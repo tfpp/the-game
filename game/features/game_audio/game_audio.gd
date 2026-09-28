@@ -32,6 +32,7 @@ const PROFILES := {
 	&"equip": [EQUIP, -16.0, 1.0],
 	&"pickup": [PICKUP, -16.0, 1.0],
 	&"drop": [DROP, -16.0, 1.0],
+	&"elevator_ding": [PICKUP, -10.0, 1.4],
 }
 
 var _world := Node3D.new()

@@ -1,0 +1,74 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" path="res://features/elevator/elevator_cab.tscn" id="1_cab"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/tile.tres" id="2_tile"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="3_wall"]
+
+[node name="Elevator" type="Node3D"]
+
+[node name="LobbyCab" parent="." instance=ExtResource("1_cab")]
+position = Vector3(30, 0, 29)
+rotation = Vector3(0, 1.5707963267948966, 0)
+destination = NodePath("../RoomCab")
+
+[node name="RoomCab" parent="." instance=ExtResource("1_cab")]
+position = Vector3(0, 0, 303.5)
+destination = NodePath("../LobbyCab")
+
+[node name="BackRoom" type="Node3D" parent="."]
+position = Vector3(0, 0, 300)
+
+[node name="Floor" type="CSGBox3D" parent="BackRoom"]
+position = Vector3(0, -0.1, 0)
+size = Vector3(10, 0.2, 10)
+material = ExtResource("2_tile")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="BackRoom"]
+position = Vector3(0, 4.1, 0)
+size = Vector3(10, 0.2, 10)
+material = ExtResource("3_wall")
+use_collision = true
+
+[node name="NorthWall" type="CSGBox3D" parent="BackRoom"]
+position = Vector3(0, 2, 5)
+size = Vector3(10, 4, 0.2)
+material = ExtResource("3_wall")
+use_collision = true
+
+[node name="SouthWall" type="CSGBox3D" parent="BackRoom"]
+position = Vector3(0, 2, -5)
+size = Vector3(10, 4, 0.2)
+material = ExtResource("3_wall")
+use_collision = true
+
+[node name="EastWall" type="CSGBox3D" parent="BackRoom"]
+position = Vector3(5, 2, 0)
+size = Vector3(0.2, 4, 10)
+material = ExtResource("3_wall")
+use_collision = true
+
+[node name="WestWall" type="CSGBox3D" parent="BackRoom"]
+position = Vector3(-5, 2, 0)
+size = Vector3(0.2, 4, 10)
+material = ExtResource("3_wall")
+use_collision = true
+
+[node name="RoomLight" type="OmniLight3D" parent="BackRoom"]
+position = Vector3(0, 3.3, 0)
+light_energy = 1.2
+omni_range = 12.0
+
+[node name="Sign" type="Label3D" parent="BackRoom"]
+position = Vector3(0, 3, -4.85)
+billboard = 1
+text = "BACK ROOM No. 1"
+font_size = 36
+outline_size = 6
+
+[node name="Notice" type="Label3D" parent="BackRoom"]
+position = Vector3(0, 2.2, -4.85)
+billboard = 1
+text = "Ride the elevator back to the casino."
+font_size = 20
+outline_size = 6

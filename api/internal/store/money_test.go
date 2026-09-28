@@ -90,6 +90,48 @@ func TestCoinCreditIsIdempotentAndPersists(t *testing.T) {
 	}
 }
 
+func TestChargeAccountIsIdempotentAndRejectsInsufficientFunds(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "charge.db")
+	s, err := Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+	a, err := s.CreateEmailAccount(ctx, "charge@example.com", "hash", "Alice", time.Now())
+	if err != nil {
+		t.Fatal(err)
+	}
+	balance, err := s.ChargeAccount(ctx, a.ID, "one", 1500)
+	if err != nil || balance != 500 {
+		t.Fatalf("charge: %d %v", balance, err)
+	}
+	s.Close()
+	s, err = Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	replay, err := s.ChargeAccount(ctx, a.ID, "one", 1500)
+	if err != nil || replay != 500 {
+		t.Fatalf("retry charged again: %d %v", replay, err)
+	}
+	balance, _ = s.Money(ctx, a.ID)
+	if balance != 500 {
+		t.Fatal(balance)
+	}
+	if _, err = s.ChargeAccount(ctx, a.ID, "two", 600); !errors.Is(err, ErrInsufficientMoney) {
+		t.Fatal(err)
+	}
+	balance, _ = s.Money(ctx, a.ID)
+	if balance != 500 {
+		t.Fatalf("insufficient charge should not touch balance: %d", balance)
+	}
+	b, _ := s.CreateEmailAccount(ctx, "charge-b@example.com", "hash", "Bob", time.Now())
+	if _, err = s.ChargeAccount(ctx, b.ID, "one", 100); !errors.Is(err, ErrChargeConflict) {
+		t.Fatal(err)
+	}
+}
+
 func TestConcurrentSpinsCannotOverdraw(t *testing.T) {
 	s, err := Open(":memory:")
 	if err != nil {

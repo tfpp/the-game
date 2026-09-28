@@ -5,10 +5,10 @@
 [node name="Trampolines" type="Node3D"]
 
 [node name="PadA" parent="." instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0.15, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.15, 25)
 
 [node name="PadB" parent="." instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0.15, 24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.15, 28.5)
 
 [node name="PadC" parent="." instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0.15, 28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.15, 32)

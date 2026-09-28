@@ -14,6 +14,12 @@ import (
 	"github.com/tfpp/the-game/api/internal/store"
 )
 
+// maxChargeCents bounds a generic "charge" request (e.g. features/gun_machine's
+// purchase price) well above any planned in-game cost, as a sanity check rather
+// than a real security boundary — the game server is already fully trusted via
+// the HMAC signature this handler requires.
+const maxChargeCents = 100_00
+
 // Only the dedicated server possesses the ticket key. Domain separation prevents
 // join-ticket signatures from being used to authorize wallet operations.
 func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
@@ -31,10 +37,11 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req struct {
-		AccountID int64  `json:"account_id"`
-		Action    string `json:"action"`
-		ID        string `json:"id"`
-		Timestamp int64  `json:"timestamp"`
+		AccountID   int64  `json:"account_id"`
+		Action      string `json:"action"`
+		ID          string `json:"id"`
+		Timestamp   int64  `json:"timestamp"`
+		AmountCents int64  `json:"amount_cents"`
 	}
 	if json.Unmarshal(raw, &req) != nil || req.AccountID <= 0 || req.Timestamp < s.cfg.Now().Unix()-60 || req.Timestamp > s.cfg.Now().Unix()+60 {
 		writeError(w, 400, "bad_request", "invalid request")
@@ -57,6 +64,27 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		balance, err := s.store.CreditCoin(r.Context(), req.AccountID, req.ID)
 		if errors.Is(err, store.ErrCreditConflict) {
 			writeError(w, 409, "credit_conflict", "invalid credit")
+			return
+		}
+		if err != nil {
+			s.internalError(w, r, err)
+			return
+		}
+		writeJSON(w, 200, map[string]int64{"balance": balance})
+		return
+	}
+	if req.Action == "charge" {
+		if len(req.ID) != 64 || req.AmountCents <= 0 || req.AmountCents > maxChargeCents {
+			writeError(w, 400, "bad_request", "invalid charge")
+			return
+		}
+		balance, err := s.store.ChargeAccount(r.Context(), req.AccountID, req.ID, req.AmountCents)
+		if errors.Is(err, store.ErrInsufficientMoney) {
+			writeError(w, 409, "insufficient_money", "You can't afford that.")
+			return
+		}
+		if errors.Is(err, store.ErrChargeConflict) {
+			writeError(w, 409, "charge_conflict", "invalid charge")
 			return
 		}
 		if err != nil {
