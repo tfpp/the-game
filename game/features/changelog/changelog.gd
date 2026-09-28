@@ -5,6 +5,11 @@ extends CanvasLayer
 ## The entries live in entries.gd so new features can add to the list without touching
 ## this script (see AGENTS.md for the rule that every new feature must add one). This
 ## is static, read-only content baked into the client, so it needs no server round trip.
+##
+## Builds from main group entries under "Edge" (added since the latest release) and the
+## last 10 releases: the web export generates releases.gd (scripts/release_notes.sh at
+## the repo root) from the vX.Y.Z tags, mapping each release to the entry titles it
+## added. Builds without releases.gd (local runs, PR previews) list every entry.
 
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const TOGGLE_ACTION := &"toggle_changelog"
@@ -15,6 +20,12 @@ const MODAL_GROUP := &"modal_ui"
 const ESC_MENU_GROUP := &"esc_menu_links"
 const PANEL_WIDTH := 420.0
 const PANEL_MAX_HEIGHT := 480.0
+const RELEASES_PATH := "res://features/changelog/releases.gd"
+## The `version` of the pseudo-release for entries added since the latest release.
+const EDGE := "edge"
+const MONTHS: Array[String] = [
+	"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+]
 
 var _backdrop: Control
 
@@ -64,6 +75,65 @@ static func body_text(entries: Array[Dictionary]) -> String:
 	for entry: Dictionary in entries:
 		lines.append(entry_line(entry))
 	return "\n".join(lines)
+
+
+## The generated releases (see releases.gd above), newest first, after an EDGE
+## pseudo-release with the entries since the latest one; [] without releases.gd.
+static func load_releases() -> Array:
+	if not ResourceLoader.exists(RELEASES_PATH):
+		return []
+	var script := load(RELEASES_PATH) as GDScript
+	if script == null:
+		return []
+	var constants := script.get_script_constant_map()
+	return (
+		[{"version": EDGE, "titles": constants.get("EDGE", [])}]
+		+ Array(constants.get("RELEASES", []))
+	)
+
+
+## "Sep 28, 2026" for "2026-09-28"; anything else is returned unchanged.
+static func date_text(iso: String) -> String:
+	var parts := iso.split("-")
+	if parts.size() != 3 or not parts[1].is_valid_int() or not parts[2].is_valid_int():
+		return iso
+	var month := parts[1].to_int()
+	if month < 1 or month > 12:
+		return iso
+	return "%s %d, %s" % [MONTHS[month - 1], parts[2].to_int(), parts[0]]
+
+
+## The BBCode body grouped by release: a heading per release, then the entries it added
+## (from `entries`, matched by title). An empty EDGE is left out.
+static func releases_text(releases: Array, entries: Array[Dictionary]) -> String:
+	var by_title := {}
+	for entry: Dictionary in entries:
+		by_title[str(entry.get("title", ""))] = entry
+	var blocks: Array[String] = []
+	for release: Variant in releases:
+		if not release is Dictionary:
+			continue
+		var version := str(release.get("version", "?"))
+		var titles: Array = release.get("titles", [])
+		if version == EDGE and titles.is_empty():
+			continue
+		var lines: Array[String] = [
+			(
+				"[font_size=20][b]%s[/b][/font_size]  [color=#ffffff99]%s[/color]"
+				% (
+					["Edge", "not released yet"]
+					if version == EDGE
+					else ["v" + version, date_text(str(release.get("date", "")))]
+				)
+			)
+		]
+		for title: Variant in titles:
+			var entry: Dictionary = by_title.get(str(title), {"title": str(title)})
+			lines.append(entry_line(entry) if entry.has("summary") else "[b]%s[/b]" % str(title))
+		if lines.size() == 1:
+			lines.append("Fixes and improvements.")
+		blocks.append("\n".join(lines))
+	return "\n\n".join(blocks)
 
 
 func _open() -> void:
@@ -117,7 +187,12 @@ func _build() -> void:
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.custom_minimum_size = Vector2(PANEL_WIDTH, 0.0)
 	body.add_theme_color_override("default_color", Color.WHITE)
-	body.text = body_text(ChangelogEntries.ENTRIES)
+	var releases := load_releases()
+	body.text = (
+		releases_text(releases, ChangelogEntries.ENTRIES)
+		if releases
+		else body_text(ChangelogEntries.ENTRIES)
+	)
 	scroll.add_child(body)
 
 	var footer := Label.new()
