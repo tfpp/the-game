@@ -115,3 +115,8 @@ contains five generated icons in the exact gameplay order: 7, BAR, STAR, BELL,
 GEM. Prompts and provenance are in `../casino_hub/textures/GENERATED_ASSETS.md`.
 The cabinet keeps its existing collision hull and interaction point. Materials
 are shared; each reel only owns its small animation shader state.
+
+The PS1 cabinet uses 844 triangles and flat, matte finishes. The reel texture imports
+at 128×128 with nearest mipmap filtering; its five icons and server-selected results
+keep their original order. Drums use eight segments and idle reels skip redundant
+shader uploads. Labels and interaction prompts keep their normal readable fonts.

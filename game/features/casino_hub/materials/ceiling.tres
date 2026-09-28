@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://features/casino_hub/materials/retro_surface.gdshader" id="shader"]
+[ext_resource type="Texture2D" path="res://features/casino_hub/textures/ceiling_albedo.png" id="albedo"]
+
+[resource]
+resource_name = "Aged plaster"
+shader = ExtResource("shader")
+shader_parameter/albedo_texture = ExtResource("albedo")
+shader_parameter/tint = Color(0.72, 0.65, 0.53, 1)
+shader_parameter/texture_scale = 0.18

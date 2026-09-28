@@ -1,2053 +1,898 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/plaster.tres" id="plaster"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/teal.tres" id="teal"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/velvet.tres" id="velvet"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/tile.tres" id="tile"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/stain.tres" id="stain"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/cream.tres" id="cream"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/glow.tres" id="glow"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="carpet"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="wallpaper"]
-[ext_resource type="Material" path="res://features/water/materials/water_surface.tres" id="water"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/glass.tres" id="glass"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="1_0li85"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="2_frjm8"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="3_s0u5k"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/plaster.tres" id="4_ya073"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/teal.tres" id="5_qsuj4"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="6_5ffdp"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/velvet.tres" id="7_xm4mq"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/tile.tres" id="8_qn0bx"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/cream.tres" id="9_mt1ls"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/casino_stool.tscn" id="10_u6gbq"]
+[ext_resource type="Script" path="res://features/casino_hub/model_materials.gd" id="11_veqc0"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/lounge_bench.tscn" id="12_cel82"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/ceramic_planter.tscn" id="13_quvcb"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/brass_chandelier.tscn" id="14_5ubmw"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/salon.tscn" id="15_0e7fu"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/decor_batches.scn" id="16_y7jil"]
 
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/casino_stool.tscn" id="casino_stool"]
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/lounge_bench.tscn" id="lounge_bench"]
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/ceramic_planter.tscn" id="ceramic_planter"]
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/brass_chandelier.tscn" id="brass_chandelier"]
+[node name="CasinoInterior" type="Node3D" unique_id=512010880]
 
-[node name="CasinoInterior" type="Node3D"]
-
-[node name="SunkenGamingFloor" type="CSGBox3D" parent="."]
-position = Vector3(0, -1.9, 0)
+[node name="SunkenGamingFloor" type="CSGBox3D" parent="." unique_id=428697057]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.9, 0)
+use_collision = true
 size = Vector3(30, 0.8, 24)
-material = ExtResource("carpet")
-use_collision = true
+material = ExtResource("1_0li85")
 
-[node name="NorthPromenade" type="CSGBox3D" parent="."]
-position = Vector3(0, -0.4, -23.5)
+[node name="NorthPromenade" type="CSGBox3D" parent="." unique_id=276394150]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, -23.5)
+use_collision = true
 size = Vector3(68, 0.8, 23)
-material = ExtResource("carpet")
-use_collision = true
+material = ExtResource("1_0li85")
 
-[node name="SouthPromenade" type="CSGBox3D" parent="."]
-position = Vector3(0, -0.4, 23.5)
+[node name="SouthPromenade" type="CSGBox3D" parent="." unique_id=111049600]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 23.5)
+use_collision = true
 size = Vector3(68, 0.8, 23)
-material = ExtResource("carpet")
-use_collision = true
+material = ExtResource("1_0li85")
 
-[node name="WestPromenade" type="CSGBox3D" parent="."]
-position = Vector3(-24.5, -0.4, 0)
+[node name="WestPromenade" type="CSGBox3D" parent="." unique_id=262254633]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.5, -0.4, 0)
+use_collision = true
 size = Vector3(19, 0.8, 24)
-material = ExtResource("carpet")
-use_collision = true
+material = ExtResource("1_0li85")
 
-[node name="EastPromenade" type="CSGBox3D" parent="."]
-position = Vector3(24.5, -0.4, 0)
+[node name="EastPromenade" type="CSGBox3D" parent="." unique_id=303363138]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.5, -0.4, 0)
+use_collision = true
 size = Vector3(19, 0.8, 24)
-material = ExtResource("carpet")
-use_collision = true
+material = ExtResource("1_0li85")
 
-[node name="NorthRamp" type="CSGPolygon3D" parent="."]
-position = Vector3(3, -1.5, -6)
+[node name="NorthRamp" type="CSGPolygon3D" parent="." unique_id=264869718]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3, -1.5, -6)
+use_collision = true
 polygon = PackedVector2Array(0, 0, 6, 0, 6, 1.5)
 depth = 6.0
-rotation = Vector3(0, 1.5707963267948966, 0)
-material = ExtResource("carpet")
-use_collision = true
+material = ExtResource("1_0li85")
 
-[node name="PitRetaining-1_-9" type="CSGBox3D" parent="."]
-position = Vector3(-9, -0.75, -12)
+[node name="PitRetaining-1_-9" type="CSGBox3D" parent="." unique_id=218405177]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -0.75, -12)
+use_collision = true
 size = Vector3(12, 1.5, 0.18)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="PitRail-1_-9" type="CSGBox3D" parent="."]
-position = Vector3(-9, 0.92, -12)
+[node name="PitRail-1_-9" type="CSGBox3D" parent="." unique_id=184141344]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0.92, -12)
+use_collision = true
 size = Vector3(12, 0.12, 0.12)
-material = ExtResource("brass")
+material = ExtResource("3_s0u5k")
+
+[node name="PitRetaining-1_9" type="CSGBox3D" parent="." unique_id=670907083]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, -0.75, -12)
 use_collision = true
-
-[node name="RailPost-1_-9_-5" type="CSGCylinder3D" parent="."]
-position = Vector3(-14, 0.45, -12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost-1_-9_-2" type="CSGCylinder3D" parent="."]
-position = Vector3(-11, 0.45, -12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost-1_-9_2" type="CSGCylinder3D" parent="."]
-position = Vector3(-7, 0.45, -12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost-1_-9_5" type="CSGCylinder3D" parent="."]
-position = Vector3(-4, 0.45, -12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="PitRetaining-1_9" type="CSGBox3D" parent="."]
-position = Vector3(9, -0.75, -12)
 size = Vector3(12, 1.5, 0.18)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="PitRail-1_9" type="CSGBox3D" parent="."]
-position = Vector3(9, 0.92, -12)
+[node name="PitRail-1_9" type="CSGBox3D" parent="." unique_id=1814634972]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.92, -12)
+use_collision = true
 size = Vector3(12, 0.12, 0.12)
-material = ExtResource("brass")
+material = ExtResource("3_s0u5k")
+
+[node name="SouthRamp" type="CSGPolygon3D" parent="." unique_id=1704254490]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3, -1.5, 6)
 use_collision = true
-
-[node name="RailPost-1_9_-5" type="CSGCylinder3D" parent="."]
-position = Vector3(4, 0.45, -12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost-1_9_-2" type="CSGCylinder3D" parent="."]
-position = Vector3(7, 0.45, -12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost-1_9_2" type="CSGCylinder3D" parent="."]
-position = Vector3(11, 0.45, -12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost-1_9_5" type="CSGCylinder3D" parent="."]
-position = Vector3(14, 0.45, -12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SouthRamp" type="CSGPolygon3D" parent="."]
-position = Vector3(-3, -1.5, 6)
 polygon = PackedVector2Array(0, 0, 6, 0, 6, 1.5)
 depth = 6.0
-rotation = Vector3(0, -1.5707963267948966, 0)
-material = ExtResource("carpet")
-use_collision = true
+material = ExtResource("1_0li85")
 
-[node name="PitRetaining1_-9" type="CSGBox3D" parent="."]
-position = Vector3(-9, -0.75, 12)
+[node name="PitRetaining1_-9" type="CSGBox3D" parent="." unique_id=100010682]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -0.75, 12)
+use_collision = true
 size = Vector3(12, 1.5, 0.18)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="PitRail1_-9" type="CSGBox3D" parent="."]
-position = Vector3(-9, 0.92, 12)
+[node name="PitRail1_-9" type="CSGBox3D" parent="." unique_id=2137718516]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0.92, 12)
+use_collision = true
 size = Vector3(12, 0.12, 0.12)
-material = ExtResource("brass")
+material = ExtResource("3_s0u5k")
+
+[node name="PitRetaining1_9" type="CSGBox3D" parent="." unique_id=1483549424]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, -0.75, 12)
 use_collision = true
-
-[node name="RailPost1_-9_-5" type="CSGCylinder3D" parent="."]
-position = Vector3(-14, 0.45, 12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost1_-9_-2" type="CSGCylinder3D" parent="."]
-position = Vector3(-11, 0.45, 12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost1_-9_2" type="CSGCylinder3D" parent="."]
-position = Vector3(-7, 0.45, 12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost1_-9_5" type="CSGCylinder3D" parent="."]
-position = Vector3(-4, 0.45, 12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="PitRetaining1_9" type="CSGBox3D" parent="."]
-position = Vector3(9, -0.75, 12)
 size = Vector3(12, 1.5, 0.18)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="PitRail1_9" type="CSGBox3D" parent="."]
-position = Vector3(9, 0.92, 12)
+[node name="PitRail1_9" type="CSGBox3D" parent="." unique_id=1422523336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.92, 12)
+use_collision = true
 size = Vector3(12, 0.12, 0.12)
-material = ExtResource("brass")
+material = ExtResource("3_s0u5k")
+
+[node name="PitSide-15" type="CSGBox3D" parent="." unique_id=168436488]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, -0.75, 0)
 use_collision = true
-
-[node name="RailPost1_9_-5" type="CSGCylinder3D" parent="."]
-position = Vector3(4, 0.45, 12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost1_9_-2" type="CSGCylinder3D" parent="."]
-position = Vector3(7, 0.45, 12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost1_9_2" type="CSGCylinder3D" parent="."]
-position = Vector3(11, 0.45, 12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="RailPost1_9_5" type="CSGCylinder3D" parent="."]
-position = Vector3(14, 0.45, 12)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="PitSide-15" type="CSGBox3D" parent="."]
-position = Vector3(-15, -0.75, 0)
 size = Vector3(0.18, 1.5, 24)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="PitSideRail-15" type="CSGBox3D" parent="."]
-position = Vector3(-15, 0.92, 0)
+[node name="PitSideRail-15" type="CSGBox3D" parent="." unique_id=1623935121]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.92, 0)
+use_collision = true
 size = Vector3(0.12, 0.12, 24)
-material = ExtResource("brass")
+material = ExtResource("3_s0u5k")
+
+[node name="PitSide15" type="CSGBox3D" parent="." unique_id=517190151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -0.75, 0)
 use_collision = true
-
-[node name="SidePost-15_-11" type="CSGCylinder3D" parent="."]
-position = Vector3(-15, 0.45, -11)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost-15_-8" type="CSGCylinder3D" parent="."]
-position = Vector3(-15, 0.45, -8)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost-15_-5" type="CSGCylinder3D" parent="."]
-position = Vector3(-15, 0.45, -5)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost-15_-2" type="CSGCylinder3D" parent="."]
-position = Vector3(-15, 0.45, -2)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost-15_1" type="CSGCylinder3D" parent="."]
-position = Vector3(-15, 0.45, 1)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost-15_4" type="CSGCylinder3D" parent="."]
-position = Vector3(-15, 0.45, 4)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost-15_7" type="CSGCylinder3D" parent="."]
-position = Vector3(-15, 0.45, 7)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost-15_10" type="CSGCylinder3D" parent="."]
-position = Vector3(-15, 0.45, 10)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="PitSide15" type="CSGBox3D" parent="."]
-position = Vector3(15, -0.75, 0)
 size = Vector3(0.18, 1.5, 24)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="PitSideRail15" type="CSGBox3D" parent="."]
-position = Vector3(15, 0.92, 0)
+[node name="PitSideRail15" type="CSGBox3D" parent="." unique_id=136362071]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.92, 0)
+use_collision = true
 size = Vector3(0.12, 0.12, 24)
-material = ExtResource("brass")
+material = ExtResource("3_s0u5k")
+
+[node name="Ceiling" type="CSGBox3D" parent="." unique_id=1058675236]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.3, 0)
 use_collision = true
-
-[node name="SidePost15_-11" type="CSGCylinder3D" parent="."]
-position = Vector3(15, 0.45, -11)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost15_-8" type="CSGCylinder3D" parent="."]
-position = Vector3(15, 0.45, -8)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost15_-5" type="CSGCylinder3D" parent="."]
-position = Vector3(15, 0.45, -5)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost15_-2" type="CSGCylinder3D" parent="."]
-position = Vector3(15, 0.45, -2)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost15_1" type="CSGCylinder3D" parent="."]
-position = Vector3(15, 0.45, 1)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost15_4" type="CSGCylinder3D" parent="."]
-position = Vector3(15, 0.45, 4)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost15_7" type="CSGCylinder3D" parent="."]
-position = Vector3(15, 0.45, 7)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SidePost15_10" type="CSGCylinder3D" parent="."]
-position = Vector3(15, 0.45, 10)
-radius = 0.045
-height = 0.9
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="Ceiling" type="CSGBox3D" parent="."]
-position = Vector3(0, 8.3, 0)
 size = Vector3(70, 0.6, 70)
-material = ExtResource("plaster")
-use_collision = true
+material = ExtResource("4_ya073")
 
-[node name="SkylightWestOpening" type="CSGBox3D" parent="Ceiling"]
-position = Vector3(-9.5, 0, 0)
+[node name="SkylightWestOpening" type="CSGBox3D" parent="Ceiling" unique_id=1467277960]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.5, 0, 0)
 operation = 2
-size = Vector3(5.0, 1, 18.0)
+size = Vector3(5, 1, 18)
 
-[node name="SkylightWestGlass" type="CSGBox3D" parent="."]
-position = Vector3(-9.5, 8.5, 0)
-size = Vector3(5.0, 0.06, 18.0)
-material = ExtResource("glass")
-use_collision = true
-
-[node name="SkylightWestTrimN" type="CSGBox3D" parent="."]
-position = Vector3(-9.5, 7.94, -9.0)
-size = Vector3(5.5, 0.14, 0.25)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightWestTrimS" type="CSGBox3D" parent="."]
-position = Vector3(-9.5, 7.94, 9.0)
-size = Vector3(5.5, 0.14, 0.25)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightWestTrimW" type="CSGBox3D" parent="."]
-position = Vector3(-12.0, 7.94, 0)
-size = Vector3(0.25, 0.14, 18.5)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightWestTrimE" type="CSGBox3D" parent="."]
-position = Vector3(-7.0, 7.94, 0)
-size = Vector3(0.25, 0.14, 18.5)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightWestBarSpine" type="CSGBox3D" parent="."]
-position = Vector3(-9.5, 8.44, 0)
-size = Vector3(0.08, 0.08, 18.0)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightWestBar0" type="CSGBox3D" parent="."]
-position = Vector3(-9.5, 8.44, -6.0)
-size = Vector3(5.0, 0.08, 0.08)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightWestBar1" type="CSGBox3D" parent="."]
-position = Vector3(-9.5, 8.44, -3.0)
-size = Vector3(5.0, 0.08, 0.08)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightWestBar2" type="CSGBox3D" parent="."]
-position = Vector3(-9.5, 8.44, 0.0)
-size = Vector3(5.0, 0.08, 0.08)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightWestBar3" type="CSGBox3D" parent="."]
-position = Vector3(-9.5, 8.44, 3.0)
-size = Vector3(5.0, 0.08, 0.08)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightWestBar4" type="CSGBox3D" parent="."]
-position = Vector3(-9.5, 8.44, 6.0)
-size = Vector3(5.0, 0.08, 0.08)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightEastOpening" type="CSGBox3D" parent="Ceiling"]
-position = Vector3(5.5, 0, 0)
+[node name="SkylightEastOpening" type="CSGBox3D" parent="Ceiling" unique_id=950126649]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, 0)
 operation = 2
-size = Vector3(5.0, 1, 18.0)
+size = Vector3(5, 1, 18)
 
-[node name="SkylightEastGlass" type="CSGBox3D" parent="."]
-position = Vector3(5.5, 8.5, 0)
-size = Vector3(5.0, 0.06, 18.0)
-material = ExtResource("glass")
+[node name="SkylightWestGlass" type="CSGBox3D" parent="." unique_id=137243737]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.5, 8.5, 0)
 use_collision = true
+size = Vector3(5, 0.06, 18)
+material = ExtResource("4_ya073")
 
-[node name="SkylightEastTrimN" type="CSGBox3D" parent="."]
-position = Vector3(5.5, 7.94, -9.0)
-size = Vector3(5.5, 0.14, 0.25)
-material = ExtResource("brass")
-use_collision = false
+[node name="SkylightEastGlass" type="CSGBox3D" parent="." unique_id=155231642]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 8.5, 0)
+use_collision = true
+size = Vector3(5, 0.06, 18)
+material = ExtResource("4_ya073")
 
-[node name="SkylightEastTrimS" type="CSGBox3D" parent="."]
-position = Vector3(5.5, 7.94, 9.0)
-size = Vector3(5.5, 0.14, 0.25)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightEastTrimW" type="CSGBox3D" parent="."]
-position = Vector3(3.0, 7.94, 0)
-size = Vector3(0.25, 0.14, 18.5)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightEastTrimE" type="CSGBox3D" parent="."]
-position = Vector3(8.0, 7.94, 0)
-size = Vector3(0.25, 0.14, 18.5)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightEastBarSpine" type="CSGBox3D" parent="."]
-position = Vector3(5.5, 8.44, 0)
-size = Vector3(0.08, 0.08, 18.0)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightEastBar0" type="CSGBox3D" parent="."]
-position = Vector3(5.5, 8.44, -6.0)
-size = Vector3(5.0, 0.08, 0.08)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightEastBar1" type="CSGBox3D" parent="."]
-position = Vector3(5.5, 8.44, -3.0)
-size = Vector3(5.0, 0.08, 0.08)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightEastBar2" type="CSGBox3D" parent="."]
-position = Vector3(5.5, 8.44, 0.0)
-size = Vector3(5.0, 0.08, 0.08)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightEastBar3" type="CSGBox3D" parent="."]
-position = Vector3(5.5, 8.44, 3.0)
-size = Vector3(5.0, 0.08, 0.08)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SkylightEastBar4" type="CSGBox3D" parent="."]
-position = Vector3(5.5, 8.44, 6.0)
-size = Vector3(5.0, 0.08, 0.08)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="CofferSide-16" type="CSGBox3D" parent="."]
-position = Vector3(-16, 7.6, 0)
+[node name="CofferSide-16" type="CSGBox3D" parent="." unique_id=677950346]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 7.6, 0)
+use_collision = true
 size = Vector3(1, 1, 27)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="CofferSide16" type="CSGBox3D" parent="."]
-position = Vector3(16, 7.6, 0)
+[node name="CofferSide16" type="CSGBox3D" parent="." unique_id=1989581086]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 7.6, 0)
+use_collision = true
 size = Vector3(1, 1, 27)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="CofferEnd-13" type="CSGBox3D" parent="."]
-position = Vector3(0, 7.6, -13)
+[node name="CofferEnd-13" type="CSGBox3D" parent="." unique_id=168107640]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.6, -13)
+use_collision = true
 size = Vector3(33, 1, 1)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="CofferEnd13" type="CSGBox3D" parent="."]
-position = Vector3(0, 7.6, 13)
+[node name="CofferEnd13" type="CSGBox3D" parent="." unique_id=1962391721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.6, 13)
+use_collision = true
 size = Vector3(33, 1, 1)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="Column-16_-13" type="CSGCylinder3D" parent="."]
-position = Vector3(-16, 3.65, -13)
+[node name="Column-16_-13" type="CSGCylinder3D" parent="." unique_id=2034179562]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 3.65, -13)
+use_collision = true
 radius = 0.36
 height = 7.3
 sides = 16
-material = ExtResource("teal")
+material = ExtResource("5_qsuj4")
+
+[node name="Column-16_13" type="CSGCylinder3D" parent="." unique_id=1836450829]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 3.65, 13)
 use_collision = true
-
-[node name="ColumnBase-16_-13" type="CSGCylinder3D" parent="."]
-position = Vector3(-16, 0.16, -13)
-radius = 0.57
-height = 0.32
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="ColumnCapital-16_-13" type="CSGCylinder3D" parent="."]
-position = Vector3(-16, 7.12, -13)
-radius = 0.68
-height = 0.34
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="Column-16_13" type="CSGCylinder3D" parent="."]
-position = Vector3(-16, 3.65, 13)
 radius = 0.36
 height = 7.3
 sides = 16
-material = ExtResource("teal")
+material = ExtResource("5_qsuj4")
+
+[node name="Column16_-13" type="CSGCylinder3D" parent="." unique_id=388825855]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 3.65, -13)
 use_collision = true
-
-[node name="ColumnBase-16_13" type="CSGCylinder3D" parent="."]
-position = Vector3(-16, 0.16, 13)
-radius = 0.57
-height = 0.32
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="ColumnCapital-16_13" type="CSGCylinder3D" parent="."]
-position = Vector3(-16, 7.12, 13)
-radius = 0.68
-height = 0.34
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="Column16_-13" type="CSGCylinder3D" parent="."]
-position = Vector3(16, 3.65, -13)
 radius = 0.36
 height = 7.3
 sides = 16
-material = ExtResource("teal")
+material = ExtResource("5_qsuj4")
+
+[node name="Column16_13" type="CSGCylinder3D" parent="." unique_id=641418704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 3.65, 13)
 use_collision = true
-
-[node name="ColumnBase16_-13" type="CSGCylinder3D" parent="."]
-position = Vector3(16, 0.16, -13)
-radius = 0.57
-height = 0.32
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="ColumnCapital16_-13" type="CSGCylinder3D" parent="."]
-position = Vector3(16, 7.12, -13)
-radius = 0.68
-height = 0.34
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="Column16_13" type="CSGCylinder3D" parent="."]
-position = Vector3(16, 3.65, 13)
 radius = 0.36
 height = 7.3
 sides = 16
-material = ExtResource("teal")
-use_collision = true
+material = ExtResource("5_qsuj4")
 
-[node name="ColumnBase16_13" type="CSGCylinder3D" parent="."]
-position = Vector3(16, 0.16, 13)
-radius = 0.57
-height = 0.32
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="ColumnCapital16_13" type="CSGCylinder3D" parent="."]
-position = Vector3(16, 7.12, 13)
-radius = 0.68
-height = 0.34
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="GamingLight-7" type="OmniLight3D" parent="."]
-position = Vector3(0, 5.6, -7)
+[node name="GamingLight-7" type="OmniLight3D" parent="." unique_id=1691468235]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -7)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 1.7
-omni_range = 16
+omni_range = 16.0
 omni_attenuation = 1.4
 
-[node name="GamingLight0" type="OmniLight3D" parent="."]
-position = Vector3(0, 5.6, 0)
+[node name="GamingLight0" type="OmniLight3D" parent="." unique_id=1442914124]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 0)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 1.7
-omni_range = 16
+omni_range = 16.0
 omni_attenuation = 1.4
 
-[node name="GamingLight7" type="OmniLight3D" parent="."]
-position = Vector3(0, 5.6, 7)
+[node name="GamingLight7" type="OmniLight3D" parent="." unique_id=908256897]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 7)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 1.7
-omni_range = 16
+omni_range = 16.0
 omni_attenuation = 1.4
 
-[node name="RoomPartition-1_-12" type="CSGBox3D" parent="."]
-position = Vector3(-18, 4, -12)
+[node name="RoomPartition-1_-12" type="CSGBox3D" parent="." unique_id=1054405904]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 4, -12)
+use_collision = true
 size = Vector3(0.4, 8, 18)
-material = ExtResource("wallpaper")
-use_collision = true
+material = ExtResource("6_5ffdp")
 
-[node name="RoomPartition-1_12" type="CSGBox3D" parent="."]
-position = Vector3(-18, 4, 12)
+[node name="RoomPartition-1_12" type="CSGBox3D" parent="." unique_id=880966877]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 4, 12)
+use_collision = true
 size = Vector3(0.4, 8, 18)
-material = ExtResource("wallpaper")
-use_collision = true
+material = ExtResource("6_5ffdp")
 
-[node name="DoorLintel-1" type="CSGBox3D" parent="."]
-position = Vector3(-18, 6.5, 0)
+[node name="DoorLintel-1" type="CSGBox3D" parent="." unique_id=1274976563]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 6.5, 0)
+use_collision = true
 size = Vector3(0.6, 3, 6)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="DoorShoulder-1_-2.7" type="CSGBox3D" parent="."]
-position = Vector3(-18, 4.65, -2.7)
+[node name="DoorShoulder-1_-2.7" type="CSGBox3D" parent="." unique_id=1176921673]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 4.65, -2.7)
+use_collision = true
 size = Vector3(0.65, 0.7, 0.6)
-material = ExtResource("brass")
-use_collision = true
+material = ExtResource("3_s0u5k")
 
-[node name="DoorShoulder-1_2.7" type="CSGBox3D" parent="."]
-position = Vector3(-18, 4.65, 2.7)
+[node name="DoorShoulder-1_2.7" type="CSGBox3D" parent="." unique_id=1056620570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 4.65, 2.7)
+use_collision = true
 size = Vector3(0.65, 0.7, 0.6)
-material = ExtResource("brass")
-use_collision = true
+material = ExtResource("3_s0u5k")
 
-[node name="SideRoomEnd-1_-21" type="CSGBox3D" parent="."]
-position = Vector3(-26, 4, -21)
+[node name="SideRoomEnd-1_-21" type="CSGBox3D" parent="." unique_id=565104510]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 4, -21)
+use_collision = true
 size = Vector3(16, 8, 0.4)
-material = ExtResource("wallpaper")
-use_collision = true
+material = ExtResource("6_5ffdp")
 
-[node name="SideRoomEnd-1_21" type="CSGBox3D" parent="."]
-position = Vector3(-26, 4, 21)
+[node name="SideRoomEnd-1_21" type="CSGBox3D" parent="." unique_id=302991150]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 4, 21)
+use_collision = true
 size = Vector3(16, 8, 0.4)
-material = ExtResource("wallpaper")
-use_collision = true
+material = ExtResource("6_5ffdp")
 
-[node name="Panel-1_-12" type="CSGBox3D" parent="."]
-position = Vector3(-17.76, 0.65, -12)
-size = Vector3(0.12, 1.3, 18)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="PanelCap-1_-12" type="CSGBox3D" parent="."]
-position = Vector3(-17.69, 1.35, -12)
-size = Vector3(0.1, 0.08, 18)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="Panel-1_12" type="CSGBox3D" parent="."]
-position = Vector3(-17.76, 0.65, 12)
-size = Vector3(0.12, 1.3, 18)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="PanelCap-1_12" type="CSGBox3D" parent="."]
-position = Vector3(-17.69, 1.35, 12)
-size = Vector3(0.1, 0.08, 18)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="WingSign-1" type="Label3D" parent="."]
-position = Vector3(-17.65, 4, 0)
+[node name="WingSign-1" type="Label3D" parent="." unique_id=732922039]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -17.65, 4, 0)
+pixel_size = 0.012
+double_sided = false
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "PETTING ZOO"
 font_size = 42
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 1.5707963267948966, 0)
 
-double_sided = false
-[node name="WingDoorLight-1" type="OmniLight3D" parent="."]
-position = Vector3(-16, 4, 0)
+[node name="WingDoorLight-1" type="OmniLight3D" parent="." unique_id=761517946]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 4, 0)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 1.1
-omni_range = 10
+omni_range = 10.0
 omni_attenuation = 1.4
 
-[node name="RoomPartition1_-12" type="CSGBox3D" parent="."]
-position = Vector3(18, 4, -12)
-size = Vector3(0.4, 8, 18)
-material = ExtResource("wallpaper")
+[node name="RoomPartition1_-12" type="CSGBox3D" parent="." unique_id=1885273438]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 4, -12)
 use_collision = true
-
-[node name="RoomPartition1_12" type="CSGBox3D" parent="."]
-position = Vector3(18, 4, 12)
 size = Vector3(0.4, 8, 18)
-material = ExtResource("wallpaper")
-use_collision = true
+material = ExtResource("6_5ffdp")
 
-[node name="DoorLintel1" type="CSGBox3D" parent="."]
-position = Vector3(18, 6.5, 0)
+[node name="RoomPartition1_12" type="CSGBox3D" parent="." unique_id=1395602137]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 4, 12)
+use_collision = true
+size = Vector3(0.4, 8, 18)
+material = ExtResource("6_5ffdp")
+
+[node name="DoorLintel1" type="CSGBox3D" parent="." unique_id=1919472666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 6.5, 0)
+use_collision = true
 size = Vector3(0.6, 3, 6)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="DoorShoulder1_-2.7" type="CSGBox3D" parent="."]
-position = Vector3(18, 4.65, -2.7)
+[node name="DoorShoulder1_-2.7" type="CSGBox3D" parent="." unique_id=135400300]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 4.65, -2.7)
+use_collision = true
 size = Vector3(0.65, 0.7, 0.6)
-material = ExtResource("brass")
-use_collision = true
+material = ExtResource("3_s0u5k")
 
-[node name="DoorShoulder1_2.7" type="CSGBox3D" parent="."]
-position = Vector3(18, 4.65, 2.7)
+[node name="DoorShoulder1_2.7" type="CSGBox3D" parent="." unique_id=1408673897]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 4.65, 2.7)
+use_collision = true
 size = Vector3(0.65, 0.7, 0.6)
-material = ExtResource("brass")
-use_collision = true
+material = ExtResource("3_s0u5k")
 
-[node name="SideRoomEnd1_-21" type="CSGBox3D" parent="."]
-position = Vector3(26, 4, -21)
+[node name="SideRoomEnd1_-21" type="CSGBox3D" parent="." unique_id=821729332]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 4, -21)
+use_collision = true
 size = Vector3(16, 8, 0.4)
-material = ExtResource("wallpaper")
-use_collision = true
+material = ExtResource("6_5ffdp")
 
-[node name="SideRoomEnd1_21" type="CSGBox3D" parent="."]
-position = Vector3(26, 4, 21)
+[node name="SideRoomEnd1_21" type="CSGBox3D" parent="." unique_id=1776227206]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 4, 21)
+use_collision = true
 size = Vector3(16, 8, 0.4)
-material = ExtResource("wallpaper")
-use_collision = true
+material = ExtResource("6_5ffdp")
 
-[node name="Panel1_-12" type="CSGBox3D" parent="."]
-position = Vector3(17.76, 0.65, -12)
-size = Vector3(0.12, 1.3, 18)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="PanelCap1_-12" type="CSGBox3D" parent="."]
-position = Vector3(17.69, 1.35, -12)
-size = Vector3(0.1, 0.08, 18)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="Panel1_12" type="CSGBox3D" parent="."]
-position = Vector3(17.76, 0.65, 12)
-size = Vector3(0.12, 1.3, 18)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="PanelCap1_12" type="CSGBox3D" parent="."]
-position = Vector3(17.69, 1.35, 12)
-size = Vector3(0.1, 0.08, 18)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="WingSign1" type="Label3D" parent="."]
-position = Vector3(17.65, 4, 0)
+[node name="WingSign1" type="Label3D" parent="." unique_id=1754652146]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 17.65, 4, 0)
+pixel_size = 0.012
+double_sided = false
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "HARBOR ROOM"
 font_size = 42
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, -1.5707963267948966, 0)
 
-double_sided = false
-[node name="WingDoorLight1" type="OmniLight3D" parent="."]
-position = Vector3(16, 4, 0)
+[node name="WingDoorLight1" type="OmniLight3D" parent="." unique_id=1533499037]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 4, 0)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 1.1
-omni_range = 10
+omni_range = 10.0
 omni_attenuation = 1.4
 
-[node name="ZooTiles" type="CSGBox3D" parent="."]
-position = Vector3(-26, 0.02, 0)
-size = Vector3(15, 0.04, 41)
-material = ExtResource("tile")
-use_collision = false
-
-[node name="ZooBenchSeat-12" type="CSGBox3D" parent="."]
-position = Vector3(-32, 0.5, -12)
+[node name="ZooBenchSeat-12" type="CSGBox3D" parent="." unique_id=1263159808]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0.5, -12)
+visible = false
+use_collision = true
 size = Vector3(1, 0.25, 4)
-material = ExtResource("velvet")
-use_collision = true
-visible = false
+material = ExtResource("7_xm4mq")
 
-[node name="ZooBenchBack-12" type="CSGBox3D" parent="."]
-position = Vector3(-32.5, 1, -12)
+[node name="ZooBenchBack-12" type="CSGBox3D" parent="." unique_id=1339868855]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.5, 1, -12)
+visible = false
+use_collision = true
 size = Vector3(0.18, 1.2, 4)
-material = ExtResource("wood")
-use_collision = true
-visible = false
+material = ExtResource("2_frjm8")
 
-[node name="ZooBenchSeat12" type="CSGBox3D" parent="."]
-position = Vector3(-32, 0.5, 12)
+[node name="ZooBenchSeat12" type="CSGBox3D" parent="." unique_id=2040961483]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0.5, 12)
+visible = false
+use_collision = true
 size = Vector3(1, 0.25, 4)
-material = ExtResource("velvet")
-use_collision = true
-visible = false
+material = ExtResource("7_xm4mq")
 
-[node name="ZooBenchBack12" type="CSGBox3D" parent="."]
-position = Vector3(-32.5, 1, 12)
+[node name="ZooBenchBack12" type="CSGBox3D" parent="." unique_id=1513374764]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.5, 1, 12)
+visible = false
+use_collision = true
 size = Vector3(0.18, 1.2, 4)
-material = ExtResource("wood")
-use_collision = true
-visible = false
+material = ExtResource("2_frjm8")
 
-[node name="ZooTitle" type="Label3D" parent="."]
-position = Vector3(-26, 4.5, -20.7)
+[node name="ZooTitle" type="Label3D" parent="." unique_id=2062186257]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 4.5, -20.7)
+pixel_size = 0.012
+double_sided = false
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "THE LUCKY PETTING PARLOR"
 font_size = 38
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
+[node name="ZooNotice" type="Label3D" parent="." unique_id=2042246369]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 2.9, -20.7)
+pixel_size = 0.012
 double_sided = false
-[node name="ZooNotice" type="Label3D" parent="."]
-position = Vector3(-26, 2.9, -20.7)
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "FROGS & FRIENDS  /  PLEASE BE KIND"
 font_size = 23
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
-double_sided = false
-[node name="ZooLight-13" type="OmniLight3D" parent="."]
-position = Vector3(-26, 5, -13)
+[node name="ZooLight-13" type="OmniLight3D" parent="." unique_id=2115396041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 5, -13)
 light_color = Color(0.66, 0.85, 0.66, 1)
 light_energy = 1.25
-omni_range = 14
+omni_range = 14.0
 omni_attenuation = 1.4
 
-[node name="ZooLight0" type="OmniLight3D" parent="."]
-position = Vector3(-26, 5, 0)
+[node name="ZooLight0" type="OmniLight3D" parent="." unique_id=490508515]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 5, 0)
 light_color = Color(0.66, 0.85, 0.66, 1)
 light_energy = 1.25
-omni_range = 14
+omni_range = 14.0
 omni_attenuation = 1.4
 
-[node name="ZooLight13" type="OmniLight3D" parent="."]
-position = Vector3(-26, 5, 13)
+[node name="ZooLight13" type="OmniLight3D" parent="." unique_id=1285813809]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 5, 13)
 light_color = Color(0.66, 0.85, 0.66, 1)
 light_energy = 1.25
-omni_range = 14
+omni_range = 14.0
 omni_attenuation = 1.4
 
-[node name="BasinBed" type="CSGBox3D" parent="."]
-position = Vector3(26, -0.02, 0)
+[node name="BasinBed" type="CSGBox3D" parent="." unique_id=206852801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, -0.02, 0)
+use_collision = true
 size = Vector3(11, 0.12, 40)
-material = ExtResource("teal")
-use_collision = true
+material = ExtResource("5_qsuj4")
 
-[node name="QuayWest" type="CSGBox3D" parent="."]
-position = Vector3(20, 0.06, 0)
+[node name="QuayWest" type="CSGBox3D" parent="." unique_id=1030837267]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.06, 0)
+use_collision = true
 size = Vector3(3, 0.12, 40)
-material = ExtResource("tile")
-use_collision = true
+material = ExtResource("8_qn0bx")
 
-[node name="QuayEast" type="CSGBox3D" parent="."]
-position = Vector3(32, 0.06, 0)
+[node name="QuayEast" type="CSGBox3D" parent="." unique_id=767716611]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 0.06, 0)
+use_collision = true
 size = Vector3(3, 0.12, 40)
-material = ExtResource("tile")
-use_collision = true
+material = ExtResource("8_qn0bx")
 
-[node name="FerryLanding-19.6" type="CSGBox3D" parent="."]
-position = Vector3(26, 0.1, -20.05)
+[node name="FerryLanding-19.6" type="CSGBox3D" parent="." unique_id=143685948]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0.1, -20.05)
+use_collision = true
 size = Vector3(11, 0.2, 0.8)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="FerryLanding19.6" type="CSGBox3D" parent="."]
-position = Vector3(26, 0.1, 20.05)
+[node name="FerryLanding19.6" type="CSGBox3D" parent="." unique_id=1579844883]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0.1, 20.05)
+use_collision = true
 size = Vector3(11, 0.2, 0.8)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="HarborWater" type="CSGBox3D" parent="."]
-position = Vector3(26, 0.1, 0)
-size = Vector3(9, 0.035, 39)
-material = ExtResource("water")
-use_collision = false
-
-[node name="QuayBollard-18" type="CSGCylinder3D" parent="."]
-position = Vector3(21.1, 0.3, -18)
-radius = 0.14
-height = 0.6
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="QuayLamp-18" type="CSGBox3D" parent="."]
-position = Vector3(32.8, 3.5, -18)
-size = Vector3(0.25, 0.5, 0.25)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="HarborLight-18" type="OmniLight3D" parent="."]
-position = Vector3(29, 4, -18)
+[node name="HarborLight-18" type="OmniLight3D" parent="." unique_id=1441693032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 4, -18)
 light_color = Color(0.48, 0.75, 0.83, 1)
 light_energy = 1.3
-omni_range = 13
+omni_range = 13.0
 omni_attenuation = 1.4
 
-[node name="QuayBollard-9" type="CSGCylinder3D" parent="."]
-position = Vector3(21.1, 0.3, -9)
-radius = 0.14
-height = 0.6
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="QuayLamp-9" type="CSGBox3D" parent="."]
-position = Vector3(32.8, 3.5, -9)
-size = Vector3(0.25, 0.5, 0.25)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="HarborLight-9" type="OmniLight3D" parent="."]
-position = Vector3(29, 4, -9)
+[node name="HarborLight-9" type="OmniLight3D" parent="." unique_id=1616611811]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 4, -9)
 light_color = Color(0.48, 0.75, 0.83, 1)
 light_energy = 1.3
-omni_range = 13
+omni_range = 13.0
 omni_attenuation = 1.4
 
-[node name="QuayBollard9" type="CSGCylinder3D" parent="."]
-position = Vector3(21.1, 0.3, 9)
-radius = 0.14
-height = 0.6
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="QuayLamp9" type="CSGBox3D" parent="."]
-position = Vector3(32.8, 3.5, 9)
-size = Vector3(0.25, 0.5, 0.25)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="HarborLight9" type="OmniLight3D" parent="."]
-position = Vector3(29, 4, 9)
+[node name="HarborLight9" type="OmniLight3D" parent="." unique_id=1135714267]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 4, 9)
 light_color = Color(0.48, 0.75, 0.83, 1)
 light_energy = 1.3
-omni_range = 13
+omni_range = 13.0
 omni_attenuation = 1.4
 
-[node name="QuayBollard18" type="CSGCylinder3D" parent="."]
-position = Vector3(21.1, 0.3, 18)
-radius = 0.14
-height = 0.6
-sides = 16
-material = ExtResource("brass")
-use_collision = false
-
-[node name="QuayLamp18" type="CSGBox3D" parent="."]
-position = Vector3(32.8, 3.5, 18)
-size = Vector3(0.25, 0.5, 0.25)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="HarborLight18" type="OmniLight3D" parent="."]
-position = Vector3(29, 4, 18)
+[node name="HarborLight18" type="OmniLight3D" parent="." unique_id=139250856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 4, 18)
 light_color = Color(0.48, 0.75, 0.83, 1)
 light_energy = 1.3
-omni_range = 13
+omni_range = 13.0
 omni_attenuation = 1.4
 
-[node name="HarborTitle" type="Label3D" parent="."]
-position = Vector3(26, 4.6, -20.7)
+[node name="HarborTitle" type="Label3D" parent="." unique_id=1882197327]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 4.6, -20.7)
+pixel_size = 0.012
+double_sided = false
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "NEW YORK  /  INDOOR FERRY"
 font_size = 34
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
+[node name="HarborNotice" type="Label3D" parent="." unique_id=523928100]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 3.2, -20.7)
+pixel_size = 0.012
 double_sided = false
-[node name="HarborNotice" type="Label3D" parent="."]
-position = Vector3(26, 3.2, -20.7)
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "BOARD AT EITHER END  -  TAKE THE WHEEL"
 font_size = 22
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
-double_sided = false
-[node name="MarqueeBacking" type="CSGBox3D" parent="."]
-position = Vector3(0, 4.8, -16)
-size = Vector3(20, 3.1, 0.4)
-material = ExtResource("wood")
+[node name="MarqueeBacking" type="CSGBox3D" parent="." unique_id=213476343]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.8, -16)
 use_collision = true
+size = Vector3(20, 3.1, 0.4)
+material = ExtResource("2_frjm8")
 
-[node name="CasinoName" type="Label3D" parent="."]
-position = Vector3(0, 5.2, -15.75)
+[node name="CasinoName" type="Label3D" parent="." unique_id=1310364929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.2, -15.75)
+pixel_size = 0.012
+double_sided = false
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "THE GILDED LILY"
 font_size = 90
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
+[node name="CasinoDate" type="Label3D" parent="." unique_id=380083166]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9, -15.73)
+pixel_size = 0.012
 double_sided = false
-[node name="CasinoDate" type="Label3D" parent="."]
-position = Vector3(0, 3.9, -15.73)
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "MOTOR LODGE & CASINO  /  EST. 1964"
 font_size = 27
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
+[node name="Welcome" type="Label3D" parent="." unique_id=1250382980]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.2, 29)
+pixel_size = 0.012
 double_sided = false
-[node name="Welcome" type="Label3D" parent="."]
-position = Vector3(0, 2.2, 29)
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "WELCOME BACK, HIGH ROLLER"
 font_size = 40
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 3.141592653589793, 0)
 
+[node name="Directions" type="Label3D" parent="." unique_id=28343790]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 14.15)
+pixel_size = 0.012
 double_sided = false
-[node name="Directions" type="Label3D" parent="."]
-position = Vector3(0, 5.5, 14.15)
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "PETTING ZOO  <     SLOTS & ROULETTE     >  HARBOR ROOM"
 font_size = 20
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
-double_sided = false
-[node name="LobbySofa-10" type="CSGBox3D" parent="."]
-position = Vector3(-7, 0.45, 24)
+[node name="LobbySofa-10" type="CSGBox3D" parent="." unique_id=826226934]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.45, 24)
+use_collision = true
 size = Vector3(5, 0.6, 1.4)
-material = ExtResource("velvet")
-use_collision = true
+material = ExtResource("7_xm4mq")
 
-[node name="LobbySofaBack-10" type="CSGBox3D" parent="."]
-position = Vector3(-7, 1, 24.6)
+[node name="LobbySofaBack-10" type="CSGBox3D" parent="." unique_id=139631089]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 24.6)
+use_collision = true
 size = Vector3(5, 1, 0.25)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="SofaArm-10_-2.4" type="CSGBox3D" parent="."]
-position = Vector3(-9.4, 0.8, 24)
+[node name="SofaArm-10_-2.4" type="CSGBox3D" parent="." unique_id=1084805682]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.4, 0.8, 24)
+use_collision = true
 size = Vector3(0.25, 0.65, 1.5)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="SofaArm-10_2.4" type="CSGBox3D" parent="."]
-position = Vector3(-4.6, 0.8, 24)
+[node name="SofaArm-10_2.4" type="CSGBox3D" parent="." unique_id=191692593]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, 0.8, 24)
+use_collision = true
 size = Vector3(0.25, 0.65, 1.5)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="LobbyTable-10" type="CSGCylinder3D" parent="."]
-position = Vector3(-10, 0.6, 21.8)
-radius = 1
+[node name="LobbyTable-10" type="CSGCylinder3D" parent="." unique_id=1824855058]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.6, 21.8)
+use_collision = true
+radius = 1.0
 height = 0.12
 sides = 16
-material = ExtResource("brass")
-use_collision = true
+material = ExtResource("3_s0u5k")
 
-[node name="LobbyTableStem-10" type="CSGCylinder3D" parent="."]
-position = Vector3(-10, 0.3, 21.8)
-radius = 0.12
-height = 0.6
-sides = 16
-material = ExtResource("wood")
-use_collision = false
-
-[node name="LobbyLight-10" type="OmniLight3D" parent="."]
-position = Vector3(-10, 5.5, 23)
+[node name="LobbyLight-10" type="OmniLight3D" parent="." unique_id=1508160011]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 5.5, 23)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 1.6
-omni_range = 16
+omni_range = 16.0
 omni_attenuation = 1.4
 
-[node name="LobbySofa10" type="CSGBox3D" parent="."]
-position = Vector3(10, 0.45, 24)
+[node name="LobbySofa10" type="CSGBox3D" parent="." unique_id=946614227]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.45, 24)
+use_collision = true
 size = Vector3(5, 0.6, 1.4)
-material = ExtResource("velvet")
-use_collision = true
+material = ExtResource("7_xm4mq")
 
-[node name="LobbySofaBack10" type="CSGBox3D" parent="."]
-position = Vector3(10, 1, 24.6)
+[node name="LobbySofaBack10" type="CSGBox3D" parent="." unique_id=1549872286]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1, 24.6)
+use_collision = true
 size = Vector3(5, 1, 0.25)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="SofaArm10_-2.4" type="CSGBox3D" parent="."]
-position = Vector3(7.6, 0.8, 24)
+[node name="SofaArm10_-2.4" type="CSGBox3D" parent="." unique_id=1984676378]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.6, 0.8, 24)
+use_collision = true
 size = Vector3(0.25, 0.65, 1.5)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="SofaArm10_2.4" type="CSGBox3D" parent="."]
-position = Vector3(12.4, 0.8, 24)
+[node name="SofaArm10_2.4" type="CSGBox3D" parent="." unique_id=1218718436]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.4, 0.8, 24)
+use_collision = true
 size = Vector3(0.25, 0.65, 1.5)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="LobbyTable10" type="CSGCylinder3D" parent="."]
-position = Vector3(10, 0.6, 21.8)
-radius = 1
+[node name="LobbyTable10" type="CSGCylinder3D" parent="." unique_id=301591694]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.6, 21.8)
+use_collision = true
+radius = 1.0
 height = 0.12
 sides = 16
-material = ExtResource("brass")
-use_collision = true
+material = ExtResource("3_s0u5k")
 
-[node name="LobbyTableStem10" type="CSGCylinder3D" parent="."]
-position = Vector3(10, 0.3, 21.8)
-radius = 0.12
-height = 0.6
-sides = 16
-material = ExtResource("wood")
-use_collision = false
-
-[node name="LobbyLight10" type="OmniLight3D" parent="."]
-position = Vector3(10, 5.5, 23)
+[node name="LobbyLight10" type="OmniLight3D" parent="." unique_id=1769519908]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 5.5, 23)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 1.6
-omni_range = 16
+omni_range = 16.0
 omni_attenuation = 1.4
 
-[node name="SecurityCounter" type="CSGBox3D" parent="."]
-position = Vector3(-10, 0.48, 17)
+[node name="SecurityCounter" type="CSGBox3D" parent="." unique_id=1275777525]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.48, 17)
+use_collision = true
 size = Vector3(10, 0.96, 1.2)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="SecuritySign" type="Label3D" parent="."]
-position = Vector3(-10, 2.4, 16.7)
+[node name="SecuritySign" type="Label3D" parent="." unique_id=1972677789]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.4, 16.7)
+pixel_size = 0.012
+double_sided = false
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "SECURITY / UNCLAIMED PROPERTY"
 font_size = 24
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
-double_sided = false
-[node name="WardrobeCounter" type="CSGBox3D" parent="."]
-position = Vector3(10, 0.43, 17)
-size = Vector3(10, 0.86, 1.2)
-material = ExtResource("teal")
+[node name="WardrobeCounter" type="CSGBox3D" parent="." unique_id=1275042437]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.43, 17)
 use_collision = true
+size = Vector3(10, 0.86, 1.2)
+material = ExtResource("5_qsuj4")
 
-[node name="WardrobeSign" type="Label3D" parent="."]
-position = Vector3(10, 2.3, 16.7)
+[node name="WardrobeSign" type="Label3D" parent="." unique_id=1954715748]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.3, 16.7)
+pixel_size = 0.012
+double_sided = false
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "COAT CHECK / LOST & FOUND"
 font_size = 25
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
+[node name="RecreationSign" type="Label3D" parent="." unique_id=91122181]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 4, 24)
+pixel_size = 0.012
 double_sided = false
-[node name="RecreationSign" type="Label3D" parent="."]
-position = Vector3(-24, 4, 24)
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "THE STARDUST REC ROOM"
 font_size = 30
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
+[node name="TrampolineSign" type="Label3D" parent="." unique_id=2022950612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 4, 23)
+pixel_size = 0.012
 double_sided = false
-[node name="TrampolineSign" type="Label3D" parent="."]
-position = Vector3(25, 4, 23)
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "JUMP LOUNGE"
 font_size = 35
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
+[node name="ExhibitSign" type="Label3D" parent="." unique_id=353036611]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 5.5, -28)
+pixel_size = 0.012
 double_sided = false
-[node name="ExhibitSign" type="Label3D" parent="."]
-position = Vector3(-25, 5.5, -28)
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "QUIET GALLERY"
 font_size = 30
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
 outline_size = 6
-rotation = Vector3(0, 0, 0)
 
-double_sided = false
-[node name="CeilingSeam-30" type="CSGBox3D" parent="."]
-position = Vector3(-30, 7.98, 0)
-size = Vector3(0.045, 0.02, 68)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="CeilingSeam-22" type="CSGBox3D" parent="."]
-position = Vector3(-22, 7.98, 0)
-size = Vector3(0.045, 0.02, 68)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="CeilingSeam-14" type="CSGBox3D" parent="."]
-position = Vector3(-14, 7.98, 0)
-size = Vector3(0.045, 0.02, 68)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="CeilingSeam-6" type="CSGBox3D" parent="."]
-position = Vector3(-6, 7.98, 0)
-size = Vector3(0.045, 0.02, 68)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="CeilingSeam2" type="CSGBox3D" parent="."]
-position = Vector3(2, 7.98, 0)
-size = Vector3(0.045, 0.02, 68)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="CeilingSeam10" type="CSGBox3D" parent="."]
-position = Vector3(10, 7.98, 0)
-size = Vector3(0.045, 0.02, 68)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="CeilingSeam18" type="CSGBox3D" parent="."]
-position = Vector3(18, 7.98, 0)
-size = Vector3(0.045, 0.02, 68)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="CeilingSeam26" type="CSGBox3D" parent="."]
-position = Vector3(26, 7.98, 0)
-size = Vector3(0.045, 0.02, 68)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="CeilingWaterStain0" type="CSGBox3D" parent="."]
-position = Vector3(-30, 7.965, -30)
-size = Vector3(1.3, 0.015, 0.7)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain1" type="CSGBox3D" parent="."]
-position = Vector3(-13, 7.965, -7)
-size = Vector3(1.9, 0.015, 1.1)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain2" type="CSGBox3D" parent="."]
-position = Vector3(4, 7.965, 16)
-size = Vector3(2.5, 0.015, 1.5)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain3" type="CSGBox3D" parent="."]
-position = Vector3(21, 7.965, -22)
-size = Vector3(3.1, 0.015, 0.7)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain4" type="CSGBox3D" parent="."]
-position = Vector3(-23, 7.965, 1)
-size = Vector3(1.3, 0.015, 1.1)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain5" type="CSGBox3D" parent="."]
-position = Vector3(-6, 7.965, 24)
-size = Vector3(1.9, 0.015, 1.5)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain6" type="CSGBox3D" parent="."]
-position = Vector3(11, 7.965, -14)
-size = Vector3(2.5, 0.015, 0.7)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain7" type="CSGBox3D" parent="."]
-position = Vector3(28, 7.965, 9)
-size = Vector3(3.1, 0.015, 1.1)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain8" type="CSGBox3D" parent="."]
-position = Vector3(-16, 7.965, -29)
-size = Vector3(1.3, 0.015, 1.5)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain9" type="CSGBox3D" parent="."]
-position = Vector3(1, 7.965, -6)
-size = Vector3(1.9, 0.015, 0.7)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain10" type="CSGBox3D" parent="."]
-position = Vector3(18, 7.965, 17)
-size = Vector3(2.5, 0.015, 1.1)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain11" type="CSGBox3D" parent="."]
-position = Vector3(-26, 7.965, -21)
-size = Vector3(3.1, 0.015, 1.5)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain12" type="CSGBox3D" parent="."]
-position = Vector3(-4, 7.965, 2)
-size = Vector3(1.3, 0.015, 0.7)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain13" type="CSGBox3D" parent="."]
-position = Vector3(8, 7.965, 25)
-size = Vector3(1.9, 0.015, 1.1)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain14" type="CSGBox3D" parent="."]
-position = Vector3(25, 7.965, -13)
-size = Vector3(2.5, 0.015, 1.5)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain15" type="CSGBox3D" parent="."]
-position = Vector3(-19, 7.965, 10)
-size = Vector3(3.1, 0.015, 0.7)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain16" type="CSGBox3D" parent="."]
-position = Vector3(-2, 7.965, -28)
-size = Vector3(1.3, 0.015, 1.1)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain17" type="CSGBox3D" parent="."]
-position = Vector3(15, 7.965, -5)
-size = Vector3(1.9, 0.015, 1.5)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain18" type="CSGBox3D" parent="."]
-position = Vector3(-29, 7.965, 18)
-size = Vector3(2.5, 0.015, 0.7)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="CeilingWaterStain19" type="CSGBox3D" parent="."]
-position = Vector3(-12, 7.965, -20)
-size = Vector3(3.1, 0.015, 1.1)
-material = ExtResource("stain")
-use_collision = false
-
-[node name="NorthPeelingPaper0" type="CSGBox3D" parent="."]
-position = Vector3(-29.0, 2.1, -33.98)
-size = Vector3(0.25, 0.7, 0.018)
-material = ExtResource("plaster")
-use_collision = false
-
-[node name="NorthPeelingPaper1" type="CSGBox3D" parent="."]
-position = Vector3(-22.6, 3.1, -33.98)
-size = Vector3(0.43, 0.7, 0.018)
-material = ExtResource("plaster")
-use_collision = false
-
-[node name="NorthPeelingPaper2" type="CSGBox3D" parent="."]
-position = Vector3(-16.2, 4.1, -33.98)
-size = Vector3(0.61, 0.7, 0.018)
-material = ExtResource("plaster")
-use_collision = false
-
-[node name="NorthPeelingPaper3" type="CSGBox3D" parent="."]
-position = Vector3(-9.8, 2.1, -33.98)
-size = Vector3(0.25, 0.7, 0.018)
-material = ExtResource("plaster")
-use_collision = false
-
-[node name="NorthPeelingPaper4" type="CSGBox3D" parent="."]
-position = Vector3(-3.4, 3.1, -33.98)
-size = Vector3(0.43, 0.7, 0.018)
-material = ExtResource("plaster")
-use_collision = false
-
-[node name="NorthPeelingPaper5" type="CSGBox3D" parent="."]
-position = Vector3(3.0, 4.1, -33.98)
-size = Vector3(0.61, 0.7, 0.018)
-material = ExtResource("plaster")
-use_collision = false
-
-[node name="NorthPeelingPaper6" type="CSGBox3D" parent="."]
-position = Vector3(9.4, 2.1, -33.98)
-size = Vector3(0.25, 0.7, 0.018)
-material = ExtResource("plaster")
-use_collision = false
-
-[node name="NorthPeelingPaper7" type="CSGBox3D" parent="."]
-position = Vector3(15.8, 3.1, -33.98)
-size = Vector3(0.43, 0.7, 0.018)
-material = ExtResource("plaster")
-use_collision = false
-
-[node name="NorthPeelingPaper8" type="CSGBox3D" parent="."]
-position = Vector3(22.2, 4.1, -33.98)
-size = Vector3(0.61, 0.7, 0.018)
-material = ExtResource("plaster")
-use_collision = false
-
-[node name="NorthPeelingPaper9" type="CSGBox3D" parent="."]
-position = Vector3(28.6, 2.1, -33.98)
-size = Vector3(0.25, 0.7, 0.018)
-material = ExtResource("plaster")
-use_collision = false
-
-[node name="SconceBack-28_-33.9" type="CSGBox3D" parent="."]
-position = Vector3(-28, 3.3, -33.9)
-size = Vector3(0.5, 1, 0.16)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SconceShade-28_-33.9" type="CSGBox3D" parent="."]
-position = Vector3(-28, 3.4, -33.75)
-size = Vector3(0.32, 0.65, 0.24)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="SconceLight-28_-33.9" type="OmniLight3D" parent="."]
-position = Vector3(-28, 3.4, -32.9)
+[node name="SconceLight-28_-33.9" type="OmniLight3D" parent="." unique_id=1975528213]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28, 3.4, -32.9)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
-omni_range = 11
+omni_range = 11.0
 omni_attenuation = 1.4
 
-[node name="SconceBack-28_33.9" type="CSGBox3D" parent="."]
-position = Vector3(-28, 3.3, 33.9)
-size = Vector3(0.5, 1, 0.16)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SconceShade-28_33.9" type="CSGBox3D" parent="."]
-position = Vector3(-28, 3.4, 33.75)
-size = Vector3(0.32, 0.65, 0.24)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="SconceLight-28_33.9" type="OmniLight3D" parent="."]
-position = Vector3(-28, 3.4, 32.9)
+[node name="SconceLight-28_33.9" type="OmniLight3D" parent="." unique_id=1367168908]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28, 3.4, 32.9)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
-omni_range = 11
+omni_range = 11.0
 omni_attenuation = 1.4
 
-[node name="SconceBack-20_-33.9" type="CSGBox3D" parent="."]
-position = Vector3(-20, 3.3, -33.9)
-size = Vector3(0.5, 1, 0.16)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SconceShade-20_-33.9" type="CSGBox3D" parent="."]
-position = Vector3(-20, 3.4, -33.75)
-size = Vector3(0.32, 0.65, 0.24)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="SconceLight-20_-33.9" type="OmniLight3D" parent="."]
-position = Vector3(-20, 3.4, -32.9)
+[node name="SconceLight-20_-33.9" type="OmniLight3D" parent="." unique_id=1443902194]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 3.4, -32.9)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
-omni_range = 11
+omni_range = 11.0
 omni_attenuation = 1.4
 
-[node name="SconceBack-20_33.9" type="CSGBox3D" parent="."]
-position = Vector3(-20, 3.3, 33.9)
-size = Vector3(0.5, 1, 0.16)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SconceShade-20_33.9" type="CSGBox3D" parent="."]
-position = Vector3(-20, 3.4, 33.75)
-size = Vector3(0.32, 0.65, 0.24)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="SconceLight-20_33.9" type="OmniLight3D" parent="."]
-position = Vector3(-20, 3.4, 32.9)
+[node name="SconceLight-20_33.9" type="OmniLight3D" parent="." unique_id=1776507731]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 3.4, 32.9)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
-omni_range = 11
+omni_range = 11.0
 omni_attenuation = 1.4
 
-[node name="SconceBack0_-33.9" type="CSGBox3D" parent="."]
-position = Vector3(0, 3.3, -33.9)
-size = Vector3(0.5, 1, 0.16)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SconceShade0_-33.9" type="CSGBox3D" parent="."]
-position = Vector3(0, 3.4, -33.75)
-size = Vector3(0.32, 0.65, 0.24)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="SconceLight0_-33.9" type="OmniLight3D" parent="."]
-position = Vector3(0, 3.4, -32.9)
+[node name="SconceLight0_-33.9" type="OmniLight3D" parent="." unique_id=2051630318]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, -32.9)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
-omni_range = 11
+omni_range = 11.0
 omni_attenuation = 1.4
 
-[node name="SconceBack0_33.9" type="CSGBox3D" parent="."]
-position = Vector3(0, 3.3, 33.9)
-size = Vector3(0.5, 1, 0.16)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SconceShade0_33.9" type="CSGBox3D" parent="."]
-position = Vector3(0, 3.4, 33.75)
-size = Vector3(0.32, 0.65, 0.24)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="SconceLight0_33.9" type="OmniLight3D" parent="."]
-position = Vector3(0, 3.4, 32.9)
+[node name="SconceLight0_33.9" type="OmniLight3D" parent="." unique_id=2013438731]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 32.9)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
-omni_range = 11
+omni_range = 11.0
 omni_attenuation = 1.4
 
-[node name="SconceBack20_-33.9" type="CSGBox3D" parent="."]
-position = Vector3(20, 3.3, -33.9)
-size = Vector3(0.5, 1, 0.16)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SconceShade20_-33.9" type="CSGBox3D" parent="."]
-position = Vector3(20, 3.4, -33.75)
-size = Vector3(0.32, 0.65, 0.24)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="SconceLight20_-33.9" type="OmniLight3D" parent="."]
-position = Vector3(20, 3.4, -32.9)
+[node name="SconceLight20_-33.9" type="OmniLight3D" parent="." unique_id=1536845207]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 3.4, -32.9)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
-omni_range = 11
+omni_range = 11.0
 omni_attenuation = 1.4
 
-[node name="SconceBack20_33.9" type="CSGBox3D" parent="."]
-position = Vector3(20, 3.3, 33.9)
-size = Vector3(0.5, 1, 0.16)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SconceShade20_33.9" type="CSGBox3D" parent="."]
-position = Vector3(20, 3.4, 33.75)
-size = Vector3(0.32, 0.65, 0.24)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="SconceLight20_33.9" type="OmniLight3D" parent="."]
-position = Vector3(20, 3.4, 32.9)
+[node name="SconceLight20_33.9" type="OmniLight3D" parent="." unique_id=919459152]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 3.4, 32.9)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
-omni_range = 11
+omni_range = 11.0
 omni_attenuation = 1.4
 
-[node name="SconceBack28_-33.9" type="CSGBox3D" parent="."]
-position = Vector3(28, 3.3, -33.9)
-size = Vector3(0.5, 1, 0.16)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SconceShade28_-33.9" type="CSGBox3D" parent="."]
-position = Vector3(28, 3.4, -33.75)
-size = Vector3(0.32, 0.65, 0.24)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="SconceLight28_-33.9" type="OmniLight3D" parent="."]
-position = Vector3(28, 3.4, -32.9)
+[node name="SconceLight28_-33.9" type="OmniLight3D" parent="." unique_id=480026734]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 3.4, -32.9)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
-omni_range = 11
+omni_range = 11.0
 omni_attenuation = 1.4
 
-[node name="SconceBack28_33.9" type="CSGBox3D" parent="."]
-position = Vector3(28, 3.3, 33.9)
-size = Vector3(0.5, 1, 0.16)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="SconceShade28_33.9" type="CSGBox3D" parent="."]
-position = Vector3(28, 3.4, 33.75)
-size = Vector3(0.32, 0.65, 0.24)
-material = ExtResource("glow")
-use_collision = false
-
-[node name="SconceLight28_33.9" type="OmniLight3D" parent="."]
-position = Vector3(28, 3.4, 32.9)
+[node name="SconceLight28_33.9" type="OmniLight3D" parent="." unique_id=1416711761]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 3.4, 32.9)
 light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
-omni_range = 11
+omni_range = 11.0
 omni_attenuation = 1.4
 
-[node name="RecreationObstacles" type="Node3D" parent="."]
+[node name="RecreationObstacles" type="Node3D" parent="." unique_id=1047186210]
 
-[node name="Crate" type="CSGBox3D" parent="RecreationObstacles"]
+[node name="Crate" type="CSGBox3D" parent="RecreationObstacles" unique_id=394323186]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0.5, 29)
+use_collision = true
 size = Vector3(1.5, 1, 1.5)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="CrateStack" type="CSGBox3D" parent="RecreationObstacles"]
+[node name="CrateStack" type="CSGBox3D" parent="RecreationObstacles" unique_id=663987081]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 1, 29)
+use_collision = true
 size = Vector3(2, 2, 2)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="Ramp" type="CSGBox3D" parent="RecreationObstacles"]
+[node name="Ramp" type="CSGBox3D" parent="RecreationObstacles" unique_id=777836059]
 transform = Transform3D(0.9397, -0.342, 0, 0.342, 0.9397, 0, 0, 0, 1, -22, 1.6, 25)
+use_collision = true
 size = Vector3(10, 0.5, 4)
-material = ExtResource("wood")
-use_collision = true
+material = ExtResource("2_frjm8")
 
-[node name="Platform" type="CSGBox3D" parent="RecreationObstacles"]
+[node name="Platform" type="CSGBox3D" parent="RecreationObstacles" unique_id=1332688585]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 1.75, 25)
-size = Vector3(6, 3.5, 6)
-material = ExtResource("wood")
 use_collision = true
+size = Vector3(6, 3.5, 6)
+material = ExtResource("2_frjm8")
 
-[node name="SurfRamp" type="CSGPolygon3D" parent="RecreationObstacles"]
+[node name="SurfRamp" type="CSGPolygon3D" parent="RecreationObstacles" unique_id=1447894347]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 0, 33)
+use_collision = true
 polygon = PackedVector2Array(-3.5, 0, 3.5, 0, 0, 5)
 depth = 10.0
-material = ExtResource("wood")
+material = ExtResource("2_frjm8")
+
+[node name="ZooFence-31_-8" type="CSGBox3D" parent="." unique_id=1459626723]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 0.5, -8)
 use_collision = true
-
-[node name="DirectionsBoard" type="CSGBox3D" parent="."]
-position = Vector3(0, 5.5, 14)
-size = Vector3(12, 1, 0.2)
-material = ExtResource("wood")
-use_collision = false
-
-[node name="DirectionsHanger-5" type="CSGCylinder3D" parent="."]
-position = Vector3(-5, 6.7, 14)
-radius = 0.035
-height = 2.4
-sides = 12
-material = ExtResource("brass")
-
-[node name="DirectionsHanger5" type="CSGCylinder3D" parent="."]
-position = Vector3(5, 6.7, 14)
-radius = 0.035
-height = 2.4
-sides = 12
-material = ExtResource("brass")
-
-[node name="MarqueeHanger-8" type="CSGCylinder3D" parent="."]
-position = Vector3(-8, 7, -16)
-radius = 0.04
-height = 2
-sides = 12
-material = ExtResource("brass")
-
-[node name="MarqueeHanger8" type="CSGCylinder3D" parent="."]
-position = Vector3(8, 7, -16)
-radius = 0.04
-height = 2
-sides = 12
-material = ExtResource("brass")
-
-[node name="AttractionDado-1_-12" type="CSGBox3D" parent="."]
-position = Vector3(-18.26, 0.7, -12)
-size = Vector3(0.09, 1.4, 18)
-material = ExtResource("teal")
-use_collision = false
-
-[node name="AttractionDadoRail-1_-12" type="CSGBox3D" parent="."]
-position = Vector3(-18.32, 1.45, -12)
-size = Vector3(0.1, 0.1, 18)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="AttractionDado-1_12" type="CSGBox3D" parent="."]
-position = Vector3(-18.26, 0.7, 12)
-size = Vector3(0.09, 1.4, 18)
-material = ExtResource("teal")
-use_collision = false
-
-[node name="AttractionDadoRail-1_12" type="CSGBox3D" parent="."]
-position = Vector3(-18.32, 1.45, 12)
-size = Vector3(0.1, 0.1, 18)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="AttractionEndDado-1_-21" type="CSGBox3D" parent="."]
-position = Vector3(-26, 0.7, -20.74)
-size = Vector3(15, 1.4, 0.1)
-material = ExtResource("teal")
-use_collision = false
-
-[node name="AttractionEndDado-1_21" type="CSGBox3D" parent="."]
-position = Vector3(-26, 0.7, 20.74)
-size = Vector3(15, 1.4, 0.1)
-material = ExtResource("teal")
-use_collision = false
-
-[node name="AttractionDado1_-12" type="CSGBox3D" parent="."]
-position = Vector3(18.26, 0.7, -12)
-size = Vector3(0.09, 1.4, 18)
-material = ExtResource("teal")
-use_collision = false
-
-[node name="AttractionDadoRail1_-12" type="CSGBox3D" parent="."]
-position = Vector3(18.32, 1.45, -12)
-size = Vector3(0.1, 0.1, 18)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="AttractionDado1_12" type="CSGBox3D" parent="."]
-position = Vector3(18.26, 0.7, 12)
-size = Vector3(0.09, 1.4, 18)
-material = ExtResource("teal")
-use_collision = false
-
-[node name="AttractionDadoRail1_12" type="CSGBox3D" parent="."]
-position = Vector3(18.32, 1.45, 12)
-size = Vector3(0.1, 0.1, 18)
-material = ExtResource("brass")
-use_collision = false
-
-[node name="AttractionEndDado1_-21" type="CSGBox3D" parent="."]
-position = Vector3(26, 0.7, -20.74)
-size = Vector3(15, 1.4, 0.1)
-material = ExtResource("teal")
-use_collision = false
-
-[node name="AttractionEndDado1_21" type="CSGBox3D" parent="."]
-position = Vector3(26, 0.7, 20.74)
-size = Vector3(15, 1.4, 0.1)
-material = ExtResource("teal")
-use_collision = false
-
-[node name="ZooFence-31_-8" type="CSGBox3D" parent="."]
-position = Vector3(-31, 0.5, -8)
 size = Vector3(0.09, 0.13, 9)
-material = ExtResource("cream")
+material = ExtResource("9_mt1ls")
+
+[node name="ZooFence-31_8" type="CSGBox3D" parent="." unique_id=1980816823]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 0.5, 4.5)
 use_collision = true
-
-[node name="ZooFencePost-31_-8_-4" type="CSGCylinder3D" parent="."]
-position = Vector3(-31, 0.35, -12)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
-
-[node name="ZooFencePost-31_-8_0" type="CSGCylinder3D" parent="."]
-position = Vector3(-31, 0.35, -8)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
-
-[node name="ZooFencePost-31_-8_4" type="CSGCylinder3D" parent="."]
-position = Vector3(-31, 0.35, -4)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
-
-[node name="ZooFence-31_8" type="CSGBox3D" parent="."]
-position = Vector3(-31, 0.5, 4.5)
 size = Vector3(0.09, 0.13, 2)
-material = ExtResource("cream")
-use_collision = true
+material = ExtResource("9_mt1ls")
 
-[node name="ZooFenceWestExitSouth" type="CSGBox3D" parent="."]
-position = Vector3(-31, 0.5, 11.5)
+[node name="ZooFenceWestExitSouth" type="CSGBox3D" parent="." unique_id=1348842485]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 0.5, 11.5)
+use_collision = true
 size = Vector3(0.09, 0.13, 2)
-material = ExtResource("cream")
+material = ExtResource("9_mt1ls")
+
+[node name="ZooFence-21_-8" type="CSGBox3D" parent="." unique_id=1719463279]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0.5, -8)
 use_collision = true
-
-[node name="ZooFencePost-31_8_-4" type="CSGCylinder3D" parent="."]
-position = Vector3(-31, 0.35, 4)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
-
-[node name="ZooFencePost-31_8_0" type="CSGCylinder3D" parent="."]
-position = Vector3(-31, 0.35, 5)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
-
-[node name="ZooFencePostWestExitSouth" type="CSGCylinder3D" parent="."]
-position = Vector3(-31, 0.35, 11)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
-
-[node name="ZooFencePost-31_8_4" type="CSGCylinder3D" parent="."]
-position = Vector3(-31, 0.35, 12)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
-
-[node name="ZooFence-21_-8" type="CSGBox3D" parent="."]
-position = Vector3(-21, 0.5, -8)
 size = Vector3(0.09, 0.13, 9)
-material = ExtResource("cream")
+material = ExtResource("9_mt1ls")
+
+[node name="ZooFence-21_8" type="CSGBox3D" parent="." unique_id=1621205222]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0.5, 8)
 use_collision = true
-
-[node name="ZooFencePost-21_-8_-4" type="CSGCylinder3D" parent="."]
-position = Vector3(-21, 0.35, -12)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
-
-[node name="ZooFencePost-21_-8_0" type="CSGCylinder3D" parent="."]
-position = Vector3(-21, 0.35, -8)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
-
-[node name="ZooFencePost-21_-8_4" type="CSGCylinder3D" parent="."]
-position = Vector3(-21, 0.35, -4)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
-
-[node name="ZooFence-21_8" type="CSGBox3D" parent="."]
-position = Vector3(-21, 0.5, 8)
 size = Vector3(0.09, 0.13, 9)
-material = ExtResource("cream")
-use_collision = true
+material = ExtResource("9_mt1ls")
 
-[node name="ZooFencePost-21_8_-4" type="CSGCylinder3D" parent="."]
-position = Vector3(-21, 0.35, 4)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
+[node name="CasinoStool0" type="Node3D" parent="." unique_id=2134364746 instance=ExtResource("10_u6gbq")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 5.5, -1.5, -8.4)
+script = ExtResource("11_veqc0")
 
-[node name="ZooFencePost-21_8_0" type="CSGCylinder3D" parent="."]
-position = Vector3(-21, 0.35, 8)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
+[node name="CasinoStool1" type="Node3D" parent="." unique_id=1573166901 instance=ExtResource("10_u6gbq")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 5.5, -1.5, -6)
+script = ExtResource("11_veqc0")
 
-[node name="ZooFencePost-21_8_4" type="CSGCylinder3D" parent="."]
-position = Vector3(-21, 0.35, 12)
-radius = 0.055
-height = 0.7
-sides = 12
-material = ExtResource("wood")
+[node name="CasinoStool2" type="Node3D" parent="." unique_id=1656477922 instance=ExtResource("10_u6gbq")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 5.5, -1.5, -3.6)
+script = ExtResource("11_veqc0")
 
-[node name="AnimalRock0" type="CSGCylinder3D" parent="."]
-position = Vector3(-29, 0.15, -11)
-radius = 0.65
-height = 0.3
-sides = 12
-material = ExtResource("plaster")
+[node name="CasinoStool3" type="Node3D" parent="." unique_id=540428764 instance=ExtResource("10_u6gbq")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 5.5, -1.5, -1.2)
+script = ExtResource("11_veqc0")
 
-[node name="AnimalRock1" type="CSGCylinder3D" parent="."]
-position = Vector3(-23, 0.15, -11)
-radius = 0.65
-height = 0.3
-sides = 12
-material = ExtResource("plaster")
+[node name="CasinoStool4" type="Node3D" parent="." unique_id=1318628749 instance=ExtResource("10_u6gbq")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 5.5, -1.5, 1.2)
+script = ExtResource("11_veqc0")
 
-[node name="AnimalRock2" type="CSGCylinder3D" parent="."]
-position = Vector3(-29, 0.15, 10)
-radius = 0.65
-height = 0.3
-sides = 12
-material = ExtResource("plaster")
+[node name="CasinoStool5" type="Node3D" parent="." unique_id=1182244612 instance=ExtResource("10_u6gbq")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 5.5, -1.5, 3.6)
+script = ExtResource("11_veqc0")
 
+[node name="CasinoStool6" type="Node3D" parent="." unique_id=1406551011 instance=ExtResource("10_u6gbq")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 5.5, -1.5, 6)
+script = ExtResource("11_veqc0")
 
-[node name="CasinoStool0" parent="." instance=ExtResource("casino_stool")]
-position = Vector3(-10, -1.5, -5.3)
-rotation = Vector3(0, 3.14159265, 0)
+[node name="CasinoStool7" type="Node3D" parent="." unique_id=1187707909 instance=ExtResource("10_u6gbq")]
+transform = Transform3D(3.1391647e-07, 0, 1, 0, 1, 0, -1, 0, 3.1391647e-07, 5.5, -1.5, 8.4)
+script = ExtResource("11_veqc0")
 
-[node name="CasinoStool1" parent="." instance=ExtResource("casino_stool")]
-position = Vector3(-6, -1.5, -5.3)
-rotation = Vector3(0, 3.14159265, 0)
+[node name="LoungeBench0" type="Node3D" parent="." unique_id=2111903388 instance=ExtResource("12_cel82")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, -12)
+script = ExtResource("11_veqc0")
 
-[node name="CasinoStool2" parent="." instance=ExtResource("casino_stool")]
-position = Vector3(6, -1.5, -5.3)
-rotation = Vector3(0, 3.14159265, 0)
+[node name="LoungeBench1" type="Node3D" parent="." unique_id=1590710661 instance=ExtResource("12_cel82")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 12)
+script = ExtResource("11_veqc0")
 
-[node name="CasinoStool3" parent="." instance=ExtResource("casino_stool")]
-position = Vector3(10, -1.5, -5.3)
-rotation = Vector3(0, 3.14159265, 0)
+[node name="CeramicPlanter0" type="Node3D" parent="." unique_id=1232527823 instance=ExtResource("13_quvcb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -17)
+script = ExtResource("11_veqc0")
 
-[node name="CasinoStool4" parent="." instance=ExtResource("casino_stool")]
-position = Vector3(-10, -1.5, 5.7)
-rotation = Vector3(0, 3.14159265, 0)
+[node name="CeramicPlanter1" type="Node3D" parent="." unique_id=1438383875 instance=ExtResource("13_quvcb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0, -17)
+script = ExtResource("11_veqc0")
 
-[node name="CasinoStool5" parent="." instance=ExtResource("casino_stool")]
-position = Vector3(-6, -1.5, 5.7)
-rotation = Vector3(0, 3.14159265, 0)
+[node name="CeramicPlanter2" type="Node3D" parent="." unique_id=1427464469 instance=ExtResource("13_quvcb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, 17)
+script = ExtResource("11_veqc0")
 
-[node name="CasinoStool6" parent="." instance=ExtResource("casino_stool")]
-position = Vector3(6, -1.5, 5.7)
-rotation = Vector3(0, 3.14159265, 0)
+[node name="CeramicPlanter3" type="Node3D" parent="." unique_id=1615323974 instance=ExtResource("13_quvcb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0, 17)
+script = ExtResource("11_veqc0")
 
-[node name="CasinoStool7" parent="." instance=ExtResource("casino_stool")]
-position = Vector3(10, -1.5, 5.7)
-rotation = Vector3(0, 3.14159265, 0)
+[node name="BrassChandelier0" type="Node3D" parent="." unique_id=1658416674 instance=ExtResource("14_5ubmw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.65, -7)
+script = ExtResource("11_veqc0")
 
-[node name="LoungeBench0" parent="." instance=ExtResource("lounge_bench")]
-position = Vector3(-32, 0, -12)
+[node name="BrassChandelier1" type="Node3D" parent="." unique_id=117317528 instance=ExtResource("14_5ubmw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.65, 0)
+script = ExtResource("11_veqc0")
 
-[node name="LoungeBench1" parent="." instance=ExtResource("lounge_bench")]
-position = Vector3(-32, 0, 12)
+[node name="BrassChandelier2" type="Node3D" parent="." unique_id=157075382 instance=ExtResource("14_5ubmw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.65, 7)
+script = ExtResource("11_veqc0")
 
-[node name="CeramicPlanter0" parent="." instance=ExtResource("ceramic_planter")]
-position = Vector3(-30, 0, -17)
+[node name="Salon" type="Node3D" parent="." unique_id=2006601696 instance=ExtResource("15_0e7fu")]
+script = ExtResource("11_veqc0")
 
-[node name="CeramicPlanter1" parent="." instance=ExtResource("ceramic_planter")]
-position = Vector3(-22, 0, -17)
-
-[node name="CeramicPlanter2" parent="." instance=ExtResource("ceramic_planter")]
-position = Vector3(-30, 0, 17)
-
-[node name="CeramicPlanter3" parent="." instance=ExtResource("ceramic_planter")]
-position = Vector3(-22, 0, 17)
-
-[node name="BrassChandelier0" parent="." instance=ExtResource("brass_chandelier")]
-position = Vector3(0, 5.95, -7)
-
-[node name="BrassChandelier1" parent="." instance=ExtResource("brass_chandelier")]
-position = Vector3(0, 5.95, 0)
-
-[node name="BrassChandelier2" parent="." instance=ExtResource("brass_chandelier")]
-position = Vector3(0, 5.95, 7)
-
-[node name="CasinoReflections" type="ReflectionProbe" parent="."]
-position = Vector3(0, 2.5, 0)
-size = Vector3(68, 12, 68)
-box_projection = true
-interior = true
-ambient_mode = 2
-ambient_color = Color(0.55, 0.48, 0.38, 1)
-ambient_color_energy = 0.5
-intensity = 0.65
-max_distance = 90.0
+[node name="DecorBatches" type="Node3D" parent="." unique_id=863233637 instance=ExtResource("16_y7jil")]

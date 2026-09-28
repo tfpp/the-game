@@ -35,8 +35,8 @@ func _process(delta: float) -> void:
 
 
 func _resize_layout() -> void:
-	# Portrait should retain thumb-sized controls instead of shrinking a desktop HUD.
-	ui_scale = clampf(size.y / maxf(size.x, 1.0), 1.0, 2.0)
+	# Reserve separate thumb zones even with the mobile portrait UI layout.
+	ui_scale = minf(1.0, maxf(size.x, 1.0) / 600.0)
 	ui_size = size / ui_scale
 	_update_safe_area()
 	_clear_fingers()
@@ -73,7 +73,7 @@ func pause_button() -> Rect2:
 
 
 func jump_center() -> Vector2:
-	return safe_bounds.end - Vector2(106, 116)
+	return safe_bounds.end - Vector2(106, 150)
 
 
 func use_center() -> Vector2:
@@ -167,7 +167,7 @@ func _draw_touch() -> void:
 	)
 	draw_string(
 		ThemeDB.fallback_font,
-		Vector2(safe_bounds.position.x + safe_bounds.size.x * 0.63, safe_bounds.end.y - 42),
+		Vector2(safe_bounds.get_center().x - 54, safe_bounds.end.y - 230),
 		"DRAG TO LOOK",
 		HORIZONTAL_ALIGNMENT_LEFT,
 		-1,

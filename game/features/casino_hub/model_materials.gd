@@ -1,7 +1,9 @@
 extends Node3D
-## Shared physical finishes for imported props, also used by the level geometry.
+## Shared matte, vertex-lit finishes for imported props, also used by the level geometry.
 
 const FINISHES: Dictionary[String, Material] = {
+	"Felt": preload("res://features/casino_hub/materials/felt.tres"),
+	"Palette": preload("res://features/casino_hub/materials/palette.tres"),
 	"Walnut": preload("res://features/casino_hub/materials/wood.tres"),
 	"Brass": preload("res://features/casino_hub/materials/brass.tres"),
 	"Chrome": preload("res://features/casino_hub/materials/chrome.tres"),

@@ -71,6 +71,31 @@ func _run() -> void:
 		"Radar follows teleport"
 	)
 	await _capture("/tmp/radar-lounge.png")
+	# Exercise the actual interactive door chain, including both return journeys.
+	var doors := game.get_node("Features/room_doors")
+	for path: String in [
+		"Lounge/CellarDoor", "Cellar/LoungeDoor", "Lounge/LobbyDoor", "Lobby/Door"
+	]:
+		var door := doors.get_node(path) as RoomDoor
+		player.global_position = door.global_position + Vector3(0, 0, 0.9)
+		player.net_position = player.global_position
+		door.use()
+		await get_tree().create_timer(0.3).timeout
+		var arrival := door.get_node(door.destination) as Marker3D
+		_check(player.net_position.is_equal_approx(arrival.global_position), "Door works: " + path)
+		var destination_room := door.destination_room()
+		if destination_room != null:
+			_check(destination_room.is_loaded(), "Destination built: " + path)
+			var floor_ray := PhysicsRayQueryParameters3D.create(
+				arrival.global_position, arrival.global_position - Vector3(0, 2, 0)
+			)
+			floor_ray.exclude = [player.get_rid()]
+			_check(
+				not player.get_world_3d().direct_space_state.intersect_ray(floor_ray).is_empty(),
+				"Arrival floor exists: " + path
+			)
+		if path == "Lounge/CellarDoor":
+			await _capture("/tmp/radar-cellar.png")
 	get_window().size = Vector2i(960, 600)
 	await get_tree().create_timer(0.2).timeout
 	var panel: Control = game.get_node("HUD/Corners/Players")

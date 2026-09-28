@@ -8,7 +8,7 @@ static func create() -> ArrayMesh:
 	var normals := PackedVector3Array()
 	var uvs := PackedVector2Array()
 	var indices := PackedInt32Array()
-	const SEGMENTS := 24
+	const SEGMENTS := 8
 	for row: int in range(SEGMENTS + 1):
 		var v := float(row) / SEGMENTS
 		var angle := lerpf(-1.1, 1.1, v)

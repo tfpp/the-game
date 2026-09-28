@@ -1,0 +1,2047 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/plaster.tres" id="plaster"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/teal.tres" id="teal"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/velvet.tres" id="velvet"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/tile.tres" id="tile"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/stain.tres" id="stain"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/cream.tres" id="cream"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/glow.tres" id="glow"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="carpet"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="wallpaper"]
+[ext_resource type="Material" path="res://features/water/materials/water_surface.tres" id="water"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/glass.tres" id="glass"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/casino_stool.tscn" id="casino_stool"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/lounge_bench.tscn" id="lounge_bench"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/ceramic_planter.tscn" id="ceramic_planter"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/brass_chandelier.tscn" id="brass_chandelier"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/salon.tscn" id="salon"]
+
+[node name="CasinoInterior" type="Node3D"]
+
+[node name="SunkenGamingFloor" type="CSGBox3D" parent="."]
+position = Vector3(0, -1.9, 0)
+size = Vector3(30, 0.8, 24)
+material = ExtResource("carpet")
+use_collision = true
+
+[node name="NorthPromenade" type="CSGBox3D" parent="."]
+position = Vector3(0, -0.4, -23.5)
+size = Vector3(68, 0.8, 23)
+material = ExtResource("carpet")
+use_collision = true
+
+[node name="SouthPromenade" type="CSGBox3D" parent="."]
+position = Vector3(0, -0.4, 23.5)
+size = Vector3(68, 0.8, 23)
+material = ExtResource("carpet")
+use_collision = true
+
+[node name="WestPromenade" type="CSGBox3D" parent="."]
+position = Vector3(-24.5, -0.4, 0)
+size = Vector3(19, 0.8, 24)
+material = ExtResource("carpet")
+use_collision = true
+
+[node name="EastPromenade" type="CSGBox3D" parent="."]
+position = Vector3(24.5, -0.4, 0)
+size = Vector3(19, 0.8, 24)
+material = ExtResource("carpet")
+use_collision = true
+
+[node name="NorthRamp" type="CSGPolygon3D" parent="."]
+position = Vector3(3, -1.5, -6)
+polygon = PackedVector2Array(0, 0, 6, 0, 6, 1.5)
+depth = 6.0
+rotation = Vector3(0, 1.5707963267948966, 0)
+material = ExtResource("carpet")
+use_collision = true
+
+[node name="PitRetaining-1_-9" type="CSGBox3D" parent="."]
+position = Vector3(-9, -0.75, -12)
+size = Vector3(12, 1.5, 0.18)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="PitRail-1_-9" type="CSGBox3D" parent="."]
+position = Vector3(-9, 0.92, -12)
+size = Vector3(12, 0.12, 0.12)
+material = ExtResource("brass")
+use_collision = true
+
+[node name="RailPost-1_-9_-5" type="CSGCylinder3D" parent="."]
+position = Vector3(-14, 0.45, -12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost-1_-9_-2" type="CSGCylinder3D" parent="."]
+position = Vector3(-11, 0.45, -12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost-1_-9_2" type="CSGCylinder3D" parent="."]
+position = Vector3(-7, 0.45, -12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost-1_-9_5" type="CSGCylinder3D" parent="."]
+position = Vector3(-4, 0.45, -12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="PitRetaining-1_9" type="CSGBox3D" parent="."]
+position = Vector3(9, -0.75, -12)
+size = Vector3(12, 1.5, 0.18)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="PitRail-1_9" type="CSGBox3D" parent="."]
+position = Vector3(9, 0.92, -12)
+size = Vector3(12, 0.12, 0.12)
+material = ExtResource("brass")
+use_collision = true
+
+[node name="RailPost-1_9_-5" type="CSGCylinder3D" parent="."]
+position = Vector3(4, 0.45, -12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost-1_9_-2" type="CSGCylinder3D" parent="."]
+position = Vector3(7, 0.45, -12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost-1_9_2" type="CSGCylinder3D" parent="."]
+position = Vector3(11, 0.45, -12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost-1_9_5" type="CSGCylinder3D" parent="."]
+position = Vector3(14, 0.45, -12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SouthRamp" type="CSGPolygon3D" parent="."]
+position = Vector3(-3, -1.5, 6)
+polygon = PackedVector2Array(0, 0, 6, 0, 6, 1.5)
+depth = 6.0
+rotation = Vector3(0, -1.5707963267948966, 0)
+material = ExtResource("carpet")
+use_collision = true
+
+[node name="PitRetaining1_-9" type="CSGBox3D" parent="."]
+position = Vector3(-9, -0.75, 12)
+size = Vector3(12, 1.5, 0.18)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="PitRail1_-9" type="CSGBox3D" parent="."]
+position = Vector3(-9, 0.92, 12)
+size = Vector3(12, 0.12, 0.12)
+material = ExtResource("brass")
+use_collision = true
+
+[node name="RailPost1_-9_-5" type="CSGCylinder3D" parent="."]
+position = Vector3(-14, 0.45, 12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost1_-9_-2" type="CSGCylinder3D" parent="."]
+position = Vector3(-11, 0.45, 12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost1_-9_2" type="CSGCylinder3D" parent="."]
+position = Vector3(-7, 0.45, 12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost1_-9_5" type="CSGCylinder3D" parent="."]
+position = Vector3(-4, 0.45, 12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="PitRetaining1_9" type="CSGBox3D" parent="."]
+position = Vector3(9, -0.75, 12)
+size = Vector3(12, 1.5, 0.18)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="PitRail1_9" type="CSGBox3D" parent="."]
+position = Vector3(9, 0.92, 12)
+size = Vector3(12, 0.12, 0.12)
+material = ExtResource("brass")
+use_collision = true
+
+[node name="RailPost1_9_-5" type="CSGCylinder3D" parent="."]
+position = Vector3(4, 0.45, 12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost1_9_-2" type="CSGCylinder3D" parent="."]
+position = Vector3(7, 0.45, 12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost1_9_2" type="CSGCylinder3D" parent="."]
+position = Vector3(11, 0.45, 12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="RailPost1_9_5" type="CSGCylinder3D" parent="."]
+position = Vector3(14, 0.45, 12)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="PitSide-15" type="CSGBox3D" parent="."]
+position = Vector3(-15, -0.75, 0)
+size = Vector3(0.18, 1.5, 24)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="PitSideRail-15" type="CSGBox3D" parent="."]
+position = Vector3(-15, 0.92, 0)
+size = Vector3(0.12, 0.12, 24)
+material = ExtResource("brass")
+use_collision = true
+
+[node name="SidePost-15_-11" type="CSGCylinder3D" parent="."]
+position = Vector3(-15, 0.45, -11)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost-15_-8" type="CSGCylinder3D" parent="."]
+position = Vector3(-15, 0.45, -8)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost-15_-5" type="CSGCylinder3D" parent="."]
+position = Vector3(-15, 0.45, -5)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost-15_-2" type="CSGCylinder3D" parent="."]
+position = Vector3(-15, 0.45, -2)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost-15_1" type="CSGCylinder3D" parent="."]
+position = Vector3(-15, 0.45, 1)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost-15_4" type="CSGCylinder3D" parent="."]
+position = Vector3(-15, 0.45, 4)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost-15_7" type="CSGCylinder3D" parent="."]
+position = Vector3(-15, 0.45, 7)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost-15_10" type="CSGCylinder3D" parent="."]
+position = Vector3(-15, 0.45, 10)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="PitSide15" type="CSGBox3D" parent="."]
+position = Vector3(15, -0.75, 0)
+size = Vector3(0.18, 1.5, 24)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="PitSideRail15" type="CSGBox3D" parent="."]
+position = Vector3(15, 0.92, 0)
+size = Vector3(0.12, 0.12, 24)
+material = ExtResource("brass")
+use_collision = true
+
+[node name="SidePost15_-11" type="CSGCylinder3D" parent="."]
+position = Vector3(15, 0.45, -11)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost15_-8" type="CSGCylinder3D" parent="."]
+position = Vector3(15, 0.45, -8)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost15_-5" type="CSGCylinder3D" parent="."]
+position = Vector3(15, 0.45, -5)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost15_-2" type="CSGCylinder3D" parent="."]
+position = Vector3(15, 0.45, -2)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost15_1" type="CSGCylinder3D" parent="."]
+position = Vector3(15, 0.45, 1)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost15_4" type="CSGCylinder3D" parent="."]
+position = Vector3(15, 0.45, 4)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost15_7" type="CSGCylinder3D" parent="."]
+position = Vector3(15, 0.45, 7)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SidePost15_10" type="CSGCylinder3D" parent="."]
+position = Vector3(15, 0.45, 10)
+radius = 0.045
+height = 0.9
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="Ceiling" type="CSGBox3D" parent="."]
+position = Vector3(0, 8.3, 0)
+size = Vector3(70, 0.6, 70)
+material = ExtResource("plaster")
+use_collision = true
+
+[node name="SkylightWestOpening" type="CSGBox3D" parent="Ceiling"]
+position = Vector3(-9.5, 0, 0)
+operation = 2
+size = Vector3(5.0, 1, 18.0)
+
+[node name="SkylightWestGlass" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.5, 0)
+size = Vector3(5.0, 0.06, 18.0)
+material = ExtResource("plaster")
+use_collision = true
+
+[node name="SkylightWestTrimN" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 7.94, -9.0)
+size = Vector3(5.5, 0.14, 0.25)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestTrimS" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 7.94, 9.0)
+size = Vector3(5.5, 0.14, 0.25)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestTrimW" type="CSGBox3D" parent="."]
+position = Vector3(-12.0, 7.94, 0)
+size = Vector3(0.25, 0.14, 18.5)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestTrimE" type="CSGBox3D" parent="."]
+position = Vector3(-7.0, 7.94, 0)
+size = Vector3(0.25, 0.14, 18.5)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBarSpine" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, 0)
+size = Vector3(0.08, 0.08, 18.0)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBar0" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, -6.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBar1" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, -3.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBar2" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, 0.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBar3" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, 3.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBar4" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, 6.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastOpening" type="CSGBox3D" parent="Ceiling"]
+position = Vector3(5.5, 0, 0)
+operation = 2
+size = Vector3(5.0, 1, 18.0)
+
+[node name="SkylightEastGlass" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.5, 0)
+size = Vector3(5.0, 0.06, 18.0)
+material = ExtResource("plaster")
+use_collision = true
+
+[node name="SkylightEastTrimN" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 7.94, -9.0)
+size = Vector3(5.5, 0.14, 0.25)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastTrimS" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 7.94, 9.0)
+size = Vector3(5.5, 0.14, 0.25)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastTrimW" type="CSGBox3D" parent="."]
+position = Vector3(3.0, 7.94, 0)
+size = Vector3(0.25, 0.14, 18.5)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastTrimE" type="CSGBox3D" parent="."]
+position = Vector3(8.0, 7.94, 0)
+size = Vector3(0.25, 0.14, 18.5)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBarSpine" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, 0)
+size = Vector3(0.08, 0.08, 18.0)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBar0" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, -6.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBar1" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, -3.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBar2" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, 0.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBar3" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, 3.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBar4" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, 6.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="CofferSide-16" type="CSGBox3D" parent="."]
+position = Vector3(-16, 7.6, 0)
+size = Vector3(1, 1, 27)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="CofferSide16" type="CSGBox3D" parent="."]
+position = Vector3(16, 7.6, 0)
+size = Vector3(1, 1, 27)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="CofferEnd-13" type="CSGBox3D" parent="."]
+position = Vector3(0, 7.6, -13)
+size = Vector3(33, 1, 1)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="CofferEnd13" type="CSGBox3D" parent="."]
+position = Vector3(0, 7.6, 13)
+size = Vector3(33, 1, 1)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="Column-16_-13" type="CSGCylinder3D" parent="."]
+position = Vector3(-16, 3.65, -13)
+radius = 0.36
+height = 7.3
+sides = 16
+material = ExtResource("teal")
+use_collision = true
+
+[node name="ColumnBase-16_-13" type="CSGCylinder3D" parent="."]
+position = Vector3(-16, 0.16, -13)
+radius = 0.57
+height = 0.32
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="ColumnCapital-16_-13" type="CSGCylinder3D" parent="."]
+position = Vector3(-16, 7.12, -13)
+radius = 0.68
+height = 0.34
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="Column-16_13" type="CSGCylinder3D" parent="."]
+position = Vector3(-16, 3.65, 13)
+radius = 0.36
+height = 7.3
+sides = 16
+material = ExtResource("teal")
+use_collision = true
+
+[node name="ColumnBase-16_13" type="CSGCylinder3D" parent="."]
+position = Vector3(-16, 0.16, 13)
+radius = 0.57
+height = 0.32
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="ColumnCapital-16_13" type="CSGCylinder3D" parent="."]
+position = Vector3(-16, 7.12, 13)
+radius = 0.68
+height = 0.34
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="Column16_-13" type="CSGCylinder3D" parent="."]
+position = Vector3(16, 3.65, -13)
+radius = 0.36
+height = 7.3
+sides = 16
+material = ExtResource("teal")
+use_collision = true
+
+[node name="ColumnBase16_-13" type="CSGCylinder3D" parent="."]
+position = Vector3(16, 0.16, -13)
+radius = 0.57
+height = 0.32
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="ColumnCapital16_-13" type="CSGCylinder3D" parent="."]
+position = Vector3(16, 7.12, -13)
+radius = 0.68
+height = 0.34
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="Column16_13" type="CSGCylinder3D" parent="."]
+position = Vector3(16, 3.65, 13)
+radius = 0.36
+height = 7.3
+sides = 16
+material = ExtResource("teal")
+use_collision = true
+
+[node name="ColumnBase16_13" type="CSGCylinder3D" parent="."]
+position = Vector3(16, 0.16, 13)
+radius = 0.57
+height = 0.32
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="ColumnCapital16_13" type="CSGCylinder3D" parent="."]
+position = Vector3(16, 7.12, 13)
+radius = 0.68
+height = 0.34
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="GamingLight-7" type="OmniLight3D" parent="."]
+position = Vector3(0, 5.6, -7)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 1.7
+omni_range = 16
+omni_attenuation = 1.4
+
+[node name="GamingLight0" type="OmniLight3D" parent="."]
+position = Vector3(0, 5.6, 0)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 1.7
+omni_range = 16
+omni_attenuation = 1.4
+
+[node name="GamingLight7" type="OmniLight3D" parent="."]
+position = Vector3(0, 5.6, 7)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 1.7
+omni_range = 16
+omni_attenuation = 1.4
+
+[node name="RoomPartition-1_-12" type="CSGBox3D" parent="."]
+position = Vector3(-18, 4, -12)
+size = Vector3(0.4, 8, 18)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="RoomPartition-1_12" type="CSGBox3D" parent="."]
+position = Vector3(-18, 4, 12)
+size = Vector3(0.4, 8, 18)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="DoorLintel-1" type="CSGBox3D" parent="."]
+position = Vector3(-18, 6.5, 0)
+size = Vector3(0.6, 3, 6)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="DoorShoulder-1_-2.7" type="CSGBox3D" parent="."]
+position = Vector3(-18, 4.65, -2.7)
+size = Vector3(0.65, 0.7, 0.6)
+material = ExtResource("brass")
+use_collision = true
+
+[node name="DoorShoulder-1_2.7" type="CSGBox3D" parent="."]
+position = Vector3(-18, 4.65, 2.7)
+size = Vector3(0.65, 0.7, 0.6)
+material = ExtResource("brass")
+use_collision = true
+
+[node name="SideRoomEnd-1_-21" type="CSGBox3D" parent="."]
+position = Vector3(-26, 4, -21)
+size = Vector3(16, 8, 0.4)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="SideRoomEnd-1_21" type="CSGBox3D" parent="."]
+position = Vector3(-26, 4, 21)
+size = Vector3(16, 8, 0.4)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="Panel-1_-12" type="CSGBox3D" parent="."]
+position = Vector3(-17.76, 0.65, -12)
+size = Vector3(0.12, 1.3, 18)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="PanelCap-1_-12" type="CSGBox3D" parent="."]
+position = Vector3(-17.69, 1.35, -12)
+size = Vector3(0.1, 0.08, 18)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="Panel-1_12" type="CSGBox3D" parent="."]
+position = Vector3(-17.76, 0.65, 12)
+size = Vector3(0.12, 1.3, 18)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="PanelCap-1_12" type="CSGBox3D" parent="."]
+position = Vector3(-17.69, 1.35, 12)
+size = Vector3(0.1, 0.08, 18)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="WingSign-1" type="Label3D" parent="."]
+position = Vector3(-17.65, 4, 0)
+text = "PETTING ZOO"
+font_size = 42
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 1.5707963267948966, 0)
+
+double_sided = false
+[node name="WingDoorLight-1" type="OmniLight3D" parent="."]
+position = Vector3(-16, 4, 0)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 1.1
+omni_range = 10
+omni_attenuation = 1.4
+
+[node name="RoomPartition1_-12" type="CSGBox3D" parent="."]
+position = Vector3(18, 4, -12)
+size = Vector3(0.4, 8, 18)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="RoomPartition1_12" type="CSGBox3D" parent="."]
+position = Vector3(18, 4, 12)
+size = Vector3(0.4, 8, 18)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="DoorLintel1" type="CSGBox3D" parent="."]
+position = Vector3(18, 6.5, 0)
+size = Vector3(0.6, 3, 6)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="DoorShoulder1_-2.7" type="CSGBox3D" parent="."]
+position = Vector3(18, 4.65, -2.7)
+size = Vector3(0.65, 0.7, 0.6)
+material = ExtResource("brass")
+use_collision = true
+
+[node name="DoorShoulder1_2.7" type="CSGBox3D" parent="."]
+position = Vector3(18, 4.65, 2.7)
+size = Vector3(0.65, 0.7, 0.6)
+material = ExtResource("brass")
+use_collision = true
+
+[node name="SideRoomEnd1_-21" type="CSGBox3D" parent="."]
+position = Vector3(26, 4, -21)
+size = Vector3(16, 8, 0.4)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="SideRoomEnd1_21" type="CSGBox3D" parent="."]
+position = Vector3(26, 4, 21)
+size = Vector3(16, 8, 0.4)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="Panel1_-12" type="CSGBox3D" parent="."]
+position = Vector3(17.76, 0.65, -12)
+size = Vector3(0.12, 1.3, 18)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="PanelCap1_-12" type="CSGBox3D" parent="."]
+position = Vector3(17.69, 1.35, -12)
+size = Vector3(0.1, 0.08, 18)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="Panel1_12" type="CSGBox3D" parent="."]
+position = Vector3(17.76, 0.65, 12)
+size = Vector3(0.12, 1.3, 18)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="PanelCap1_12" type="CSGBox3D" parent="."]
+position = Vector3(17.69, 1.35, 12)
+size = Vector3(0.1, 0.08, 18)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="WingSign1" type="Label3D" parent="."]
+position = Vector3(17.65, 4, 0)
+text = "HARBOR ROOM"
+font_size = 42
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, -1.5707963267948966, 0)
+
+double_sided = false
+[node name="WingDoorLight1" type="OmniLight3D" parent="."]
+position = Vector3(16, 4, 0)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 1.1
+omni_range = 10
+omni_attenuation = 1.4
+
+[node name="ZooTiles" type="CSGBox3D" parent="."]
+position = Vector3(-26, 0.02, 0)
+size = Vector3(15, 0.04, 41)
+material = ExtResource("tile")
+use_collision = false
+
+[node name="ZooBenchSeat-12" type="CSGBox3D" parent="."]
+position = Vector3(-32, 0.5, -12)
+size = Vector3(1, 0.25, 4)
+material = ExtResource("velvet")
+use_collision = true
+visible = false
+
+[node name="ZooBenchBack-12" type="CSGBox3D" parent="."]
+position = Vector3(-32.5, 1, -12)
+size = Vector3(0.18, 1.2, 4)
+material = ExtResource("wood")
+use_collision = true
+visible = false
+
+[node name="ZooBenchSeat12" type="CSGBox3D" parent="."]
+position = Vector3(-32, 0.5, 12)
+size = Vector3(1, 0.25, 4)
+material = ExtResource("velvet")
+use_collision = true
+visible = false
+
+[node name="ZooBenchBack12" type="CSGBox3D" parent="."]
+position = Vector3(-32.5, 1, 12)
+size = Vector3(0.18, 1.2, 4)
+material = ExtResource("wood")
+use_collision = true
+visible = false
+
+[node name="ZooTitle" type="Label3D" parent="."]
+position = Vector3(-26, 4.5, -20.7)
+text = "THE LUCKY PETTING PARLOR"
+font_size = 38
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="ZooNotice" type="Label3D" parent="."]
+position = Vector3(-26, 2.9, -20.7)
+text = "FROGS & FRIENDS  /  PLEASE BE KIND"
+font_size = 23
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="ZooLight-13" type="OmniLight3D" parent="."]
+position = Vector3(-26, 5, -13)
+light_color = Color(0.66, 0.85, 0.66, 1)
+light_energy = 1.25
+omni_range = 14
+omni_attenuation = 1.4
+
+[node name="ZooLight0" type="OmniLight3D" parent="."]
+position = Vector3(-26, 5, 0)
+light_color = Color(0.66, 0.85, 0.66, 1)
+light_energy = 1.25
+omni_range = 14
+omni_attenuation = 1.4
+
+[node name="ZooLight13" type="OmniLight3D" parent="."]
+position = Vector3(-26, 5, 13)
+light_color = Color(0.66, 0.85, 0.66, 1)
+light_energy = 1.25
+omni_range = 14
+omni_attenuation = 1.4
+
+[node name="BasinBed" type="CSGBox3D" parent="."]
+position = Vector3(26, -0.02, 0)
+size = Vector3(11, 0.12, 40)
+material = ExtResource("teal")
+use_collision = true
+
+[node name="QuayWest" type="CSGBox3D" parent="."]
+position = Vector3(20, 0.06, 0)
+size = Vector3(3, 0.12, 40)
+material = ExtResource("tile")
+use_collision = true
+
+[node name="QuayEast" type="CSGBox3D" parent="."]
+position = Vector3(32, 0.06, 0)
+size = Vector3(3, 0.12, 40)
+material = ExtResource("tile")
+use_collision = true
+
+[node name="FerryLanding-19.6" type="CSGBox3D" parent="."]
+position = Vector3(26, 0.1, -20.05)
+size = Vector3(11, 0.2, 0.8)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="FerryLanding19.6" type="CSGBox3D" parent="."]
+position = Vector3(26, 0.1, 20.05)
+size = Vector3(11, 0.2, 0.8)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="HarborWater" type="CSGBox3D" parent="."]
+position = Vector3(26, 0.1, 0)
+size = Vector3(9, 0.035, 39)
+material = ExtResource("water")
+use_collision = false
+
+[node name="QuayBollard-18" type="CSGCylinder3D" parent="."]
+position = Vector3(21.1, 0.3, -18)
+radius = 0.14
+height = 0.6
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="QuayLamp-18" type="CSGBox3D" parent="."]
+position = Vector3(32.8, 3.5, -18)
+size = Vector3(0.25, 0.5, 0.25)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="HarborLight-18" type="OmniLight3D" parent="."]
+position = Vector3(29, 4, -18)
+light_color = Color(0.48, 0.75, 0.83, 1)
+light_energy = 1.3
+omni_range = 13
+omni_attenuation = 1.4
+
+[node name="QuayBollard-9" type="CSGCylinder3D" parent="."]
+position = Vector3(21.1, 0.3, -9)
+radius = 0.14
+height = 0.6
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="QuayLamp-9" type="CSGBox3D" parent="."]
+position = Vector3(32.8, 3.5, -9)
+size = Vector3(0.25, 0.5, 0.25)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="HarborLight-9" type="OmniLight3D" parent="."]
+position = Vector3(29, 4, -9)
+light_color = Color(0.48, 0.75, 0.83, 1)
+light_energy = 1.3
+omni_range = 13
+omni_attenuation = 1.4
+
+[node name="QuayBollard9" type="CSGCylinder3D" parent="."]
+position = Vector3(21.1, 0.3, 9)
+radius = 0.14
+height = 0.6
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="QuayLamp9" type="CSGBox3D" parent="."]
+position = Vector3(32.8, 3.5, 9)
+size = Vector3(0.25, 0.5, 0.25)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="HarborLight9" type="OmniLight3D" parent="."]
+position = Vector3(29, 4, 9)
+light_color = Color(0.48, 0.75, 0.83, 1)
+light_energy = 1.3
+omni_range = 13
+omni_attenuation = 1.4
+
+[node name="QuayBollard18" type="CSGCylinder3D" parent="."]
+position = Vector3(21.1, 0.3, 18)
+radius = 0.14
+height = 0.6
+sides = 16
+material = ExtResource("brass")
+use_collision = false
+
+[node name="QuayLamp18" type="CSGBox3D" parent="."]
+position = Vector3(32.8, 3.5, 18)
+size = Vector3(0.25, 0.5, 0.25)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="HarborLight18" type="OmniLight3D" parent="."]
+position = Vector3(29, 4, 18)
+light_color = Color(0.48, 0.75, 0.83, 1)
+light_energy = 1.3
+omni_range = 13
+omni_attenuation = 1.4
+
+[node name="HarborTitle" type="Label3D" parent="."]
+position = Vector3(26, 4.6, -20.7)
+text = "NEW YORK  /  INDOOR FERRY"
+font_size = 34
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="HarborNotice" type="Label3D" parent="."]
+position = Vector3(26, 3.2, -20.7)
+text = "BOARD AT EITHER END  -  TAKE THE WHEEL"
+font_size = 22
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="MarqueeBacking" type="CSGBox3D" parent="."]
+position = Vector3(0, 4.8, -16)
+size = Vector3(20, 3.1, 0.4)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="CasinoName" type="Label3D" parent="."]
+position = Vector3(0, 5.2, -15.75)
+text = "THE GILDED LILY"
+font_size = 90
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="CasinoDate" type="Label3D" parent="."]
+position = Vector3(0, 3.9, -15.73)
+text = "MOTOR LODGE & CASINO  /  EST. 1964"
+font_size = 27
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="Welcome" type="Label3D" parent="."]
+position = Vector3(0, 2.2, 29)
+text = "WELCOME BACK, HIGH ROLLER"
+font_size = 40
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 3.141592653589793, 0)
+
+double_sided = false
+[node name="Directions" type="Label3D" parent="."]
+position = Vector3(0, 5.5, 14.15)
+text = "PETTING ZOO  <     SLOTS & ROULETTE     >  HARBOR ROOM"
+font_size = 20
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="LobbySofa-10" type="CSGBox3D" parent="."]
+position = Vector3(-7, 0.45, 24)
+size = Vector3(5, 0.6, 1.4)
+material = ExtResource("velvet")
+use_collision = true
+
+[node name="LobbySofaBack-10" type="CSGBox3D" parent="."]
+position = Vector3(-7, 1, 24.6)
+size = Vector3(5, 1, 0.25)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="SofaArm-10_-2.4" type="CSGBox3D" parent="."]
+position = Vector3(-9.4, 0.8, 24)
+size = Vector3(0.25, 0.65, 1.5)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="SofaArm-10_2.4" type="CSGBox3D" parent="."]
+position = Vector3(-4.6, 0.8, 24)
+size = Vector3(0.25, 0.65, 1.5)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="LobbyTable-10" type="CSGCylinder3D" parent="."]
+position = Vector3(-10, 0.6, 21.8)
+radius = 1
+height = 0.12
+sides = 16
+material = ExtResource("brass")
+use_collision = true
+
+[node name="LobbyTableStem-10" type="CSGCylinder3D" parent="."]
+position = Vector3(-10, 0.3, 21.8)
+radius = 0.12
+height = 0.6
+sides = 16
+material = ExtResource("wood")
+use_collision = false
+
+[node name="LobbyLight-10" type="OmniLight3D" parent="."]
+position = Vector3(-10, 5.5, 23)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 1.6
+omni_range = 16
+omni_attenuation = 1.4
+
+[node name="LobbySofa10" type="CSGBox3D" parent="."]
+position = Vector3(10, 0.45, 24)
+size = Vector3(5, 0.6, 1.4)
+material = ExtResource("velvet")
+use_collision = true
+
+[node name="LobbySofaBack10" type="CSGBox3D" parent="."]
+position = Vector3(10, 1, 24.6)
+size = Vector3(5, 1, 0.25)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="SofaArm10_-2.4" type="CSGBox3D" parent="."]
+position = Vector3(7.6, 0.8, 24)
+size = Vector3(0.25, 0.65, 1.5)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="SofaArm10_2.4" type="CSGBox3D" parent="."]
+position = Vector3(12.4, 0.8, 24)
+size = Vector3(0.25, 0.65, 1.5)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="LobbyTable10" type="CSGCylinder3D" parent="."]
+position = Vector3(10, 0.6, 21.8)
+radius = 1
+height = 0.12
+sides = 16
+material = ExtResource("brass")
+use_collision = true
+
+[node name="LobbyTableStem10" type="CSGCylinder3D" parent="."]
+position = Vector3(10, 0.3, 21.8)
+radius = 0.12
+height = 0.6
+sides = 16
+material = ExtResource("wood")
+use_collision = false
+
+[node name="LobbyLight10" type="OmniLight3D" parent="."]
+position = Vector3(10, 5.5, 23)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 1.6
+omni_range = 16
+omni_attenuation = 1.4
+
+[node name="SecurityCounter" type="CSGBox3D" parent="."]
+position = Vector3(-10, 0.48, 17)
+size = Vector3(10, 0.96, 1.2)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="SecuritySign" type="Label3D" parent="."]
+position = Vector3(-10, 2.4, 16.7)
+text = "SECURITY / UNCLAIMED PROPERTY"
+font_size = 24
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="WardrobeCounter" type="CSGBox3D" parent="."]
+position = Vector3(10, 0.43, 17)
+size = Vector3(10, 0.86, 1.2)
+material = ExtResource("teal")
+use_collision = true
+
+[node name="WardrobeSign" type="Label3D" parent="."]
+position = Vector3(10, 2.3, 16.7)
+text = "COAT CHECK / LOST & FOUND"
+font_size = 25
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="RecreationSign" type="Label3D" parent="."]
+position = Vector3(-24, 4, 24)
+text = "THE STARDUST REC ROOM"
+font_size = 30
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="TrampolineSign" type="Label3D" parent="."]
+position = Vector3(25, 4, 23)
+text = "JUMP LOUNGE"
+font_size = 35
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="ExhibitSign" type="Label3D" parent="."]
+position = Vector3(-25, 5.5, -28)
+text = "QUIET GALLERY"
+font_size = 30
+pixel_size = 0.012
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.10, 0.04, 0.025, 1)
+outline_size = 6
+rotation = Vector3(0, 0, 0)
+
+double_sided = false
+[node name="CeilingSeam-30" type="CSGBox3D" parent="."]
+position = Vector3(-30, 7.98, 0)
+size = Vector3(0.045, 0.02, 68)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="CeilingSeam-22" type="CSGBox3D" parent="."]
+position = Vector3(-22, 7.98, 0)
+size = Vector3(0.045, 0.02, 68)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="CeilingSeam-14" type="CSGBox3D" parent="."]
+position = Vector3(-14, 7.98, 0)
+size = Vector3(0.045, 0.02, 68)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="CeilingSeam-6" type="CSGBox3D" parent="."]
+position = Vector3(-6, 7.98, 0)
+size = Vector3(0.045, 0.02, 68)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="CeilingSeam2" type="CSGBox3D" parent="."]
+position = Vector3(2, 7.98, 0)
+size = Vector3(0.045, 0.02, 68)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="CeilingSeam10" type="CSGBox3D" parent="."]
+position = Vector3(10, 7.98, 0)
+size = Vector3(0.045, 0.02, 68)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="CeilingSeam18" type="CSGBox3D" parent="."]
+position = Vector3(18, 7.98, 0)
+size = Vector3(0.045, 0.02, 68)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="CeilingSeam26" type="CSGBox3D" parent="."]
+position = Vector3(26, 7.98, 0)
+size = Vector3(0.045, 0.02, 68)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="CeilingWaterStain0" type="CSGBox3D" parent="."]
+position = Vector3(-30, 7.965, -30)
+size = Vector3(1.3, 0.015, 0.7)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain1" type="CSGBox3D" parent="."]
+position = Vector3(-13, 7.965, -7)
+size = Vector3(1.9, 0.015, 1.1)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain2" type="CSGBox3D" parent="."]
+position = Vector3(4, 7.965, 16)
+size = Vector3(2.5, 0.015, 1.5)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain3" type="CSGBox3D" parent="."]
+position = Vector3(21, 7.965, -22)
+size = Vector3(3.1, 0.015, 0.7)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain4" type="CSGBox3D" parent="."]
+position = Vector3(-23, 7.965, 1)
+size = Vector3(1.3, 0.015, 1.1)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain5" type="CSGBox3D" parent="."]
+position = Vector3(-6, 7.965, 24)
+size = Vector3(1.9, 0.015, 1.5)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain6" type="CSGBox3D" parent="."]
+position = Vector3(11, 7.965, -14)
+size = Vector3(2.5, 0.015, 0.7)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain7" type="CSGBox3D" parent="."]
+position = Vector3(28, 7.965, 9)
+size = Vector3(3.1, 0.015, 1.1)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain8" type="CSGBox3D" parent="."]
+position = Vector3(-16, 7.965, -29)
+size = Vector3(1.3, 0.015, 1.5)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain9" type="CSGBox3D" parent="."]
+position = Vector3(1, 7.965, -6)
+size = Vector3(1.9, 0.015, 0.7)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain10" type="CSGBox3D" parent="."]
+position = Vector3(18, 7.965, 17)
+size = Vector3(2.5, 0.015, 1.1)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain11" type="CSGBox3D" parent="."]
+position = Vector3(-26, 7.965, -21)
+size = Vector3(3.1, 0.015, 1.5)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain12" type="CSGBox3D" parent="."]
+position = Vector3(-4, 7.965, 2)
+size = Vector3(1.3, 0.015, 0.7)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain13" type="CSGBox3D" parent="."]
+position = Vector3(8, 7.965, 25)
+size = Vector3(1.9, 0.015, 1.1)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain14" type="CSGBox3D" parent="."]
+position = Vector3(25, 7.965, -13)
+size = Vector3(2.5, 0.015, 1.5)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain15" type="CSGBox3D" parent="."]
+position = Vector3(-19, 7.965, 10)
+size = Vector3(3.1, 0.015, 0.7)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain16" type="CSGBox3D" parent="."]
+position = Vector3(-2, 7.965, -28)
+size = Vector3(1.3, 0.015, 1.1)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain17" type="CSGBox3D" parent="."]
+position = Vector3(15, 7.965, -5)
+size = Vector3(1.9, 0.015, 1.5)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain18" type="CSGBox3D" parent="."]
+position = Vector3(-29, 7.965, 18)
+size = Vector3(2.5, 0.015, 0.7)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="CeilingWaterStain19" type="CSGBox3D" parent="."]
+position = Vector3(-12, 7.965, -20)
+size = Vector3(3.1, 0.015, 1.1)
+material = ExtResource("stain")
+use_collision = false
+
+[node name="NorthPeelingPaper0" type="CSGBox3D" parent="."]
+position = Vector3(-29.0, 2.1, -33.98)
+size = Vector3(0.25, 0.7, 0.018)
+material = ExtResource("plaster")
+use_collision = false
+
+[node name="NorthPeelingPaper1" type="CSGBox3D" parent="."]
+position = Vector3(-22.6, 3.1, -33.98)
+size = Vector3(0.43, 0.7, 0.018)
+material = ExtResource("plaster")
+use_collision = false
+
+[node name="NorthPeelingPaper2" type="CSGBox3D" parent="."]
+position = Vector3(-16.2, 4.1, -33.98)
+size = Vector3(0.61, 0.7, 0.018)
+material = ExtResource("plaster")
+use_collision = false
+
+[node name="NorthPeelingPaper3" type="CSGBox3D" parent="."]
+position = Vector3(-9.8, 2.1, -33.98)
+size = Vector3(0.25, 0.7, 0.018)
+material = ExtResource("plaster")
+use_collision = false
+
+[node name="NorthPeelingPaper4" type="CSGBox3D" parent="."]
+position = Vector3(-3.4, 3.1, -33.98)
+size = Vector3(0.43, 0.7, 0.018)
+material = ExtResource("plaster")
+use_collision = false
+
+[node name="NorthPeelingPaper5" type="CSGBox3D" parent="."]
+position = Vector3(3.0, 4.1, -33.98)
+size = Vector3(0.61, 0.7, 0.018)
+material = ExtResource("plaster")
+use_collision = false
+
+[node name="NorthPeelingPaper6" type="CSGBox3D" parent="."]
+position = Vector3(9.4, 2.1, -33.98)
+size = Vector3(0.25, 0.7, 0.018)
+material = ExtResource("plaster")
+use_collision = false
+
+[node name="NorthPeelingPaper7" type="CSGBox3D" parent="."]
+position = Vector3(15.8, 3.1, -33.98)
+size = Vector3(0.43, 0.7, 0.018)
+material = ExtResource("plaster")
+use_collision = false
+
+[node name="NorthPeelingPaper8" type="CSGBox3D" parent="."]
+position = Vector3(22.2, 4.1, -33.98)
+size = Vector3(0.61, 0.7, 0.018)
+material = ExtResource("plaster")
+use_collision = false
+
+[node name="NorthPeelingPaper9" type="CSGBox3D" parent="."]
+position = Vector3(28.6, 2.1, -33.98)
+size = Vector3(0.25, 0.7, 0.018)
+material = ExtResource("plaster")
+use_collision = false
+
+[node name="SconceBack-28_-33.9" type="CSGBox3D" parent="."]
+position = Vector3(-28, 3.3, -33.9)
+size = Vector3(0.5, 1, 0.16)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SconceShade-28_-33.9" type="CSGBox3D" parent="."]
+position = Vector3(-28, 3.4, -33.75)
+size = Vector3(0.32, 0.65, 0.24)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="SconceLight-28_-33.9" type="OmniLight3D" parent="."]
+position = Vector3(-28, 3.4, -32.9)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.9
+omni_range = 11
+omni_attenuation = 1.4
+
+[node name="SconceBack-28_33.9" type="CSGBox3D" parent="."]
+position = Vector3(-28, 3.3, 33.9)
+size = Vector3(0.5, 1, 0.16)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SconceShade-28_33.9" type="CSGBox3D" parent="."]
+position = Vector3(-28, 3.4, 33.75)
+size = Vector3(0.32, 0.65, 0.24)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="SconceLight-28_33.9" type="OmniLight3D" parent="."]
+position = Vector3(-28, 3.4, 32.9)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.9
+omni_range = 11
+omni_attenuation = 1.4
+
+[node name="SconceBack-20_-33.9" type="CSGBox3D" parent="."]
+position = Vector3(-20, 3.3, -33.9)
+size = Vector3(0.5, 1, 0.16)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SconceShade-20_-33.9" type="CSGBox3D" parent="."]
+position = Vector3(-20, 3.4, -33.75)
+size = Vector3(0.32, 0.65, 0.24)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="SconceLight-20_-33.9" type="OmniLight3D" parent="."]
+position = Vector3(-20, 3.4, -32.9)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.9
+omni_range = 11
+omni_attenuation = 1.4
+
+[node name="SconceBack-20_33.9" type="CSGBox3D" parent="."]
+position = Vector3(-20, 3.3, 33.9)
+size = Vector3(0.5, 1, 0.16)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SconceShade-20_33.9" type="CSGBox3D" parent="."]
+position = Vector3(-20, 3.4, 33.75)
+size = Vector3(0.32, 0.65, 0.24)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="SconceLight-20_33.9" type="OmniLight3D" parent="."]
+position = Vector3(-20, 3.4, 32.9)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.9
+omni_range = 11
+omni_attenuation = 1.4
+
+[node name="SconceBack0_-33.9" type="CSGBox3D" parent="."]
+position = Vector3(0, 3.3, -33.9)
+size = Vector3(0.5, 1, 0.16)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SconceShade0_-33.9" type="CSGBox3D" parent="."]
+position = Vector3(0, 3.4, -33.75)
+size = Vector3(0.32, 0.65, 0.24)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="SconceLight0_-33.9" type="OmniLight3D" parent="."]
+position = Vector3(0, 3.4, -32.9)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.9
+omni_range = 11
+omni_attenuation = 1.4
+
+[node name="SconceBack0_33.9" type="CSGBox3D" parent="."]
+position = Vector3(0, 3.3, 33.9)
+size = Vector3(0.5, 1, 0.16)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SconceShade0_33.9" type="CSGBox3D" parent="."]
+position = Vector3(0, 3.4, 33.75)
+size = Vector3(0.32, 0.65, 0.24)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="SconceLight0_33.9" type="OmniLight3D" parent="."]
+position = Vector3(0, 3.4, 32.9)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.9
+omni_range = 11
+omni_attenuation = 1.4
+
+[node name="SconceBack20_-33.9" type="CSGBox3D" parent="."]
+position = Vector3(20, 3.3, -33.9)
+size = Vector3(0.5, 1, 0.16)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SconceShade20_-33.9" type="CSGBox3D" parent="."]
+position = Vector3(20, 3.4, -33.75)
+size = Vector3(0.32, 0.65, 0.24)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="SconceLight20_-33.9" type="OmniLight3D" parent="."]
+position = Vector3(20, 3.4, -32.9)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.9
+omni_range = 11
+omni_attenuation = 1.4
+
+[node name="SconceBack20_33.9" type="CSGBox3D" parent="."]
+position = Vector3(20, 3.3, 33.9)
+size = Vector3(0.5, 1, 0.16)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SconceShade20_33.9" type="CSGBox3D" parent="."]
+position = Vector3(20, 3.4, 33.75)
+size = Vector3(0.32, 0.65, 0.24)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="SconceLight20_33.9" type="OmniLight3D" parent="."]
+position = Vector3(20, 3.4, 32.9)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.9
+omni_range = 11
+omni_attenuation = 1.4
+
+[node name="SconceBack28_-33.9" type="CSGBox3D" parent="."]
+position = Vector3(28, 3.3, -33.9)
+size = Vector3(0.5, 1, 0.16)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SconceShade28_-33.9" type="CSGBox3D" parent="."]
+position = Vector3(28, 3.4, -33.75)
+size = Vector3(0.32, 0.65, 0.24)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="SconceLight28_-33.9" type="OmniLight3D" parent="."]
+position = Vector3(28, 3.4, -32.9)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.9
+omni_range = 11
+omni_attenuation = 1.4
+
+[node name="SconceBack28_33.9" type="CSGBox3D" parent="."]
+position = Vector3(28, 3.3, 33.9)
+size = Vector3(0.5, 1, 0.16)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SconceShade28_33.9" type="CSGBox3D" parent="."]
+position = Vector3(28, 3.4, 33.75)
+size = Vector3(0.32, 0.65, 0.24)
+material = ExtResource("glow")
+use_collision = false
+
+[node name="SconceLight28_33.9" type="OmniLight3D" parent="."]
+position = Vector3(28, 3.4, 32.9)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 0.9
+omni_range = 11
+omni_attenuation = 1.4
+
+[node name="RecreationObstacles" type="Node3D" parent="."]
+
+[node name="Crate" type="CSGBox3D" parent="RecreationObstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0.5, 29)
+size = Vector3(1.5, 1, 1.5)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="CrateStack" type="CSGBox3D" parent="RecreationObstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 1, 29)
+size = Vector3(2, 2, 2)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="Ramp" type="CSGBox3D" parent="RecreationObstacles"]
+transform = Transform3D(0.9397, -0.342, 0, 0.342, 0.9397, 0, 0, 0, 1, -22, 1.6, 25)
+size = Vector3(10, 0.5, 4)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="Platform" type="CSGBox3D" parent="RecreationObstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 1.75, 25)
+size = Vector3(6, 3.5, 6)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="SurfRamp" type="CSGPolygon3D" parent="RecreationObstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 0, 33)
+polygon = PackedVector2Array(-3.5, 0, 3.5, 0, 0, 5)
+depth = 10.0
+material = ExtResource("wood")
+use_collision = true
+
+[node name="DirectionsBoard" type="CSGBox3D" parent="."]
+position = Vector3(0, 5.5, 14)
+size = Vector3(12, 1, 0.2)
+material = ExtResource("wood")
+use_collision = false
+
+[node name="DirectionsHanger-5" type="CSGCylinder3D" parent="."]
+position = Vector3(-5, 6.7, 14)
+radius = 0.035
+height = 2.4
+sides = 12
+material = ExtResource("brass")
+
+[node name="DirectionsHanger5" type="CSGCylinder3D" parent="."]
+position = Vector3(5, 6.7, 14)
+radius = 0.035
+height = 2.4
+sides = 12
+material = ExtResource("brass")
+
+[node name="MarqueeHanger-8" type="CSGCylinder3D" parent="."]
+position = Vector3(-8, 7, -16)
+radius = 0.04
+height = 2
+sides = 12
+material = ExtResource("brass")
+
+[node name="MarqueeHanger8" type="CSGCylinder3D" parent="."]
+position = Vector3(8, 7, -16)
+radius = 0.04
+height = 2
+sides = 12
+material = ExtResource("brass")
+
+[node name="AttractionDado-1_-12" type="CSGBox3D" parent="."]
+position = Vector3(-18.26, 0.7, -12)
+size = Vector3(0.09, 1.4, 18)
+material = ExtResource("teal")
+use_collision = false
+
+[node name="AttractionDadoRail-1_-12" type="CSGBox3D" parent="."]
+position = Vector3(-18.32, 1.45, -12)
+size = Vector3(0.1, 0.1, 18)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="AttractionDado-1_12" type="CSGBox3D" parent="."]
+position = Vector3(-18.26, 0.7, 12)
+size = Vector3(0.09, 1.4, 18)
+material = ExtResource("teal")
+use_collision = false
+
+[node name="AttractionDadoRail-1_12" type="CSGBox3D" parent="."]
+position = Vector3(-18.32, 1.45, 12)
+size = Vector3(0.1, 0.1, 18)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="AttractionEndDado-1_-21" type="CSGBox3D" parent="."]
+position = Vector3(-26, 0.7, -20.74)
+size = Vector3(15, 1.4, 0.1)
+material = ExtResource("teal")
+use_collision = false
+
+[node name="AttractionEndDado-1_21" type="CSGBox3D" parent="."]
+position = Vector3(-26, 0.7, 20.74)
+size = Vector3(15, 1.4, 0.1)
+material = ExtResource("teal")
+use_collision = false
+
+[node name="AttractionDado1_-12" type="CSGBox3D" parent="."]
+position = Vector3(18.26, 0.7, -12)
+size = Vector3(0.09, 1.4, 18)
+material = ExtResource("teal")
+use_collision = false
+
+[node name="AttractionDadoRail1_-12" type="CSGBox3D" parent="."]
+position = Vector3(18.32, 1.45, -12)
+size = Vector3(0.1, 0.1, 18)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="AttractionDado1_12" type="CSGBox3D" parent="."]
+position = Vector3(18.26, 0.7, 12)
+size = Vector3(0.09, 1.4, 18)
+material = ExtResource("teal")
+use_collision = false
+
+[node name="AttractionDadoRail1_12" type="CSGBox3D" parent="."]
+position = Vector3(18.32, 1.45, 12)
+size = Vector3(0.1, 0.1, 18)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="AttractionEndDado1_-21" type="CSGBox3D" parent="."]
+position = Vector3(26, 0.7, -20.74)
+size = Vector3(15, 1.4, 0.1)
+material = ExtResource("teal")
+use_collision = false
+
+[node name="AttractionEndDado1_21" type="CSGBox3D" parent="."]
+position = Vector3(26, 0.7, 20.74)
+size = Vector3(15, 1.4, 0.1)
+material = ExtResource("teal")
+use_collision = false
+
+[node name="ZooFence-31_-8" type="CSGBox3D" parent="."]
+position = Vector3(-31, 0.5, -8)
+size = Vector3(0.09, 0.13, 9)
+material = ExtResource("cream")
+use_collision = true
+
+[node name="ZooFencePost-31_-8_-4" type="CSGCylinder3D" parent="."]
+position = Vector3(-31, 0.35, -12)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFencePost-31_-8_0" type="CSGCylinder3D" parent="."]
+position = Vector3(-31, 0.35, -8)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFencePost-31_-8_4" type="CSGCylinder3D" parent="."]
+position = Vector3(-31, 0.35, -4)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFence-31_8" type="CSGBox3D" parent="."]
+position = Vector3(-31, 0.5, 4.5)
+size = Vector3(0.09, 0.13, 2)
+material = ExtResource("cream")
+use_collision = true
+
+[node name="ZooFenceWestExitSouth" type="CSGBox3D" parent="."]
+position = Vector3(-31, 0.5, 11.5)
+size = Vector3(0.09, 0.13, 2)
+material = ExtResource("cream")
+use_collision = true
+
+[node name="ZooFencePost-31_8_-4" type="CSGCylinder3D" parent="."]
+position = Vector3(-31, 0.35, 4)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFencePost-31_8_0" type="CSGCylinder3D" parent="."]
+position = Vector3(-31, 0.35, 5)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFencePostWestExitSouth" type="CSGCylinder3D" parent="."]
+position = Vector3(-31, 0.35, 11)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFencePost-31_8_4" type="CSGCylinder3D" parent="."]
+position = Vector3(-31, 0.35, 12)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFence-21_-8" type="CSGBox3D" parent="."]
+position = Vector3(-21, 0.5, -8)
+size = Vector3(0.09, 0.13, 9)
+material = ExtResource("cream")
+use_collision = true
+
+[node name="ZooFencePost-21_-8_-4" type="CSGCylinder3D" parent="."]
+position = Vector3(-21, 0.35, -12)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFencePost-21_-8_0" type="CSGCylinder3D" parent="."]
+position = Vector3(-21, 0.35, -8)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFencePost-21_-8_4" type="CSGCylinder3D" parent="."]
+position = Vector3(-21, 0.35, -4)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFence-21_8" type="CSGBox3D" parent="."]
+position = Vector3(-21, 0.5, 8)
+size = Vector3(0.09, 0.13, 9)
+material = ExtResource("cream")
+use_collision = true
+
+[node name="ZooFencePost-21_8_-4" type="CSGCylinder3D" parent="."]
+position = Vector3(-21, 0.35, 4)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFencePost-21_8_0" type="CSGCylinder3D" parent="."]
+position = Vector3(-21, 0.35, 8)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFencePost-21_8_4" type="CSGCylinder3D" parent="."]
+position = Vector3(-21, 0.35, 12)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="AnimalRock0" type="CSGCylinder3D" parent="."]
+position = Vector3(-29, 0.15, -11)
+radius = 0.65
+height = 0.3
+sides = 12
+material = ExtResource("plaster")
+
+[node name="AnimalRock1" type="CSGCylinder3D" parent="."]
+position = Vector3(-23, 0.15, -11)
+radius = 0.65
+height = 0.3
+sides = 12
+material = ExtResource("plaster")
+
+[node name="AnimalRock2" type="CSGCylinder3D" parent="."]
+position = Vector3(-29, 0.15, 10)
+radius = 0.65
+height = 0.3
+sides = 12
+material = ExtResource("plaster")
+
+
+[node name="CasinoStool0" parent="." instance=ExtResource("casino_stool")]
+position = Vector3(5.5, -1.5, -8.4)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="CasinoStool1" parent="." instance=ExtResource("casino_stool")]
+position = Vector3(5.5, -1.5, -6.0)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="CasinoStool2" parent="." instance=ExtResource("casino_stool")]
+position = Vector3(5.5, -1.5, -3.6)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="CasinoStool3" parent="." instance=ExtResource("casino_stool")]
+position = Vector3(5.5, -1.5, -1.2)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="CasinoStool4" parent="." instance=ExtResource("casino_stool")]
+position = Vector3(5.5, -1.5, 1.2)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="CasinoStool5" parent="." instance=ExtResource("casino_stool")]
+position = Vector3(5.5, -1.5, 3.6)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="CasinoStool6" parent="." instance=ExtResource("casino_stool")]
+position = Vector3(5.5, -1.5, 6.0)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="CasinoStool7" parent="." instance=ExtResource("casino_stool")]
+position = Vector3(5.5, -1.5, 8.4)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="LoungeBench0" parent="." instance=ExtResource("lounge_bench")]
+position = Vector3(-32, 0, -12)
+
+[node name="LoungeBench1" parent="." instance=ExtResource("lounge_bench")]
+position = Vector3(-32, 0, 12)
+
+[node name="CeramicPlanter0" parent="." instance=ExtResource("ceramic_planter")]
+position = Vector3(-30, 0, -17)
+
+[node name="CeramicPlanter1" parent="." instance=ExtResource("ceramic_planter")]
+position = Vector3(-22, 0, -17)
+
+[node name="CeramicPlanter2" parent="." instance=ExtResource("ceramic_planter")]
+position = Vector3(-30, 0, 17)
+
+[node name="CeramicPlanter3" parent="." instance=ExtResource("ceramic_planter")]
+position = Vector3(-22, 0, 17)
+
+[node name="BrassChandelier0" parent="." instance=ExtResource("brass_chandelier")]
+position = Vector3(0, 3.65, -7)
+
+[node name="BrassChandelier1" parent="." instance=ExtResource("brass_chandelier")]
+position = Vector3(0, 3.65, 0)
+
+[node name="BrassChandelier2" parent="." instance=ExtResource("brass_chandelier")]
+position = Vector3(0, 3.65, 7)
+
+
+[node name="Salon" parent="." instance=ExtResource("salon")]
