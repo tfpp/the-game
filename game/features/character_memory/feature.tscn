@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/character_memory/character_memory.gd" id="1_script"]
+
+[node name="CharacterMemory" type="Node"]
+script = ExtResource("1_script")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 1.0
+autostart = true
