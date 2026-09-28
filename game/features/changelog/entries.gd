@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "AWP one-shots",
+		"summary":
+		"The AWP sniper rifle now deals damage like every other gun: a slow, lethal shot."
+	},
+	{
 		"title": "Girl model option",
 		"summary":
 		"Pick a girl body model from the Esc menu's Character Model screen. Everyone sees your choice."
