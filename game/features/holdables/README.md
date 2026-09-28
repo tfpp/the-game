@@ -1,7 +1,7 @@
 # Holdables
 
-Generic items players can pick up and hold: `pistol` (weapon), `banana` (food) and
-`ball` (prop), plus the framework to add more.
+Generic items players can pick up and hold: `pistol` and `awp` (weapons), `banana`
+(food) and `ball` (prop), plus the framework to add more.
 
 ## Adding an item
 

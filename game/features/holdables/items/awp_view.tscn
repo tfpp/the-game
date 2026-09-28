@@ -1,7 +1,4 @@
-[gd_scene load_steps=10 format=3]
-
-[sub_resource type="BoxShape3D" id="ColliderShape"]
-size = Vector3(0.12, 0.5, 1.6)
+[gd_scene load_steps=8 format=3]
 
 [sub_resource type="CylinderMesh" id="BarrelMesh"]
 top_radius = 0.018
@@ -31,12 +28,7 @@ albedo_color = Color(0.14, 0.17, 0.11, 1)
 [sub_resource type="BoxMesh" id="MagazineMesh"]
 size = Vector3(0.05, 0.2, 0.11)
 
-[node name="Awp" type="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
-
-[node name="Collider" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
-shape = SubResource("ColliderShape")
+[node name="AwpView" type="Node3D"]
 
 [node name="Receiver" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.05)
@@ -63,9 +55,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -0.12)
 mesh = SubResource("MagazineMesh")
 surface_material_override/0 = SubResource("BlackMat")
 
-[node name="Sign" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.05)
-billboard = 1
-text = "AWP"
-font_size = 32
-outline_size = 6
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -0.97)
