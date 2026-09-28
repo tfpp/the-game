@@ -11,9 +11,20 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
-		"title": "Wilder generated guns",
+		"title": "Dev elevator",
 		"summary":
-		"Gun machine guns roll automatic or semi-auto, and explosive rounds get a real blast and shove."
+		(
+			"A hazard-striped debug warp pad (noclip to find it) instantly sends you to the"
+			+ " parking garage for testing — internal, not part of the game proper."
+		)
+	},
+	{
+		"title": "Parking garage",
+		"summary":
+		(
+			"A dark three-story parking structure outside the casino — take the staff door"
+			+ " near the trampolines. Ramps and a stairwell connect all three levels."
+		)
 	},
 	{
 		"title": "Wandering gnomes",

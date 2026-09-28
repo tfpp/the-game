@@ -3,6 +3,11 @@ extends Node3D
 ## Original voxel-style avatar. Its parent is Player/Body, so the existing camera
 ## feature controls first/third-person visibility and player replication owns yaw.
 
+## Uniform rig scale for the "penguin" body type, so the third-person model (and,
+## via `height_scale()`, the first-person view model in features/holdables/hand.gd)
+## reads as short as the penguin NPC (features/penguin), not human-height in a suit.
+const PENGUIN_HEIGHT_SCALE := 0.58
+
 var player: Player
 var skin_color := PlayerSkin.TONES[0]
 var shirt_color := skin_color
@@ -11,6 +16,7 @@ var shirt_id := ""
 var pants_id := ""
 var body_type: StringName = &"default"
 var locomotion: StringName = &"idle"
+var _height_scale := 1.0
 var _skin_material: StandardMaterial3D
 var _shirt_material: StandardMaterial3D
 var _trim_material: StandardMaterial3D
@@ -83,7 +89,7 @@ func animate(
 	_torso.rotation.x = lerp_angle(_torso.rotation.x, pose["lean"], blend)
 	_torso.rotation.z = lerp_angle(_torso.rotation.z, pose["roll"], blend)
 	_head.rotation.x = lerp_angle(_head.rotation.x, pitch - _torso.rotation.x, blend)
-	_rig.scale.y = 1.0 - _landing * 0.055
+	_rig.scale = Vector3(_height_scale, _height_scale * (1.0 - _landing * 0.055), _height_scale)
 	_rig.position.y = float(pose["bob"]) - _landing * 0.049
 
 
@@ -95,7 +101,15 @@ func shoulder_position(right: bool) -> Vector3:
 
 
 func sleeve_color() -> Color:
-	return shirt_color
+	return Color("1c1c1c") if body_type == &"penguin" else shirt_color
+
+
+## How tall this body type reads relative to the default human build (1.0). Read by
+## features/holdables/hand.gd so a penguin's first-person view model sits as low as
+## their shortened third-person avatar, without either feature needing to know the
+## other's body-type constants.
+func height_scale() -> float:
+	return _height_scale
 
 
 func _remote_grounded() -> bool:
@@ -131,6 +145,17 @@ func _build() -> void:
 ## drives (`animate()`) or the paths other features hang onto (`Hand._pose_arms`,
 ## the GUT tests).
 func _decorate() -> void:
+	_height_scale = PENGUIN_HEIGHT_SCALE if body_type == &"penguin" else 1.0
+	for node: Node3D in [_torso, _head, _left_arm, _right_arm, _left_leg, _right_leg]:
+		_clear_boxes(node)
+	if body_type == &"penguin":
+		_decorate_penguin()
+	else:
+		_decorate_humanoid()
+	_apply_clothing()
+
+
+func _decorate_humanoid() -> void:
 	var skin := _skin_material
 	var shirt := _shirt_material
 	var trim := _trim_material
@@ -146,8 +171,6 @@ func _decorate() -> void:
 	var trouser_width := 0.25 if feminine else 0.22
 	var hair_back_size := Vector3(0.44, 0.62, 0.025) if feminine else Vector3(0.44, 0.27, 0.025)
 	var hair_back_y := 0.06 if feminine else 0.24
-	for node: Node3D in [_torso, _head, _left_arm, _right_arm, _left_leg, _right_leg]:
-		_clear_boxes(node)
 	_box(_torso, "Shirt", Vector3(0, 0.31, 0), shirt_size, shirt)
 	_box(_torso, "Hem", Vector3(0, 0.028, 0), Vector3(shirt_size.x + 0.008, 0.055, 0.26), trim)
 	_box(_torso, "Collar", Vector3(0, 0.59, -0.131), Vector3(0.15, 0.06, 0.012), skin)
@@ -183,7 +206,32 @@ func _decorate() -> void:
 			Vector3(trouser_width + 0.009, 0.19, 0.26),
 			underwear
 		)
-	_apply_clothing()
+
+
+## A short, rounded penguin costume: black feathers, a white belly, an orange beak
+## and feet, and stubby flipper arms. Ignores clothing entirely (see the early
+## return in `_apply_clothing`) since it's a full-body costume, not an outfit.
+func _decorate_penguin() -> void:
+	var feathers := _material(Color("1c1c1c"))
+	var belly := _material(Color("f5f5f0"))
+	var beak := _material(Color("e8891c"))
+	var eyes := _material(Color(0.05, 0.05, 0.05))
+	_box(_torso, "Body", Vector3(0, 0.30, 0), Vector3(0.42, 0.58, 0.34), feathers)
+	_box(_torso, "Belly", Vector3(0, 0.22, -0.10), Vector3(0.28, 0.42, 0.20), belly)
+	_box(_head, "Face", Vector3(0, 0.19, 0), Vector3(0.36, 0.34, 0.36), feathers)
+	_box(_head, "FaceMask", Vector3(0, 0.11, -0.14), Vector3(0.20, 0.16, 0.10), belly)
+	_box(_head, "Beak", Vector3(0, 0.15, -0.23), Vector3(0.10, 0.07, 0.12), beak)
+	for side: float in [-1.0, 1.0]:
+		_box(_head, "Eye", Vector3(side * 0.09, 0.26, -0.19), Vector3(0.055, 0.055, 0.01), eyes)
+	for side: float in [-1.0, 1.0]:
+		var arm := _left_arm if side < 0 else _right_arm
+		var leg := _left_leg if side < 0 else _right_leg
+		var shoulder := _left_shoulder if side < 0 else _right_shoulder
+		arm.position = Vector3(side * 0.24, 0.44, 0)
+		shoulder.position = arm.position
+		_box(arm, "Flipper", Vector3(0, -0.19, 0), Vector3(0.09, 0.38, 0.16), feathers)
+		leg.position = Vector3(side * 0.10, -0.17, 0)
+		_box(leg, "Foot", Vector3(0, -0.30, 0.06), Vector3(0.15, 0.10, 0.26), beak)
 
 
 func _clear_boxes(node: Node3D) -> void:
@@ -229,6 +277,10 @@ func set_clothing(new_shirt: String, new_pants: String) -> void:
 
 
 func _apply_clothing() -> void:
+	# The penguin costume has no Hem/Pocket/Cuff/Underwear boxes to recolor or
+	# toggle, and always wears its own feathers regardless of equipped clothing.
+	if body_type == &"penguin":
+		return
 	shirt_color = skin_color if shirt_id.is_empty() else ClothingCatalog.color(shirt_id)
 	pants_color = skin_color if pants_id.is_empty() else ClothingCatalog.color(pants_id)
 	_shirt_material.albedo_color = shirt_color
@@ -242,10 +294,15 @@ func _apply_clothing() -> void:
 		(leg.get_node("Underwear") as Node3D).visible = pants_id.is_empty()
 
 
-## "girl" narrows the shoulders and waist, widens the hips and grows the hair out;
-## anything else (including an unrecognized value) is the original "default" build.
+## "girl" narrows the shoulders and waist, widens the hips and grows the hair out.
+## "penguin" replaces the build with a short penguin costume (see `_decorate_penguin`).
+## Anything else (including an unrecognized value) is the original "default" build.
 func set_body_type(new_type: String) -> void:
-	var next: StringName = &"girl" if new_type == "girl" else &"default"
+	var next: StringName = &"default"
+	if new_type == "girl":
+		next = &"girl"
+	elif new_type == "penguin":
+		next = &"penguin"
 	if next == body_type:
 		return
 	body_type = next
