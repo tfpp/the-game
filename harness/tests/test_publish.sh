@@ -81,7 +81,7 @@ scenario() {
 publish() {
   code=0
   OUT="$out" MODE="${PUBLISH_MODE:-implement}" AGENT=fake ISSUE=5 PR="${PUBLISH_PR:-}" BRANCH=agent/5-jump-pads TARGET=5 \
-    AGENT_JOB_RESULT=success HARNESS_PUSH_URL="$origin" "$pub/harness/publish.sh" >"$work/publish.log" 2>&1 || code=$?
+    AGENT_JOB_RESULT="${PUBLISH_JOB_RESULT:-success}" HARNESS_PUSH_URL="$origin" "$pub/harness/publish.sh" >"$work/publish.log" 2>&1 || code=$?
 }
 
 echo "- success: pushes the branch and opens a PR with the request quoted"
@@ -209,6 +209,13 @@ scenario <<<'true'
 out="$work/nothing" publish
 [[ "$code" == 1 ]] || fail "expected exit 1, got $code"
 grep -q "without a result" "$work/comments" || fail "no crash comment"
+
+echo "- a cancelled agent job is named and lists no unavailable usage"
+rm -f "$work/comments"
+out="$work/nothing" PUBLISH_JOB_RESULT=cancelled publish
+[[ "$code" == 1 ]] || fail "expected exit 1, got $code"
+[[ "$(head -n 1 "$work/comments")" == '🤖 `fake` (`implement`) did not produce a change: the agent job was cancelled before it finished (stopped by hand or it hit its time limit) ([run](https://run))' ]] ||
+  fail "cancelled comment: $(head -n 1 "$work/comments")"
 
 if [[ "$failures" -gt 0 ]]; then
   echo "publish tests: $failures failure(s)"

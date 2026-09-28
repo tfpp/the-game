@@ -51,7 +51,16 @@ report_failure() { # report_failure MESSAGE [nologs]
 
 result="${OUT:-/nonexistent}/result.json"
 if [[ ! -s "$result" ]]; then
-  report_failure "the agent job ended without a result (job status: ${AGENT_JOB_RESULT:-unknown})"
+  # No result means no telemetry either: say nothing about usage rather than list
+  # three "unavailable" fields.
+  usage_note=""
+  case "${AGENT_JOB_RESULT:-}" in
+    cancelled) reason="the agent job was cancelled before it finished (stopped by hand or it hit its time limit)" ;;
+    failure) reason="the agent job failed before it produced a result" ;;
+    skipped) reason="the agent job was skipped" ;;
+    *) reason="the agent job ended without a result" ;;
+  esac
+  report_failure "$reason"
   exit 1
 fi
 

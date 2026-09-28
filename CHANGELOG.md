@@ -52,6 +52,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Include model, token usage and estimated API-equivalent cost in PR templates and Opened/Pushed Discord notifications, with readable PR-number links.
 - Make the penguin-facing regression test independent of frame timing by checking its forward offset at fixed waddle phases.
 - Show Claude and Codex subscription limits together in Discord `/usage`, with independent error handling and a read-only Codex login file.
+- Name cancelled, failed and skipped agent jobs in the "did not produce a change" comment, without listing unavailable model, token and cost fields.
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
