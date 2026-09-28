@@ -8,6 +8,8 @@ extends CanvasLayer
 ## ticket and connects. The offline room keeps running behind it, and "Play offline"
 ## just closes the screen. Email links and the Discord callback return to the web page
 ## with a #fragment (verify=, reset=, forgot, discord_code=, auth_error=), handled here.
+## A returning player with a valid session skips straight past the "Play" screen and
+## connects right away instead of stopping to ask for a click.
 ## Styled with Kenney's UI Pack (ui/theme/ui_theme.tres).
 
 const MODAL_GROUP := &"modal_ui"
@@ -112,7 +114,7 @@ func _on_login_required(url: String) -> void:
 		var code := str(fragment["auth_error"])
 		_resume_session(str(AUTH_ERRORS.get(code, "Discord sign-in failed. Try again.")))
 	else:
-		_resume_session("")
+		_resume_session("", true)
 
 
 func _on_connection_failed(reason: String) -> void:
@@ -123,14 +125,16 @@ func _on_connection_failed(reason: String) -> void:
 
 
 ## Shows "ready to play" if the stored session is still good, else the sign-in form.
-func _resume_session(message: String) -> void:
+## `auto_play` connects immediately instead of waiting for a "Play" click, for the
+## normal case of a returning player whose session is still valid.
+func _resume_session(message: String, auto_play: bool = false) -> void:
 	if not _api.has_session():
 		_show_sign_in(message)
 		return
 	_show_busy("Signing in…")
 	var result: Dictionary = await _api.me()
 	if result["ok"]:
-		_after_sign_in(result["data"], message)
+		_after_sign_in(result["data"], message, auto_play)
 	else:
 		_show_sign_in(message if message else _error_text(result))
 
@@ -142,12 +146,12 @@ func _finish_sign_in(result: Dictionary) -> void:
 		_show_sign_in(_error_text(result))
 
 
-func _after_sign_in(account: Dictionary, message: String) -> void:
+func _after_sign_in(account: Dictionary, message: String, auto_play: bool = false) -> void:
 	_account = account
 	if str(account.get("display_name", "")).is_empty():
 		_show_pick_name("")
 	else:
-		_show_ready(message)
+		_show_ready(message, auto_play)
 
 
 # Screens.
@@ -286,9 +290,21 @@ func _back_to_menu() -> void:
 		_show_ready("")
 
 
-func _show_ready(message: String) -> void:
+## True when a returning player should connect immediately instead of being stopped at
+## the "Play" screen: they asked to auto-play, there's no error or notice to show, and
+## the client isn't stuck behind a version mismatch that needs a page reload first.
+static func should_auto_play(auto_play: bool, message: String, version_mismatch: bool) -> bool:
+	return auto_play and message.is_empty() and not version_mismatch
+
+
+func _show_ready(message: String, auto_play: bool = false) -> void:
+	var version_mismatch := OS.has_feature("web") and not Network.server_version_mismatch.is_empty()
+	if should_auto_play(auto_play, message, version_mismatch):
+		Controls.start()
+		_play()
+		return
 	_clear("Signed in as %s" % _account.get("display_name", ""), message)
-	if OS.has_feature("web") and not Network.server_version_mismatch.is_empty():
+	if version_mismatch:
 		_button("Reload page", func() -> void: JavaScriptBridge.eval("window.location.reload()"))
 		_game_button("Play", _play, false)
 	else:
