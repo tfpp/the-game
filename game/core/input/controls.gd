@@ -106,6 +106,7 @@ func _ready() -> void:
 		device = Device.GAMEPAD
 	Input.joy_connection_changed.connect(_joy_connection_changed)
 	get_window().focus_exited.connect(_focus_lost)
+	get_window().focus_entered.connect(_focus_regained)
 
 
 func touch_visible() -> bool:
@@ -241,8 +242,14 @@ func _joy_connection_changed(id: int, connected: bool) -> void:
 		_focus_lost()
 
 
+## Losing OS focus (alt-tab, a screenshot tool, a disconnected gamepad) pauses input
+## quietly rather than popping a menu open on the player's behalf. `_focus_regained`
+## resumes just as quietly, so only an explicit action (Esc, a menu button, ...) ever
+## opens a menu.
 func _focus_lost() -> void:
-	var active := gameplay_active()
 	pause()
-	if active:
-		menu_requested.emit()
+
+
+func _focus_regained() -> void:
+	if not playing and not get_tree().get_first_node_in_group(&"modal_ui"):
+		start()

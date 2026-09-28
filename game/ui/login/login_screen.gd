@@ -1,8 +1,11 @@
 extends CanvasLayer
 ## Sign-in screen shown before joining an online server (`Network.login_required`), and
 ## the in-game menu. Desktop play uses mouse capture; touch and gamepads use an explicit
-## playing state. Losing desktop pointer lock or pausing opens the menu. Resume only
-## requests mouse capture for keyboard/mouse input.
+## playing state. Losing desktop pointer lock while the window still has focus opens the
+## menu (e.g. a browser dropping pointer lock on Esc). Losing focus on the window itself
+## (alt-tab, a screenshot tool) just pauses quietly and resumes on its own once focus
+## returns (see Controls._focus_regained), so a menu only shows up when explicitly asked
+## for. Resume only requests mouse capture for keyboard/mouse input.
 ##
 ## Email/password or Discord sign-in, display-name picker, then "Play" fetches a join
 ## ticket and connects. The offline room keeps running behind it, and "Play offline"
@@ -63,6 +66,12 @@ func _process(delta: float) -> void:
 	if visible and Controls.device == Controls.Device.GAMEPAD:
 		_focus_default_button()
 	if visible or DisplayServer.get_name() == "headless":
+		_idle_s = 0.0
+		return
+	# The window losing OS focus (alt-tab, a screenshot tool) also reads as "not playing"
+	# and can sit that way for a long time; Controls resumes it quietly on its own once
+	# focus returns, so don't race it into opening a menu while it's away.
+	if not get_window().has_focus():
 		_idle_s = 0.0
 		return
 	# Browsers exit pointer lock on Esc without passing the key on, so watch the mouse

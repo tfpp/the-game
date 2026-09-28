@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Quieter alt-tabbing",
+		"summary":
+		"Unfocusing the window (e.g. for a screenshot) no longer pops the menu; it resumes on its own."
+	},
+	{
 		"title": "Gameplay sound effects",
 		"summary":
 		"Guns, hits and animal explosions now make sound. Pickups and inventory actions have audio cues."

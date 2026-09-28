@@ -117,6 +117,30 @@ func test_menu_and_focus_loss_clear_pending_input() -> void:
 	assert_eq(Controls.consume_look(0.016), Vector2.ZERO)
 
 
+func test_window_focus_loss_pauses_without_requesting_a_menu() -> void:
+	watch_signals(Controls)
+	Controls._focus_lost()
+	assert_false(Controls.gameplay_active())
+	assert_signal_not_emitted(Controls, "menu_requested")
+
+
+func test_window_focus_regained_resumes_quietly_with_no_modal_open() -> void:
+	Controls._focus_lost()
+	watch_signals(Controls)
+	Controls._focus_regained()
+	assert_true(Controls.gameplay_active())
+	assert_signal_not_emitted(Controls, "menu_requested")
+
+
+func test_window_focus_regained_does_not_resume_while_a_menu_is_open() -> void:
+	Controls._focus_lost()
+	var modal := Node.new()
+	add_child_autofree(modal)
+	modal.add_to_group(&"modal_ui")
+	Controls._focus_regained()
+	assert_false(Controls.playing)
+
+
 func test_modal_blocks_movement_look_and_jump() -> void:
 	var modal := Node.new()
 	add_child_autofree(modal)
