@@ -9,12 +9,17 @@ signal input_reset
 
 enum Device { KEYBOARD, GAMEPAD, TOUCH }
 
+## Left-handed frees the left hand for the mouse: movement on the arrow keys, jump on
+## Shift. Right-handed is the classic WASD + Space layout.
+enum Scheme { LEFT_HANDED, RIGHT_HANDED }
+
 const MOUSE_YAW_DEGREES := 0.022  ## Source m_yaw/m_pitch: degrees per mouse count.
 const DEADZONE := 0.18
 const TOUCH_SENSITIVITY := 0.004
 const STICK_SENSITIVITY := 2.6
 
 var device := Device.KEYBOARD
+var scheme := Scheme.LEFT_HANDED
 var touch_available := false
 var joypad := -1
 var playing := false
@@ -27,19 +32,42 @@ var sensitivity := 2.0
 
 
 func _enter_tree() -> void:
-	ensure_action("move_forward", [_key(KEY_W), _key(KEY_UP)])
-	ensure_action("move_back", [_key(KEY_S), _key(KEY_DOWN)])
-	ensure_action("move_left", [_key(KEY_A), _key(KEY_LEFT)])
-	ensure_action("move_right", [_key(KEY_D), _key(KEY_RIGHT)])
-	# Scroll-wheel jump is the classic b-hop bind: each notch is one press.
-	ensure_action(
-		"jump", [_key(KEY_SPACE), _mouse(MOUSE_BUTTON_WHEEL_DOWN), _mouse(MOUSE_BUTTON_WHEEL_UP)]
-	)
+	apply_scheme(Scheme.LEFT_HANDED)
 	ensure_action("release_mouse", [_key(KEY_ESCAPE)])
 	# Godot 4.7 does not include a gamepad binding in ui_accept by default.
 	var accept := InputEventJoypadButton.new()
 	accept.button_index = JOY_BUTTON_A
 	ensure_action("ui_accept", [accept])
+
+
+## Rebinds movement and jump to the given handedness. Left-handed (the default) puts
+## movement on the arrow keys and jump on Shift, freeing the left hand for the mouse.
+## Right-handed swaps in the classic WASD + Space layout.
+func apply_scheme(new_scheme: Scheme) -> void:
+	scheme = new_scheme
+	var left_handed := scheme == Scheme.LEFT_HANDED
+	_rebind("move_forward", [_key(KEY_UP if left_handed else KEY_W)])
+	_rebind("move_back", [_key(KEY_DOWN if left_handed else KEY_S)])
+	_rebind("move_left", [_key(KEY_LEFT if left_handed else KEY_A)])
+	_rebind("move_right", [_key(KEY_RIGHT if left_handed else KEY_D)])
+	# Scroll-wheel jump is the classic b-hop bind: each notch is one press, regardless
+	# of handedness.
+	_rebind(
+		"jump",
+		[
+			_key(KEY_SHIFT if left_handed else KEY_SPACE),
+			_mouse(MOUSE_BUTTON_WHEEL_DOWN),
+			_mouse(MOUSE_BUTTON_WHEEL_UP),
+		]
+	)
+
+
+func _rebind(action: StringName, events: Array[InputEvent]) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	InputMap.action_erase_events(action)
+	for event: InputEvent in events:
+		InputMap.action_add_event(action, event)
 
 
 ## Radians of rotation per mouse count at the current sensitivity.

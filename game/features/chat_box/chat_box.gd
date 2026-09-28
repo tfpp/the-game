@@ -16,6 +16,9 @@ const NAME_COLOR := "#ffd166"
 const OPEN_ACTION := &"chat_open"
 const MODAL_GROUP := &"modal_ui"
 
+## Group other features listen on to handle a slash command (see `handle_chat_command`).
+const COMMAND_GROUP := &"chat_commands"
+
 ## Movement and jump poll raw key state, not GUI focus, so typing a message containing
 ## "w" or a space would also move or jump the player unless these are held released for
 ## as long as the chat line is open.
@@ -71,6 +74,16 @@ static func format_line(sender_name: String, text: String) -> String:
 	)
 
 
+## A sent line is a command, not a chat message, if it starts with "/".
+static func is_command(text: String) -> bool:
+	return text.begins_with("/")
+
+
+## The lowercase command word of a slash command, e.g. "/Suicide now" -> "suicide".
+static func parse_command(text: String) -> String:
+	return text.substr(1).split(" ")[0].to_lower()
+
+
 ## Client -> server: asks to say `text`. The server re-validates and supplies the
 ## sender's name itself, so a modified client can't spoof either.
 @rpc("any_peer", "call_local", "reliable")
@@ -89,6 +102,18 @@ func request_chat_message(text: String) -> void:
 @rpc("authority", "call_local", "reliable")
 func receive_chat_message(sender_name: String, text: String) -> void:
 	_add_line(sender_name, text)
+
+
+## Client -> server: asks to run a slash command. Commands never appear in the log;
+## they're dispatched to whichever feature is listening on `COMMAND_GROUP`, which
+## re-validates the real sender itself (the server here only trusts its own peer id).
+@rpc("any_peer", "call_local", "reliable")
+func request_chat_command(command: String) -> void:
+	if not multiplayer.is_server() or command.is_empty():
+		return
+	var sender_id := multiplayer.get_remote_sender_id()
+	var peer_id := sender_id if sender_id != 0 else multiplayer.get_unique_id()
+	get_tree().call_group(COMMAND_GROUP, &"handle_chat_command", peer_id, command)
 
 
 func _open() -> void:
@@ -112,7 +137,11 @@ func _is_open() -> bool:
 func _on_text_submitted(text: String) -> void:
 	_close()
 	var trimmed := sanitize_message(text)
-	if not trimmed.is_empty():
+	if trimmed.is_empty():
+		return
+	if is_command(trimmed):
+		request_chat_command.rpc_id(1, parse_command(trimmed))
+	else:
 		request_chat_message.rpc_id(1, trimmed)
 
 
