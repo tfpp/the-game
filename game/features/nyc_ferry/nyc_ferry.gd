@@ -13,11 +13,23 @@ extends AnimatableBody3D
 ## driver's move_forward/move_back input, sent to the server as `_throttle`. Letting go
 ## converts the current distance and direction back into an equivalent elapsed time
 ## (`NycFerryPath.elapsed_for_distance`) so the schedule resumes without a jump.
+##
+## While `driver_peer_id` names them, the driver is held at the helm: each peer that owns
+## a driving player disables that player's own movement and pins it to the wheel every
+## frame, matching player movement's usual client-authoritative ownership. That way the
+## driver actually rides the ferry instead of wandering off while still steering it with
+## move_forward/move_back.
 
 const ROUTE_LENGTH_M := 30.0
 const SPEED_MPS := 3.0
 const DOCK_WAIT_S := 3.0
 const USE_RANGE_M := 4.0
+
+## Local-space spot the driver stands: on the open deck just forward of the wheel
+## (there's no room between the wheel and the cabin behind it), facing aft at the wheel.
+const HELM_STAND_LOCAL := Vector3(0.0, 0.0, 0.8)
+const HELM_STAND_DECK_Y := 0.15
+const HELM_YAW := 0.0
 
 ## Replicated state (server -> everyone). See the synchronizer config in feature.tscn.
 @export var net_position := Vector3.ZERO
@@ -31,6 +43,7 @@ var _distance := 0.0
 var _direction := 1
 var _throttle := 0.0
 var _last_sent_throttle := 0.0
+var _helm_locked := false
 
 
 func _ready() -> void:
@@ -55,6 +68,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _process(_delta: float) -> void:
+	_sync_helm_lock()
 	if driver_peer_id == 0 or driver_peer_id != multiplayer.get_unique_id():
 		return
 	var throttle := _local_throttle_input()
@@ -147,6 +161,40 @@ func _helm_position() -> Vector3:
 	return to_global(Vector3(0, 1.0, -0.2))
 
 
+## Pins the local player to the wheel while they're driving, and releases them the
+## instant they stop. Only ever acts on the local player: remote peers' drivers are
+## pinned the same way by their own client.
+func _sync_helm_lock() -> void:
+	var player := get_tree().get_first_node_in_group(&"local_player") as Player
+	if player == null:
+		return
+	var driving := driver_peer_id != 0 and driver_peer_id == multiplayer.get_unique_id()
+	if driving and not _helm_locked:
+		_helm_locked = true
+		player.set_physics_process(false)
+		player.yaw = HELM_YAW
+	elif not driving and _helm_locked:
+		_helm_locked = false
+		player.set_physics_process(true)
+	if _helm_locked:
+		_pin_player_to_helm(player)
+
+
+func _pin_player_to_helm(player: Player) -> void:
+	var stand := to_global(
+		(
+			HELM_STAND_LOCAL
+			+ Vector3(0.0, HELM_STAND_DECK_Y + player.movement.hull_height_m() * 0.5, 0.0)
+		)
+	)
+	player.global_position = stand
+	player.velocity = Vector3.ZERO
+	player.net_position = stand
+	player.net_yaw = player.yaw
+	player.net_pitch = player.pitch
+	player.reset_physics_interpolation()
+
+
 func _player_for_peer(peer_id: int) -> Player:
 	for node: Node in get_tree().get_nodes_in_group(&"players"):
 		var player := node as Player
@@ -170,3 +218,8 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 	_direction = 1
 	global_position = _dock_a
 	net_position = _dock_a
+	if _helm_locked:
+		_helm_locked = false
+		var player := get_tree().get_first_node_in_group(&"local_player") as Player
+		if player != null:
+			player.set_physics_process(true)
