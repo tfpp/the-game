@@ -19,8 +19,20 @@ const MODAL_GROUP := &"modal_ui"
 ## must implement `esc_menu_label() -> String` and `esc_menu_open() -> void`, and may
 ## implement `esc_menu_icon() -> Texture2D`.
 const ESC_MENU_GROUP := &"esc_menu_links"
-const PANEL_WIDTH := 420.0
-const PANEL_MAX_HEIGHT := 480.0
+const PANEL_WIDTH := 640.0
+const PANEL_MAX_HEIGHT := 520.0
+## Room the panel keeps from the screen edges on narrow screens.
+const SCREEN_MARGIN := 32.0
+## Colors on ui_theme.tres's light panel: the theme's slate text, a muted slate for
+## summaries and dates, and accents for release and edge headings.
+const TEXT_COLOR := "#232838"
+const MUTED_COLOR := "#3f4759"
+const RELEASE_COLOR := "#1d56bd"
+const EDGE_COLOR := "#a8540a"
+## A short blank line between releases.
+const RELEASE_GAP := "\n[font_size=8]\n[/font_size]"
+## The body's bold font, so `[b]` means a heading (and nothing gets a faux bold).
+const HEADING_FONT := preload("res://assets/kenney/ui/Font/Kenney Future.ttf")
 const RELEASES_PATH := "res://features/changelog/releases.gd"
 ## The `version` of the pseudo-release for entries added since the latest release.
 const EDGE := "edge"
@@ -63,20 +75,47 @@ func esc_menu_open() -> void:
 	_open()
 
 
-## One BBCode line for `entry`, tolerant of missing keys so a malformed entry can't
-## crash the panel.
+## One bulleted row for `entry` (see entry_list): the title, then the summary in a
+## smaller, muted line. Tolerant of missing keys so a malformed entry can't crash the
+## panel.
 static func entry_line(entry: Dictionary) -> String:
-	var title := str(entry.get("title", ""))
+	var text := (
+		"[color=%s][font_size=19]%s[/font_size][/color]" % [TEXT_COLOR, str(entry.get("title", ""))]
+	)
 	var summary := str(entry.get("summary", ""))
-	return "[b]%s[/b] — %s" % [title, summary]
+	if summary:
+		text += "\n[color=%s][font_size=16]%s[/font_size][/color]" % [MUTED_COLOR, summary]
+	return (
+		"[cell padding=0,1,10,0][color=%s]•[/color][/cell][cell padding=0,0,0,10]%s[/cell]"
+		% [RELEASE_COLOR, text]
+	)
 
 
-## The full BBCode body, one line per entry, in the order given.
+## Rows from entry_line as a bulleted list: a two-column table, so wrapped lines hang
+## under the text instead of the bullet.
+static func entry_list(rows: Array[String]) -> String:
+	return "[table=2]%s[/table]" % "".join(rows) if rows else ""
+
+
+## A release heading: the version in the heading font (the body's bold font) and an
+## accent color, then the date, small and muted.
+static func heading_text(title: String, color: String, detail: String) -> String:
+	return (
+		"[b][font_size=24][color=%s]%s[/color][/font_size][/b]" % [color, title]
+		+ (
+			"   [color=%s][font_size=15]%s[/font_size][/color]" % [MUTED_COLOR, detail]
+			if detail
+			else ""
+		)
+	)
+
+
+## The full BBCode body without releases: every entry, in the order given.
 static func body_text(entries: Array[Dictionary]) -> String:
-	var lines: Array[String] = []
+	var rows: Array[String] = []
 	for entry: Dictionary in entries:
-		lines.append(entry_line(entry))
-	return "\n".join(lines)
+		rows.append(entry_line(entry))
+	return entry_list(rows)
 
 
 ## The exported releases.gd's releases (see releases_from), or [] without it.
@@ -140,23 +179,18 @@ static func releases_text(releases: Array, entries: Array[Dictionary]) -> String
 		var titles: Array = release.get("titles", [])
 		if version == EDGE and titles.is_empty():
 			continue
-		var lines: Array[String] = [
-			(
-				"[font_size=20][b]%s[/b][/font_size]  [color=#ffffff99]%s[/color]"
-				% (
-					["Edge", "not released yet"]
-					if version == EDGE
-					else ["v" + version, date_text(str(release.get("date", "")))]
-				)
-			)
-		]
+		var head := (
+			heading_text("Edge", EDGE_COLOR, "not released yet")
+			if version == EDGE
+			else heading_text("v" + version, RELEASE_COLOR, date_text(str(release.get("date", ""))))
+		)
+		var rows: Array[String] = []
 		for title: Variant in titles:
-			var entry: Dictionary = by_title.get(str(title), {"title": str(title)})
-			lines.append(entry_line(entry) if entry.has("summary") else "[b]%s[/b]" % str(title))
-		if lines.size() == 1:
-			lines.append("Fixes and improvements.")
-		blocks.append("\n".join(lines))
-	return "\n\n".join(blocks)
+			rows.append(entry_line(by_title.get(str(title), {"title": str(title)})))
+		if rows.is_empty():
+			rows.append(entry_line({"title": "Fixes and improvements"}))
+		blocks.append(head + "\n" + entry_list(rows))
+	return RELEASE_GAP.join(blocks)
 
 
 func _open() -> void:
@@ -199,7 +233,8 @@ func _build() -> void:
 	_backdrop.add_child(center)
 
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size.x = PANEL_WIDTH
+	var width := minf(PANEL_WIDTH, get_viewport().get_visible_rect().size.x - 2.0 * SCREEN_MARGIN)
+	panel.custom_minimum_size.x = width
 	center.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -212,7 +247,8 @@ func _build() -> void:
 	box.add_child(heading)
 
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(PANEL_WIDTH, PANEL_MAX_HEIGHT)
+	scroll.custom_minimum_size = Vector2(width, PANEL_MAX_HEIGHT)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	box.add_child(scroll)
 
 	_body = RichTextLabel.new()
@@ -220,13 +256,15 @@ func _build() -> void:
 	_body.fit_content = true
 	_body.scroll_active = false
 	_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_body.custom_minimum_size = Vector2(PANEL_WIDTH, 0.0)
-	_body.add_theme_color_override("default_color", Color.WHITE)
+	# Leaves room for the scrollbar.
+	_body.custom_minimum_size = Vector2(width - 24.0, 0.0)
+	_body.add_theme_color_override("default_color", Color(TEXT_COLOR))
+	_body.add_theme_font_override("bold_font", HEADING_FONT)
 	scroll.add_child(_body)
 
 	var footer := Label.new()
 	footer.text = "Esc or L to close"
-	footer.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.6))
+	footer.add_theme_color_override("font_color", Color(MUTED_COLOR))
 	box.add_child(footer)
 
 

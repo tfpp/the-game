@@ -6,25 +6,63 @@ const Changelog := preload("res://features/changelog/changelog.gd")
 const ChangelogEntries := preload("res://features/changelog/entries.gd")
 
 
-func test_entry_line_bolds_the_title_and_keeps_the_summary() -> void:
+func test_entry_line_is_a_bulleted_row_with_the_summary_under_the_title() -> void:
 	var line := Changelog.entry_line({"title": "Frogs", "summary": "Frogs hop around."})
-	assert_eq(line, "[b]Frogs[/b] — Frogs hop around.")
+	assert_eq(
+		line,
+		(
+			"[cell padding=0,1,10,0][color=#1d56bd]•[/color][/cell]"
+			+ "[cell padding=0,0,0,10][color=#232838][font_size=19]Frogs[/font_size][/color]\n"
+			+ "[color=#3f4759][font_size=16]Frogs hop around.[/font_size][/color][/cell]"
+		)
+	)
 
 
 func test_entry_line_tolerates_missing_keys() -> void:
-	assert_eq(Changelog.entry_line({}), "[b][/b] — ")
+	assert_eq(
+		Changelog.entry_line({}),
+		(
+			"[cell padding=0,1,10,0][color=#1d56bd]•[/color][/cell]"
+			+ "[cell padding=0,0,0,10][color=#232838][font_size=19][/font_size][/color][/cell]"
+		)
+	)
 
 
-func test_body_text_joins_one_line_per_entry_in_order() -> void:
+func test_entry_line_uses_no_faux_bold() -> void:
+	# The body's bold font is the heading font, so entries must not use [b].
+	assert_false(Changelog.entry_line({"title": "A", "summary": "b"}).contains("[b]"))
+
+
+func test_body_text_is_one_list_of_every_entry_in_order() -> void:
 	var entries: Array[Dictionary] = [
 		{"title": "A", "summary": "first"},
 		{"title": "B", "summary": "second"},
 	]
-	assert_eq(Changelog.body_text(entries), "[b]A[/b] — first\n[b]B[/b] — second")
+	assert_eq(
+		Changelog.body_text(entries),
+		(
+			"[table=2]%s%s[/table]"
+			% [Changelog.entry_line(entries[0]), Changelog.entry_line(entries[1])]
+		)
+	)
 
 
 func test_body_text_of_an_empty_list_is_empty() -> void:
 	assert_eq(Changelog.body_text([]), "")
+
+
+func test_heading_text_uses_the_heading_font_and_a_muted_detail() -> void:
+	assert_eq(
+		Changelog.heading_text("v0.6.0", "#1d56bd", "Sep 28, 2026"),
+		(
+			"[b][font_size=24][color=#1d56bd]v0.6.0[/color][/font_size][/b]"
+			+ "   [color=#3f4759][font_size=15]Sep 28, 2026[/font_size][/color]"
+		)
+	)
+	assert_eq(
+		Changelog.heading_text("x", "#000", ""),
+		"[b][font_size=24][color=#000]x[/color][/font_size][/b]"
+	)
 
 
 func test_every_shipped_entry_has_a_title_and_summary() -> void:
@@ -61,26 +99,46 @@ func test_releases_text_groups_entries_under_each_release() -> void:
 		{"version": "0.6.2", "date": "2026-09-28", "titles": []},
 		{"version": "0.6.1", "date": "2026-09-28", "titles": ["Frogs"]},
 	]
-	var date := "  [color=#ffffff99]%s[/color]"
+	var edge := Changelog.EDGE_COLOR
+	var release := Changelog.RELEASE_COLOR
 	assert_eq(
 		Changelog.releases_text(releases, entries),
 		(
-			"\n"
+			Changelog
+			. RELEASE_GAP
 			. join(
 				[
-					"[font_size=20][b]Edge[/b][/font_size]" + date % "not released yet",
-					"[b]Boats[/b] — Sail around.",
-					"",
-					"[font_size=20][b]v0.7.0[/b][/font_size]" + date % "Oct 2, 2026",
-					"[b]Hats[/b] — Wear hats.",
-					# An entry renamed or removed since still shows its title.
-					"[b]Gone[/b]",
-					"",
-					"[font_size=20][b]v0.6.2[/b][/font_size]" + date % "Sep 28, 2026",
-					"Fixes and improvements.",
-					"",
-					"[font_size=20][b]v0.6.1[/b][/font_size]" + date % "Sep 28, 2026",
-					"[b]Frogs[/b] — Frogs hop around.",
+					(
+						Changelog.heading_text("Edge", edge, "not released yet")
+						+ "\n"
+						+ Changelog.entry_list([Changelog.entry_line(entries[0])])
+					),
+					(
+						Changelog.heading_text("v0.7.0", release, "Oct 2, 2026")
+						+ "\n"
+						+ (
+							Changelog
+							. entry_list(
+								[
+									Changelog.entry_line(entries[1]),
+									# An entry renamed or removed since still shows its title.
+									Changelog.entry_line({"title": "Gone"}),
+								]
+							)
+						)
+					),
+					(
+						Changelog.heading_text("v0.6.2", release, "Sep 28, 2026")
+						+ "\n"
+						+ Changelog.entry_list(
+							[Changelog.entry_line({"title": "Fixes and improvements"})]
+						)
+					),
+					(
+						Changelog.heading_text("v0.6.1", release, "Sep 28, 2026")
+						+ "\n"
+						+ Changelog.entry_list([Changelog.entry_line(entries[2])])
+					),
 				]
 			)
 		)
@@ -95,8 +153,9 @@ func test_releases_text_leaves_out_an_empty_edge() -> void:
 	assert_eq(
 		Changelog.releases_text(releases, []),
 		(
-			"[font_size=20][b]v0.6.0[/b][/font_size]  [color=#ffffff99]Sep 28, 2026[/color]\n"
-			+ "Fixes and improvements."
+			Changelog.heading_text("v0.6.0", Changelog.RELEASE_COLOR, "Sep 28, 2026")
+			+ "\n"
+			+ Changelog.entry_list([Changelog.entry_line({"title": "Fixes and improvements"})])
 		)
 	)
 
