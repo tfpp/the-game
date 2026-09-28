@@ -12,6 +12,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 ## [edge]
 
+- Add an F-toggle flashlight with shared beams and a rebindable Controls entry.
 - Keep offline players on the leaderboard and remember signed-in scores across reconnects and server restarts.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
