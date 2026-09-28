@@ -23,6 +23,10 @@ const ENTRIES: Array[Dictionary] = [
 		"Key and button icons on the Controls page, menu icons, restyled sliders and click sounds."
 	},
 	{
+		"title": "Elevator",
+		"summary": "Call the lobby elevator to ding open onto a new back room, with friends in tow."
+	},
+	{
 		"title": "The Gilded Lily casino",
 		"summary":
 		"Explore a faded 1964 casino with sunken gaming, eight slots, a petting zoo and an indoor ferry."

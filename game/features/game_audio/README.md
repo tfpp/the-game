@@ -10,6 +10,9 @@ attenuated with distance. Inventory cues are local to the owner and success cues
 only play after the server accepts the action. Gun cooldowns also gate sound;
 shotgun pellets produce one shot and at most one impact sound per trigger.
 
+The `elevator_ding` cue (features/elevator) reuses the confirmation chime at a
+brighter pitch rather than adding another audio file.
+
 Shot events carry the weapon ID and firing position, so later equipment changes
 do not alter their audio. Reliable authority-only events reach current peers;
 late joiners do not replay old effects. Dedicated servers skip playback.
