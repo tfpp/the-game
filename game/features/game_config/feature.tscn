@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/game_config/game_config.gd" id="1_script"]
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:jump_height_scale")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:frog_hop_rate")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="GameConfig" type="Node"]
+script = ExtResource("1_script")
+
+[node name="Sync" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath("..")
+replication_config = SubResource("Replication")
