@@ -55,7 +55,7 @@ func _drive() -> void:
 		get_tree().quit(1)
 		return
 	print("RANGE_REJECTED")
-	player.position = Vector3(0, 0.9144, 8.5)
+	player.position = _machine.to_global(Vector3(0, 0.9144, 2.5))
 	player.net_position = player.position
 	await get_tree().create_timer(0.5).timeout
 	for spin: int in range(1, 6):
