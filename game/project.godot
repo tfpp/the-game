@@ -1,5 +1,10 @@
 ; Engine configuration file.
-; Pinned to Godot 4.7.x. See game/AGENTS.md before editing.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
@@ -10,8 +15,8 @@ config/description="Open multiplayer sandbox with Source-style movement."
 config/version="0.3.0"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://icon.svg"
 run/flush_stdout_on_print=true
+config/icon="res://icon.svg"
 
 [autoload]
 
@@ -20,13 +25,11 @@ Network="*res://core/net/network.gd"
 
 [debug]
 
-gdscript/warnings/untyped_declaration=2
-gdscript/warnings/inferred_declaration=0
-gdscript/warnings/unsafe_property_access=1
-gdscript/warnings/unsafe_method_access=1
 gdscript/warnings/unused_variable=2
 gdscript/warnings/shadowed_variable=2
-gdscript/warnings/exclude_addons=true
+gdscript/warnings/untyped_declaration=2
+gdscript/warnings/unsafe_property_access=1
+gdscript/warnings/unsafe_method_access=1
 
 [display]
 
@@ -47,9 +50,8 @@ network/api_url="https://game.chrisbox.dev/api"
 
 [physics]
 
-3d/physics_engine="Jolt Physics"
 common/physics_ticks_per_second=64
-common/max_physics_steps_per_frame=8
+3d/physics_engine="Jolt Physics"
 common/physics_interpolation=true
 
 [rendering]

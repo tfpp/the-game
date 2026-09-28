@@ -18,6 +18,8 @@ const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const MESSAGE_COLOR := Color(0.3, 0.4, 0.55)
 const ERROR_COLOR := Color(0.8, 0.2, 0.2)
 const IDLE_MENU_DELAY_S := 0.25
+## A dropped connection retries silently at this interval, with no menu in between.
+const RECONNECT_INTERVAL_S := 3.0
 
 const AUTH_ERRORS := {
 	"discord_cancelled": "Discord sign-in was cancelled.",
@@ -35,12 +37,18 @@ var _box: VBoxContainer
 var _menu_open := false
 ## How long the mouse has been free with no screen up.
 var _idle_s := 0.0
+## Fires a silent reconnect attempt after a dropped connection.
+var _reconnect_timer: Timer
 
 
 func _ready() -> void:
 	layer = 10
 	_build()
 	_close()
+	_reconnect_timer = Timer.new()
+	_reconnect_timer.one_shot = true
+	_reconnect_timer.timeout.connect(_attempt_reconnect)
+	add_child(_reconnect_timer)
 	Controls.menu_requested.connect(_on_menu_requested)
 	Network.login_required.connect(_on_login_required)
 	Network.connection_failed.connect(_on_connection_failed)
@@ -125,11 +133,29 @@ func _on_login_required(url: String) -> void:
 		_resume_session("", true)
 
 
-func _on_connection_failed(reason: String) -> void:
+## A dropped connection never shows a menu: it just retries silently (see
+## `_attempt_reconnect`) until it's back, or the player leaves or signs out.
+func _on_connection_failed(_reason: String) -> void:
 	if _server_url.is_empty() or _api == null:
 		return
-	_open()
-	_resume_session(reason)
+	_schedule_reconnect()
+
+
+func _schedule_reconnect() -> void:
+	_reconnect_timer.start(RECONNECT_INTERVAL_S)
+
+
+## Silently rejoins with a fresh ticket (the old one's nonce is already spent). A
+## failure reaches `_on_connection_failed` again through the usual signal, which
+## schedules the next attempt, so this just keeps retrying until it works.
+func _attempt_reconnect() -> void:
+	if not _api.has_session():
+		return
+	var result: Dictionary = await _api.join_ticket()
+	if result["ok"]:
+		Network.join(_server_url, str((result["data"] as Dictionary).get("ticket", "")))
+	else:
+		_schedule_reconnect()
 
 
 ## Shows "ready to play" if the stored session is still good, else the sign-in form.
@@ -395,11 +421,13 @@ func _resume() -> void:
 
 ## Disconnects and keeps playing in the offline room.
 func _leave() -> void:
+	_reconnect_timer.stop()
 	Network.start_offline()
 	_close()
 
 
 func _sign_out() -> void:
+	_reconnect_timer.stop()
 	if Network.mode == Network.Mode.CLIENT:
 		Network.start_offline()
 	_show_busy("Signing out…")

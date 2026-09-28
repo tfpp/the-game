@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3]
+
+[sub_resource type="BoxMesh" id="BoxMesh_slide"]
+size = Vector3(0.22, 0.06, 0.04)
+
+[sub_resource type="BoxMesh" id="BoxMesh_grip"]
+size = Vector3(0.06, 0.14, 0.035)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gunmetal"]
+albedo_color = Color(0.12, 0.12, 0.14, 1)
+metallic = 0.6
+roughness = 0.35
+
+[node name="PistolView" type="Node3D"]
+
+[node name="Slide" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_slide")
+surface_material_override/0 = SubResource("StandardMaterial3D_gunmetal")
+
+[node name="Grip" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9563, -0.2924, 0, 0.2924, 0.9563, 0, 0, 0, 1, -0.08, -0.09, 0)
+mesh = SubResource("BoxMesh_grip")
+surface_material_override/0 = SubResource("StandardMaterial3D_gunmetal")
+
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11, 0, 0)

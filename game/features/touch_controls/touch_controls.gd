@@ -9,6 +9,7 @@ var safe_bounds := Rect2()
 var move_finger := -1
 var look_finger := -1
 var jump_finger := -1
+var use_finger := -1
 var move_origin := Vector2.ZERO
 var look_position := Vector2.ZERO
 var _browser: JavaScriptObject
@@ -61,6 +62,7 @@ func _clear_fingers() -> void:
 	move_finger = -1
 	look_finger = -1
 	jump_finger = -1
+	use_finger = -1
 	Controls.touch_move = Vector2.ZERO
 	Controls.look_delta = Vector2.ZERO
 	Controls.jump_queued = false
@@ -74,6 +76,10 @@ func jump_center() -> Vector2:
 	return safe_bounds.end - Vector2(106, 116)
 
 
+func use_center() -> Vector2:
+	return jump_center() - Vector2(145, 0)
+
+
 func _input(event: InputEvent) -> void:
 	if not Controls.touch_visible() or not Controls.gameplay_active():
 		return
@@ -84,6 +90,9 @@ func _input(event: InputEvent) -> void:
 			_release_finger(touch.index)
 		elif pause_button().has_point(point):
 			Controls.menu_requested.emit()
+		elif point.distance_to(use_center()) <= 54 and use_finger == -1:
+			use_finger = touch.index
+			get_tree().call_group(&"interaction", "use")
 		elif point.distance_to(jump_center()) <= 62 and jump_finger == -1:
 			jump_finger = touch.index
 			Controls.jump_queued = true
@@ -115,11 +124,24 @@ func _release_finger(index: int) -> void:
 		look_finger = -1
 	if index == jump_finger:
 		jump_finger = -1
+	if index == use_finger:
+		use_finger = -1
 
 
 func _draw() -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE * ui_scale)
 	_draw_touch()
+	draw_circle(use_center(), 54, Color(0.06, 0.1, 0.14, 0.6))
+	draw_arc(use_center(), 54, 0, TAU, 48, ACCENT, 2, true)
+	draw_string(
+		ThemeDB.fallback_font,
+		use_center() + Vector2(-20, 7),
+		"USE",
+		HORIZONTAL_ALIGNMENT_LEFT,
+		-1,
+		20,
+		INK
+	)
 	_button(pause_button(), "II")
 
 

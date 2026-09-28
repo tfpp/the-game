@@ -1,0 +1,71 @@
+[gd_scene load_steps=10 format=3]
+
+[sub_resource type="BoxShape3D" id="ColliderShape"]
+size = Vector3(0.12, 0.5, 1.6)
+
+[sub_resource type="CylinderMesh" id="BarrelMesh"]
+top_radius = 0.018
+bottom_radius = 0.018
+height = 0.65
+
+[sub_resource type="CylinderMesh" id="ScopeMesh"]
+top_radius = 0.028
+bottom_radius = 0.028
+height = 0.3
+
+[sub_resource type="StandardMaterial3D" id="GunMetalMat"]
+albedo_color = Color(0.05, 0.05, 0.06, 1)
+
+[sub_resource type="BoxMesh" id="ReceiverMesh"]
+size = Vector3(0.09, 0.08, 0.55)
+
+[sub_resource type="StandardMaterial3D" id="BlackMat"]
+albedo_color = Color(0.03, 0.03, 0.03, 1)
+
+[sub_resource type="BoxMesh" id="StockMesh"]
+size = Vector3(0.075, 0.1, 0.35)
+
+[sub_resource type="StandardMaterial3D" id="StockMat"]
+albedo_color = Color(0.14, 0.17, 0.11, 1)
+
+[sub_resource type="BoxMesh" id="MagazineMesh"]
+size = Vector3(0.05, 0.2, 0.11)
+
+[node name="Awp" type="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+shape = SubResource("ColliderShape")
+
+[node name="Receiver" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.05)
+mesh = SubResource("ReceiverMesh")
+surface_material_override/0 = SubResource("BlackMat")
+
+[node name="Barrel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.02, -0.65)
+mesh = SubResource("BarrelMesh")
+surface_material_override/0 = SubResource("GunMetalMat")
+
+[node name="Stock" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.4)
+mesh = SubResource("StockMesh")
+surface_material_override/0 = SubResource("StockMat")
+
+[node name="Scope" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.09, -0.05)
+mesh = SubResource("ScopeMesh")
+surface_material_override/0 = SubResource("GunMetalMat")
+
+[node name="Magazine" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, -0.12)
+mesh = SubResource("MagazineMesh")
+surface_material_override/0 = SubResource("BlackMat")
+
+[node name="Sign" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.05)
+billboard = 1
+text = "AWP"
+font_size = 32
+outline_size = 6
