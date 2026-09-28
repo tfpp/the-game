@@ -261,7 +261,8 @@ The client and server must run the same code, and the join handshake enforces it
 "Version check"). Once `pages.yml` and `server-image.yml` have both succeeded for the same
 `main` commit, the bot asks the homelab to deploy that server image (a request file that
 a host service acts on; see `bot/README.md`), then tells the merged PRs' threads they're
-live. The API and the bot are still deployed by hand.
+live. Each successful `api-image.yml` build of a newer `main` commit deploys the API the
+same way (an `api-request` file). The bot is still deployed by hand.
 
 **PR previews.** For each same-repo PR that touches `game/`, `preview.yml` exports the
 web client and deploys it to its own Cloudflare Pages origin, then posts the link on the
