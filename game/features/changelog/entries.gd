@@ -9,6 +9,14 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Dev elevator",
+		"summary":
+		(
+			"A hazard-striped debug warp pad (noclip to find it) instantly sends you to the"
+			+ " parking garage for testing — internal, not part of the game proper."
+		)
+	},
+	{
 		"title": "Parking garage",
 		"summary":
 		(

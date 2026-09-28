@@ -40,3 +40,8 @@ PCM, so the feature ships with no new audio assets.
 `test_elevator_cab.gd`), the fixture failure states, the synthesized audio
 buffers, and the baked collision — floors, both ramps' slopes, and both
 stair flights — the same way `test_casino_layout.gd` checks the casino.
+
+`Garage/GarageArrival` also carries `features/dev_elevator/slum_arrival_point.gd`,
+which registers it as a valid landing spot for a randomized slum destination system
+(not built yet — see `features/dev_elevator/README.md`). For now the only way to reach
+it without walking through the casino is `features/dev_elevator/`'s debug warp pad.
