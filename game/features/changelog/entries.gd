@@ -37,6 +37,11 @@ const ENTRIES: Array[Dictionary] = [
 		"Gnome burrows hug the outer walls, dash to far-off holes along real routed paths, and dodge you."
 	},
 	{
+		"title": "Shooting gallery",
+		"summary":
+		"A Doom-style arena of killable, gory humanoid dummies. Every weapon can now hurt animals too."
+	},
+	{
 		"title": "Steadier gun viewmodels",
 		"summary":
 		(

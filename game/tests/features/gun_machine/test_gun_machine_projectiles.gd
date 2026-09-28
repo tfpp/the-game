@@ -34,6 +34,31 @@ const ROCKET_STATS := {
 }
 
 
+## Minimal stand-in for a non-player killable (features/frogs, features/penguin,
+## features/shooting_gallery): just enough of their `killable` contract for
+## projectile.gd's `_apply_killable_hit` to route a hit to it.
+class KillableStub:
+	extends StaticBody3D
+
+	var hits: Array[int] = []
+
+	func _ready() -> void:
+		add_to_group(&"killable")
+		var shape := CollisionShape3D.new()
+		var box := BoxShape3D.new()
+		# Sized and centered like a standing NPC (see
+		# features/shooting_gallery/humanoid_target.tscn's capsule), so it spans eye
+		# height — GunRig.request_fire now fires from the shooter's actual eye height
+		# rather than the shoulder-mount offset it used to.
+		box.size = Vector3(1, 2, 1)
+		shape.position = Vector3(0, 0.9, 0)
+		shape.shape = box
+		add_child(shape)
+
+	func take_hit(attacker_peer: int) -> void:
+		hits.append(attacker_peer)
+
+
 func _shooter_and_target() -> Array[Player]:
 	var shooter := PlayerScene.instantiate() as Player
 	shooter.name = "1"
@@ -113,6 +138,36 @@ func test_a_direct_rocket_hit_also_splashes_a_nearby_bystander() -> void:
 	assert_lt(
 		combat.health_for(2), combat.health_for(3), "a direct hit should hurt more than splash"
 	)
+
+
+func test_a_fired_rifle_round_kills_a_killable_npc_on_layer_2() -> void:
+	var shooter := PlayerScene.instantiate() as Player
+	shooter.name = "1"
+	shooter.set_multiplayer_authority(1)
+	add_child_autofree(shooter)
+	var target := KillableStub.new()
+	target.collision_layer = 2
+	target.position = Vector3(0, 0, -10)
+	add_child_autofree(target)
+	var rig := GunRigScene.instantiate() as GunRig
+	rig.peer_id = 1
+	add_child_autofree(rig)
+	var feature := FeatureScene.instantiate() as GunMachine
+	add_child_autofree(feature)
+	await get_tree().physics_frame
+	rig.equip(RIFLE_STATS)
+	shooter.net_yaw = 0.0
+	shooter.net_pitch = 0.0
+	rig.request_fire()
+
+	var hit := false
+	for _tick: int in 120:
+		await get_tree().physics_frame
+		if not target.hits.is_empty():
+			hit = true
+			break
+	assert_true(hit, "the round should have crossed the 10m gap and hit the killable target")
+	assert_eq(target.hits, [1])
 
 
 func test_splash_force_pushes_a_nearby_player_away_from_and_above_the_blast() -> void:

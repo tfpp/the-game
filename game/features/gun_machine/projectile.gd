@@ -11,7 +11,9 @@ extends Node3D
 
 const REMOTE_SMOOTHING := 24.0
 const MAX_LIFETIME_S := 6.0
-const COLLISION_MASK := 1
+# Layer 2 lets rounds hit small wildlife and gallery targets without blocking
+# player movement, the same mask features/holdables/hand.gd's hitscan uses.
+const COLLISION_MASK := 1 | 2
 ## How long the visual takes to ease from the shooter's muzzle onto the real
 ## trajectory. See `_visual_offset`.
 const MUZZLE_VISUAL_EASE_S := 0.08
@@ -105,6 +107,12 @@ func _on_hit(hit: Dictionary, profile: Dictionary) -> void:
 		net_position = position
 		_apply_direct_hit(player, profile)
 		return
+	var target := hit["collider"] as Node
+	if target != null and target.is_in_group(&"killable"):
+		position = hit["position"]
+		net_position = position
+		_apply_killable_hit(target, profile)
+		return
 	if _bounces_left > 0:
 		velocity = ProjectileMath.bounce(velocity, hit["normal"])
 		_bounces_left -= 1
@@ -124,6 +132,15 @@ func _apply_direct_hit(player: Player, profile: Dictionary) -> void:
 		combat.call("apply_damage", player.get_multiplayer_authority(), damage, shooter_peer)
 	_splash(profile, player.get_multiplayer_authority())
 	_finish(float(profile["explosion_radius"]))
+
+
+## Non-player killables (features/frogs, features/penguin, features/shooting_gallery)
+## have no player peer id, so this routes to their own `take_hit` instead of
+## features/combat's `apply_damage` — the same split hand.gd's hitscan makes.
+func _apply_killable_hit(target: Node, profile: Dictionary) -> void:
+	target.call("take_hit", shooter_peer)
+	_splash(profile, 0)
+	_finish()
 
 
 func _explode(profile: Dictionary) -> void:

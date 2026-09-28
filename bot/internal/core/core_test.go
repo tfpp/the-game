@@ -309,7 +309,7 @@ func TestNoChangesClosesTheIssue(t *testing.T) {
 	ctx := context.Background()
 	e.feature(t, "42", "add jump pads please")
 	bot := github.User{Login: "the-game[bot]", Type: "Bot"}
-	body := "🤖 `claude` (`implement`) made no changes ([run](https://run)).\n\nThis is unclear."
+	body := "🤖 `claude` (`implement`) made no changes ([run](https://run) · 1.2M tokens (34k output) · ~$3.46).\n\nThis is unclear."
 	must(t, e.svc.Comment(ctx, 11, github.Comment{ID: 1, User: bot, Body: body}))
 	if fmt.Sprint(e.gh.closedIssues) != "[11]" {
 		t.Errorf("closed %v", e.gh.closedIssues)
@@ -357,7 +357,7 @@ func TestWorkflowRunAndCommentsReachTheThread(t *testing.T) {
 	if len(e.chat.posts) != n+1 || e.chat.last().ping != "" {
 		t.Fatalf("posts %+v", e.chat.posts[n:])
 	}
-	must(t, e.svc.Comment(ctx, 11, github.Comment{ID: 3, User: bot, Body: "🤖 Opened https://github.com/o/r/pull/12\n"}))
+	must(t, e.svc.Comment(ctx, 11, github.Comment{ID: 3, User: bot, Body: "🤖 Opened https://github.com/o/r/pull/12 · 1.2M tokens (34k output) · ~$3.46\n"}))
 	if p := e.chat.last(); !strings.HasPrefix(p.content, "<@42> 🤖 Opened") || p.ping != "42" {
 		t.Errorf("opened post %+v", p)
 	}
