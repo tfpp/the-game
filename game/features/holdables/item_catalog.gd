@@ -6,6 +6,8 @@ extends RefCounted
 
 const DEFINITIONS: Array[ItemDefinition] = [
 	preload("res://features/holdables/items/pistol.tres"),
+	preload("res://features/holdables/items/smg.tres"),
+	preload("res://features/holdables/items/shotgun.tres"),
 	preload("res://features/holdables/items/banana.tres"),
 	preload("res://features/holdables/items/ball.tres"),
 	preload("res://features/holdables/items/awp.tres"),

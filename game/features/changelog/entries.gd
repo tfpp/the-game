@@ -12,6 +12,15 @@ const ENTRIES: Array[Dictionary] = [
 		"title": "Right-handed controls by default",
 		"summary": "New controls default to WASD + Space (DoctorDalek still starts left-handed).",
 	},
+	{
+		"title": "Combat",
+		"summary": "Weapons can now kill — take damage and respawn once your health runs out."
+	},
+	{
+		"title": "Item drops & new guns",
+		"summary":
+		"Drop any held item with G; thrown items bounce based on weight. Added an SMG and a shotgun."
+	},
 	{"title": "AWP", "summary": "The AWP in the middle of the map is now a pickup."},
 	{
 		"title": "Pond",

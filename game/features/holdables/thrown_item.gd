@@ -1,14 +1,16 @@
 class_name ThrownItem
 extends Node3D
-## A generic thrown prop: arcs from `from` to a landing point, then sits there as a new
-## pickup so anyone can grab it again — the same PROP item, just back on the ground.
-## Spawned by the holdables feature (holdables.gd) when a PROP-category item's primary
-## action fires (see hand.gd's `_throw`).
+## A generic thrown or dropped item: arcs from `from` to a landing point, then bounces
+## a few times — fewer and lower the heavier the item is (see throw_math.gd's
+## `bounce_height`) — before settling as a new pickup so anyone can grab it again, the
+## same item just back on the ground. Spawned by the holdables feature (holdables.gd)
+## when a PROP item is thrown or any held item is dropped (see hand.gd's `_toss`).
 ##
 ## Server-authoritative flight, like frogs/frog.gd: the server integrates the arc and
 ## publishes `net_position`/`net_landed`; other peers only smooth toward them.
 
 const FLIGHT_DURATION_S := 0.6
+const BOUNCE_DURATION_S := 0.3
 const REMOTE_SMOOTHING := 16.0
 const PICKUP_RANGE := 2.5
 
@@ -25,12 +27,22 @@ var to := Vector3.ZERO
 var _elapsed := 0.0
 var _last_landed := false
 
+## The flight segment currently being animated: the initial throw arc, then each
+## successive (shorter, lower) bounce.
+var _seg_from := Vector3.ZERO
+var _seg_to := Vector3.ZERO
+var _seg_height := ThrowMath.ARC_HEIGHT
+var _seg_duration := FLIGHT_DURATION_S
+var _bounce_index := 0
+
 @onready var _mount: Node3D = $Mount
 
 
 func _ready() -> void:
 	position = from
 	net_position = from
+	_seg_from = from
+	_seg_to = to
 	var def := ItemCatalog.find(item_id)
 	if def != null and def.view_scene != null:
 		_mount.add_child(def.view_scene.instantiate())
@@ -40,15 +52,52 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if net_landed:
-		return
+	if not net_landed:
+		_advance(delta)
+
+
+func _advance(delta: float) -> void:
 	_elapsed += delta
-	var t := _elapsed / FLIGHT_DURATION_S
+	var t := _elapsed / _seg_duration
 	if t >= 1.0:
-		net_position = to
-		net_landed = true
+		_advance_segment()
 	else:
-		net_position = ThrowMath.arc_position(from, to, t)
+		net_position = ThrowMath.arc_position(_seg_from, _seg_to, t, _seg_height)
+
+
+## The current segment finished: start the next, smaller bounce, or settle for good
+## once this item's weight says it wouldn't bounce meaningfully higher.
+func _advance_segment() -> void:
+	net_position = _seg_to
+	var height := ThrowMath.bounce_height(_weight(), _bounce_index)
+	if height < ThrowMath.MIN_BOUNCE_HEIGHT:
+		net_landed = true
+		return
+	var direction := _seg_to - _seg_from
+	direction.y = 0.0
+	direction = Vector3.FORWARD if direction.is_zero_approx() else direction.normalized()
+	var flat := _seg_to + direction * ThrowMath.bounce_distance(_bounce_index)
+	_seg_from = _seg_to
+	_seg_to = _floor_point(flat)
+	_seg_height = height
+	_seg_duration = BOUNCE_DURATION_S
+	_elapsed = 0.0
+	_bounce_index += 1
+
+
+func _weight() -> float:
+	var def := ItemCatalog.find(item_id)
+	return def.weight if def != null else 1.0
+
+
+## Snaps a bounce's flat target down to the floor beneath it, the same way hand.gd's
+## `_landing_point` finds the original throw's landing spot.
+func _floor_point(flat: Vector3) -> Vector3:
+	var query := PhysicsRayQueryParameters3D.create(
+		flat + Vector3.UP * 10.0, flat + Vector3.DOWN * 10.0
+	)
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	return hit["position"] if hit else flat
 
 
 func _process(delta: float) -> void:
