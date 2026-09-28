@@ -33,8 +33,9 @@ material = SubResource("WarningMat")
 
 [node name="Sign" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.9, 0)
-billboard = 1
-fixed_size = true
-pixel_size = 0.003
-outline_size = 10
+billboard = 0
+fixed_size = false
+font_size = 36
+pixel_size = 0.004
+outline_size = 4
 text = "PORTAL"

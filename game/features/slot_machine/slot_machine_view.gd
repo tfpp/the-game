@@ -1,10 +1,17 @@
 extends Node3D
-## Asset-free cabinet and reel placeholders. Presentation only; never chooses results.
+## Physical cabinet and animated reel drums. Presentation reads authoritative results.
 
+const CABINET := preload("res://features/casino_hub/models/slot_cabinet.tscn")
+const REEL_SHADER := preload("res://features/slot_machine/reel.gdshader")
+const SYMBOL_TEXTURE := preload("res://features/slot_machine/textures/reel_symbols.png")
+const CHROME := preload("res://features/casino_hub/materials/chrome.tres")
 const SYMBOLS: Array[String] = ["7", "BAR", "STAR", "BELL", "GEM"]
 const GOLD := Color("f6c85f")
-const INK := Color("122133")
-var _reels: Array[Label3D] = []
+const INK := Color("173330")
+
+var _reels: Array[ShaderMaterial] = []
+var _positions: Array[float] = [0.0, 1.0, 2.0]
+var _targets: Array[float] = [0.0, 1.0, 2.0]
 var _status: Label3D
 var _caption: Label3D
 var _lever: Node3D
@@ -14,123 +21,123 @@ var _last_state: Dictionary = {}
 
 
 func _ready() -> void:
-	_box(Vector3(2.2, 2.8, 1.2), Vector3(0, 1.4, 0), INK)
-	_box(Vector3(2.3, 0.15, 1.3), Vector3(0, 0.08, 0), GOLD)
-	_box(Vector3(2.05, 0.5, 0.08), Vector3(0, 2.4, 0.63), GOLD)
-	_label("LUCKY FIVE", Vector3(0, 2.4, 0.69), 64, INK)
-	_box(Vector3(2.05, 0.85, 0.08), Vector3(0, 1.65, 0.63), GOLD)
+	add_child(CABINET.instantiate())
+	_label("LUCKY FIVE", Vector3(0, 2.49, 0.596), 48, INK, 0.004)
+	_label("THE GILDED LILY  •  EST. 1964", Vector3(0, 2.38, 0.596), 18, INK, 0.003)
+	var drum := SlotReelMesh.create()
 	for index: int in 3:
-		var x := float(index - 1) * 0.65
-		_box(Vector3(0.59, 0.68, 0.09), Vector3(x, 1.65, 0.69), Color("fff5da"))
-		_reels.append(_label(SYMBOLS[index], Vector3(x, 1.65, 0.75), 58, INK))
-	_status = _label("TRY YOUR LUCK", Vector3(0, 1.02, 0.66), 34, GOLD)
-	_caption = _label(_price_caption(), Vector3(0, 0.78, 0.66), 26, Color.WHITE)
-	var prizes := SlotSpinCycle.PRIZES
-	var buy_in := _machine.buy_in_cents
-	_label(
-		(
-			"TRIPLES: 7 %s | BAR %s | STAR %s"
-			% [
-				PlayerMoney.format_money(prizes[0] * buy_in / 100),
-				PlayerMoney.format_money(prizes[1] * buy_in / 100),
-				PlayerMoney.format_money(prizes[2] * buy_in / 100)
-			]
-		),
-		Vector3(0, 0.60, 0.72),
-		15,
-		Color.WHITE
-	)
-	_label(
-		(
-			"BELL %s | GEM %s — PAIRS $0"
-			% [
-				PlayerMoney.format_money(prizes[3] * buy_in / 100),
-				PlayerMoney.format_money(prizes[4] * buy_in / 100)
-			]
-		),
-		Vector3(0, 0.51, 0.72),
-		15,
-		Color.WHITE
-	)
-	_box(Vector3(0.95, 0.16, 0.12), Vector3(0, 0.42, 0.64), Color("070d14"))
-	_lever = Node3D.new()
-	_lever.position = Vector3(1.25, 1.3, 0)
-	add_child(_lever)
-	var stem := MeshInstance3D.new()
-	var cylinder := CylinderMesh.new()
-	cylinder.top_radius = 0.055
-	cylinder.bottom_radius = 0.055
-	cylinder.height = 0.7
-	stem.mesh = cylinder
-	stem.position.y = 0.35
-	stem.material_override = _material(GOLD)
-	_lever.add_child(stem)
-	var knob := MeshInstance3D.new()
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.14
-	sphere.height = 0.28
-	knob.mesh = sphere
-	knob.position.y = 0.75
-	knob.material_override = _material(Color("e34b58"))
-	_lever.add_child(knob)
+		var reel := MeshInstance3D.new()
+		reel.name = "Reel%d" % index
+		reel.mesh = drum
+		reel.position = Vector3(float(index - 1) * 0.58, 1.73, 0.26)
+		var material := ShaderMaterial.new()
+		material.shader = REEL_SHADER
+		material.set_shader_parameter("symbols", SYMBOL_TEXTURE)
+		material.set_shader_parameter("reel_position", float(index))
+		reel.material_override = material
+		_reels.append(material)
+		add_child(reel)
+	# Small red payline pointers, outside the clear viewing area.
+	_label("▶", Vector3(-0.91, 1.73, 0.655), 25, Color("ba293a"), 0.003)
+	_label("◀", Vector3(0.91, 1.73, 0.655), 25, Color("ba293a"), 0.003)
+	_status = _label("TRY YOUR LUCK", Vector3(-0.18, 0.94, 0.56), 26, GOLD, 0.0025)
+	_caption = _label(_price_caption(), Vector3(0, 2.245, 0.56), 21, GOLD, 0.0025)
+	_label("7  ×30    BAR  ×20    STAR  ×10", Vector3(0, 0.72, 0.505), 18, GOLD, 0.0025)
+	_label("BELL  ×15    GEM  ×25    PAIRS  ×0", Vector3(0, 0.65, 0.505), 18, GOLD, 0.0025)
+	_label("THREE MATCHING SYMBOLS PAY", Vector3(0, 0.58, 0.505), 13, Color("ded2b9"), 0.0025)
+	_build_lever()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	var snapshot := _machine.state
-	if snapshot == _last_state:
-		return
-	_last_state = snapshot.duplicate(true)
+	if snapshot != _last_state:
+		_update_snapshot(snapshot)
+	var spinning: bool = snapshot["spinning"]
+	for index: int in 3:
+		if spinning and index >= int(snapshot["stopped"]):
+			_positions[index] = fposmod(_positions[index] + delta * (13.0 + index), 5.0)
+		else:
+			_positions[index] = move_toward(_positions[index], _targets[index], delta * 36.0)
+		_reels[index].set_shader_parameter("reel_position", _positions[index])
+	_lever.rotation.x = lerpf(_lever.rotation.x, 0.8 if spinning else 0.0, 1.0 - exp(-delta * 14.0))
+
+
+func _update_snapshot(snapshot: Dictionary) -> void:
 	var reels: Array = snapshot["reels"]
 	for index: int in 3:
-		_reels[index].text = SYMBOLS[int(reels[index])]
-		_reels[index].modulate = INK if index < int(snapshot["stopped"]) else Color("84909b")
-	_lever.rotation.x = 0.8 if snapshot["spinning"] else 0.0
+		if _last_state.is_empty():
+			_positions[index] = float(reels[index])
+			_targets[index] = _positions[index]
+		elif index < int(snapshot["stopped"]):
+			var newly_stopped := index >= int(_last_state.get("stopped", 3))
+			if newly_stopped or not bool(snapshot["spinning"]):
+				_targets[index] = SlotReelMesh.next_stop(_positions[index], int(reels[index]))
+	_last_state = snapshot.duplicate(true)
 	if not str(snapshot.get("message", "")).is_empty():
 		_status.text = str(snapshot["message"])
-		_caption.text = _price_caption()
 	elif snapshot["spinning"]:
-		_status.text = "SPINNING…"
-		_caption.text = str(snapshot["operator"]).left(20)
+		_status.text = "GOOD LUCK"
 	elif int(snapshot["spin"]) > 0:
 		_status.text = (
-			("WON %s!" % PlayerMoney.format_money(int(snapshot["payout"])))
+			("WON %s" % PlayerMoney.format_money(int(snapshot["payout"])))
 			if snapshot["won"]
-			else "NO WIN — TRY AGAIN"
+			else "PLAY AGAIN"
 		)
-		_caption.text = str(snapshot["operator"]).left(20)
 	else:
 		_status.text = "TRY YOUR LUCK"
-		_caption.text = _price_caption()
+	_caption.text = _price_caption()
+	# Keep even billion-dollar buy-ins and long server messages inside their panels.
+	_fit_label(_status, 1.18, 0.0025)
+	_fit_label(_caption, 1.68, 0.0025)
 
 
 func _price_caption() -> String:
 	return "%s PER SPIN" % PlayerMoney.format_money(_machine.buy_in_cents)
 
 
-func _material(color: Color) -> StandardMaterial3D:
-	var material := StandardMaterial3D.new()
-	material.albedo_color = color
-	material.roughness = 0.35
-	return material
+func _build_lever() -> void:
+	_lever = Node3D.new()
+	_lever.position = Vector3(1.14, 1.23, 0.0)
+	add_child(_lever)
+	var stem := MeshInstance3D.new()
+	var cylinder := CylinderMesh.new()
+	cylinder.top_radius = 0.038
+	cylinder.bottom_radius = 0.055
+	cylinder.height = 0.65
+	cylinder.radial_segments = 24
+	stem.mesh = cylinder
+	stem.position.y = 0.3
+	stem.material_override = CHROME
+	_lever.add_child(stem)
+	var knob := MeshInstance3D.new()
+	var sphere := SphereMesh.new()
+	sphere.radius = 0.115
+	sphere.height = 0.23
+	knob.mesh = sphere
+	knob.position.y = 0.67
+	var bakelite := StandardMaterial3D.new()
+	bakelite.albedo_color = Color("8d172c")
+	bakelite.roughness = 0.23
+	knob.material_override = bakelite
+	_lever.add_child(knob)
 
 
-func _box(dimensions: Vector3, origin: Vector3, color: Color) -> void:
-	var mesh := MeshInstance3D.new()
-	var box := BoxMesh.new()
-	box.size = dimensions
-	mesh.mesh = box
-	mesh.position = origin
-	mesh.material_override = _material(color)
-	add_child(mesh)
-
-
-func _label(text: String, origin: Vector3, font_size: int, color: Color) -> Label3D:
+func _label(
+	text: String, origin: Vector3, font_size: int, color: Color, pixel_size: float
+) -> Label3D:
 	var label := Label3D.new()
 	label.text = text
 	label.position = origin
 	label.font_size = font_size
-	label.pixel_size = 0.003
+	label.pixel_size = pixel_size
 	label.modulate = color
 	label.outline_size = 0
+	label.no_depth_test = false
 	add_child(label)
 	return label
+
+
+func _fit_label(label: Label3D, width: float, maximum_pixel_size: float) -> void:
+	var font := ThemeDB.fallback_font
+	var pixels := font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, label.font_size).x
+	label.pixel_size = minf(maximum_pixel_size, width / maxf(pixels, 1.0))

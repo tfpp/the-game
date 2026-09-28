@@ -3,7 +3,7 @@
 A faded 1964 casino. `world/room.tscn` instances `interior.tscn` and
 retains the stable `Room/Spawn` path and all five original annex entrances. This
 folder intentionally has no `feature.tscn`: the architecture is part of the room,
-not a second copy loaded by the feature loader. All geometry is editable CSG.
+not a second copy loaded by the feature loader. Architecture and collision are editable CSG; detailed props are reusable glTF meshes.
 
 - Gaming floor: x -15…15, z -12…12, surface y -1.5. Eight independently networked
   slots and the original roulette table. Two 6m-wide, 1:4 ramps connect the floor
@@ -25,10 +25,26 @@ not a second copy loaded by the feature loader. All geometry is editable CSG.
   All three coin pickups remain available. Original annex rooms and routes are
   retained, with covered ceilings and matching finishes.
 
-Procedural carpet, wallpaper and tile shaders use world coordinates, so patterns
-keep a consistent scale across CSG surfaces. Tarnished brass, velvet, ceiling
-stains, peeling-paper patches, chandeliers and sconces provide the period decor.
-No external image assets or new gameplay/network scripts are required.
+Generated carpet, wallpaper and walnut base-color textures use world-space
+triplanar mapping so patterns keep a consistent scale across the architecture.
+Physical materials combine micro-normal and roughness textures with separate
+metal, enamel and fabric finishes. A local reflection probe gives metal props
+indoor reflections and a constant warm ambient fill so night-time startup does
+not capture a nearly black room. The outdoor day/night cycle still changes. Textures use mipmaps and lossy import compression for export.
+
+Five original glTF models replace the basic cabinet, stools, benches, planters
+and chandeliers. Each model merges parts by material to limit draw calls and
+shares the level's finishes through `model_materials.gd`. Existing bench
+colliders, passages and machine collision/interaction stay in place. Rebuild:
+
+```sh
+blender --background --python game/features/casino_hub/tools/build_models.py
+```
+
+Artwork prompts and provenance: `textures/GENERATED_ASSETS.md`. The PNGs are
+base-color artwork; micro-normal/roughness detail is procedural, not measured
+from real surfaces. `tests/features/casino_hub/polish_probe.tscn` captures the
+actual room and verifies reel settling during a win.
 
 `tests/features/casino_hub/test_casino_layout.gd` checks the baked CSG collision:
 ramps join both elevations, side doors stay open, the entire ferry hull route has

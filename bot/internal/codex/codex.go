@@ -14,14 +14,14 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"unicode"
-	"unicode/utf8"
 )
 
 const (
 	DefaultURL = "https://chatgpt.com/backend-api/wham/usage"
 	cacheFor   = time.Minute
 	maxBody    = 1 << 20
+
+	weekSeconds = 604800
 )
 
 var (
@@ -65,12 +65,7 @@ type limits struct {
 }
 
 type payload struct {
-	Limits     *limits `json:"rate_limit"`
-	Additional []struct {
-		Name    string  `json:"limit_name"`
-		Feature string  `json:"metered_feature"`
-		Limits  *limits `json:"rate_limit"`
-	} `json:"additional_rate_limits"`
+	Limits *limits `json:"rate_limit"`
 }
 
 func (c *Client) now() time.Time {
@@ -163,57 +158,17 @@ func readAuth(path string) (auth, error) {
 	return a, nil
 }
 
+// format reports only the main weekly window; short windows and additional
+// per-model limits (e.g. gpt-reserve) are deliberately omitted.
 func format(p payload, now time.Time) (string, error) {
-	var lines []string
-	if p.Limits != nil {
-		lines = append(lines, formatLimits("", p.Limits)...)
-	}
-	for _, extra := range p.Additional {
-		name := extra.Name
-		if name == "" {
-			name = extra.Feature
-		}
-		name = safeLabel(name)
-		if name == "" {
-			name = "Additional limit"
-		}
-		lines = append(lines, formatLimits(name+" · ", extra.Limits)...)
-	}
-	if len(lines) == 0 {
+	l := p.Limits
+	if l == nil {
 		return "", errors.New("codex: usage response has no recognized limits")
 	}
-	text := "**Codex usage limits**\n"
-	for i, line := range lines {
-		// Leave ample room for Claude's report in Discord's 2000-character reply.
-		if utf8.RuneCountInString(text+line) > 1000 {
-			text += fmt.Sprintf("… %d additional limit line(s) not shown.\n", len(lines)-i)
-			break
-		}
-		text += line + "\n"
-	}
-	return text + fmt.Sprintf("-# As of <t:%d:T>", now.Unix()), nil
-}
-
-func formatLimits(prefix string, l *limits) []string {
-	if l == nil {
-		return nil
-	}
-	var lines []string
-	for i, w := range []*window{l.Primary, l.Secondary} {
-		if w == nil || w.UsedPercent == nil || *w.UsedPercent < 0 || *w.UsedPercent > 10000 {
+	var line string
+	for _, w := range []*window{l.Primary, l.Secondary} {
+		if w == nil || w.Seconds != weekSeconds || w.UsedPercent == nil || *w.UsedPercent < 0 || *w.UsedPercent > 10000 {
 			continue // absent/invalid telemetry is not zero usage
-		}
-		label := "Primary"
-		if i == 1 {
-			label = "Secondary"
-		}
-		switch {
-		case w.Seconds == 604800:
-			label = "Weekly"
-		case w.Seconds > 0 && w.Seconds%3600 == 0:
-			label = fmt.Sprintf("%d-hour", w.Seconds/3600)
-		case w.Seconds > 0 && w.Seconds%60 == 0:
-			label = fmt.Sprintf("%d-minute", w.Seconds/60)
 		}
 		used := *w.UsedPercent
 		icon := "🟢"
@@ -222,35 +177,25 @@ func formatLimits(prefix string, l *limits) []string {
 		} else if used >= 80 {
 			icon = "🟡"
 		}
-		line := fmt.Sprintf("%s %s%s: %.0f%% used", icon, prefix, label, used)
+		line = fmt.Sprintf("%s Weekly: %.0f%% used", icon, used)
 		if w.ResetAt > 0 && w.ResetAt <= 253402300799 {
 			line += fmt.Sprintf(" · resets <t:%d:F> (<t:%d:R>)", w.ResetAt, w.ResetAt)
 		}
-		lines = append(lines, line)
+		break
 	}
-	if len(lines) == 0 {
-		if l.Allowed == nil && !l.LimitReached {
-			return nil
-		}
-		lines = append(lines, prefix+"Usage windows unavailable.")
+	lines := []string{}
+	if line != "" {
+		lines = append(lines, line)
+	} else if l.Allowed != nil || l.LimitReached {
+		lines = append(lines, "Weekly usage unavailable.")
 	}
 	if l.LimitReached {
-		lines = append(lines, "⛔ "+prefix+"Limit reached.")
+		lines = append(lines, "⛔ Limit reached.")
 	} else if l.Allowed != nil && !*l.Allowed {
-		lines = append(lines, "⚠️ "+prefix+"Requests currently unavailable.")
+		lines = append(lines, "⚠️ Requests currently unavailable.")
 	}
-	return lines
-}
-
-func safeLabel(s string) string {
-	var label []rune
-	for _, r := range s {
-		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == ' ' || r == '-' || r == '/' {
-			label = append(label, r)
-			if len(label) == 40 {
-				break
-			}
-		}
+	if len(lines) == 0 {
+		return "", errors.New("codex: usage response has no weekly limit")
 	}
-	return strings.TrimSpace(string(label))
+	return "**Codex usage limits**\n" + strings.Join(lines, "\n") + fmt.Sprintf("\n-# As of <t:%d:T>", now.Unix()), nil
 }

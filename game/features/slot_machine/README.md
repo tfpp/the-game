@@ -73,8 +73,11 @@ optional, so the feature works before assets are supplied. No code edits are nee
   `buy_in_cents` export.
 - `spin_cycle.gd` generates independent reels and the scaled payout for offline/dev
   play.
-- `slot_machine_view.gd` builds the placeholder cabinet and text symbols, including
-  the machine's price and scaled prize table.
+- `slot_machine_view.gd` presents the walnut, enamel and chrome cabinet, curved
+  printed reel drums, lever, price and payout multipliers. `reel_mesh.gd` builds the
+  shared curved surface; `reel.gdshader` scrolls the generated symbol strip.
+  Moving drums are cosmetic; each stopped drum settles onto its server-selected
+  symbol, including immediately showing stopped symbols for late joiners.
 - `../interaction/` supplies the shared Use binding and proximity prompt.
 
 To add another machine, instance `machine.tscn` under `feature.tscn` with a unique
@@ -103,3 +106,12 @@ SLOT_TEST_DATABASE=1 python3 game/tests/features/slot_machine/network_test.py
 
 This builds a temporary API binary, creates an isolated database and test key, and
 uses signed account join tickets. Nothing is written to a production database.
+
+## Visual assets
+
+The original cabinet model and reproducible Blender build script live in
+`../casino_hub/models/` and `../casino_hub/tools/`. `textures/reel_symbols.png`
+contains five generated icons in the exact gameplay order: 7, BAR, STAR, BELL,
+GEM. Prompts and provenance are in `../casino_hub/textures/GENERATED_ASSETS.md`.
+The cabinet keeps its existing collision hull and interaction point. Materials
+are shared; each reel only owns its small animation shader state.
