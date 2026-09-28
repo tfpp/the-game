@@ -1,0 +1,90 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://features/elevator/elevator_cab.gd" id="1_script"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="2_carpet"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="3_wall"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="4_wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="5_brass"]
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:net_state")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="ElevatorCab" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Floor" type="CSGBox3D" parent="."]
+position = Vector3(0, -0.05, 0)
+size = Vector3(2.24, 0.1, 2.24)
+material = ExtResource("2_carpet")
+use_collision = true
+
+[node name="BackWall" type="CSGBox3D" parent="."]
+position = Vector3(0, 1.25, 1.06)
+size = Vector3(2.24, 2.5, 0.12)
+material = ExtResource("3_wall")
+use_collision = true
+
+[node name="LeftWall" type="CSGBox3D" parent="."]
+position = Vector3(-1.06, 1.25, 0)
+size = Vector3(0.12, 2.5, 2.24)
+material = ExtResource("3_wall")
+use_collision = true
+
+[node name="RightWall" type="CSGBox3D" parent="."]
+position = Vector3(1.06, 1.25, 0)
+size = Vector3(0.12, 2.5, 2.24)
+material = ExtResource("3_wall")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="."]
+position = Vector3(0, 2.56, 0)
+size = Vector3(2.24, 0.12, 2.24)
+material = ExtResource("3_wall")
+use_collision = true
+
+[node name="DoorLintel" type="CSGBox3D" parent="."]
+position = Vector3(0, 2.3, -1.06)
+size = Vector3(2.24, 0.4, 0.12)
+material = ExtResource("3_wall")
+use_collision = true
+
+[node name="DoorLeft" type="CSGBox3D" parent="."]
+position = Vector3(-0.475, 1.05, -1.06)
+size = Vector3(1.05, 2.1, 0.08)
+material = ExtResource("4_wood")
+use_collision = true
+
+[node name="DoorRight" type="CSGBox3D" parent="."]
+position = Vector3(0.475, 1.05, -1.06)
+size = Vector3(1.05, 2.1, 0.08)
+material = ExtResource("4_wood")
+use_collision = true
+
+[node name="CallButtonPanel" type="CSGBox3D" parent="."]
+position = Vector3(1.3, 1.2, -1.1)
+size = Vector3(0.1, 0.3, 0.1)
+material = ExtResource("5_brass")
+
+[node name="CallButtonLight" type="OmniLight3D" parent="."]
+position = Vector3(1.3, 1.2, -1.35)
+light_color = Color(1, 0.85, 0.5, 1)
+light_energy = 0.8
+omni_range = 2.0
+
+[node name="CabLight" type="OmniLight3D" parent="."]
+position = Vector3(0, 2.2, 0)
+light_energy = 1.0
+omni_range = 4.0
+
+[node name="Sign" type="Label3D" parent="."]
+position = Vector3(0, 2.75, -1.05)
+billboard = 1
+text = "ELEVATOR"
+font_size = 32
+outline_size = 6
+
+[node name="Sync" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath("..")
+replication_config = SubResource("Replication")
