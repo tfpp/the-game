@@ -20,7 +20,8 @@ static func is_win(reels: Array[int]) -> bool:
 	return reels.size() == 3 and reels[0] == reels[1] and reels[1] == reels[2]
 
 
-static func payout(reels: Array[int]) -> int:
+## Prizes scale with wager_cents so any buy-in keeps the same 80% return.
+static func payout(reels: Array[int], wager_cents: int = 100) -> int:
 	if not is_win(reels) or reels[0] < 0 or reels[0] >= SYMBOL_COUNT:
 		return 0
-	return PRIZES[reels[0]]
+	return PRIZES[reels[0]] * wager_cents / 100

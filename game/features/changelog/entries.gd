@@ -20,6 +20,15 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Eight slot machines, eight stakes",
+		"summary":
+		(
+			"Each of the eight slot machines now has its own buy-in, from $1 up to"
+			+ " $1,000,000,000, shown on its cabinet and in the interaction prompt. Prizes"
+			+ " scale with the buy-in, so every machine keeps the same 80% return."
+		)
+	},
+	{
 		"title": "One weapon at a time",
 		"summary":
 		(

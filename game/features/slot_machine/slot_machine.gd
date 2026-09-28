@@ -8,6 +8,10 @@ const FIRST_STOP_S := 1.2
 const STOP_INTERVAL_S := 0.9
 const FRAME_S := 0.1
 
+## Each machine instance in feature.tscn sets its own price; every peer loads
+## the same scene, so this needs no replication.
+@export var buy_in_cents: int = 100
+
 @export var state: Dictionary = initial_state()
 
 var _pending := false
@@ -47,7 +51,7 @@ func interaction_text() -> String:
 	if state["spinning"]:
 		return "Slot machine — spinning…"
 	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
-	var text := "Spin slot machine — $1"
+	var text := "Spin slot machine — %s" % PlayerMoney.format_money(buy_in_cents)
 	if wallet != null and wallet.balances.has(multiplayer.get_unique_id()):
 		text += (
 			" (you have %s)"
@@ -103,7 +107,7 @@ func request_spin() -> void:
 	var generation := _generation
 	var operator_name := player.display_name
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
-	var result: Dictionary = await wallet.spin(peer_id, id)
+	var result: Dictionary = await wallet.spin(peer_id, id, buy_in_cents)
 	if generation != _generation:
 		return
 	_pending = false

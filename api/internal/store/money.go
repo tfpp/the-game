@@ -22,12 +22,13 @@ type Spin struct {
 }
 
 // SlotPayout returns cents. Five equiprobable symbols give 125 combinations;
-// the five winning prizes total $100, for an exact 80% return on $1 spins.
-func SlotPayout(reels [3]int) int64 {
+// the five winning prizes total 100x wagerCents, for an exact 80% return
+// regardless of a machine's buy-in.
+func SlotPayout(reels [3]int, wagerCents int64) int64 {
 	if reels[0] < 0 || reels[0] >= 5 || reels[0] != reels[1] || reels[1] != reels[2] {
 		return 0
 	}
-	return [5]int64{3000, 2000, 1000, 1500, 2500}[reels[0]]
+	return [5]int64{3000, 2000, 1000, 1500, 2500}[reels[0]] * wagerCents / 100
 }
 
 func (s *Store) Money(ctx context.Context, accountID int64) (int64, error) {
@@ -36,8 +37,9 @@ func (s *Store) Money(ctx context.Context, accountID int64) (int64, error) {
 	return balance, err
 }
 
-// PlaySlot atomically charges and pays, and records the result for safe retries.
-func (s *Store) PlaySlot(ctx context.Context, accountID int64, id string, reels [3]int) (Spin, error) {
+// PlaySlot atomically charges wagerCents and pays, and records the result for
+// safe retries. wagerCents lets each slot machine set its own buy-in.
+func (s *Store) PlaySlot(ctx context.Context, accountID int64, id string, reels [3]int, wagerCents int64) (Spin, error) {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return Spin{}, err
@@ -58,8 +60,8 @@ func (s *Store) PlaySlot(ctx context.Context, accountID int64, id string, reels 
 		return Spin{}, err
 	}
 	result.Reels = reels
-	result.Payout = SlotPayout(reels)
-	err = tx.QueryRowContext(ctx, "UPDATE accounts SET money = money - 100 + ? WHERE id = ? AND money >= 100 RETURNING money", result.Payout, accountID).Scan(&result.Balance)
+	result.Payout = SlotPayout(reels, wagerCents)
+	err = tx.QueryRowContext(ctx, "UPDATE accounts SET money = money - ? + ? WHERE id = ? AND money >= ? RETURNING money", wagerCents, result.Payout, accountID, wagerCents).Scan(&result.Balance)
 	if errors.Is(err, sql.ErrNoRows) {
 		return Spin{}, ErrInsufficientMoney
 	}

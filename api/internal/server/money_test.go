@@ -44,7 +44,7 @@ func TestGameMoneyRequiresServerAndRetriesSafely(t *testing.T) {
 	if err := json.Unmarshal(first.Body.Bytes(), &spin); err != nil {
 		t.Fatal(err)
 	}
-	if spin.Balance != 1900+spin.Payout || spin.Payout != store.SlotPayout(spin.Reels) {
+	if spin.Balance != 1900+spin.Payout || spin.Payout != store.SlotPayout(spin.Reels, 100) {
 		t.Fatal(spin)
 	}
 	second := request(testKey, body)
@@ -53,6 +53,40 @@ func TestGameMoneyRequiresServerAndRetriesSafely(t *testing.T) {
 	}
 	stale := bytes.Replace(body, []byte(fmt.Sprint(h.now.Unix())), []byte(fmt.Sprint(h.now.Unix()-61)), 1)
 	if res := request(testKey, stale); res.Code != 400 {
+		t.Fatal(res.Code)
+	}
+}
+
+func TestGameMoneySpinAcceptsAPerMachineWager(t *testing.T) {
+	h := newHarness(t)
+	account, err := h.srv.store.CreateEmailAccount(context.Background(), "wager@example.com", "hash", "Wanda", h.now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := func(payload []byte) *httptest.ResponseRecorder {
+		req := httptest.NewRequest("POST", "/api/game/money", bytes.NewReader(payload))
+		mac := hmac.New(sha256.New, testKey)
+		mac.Write([]byte("game-money-v1\n"))
+		mac.Write(payload)
+		req.Header.Set("X-Game-Signature", hex.EncodeToString(mac.Sum(nil)))
+		res := httptest.NewRecorder()
+		h.h.ServeHTTP(res, req)
+		return res
+	}
+	body := []byte(fmt.Sprintf(`{"account_id":%d,"action":"spin","id":"%s","timestamp":%d,"wager_cents":1500}`, account.ID, strings.Repeat("f", 64), h.now.Unix()))
+	res := request(body)
+	if res.Code != 200 {
+		t.Fatal(res.Body.String())
+	}
+	var spin store.Spin
+	if err := json.Unmarshal(res.Body.Bytes(), &spin); err != nil {
+		t.Fatal(err)
+	}
+	if spin.Balance != 2000-1500+spin.Payout || spin.Payout != store.SlotPayout(spin.Reels, 1500) {
+		t.Fatal(spin)
+	}
+	tooBig := []byte(fmt.Sprintf(`{"account_id":%d,"action":"spin","id":"%s","timestamp":%d,"wager_cents":100000000001}`, account.ID, strings.Repeat("g", 64), h.now.Unix()))
+	if res := request(tooBig); res.Code != 400 {
 		t.Fatal(res.Code)
 	}
 }
