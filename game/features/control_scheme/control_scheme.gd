@@ -6,12 +6,15 @@ extends CanvasLayer
 ## away and corrects it once the local player's account name arrives from the server,
 ## unless the player has already picked a scheme by hand in the meantime. Real play time
 ## (not wall-clock time since launch) unlocks switching to the other layout after
-## UNLOCK_SECONDS; a small corner button then lets a player switch between the two.
-## The unlocked progress and chosen scheme persist locally per install, the same way the
-## account session does (`core/net/account_api.gd`): localStorage on the web, a
-## ConfigFile natively.
+## UNLOCK_SECONDS; a "Controls" entry in the Esc menu then lets a player switch between
+## the two. The unlocked progress and chosen scheme persist locally per install, the
+## same way the account session does (`core/net/account_api.gd`): localStorage on the
+## web, a ConfigFile natively.
 
 const MODAL_GROUP := &"modal_ui"
+## Nodes in this group get a link in the Esc menu (`ui/login/login_screen.gd`); they
+## must implement `esc_menu_label() -> String` and `esc_menu_open() -> void`.
+const ESC_MENU_GROUP := &"esc_menu_links"
 const NATIVE_STORE := "user://controls.cfg"
 const STORAGE_KEY := "the-game.controls"
 const UNLOCK_SECONDS := 300.0
@@ -25,7 +28,6 @@ var played_s := 0.0
 var _panel: Control
 var _status: Label
 var _switch_button: Button
-var _open_button: Button
 var _save_in := SAVE_INTERVAL_S
 ## True on a fresh install until the local player's account name is known, so the
 ## guessed default can still be corrected for DoctorDalek before anyone notices.
@@ -35,6 +37,7 @@ var _default_pending := false
 func _ready() -> void:
 	layer = 9
 	Controls.apply_scheme(_load())
+	add_to_group(ESC_MENU_GROUP)
 	_build()
 	_refresh()
 
@@ -48,7 +51,6 @@ func _process(delta: float) -> void:
 		if _save_in <= 0.0:
 			_save_in = SAVE_INTERVAL_S
 			_save()
-	_open_button.visible = not _other_modal_ui_open()
 	if _panel.visible:
 		_refresh()
 
@@ -69,10 +71,12 @@ static func remaining_text(remaining_seconds: float) -> String:
 	return "%d:%02d" % [whole / 60, whole % 60]
 
 
-func _other_modal_ui_open() -> bool:
-	if is_in_group(MODAL_GROUP):
-		return false
-	return get_tree().get_first_node_in_group(MODAL_GROUP) != null
+func esc_menu_label() -> String:
+	return "Controls"
+
+
+func esc_menu_open() -> void:
+	_open()
 
 
 func _open() -> void:
@@ -199,22 +203,6 @@ static func _save_value(value: String) -> void:
 
 
 func _build() -> void:
-	var corner := MarginContainer.new()
-	corner.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	corner.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	corner.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	corner.offset_left = -132.0
-	corner.offset_top = -60.0
-	corner.offset_right = -12.0
-	corner.offset_bottom = -12.0
-	corner.theme = UI_THEME
-	add_child(corner)
-	_open_button = Button.new()
-	_open_button.text = "Controls"
-	_open_button.theme_type_variation = &"SecondaryButton"
-	_open_button.pressed.connect(_open)
-	corner.add_child(_open_button)
-
 	var backdrop := ColorRect.new()
 	backdrop.color = Color(0.05, 0.06, 0.08, 0.6)
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)

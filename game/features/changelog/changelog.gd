@@ -1,5 +1,6 @@
 extends CanvasLayer
-## In-game feature changelog: press L to see what's shipped, Esc or L again to close.
+## In-game feature changelog: open "Release notes" from the Esc menu (or press L) to see
+## what's shipped, Esc or L again to close.
 ##
 ## The entries live in entries.gd so new features can add to the list without touching
 ## this script (see AGENTS.md for the rule that every new feature must add one). This
@@ -8,15 +9,18 @@ extends CanvasLayer
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const TOGGLE_ACTION := &"toggle_changelog"
 const MODAL_GROUP := &"modal_ui"
+## Nodes in this group get a link in the Esc menu (`ui/login/login_screen.gd`); they
+## must implement `esc_menu_label() -> String` and `esc_menu_open() -> void`.
+const ESC_MENU_GROUP := &"esc_menu_links"
 const PANEL_WIDTH := 420.0
 const PANEL_MAX_HEIGHT := 480.0
 
 var _backdrop: Control
-var _hint: Label
 
 
 func _ready() -> void:
 	Controls.ensure_action(TOGGLE_ACTION, [_key_event(KEY_L)])
+	add_to_group(ESC_MENU_GROUP)
 	_build()
 
 
@@ -33,8 +37,12 @@ func _input(event: InputEvent) -> void:
 		_open()
 
 
-func _process(_delta: float) -> void:
-	_hint.visible = not _is_open()
+func esc_menu_label() -> String:
+	return "Release notes"
+
+
+func esc_menu_open() -> void:
+	_open()
 
 
 ## One BBCode line for `entry`, tolerant of missing keys so a malformed entry can't
@@ -69,18 +77,6 @@ func _is_open() -> bool:
 
 
 func _build() -> void:
-	_hint = Label.new()
-	_hint.text = "[L] What's new"
-	_hint.set_anchors_and_offsets_preset(
-		Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 12.0
-	)
-	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_hint.add_theme_font_size_override("font_size", 14)
-	_hint.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 0.6))
-	_hint.add_theme_color_override("font_outline_color", Color.BLACK)
-	_hint.add_theme_constant_override("outline_size", 4)
-	add_child(_hint)
-
 	_backdrop = ColorRect.new()
 	_backdrop.color = Color(0.05, 0.06, 0.08, 0.6)
 	_backdrop.visible = false

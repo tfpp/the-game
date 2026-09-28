@@ -31,3 +31,12 @@ func test_every_shipped_entry_has_a_title_and_summary() -> void:
 	for entry: Dictionary in ChangelogEntries.ENTRIES:
 		assert_false(str(entry.get("title", "")).is_empty(), "entry missing a title")
 		assert_false(str(entry.get("summary", "")).is_empty(), "entry missing a summary")
+
+
+func test_registers_a_release_notes_link_in_the_esc_menu() -> void:
+	var node := Changelog.new()
+	add_child_autofree(node)
+	assert_true(node.is_in_group(&"esc_menu_links"))
+	assert_eq(node.esc_menu_label(), "Release notes")
+	node.esc_menu_open()
+	assert_true(node.is_in_group(&"modal_ui"))

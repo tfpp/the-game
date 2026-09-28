@@ -13,6 +13,9 @@ extends CanvasLayer
 ## Styled with Kenney's UI Pack (ui/theme/ui_theme.tres).
 
 const MODAL_GROUP := &"modal_ui"
+## Feature panels that want an entry here (e.g. Controls, Release notes) join this group
+## and implement `esc_menu_label() -> String` and `esc_menu_open() -> void`.
+const ESC_MENU_LINKS_GROUP := &"esc_menu_links"
 const PANEL_WIDTH := 400.0
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const MESSAGE_COLOR := Color(0.3, 0.4, 0.55)
@@ -303,6 +306,7 @@ func _show_game_menu(message: String) -> void:
 		if OS.has_feature("web") and not _account.get("discord_linked", false):
 			_link("Link your Discord account", _start_discord.bind(true))
 		_link("Change display name", _show_pick_name.bind(""))
+	_add_esc_menu_links()
 	_game_button("Leave and play offline", _leave, false)
 	if _api != null and _api.has_session():
 		_link("Sign out", _sign_out)
@@ -313,6 +317,7 @@ func _show_offline_menu() -> void:
 	_clear("Menu", "")
 	_menu_open = true
 	_resume_button()
+	_add_esc_menu_links()
 	if not OS.has_feature("web"):
 		_link("Quit", get_tree().quit)
 
@@ -391,6 +396,26 @@ func _start_discord(link: bool) -> void:
 
 func _resume_button() -> void:
 	_game_button("Resume", _close, true)
+
+
+## Adds a link for every feature panel registered in ESC_MENU_LINKS_GROUP (Controls,
+## Release notes, ...), alphabetically by label so the order doesn't depend on feature
+## load order.
+func _add_esc_menu_links() -> void:
+	var entries := get_tree().get_nodes_in_group(ESC_MENU_LINKS_GROUP)
+	entries.sort_custom(_esc_menu_label_is_before)
+	for entry: Node in entries:
+		_link(entry.esc_menu_label(), _open_esc_menu_link.bind(entry))
+
+
+## Closes this menu and hands off to the feature panel's own open/close handling.
+func _open_esc_menu_link(entry: Node) -> void:
+	_close()
+	entry.esc_menu_open()
+
+
+static func _esc_menu_label_is_before(a: Node, b: Node) -> bool:
+	return a.esc_menu_label() < b.esc_menu_label()
 
 
 ## A button that returns to the game: it starts input, then runs `action`. It fires on
