@@ -4,7 +4,7 @@ extends CanvasLayer
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 
 var _body_font: Font = ThemeDB.fallback_font.duplicate()
-var _heading_font: Font = preload("res://assets/kenney/ui/kenney_future.ttf").duplicate()
+var _heading_font: Font = preload("res://assets/kenney/ui/Font/Kenney Future.ttf").duplicate()
 var _panel: Control
 var _preview: InventoryPreview
 var _slots: Array[Button] = []

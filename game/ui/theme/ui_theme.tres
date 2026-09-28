@@ -1,14 +1,14 @@
 [gd_resource type="Theme" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/kenney/ui/panel.png" id="panel"]
-[ext_resource type="Texture2D" path="res://assets/kenney/ui/button_blue.png" id="blue"]
-[ext_resource type="Texture2D" path="res://assets/kenney/ui/button_blue_hover.png" id="blue_hover"]
-[ext_resource type="Texture2D" path="res://assets/kenney/ui/button_blue_pressed.png" id="blue_pressed"]
-[ext_resource type="Texture2D" path="res://assets/kenney/ui/button_grey.png" id="grey"]
-[ext_resource type="Texture2D" path="res://assets/kenney/ui/button_grey_hover.png" id="grey_hover"]
-[ext_resource type="Texture2D" path="res://assets/kenney/ui/button_grey_pressed.png" id="grey_pressed"]
-[ext_resource type="Texture2D" path="res://assets/kenney/ui/input.png" id="input"]
-[ext_resource type="FontFile" path="res://assets/kenney/ui/kenney_future.ttf" id="font_heading"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Grey/Default/button_square_depth_border.png" id="panel"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Blue/Default/button_rectangle_depth_flat.png" id="blue"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Blue/Default/button_rectangle_depth_gradient.png" id="blue_hover"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Blue/Default/button_rectangle_flat.png" id="blue_pressed"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Grey/Default/button_rectangle_depth_flat.png" id="grey"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Grey/Default/button_rectangle_depth_gradient.png" id="grey_hover"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Grey/Default/button_rectangle_flat.png" id="grey_pressed"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Extra/Default/input_outline_rectangle.png" id="input"]
+[ext_resource type="FontFile" path="res://assets/kenney/ui/Font/Kenney Future.ttf" id="font_heading"]
 
 [sub_resource type="StyleBoxTexture" id="panel"]
 content_margin_left = 28.0

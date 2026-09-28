@@ -1,8 +1,8 @@
 [gd_resource type="Theme" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/kenney/ui-space/panel_glass_notch_br.png" id="glass_br"]
-[ext_resource type="Texture2D" path="res://assets/kenney/ui-space/panel_glass_notch_bl.png" id="glass_bl"]
-[ext_resource type="FontFile" path="res://assets/kenney/ui/kenney_future.ttf" id="font_heading"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui-space/PNG/Extra/Default/panel_glass_notch_br.png" id="glass_br"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui-space/PNG/Extra/Default/panel_glass_notch_bl.png" id="glass_bl"]
+[ext_resource type="FontFile" path="res://assets/kenney/ui/Font/Kenney Future.ttf" id="font_heading"]
 
 [sub_resource type="StyleBoxTexture" id="glass_left"]
 content_margin_left = 16.0
