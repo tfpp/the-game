@@ -11,6 +11,11 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Remembered leaderboard",
+		"summary":
+		"Offline players stay ranked; signed-in scores survive reconnects and server restarts."
+	},
+	{
 		"title": "Scavenging",
 		"summary":
 		"Search wrecked cars in the parking garage with Use for wallets, watches, cash and more."

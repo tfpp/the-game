@@ -7,6 +7,9 @@
 properties/0/path = NodePath(".:jumps")
 properties/0/spawn = true
 properties/0/replication_mode = 2
+properties/1/path = NodePath(".:entries")
+properties/1/spawn = true
+properties/1/replication_mode = 2
 
 [node name="Leaderboard" type="Node"]
 script = ExtResource("1")
