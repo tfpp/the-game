@@ -2,7 +2,6 @@
 
 [ext_resource type="Texture2D" path="res://assets/kenney/ui-space/panel_glass_notch_br.png" id="glass_br"]
 [ext_resource type="Texture2D" path="res://assets/kenney/ui-space/panel_glass_notch_bl.png" id="glass_bl"]
-[ext_resource type="Texture2D" path="res://assets/kenney/ui-space/panel_glass_notch_tr.png" id="glass_tr"]
 [ext_resource type="FontFile" path="res://assets/kenney/ui/kenney_future.ttf" id="font_heading"]
 
 [sub_resource type="StyleBoxTexture" id="glass_left"]
@@ -27,23 +26,7 @@ texture_margin_top = 16.0
 texture_margin_right = 16.0
 texture_margin_bottom = 20.0
 
-[sub_resource type="StyleBoxTexture" id="glass_bottom_left"]
-content_margin_left = 16.0
-content_margin_top = 12.0
-content_margin_right = 22.0
-content_margin_bottom = 10.0
-texture = ExtResource("glass_tr")
-texture_margin_left = 16.0
-texture_margin_top = 20.0
-texture_margin_right = 20.0
-texture_margin_bottom = 16.0
-
 [resource]
-HudKey/base_type = &"Label"
-HudKey/colors/font_color = Color(0.2, 0.24, 0.33, 1)
-HudKey/font_sizes/font_size = 13
-HudPanelBottomLeft/base_type = &"PanelContainer"
-HudPanelBottomLeft/styles/panel = SubResource("glass_bottom_left")
 HudPanelLeft/base_type = &"PanelContainer"
 HudPanelLeft/styles/panel = SubResource("glass_left")
 HudPanelRight/base_type = &"PanelContainer"

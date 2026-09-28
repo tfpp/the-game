@@ -1,6 +1,6 @@
 extends CanvasLayer
-## Corner readouts: version (top left), players and connection (top right) and controls
-## (bottom left). Styled with Kenney's UI Pack - Space Expansion. Desktop play uses
+## Corner readouts: version (top left) and players and connection (top right). Styled
+## with Kenney's UI Pack - Space Expansion. Desktop play uses
 ## pointer lock; touch and controller play can keep the pointer free.
 
 const REFRESH_S := 0.25
@@ -40,13 +40,6 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
-	$Corners/Keys.visible = not Controls.touch_visible()
-	var pad := Controls.device == Controls.Device.GAMEPAD
-	# Read from the live bindings, so rebinding in Settings > Controls shows up here.
-	$Corners/Keys/Grid/Key0.text = InputLabels.movement_label(pad)
-	$Corners/Keys/Grid/Key1.text = InputLabels.action_label(&"jump", pad)
-	$Corners/Keys/Grid/Key2.text = "Right stick" if pad else "Mouse"
-	$Corners/Keys/Grid/Key3.text = "Start" if pad else "Esc"
 	_refresh_in -= delta
 	if _refresh_in <= 0.0:
 		_refresh_in = REFRESH_S

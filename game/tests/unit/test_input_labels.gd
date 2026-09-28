@@ -1,6 +1,6 @@
 extends GutTest
-## `ui/input_labels.gd`: player-facing names for bindings, used by the HUD and the
-## Controls settings page.
+## `ui/input_labels.gd`: player-facing names for bindings, used by the Controls
+## settings page.
 
 var _saved_scheme: int
 
@@ -31,14 +31,6 @@ func test_jump_label_collapses_the_wheel_and_splits_by_device() -> void:
 	Controls.apply_scheme(Controls.Scheme.RIGHT_HANDED)
 	assert_eq(InputLabels.action_label(&"jump", false), "Space / Wheel")
 	assert_eq(InputLabels.action_label(&"jump", true), "A / Cross")
-
-
-func test_movement_label_follows_the_scheme() -> void:
-	Controls.apply_scheme(Controls.Scheme.RIGHT_HANDED)
-	assert_eq(InputLabels.movement_label(false), "W A S D")
-	Controls.apply_scheme(Controls.Scheme.LEFT_HANDED)
-	assert_eq(InputLabels.movement_label(false), "Arrow keys")
-	assert_eq(InputLabels.movement_label(true), "Left stick")
 
 
 func test_sided_modifiers_name_their_side() -> void:

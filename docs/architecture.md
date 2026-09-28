@@ -49,8 +49,7 @@ Browser ─────────┘  wss://game.chrisbox.dev (Cloudflare Tunn
   name, link Discord, leave and play offline, sign out. Buttons that return to the game
   capture the mouse on press, inside the click browsers require for pointer lock. On the
   web, Esc can't re-lock the pointer, so it leaves the menu up; natively it resumes.
-- **HUD corners:** version (top left), players and connection (top right), controls
-  (bottom left).
+- **HUD corners:** version (top left), players and connection (top right).
 
 ### Networking and authority
 

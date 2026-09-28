@@ -1,7 +1,7 @@
 class_name InputLabels
 extends RefCounted
-## Player-facing names for input bindings ("W", "Left click", "A / Cross"), shared by
-## the HUD's key hints and the Controls settings page so both follow rebinding.
+## Player-facing names for input bindings ("W", "Left click", "A / Cross"), used by the
+## Controls settings page so it follows rebinding.
 
 const PAD_BUTTONS := {
 	JOY_BUTTON_A: "A / Cross",
@@ -41,8 +41,6 @@ const ARROW_KEYS := {
 	KEY_LEFT: "Left arrow",
 	KEY_RIGHT: "Right arrow",
 }
-
-const MOVE_ACTIONS: Array[StringName] = [&"move_forward", &"move_left", &"move_back", &"move_right"]
 
 
 ## The platform's name for a modifier key ("Command" and "Option" on a Mac, "Ctrl",
@@ -110,26 +108,3 @@ static func action_label(action: StringName, pad: bool) -> String:
 		if not labels.has(label):
 			labels.append(label)
 	return " / ".join(labels)
-
-
-## HUD hint for walking: "Left stick" on a controller, "Arrow keys" for the arrows, or
-## the four keys in forward-left-back-right order ("W A S D").
-static func movement_label(pad: bool) -> String:
-	if pad:
-		return "Left stick"
-	var keys: Array[String] = []
-	var arrows := true
-	for action: StringName in MOVE_ACTIONS:
-		var first := _first_label(action)
-		arrows = arrows and first.ends_with(" arrow")
-		keys.append(first if not first.is_empty() else "?")
-	return "Arrow keys" if arrows else " ".join(keys)
-
-
-static func _first_label(action: StringName) -> String:
-	if not InputMap.has_action(action):
-		return ""
-	for event: InputEvent in InputMap.action_get_events(action):
-		if is_keyboard_or_mouse(event):
-			return event_label(event)
-	return ""
