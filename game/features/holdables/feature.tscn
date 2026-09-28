@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/holdables/holdables.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://features/holdables/item_pickup.tscn" id="2_pickup"]
+
+[node name="Holdables" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Hands" type="Node3D" parent="."]
+
+[node name="HandSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Hands")
+
+[node name="Thrown" type="Node3D" parent="."]
+
+[node name="ThrownSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Thrown")
+
+[node name="Pickups" type="Node3D" parent="."]
+
+[node name="Pistol" parent="Pickups" instance=ExtResource("2_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.35, 9)
+item_id = "pistol"
+
+[node name="Banana" parent="Pickups" instance=ExtResource("2_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.35, 9)
+item_id = "banana"
+
+[node name="Ball" parent="Pickups" instance=ExtResource("2_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.35, 9)
+item_id = "ball"

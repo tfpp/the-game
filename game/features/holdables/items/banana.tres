@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/holdables/item_definition.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://features/holdables/items/banana_view.tscn" id="2_view"]
+
+[resource]
+script = ExtResource("1_script")
+id = "banana"
+display_name = "Banana"
+category = 1
+view_scene = ExtResource("2_view")
