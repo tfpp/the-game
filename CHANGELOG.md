@@ -9,8 +9,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 ## [edge]
 
-- Add a Leaderboard entry to the Esc menu with tabs ranking every connected player by
-  money, times jumped and other players killed, highest first.
+- Add a day/night cycle: a full day repeats every 48 real-time minutes, with the sun
+  swinging across the sky, the skybox fading between day and night, and ambient
+  lighting dimming at night. It runs off the real-world clock, so it stays in sync
+  for everyone without any extra networking.
 - Rank connected players by wallet balance and show a swarm of flies over the poorest
   80% of them, rounded down; nobody is flagged with fewer than two connected wallets.
 - Frogs jump twice as high by default now, with a new "Frog jump height" slider in
@@ -35,6 +37,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Close a Discord feature's issue automatically when the agent makes no changes for it.
 - Show each agent run's token usage and estimated cost in its PR and in the Discord thread.
 - Give the girl model a smaller collision hitbox and 15% less passive income.
+- Add `/usage` to the Discord bot: it shows how much of Claude's 5-hour and weekly usage
+  limits the agent has used, and when they reset.
+- Add sprays: press T to spray a decal on the surface you're looking at, visible to
+  everyone (placeholder image for now).
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
