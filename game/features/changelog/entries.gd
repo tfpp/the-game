@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Girl model balance",
+		"summary": "The girl model has a smaller hitbox and earns 15% less passive income."
+	},
+	{
 		"title": "Dev elevator",
 		"summary":
 		(

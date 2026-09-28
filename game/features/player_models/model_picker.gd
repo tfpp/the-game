@@ -101,7 +101,7 @@ func _build() -> void:
 	heading.theme_type_variation = &"HeadingLabel"
 	box.add_child(heading)
 	var status := Label.new()
-	status.text = "Pick your avatar's body model. Everyone sees your choice."
+	status.text = "Girl: smaller hitbox, 15% less income. Everyone sees your choice."
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(status)
 	_preview = InventoryPreview.new()

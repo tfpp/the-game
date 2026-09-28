@@ -1,12 +1,15 @@
 class_name PlayerModels
 extends Node
 ## Attaches a cosmetic rig to each existing Player, including late joiners and
-## respawns. Player collision, movement, authority and camera ownership stay intact.
+## respawns. The girl body uses a smaller collision capsule; movement, authority and
+## camera ownership stay intact.
 ##
 ## Also holds each player's chosen body model (see `model_picker.gd`), replicated
 ## from the server like clothing so everyone sees the same silhouette.
 
 const VALID_BODY_TYPES: Array[String] = ["default", "girl", "penguin"]
+const GIRL_RADIUS_SCALE := 0.6
+const GIRL_HEIGHT_SCALE := 0.75
 
 ## Replicated (server -> everyone). peer_id -> "girl"; peers without an entry use
 ## the default body type. See the synchronizer config in feature.tscn.
@@ -23,6 +26,7 @@ func _process(_delta: float) -> void:
 		var player := node as Player
 		if player == null or player.is_queued_for_deletion():
 			continue
+		_apply_collider(player)
 		var body := player.get_node("Body") as Node3D
 		if body.has_node("Avatar"):
 			continue
@@ -34,6 +38,22 @@ func _process(_delta: float) -> void:
 		body.add_child(model)
 		(body.get_node("Mesh") as Node3D).hide()
 		(body.get_node("Visor") as Node3D).hide()
+
+
+func _apply_collider(player: Player) -> void:
+	var collider := player.get_node("Collider") as CollisionShape3D
+	var capsule := collider.shape as CapsuleShape3D
+	var girl := type_for(player.get_multiplayer_authority()) == "girl"
+	var radius := player.movement.hull_radius_m() * (GIRL_RADIUS_SCALE if girl else 1.0)
+	var height := player.movement.hull_height_m() * (GIRL_HEIGHT_SCALE if girl else 1.0)
+	var offset := (height - player.movement.hull_height_m()) * 0.5
+	if is_equal_approx(capsule.radius, radius) and is_equal_approx(capsule.height, height):
+		return
+	var shape := CapsuleShape3D.new()
+	shape.radius = radius
+	shape.height = height
+	collider.shape = shape
+	collider.position.y = offset
 
 
 ## The body type a peer sees for themselves and everyone else. Falls back to

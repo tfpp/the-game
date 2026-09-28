@@ -42,13 +42,22 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		ID          string `json:"id"`
 		Timestamp   int64  `json:"timestamp"`
 		AmountCents int64  `json:"amount_cents"`
+		IncomeCents int64  `json:"income_cents"`
 	}
 	if json.Unmarshal(raw, &req) != nil || req.AccountID <= 0 || req.Timestamp < s.cfg.Now().Unix()-60 || req.Timestamp > s.cfg.Now().Unix()+60 {
 		writeError(w, 400, "bad_request", "invalid request")
 		return
 	}
 	if req.Action == "balance" {
-		balance, err := s.store.AccrueIncome(r.Context(), req.AccountID, s.cfg.Now().Unix())
+		// Older game servers omit the rate; only the two model rates are accepted.
+		if req.IncomeCents == 0 {
+			req.IncomeCents = 500
+		}
+		if req.IncomeCents != 500 && req.IncomeCents != 425 {
+			writeError(w, 400, "bad_request", "invalid income rate")
+			return
+		}
+		balance, err := s.store.AccrueIncome(r.Context(), req.AccountID, s.cfg.Now().Unix(), req.IncomeCents)
 		if err != nil {
 			s.internalError(w, r, err)
 			return
