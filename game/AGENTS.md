@@ -20,6 +20,9 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 - `features/<name>/`: one directory per feature, containing its scenes and scripts.
 - `world/`: level geometry (CSG for now).
 - `ui/`: HUD and menus.
+- `assets/kenney/`: whole Kenney packs (CC0; see its README). Exports ship only the
+  files the game references (`scripts/unused_assets.gd`), so write asset paths as
+  full literal `res://` strings, not built at runtime.
 - `tests/`: GUT tests (`test_*.gd`, `extends GutTest`). Put feature tests in
   `tests/features/<name>/`.
 
