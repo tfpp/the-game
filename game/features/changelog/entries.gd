@@ -11,6 +11,11 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Wandering gnomes",
+		"summary":
+		"Gnome burrows hug the outer walls, dash to far-off holes along real routed paths, and dodge you."
+	},
+	{
 		"title": "Shooting gallery",
 		"summary":
 		"A Doom-style arena of killable, gory humanoid dummies. Every weapon can now hurt animals too."
