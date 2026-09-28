@@ -231,6 +231,13 @@ dispatch's `agent` input. Claude defaults to Opus 5.5 (`claude-opus-5-5`) with l
 Codex defaults to GPT-6 Astra (`gpt-6-astra`) with low reasoning. Pi remains local-only
 until its runner and authentication are wired up.
 
+**Subscription usage:** Discord `/usage` privately reports Claude and Codex limits,
+independently cached for one minute. Claude probes rate-limit headers; Codex reads the
+ChatGPT usage endpoint with `BOT_CODEX_AUTH_FILE`, a separately mounted `auth.json`.
+The bot does not rotate Codex credentials; the CLI/operator refreshes the read-only
+login file. Provider failures do not hide the other's report. This is account quota,
+not the per-run token/cost metadata in PR notifications.
+
 ## Merging
 
 Approvals come from Discord, and a single coordinator in the bot applies them in order

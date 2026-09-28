@@ -1,6 +1,6 @@
 // Command bot is the Discord bot: /feature and /revise start agent runs through the
 // GitHub App, and GitHub webhooks report their progress back to Discord threads.
-// /usage shows the agent's Claude usage limits.
+// /usage shows the agent's Claude and Codex subscription usage limits.
 //
 // Configuration comes from the environment (see bot/README.md). Secrets are read from
 // files, never from variables.
@@ -28,6 +28,7 @@ import (
 	"github.com/disgoorg/snowflake/v2"
 
 	"github.com/tfpp/the-game/bot/internal/claude"
+	"github.com/tfpp/the-game/bot/internal/codex"
 	"github.com/tfpp/the-game/bot/internal/core"
 	"github.com/tfpp/the-game/bot/internal/discordbot"
 	"github.com/tfpp/the-game/bot/internal/github"
@@ -207,6 +208,12 @@ func run(log *slog.Logger) error {
 	}, st, gh, dc)
 	dc.Service = svc
 	dc.Claude = claudeClient
+	// Read the optional auth file on cache misses so replacing a mounted login
+	// takes effect without restarting the bot. Never write/refresh this shared login.
+	dc.Codex = &codex.Client{
+		AuthFile: env("BOT_CODEX_AUTH_FILE", "/run/secrets/bot/codex-auth.json"),
+		HTTP:     &http.Client{Timeout: 30 * time.Second},
+	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()

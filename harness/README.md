@@ -148,7 +148,9 @@ bounds numeric values and validates model IDs before rendering them. The human P
      key is needed. The secret is a reusable login credential: protect it like a password.
      Refreshed tokens are **not** written back to GitHub Secrets; if login expires or
      refresh fails, log in locally again and replace `CODEX_AUTH_JSON`. Concurrent runs
-     sharing one login may also require reauthentication.
+     sharing one login may also require reauthentication. Discord `/usage` needs a
+     separate mount of that account's `auth.json` on the bot via `BOT_CODEX_AUTH_FILE`;
+     GitHub Secrets are not available to the bot. See [bot setup](../bot/README.md).
 3. **Push identity:** pick one. Pushes made with either identity trigger CI, which
    `GITHUB_TOKEN` pushes don't.
    - **Own GitHub App (preferred; the v0.5 bot needs it anyway).** Create an App with
