@@ -16,6 +16,10 @@ const ENTRIES: Array[Dictionary] = [
 		"Offline players stay ranked; signed-in scores survive reconnects and server restarts.",
 	},
 	{
+		"title": "Faster mobile",
+		"summary": "Phones and tablets render fewer pixels and lights so the game runs smoother.",
+	},
+	{
 		"title": "Modelled casino furniture and textured surfaces",
 		"summary":
 		(
