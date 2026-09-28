@@ -87,11 +87,16 @@ static func step(
 	on_floor: bool,
 	jump_pressed: bool,
 	cfg: MovementConfig,
-	dt: float
+	dt: float,
+	input_strength: float = 1.0
 ) -> StepResult:
 	var vel := velocity
 	var grounded := is_grounded(on_floor, vel, cfg)
-	var wish_speed := cfg.max_speed_m() if not wish_dir.is_zero_approx() else 0.0
+	var wish_speed := (
+		cfg.max_speed_m() * clampf(input_strength, 0.0, 1.0)
+		if not wish_dir.is_zero_approx()
+		else 0.0
+	)
 	var jumped := false
 
 	if grounded and jump_pressed:
