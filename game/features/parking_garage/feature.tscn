@@ -1,0 +1,912 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="PackedScene" path="res://features/parking_garage/car_wreck.tscn" id="1_car"]
+[ext_resource type="PackedScene" path="res://features/parking_garage/fluorescent_fixture.tscn" id="2_fixture"]
+[ext_resource type="Script" path="res://features/parking_garage/garage_door.gd" id="3_door"]
+[ext_resource type="Script" path="res://features/parking_garage/stairs_flight.gd" id="4_stairs"]
+[ext_resource type="Script" path="res://features/parking_garage/garage_ambience.gd" id="5_ambience"]
+[ext_resource type="Script" path="res://features/parking_garage/garage_drip.gd" id="6_drip"]
+[ext_resource type="Material" path="res://world/materials/proto_dark.tres" id="7_floor"]
+[ext_resource type="Material" path="res://world/materials/proto_wall.tres" id="8_wall"]
+[ext_resource type="Material" path="res://features/parking_garage/materials/puddle.tres" id="9_puddle"]
+[ext_resource type="Material" path="res://features/parking_garage/materials/paint_yellow.tres" id="10_yellow"]
+[ext_resource type="Material" path="res://features/parking_garage/materials/paint_white.tres" id="11_white"]
+[ext_resource type="Material" path="res://features/parking_garage/materials/city_building.tres" id="12_building"]
+[ext_resource type="Material" path="res://features/parking_garage/materials/city_window.tres" id="13_window"]
+[ext_resource type="Script" path="res://features/dev_elevator/slum_arrival_point.gd" id="14_slum_arrival"]
+
+[sub_resource type="BoxMesh" id="PuddleMesh"]
+size = Vector3(1, 0.02, 1)
+
+[node name="ParkingGarage" type="Node3D"]
+
+[node name="Entrance" type="Node3D" parent="."]
+position = Vector3(12, 0, 31)
+
+[node name="Floor" type="CSGBox3D" parent="Entrance"]
+position = Vector3(0, -0.1, 0)
+size = Vector3(2.4, 0.2, 2.4)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="Entrance"]
+position = Vector3(0, 2.6, 0)
+size = Vector3(2.4, 0.2, 2.4)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="BackWall" type="CSGBox3D" parent="Entrance"]
+position = Vector3(0, 1.3, 1.3)
+size = Vector3(2.4, 2.6, 0.2)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="LeftWall" type="CSGBox3D" parent="Entrance"]
+position = Vector3(-1.3, 1.3, 0)
+size = Vector3(0.2, 2.6, 2.4)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="RightWall" type="CSGBox3D" parent="Entrance"]
+position = Vector3(1.3, 1.3, 0)
+size = Vector3(0.2, 2.6, 2.4)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Door" type="CSGBox3D" parent="Entrance"]
+position = Vector3(0, 1.1, 1.15)
+size = Vector3(1.1, 2.1, 0.08)
+material = ExtResource("8_wall")
+use_collision = true
+script = ExtResource("3_door")
+destination = NodePath("../../Garage/GarageArrival")
+door_label = "Enter the parking garage"
+
+[node name="EntranceArrival" type="Marker3D" parent="Entrance"]
+position = Vector3(0, 1.2, -1)
+
+[node name="Sign" type="Label3D" parent="Entrance"]
+position = Vector3(0, 2.3, 1.15)
+billboard = 1
+text = "STAFF ONLY
+PARKING GARAGE ACCESS"
+font_size = 20
+outline_size = 6
+
+[node name="Light" type="OmniLight3D" parent="Entrance"]
+position = Vector3(0, 2.2, 0)
+light_color = Color(0.8, 0.85, 0.9, 1)
+light_energy = 0.8
+omni_range = 4.0
+
+[node name="Garage" type="Node3D" parent="."]
+position = Vector3(0, 0, 600)
+
+[node name="GarageArrival" type="Marker3D" parent="Garage"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -10, 1.2, -5)
+script = ExtResource("14_slum_arrival")
+slum_name = "Parking Garage"
+
+[node name="GarageDoor" type="CSGBox3D" parent="Garage"]
+position = Vector3(-10, 1.1, -5.6)
+size = Vector3(1.1, 2.1, 0.08)
+material = ExtResource("8_wall")
+use_collision = true
+script = ExtResource("3_door")
+destination = NodePath("../../Entrance/EntranceArrival")
+door_label = "Back to the casino"
+
+[node name="GarageDoorSign" type="Label3D" parent="Garage"]
+position = Vector3(-10, 2.3, -5.6)
+billboard = 1
+text = "EMPLOYEE ENTRANCE"
+font_size = 18
+outline_size = 6
+
+[node name="Floor0MiddleBand" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, -0.15, 0.5)
+size = Vector3(36, 0.3, 17)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor0NorthStrip" type="CSGBox3D" parent="Garage"]
+position = Vector3(2, -0.15, -11)
+size = Vector3(32, 0.3, 6)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor0SouthStrip" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, -0.15, 11.5)
+size = Vector3(36, 0.3, 5)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor1MiddleBand" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 3.15, 0.5)
+size = Vector3(36, 0.3, 17)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor1NorthStrip" type="CSGBox3D" parent="Garage"]
+position = Vector3(2, 3.15, -11)
+size = Vector3(32, 0.3, 6)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor1SouthStripWest" type="CSGBox3D" parent="Garage"]
+position = Vector3(-5, 3.15, 11.5)
+size = Vector3(26, 0.3, 5)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor1SouthStripEast" type="CSGBox3D" parent="Garage"]
+position = Vector3(17.5, 3.15, 11.5)
+size = Vector3(1, 0.3, 5)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor2MiddleBand" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 6.45, 0.5)
+size = Vector3(36, 0.3, 17)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor2NorthStrip" type="CSGBox3D" parent="Garage"]
+position = Vector3(2, 6.45, -11)
+size = Vector3(32, 0.3, 6)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor2SouthStripWest" type="CSGBox3D" parent="Garage"]
+position = Vector3(-17.5, 6.45, 11.5)
+size = Vector3(1, 0.3, 5)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor2SouthStripEast" type="CSGBox3D" parent="Garage"]
+position = Vector3(5, 6.45, 11.5)
+size = Vector3(26, 0.3, 5)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="RoofMiddleBand" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 9.45, 0.5)
+size = Vector3(36, 0.3, 17)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="RoofNorthStrip" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 9.45, -11)
+size = Vector3(36, 0.3, 6)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="RoofSouthStrip" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 9.45, 11.5)
+size = Vector3(36, 0.3, 5)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Floor0NorthWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 1.5, -14)
+size = Vector3(36, 3, 0.3)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor0WestWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(-18, 1.5, 0)
+size = Vector3(0.3, 3, 28)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor0EastWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(18, 1.5, 0)
+size = Vector3(0.3, 3, 28)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor0KneeWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 0.5, 14)
+size = Vector3(36, 1, 0.3)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor1NorthWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 4.8, -14)
+size = Vector3(36, 3, 0.3)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor1WestWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(-18, 4.8, 0)
+size = Vector3(0.3, 3, 28)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor1EastWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(18, 4.8, 0)
+size = Vector3(0.3, 3, 28)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor1KneeWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 3.8, 14)
+size = Vector3(36, 1, 0.3)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor2NorthWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 8.1, -14)
+size = Vector3(36, 3, 0.3)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor2WestWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(-18, 8.1, 0)
+size = Vector3(0.3, 3, 28)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor2EastWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(18, 8.1, 0)
+size = Vector3(0.3, 3, 28)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Floor2KneeWall" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 7.1, 14)
+size = Vector3(36, 1, 0.3)
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Ramp1" type="CSGBox3D" parent="Garage"]
+transform = Transform3D(0.93848, -0.34534, 0, 0.34534, 0.93848, 0, 0, 0, 1, 12.5, 1.65, 11.5)
+size = Vector3(9.586, 0.3, 5)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="Ramp2" type="CSGBox3D" parent="Garage"]
+transform = Transform3D(-0.93848, -0.34534, 0, 0.34534, -0.93848, 0, 0, 0, 1, -12.5, 4.95, 11.5)
+size = Vector3(9.586, 0.3, 5)
+material = ExtResource("7_floor")
+use_collision = true
+
+[node name="StairsFlightA" type="Node3D" parent="Garage"]
+position = Vector3(-16, 0, -8)
+script = ExtResource("4_stairs")
+step_count = 22
+rise = 0.15
+run = 0.272727
+width = 4.0
+material = ExtResource("7_floor")
+
+[node name="StairsFlightB" type="Node3D" parent="Garage"]
+position = Vector3(-16, 3.3, -8)
+script = ExtResource("4_stairs")
+step_count = 22
+rise = 0.15
+run = 0.272727
+width = 4.0
+material = ExtResource("7_floor")
+
+[node name="Column_F0_A" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-12, 1.5, -9)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F0_B" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(0, 1.5, -9)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F0_C" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(12, 1.5, -9)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F0_D" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-12, 1.5, 6)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F0_E" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(0, 1.5, 6)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F0_F" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(12, 1.5, 6)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F0_South1" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-6, 1.5, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F0_South2" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-2, 1.5, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F0_South3" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(2, 1.5, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F0_South4" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(6, 1.5, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F1_A" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-12, 4.8, -9)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F1_B" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(0, 4.8, -9)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F1_C" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(12, 4.8, -9)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F1_D" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-12, 4.8, 6)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F1_E" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(0, 4.8, 6)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F1_F" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(12, 4.8, 6)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F1_South1" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-6, 4.8, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F1_South2" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-2, 4.8, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F1_South3" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(2, 4.8, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F1_South4" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(6, 4.8, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F2_A" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-12, 8.1, -9)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F2_B" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(0, 8.1, -9)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F2_C" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(12, 8.1, -9)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F2_D" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-12, 8.1, 6)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F2_E" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(0, 8.1, 6)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F2_F" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(12, 8.1, 6)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F2_South1" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-6, 8.1, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F2_South2" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(-2, 8.1, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F2_South3" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(2, 8.1, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Column_F2_South4" type="CSGCylinder3D" parent="Garage"]
+position = Vector3(6, 8.1, 13.3)
+radius = 0.4
+height = 3
+sides = 12
+material = ExtResource("8_wall")
+use_collision = true
+
+[node name="Light_F0_1" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(-14, 2.85, -1)
+mode = 0
+fixture_seed = 0
+
+[node name="Light_F0_2" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(-7, 2.85, -1)
+mode = 0
+fixture_seed = 1
+
+[node name="Light_F0_3" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(0, 2.85, -1)
+mode = 2
+fixture_seed = 2
+
+[node name="Light_F0_4" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(7, 2.85, -1)
+mode = 0
+fixture_seed = 3
+
+[node name="Light_F0_5" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(14, 2.85, -1)
+mode = 3
+fixture_seed = 4
+
+[node name="Light_F1_1" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(-14, 6.15, -1)
+mode = 0
+fixture_seed = 5
+
+[node name="Light_F1_2" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(-7, 6.15, -1)
+mode = 1
+fixture_seed = 6
+
+[node name="Light_F1_3" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(0, 6.15, -1)
+mode = 3
+fixture_seed = 7
+
+[node name="Light_F1_4" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(7, 6.15, -1)
+mode = 1
+fixture_seed = 8
+
+[node name="Light_F1_5" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(14, 6.15, -1)
+mode = 3
+fixture_seed = 9
+
+[node name="Light_F2_1" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(-14, 9.45, -1)
+mode = 3
+fixture_seed = 10
+
+[node name="Light_F2_2" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(-7, 9.45, -1)
+mode = 1
+fixture_seed = 11
+
+[node name="Light_F2_3" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(0, 9.45, -1)
+mode = 3
+fixture_seed = 12
+
+[node name="Light_F2_4" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(7, 9.45, -1)
+mode = 0
+fixture_seed = 13
+
+[node name="Light_F2_5" parent="Garage" instance=ExtResource("2_fixture")]
+position = Vector3(14, 9.45, -1)
+mode = 3
+fixture_seed = 14
+
+[node name="Car_F0_1" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(-15, 0, -4)
+rotation_degrees = Vector3(0, 0, 0)
+body_color = Color(0.55, 0.15, 0.15, 1)
+
+[node name="Car_F0_2" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(-9, 0, 3)
+rotation_degrees = Vector3(0, 90, 0)
+body_color = Color(0.2, 0.3, 0.45, 1)
+
+[node name="Car_F0_3" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(-3, 0, -11)
+rotation_degrees = Vector3(0, 15, 0)
+body_color = Color(0.5, 0.5, 0.52, 1)
+
+[node name="Car_F0_4" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(3, 0, -4)
+rotation_degrees = Vector3(0, -30, 0)
+body_color = Color(0.15, 0.35, 0.2, 1)
+
+[node name="Car_F0_5" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(9, 0, 10)
+rotation_degrees = Vector3(0, 60, 0)
+body_color = Color(0.4, 0.3, 0.1, 1)
+
+[node name="Car_F0_6" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(15, 0, 9.5)
+rotation_degrees = Vector3(0, 200, 0)
+body_color = Color(0.3, 0.32, 0.34, 1)
+
+[node name="Car_F1_1" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(-15, 3.3, -4)
+rotation_degrees = Vector3(0, 10, 0)
+body_color = Color(0.5, 0.1, 0.1, 1)
+
+[node name="Car_F1_2" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(-9, 3.3, -11)
+rotation_degrees = Vector3(0, 45, 0)
+body_color = Color(0.25, 0.27, 0.3, 1)
+
+[node name="Car_F1_3" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(-3, 3.3, 3)
+rotation_degrees = Vector3(0, 0, 0)
+body_color = Color(0.35, 0.2, 0.4, 1)
+
+[node name="Car_F1_4" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(3, 3.3, -9.5)
+rotation_degrees = Vector3(0, 90, 0)
+body_color = Color(0.15, 0.2, 0.35, 1)
+
+[node name="Car_F1_5" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(9, 3.3, -3)
+rotation_degrees = Vector3(0, 30, 0)
+body_color = Color(0.45, 0.4, 0.1, 1)
+damaged = true
+
+[node name="Car_F1_6" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(15, 3.3, -6)
+rotation_degrees = Vector3(0, 170, 0)
+body_color = Color(0.3, 0.3, 0.3, 1)
+
+[node name="Car_F1_7" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(-15, 3.3, 10)
+rotation_degrees = Vector3(0, 60, 0)
+body_color = Color(0.5, 0.5, 0.5, 1)
+damaged = true
+
+[node name="Car_F1_8" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(-6, 3.3, 11)
+rotation_degrees = Vector3(0, -20, 0)
+body_color = Color(0.2, 0.4, 0.3, 1)
+
+[node name="Car_F2_1" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(3, 6.6, -4)
+rotation_degrees = Vector3(0, 0, 0)
+body_color = Color(0.4, 0.15, 0.15, 1)
+damaged = true
+
+[node name="Car_F2_2" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(9, 6.6, 5)
+rotation_degrees = Vector3(0, 45, 0)
+body_color = Color(0.3, 0.3, 0.32, 1)
+damaged = true
+
+[node name="Car_F2_3" parent="Garage" instance=ExtResource("1_car")]
+position = Vector3(-9, 6.6, -10)
+rotation_degrees = Vector3(0, -60, 0)
+body_color = Color(0.35, 0.35, 0.1, 1)
+
+[node name="Puddle_F0_1" type="MeshInstance3D" parent="Garage"]
+position = Vector3(-10, 0.02, -2)
+scale = Vector3(3, 1, 2.5)
+mesh = SubResource("PuddleMesh")
+surface_material_override/0 = ExtResource("9_puddle")
+
+[node name="Puddle_F0_2" type="MeshInstance3D" parent="Garage"]
+position = Vector3(5, 0.02, 6.5)
+scale = Vector3(4, 1, 2)
+mesh = SubResource("PuddleMesh")
+surface_material_override/0 = ExtResource("9_puddle")
+
+[node name="Puddle_F0_3" type="MeshInstance3D" parent="Garage"]
+position = Vector3(-16, 0.02, -12.5)
+scale = Vector3(2, 1, 2)
+mesh = SubResource("PuddleMesh")
+surface_material_override/0 = ExtResource("9_puddle")
+
+[node name="Drain_F0_1" type="CSGBox3D" parent="Garage"]
+position = Vector3(-10, -0.01, -2)
+size = Vector3(0.5, 0.03, 0.5)
+material = ExtResource("12_building")
+
+[node name="Drain_F0_2" type="CSGBox3D" parent="Garage"]
+position = Vector3(5, -0.01, 6.5)
+size = Vector3(0.5, 0.03, 0.5)
+material = ExtResource("12_building")
+
+[node name="Puddle_F1_1" type="MeshInstance3D" parent="Garage"]
+position = Vector3(-4, 3.32, 7)
+scale = Vector3(2.5, 1, 2)
+mesh = SubResource("PuddleMesh")
+surface_material_override/0 = ExtResource("9_puddle")
+
+[node name="Puddle_F1_2" type="MeshInstance3D" parent="Garage"]
+position = Vector3(10, 3.32, -6)
+scale = Vector3(2, 1, 1.5)
+mesh = SubResource("PuddleMesh")
+surface_material_override/0 = ExtResource("9_puddle")
+
+[node name="Drain_F1_1" type="CSGBox3D" parent="Garage"]
+position = Vector3(-4, 3.29, 7)
+size = Vector3(0.5, 0.03, 0.5)
+material = ExtResource("12_building")
+
+[node name="Puddle_F2_1" type="MeshInstance3D" parent="Garage"]
+position = Vector3(6, 6.62, -8)
+scale = Vector3(1.5, 1, 1.2)
+mesh = SubResource("PuddleMesh")
+surface_material_override/0 = ExtResource("9_puddle")
+
+[node name="Drip_F0_1" type="AudioStreamPlayer3D" parent="Garage"]
+position = Vector3(-10, 2.9, -2)
+script = ExtResource("6_drip")
+drip_seed = 1
+
+[node name="Drip_F0_2" type="AudioStreamPlayer3D" parent="Garage"]
+position = Vector3(5, 2.9, 6.5)
+script = ExtResource("6_drip")
+drip_seed = 2
+
+[node name="Drip_F1_1" type="AudioStreamPlayer3D" parent="Garage"]
+position = Vector3(-4, 6.2, 7)
+script = ExtResource("6_drip")
+drip_seed = 3
+
+[node name="Drip_F2_1" type="AudioStreamPlayer3D" parent="Garage"]
+position = Vector3(6, 9.4, -8)
+script = ExtResource("6_drip")
+drip_seed = 4
+
+[node name="LevelLabel_F0" type="Label3D" parent="Garage"]
+position = Vector3(-10, 2, -13.7)
+billboard = 1
+text = "P1"
+font_size = 72
+outline_size = 8
+modulate = Color(0.7, 0.55, 0.1, 1)
+
+[node name="LevelLabel_F1" type="Label3D" parent="Garage"]
+position = Vector3(-10, 5.3, -13.7)
+billboard = 1
+text = "P2"
+font_size = 72
+outline_size = 8
+modulate = Color(0.7, 0.55, 0.1, 1)
+
+[node name="LevelLabel_F2" type="Label3D" parent="Garage"]
+position = Vector3(-10, 8.6, -13.7)
+billboard = 1
+text = "P3"
+font_size = 72
+outline_size = 8
+modulate = Color(0.7, 0.55, 0.1, 1)
+
+[node name="RampArrow1" type="Label3D" parent="Garage"]
+position = Vector3(8, 0.3, 11.5)
+billboard = 1
+text = "UP"
+font_size = 28
+outline_size = 6
+modulate = Color(0.68, 0.58, 0.1, 1)
+
+[node name="RampArrow2" type="Label3D" parent="Garage"]
+position = Vector3(-8, 3.6, 11.5)
+billboard = 1
+text = "UP"
+font_size = 28
+outline_size = 6
+modulate = Color(0.68, 0.58, 0.1, 1)
+
+[node name="StallLine_F0_1" type="CSGBox3D" parent="Garage"]
+position = Vector3(-4, 0.006, 11)
+size = Vector3(0.1, 0.01, 3)
+material = ExtResource("11_white")
+
+[node name="StallLine_F0_2" type="CSGBox3D" parent="Garage"]
+position = Vector3(0, 0.006, 11)
+size = Vector3(0.1, 0.01, 3)
+material = ExtResource("11_white")
+
+[node name="StallLine_F0_3" type="CSGBox3D" parent="Garage"]
+position = Vector3(4, 0.006, 11)
+size = Vector3(0.1, 0.01, 3)
+material = ExtResource("11_white")
+
+[node name="HazardStripe_F1" type="CSGBox3D" parent="Garage"]
+position = Vector3(12.5, 3.306, 9.1)
+size = Vector3(5, 0.01, 0.3)
+material = ExtResource("10_yellow")
+
+[node name="HazardStripe_F2" type="CSGBox3D" parent="Garage"]
+position = Vector3(-12.5, 6.606, 9.1)
+size = Vector3(5, 0.01, 0.3)
+material = ExtResource("10_yellow")
+
+[node name="CityBuilding1" type="CSGBox3D" parent="Garage"]
+position = Vector3(-24, 12, 22)
+size = Vector3(8, 24, 6)
+material = ExtResource("12_building")
+
+[node name="CityBuilding2" type="CSGBox3D" parent="Garage"]
+position = Vector3(-14, 15, 24)
+size = Vector3(10, 30, 7)
+material = ExtResource("12_building")
+
+[node name="CityBuilding3" type="CSGBox3D" parent="Garage"]
+position = Vector3(-2, 11, 21)
+size = Vector3(12, 22, 5)
+material = ExtResource("12_building")
+
+[node name="CityBuilding4" type="CSGBox3D" parent="Garage"]
+position = Vector3(8, 17, 25)
+size = Vector3(10, 34, 6)
+material = ExtResource("12_building")
+
+[node name="CityBuilding5" type="CSGBox3D" parent="Garage"]
+position = Vector3(18, 13, 22)
+size = Vector3(8, 26, 6)
+material = ExtResource("12_building")
+
+[node name="CityBuilding6" type="CSGBox3D" parent="Garage"]
+position = Vector3(27, 14.5, 23)
+size = Vector3(8, 29, 5)
+material = ExtResource("12_building")
+
+[node name="CityWindow1" type="CSGBox3D" parent="Garage"]
+position = Vector3(-15, 6, 20.4)
+size = Vector3(0.6, 0.8, 0.1)
+material = ExtResource("13_window")
+
+[node name="CityWindow2" type="CSGBox3D" parent="Garage"]
+position = Vector3(-13, 14, 20.4)
+size = Vector3(0.6, 0.8, 0.1)
+material = ExtResource("13_window")
+
+[node name="CityWindow3" type="CSGBox3D" parent="Garage"]
+position = Vector3(-2, 10, 18.4)
+size = Vector3(0.6, 0.8, 0.1)
+material = ExtResource("13_window")
+
+[node name="CityWindow4" type="CSGBox3D" parent="Garage"]
+position = Vector3(6, 18, 21.9)
+size = Vector3(0.6, 0.8, 0.1)
+material = ExtResource("13_window")
+
+[node name="CityWindow5" type="CSGBox3D" parent="Garage"]
+position = Vector3(9, 8, 21.9)
+size = Vector3(0.6, 0.8, 0.1)
+material = ExtResource("13_window")
+
+[node name="CityWindow6" type="CSGBox3D" parent="Garage"]
+position = Vector3(17, 5, 18.9)
+size = Vector3(0.6, 0.8, 0.1)
+material = ExtResource("13_window")
+
+[node name="CityWindow7" type="CSGBox3D" parent="Garage"]
+position = Vector3(19, 15, 18.9)
+size = Vector3(0.6, 0.8, 0.1)
+material = ExtResource("13_window")
+
+[node name="CityWindow8" type="CSGBox3D" parent="Garage"]
+position = Vector3(27, 12, 20.4)
+size = Vector3(0.6, 0.8, 0.1)
+material = ExtResource("13_window")
+
+[node name="Ambience" type="Node3D" parent="Garage"]
+position = Vector3(0, 4, 0)
+script = ExtResource("5_ambience")
+ambience_seed = 42
+
+[node name="Bed" type="AudioStreamPlayer" parent="Garage/Ambience"]
+volume_db = -16.0
+
+[node name="Creaks" type="AudioStreamPlayer3D" parent="Garage/Ambience"]
+max_distance = 40.0
+unit_size = 10.0

@@ -51,12 +51,28 @@ func test_display_name_mentions_barrel_count_and_ammo_type() -> void:
 	)
 
 
+func test_display_name_mentions_automatic_fire_mode_when_rolled() -> void:
+	assert_eq(GunGenerator.display_name(GunGenerator.AmmoType.RIFLE, 1, true), "Auto Rifle Gun")
+	assert_eq(GunGenerator.display_name(GunGenerator.AmmoType.RIFLE, 1, false), "Rifle Gun")
+
+
 func test_grenade_profile_bounces_and_rocket_profile_explodes() -> void:
 	var grenade := GunGenerator.profile(GunGenerator.AmmoType.GRENADE)
 	assert_gt(int(grenade["bounces"]), 0)
 	assert_gt(float(grenade["gravity_scale"]), 0.0)
 	var rocket := GunGenerator.profile(GunGenerator.AmmoType.ROCKET)
 	assert_gt(float(rocket["explosion_radius"]), 0.0)
+	assert_gt(float(rocket["splash_force"]), 0.0)
 	var rifle := GunGenerator.profile(GunGenerator.AmmoType.RIFLE)
 	assert_eq(float(rifle["explosion_radius"]), 0.0)
+	assert_eq(float(rifle["splash_force"]), 0.0)
 	assert_eq(int(rifle["bounces"]), 0)
+
+
+func test_generated_guns_roll_a_fire_mode_and_both_modes_occur() -> void:
+	var modes := {}
+	for seed_value: int in 60:
+		var gun := GunGenerator.generate(_rng(seed_value))
+		assert_true(gun["is_automatic"] is bool)
+		modes[gun["is_automatic"]] = true
+	assert_eq(modes.size(), 2, "60 seeds should roll both automatic and semi-automatic guns")

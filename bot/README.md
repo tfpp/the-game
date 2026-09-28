@@ -33,12 +33,20 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
      `preview.yml` deploys there (run name `preview #<pr> deploy`) post the preview link
      (`BOT_PREVIEW_URL`).
    - `pull_request`: merged or closed.
+   If the agent declines an `implement` run (the harness's "🤖 … (`implement`) made no
+   changes" comment on the issue, before any PR exists), the bot closes the issue as not
+   planned and marks the job closed; the requester asks again with a new `/feature`.
    A reconcile loop (every 2 minutes, only while runs are active) polls the agent runs and
    comments in case a webhook was missed, and expires runs that never started.
 3. **`/revise <changes>`** inside a feature thread, once its PR exists, from the requester
    or anyone with the role, and only when no run is active for it. It dispatches
    `mode=revise` on the PR, with the text as the newest instructions
    ("From <name> on Discord: …").
+   **`/close`** in a feature thread, from the requester or anyone with the requester or
+   approver role, gives up on the feature: it closes the PR without merging (if there is
+   one) and the issue as not planned, each with a "Closed from Discord by <name>" comment,
+   drops a queued approval or a run waiting for a slot, and marks the job closed. It's
+   refused while an agent run is active or once the PR is merged.
 
 4. **Approving.** When CI passes on a PR, its thread gets "✅ CI passed" with an
    **Approve & merge** button. Anyone with `BOT_APPROVER_ROLE_ID` can press it (or use
@@ -115,7 +123,7 @@ Environment variables; secrets are files.
 | `BOT_GITHUB_WEBHOOK_SECRET_FILE` | `/run/secrets/bot/github-webhook-secret` | Webhook secret |
 | `BOT_DISCORD_TOKEN_FILE` | `/run/secrets/bot/discord-token` | Discord bot token |
 | `BOT_GUILD_ID` | required | The Discord server |
-| `BOT_REQUESTER_ROLE_ID` | required | Role allowed to use `/feature` and `/revise` |
+| `BOT_REQUESTER_ROLE_ID` | required | Role allowed to use `/feature`, `/revise` and `/close` |
 | `BOT_APPROVER_ROLE_ID` | none | Role allowed to approve merges; without it nobody can |
 | `BOT_FEATURE_CHANNEL_ID` | any channel | Only channel `/feature` works in |
 | `BOT_RUNS_PER_USER` | `5` | Runs per user per 24 hours; `0` for no limit |
@@ -164,7 +172,7 @@ In the [developer portal](https://discord.com/developers/applications):
 - With Developer Mode on (User Settings → Advanced), copy the server ID, the requester
   role's ID, the approver role's ID and, optionally, the feature channel's ID.
 
-The bot registers `/feature`, `/revise`, `/approve` and `/queue` in that server when it
+The bot registers `/feature`, `/revise`, `/approve`, `/close` and `/queue` in that server when it
 starts.
 
 ### Deploy

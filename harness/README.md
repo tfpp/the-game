@@ -10,7 +10,8 @@ definition of done for agents and humans alike.
 | `adapters/<agent>.sh` | One per CLI (`claude`, `codex`, `pi`): `PROMPT_FILE LOG_FILE CONTINUE`. Each writes its call's token usage to `usage.json` |
 | `prompts/` | `rules.md` (every run), one file per mode, `fix.md` (retries) |
 | `gate.sh` | Turns a GitHub event into run inputs, or refuses it |
-| `context.sh` | Writes the task (issue, discussion, PR feedback) from GitHub |
+| `context.sh` | Writes the task, current PR, sibling PRs and paths, recent merges, and feedback from GitHub |
+| `check-summary.sh` | Requires integration review notes before agent-written work can be bundled |
 | `publish.sh` | Pushes the bundle, opens the PR or comments, reports failures |
 | `claude-app-token.sh` | Fallback push token from the Claude GitHub App |
 | `tests/` | Offline tests with a fake agent, `gh` and remote |
@@ -29,6 +30,56 @@ Only people with write access (or bots in `AGENT_TRUSTED_BOTS`) can start a run.
 | Run the workflow by hand (`workflow_dispatch`) | Any mode, by issue or PR number (the bot will use this) |
 
 The label is removed when the run ends, so adding it again starts another run.
+
+## Keeping PRs aligned
+
+Every GitHub run receives an integration snapshot before the agent starts:
+
+- Other open PRs targeting the same base, including human-authored PRs: title, URL,
+  branch, head SHA, draft status, description and changed paths (including renames).
+  Details cover the 20 most recently updated PRs; the rest remain listed by title and
+  link. Descriptions stop at 4,000 characters and file lists at 200 paths, with explicit
+  truncation notices. API pages are collected before these limits are applied.
+- Up to 10 recent merges from the 100 most recently updated closed PRs on that base.
+- For revisions, the current PR description as well as its issue and review feedback.
+
+Context API failures stop the run instead of presenting an incomplete snapshot as an
+empty backlog. The prompts ask the agent to inspect existing systems and callers, reuse
+shared interfaces, check sibling PR overlap, and document integration and validation in
+the summary. An open PR is reference material, not an available dependency: agents must
+not merge sibling branches or recreate their systems to unblock a dependent request.
+
+Before coding, agents must inspect the relevant implementation, interfaces, callers and
+tests and record their decision in the summary. **Extend a suitable existing system;
+create a new one when nothing fits.** New gameplay can own its distinct behavior while
+using shared services where applicable. Separate feature directories are not a reason
+to duplicate shared state, persistence or networking authority, and reuse is not a reason
+to force unrelated systems together.
+
+After code verification passes, the runner requires three nonempty subsections under
+`## Integration`: `### Systems inspected`, `### Reuse decision`, and
+`### Compatibility checks`. Missing notes trigger the normal retry loop and prevent a
+success bundle when attempts run out. A declined request and an automatic clean base
+merge do not need an agent design review. This is a structural reporting check: it cannot
+prove that the agent searched thoroughly or that its design is correct. Reviewers still
+need to assess the concrete paths, rationale and compatibility tests in those notes.
+
+`revise` and `resolve-conflicts` both merge the checked-out base snapshot before doing
+their work. Clean and conflicting merges stay uncommitted until verification passes.
+A revision still runs the agent to address feedback after a clean merge. A clean
+`resolve-conflicts` run can skip the agent if verification passes. The exact base SHA is
+recorded in `result.json` and the published summary; if the publisher sees a newer base,
+it says that another update and CI run are needed before merging.
+
+These are snapshots, not a lock on other work. The caller must fetch the base and target
+branch before `run.sh` (Actions checks out full history). The existing merge coordinator
+still serializes merges and updates stale branches. Context helps avoid semantic overlap;
+it cannot prove that independently developed features work together without tests.
+
+The context-before-execution approach is also supported by
+[Pi's extension lifecycle](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md).
+Here it lives in the shared shell harness, so all three adapters receive the same context
+and verification behavior without requiring a Pi extension.
 
 Runs are named `agent #<number> <mode> [<request_id>]`, so the Discord bot can match
 `workflow_run` events to the dispatch that caused them. Issues the bot opens end with a

@@ -11,6 +11,22 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Dev elevator",
+		"summary":
+		(
+			"A hazard-striped debug warp pad (noclip to find it) instantly sends you to the"
+			+ " parking garage for testing — internal, not part of the game proper."
+		)
+	},
+	{
+		"title": "Parking garage",
+		"summary":
+		(
+			"A dark three-story parking structure outside the casino — take the staff door"
+			+ " near the trampolines. Ramps and a stairwell connect all three levels."
+		)
+	},
+	{
 		"title": "Wandering gnomes",
 		"summary":
 		"Gnome burrows hug the outer walls, dash to far-off holes along real routed paths, and dodge you."

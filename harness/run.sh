@@ -7,7 +7,7 @@
 #     --task FILE --branch NAME [--base main] [--out DIR] [--attempts 3]
 #
 #   implement          creates --branch from the base
-#   revise             checks out the existing --branch and adds commits
+#   revise             merges the base into --branch, then addresses feedback
 #   resolve-conflicts  checks out --branch and merges the base into it
 #
 # Outputs in --out: result.json, summary.md, changes.bundle (on success), protected.txt,
@@ -66,13 +66,14 @@ cd "$REPO_ROOT"
 base_ref="$base"
 git rev-parse -q --verify "refs/remotes/$remote/$base" >/dev/null && base_ref="$remote/$base"
 git rev-parse -q --verify "$base_ref^{commit}" >/dev/null || die "base '$base' not found"
+base_sha="$(git rev-parse "$base_ref^{commit}")"
 
 # --- branch setup ----------------------------------------------------------------------
 merge_conflicts=0
 case "$mode" in
   implement)
     git rev-parse -q --verify "refs/heads/$branch" >/dev/null && die "branch $branch already exists"
-    git switch -q -c "$branch" "$base_ref"
+    git switch -q -c "$branch" "$base_sha"
     ;;
   revise | resolve-conflicts)
     if git rev-parse -q --verify "refs/remotes/$remote/$branch" >/dev/null; then
@@ -85,8 +86,9 @@ esac
 start_sha="$(git rev-parse HEAD)"
 log "mode=$mode agent=$agent branch=$branch base=$base_ref start=${start_sha:0:12}"
 
-if [[ "$mode" == resolve-conflicts ]]; then
-  if git merge -q --no-edit "$base_ref"; then
+if [[ "$mode" == revise || "$mode" == resolve-conflicts ]]; then
+  # Leave even clean merges uncommitted until the combined tree passes verification.
+  if git merge -q --no-commit --no-ff "$base_sha"; then
     log "merged $base_ref cleanly"
   elif [[ -n "$(git diff --name-only --diff-filter=U)" ]]; then
     merge_conflicts=1
@@ -102,6 +104,7 @@ render() { # render FILE [PROBLEM] -> stdout
   text="$(cat "$1")"
   text="${text//\{\{BRANCH\}\}/$branch}"
   text="${text//\{\{BASE\}\}/$base}"
+  text="${text//\{\{BASE_SHA\}\}/$base_sha}"
   text="${text//\{\{OUT\}\}/$out}"
   text="${text//\{\{PROBLEM\}\}/${2:-}}"
   text="${text//\{\{TASK\}\}/$(cat "$task")}"
@@ -111,7 +114,7 @@ render() { # render FILE [PROBLEM] -> stdout
 # Prints what is still wrong, or nothing when the work is done.
 check_work() {
   local n="$1" unmerged markers
-  if [[ -f "$(git rev-parse --git-dir)/MERGE_HEAD" ]]; then
+  if [[ -f "$(git rev-parse --git-path MERGE_HEAD)" ]]; then
     unmerged="$(git diff --name-only --diff-filter=U)"
     if [[ -n "$unmerged" ]]; then
       printf 'These files still have merge conflicts:\n%s\n' "$unmerged"
@@ -129,6 +132,12 @@ check_work() {
   if ! "$verify" >"$out/verify-$n.log" 2>&1; then
     printf '`harness/verify.sh` failed. The end of its output:\n\n```\n%s\n```\n' \
       "$(tail -n 150 "$out/verify-$n.log")"
+    return
+  fi
+  # A clean base merge (attempt 0) has no agent design decision to report.
+  if [[ "$n" -gt 0 ]] && ! "$HARNESS_DIR/check-summary.sh" "$out/summary.md" >"$out/summary-$n.log"; then
+    cat "$out/summary-$n.log" | tee -a "$out/verify-$n.log"
+    printf 'Inspect the existing systems, record whether you extended one or needed a new system, and update summary.md using the required Integration subsections.\n'
   fi
 }
 
@@ -160,8 +169,8 @@ if [[ "$mode" == resolve-conflicts && "$merge_conflicts" == 0 ]]; then
   problem="$(check_work 0)"
   if [[ -z "$problem" ]]; then
     status="success"
-    printf 'chore: merge %s into this branch\n\n## Summary\nMerged `%s` cleanly; verify passed.\n' \
-      "$base" "$base" >"$out/summary.md"
+    printf 'chore: merge %s into this branch\n\n## Summary\nMerged `%s` cleanly; verify passed.\n\n## Integration\nIntegrated base commit `%s`.\n\n## Validation\n`harness/verify.sh` passed on the combined tree.\n' \
+      "$base" "$base" "$base_sha" >"$out/summary.md"
   fi
 fi
 
@@ -173,6 +182,9 @@ while [[ "$status" != success && "$attempt" -lt "$attempts" ]]; do
       render "$HARNESS_DIR/prompts/rules.md"
       echo
       render "$HARNESS_DIR/prompts/$mode.md"
+      if [[ -f "$(git rev-parse --git-path MERGE_HEAD)" ]]; then
+        printf '\nA merge of base commit `%s` is in progress. Resolve any conflicts preserving both changes, then complete the task. Stage the resolution, but do not commit or abort the merge; the harness commits after verification.\n' "$base_sha"
+      fi
       if [[ -n "$problem" ]]; then # clean merge that fails verify
         echo
         render "$HARNESS_DIR/prompts/fix.md" "$problem"
@@ -197,6 +209,7 @@ while [[ "$status" != success && "$attempt" -lt "$attempts" ]]; do
 
   # The agent declined (unclear or unsafe request) and left the branch untouched.
   if [[ "$mode" != resolve-conflicts && "$(git rev-parse HEAD)" == "$start_sha" &&
+    ! -f "$(git rev-parse --git-path MERGE_HEAD)" &&
     -z "$(git status --porcelain)" ]] && grep -qi '^no changes' "$out/summary.md" 2>/dev/null; then
     status="no_changes"
     break
@@ -217,8 +230,8 @@ valid_title "$title" || title="${HARNESS_FALLBACK_TITLE:-chore: apply agent chan
 
 if [[ "$status" == success ]]; then
   git add -A
-  if [[ -f "$(git rev-parse --git-dir)/MERGE_HEAD" ]]; then
-    git commit -q --no-edit
+  if [[ -f "$(git rev-parse --git-path MERGE_HEAD)" ]]; then
+    git commit -q -m "$title"
   elif ! git diff --cached --quiet; then
     git commit -q -m "$title"
   fi
@@ -229,16 +242,16 @@ if [[ "$status" == success ]]; then
   fi
 fi
 
-git diff --name-only "$base_ref...HEAD" | filter_protected >"$out/protected.txt" || true
+git diff --name-only "$base_sha...HEAD" | filter_protected >"$out/protected.txt" || true
 head_sha="$(git rev-parse HEAD)"
 
 jq -n \
   --arg status "$status" --arg mode "$mode" --arg agent "$agent" \
   --arg branch "$branch" --arg base "$base" --arg title "$title" \
-  --arg start_sha "$start_sha" --arg head_sha "$head_sha" --argjson attempts "$attempt" \
+  --arg start_sha "$start_sha" --arg head_sha "$head_sha" --arg base_sha "$base_sha" --argjson attempts "$attempt" \
   --argjson usage "$usage" \
   '{status: $status, mode: $mode, agent: $agent, branch: $branch, base: $base,
-    title: $title, start_sha: $start_sha, head_sha: $head_sha, attempts: $attempts, usage: $usage}' \
+    title: $title, start_sha: $start_sha, head_sha: $head_sha, base_sha: $base_sha, attempts: $attempts, usage: $usage}' \
   >"$out/result.json"
 
 log "status=$status attempts=$attempt head=${head_sha:0:12} usage=$usage out=$out"

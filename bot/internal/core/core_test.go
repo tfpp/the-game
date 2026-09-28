@@ -21,6 +21,12 @@ type fakeGitHub struct {
 	failIssue   bool
 	failDispach bool
 
+	// Closing.
+	newComments  []string // "n:body"
+	closedIssues []int
+	closedPRs    []int
+	closeErr     error
+
 	// Merging (merge_test.go).
 	prs       map[int]*github.PullRequest
 	files     map[int][]string
@@ -64,6 +70,30 @@ func (f *fakeGitHub) WorkflowRuns(context.Context, string, time.Time) ([]github.
 
 func (f *fakeGitHub) Comments(_ context.Context, n int, _ time.Time) ([]github.Comment, error) {
 	return f.comments[n], nil
+}
+
+func (f *fakeGitHub) CreateComment(_ context.Context, n int, body string) error {
+	f.newComments = append(f.newComments, fmt.Sprintf("%d:%s", n, body))
+	return nil
+}
+
+func (f *fakeGitHub) CloseIssue(_ context.Context, n int) error {
+	if f.closeErr != nil {
+		return f.closeErr
+	}
+	f.closedIssues = append(f.closedIssues, n)
+	return nil
+}
+
+func (f *fakeGitHub) ClosePullRequest(_ context.Context, n int) error {
+	if f.closeErr != nil {
+		return f.closeErr
+	}
+	f.closedPRs = append(f.closedPRs, n)
+	if pr := f.prs[n]; pr != nil {
+		pr.State = "closed"
+	}
+	return nil
 }
 
 type post struct{ thread, content, ping, button string }
@@ -271,6 +301,40 @@ func TestFeatureIssueFailureFreesTheSlot(t *testing.T) {
 	e.feature(t, "1", "a feature request")
 	if r := e.feature(t, "1", "a feature request"); r.rejected != "" {
 		t.Errorf("failed runs should not count: %q", r.rejected)
+	}
+}
+
+func TestNoChangesClosesTheIssue(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.feature(t, "42", "add jump pads please")
+	bot := github.User{Login: "the-game[bot]", Type: "Bot"}
+	body := "🤖 `claude` (`implement`) made no changes ([run](https://run) · 1.2M tokens (34k output) · ~$3.46).\n\nThis is unclear."
+	must(t, e.svc.Comment(ctx, 11, github.Comment{ID: 1, User: bot, Body: body}))
+	if fmt.Sprint(e.gh.closedIssues) != "[11]" {
+		t.Errorf("closed %v", e.gh.closedIssues)
+	}
+	job, _ := e.st.JobByIssue(ctx, 11)
+	if job.State != store.JobClosed || !strings.Contains(e.chat.last().content, "closed issue #11") {
+		t.Errorf("job %+v post %+v", job, e.chat.last())
+	}
+	if len(e.chat.posts) < 2 || !strings.Contains(e.chat.posts[len(e.chat.posts)-2].content, "made no changes") {
+		t.Errorf("comment not relayed first: %+v", e.chat.posts)
+	}
+}
+
+func TestNoChangesOnARevisionKeepsTheIssue(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.feature(t, "42", "add jump pads please")
+	job, _ := e.st.JobByIssue(ctx, 11)
+	must(t, e.st.SetPR(ctx, job.ID, 12, e.now))
+	bot := github.User{Login: "the-game[bot]", Type: "Bot"}
+	must(t, e.svc.Comment(ctx, 12, github.Comment{ID: 1, User: bot, Body: "🤖 `claude` (`revise`) made no changes (x)."}))
+	must(t, e.svc.Comment(ctx, 11, github.Comment{ID: 2, User: bot, Body: "🤖 `claude` (`implement`) made no changes (x)."}))
+	job, _ = e.st.JobByIssue(ctx, 11)
+	if len(e.gh.closedIssues) != 0 || job.State != store.JobOpen {
+		t.Errorf("closed %v, job %+v", e.gh.closedIssues, job)
 	}
 }
 

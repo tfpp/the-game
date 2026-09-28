@@ -70,6 +70,7 @@ scenario() {
   chmod +x "$work/adapters/fake.sh"
   printf '#!/usr/bin/env bash\nexit 0\n' >"$work/verify" && chmod +x "$work/verify"
   cat >"$work/agent-script"
+  echo 'source harness/tests/fixtures/complete-summary.sh' >>"$work/agent-script"
   echo task >"$work/task.md"
   HARNESS_ADAPTERS="$work/adapters" HARNESS_VERIFY="$work/verify" "$agent_repo/harness/run.sh" \
     --agent fake --mode implement --task "$work/task.md" --branch agent/5-jump-pads --out "$out" \
@@ -96,12 +97,21 @@ publish
 [[ "$(cat "$work/pr-title" 2>/dev/null)" == "feat(game): add jump pads" ]] || fail "PR title"
 body="$(cat "$work/pr-body" 2>/dev/null)"
 for want in "## Summary" "Boing." "Closes #5" "## Discord Request" "> **Jump pads**" "> pads" \
-  "requested by @alice" "game/core/net/n.gd" "verify passed after 1 attempt(s) · 1.2M tokens (34k output) · ~\$3.46"; do
+  "requested by @alice" "game/core/net/n.gd" "verify passed after 1 attempt(s) · 1.2M tokens (34k output) · ~\$3.46" \
+  "Verified with base commit" "$(jq -r .base_sha "$out/result.json")"; do
   [[ "$body" == *"$want"* ]] || fail "PR body lacks '$want'"
 done
 grep -qF "🤖 Opened https://github.com/o/r/pull/99 · 1.2M tokens (34k output) · ~\$3.46" "$work/comments" ||
   fail "no PR link comment with usage on the issue: $(cat "$work/comments")"
 grep -q unlabeled "$work/labels" || fail "label not removed"
+
+echo "- a moving base is disclosed instead of claiming validation against latest main"
+scenario <<<'echo pad >game/pad.txt'
+(cd "$work/seed$n" && echo newer >game/newer.txt && git add -A && git commit -qm 'feat: newer base' && git push -q origin main)
+git -C "$pub" fetch -q origin
+publish
+[[ "$code" == 0 ]] || fail "moved base publish: $(cat "$work/publish.log")"
+grep -q 'base has moved' "$work/pr-body" || fail 'missing moving-base notice'
 
 echo "- a bot-opened issue credits the Discord requester from its trailer"
 scenario <<<'echo pad >game/pad.txt'

@@ -11,6 +11,7 @@ const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const OPTIONS: Array[Dictionary] = [
 	{"id": "default", "label": "Default"},
 	{"id": "girl", "label": "Girl"},
+	{"id": "penguin", "label": "Penguin"},
 ]
 
 var _panel: Control

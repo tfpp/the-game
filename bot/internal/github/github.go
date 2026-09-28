@@ -208,6 +208,22 @@ func (a *App) CreateIssue(ctx context.Context, title, body string) (Issue, error
 	return is, err
 }
 
+// CreateComment comments on issue or PR n.
+func (a *App) CreateComment(ctx context.Context, n int, body string) error {
+	return a.call(ctx, http.MethodPost, fmt.Sprintf("/issues/%d/comments", n), map[string]any{"body": body}, nil)
+}
+
+// CloseIssue closes issue n as not planned.
+func (a *App) CloseIssue(ctx context.Context, n int) error {
+	return a.call(ctx, http.MethodPatch, fmt.Sprintf("/issues/%d", n),
+		map[string]any{"state": "closed", "state_reason": "not_planned"}, nil)
+}
+
+// ClosePullRequest closes PR n without merging it.
+func (a *App) ClosePullRequest(ctx context.Context, n int) error {
+	return a.call(ctx, http.MethodPatch, fmt.Sprintf("/pulls/%d", n), map[string]any{"state": "closed"}, nil)
+}
+
 // Dispatch starts workflow (a file name such as "agent.yml") on ref with inputs.
 func (a *App) Dispatch(ctx context.Context, workflow, ref string, inputs map[string]string) error {
 	return a.call(ctx, http.MethodPost, "/actions/workflows/"+url.PathEscape(workflow)+"/dispatches",

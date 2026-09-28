@@ -84,6 +84,7 @@ func _stats_text(rig: GunRig) -> String:
 	var lines: Array[String] = [
 		"[b]%s[/b]" % str(stats["display_name"]),
 		"Ammo type: %s" % GunGenerator.ammo_name(ammo_type),
+		"Fire mode: %s" % ("Automatic" if bool(stats.get("is_automatic", false)) else "Semi-auto"),
 		"Barrels: %d" % int(stats["barrel_count"]),
 		"Fire rate: %.1f rounds/sec" % float(stats["fire_rate"]),
 		"Damage: %.1f per round" % float(stats["damage"]),
