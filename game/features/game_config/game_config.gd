@@ -9,17 +9,22 @@ extends Node
 ## Neither system is driven by this feature directly, so applying a change means
 ## reaching into the other feature's public state each frame: jump height scales
 ## the local player's own MovementConfig.jump_speed (movement is client-authoritative,
-## so only the local player's copy matters), and frog hop rate scales each Frog's
-## hop_rate_scale (server-only; frogs simulate hops only on the server).
+## so only the local player's copy matters), and frog hop rate/jump height scale
+## each Frog's hop_rate_scale/jump_height_scale (server-only; frogs simulate hops
+## only on the server).
 
 const SETTINGS_PAGES_GROUP := &"settings_pages"
 
 const JUMP_HEIGHT_RANGE := Vector3(0.5, 2.5, 0.1)
 const FROG_HOP_RATE_RANGE := Vector3(0.4, 3.0, 0.1)
+## Frogs used to hop at a fixed height; this multiplier defaults to 2x that so
+## frogs hop noticeably higher out of the box, and can still be tuned per world.
+const FROG_JUMP_HEIGHT_RANGE := Vector3(0.5, 4.0, 0.1)
 
 ## Replicated (server -> everyone). See the synchronizer config in feature.tscn.
 @export var jump_height_scale := 1.0
 @export var frog_hop_rate := 1.0
+@export var frog_jump_height_scale := 2.0
 
 ## Default jump speed (Source units/s) a fresh MovementConfig carries, captured once
 ## so scaling never compounds across repeated applications.
@@ -34,7 +39,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	_apply_jump_height()
 	if multiplayer.is_server():
-		_apply_frog_hop_rate()
+		_apply_frog_scales()
 
 
 func settings_page_label() -> String:
@@ -54,6 +59,13 @@ func settings_page_build() -> Control:
 	page.add_child(grid)
 	_slider(grid, "Jump height", jump_height_scale, JUMP_HEIGHT_RANGE, request_jump_height_scale)
 	_slider(grid, "Frog hop rate", frog_hop_rate, FROG_HOP_RATE_RANGE, request_frog_hop_rate)
+	_slider(
+		grid,
+		"Frog jump height",
+		frog_jump_height_scale,
+		FROG_JUMP_HEIGHT_RANGE,
+		request_frog_jump_height_scale
+	)
 	var note := Label.new()
 	note.text = "These affect everyone in this world, not just you."
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -78,6 +90,14 @@ func request_frog_hop_rate(value: float) -> void:
 	frog_hop_rate = clampf(value, FROG_HOP_RATE_RANGE.x, FROG_HOP_RATE_RANGE.y)
 
 
+## Client -> server: ask for a new frog jump height multiplier.
+@rpc("any_peer", "call_local", "reliable")
+func request_frog_jump_height_scale(value: float) -> void:
+	if not multiplayer.is_server():
+		return
+	frog_jump_height_scale = clampf(value, FROG_JUMP_HEIGHT_RANGE.x, FROG_JUMP_HEIGHT_RANGE.y)
+
+
 func _apply_jump_height() -> void:
 	for node: Node in get_tree().get_nodes_in_group(&"local_player"):
 		var player := node as Player
@@ -85,11 +105,12 @@ func _apply_jump_height() -> void:
 			player.movement.jump_speed = _base_jump_speed * jump_height_scale
 
 
-func _apply_frog_hop_rate() -> void:
+func _apply_frog_scales() -> void:
 	for node: Node in get_tree().get_nodes_in_group(&"frogs"):
 		var frog := node as Frog
 		if frog != null:
 			frog.hop_rate_scale = frog_hop_rate
+			frog.jump_height_scale = frog_jump_height_scale
 
 
 func _slider(

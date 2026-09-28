@@ -7,6 +7,9 @@ const REMOTE_SMOOTHING := 18.0
 const ALERT_RADIUS := 5.0
 const CALM_RADIUS := 7.0
 const RESPAWN_DELAY_S := 4.0
+## Caps how many times one hop can rebound off surfaces in a row, so a frog wedged
+## between two walls can't bounce forever.
+const MAX_BOUNCES := 2
 
 @export var net_position := Vector3.ZERO
 @export var net_yaw := 0.0
@@ -24,6 +27,9 @@ var rest_time := 1.0
 ## Set by features/game_config/game_config.gd: scales how often this frog hops
 ## (server-only, since hopping is only simulated on the server).
 var hop_rate_scale := 1.0
+## Set by features/game_config/game_config.gd: scales how high this frog hops
+## (server-only, for the same reason as hop_rate_scale).
+var jump_height_scale := 1.0
 
 var _home := Vector3.ZERO
 var _respawn_timer := 0.0
@@ -42,9 +48,11 @@ var _threat := Vector3.INF
 var _fleeing := false
 var _heading := Vector3.FORWARD
 var _navigation := FrogNavigation.new()
+var _bounce_count := 0
 
 @onready var _body: FrogModel = $Body
 @onready var _collider: CollisionShape3D = $Collider
+@onready var _ribbit: AudioStreamPlayer3D = $Ribbit
 
 
 func _ready() -> void:
@@ -55,6 +63,7 @@ func _ready() -> void:
 	_collider.shape = _navigation.body_shape
 	_collider.position.y = _navigation.radius + 0.04
 	_body.build(body_color, body_size)
+	_ribbit.stream = FrogRibbit.stream()
 	if multiplayer.is_server():
 		net_position = position
 		_rest_timer = randf_range(0.3, _resting_time())
@@ -89,10 +98,13 @@ func _physics_process(delta: float) -> void:
 		var next := FrogHop.arc_position(_hop_from, _hop_to, net_phase, _hop_height)
 		var collision := move_and_collide(next - global_position)
 		if collision != null:
-			# A player/prop may move into a hop after it was planned. Stop at the
-			# contact and fall onto the floor instead of passing through it.
-			_finish_hop()
-			_settling = true
+			# A player/prop may move into a hop after it was planned, or the frog
+			# simply hopped into a wall. Rebound off it, trampoline-style, unless
+			# this hop has already bounced its limit or there's nowhere safe to
+			# land — then fall onto the floor instead of passing through it.
+			if _bounce_count >= MAX_BOUNCES or not _bounce_off(collision):
+				_finish_hop()
+				_settling = true
 		elif net_phase >= 1.0:
 			_finish_hop()
 	else:
@@ -139,7 +151,7 @@ func _start_hop() -> void:
 	if _fleeing:
 		direction = FrogHop.escape_direction(global_position, _threat, _heading)
 	var distance := jump_distance * randf_range(0.75, 1.15) * (1.5 if _fleeing else 1.0)
-	_hop_height = jump_height * (1.2 if _fleeing else 1.0)
+	_hop_height = jump_height * jump_height_scale * (1.2 if _fleeing else 1.0)
 	var hop := _navigation.find_hop(
 		get_world_3d().direct_space_state,
 		global_position,
@@ -160,7 +172,46 @@ func _start_hop() -> void:
 	_hop_duration = jump_duration * (0.85 if _fleeing else 1.0)
 	_hop_elapsed = 0.0
 	net_phase = 0.0
+	_bounce_count = 0
 	_hopping = true
+
+
+## Trampoline-style rebound off whatever the in-flight hop just struck: reflect the
+## hop's horizontal direction off the contact normal (FrogHop.bounce_direction) and
+## ask navigation for a safe landing along it, same as a fresh hop. Returns false
+## when no safe landing exists, so the caller falls back to stopping and settling.
+func _bounce_off(collision: KinematicCollision3D) -> bool:
+	var incoming := (_hop_to - _hop_from) * Vector3(1, 0, 1)
+	var normal := collision.get_normal()
+	var direction := FrogHop.bounce_direction(incoming, normal)
+	var height := _hop_height * FrogHop.BOUNCE_HEIGHT_GAIN
+	# Still touching the surface right after contact; nudge off it first, the same
+	# clearance fix _physics_process applies after landing, since a hop probed from
+	# a position still touching the wall always fails FrogNavigation.arc_is_clear's
+	# very first check.
+	global_position += normal * 0.04
+	var hop := _navigation.find_hop(
+		get_world_3d().direct_space_state,
+		global_position,
+		direction,
+		jump_distance * FrogHop.BOUNCE_DISTANCE_SCALE,
+		height,
+		_threat
+	)
+	if hop.is_empty():
+		return false
+	_bounce_count += 1
+	_hop_from = global_position
+	_hop_to = hop["target"]
+	_heading = (_hop_to - _hop_from) * Vector3(1, 0, 1)
+	_heading = _heading.normalized()
+	net_yaw = FrogHop.facing_yaw(_hop_from, _hop_to)
+	_hop_height = height
+	_hop_duration = jump_duration * (0.85 if _fleeing else 1.0)
+	_hop_elapsed = 0.0
+	net_phase = 0.0
+	_hopping = true
+	return true
 
 
 func _finish_hop() -> void:
@@ -205,6 +256,7 @@ func _respawn() -> void:
 	_fleeing = false
 	_threat = Vector3.INF
 	_sense_timer = 0.0
+	_bounce_count = 0
 	_rest_timer = _resting_time()
 	net_alive = true
 	reset_physics_interpolation()
@@ -213,6 +265,15 @@ func _respawn() -> void:
 @rpc("authority", "call_local", "reliable")
 func _explode() -> void:
 	MeshExplosion.spawn(self, _body)
+	_play_ribbit()
+
+
+## Cosmetic only; the dedicated server has no audio output.
+func _play_ribbit() -> void:
+	if Network.mode == Network.Mode.SERVER:
+		return
+	_ribbit.pitch_scale = randf_range(0.92, 1.12)
+	_ribbit.play()
 
 
 ## Time to rest between hops, `rest_time` scaled down as `hop_rate_scale` rises.

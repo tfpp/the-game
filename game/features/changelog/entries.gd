@@ -15,6 +15,11 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "The girl model has a smaller hitbox and earns 15% less passive income."
 	},
 	{
+		"title": "Bouncier frogs",
+		"summary":
+		"Frogs jump twice as high, bounce off walls, ribbit when hit, and there are twice as many."
+	},
+	{
 		"title": "Dev elevator",
 		"summary":
 		(

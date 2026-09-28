@@ -9,6 +9,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 ## [edge]
 
+- Frogs jump twice as high by default now, with a new "Frog jump height" slider in
+  Game settings (Esc > Settings > Game) to tune it further; they also bounce off walls
+  at an oblique angle mid-hop instead of stopping dead, ribbit when shot, and there are
+  now 12 of them instead of 6.
 - Version releases by hand from the `release` workflow, which picks the patch, minor or
   major bump, tags it, publishes a GitHub Release and shows the version in the HUD.
 - Keep this changelog, with an `edge` section rolled into each release.
