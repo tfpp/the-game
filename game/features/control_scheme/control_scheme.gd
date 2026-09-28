@@ -4,12 +4,10 @@ extends CanvasLayer
 ## instead. That account name isn't known yet when this feature loads (features load
 ## before networking starts), so a fresh install applies the right-handed guess right
 ## away and corrects it once the local player's account name arrives from the server,
-## unless the player has already picked a scheme by hand in the meantime. Real play time
-## (not wall-clock time since launch) unlocks switching to the other layout after
-## UNLOCK_SECONDS; a "Controls" entry in the Esc menu then lets a player switch between
-## the two. The unlocked progress and chosen scheme persist locally per install, the
-## same way the account session does (`core/net/account_api.gd`): localStorage on the
-## web, a ConfigFile natively.
+## unless the player has already picked a scheme by hand in the meantime. A "Controls"
+## entry in the Esc menu lets a player switch between the two schemes at any time. The
+## chosen scheme persists locally per install, the same way the account session does
+## (`core/net/account_api.gd`): localStorage on the web, a ConfigFile natively.
 
 const MODAL_GROUP := &"modal_ui"
 ## Nodes in this group get a link in the Esc menu (`ui/login/login_screen.gd`); they
@@ -17,18 +15,12 @@ const MODAL_GROUP := &"modal_ui"
 const ESC_MENU_GROUP := &"esc_menu_links"
 const NATIVE_STORE := "user://controls.cfg"
 const STORAGE_KEY := "the-game.controls"
-const UNLOCK_SECONDS := 300.0
-## Local saves are a nice-to-have, not shared state, so writes are worth throttling.
-const SAVE_INTERVAL_S := 5.0
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const DOCTOR_DALEK_NAME := "DoctorDalek"
-
-var played_s := 0.0
 
 var _panel: Control
 var _status: Label
 var _switch_button: Button
-var _save_in := SAVE_INTERVAL_S
 ## True on a fresh install until the local player's account name is known, so the
 ## guessed default can still be corrected for DoctorDalek before anyone notices.
 var _default_pending := false
@@ -42,15 +34,9 @@ func _ready() -> void:
 	_refresh()
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if _default_pending:
 		_resolve_default()
-	if Controls.gameplay_active():
-		played_s += delta
-		_save_in -= delta
-		if _save_in <= 0.0:
-			_save_in = SAVE_INTERVAL_S
-			_save()
 	if _panel.visible:
 		_refresh()
 
@@ -59,16 +45,6 @@ func _input(event: InputEvent) -> void:
 	if _panel.visible and event.is_action_pressed(&"release_mouse"):
 		get_viewport().set_input_as_handled()
 		_close()
-
-
-func unlocked() -> bool:
-	return played_s >= UNLOCK_SECONDS
-
-
-## "m:ss" remaining before the other layout unlocks, floored at zero.
-static func remaining_text(remaining_seconds: float) -> String:
-	var whole := int(maxf(remaining_seconds, 0.0))
-	return "%d:%02d" % [whole / 60, whole % 60]
 
 
 func esc_menu_label() -> String:
@@ -94,8 +70,6 @@ func _close() -> void:
 
 
 func _toggle_scheme() -> void:
-	if not unlocked():
-		return
 	_default_pending = false
 	var next := (
 		Controls.Scheme.LEFT_HANDED
@@ -114,22 +88,11 @@ func _refresh() -> void:
 		if left_handed
 		else "Right-handed: WASD to move, Space to jump."
 	)
-	if unlocked():
-		_switch_button.disabled = false
-		_switch_button.text = (
-			"Switch to right-handed (WASD + Space)"
-			if left_handed
-			else "Switch to left-handed (arrows + Shift)"
-		)
-	else:
-		_switch_button.disabled = true
-		_switch_button.text = (
-			"%s controls unlock after %s of play"
-			% [
-				"Right-handed" if left_handed else "Left-handed",
-				remaining_text(UNLOCK_SECONDS - played_s),
-			]
-		)
+	_switch_button.text = (
+		"Switch to right-handed (WASD + Space)"
+		if left_handed
+		else "Switch to left-handed (arrows + Shift)"
+	)
 
 
 ## Reads saved progress and returns the scheme to start with. A fresh install has
@@ -142,7 +105,6 @@ func _load() -> Controls.Scheme:
 		_default_pending = true
 		return Controls.Scheme.RIGHT_HANDED
 	var data := parsed as Dictionary
-	played_s = maxf(float(data.get("played_s", 0.0)), 0.0)
 	return (
 		Controls.Scheme.RIGHT_HANDED
 		if str(data.get("scheme", "")) == "right"
@@ -167,7 +129,6 @@ func _resolve_default() -> void:
 
 func _save() -> void:
 	var data := {
-		"played_s": played_s,
 		"scheme": "right" if Controls.scheme == Controls.Scheme.RIGHT_HANDED else "left",
 	}
 	_save_value(JSON.stringify(data))

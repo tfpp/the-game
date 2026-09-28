@@ -1,7 +1,6 @@
 extends GutTest
 ## `features/control_scheme/control_scheme.gd`: right-handed-by-default input (except for
-## DoctorDalek, who gets left-handed), the play-time unlock for switching layouts, and
-## the menu that switches between them.
+## DoctorDalek, who gets left-handed) and the menu that switches between the two layouts.
 
 const ControlScheme := preload("res://features/control_scheme/control_scheme.gd")
 const PLAYER := preload("res://core/player/player.tscn")
@@ -87,7 +86,6 @@ func test_default_resolution_waits_for_the_local_players_account_name() -> void:
 
 
 func test_default_resolution_does_not_override_a_manual_choice() -> void:
-	_node.played_s = ControlScheme.UNLOCK_SECONDS
 	_node._toggle_scheme()  # right -> left
 	_node._toggle_scheme()  # left -> right, an explicit choice
 	var player := PLAYER.instantiate() as Player
@@ -99,52 +97,18 @@ func test_default_resolution_does_not_override_a_manual_choice() -> void:
 	)
 
 
-func test_switch_button_stays_locked_before_five_minutes_of_play() -> void:
-	_node._process(ControlScheme.UNLOCK_SECONDS - 1.0)
-	_node._refresh()
-	assert_false(_node.unlocked())
-	assert_true(_node._switch_button.disabled)
-
-
-func test_switch_button_unlocks_after_five_minutes_of_play() -> void:
-	_node._process(ControlScheme.UNLOCK_SECONDS)
-	_node._refresh()
-	assert_true(_node.unlocked())
-	assert_false(_node._switch_button.disabled)
-
-
-func test_played_time_only_accumulates_while_gameplay_is_active() -> void:
-	Controls.pause()
-	_node._process(120.0)
-	assert_eq(_node.played_s, 0.0)
-	Controls.start()
-	_node._process(120.0)
-	assert_eq(_node.played_s, 120.0)
-
-
-func test_switch_button_toggles_scheme_and_is_a_no_op_while_locked() -> void:
-	_node._toggle_scheme()
-	assert_eq(Controls.scheme, Controls.Scheme.RIGHT_HANDED, "Locked: pressing it does nothing")
-	_node.played_s = ControlScheme.UNLOCK_SECONDS
+func test_switch_button_toggles_scheme_both_ways() -> void:
 	_node._toggle_scheme()
 	assert_eq(Controls.scheme, Controls.Scheme.LEFT_HANDED)
 	_node._toggle_scheme()
-	assert_eq(Controls.scheme, Controls.Scheme.RIGHT_HANDED, "Unlocked switches both ways")
+	assert_eq(Controls.scheme, Controls.Scheme.RIGHT_HANDED)
 
 
-func test_choice_and_progress_persist_across_a_restart() -> void:
-	_node.played_s = ControlScheme.UNLOCK_SECONDS
+func test_choice_persists_across_a_restart() -> void:
 	_node._toggle_scheme()
 	var reloaded := ControlScheme.new()
 	add_child_autofree(reloaded)
-	assert_eq(reloaded.played_s, ControlScheme.UNLOCK_SECONDS)
 	assert_eq(Controls.scheme, Controls.Scheme.LEFT_HANDED)
-
-
-func test_remaining_text_formats_minutes_and_seconds() -> void:
-	assert_eq(ControlScheme.remaining_text(125.0), "2:05")
-	assert_eq(ControlScheme.remaining_text(0.0), "0:00")
-	assert_eq(ControlScheme.remaining_text(-5.0), "0:00")
 
 
 func test_opening_the_panel_pauses_and_joins_the_modal_group() -> void:
