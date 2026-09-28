@@ -78,14 +78,16 @@ func test_pickup_out_of_range_cannot_be_used() -> void:
 	assert_false(pickup.can_use(_player))
 
 
-func test_a_full_hand_cannot_pick_up_another_item() -> void:
+func test_a_full_hand_collects_the_next_item_into_the_backpack() -> void:
 	_hand.net_item_id = "banana"
 	var pickup := _pickup_at("ball", _player.global_position)
 	await get_tree().physics_frame
-	assert_false(pickup.can_use(_player))
+	assert_true(pickup.can_use(_player))
 	pickup.request_pickup()
-	assert_false(pickup.net_taken)
+	assert_true(pickup.net_taken)
 	assert_eq(_hand.net_item_id, "banana")
+
+	assert_eq(_hand.inventory().backpack[0], "ball")
 
 
 func test_an_already_taken_pickup_stays_taken() -> void:

@@ -1,75 +1,211 @@
 class_name Frog
-extends Node3D
-## A decorative frog that hops around its spawn point forever.
-##
-## Server-authoritative like the rest of shared state (see game/AGENTS.md): the server
-## (or the offline peer, which is its own server) drives the hop cycle in
-## `_physics_process` and publishes `net_position`/`net_yaw`, which Sync
-## (MultiplayerSynchronizer) replicates to every client. Non-authoritative peers only
-## smooth toward the replicated values. The hop math itself lives in frog_hop.gd so
-## it's unit-testable on its own.
+extends CharacterBody3D
+## The server chooses safe hops and reacts to players. Clients only render synced
+## state; appearance and individual movement traits arrive through spawn data.
 
-const REMOTE_SMOOTHING := 12.0
+const REMOTE_SMOOTHING := 18.0
+const ALERT_RADIUS := 5.0
+const CALM_RADIUS := 7.0
+const RESPAWN_DELAY_S := 4.0
 
-## Replicated state (server -> everyone). See the synchronizer config in frog.tscn.
 @export var net_position := Vector3.ZERO
 @export var net_yaw := 0.0
+@export var net_phase := -1.0
+## Keep alive and position in the same continuous snapshot: an on-change alive
+## event can otherwise arrive before the position update during respawn.
+@export var net_alive := true
 
-## Set by the feature script's spawn data, identically on every peer, before this node
-## enters the tree, so it doesn't need its own synchronizer property.
 var body_color := Color(0.3, 0.8, 0.35)
+var body_size := 1.0
+var jump_distance := 1.5
+var jump_height := 0.5
+var jump_duration := 0.45
+var rest_time := 1.0
 
 var _home := Vector3.ZERO
+var _respawn_timer := 0.0
+var _was_alive := true
+var _remote_initialized := false
 var _hopping := false
+var _settling := true
 var _hop_from := Vector3.ZERO
 var _hop_to := Vector3.ZERO
 var _hop_elapsed := 0.0
+var _hop_duration := 0.45
+var _hop_height := 0.5
 var _rest_timer := 0.0
+var _sense_timer := 0.0
+var _threat := Vector3.INF
+var _fleeing := false
+var _heading := Vector3.FORWARD
+var _navigation := FrogNavigation.new()
 
-@onready var _body: Node3D = $Body
+@onready var _body: FrogModel = $Body
+@onready var _collider: CollisionShape3D = $Collider
 
 
 func _ready() -> void:
 	_home = position
-	net_position = position
-	var mat := _body.get_surface_override_material(0) as StandardMaterial3D
-	if mat:
-		mat.albedo_color = body_color
+	add_to_group(&"killable")
+	_navigation.configure(body_size, get_rid())
+	_collider.shape = _navigation.body_shape
+	_collider.position.y = _navigation.radius + 0.04
+	_body.build(body_color, body_size)
 	if multiplayer.is_server():
-		_rest_timer = randf_range(FrogHop.REST_MIN, FrogHop.REST_MAX)
+		net_position = position
+		_rest_timer = randf_range(0.3, rest_time)
+		_heading = Vector3.FORWARD.rotated(Vector3.UP, randf() * TAU)
 	else:
+		physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 		set_physics_process(false)
 
 
 func _physics_process(delta: float) -> void:
-	if _hopping:
+	if not net_alive:
+		_respawn_timer -= delta
+		if _respawn_timer <= 0.0:
+			_respawn()
+		return
+	_sense_timer -= delta
+	if _sense_timer <= 0.0:
+		_sense_timer = 0.12
+		_sense_players()
+	if _settling:
+		velocity.y -= 18.0 * delta
+		move_and_slide()
+		if is_on_floor():
+			# The collision sphere rests slightly below the visual foot origin.
+			# Restore probe clearance before planning the next arc.
+			global_position.y += 0.04
+			_settling = false
+			velocity = Vector3.ZERO
+	elif _hopping:
 		_hop_elapsed += delta
-		var t := _hop_elapsed / FrogHop.HOP_DURATION
-		net_position = FrogHop.arc_position(_hop_from, _hop_to, t, FrogHop.HOP_HEIGHT)
-		position = net_position
-		if t >= 1.0:
-			_hopping = false
-			position = _hop_to
-			net_position = _hop_to
-			_rest_timer = randf_range(FrogHop.REST_MIN, FrogHop.REST_MAX)
+		net_phase = minf(_hop_elapsed / _hop_duration, 1.0)
+		var next := FrogHop.arc_position(_hop_from, _hop_to, net_phase, _hop_height)
+		var collision := move_and_collide(next - global_position)
+		if collision != null:
+			# A player/prop may move into a hop after it was planned. Stop at the
+			# contact and fall onto the floor instead of passing through it.
+			_finish_hop()
+			_settling = true
+		elif net_phase >= 1.0:
+			_finish_hop()
 	else:
 		_rest_timer -= delta
 		if _rest_timer <= 0.0:
 			_start_hop()
+	net_position = position
 
 
 func _process(delta: float) -> void:
-	if multiplayer.is_server():
+	if net_alive != _was_alive:
+		_remote_initialized = false
+		_was_alive = net_alive
+	_body.visible = net_alive
+	_collider.disabled = not net_alive
+	var smoothing := 1.0 - exp(-REMOTE_SMOOTHING * delta)
+	if not multiplayer.is_server():
+		_render_remote(smoothing)
+	if not net_alive:
 		return
-	var t := 1.0 - exp(-REMOTE_SMOOTHING * delta)
-	position = position.lerp(net_position, t)
-	_body.rotation.y = lerp_angle(_body.rotation.y, net_yaw, t)
+	_body.rotation.y = lerp_angle(_body.rotation.y, net_yaw, smoothing)
+	_body.animate(net_phase, delta)
+
+
+func _sense_players() -> void:
+	var nearest := CALM_RADIUS if _fleeing else ALERT_RADIUS
+	_threat = Vector3.INF
+	for node: Node in get_tree().get_nodes_in_group(&"players"):
+		var player := node as Node3D
+		if player == null or absf(player.global_position.y - global_position.y) > 2.5:
+			continue
+		var distance := global_position.distance_to(player.global_position)
+		if distance < nearest:
+			nearest = distance
+			_threat = player.global_position
+	var was_fleeing := _fleeing
+	_fleeing = _threat.is_finite()
+	if _fleeing and not was_fleeing:
+		_rest_timer = minf(_rest_timer, 0.08)
 
 
 func _start_hop() -> void:
-	_hop_from = position
-	_hop_to = FrogHop.pick_target(_home, FrogHop.HOP_RADIUS, randf() * TAU, randf())
+	var direction := _heading.rotated(Vector3.UP, randf_range(-0.65, 0.65))
+	if _fleeing:
+		direction = FrogHop.escape_direction(global_position, _threat, _heading)
+	var distance := jump_distance * randf_range(0.75, 1.15) * (1.5 if _fleeing else 1.0)
+	_hop_height = jump_height * (1.2 if _fleeing else 1.0)
+	var hop := _navigation.find_hop(
+		get_world_3d().direct_space_state,
+		global_position,
+		direction,
+		distance,
+		_hop_height,
+		_threat
+	)
+	if hop.is_empty():
+		_rest_timer = 0.25
+		_heading = _heading.rotated(Vector3.UP, PI * 0.5)
+		return
+	_hop_from = global_position
+	_hop_to = hop["target"]
+	_heading = (_hop_to - _hop_from) * Vector3(1, 0, 1)
+	_heading = _heading.normalized()
 	net_yaw = FrogHop.facing_yaw(_hop_from, _hop_to)
-	_body.rotation.y = net_yaw
+	_hop_duration = jump_duration * (0.85 if _fleeing else 1.0)
 	_hop_elapsed = 0.0
+	net_phase = 0.0
 	_hopping = true
+
+
+func _finish_hop() -> void:
+	_hopping = false
+	net_phase = -1.0
+	_rest_timer = randf_range(0.08, 0.18) if _fleeing else rest_time * randf_range(0.7, 1.3)
+
+
+func _render_remote(smoothing: float) -> void:
+	if not _remote_initialized:
+		# Spawn data remembers the original pond position. The synchronizer applies
+		# the current snapshot after _ready, before the first process frame.
+		position = net_position
+		_body.rotation.y = net_yaw
+		_remote_initialized = true
+		reset_physics_interpolation()
+	else:
+		position = position.lerp(net_position, smoothing)
+
+
+## Called by the server's weapon hitscan. Repeated shotgun pellets cannot restart
+## the timer or duplicate the effect, and clients cannot choose an animal's state.
+func take_hit(_attacker_peer: int) -> void:
+	if not multiplayer.is_server() or not net_alive:
+		return
+	net_alive = false
+	_hopping = false
+	net_phase = -1.0
+	velocity = Vector3.ZERO
+	_respawn_timer = RESPAWN_DELAY_S
+	_explode.rpc()
+
+
+func _respawn() -> void:
+	position = _home
+	net_position = position
+	net_yaw = 0.0
+	net_phase = -1.0
+	_hopping = false
+	_settling = true
+	velocity = Vector3.ZERO
+	_fleeing = false
+	_threat = Vector3.INF
+	_sense_timer = 0.0
+	_rest_timer = rest_time
+	net_alive = true
+	reset_physics_interpolation()
+
+
+@rpc("authority", "call_local", "reliable")
+func _explode() -> void:
+	MeshExplosion.spawn(self, _body)

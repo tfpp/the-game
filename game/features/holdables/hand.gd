@@ -9,8 +9,6 @@ extends Node3D
 ## unlike Player's client-authoritative movement this keeps the default multiplayer
 ## authority (1, the server). Clients only ever request an action; the server decides.
 
-const LOCAL_OFFSET := Transform3D(Basis(), Vector3(0.28, -0.22, -0.55))
-const REMOTE_OFFSET := Transform3D(Basis(), Vector3(0.32, 1.1, 0.25))
 const THROW_DISTANCE := 5.0
 const DROP_DISTANCE := 1.2
 const HITSCAN_RANGE_M := 50.0
@@ -22,9 +20,12 @@ const FLASH_DURATION_S := 0.06
 ## Set from spawn data (see holdables.gd), identically on every peer, before this node
 ## enters the tree, so it doesn't need its own synchronizer property.
 var peer_id := 0
+## Derived by the server from the account ID (or peer ID in offline/dev play).
+var skin_index := -1
 
 var _mounted_item_id := ""
 var _view: Node3D
+var _arms := HeldArms.new()
 var _flash_timer := 0.0
 var _fire_cooldown := 0.0
 
@@ -32,6 +33,11 @@ var _fire_cooldown := 0.0
 
 
 func _ready() -> void:
+	# Player updates at priority 0; third-person camera updates at 10.
+	process_priority = 20
+	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
+	_arms.name = "Arms"
+	add_child(_arms)
 	add_to_group(&"hands")
 	var mouse := InputEventMouseButton.new()
 	mouse.button_index = MOUSE_BUTTON_LEFT
@@ -53,6 +59,7 @@ func _process(delta: float) -> void:
 	visible = player != null and not net_item_id.is_empty()
 	if player != null:
 		global_transform = _mount_transform(player)
+		_pose_arms(player)
 	if _flash_timer > 0.0:
 		_flash_timer -= delta
 		if _flash_timer <= 0.0:
@@ -91,8 +98,7 @@ func request_primary_action() -> void:
 
 
 ## Drops whatever is held, regardless of category, a short toss in front of the
-## player — the only way to get rid of a weapon once picked up, since firing and
-## eating never empty the hand.
+## player. Inventory storage and swapping provide the other ways to free a hand.
 @rpc("any_peer", "call_local", "reliable")
 func request_drop_item() -> void:
 	if not multiplayer.is_server() or not _is_own_request() or net_item_id.is_empty():
@@ -105,6 +111,8 @@ func request_drop_item() -> void:
 ## Server: hands this an item, if it's empty. Called by pickups and landed throws.
 func try_equip(item_id: String) -> bool:
 	if not multiplayer.is_server() or not net_item_id.is_empty():
+		return false
+	if ItemCatalog.find(item_id) == null or not ClothingCatalog.slot(item_id).is_empty():
 		return false
 	net_item_id = item_id
 	return true
@@ -129,24 +137,31 @@ func _is_own_request() -> bool:
 func _fire(def: ItemDefinition) -> void:
 	if _fire_cooldown > 0.0:
 		return
-	_fire_cooldown = def.fire_cooldown_s
-	_play_fire.rpc()
-	if def.damage <= 0.0:
-		return
 	var player := _player()
 	if player == null:
 		return
+	_fire_cooldown = def.fire_cooldown_s
+	var origin := _aim_origin(player)
+	_play_fire.rpc(def.id, origin)
+	if def.damage <= 0.0:
+		return
 	var combat := get_tree().get_first_node_in_group(&"combat")
-	var origin := _mount_transform(player).origin
+	var played_impact := false
 	for _pellet: int in maxi(def.pellet_count, 1):
 		var jitter := deg_to_rad(def.spread_degrees)
 		var yaw := player.net_yaw + randf_range(-jitter, jitter)
 		var pitch := clampf(
 			player.net_pitch + randf_range(-jitter, jitter), deg_to_rad(-89.0), deg_to_rad(89.0)
 		)
-		var target := _hitscan(player, origin, ThrowMath.aim_direction(yaw, pitch))
+		var hit := _hitscan(player, origin, ThrowMath.aim_direction(yaw, pitch))
+		if hit.is_empty():
+			continue
+		var target := hit["collider"] as Node3D
 		if target == null:
 			continue
+		if not played_impact:
+			_play_impact.rpc(hit["position"], target is Player or target.is_in_group(&"killable"))
+			played_impact = true
 		var target_player := target as Player
 		if target_player != null and combat != null:
 			combat.call(
@@ -156,21 +171,33 @@ func _fire(def: ItemDefinition) -> void:
 			target.call("take_hit", peer_id)
 
 
-## Returns whatever physics body the shot hit — a `Player` for combat damage, or
-## anything else (e.g. features/penguin's `killable` group) for features that handle
-## being shot on their own terms.
-func _hitscan(shooter: Player, origin: Vector3, direction: Vector3) -> Node3D:
+## Keep the hit position for spatial impact audio, alongside the damage target.
+func _hitscan(shooter: Player, origin: Vector3, direction: Vector3) -> Dictionary:
+	# Layer 2 lets shots hit small wildlife without blocking player movement.
 	var query := PhysicsRayQueryParameters3D.create(
-		origin, origin + direction * HITSCAN_RANGE_M, 1, [shooter.get_rid()]
+		origin, origin + direction * HITSCAN_RANGE_M, 1 | 2, [shooter.get_rid()]
 	)
-	var hit := get_world_3d().direct_space_state.intersect_ray(query)
-	return hit["collider"] as Node3D if hit else null
+	return get_world_3d().direct_space_state.intersect_ray(query)
 
 
 @rpc("authority", "call_local", "reliable")
-func _play_fire() -> void:
+func _play_fire(item_id: String, origin: Vector3) -> void:
 	_flash_timer = FLASH_DURATION_S
 	_set_flash(true)
+	# Use the event's weapon ID; replicated equipment may already have changed.
+	GameAudio.play_at(self, StringName(item_id), origin)
+
+
+@rpc("authority", "call_local", "reliable")
+func _play_impact(at: Vector3, living: bool) -> void:
+	GameAudio.play_at(self, &"hit" if living else &"impact", at)
+
+
+## Only the collecting/equipping owner hears inventory confirmations.
+@rpc("authority", "call_local", "reliable")
+func _play_inventory(cue: StringName) -> void:
+	if peer_id == multiplayer.get_unique_id():
+		GameAudio.play_ui(self, cue)
 
 
 func _eat(def: ItemDefinition) -> void:
@@ -197,12 +224,15 @@ func _toss(def: ItemDefinition, distance: float) -> void:
 		net_item_id = ""
 		return
 	net_item_id = ""
-	var from := _mount_transform(player).origin
+	var from := (
+		HeldItemPose.world_grip(player.net_position, player.net_yaw, player.net_pitch).origin
+	)
 	var direction := ThrowMath.aim_direction(player.net_yaw, player.net_pitch)
 	var to := _landing_point(from, direction, distance)
 	var holdables := get_tree().get_first_node_in_group(&"holdables_root")
 	if holdables:
 		holdables.call("spawn_thrown_item", def.id, from, to)
+		_play_inventory.rpc_id(peer_id, &"drop")
 
 
 func _landing_point(from: Vector3, direction: Vector3, distance: float) -> Vector3:
@@ -214,14 +244,67 @@ func _landing_point(from: Vector3, direction: Vector3, distance: float) -> Vecto
 	return hit["position"] if hit else flat
 
 
-## Where this hand's item sits: near the camera for the local player (a first-person
-## viewmodel), or near the body's hand for everyone else watching a puppet.
+## Use the first-person camera only while the owner's body is hidden. F3 and
+## remote peers use the same body-relative grip, including the aim pitch.
 func _mount_transform(player: Player) -> Transform3D:
-	if player.is_local():
-		var camera := player.get_node("Camera") as Node3D
-		return camera.global_transform * LOCAL_OFFSET
 	var body := player.get_node("Body") as Node3D
-	return body.global_transform * REMOTE_OFFSET
+	if player.is_local() and not body.visible:
+		var camera := player.get_node("Camera") as Node3D
+		var def := ItemCatalog.find(net_item_id)
+		var offset := def.first_person_offset if def != null else HeldItemPose.FIRST_PERSON_OFFSET
+		return camera.global_transform * Transform3D(Basis.IDENTITY, offset)
+	var yaw := player.yaw if player.is_local() else body.global_rotation.y
+	var pitch := player.pitch if player.is_local() else player.net_pitch
+	var origin := (
+		player.get_global_transform_interpolated().origin
+		if player.is_local()
+		else player.global_position
+	)
+	return HeldItemPose.world_grip(origin, yaw, pitch)
+
+
+func _aim_origin(player: Player) -> Vector3:
+	return (
+		player.net_position
+		+ Vector3.UP * (player.movement.eye_height_m() - player.movement.hull_height_m() * 0.5)
+	)
+
+
+func support_grip() -> Node3D:
+	return _view.get_node_or_null("SupportGrip") as Node3D if _view != null else null
+
+
+func _pose_arms(player: Player) -> void:
+	if _view == null:
+		return
+	_arms.set_skin_color(PlayerSkin.TONES[skin_tone_index()])
+	var body := player.get_node("Body") as Node3D
+	var avatar := body.get_node_or_null("Avatar")
+	if avatar != null and avatar.has_method("sleeve_color"):
+		_arms.set_sleeve_color(avatar.call("sleeve_color"))
+	else:
+		_arms.set_sleeve_color(PlayerSkin.TONES[skin_tone_index()])
+	var first_person := player.is_local() and not body.visible
+	if not first_person and avatar != null and avatar.has_method("shoulder_position"):
+		_arms.pose(
+			_arms.to_local(avatar.call("shoulder_position", true)),
+			_arms.to_local(avatar.call("shoulder_position", false)),
+			support_grip()
+		)
+		return
+	var shoulders: Transform3D
+	if first_person:
+		shoulders = (player.get_node("Camera") as Node3D).global_transform
+		shoulders.origin += shoulders.basis * Vector3(0, -0.36, 0.10)
+	else:
+		var yaw := player.yaw if player.is_local() else body.global_rotation.y
+		shoulders = Transform3D(Basis(Vector3.UP, yaw), body.global_position)
+		shoulders.origin.y += 0.30
+	_arms.pose(
+		_arms.to_local(shoulders * Vector3(0.32, 0, 0)),
+		_arms.to_local(shoulders * Vector3(-0.32, 0, 0)),
+		support_grip()
+	)
 
 
 func _player() -> Player:
@@ -242,6 +325,7 @@ func _rebuild_view() -> void:
 	if def != null and def.view_scene != null:
 		_view = def.view_scene.instantiate() as Node3D
 		_mount.add_child(_view)
+		HeldItemPose.align_grip(_view)
 
 
 func _set_flash(active: bool) -> void:
@@ -260,3 +344,33 @@ func _set_flash(active: bool) -> void:
 		muzzle.add_child(light)
 	elif not active and existing != null:
 		existing.queue_free()
+
+
+func inventory() -> PlayerInventory:
+	return $Inventory as PlayerInventory
+
+
+## Spawn first; the inventory removes the source item only after this succeeds.
+func drop_inventory_item(item_id: String) -> bool:
+	if not multiplayer.is_server() or ItemCatalog.find(item_id) == null:
+		return false
+	var player := _player()
+	var holdables := get_tree().get_first_node_in_group(&"holdables_root")
+	if player == null or holdables == null:
+		return false
+	var from := (
+		HeldItemPose.world_grip(player.net_position, player.net_yaw, player.net_pitch).origin
+	)
+	var direction := ThrowMath.aim_direction(player.net_yaw, player.net_pitch)
+	holdables.call(
+		"spawn_thrown_item", item_id, from, _landing_point(from, direction, DROP_DISTANCE)
+	)
+	return true
+
+
+func skin_tone_index() -> int:
+	return (
+		skin_index
+		if skin_index >= 0 and skin_index < PlayerSkin.TONES.size()
+		else PlayerSkin.index_for_id(peer_id)
+	)

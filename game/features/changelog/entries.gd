@@ -17,6 +17,40 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Gameplay sound effects",
+		"summary":
+		"Guns, hits and animal explosions now make sound. Pickups and inventory actions have audio cues."
+	},
+	{
+		"title": "Exploding frogs",
+		"summary":
+		"Shoot frogs for a burst of flying pieces; they return after four seconds. Penguins face forward."
+	},
+	{
+		"title": "Player skin tones",
+		"summary": "Your player ID now determines a consistent skin tone for your avatar and hands."
+	},
+	{
+		"title": "Backpacks and clothing",
+		"summary":
+		"Start in white underwear. Find clothing, manage your backpack and view your wallet with I."
+	},
+	{
+		"title": "Blocky players",
+		"summary":
+		"Players now have blocky bodies with walking, running, jumping, and item-holding animations."
+	},
+	{
+		"title": "Better items and grips",
+		"summary":
+		"Remodeled guns, banana and ball, with visible hands and proper first- and third-person grips."
+	},
+	{
+		"title": "Frogs on the move",
+		"summary":
+		"Frogs have detailed bodies, varied sizes and hops, avoid obstacles, and flee nearby players."
+	},
+	{
 		"title": "Frog makeover",
 		"summary":
 		"Frogs are now small blocky voxel frogs in proper frog-green tones, not blue blobs."

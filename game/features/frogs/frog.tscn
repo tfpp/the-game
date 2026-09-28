@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://features/frogs/frog.gd" id="1_script"]
+[ext_resource type="Script" path="res://features/frogs/frog_model.gd" id="2_model"]
 
 [sub_resource type="SceneReplicationConfig" id="Replication"]
 properties/0/path = NodePath(".:net_position")
@@ -9,52 +10,22 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:net_yaw")
 properties/1/spawn = true
 properties/1/replication_mode = 1
+properties/2/path = NodePath(".:net_phase")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:net_alive")
+properties/3/spawn = true
+properties/3/replication_mode = 1
 
-[sub_resource type="BoxMesh" id="BodyMesh"]
-size = Vector3(0.42, 0.24, 0.52)
-
-[sub_resource type="StandardMaterial3D" id="BodyMat"]
-albedo_color = Color(0.25, 0.75, 0.3, 1)
-
-[sub_resource type="BoxMesh" id="EyeMesh"]
-size = Vector3(0.12, 0.12, 0.12)
-
-[sub_resource type="StandardMaterial3D" id="EyeMat"]
-albedo_color = Color(0.95, 0.95, 0.9, 1)
-
-[sub_resource type="BoxMesh" id="PupilMesh"]
-size = Vector3(0.06, 0.06, 0.02)
-
-[sub_resource type="StandardMaterial3D" id="PupilMat"]
-albedo_color = Color(0.05, 0.05, 0.05, 1)
-
-[node name="Frog" type="Node3D"]
+[node name="Frog" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 1
 script = ExtResource("1_script")
 
-[node name="Body" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0)
-mesh = SubResource("BodyMesh")
-surface_material_override/0 = SubResource("BodyMat")
+[node name="Collider" type="CollisionShape3D" parent="."]
 
-[node name="EyeLeft" type="MeshInstance3D" parent="Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13, 0.14, -0.18)
-mesh = SubResource("EyeMesh")
-surface_material_override/0 = SubResource("EyeMat")
-
-[node name="PupilLeft" type="MeshInstance3D" parent="Body/EyeLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -0.065)
-mesh = SubResource("PupilMesh")
-surface_material_override/0 = SubResource("PupilMat")
-
-[node name="EyeRight" type="MeshInstance3D" parent="Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.13, 0.14, -0.18)
-mesh = SubResource("EyeMesh")
-surface_material_override/0 = SubResource("EyeMat")
-
-[node name="PupilRight" type="MeshInstance3D" parent="Body/EyeRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -0.065)
-mesh = SubResource("PupilMesh")
-surface_material_override/0 = SubResource("PupilMat")
+[node name="Body" type="Node3D" parent="."]
+script = ExtResource("2_model")
 
 [node name="Sync" type="MultiplayerSynchronizer" parent="."]
 root_path = NodePath("..")

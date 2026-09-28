@@ -44,8 +44,9 @@ func _ready() -> void:
 	_seg_from = from
 	_seg_to = to
 	var def := ItemCatalog.find(item_id)
-	if def != null and def.view_scene != null:
-		_mount.add_child(def.view_scene.instantiate())
+	if def != null:
+		_mount.add_child(ItemCatalog.create_view(item_id))
+		_mount.position.y = def.ground_clearance
 	if not multiplayer.is_server():
 		set_physics_process(false)
 	_apply_landed(net_landed)
@@ -114,7 +115,7 @@ func can_use(player: Player) -> bool:
 	if not net_landed or global_position.distance_to(player.global_position) > PICKUP_RANGE:
 		return false
 	var hand := Hand.for_peer(get_tree(), player.get_multiplayer_authority())
-	return hand != null and hand.net_item_id.is_empty()
+	return hand != null and hand.inventory().can_collect(item_id)
 
 
 func interaction_text() -> String:
@@ -128,7 +129,7 @@ func use() -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func request_pickup() -> void:
-	if not multiplayer.is_server() or not net_landed:
+	if not multiplayer.is_server() or not net_landed or is_queued_for_deletion():
 		return
 	var sender := multiplayer.get_remote_sender_id()
 	var peer_id := sender if sender != 0 else multiplayer.get_unique_id()
@@ -136,7 +137,7 @@ func request_pickup() -> void:
 	if player == null or not can_use(player):
 		return
 	var hand := Hand.for_peer(get_tree(), peer_id)
-	if hand == null or not hand.try_equip(item_id):
+	if hand == null or not hand.inventory().collect(item_id):
 		return
 	queue_free()
 

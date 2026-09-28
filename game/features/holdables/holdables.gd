@@ -42,13 +42,13 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 	_clear(_hands)
 	_clear(_thrown)
 	if Network.is_authoritative():
-		_hand_spawner.spawn({"peer": multiplayer.get_unique_id()})
+		_hand_spawner.spawn(_hand_data(multiplayer.get_unique_id()))
 
 
 func _on_peer_connected(peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
-	_hand_spawner.spawn({"peer": peer_id})
+	_hand_spawner.spawn(_hand_data(peer_id))
 
 
 func _on_peer_disconnected(peer_id: int) -> void:
@@ -66,6 +66,7 @@ func _spawn_hand(data: Variant) -> Node:
 	var hand := HAND_SCENE.instantiate() as Hand
 	hand.name = str(peer_id)
 	hand.peer_id = peer_id
+	hand.skin_index = int(info.get("skin_index", PlayerSkin.index_for_id(peer_id)))
 	return hand
 
 
@@ -83,3 +84,10 @@ func _clear(container: Node3D) -> void:
 	for child: Node in container.get_children():
 		container.remove_child(child)
 		child.queue_free()
+
+
+func _hand_data(peer_id: int) -> Dictionary:
+	var account: Dictionary = Network.peer_accounts.get(peer_id, {})
+	var account_id := int(account.get("account_id", 0))
+	var identity := account_id if account_id > 0 else peer_id
+	return {"peer": peer_id, "skin_index": PlayerSkin.index_for_id(identity)}

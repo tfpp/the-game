@@ -1,15 +1,54 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
-[sub_resource type="SphereMesh" id="SphereMesh_ball"]
+[sub_resource type="StandardMaterial3D" id="r0"]
+albedo_color = Color(0.88, 0.29, 0.055, 1)
+metallic = 0
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="r1"]
+albedo_color = Color(0.075, 0.04, 0.023, 1)
+metallic = 0
+roughness = 0.65
+
+[sub_resource type="SphereMesh" id="r2"]
 radius = 0.12
 height = 0.24
+radial_segments = 16
+rings = 8
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ball"]
-albedo_color = Color(0.85, 0.22, 0.18, 1)
-roughness = 0.35
+[sub_resource type="TorusMesh" id="r3"]
+inner_radius = 0.117
+outer_radius = 0.122
+rings = 32
+ring_segments = 6
 
 [node name="BallView" type="Node3D"]
 
-[node name="Mesh" type="MeshInstance3D" parent="."]
-mesh = SubResource("SphereMesh_ball")
-surface_material_override/0 = SubResource("StandardMaterial3D_ball")
+[node name="Ball" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, 0)
+mesh = SubResource("r2")
+material_override = SubResource("r0")
+
+[node name="Seam0" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, 0)
+rotation = Vector3(0, 0, 0)
+mesh = SubResource("r3")
+material_override = SubResource("r1")
+
+[node name="Seam1" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, 0)
+rotation = Vector3(1.5707963267948966, 0, 0)
+mesh = SubResource("r3")
+material_override = SubResource("r1")
+
+[node name="Seam2" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, 0)
+rotation = Vector3(0, 0, 1.5707963267948966)
+mesh = SubResource("r3")
+material_override = SubResource("r1")
+
+[node name="Grip" type="Marker3D" parent="."]
+position = Vector3(0.092, -0.022, 0.015)
+
+[node name="SupportGrip" type="Marker3D" parent="."]
+position = Vector3(-0.092, -0.022, 0.015)

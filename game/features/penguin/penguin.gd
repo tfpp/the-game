@@ -19,9 +19,6 @@ extends AnimatableBody3D
 
 const REMOTE_SMOOTHING := 12.0
 const RESPAWN_DELAY_S := 4.0
-const DEBRIS_DURATION_S := 1.1
-const FLASH_DURATION_S := 0.3
-const SHOCKWAVE_DURATION_S := 0.5
 
 ## Replicated state (server -> everyone). See the synchronizer config in feature.tscn.
 @export var net_position := Vector3.ZERO
@@ -98,87 +95,4 @@ func _respawn() -> void:
 ## rock, so it doesn't need to be pixel-synced.
 @rpc("authority", "call_local", "reliable")
 func _explode() -> void:
-	_spawn_flash()
-	_spawn_shockwave()
-	_spawn_debris()
-
-
-func _spawn_flash() -> void:
-	var light := OmniLight3D.new()
-	light.light_color = Color(1.0, 0.65, 0.2)
-	light.light_energy = 6.0
-	light.omni_range = 4.0
-	light.position = Vector3(0.0, 0.2, 0.0)
-	add_child(light)
-	var tween := create_tween()
-	tween.tween_property(light, "light_energy", 0.0, FLASH_DURATION_S)
-	tween.tween_callback(light.queue_free)
-
-
-func _spawn_shockwave() -> void:
-	var sphere := MeshInstance3D.new()
-	var mesh := SphereMesh.new()
-	mesh.radius = 0.3
-	mesh.height = 0.6
-	sphere.mesh = mesh
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(1.0, 0.7, 0.2, 0.85)
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	sphere.set_surface_override_material(0, mat)
-	sphere.position = Vector3(0.0, 0.2, 0.0)
-	add_child(sphere)
-	var tween := create_tween()
-	tween.set_parallel(true)
-	(
-		tween
-		. tween_property(sphere, "scale", Vector3.ONE * 6.0, SHOCKWAVE_DURATION_S)
-		. set_trans(Tween.TRANS_QUAD)
-		. set_ease(Tween.EASE_OUT)
-	)
-	tween.tween_property(mat, "albedo_color:a", 0.0, SHOCKWAVE_DURATION_S)
-	tween.chain().tween_callback(sphere.queue_free)
-
-
-## Blows her component meshes apart into flying, tumbling debris, then frees them —
-## a fantastic send-off that reuses her own body parts instead of new art.
-func _spawn_debris() -> void:
-	for mesh: MeshInstance3D in _mesh_pieces(_body):
-		var piece := MeshInstance3D.new()
-		piece.mesh = mesh.mesh
-		var mat := mesh.get_surface_override_material(0)
-		if mat != null:
-			piece.set_surface_override_material(0, mat)
-		add_child(piece)
-		piece.global_transform = mesh.global_transform
-		_launch_piece(piece)
-
-
-func _mesh_pieces(node: Node) -> Array[MeshInstance3D]:
-	var pieces: Array[MeshInstance3D] = []
-	for child: Node in node.get_children():
-		var mesh := child as MeshInstance3D
-		if mesh != null:
-			pieces.append(mesh)
-		pieces.append_array(_mesh_pieces(child))
-	return pieces
-
-
-func _launch_piece(piece: MeshInstance3D) -> void:
-	var direction := (
-		Vector3(randf_range(-1.0, 1.0), randf_range(0.5, 1.4), randf_range(-1.0, 1.0)).normalized()
-	)
-	var target := piece.position + direction * randf_range(1.2, 3.2)
-	var spin := Vector3(
-		randf_range(-720.0, 720.0), randf_range(-720.0, 720.0), randf_range(-720.0, 720.0)
-	)
-	var tween := create_tween()
-	tween.set_parallel(true)
-	(
-		tween
-		. tween_property(piece, "position", target, DEBRIS_DURATION_S)
-		. set_trans(Tween.TRANS_CUBIC)
-		. set_ease(Tween.EASE_OUT)
-	)
-	tween.tween_property(piece, "rotation_degrees", spin, DEBRIS_DURATION_S)
-	tween.chain().tween_callback(piece.queue_free)
+	MeshExplosion.spawn(self, _body)

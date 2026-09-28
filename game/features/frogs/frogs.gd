@@ -1,11 +1,6 @@
 extends Node3D
-## Spawns a small pond of frogs that hop around forever, each a different color.
-##
-## Server-authoritative spawning like core/game/game.gd's players: the server
-## (dedicated, or the offline peer acting as its own server) spawns them once through
-## FrogSpawner so every peer, including late joiners, gets the same replicated nodes.
-## Movement itself is driven by each frog (frog.gd); this script only decides how many
-## frogs there are, where they start, and what color they are.
+## Server-owned spawning. Every peer receives the same appearance and movement
+## profile, while each frog chooses its own safe route through the level.
 
 const FROG_SCENE := preload("res://features/frogs/frog.tscn")
 const FROG_COUNT := 6
@@ -28,7 +23,14 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 func _spawn_frogs() -> void:
 	for index: int in FROG_COUNT:
 		var start := FrogHop.pick_target(Vector3.ZERO, FrogHop.HOP_RADIUS, randf() * TAU, randf())
-		_spawner.spawn({"index": index, "position": start, "color": FrogHop.color_for_index(index)})
+		_spawner.spawn(
+			{
+				"index": index,
+				"position": start,
+				"color": FrogHop.color_for_index(index),
+				"profile": FrogHop.profile_for_index(index)
+			}
+		)
 
 
 ## Runs on every peer (spawn_function), so each frog looks identical everywhere.
@@ -38,6 +40,12 @@ func _spawn_frog(data: Variant) -> Node:
 	frog.name = "Frog%d" % int(info["index"])
 	frog.position = info["position"]
 	frog.body_color = info["color"]
+	var profile: Dictionary = info["profile"]
+	frog.body_size = profile["size"]
+	frog.jump_distance = profile["distance"]
+	frog.jump_height = profile["height"]
+	frog.jump_duration = profile["duration"]
+	frog.rest_time = profile["rest"]
 	return frog
 
 

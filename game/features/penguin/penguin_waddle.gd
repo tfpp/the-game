@@ -12,7 +12,7 @@ const WADDLE_AMPLITUDE := 0.35
 
 
 ## Position on the patrol circle of the given `radius` around `home`, at `angle`
-## radians (0 at +X, increasing toward +Z).
+## radians (0 at +Z, increasing toward +X).
 static func position_on_circle(home: Vector3, radius: float, angle: float) -> Vector3:
 	return home + Vector3(sin(angle), 0.0, cos(angle)) * radius
 
@@ -26,9 +26,9 @@ static func angular_speed(radius: float, walk_speed: float) -> float:
 
 
 ## Yaw (radians) facing the direction of travel at `angle` on the patrol circle,
-## using the same forward convention as SourceMovement.wish_direction.
+## using the model's +Z forward direction (belly, beak and toes).
 static func facing_yaw(angle: float) -> float:
-	return atan2(-cos(angle), sin(angle))
+	return atan2(cos(angle), -sin(angle))
 
 
 ## Side-to-side rocking angle (radians) for the cosmetic waddle, at `elapsed` seconds.

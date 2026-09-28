@@ -6,10 +6,6 @@ extends RefCounted
 ## from the node that uses it.
 
 const HOP_RADIUS := 2.5
-const HOP_HEIGHT := 0.4
-const HOP_DURATION := 0.35
-const REST_MIN := 0.6
-const REST_MAX := 2.4
 
 const PALETTE: Array[Color] = [
 	Color(0.25, 0.75, 0.3),
@@ -55,3 +51,24 @@ static func facing_yaw(from: Vector3, to: Vector3) -> float:
 ## A distinct color for the given spawn index, cycling through the palette.
 static func color_for_index(index: int) -> Color:
 	return PALETTE[index % PALETTE.size()]
+
+
+## Fixed, distinct profiles travel with each spawn, including to late joiners.
+static func profile_for_index(index: int) -> Dictionary:
+	var sizes: Array[float] = [0.65, 0.85, 1.0, 1.2, 1.4, 0.95]
+	var distances: Array[float] = [0.85, 1.4, 1.8, 2.2, 2.6, 1.65]
+	var slot := posmod(index, sizes.size())
+	return {
+		"size": sizes[slot],
+		"distance": distances[slot],
+		"height": 0.35 + sizes[slot] * 0.25,
+		"duration": 0.32 + sizes[slot] * 0.12,
+		"rest": 0.65 + float(slot) * 0.22,
+	}
+
+
+static func escape_direction(from: Vector3, threat: Vector3, fallback: Vector3) -> Vector3:
+	var away := (from - threat) * Vector3(1, 0, 1)
+	if away.is_zero_approx():
+		return fallback.normalized()
+	return away.normalized()

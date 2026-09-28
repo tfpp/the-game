@@ -56,3 +56,22 @@ func test_color_for_index_cycles_through_a_distinct_palette() -> void:
 		assert_false(seen.has(color), "Palette colors should be distinct")
 		seen.append(color)
 	assert_eq(FrogHop.color_for_index(FrogHop.PALETTE.size()), FrogHop.PALETTE[0])
+
+
+func test_profiles_cover_distinct_sizes_and_jump_distances() -> void:
+	var sizes: Array[float] = []
+	var distances: Array[float] = []
+	for index: int in 6:
+		var profile := FrogHop.profile_for_index(index)
+		assert_false(sizes.has(profile["size"]))
+		assert_false(distances.has(profile["distance"]))
+		sizes.append(profile["size"])
+		distances.append(profile["distance"])
+		assert_gt(float(profile["duration"]), 0.0)
+	assert_eq(FrogHop.profile_for_index(6), FrogHop.profile_for_index(0))
+
+
+func test_escape_is_horizontal_and_away_from_player() -> void:
+	var direction := FrogHop.escape_direction(Vector3.ZERO, Vector3(1, 2, 0), Vector3.FORWARD)
+	assert_eq(direction, Vector3.LEFT)
+	assert_eq(FrogHop.escape_direction(Vector3.ZERO, Vector3.UP, Vector3.FORWARD), Vector3.FORWARD)

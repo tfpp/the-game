@@ -13,7 +13,7 @@ func test_position_on_circle_stays_at_the_requested_radius_from_home() -> void:
 		assert_almost_eq(pos.y, home.y, 0.0001)
 
 
-func test_position_on_circle_at_zero_angle_is_along_positive_x() -> void:
+func test_position_on_circle_at_zero_angle_is_along_positive_z() -> void:
 	var pos := PenguinWaddle.position_on_circle(Vector3.ZERO, 2.0, 0.0)
 	assert_almost_eq(pos.x, 0.0, 0.0001)
 	assert_almost_eq(pos.z, 2.0, 0.0001)
@@ -37,7 +37,7 @@ func test_facing_yaw_matches_the_direction_of_travel_around_the_circle() -> void
 	var travel := (after - before).normalized()
 
 	var yaw := PenguinWaddle.facing_yaw(angle)
-	var forward := Vector3(-sin(yaw), 0.0, -cos(yaw))
+	var forward := Vector3.BACK.rotated(Vector3.UP, yaw)
 
 	assert_almost_eq(forward.x, travel.x, 0.001)
 	assert_almost_eq(forward.z, travel.z, 0.001)

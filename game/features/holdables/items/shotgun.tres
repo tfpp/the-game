@@ -14,3 +14,4 @@ damage = 16.0
 fire_cooldown_s = 0.9
 pellet_count = 8
 spread_degrees = 8.0
+first_person_offset = Vector3(0.20, -0.25, -0.62)

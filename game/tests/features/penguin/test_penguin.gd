@@ -46,3 +46,15 @@ func test_respawns_at_home_after_the_respawn_delay() -> void:
 
 func test_is_in_the_killable_group() -> void:
 	assert_true(_penguin.is_in_group(&"killable"))
+
+
+func test_beak_points_along_patrol_travel() -> void:
+	for angle: float in [0.0, PI * 0.5, PI, PI * 1.5]:
+		_penguin.net_yaw = PenguinWaddle.facing_yaw(angle)
+		_penguin._process(0.0)
+		var torso := _penguin.get_node("Body/Torso") as Node3D
+		var beak := torso.get_node("Beak") as Node3D
+		var facing := (beak.global_position - torso.global_position) * Vector3(1, 0, 1)
+		var before := PenguinWaddle.position_on_circle(Vector3.ZERO, 2.0, angle - 0.001)
+		var after := PenguinWaddle.position_on_circle(Vector3.ZERO, 2.0, angle + 0.001)
+		assert_gt(facing.normalized().dot((after - before).normalized()), 0.99)

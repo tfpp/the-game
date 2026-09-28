@@ -9,3 +9,5 @@ id = "awp"
 display_name = "AWP"
 category = 0
 view_scene = ExtResource("2_view")
+ground_clearance = 0.12
+first_person_offset = Vector3(0.20, -0.25, -0.62)

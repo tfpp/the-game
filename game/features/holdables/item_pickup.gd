@@ -2,7 +2,7 @@ class_name ItemPickup
 extends Node3D
 ## A generic world pickup for any ItemDefinition (see item_catalog.gd). Reuses the
 ## existing "Use" interaction (features/interaction): E, or the controller's B/Circle,
-## hands the item to whoever's nearest with an empty hand.
+## adds the item to equipment or the backpack.
 
 const PICKUP_RANGE := 2.5
 
@@ -19,8 +19,8 @@ var _last_taken := false
 
 func _ready() -> void:
 	var def := ItemCatalog.find(item_id)
-	if def != null and def.view_scene != null:
-		_mount.add_child(def.view_scene.instantiate())
+	if def != null:
+		_mount.add_child(ItemCatalog.create_view(item_id))
 	_apply_taken(net_taken)
 
 
@@ -33,7 +33,7 @@ func can_use(player: Player) -> bool:
 	if net_taken or global_position.distance_to(player.global_position) > PICKUP_RANGE:
 		return false
 	var hand := Hand.for_peer(get_tree(), player.get_multiplayer_authority())
-	return hand != null and hand.net_item_id.is_empty()
+	return hand != null and hand.inventory().can_collect(item_id)
 
 
 func interaction_text() -> String:
@@ -55,7 +55,7 @@ func request_pickup() -> void:
 	if player == null or not can_use(player):
 		return
 	var hand := Hand.for_peer(get_tree(), peer_id)
-	if hand == null or not hand.try_equip(item_id):
+	if hand == null or not hand.inventory().collect(item_id):
 		return
 	net_taken = true
 

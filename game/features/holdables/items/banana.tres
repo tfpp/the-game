@@ -10,3 +10,4 @@ display_name = "Banana"
 category = 1
 view_scene = ExtResource("2_view")
 weight = 0.35
+first_person_offset = Vector3(0.24, -0.23, -0.55)

@@ -9,6 +9,7 @@ enum Category {
 	WEAPON,  ## Fires; stays in hand.
 	FOOD,  ## Eaten once; removed from hand.
 	PROP,  ## Thrown; removed from hand and becomes a world pickup where it lands.
+	CLOTHING,  ## Equipped in a shirt or pants slot.
 }
 
 @export var id := ""
@@ -16,6 +17,10 @@ enum Category {
 @export var category: Category = Category.PROP
 ## Purely visual: instanced under the pickup and under whichever hand holds it.
 @export var view_scene: PackedScene
+## Height of the model origin above a floor when dropped.
+@export var ground_clearance := 0.10
+## Camera-relative primary grip. Long stocks need more room behind the grip.
+@export var first_person_offset := Vector3(0.22, -0.23, -0.43)
 
 ## Kilograms-ish. Thrown or dropped items bounce less the heavier they are (see
 ## throw_math.gd's `bounce_height`); heavy weapons barely bounce at all.

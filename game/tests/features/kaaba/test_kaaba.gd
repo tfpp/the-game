@@ -25,5 +25,9 @@ func test_cube_and_hizam_band_are_present() -> void:
 	var root: Node3D = add_child_autofree(_instantiate())
 	var structure := root.find_child("Structure", false, false)
 	assert_not_null(structure.find_child("Cube", false, false))
-	for side in ["North", "South", "East", "West"]:
+	for side: String in ["North", "South", "East", "West"]:
 		assert_not_null(structure.find_child("Hizam%s" % side, false, false))
+
+
+func _instantiate() -> Node3D:
+	return (load(FEATURE_PATH) as PackedScene).instantiate() as Node3D
