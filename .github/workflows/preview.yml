@@ -1,0 +1,178 @@
+name: preview
+
+# Offline-only web previews for pull requests, on Cloudflare Pages (project tfpp-game).
+# Each PR gets its own origin, https://pr-<N>.tfpp-game.pages.dev, so preview code can't
+# read production sessions and the production API's CORS rejects it. The build defaults
+# to offline (the tab is its own server); no game server or API is involved.
+#   build    exports the PR's web client with no secrets (Godot import may run PR code)
+#   deploy   uploads the finished files only; never checks out or runs PR code
+#   cleanup  deletes the PR's deployments when it is merged or closed
+# Secrets live in the `preview` environment: CLOUDFLARE_API_TOKEN (Pages: Edit) and
+# CLOUDFLARE_ACCOUNT_ID.
+# The run name ("preview #12 deploy") lets the Discord bot post the link to the PR's
+# thread once a deploy succeeds.
+run-name: >-
+  preview #${{ github.event.pull_request.number }}
+  ${{ github.event.action == 'closed' && 'cleanup' || 'deploy' }}
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    paths: ["game/**", ".github/workflows/preview.yml"]
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions: {}
+
+env:
+  PROJECT: tfpp-game
+  BRANCH: pr-${{ github.event.pull_request.number }}
+
+jobs:
+  build:
+    if: >-
+      github.event.action != 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    container: barichello/godot-ci:4.7.2
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Link export templates
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates
+          ln -sfn /root/.local/share/godot/export_templates/4.7.2.stable \
+            ~/.local/share/godot/export_templates/4.7.2.stable || true
+      # Default to offline, so a link without ?server= never reaches production.
+      # This edits the checkout only; nothing is committed.
+      - name: Default to offline
+        run: |
+          sed -i 's|^network/default_server_url=.*|network/default_server_url="offline"|' game/project.godot
+          grep -qx 'network/default_server_url="offline"' game/project.godot
+      - name: Export web
+        env:
+          BUILD_VERSION: ${{ github.event.pull_request.head.sha }}
+        run: GODOT=godot game/scripts/export.sh web
+      - uses: actions/upload-artifact@v7
+        with:
+          name: web
+          path: build/web
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: preview
+      url: https://${{ env.BRANCH }}.${{ env.PROJECT }}.pages.dev/
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: web
+          path: web
+      # Pages rejects files over 25 MiB and Godot's engine (index.wasm) is ~38 MiB. Ship
+      # it gzipped (~10 MiB) and have the page inflate it with DecompressionStream before
+      # Godot's loader sees it. Only previews do this; production is unchanged.
+      - name: Fit the Pages file size limit
+        run: |
+          gzip -9 -n web/index.wasm
+          cat > web/wasm-gz.js <<'EOF'
+          // Added by preview.yml: serve index.wasm from index.wasm.gz.
+          (() => {
+            const fetch = window.fetch.bind(window);
+            window.fetch = (input, init) => {
+              const url = new URL(input instanceof Request ? input.url : String(input), location.href);
+              if (url.origin !== location.origin || !url.pathname.endsWith('/index.wasm')) {
+                return fetch(input, init);
+              }
+              url.pathname += '.gz';
+              return fetch(url, init).then((r) => !r.ok ? r : new Response(
+                r.body.pipeThrough(new DecompressionStream('gzip')),
+                { headers: { 'Content-Type': 'application/wasm' } },
+              ));
+            };
+          })();
+          EOF
+          sed -i 's|<script src="index.js"></script>|<script src="wasm-gz.js"></script>&|' web/index.html
+          grep -q 'wasm-gz.js' web/index.html
+          find web -type f -size +25M | grep . && exit 1 || true
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          npx --yes wrangler@4 pages deploy web --project-name="$PROJECT" --branch="$BRANCH" \
+            --commit-hash="$SHA" --commit-dirty=true
+      - name: Comment on the PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          url="https://$BRANCH.$PROJECT.pages.dev/"
+          body="$(printf '<!-- preview -->\n**Preview:** %s (offline, commit %s)\n\nSingle player only: the tab is its own server, so multiplayer and accounts are not available. Removed when this PR is merged or closed.' \
+            "$url" "${SHA:0:7}")"
+          id="$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
+            --jq '.[] | select(.body | startswith("<!-- preview -->")) | .id' | head -n1)"
+          if [[ -n "$id" ]]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$id" -f body="$body" >/dev/null
+          else
+            gh api "repos/$REPO/issues/$PR/comments" -f body="$body" >/dev/null
+          fi
+
+  cleanup:
+    if: >-
+      github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: preview
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Delete the PR's deployments
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PROJECT/deployments"
+          auth=(-H "Authorization: Bearer $CLOUDFLARE_API_TOKEN")
+          # Collect every ID first; deleting while paging would shift the pages.
+          ids=()
+          page=1
+          while :; do
+            resp="$(curl -fsS "${auth[@]}" "$api?env=preview&per_page=25&page=$page")"
+            mapfile -t -O "${#ids[@]}" ids < <(jq -r --arg b "$BRANCH" \
+              '.result[] | select(.deployment_trigger.metadata.branch == $b) | .id' <<<"$resp")
+            total="$(jq -r '.result_info.total_pages // 1' <<<"$resp")"
+            (( page >= total )) && break
+            page=$((page + 1))
+          done
+          echo "Deleting ${#ids[@]} deployment(s) for $BRANCH"
+          for id in "${ids[@]}"; do
+            # force=true is required for the deployment the branch alias points at.
+            curl -fsS -X DELETE "${auth[@]}" "$api/$id?force=true" >/dev/null
+          done
+      - name: Update the PR comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          id="$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
+            --jq '.[] | select(.body | startswith("<!-- preview -->")) | .id' | head -n1)"
+          [[ -z "$id" ]] && exit 0
+          gh api -X PATCH "repos/$REPO/issues/comments/$id" \
+            -f body="$(printf '<!-- preview -->\n**Preview:** removed after this PR was closed.')" >/dev/null

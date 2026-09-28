@@ -164,13 +164,15 @@ func run(log *slog.Logger) error {
 		deployer = fileDeployer(dir)
 	}
 	svc := core.New(core.Config{
-		Repo:           repo,
-		Ref:            env("BOT_REF", "main"),
-		Workflow:       env("BOT_WORKFLOW", "agent.yml"),
-		CIWorkflow:     env("BOT_CI_WORKFLOW", "game-ci.yml"),
-		ServerWorkflow: env("BOT_SERVER_WORKFLOW", "server-image.yml"),
-		PagesWorkflow:  env("BOT_PAGES_WORKFLOW", "pages.yml"),
-		Agent:          env("BOT_AGENT", "claude"),
+		Repo:            repo,
+		Ref:             env("BOT_REF", "main"),
+		Workflow:        env("BOT_WORKFLOW", "agent.yml"),
+		CIWorkflow:      env("BOT_CI_WORKFLOW", "game-ci.yml"),
+		ServerWorkflow:  env("BOT_SERVER_WORKFLOW", "server-image.yml"),
+		PagesWorkflow:   env("BOT_PAGES_WORKFLOW", "pages.yml"),
+		PreviewWorkflow: env("BOT_PREVIEW_WORKFLOW", "preview.yml"),
+		PreviewURL:      env("BOT_PREVIEW_URL", "https://pr-{pr}.tfpp-game.pages.dev/"),
+		Agent:           env("BOT_AGENT", "claude"),
 		Limits: store.Limits{
 			PerUser: perUser, Window: 24 * time.Hour,
 			MaxActive: maxActive, StaleAfter: 3 * time.Hour,

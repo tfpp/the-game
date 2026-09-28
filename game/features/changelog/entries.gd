@@ -17,6 +17,11 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Ferry helm",
+		"summary":
+		"Taking the ferry's wheel now plants you at its old-timey helm instead of wandering off."
+	},
+	{
 		"title": "Gameplay sound effects",
 		"summary":
 		"Guns, hits and animal explosions now make sound. Pickups and inventory actions have audio cues."
