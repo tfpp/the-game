@@ -1,0 +1,11 @@
+# News ticker
+
+A two-sided flat screen hangs over the centre of the casino gaming floor (0, 3, 0)
+and scrolls the latest top headlines from [TheNewsAPI](https://www.thenewsapi.com/)
+under a red BREAKING NEWS banner.
+
+- Only the server fetches (`/v1/news/top`, every 15 minutes, retry after 60 s on
+  failure) and replicates `headlines` through `Sync`, so web clients avoid CORS and
+  never see the token.
+- The token comes from the server's `THENEWSAPI_TOKEN` environment variable. It is
+  deliberately not committed. Without it the screen shows a welcome line.

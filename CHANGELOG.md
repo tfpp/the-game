@@ -11,6 +11,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 - Add an F-toggle flashlight with shared beams and a rebindable Controls entry.
 - Connect all gnome holes through enterable tunnels with four-times running speed and labeled exits.
+- Hang a BREAKING NEWS screen over the casino floor that scrolls top headlines from
+  TheNewsAPI; servers set `THENEWSAPI_TOKEN` to enable it.
 - Give coding agents a step-by-step implement workflow, playbooks for common kinds of
   features, a checklist of problems `verify.sh` can't catch, exact changelog placement,
   and clearer revise and merge-conflict instructions.

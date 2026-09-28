@@ -13,7 +13,11 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Remembered leaderboard",
 		"summary":
-		"Offline players stay ranked; signed-in scores survive reconnects and server restarts."
+		"Offline players stay ranked; signed-in scores survive reconnects and server restarts.",
+	},
+	{
+		"title": "Breaking news screen",
+		"summary": "A screen over the casino floor scrolls the latest top headlines.",
 	},
 	{
 		"title": "Gnome express tunnels",
