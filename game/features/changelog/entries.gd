@@ -8,6 +8,11 @@ class_name ChangelogEntries
 ## `title`: the feature's display name. `summary`: a one-line, player-facing
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
+	{
+		"title": "Item drops & new guns",
+		"summary":
+		"Drop any held item with G; thrown items bounce based on weight. Added an SMG and a shotgun."
+	},
 	{"title": "Penguin", "summary": "A penguin waddles around the map."},
 	{"title": "AWP", "summary": "A prop AWP sniper rifle sits in the middle of the map."},
 	{"title": "Slot machine", "summary": "Play the slot machine for a payout."},

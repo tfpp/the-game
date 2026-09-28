@@ -22,6 +22,14 @@ spawn_path = NodePath("../Thrown")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.35, 9)
 item_id = "pistol"
 
+[node name="Smg" parent="Pickups" instance=ExtResource("2_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.35, 9)
+item_id = "smg"
+
+[node name="Shotgun" parent="Pickups" instance=ExtResource("2_pickup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.35, 9)
+item_id = "shotgun"
+
 [node name="Banana" parent="Pickups" instance=ExtResource("2_pickup")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.35, 9)
 item_id = "banana"

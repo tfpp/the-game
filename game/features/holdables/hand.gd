@@ -12,7 +12,8 @@ extends Node3D
 const LOCAL_OFFSET := Transform3D(Basis(), Vector3(0.28, -0.22, -0.55))
 const REMOTE_OFFSET := Transform3D(Basis(), Vector3(0.32, 1.1, 0.25))
 const THROW_DISTANCE := 5.0
-const FIRE_COOLDOWN_S := 0.25
+const DROP_DISTANCE := 1.2
+const HITSCAN_RANGE_M := 50.0
 const FLASH_DURATION_S := 0.06
 
 ## Replicated (server -> everyone). See the synchronizer config in hand.tscn.
@@ -37,6 +38,11 @@ func _ready() -> void:
 	var pad := InputEventJoypadButton.new()
 	pad.button_index = JOY_BUTTON_RIGHT_SHOULDER
 	Controls.ensure_action(&"primary_action", [mouse, pad])
+	var drop_key := InputEventKey.new()
+	drop_key.physical_keycode = KEY_G
+	var drop_pad := InputEventJoypadButton.new()
+	drop_pad.button_index = JOY_BUTTON_LEFT_SHOULDER
+	Controls.ensure_action(&"drop_item", [drop_key, drop_pad])
 	_rebuild_view()
 
 
@@ -58,10 +64,14 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if peer_id != multiplayer.get_unique_id() or not Controls.gameplay_active():
 		return
-	if net_item_id.is_empty() or not event.is_action_pressed(&"primary_action"):
+	if net_item_id.is_empty():
 		return
-	request_primary_action.rpc_id(1)
-	get_viewport().set_input_as_handled()
+	if event.is_action_pressed(&"primary_action"):
+		request_primary_action.rpc_id(1)
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed(&"drop_item"):
+		request_drop_item.rpc_id(1)
+		get_viewport().set_input_as_handled()
 
 
 @rpc("any_peer", "call_local", "reliable")
@@ -73,11 +83,23 @@ func request_primary_action() -> void:
 		return
 	match def.category:
 		ItemDefinition.Category.WEAPON:
-			_fire()
+			_fire(def)
 		ItemDefinition.Category.FOOD:
 			_eat(def)
 		ItemDefinition.Category.PROP:
 			_throw(def)
+
+
+## Drops whatever is held, regardless of category, a short toss in front of the
+## player — the only way to get rid of a weapon once picked up, since firing and
+## eating never empty the hand.
+@rpc("any_peer", "call_local", "reliable")
+func request_drop_item() -> void:
+	if not multiplayer.is_server() or not _is_own_request() or net_item_id.is_empty():
+		return
+	var def := ItemCatalog.find(net_item_id)
+	if def != null:
+		_toss(def, DROP_DISTANCE)
 
 
 ## Server: hands this an item, if it's empty. Called by pickups and landed throws.
@@ -104,11 +126,35 @@ func _is_own_request() -> bool:
 	return effective == peer_id
 
 
-func _fire() -> void:
+func _fire(def: ItemDefinition) -> void:
 	if _fire_cooldown > 0.0:
 		return
-	_fire_cooldown = FIRE_COOLDOWN_S
+	_fire_cooldown = def.fire_cooldown_s
 	_play_fire.rpc()
+	if def.damage <= 0.0:
+		return
+	var player := _player()
+	var combat := get_tree().get_first_node_in_group(&"combat")
+	if player == null or combat == null:
+		return
+	var origin := _mount_transform(player).origin
+	for _pellet: int in maxi(def.pellet_count, 1):
+		var jitter := deg_to_rad(def.spread_degrees)
+		var yaw := player.net_yaw + randf_range(-jitter, jitter)
+		var pitch := clampf(
+			player.net_pitch + randf_range(-jitter, jitter), deg_to_rad(-89.0), deg_to_rad(89.0)
+		)
+		var target := _hitscan(player, origin, ThrowMath.aim_direction(yaw, pitch))
+		if target != null:
+			combat.call("apply_damage", target.get_multiplayer_authority(), def.damage, peer_id)
+
+
+func _hitscan(shooter: Player, origin: Vector3, direction: Vector3) -> Player:
+	var query := PhysicsRayQueryParameters3D.create(
+		origin, origin + direction * HITSCAN_RANGE_M, 1, [shooter.get_rid()]
+	)
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	return hit["collider"] as Player if hit else null
 
 
 @rpc("authority", "call_local", "reliable")
@@ -129,6 +175,13 @@ func _play_eaten(_item_id: String) -> void:
 
 
 func _throw(def: ItemDefinition) -> void:
+	_toss(def, THROW_DISTANCE)
+
+
+## Empties the hand and asks holdables to spawn `def` on the ground `distance` ahead
+## of where the player's looking — a full throw for a PROP's primary action, or a
+## short toss for a plain drop (see `_throw` and `request_drop_item`).
+func _toss(def: ItemDefinition, distance: float) -> void:
 	var player := _player()
 	if player == null:
 		net_item_id = ""
@@ -136,14 +189,14 @@ func _throw(def: ItemDefinition) -> void:
 	net_item_id = ""
 	var from := _mount_transform(player).origin
 	var direction := ThrowMath.aim_direction(player.net_yaw, player.net_pitch)
-	var to := _landing_point(from, direction)
+	var to := _landing_point(from, direction, distance)
 	var holdables := get_tree().get_first_node_in_group(&"holdables_root")
 	if holdables:
 		holdables.call("spawn_thrown_item", def.id, from, to)
 
 
-func _landing_point(from: Vector3, direction: Vector3) -> Vector3:
-	var flat := ThrowMath.toss_target(from, direction, THROW_DISTANCE)
+func _landing_point(from: Vector3, direction: Vector3, distance: float) -> Vector3:
+	var flat := ThrowMath.toss_target(from, direction, distance)
 	var query := PhysicsRayQueryParameters3D.create(
 		flat + Vector3.UP * 10.0, flat + Vector3.DOWN * 10.0
 	)

@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3]
+
+[sub_resource type="BoxMesh" id="BoxMesh_receiver"]
+size = Vector3(0.06, 0.09, 0.32)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gunmetal"]
+albedo_color = Color(0.1, 0.1, 0.12, 1)
+metallic = 0.6
+roughness = 0.35
+
+[sub_resource type="BoxMesh" id="BoxMesh_mag"]
+size = Vector3(0.04, 0.22, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_stock"]
+size = Vector3(0.05, 0.07, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stock"]
+albedo_color = Color(0.12, 0.12, 0.13, 1)
+roughness = 0.5
+
+[node name="SmgView" type="Node3D"]
+
+[node name="Receiver" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_receiver")
+surface_material_override/0 = SubResource("StandardMaterial3D_gunmetal")
+
+[node name="Magazine" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, 0.02)
+mesh = SubResource("BoxMesh_mag")
+surface_material_override/0 = SubResource("StandardMaterial3D_gunmetal")
+
+[node name="Stock" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.24)
+mesh = SubResource("BoxMesh_stock")
+surface_material_override/0 = SubResource("StandardMaterial3D_stock")
+
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.18)

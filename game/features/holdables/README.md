@@ -1,7 +1,7 @@
 # Holdables
 
-Generic items players can pick up and hold: `pistol` (weapon), `banana` (food) and
-`ball` (prop), plus the framework to add more.
+Generic items players can pick up and hold: `pistol`, `smg` and `shotgun` (weapons),
+`banana` (food) and `ball` (prop), plus the framework to add more.
 
 ## Adding an item
 
@@ -9,7 +9,9 @@ Generic items players can pick up and hold: `pistol` (weapon), `banana` (food) a
    `banana_view.tscn`, `ball_view.tscn`). A weapon's view can include a `Marker3D`
    named `Muzzle`; the fire flash appears there if present.
 2. Add an `ItemDefinition` `.tres` under `items/` pointing at it, with an `id`,
-   `display_name` and `category` (`WEAPON`, `FOOD` or `PROP`; see `item_definition.gd`).
+   `display_name`, `category` (`WEAPON`, `FOOD` or `PROP`) and `weight` (see
+   `item_definition.gd`); weapons also set `damage`, `fire_cooldown_s`,
+   `pellet_count` and `spread_degrees`.
 3. List it in `item_catalog.gd`'s `DEFINITIONS`.
 4. Place an `ItemPickup` instance somewhere in `feature.tscn` with that `item_id`.
 
@@ -30,10 +32,21 @@ action all key off the category.
   state — the one exception in this codebase is player movement.
 - The primary action (left click / right shoulder button) asks the server to resolve
   it based on the held item's category:
-  - `WEAPON`: fires (a cosmetic muzzle flash for now — there's no damage model yet).
+  - `WEAPON`: hitscans from the hand, once per `pellet_count` (a shotgun fires
+    several at slightly randomized angles — `spread_degrees`), and deals `damage` to
+    whichever `Player` a pellet hits by calling `apply_damage` on
+    `features/combat` (see that feature for health and kills). `fire_cooldown_s`
+    caps the rate of fire, so an SMG just needs a short cooldown to feel automatic
+    even though every shot is still its own click.
   - `FOOD`: eaten once and gone.
-  - `PROP`: thrown. `thrown_item.gd` arcs it from hand to a landing point (a raycast
-    finds the floor under the throw), then it becomes a pickup again where it lands,
-    so a thrown ball can be picked back up and thrown again.
-- `throw_math.gd`: pure arc/aim math, unit-tested the same way
+  - `PROP`: thrown.
+  - Any held item can also be dropped with G / left shoulder button
+    (`request_drop_item`), regardless of category — the only way to get rid of a
+    weapon, since firing never empties the hand.
+- `thrown_item.gd`: arcs an item from hand to a landing point (a raycast finds the
+  floor under the throw — see `_toss` in `hand.gd`, used by both a PROP's throw and a
+  plain drop), then bounces it a few times, lower and fewer bounces the heavier the
+  item's `weight`, before it settles as a pickup again where it lands. A dropped
+  pistol just thuds — weapons are heavy enough not to bounce.
+- `throw_math.gd`: pure arc/aim/bounce math, unit-tested the same way
   `features/frogs/frog_hop.gd` keeps its hop math separate from the scene.
