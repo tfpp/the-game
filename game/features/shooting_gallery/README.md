@@ -46,3 +46,13 @@ guns' real projectiles) didn't: its ray query's collision mask excluded layer 2
 checked for a `Player` collider. Both are fixed in `projectile.gd` so every weapon
 in the game — hitscan or projectile — can hurt every `killable`, animals included,
 not just other players.
+
+## Boxing
+
+`humanoid_target.gd` also implements `take_punch(attacker_peer, strength, direction)`
+for `features/boxing`. Punch strengths add up as daze (wearing off at 0.35/s); at 1.0
+the dummy is knocked down into a ragdoll, toppling toward the punch. A power punch
+(strength ≥ 0.5) on a downed dummy sends it sliding a short way (about 0.7–2.6 m),
+stopping at walls. It gets back up where it lies 4 s after the last punch. Shooting
+still gibs it, and respawning puts it back on its spawn spot. `net_ragdoll`,
+`net_fall_dir` and `position` are replicated, so late joiners see downed dummies.

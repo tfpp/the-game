@@ -76,3 +76,30 @@ func test_generated_guns_roll_a_fire_mode_and_both_modes_occur() -> void:
 		assert_true(gun["is_automatic"] is bool)
 		modes[gun["is_automatic"]] = true
 	assert_eq(modes.size(), 2, "60 seeds should roll both automatic and semi-automatic guns")
+
+
+func test_ray_gun_is_rare_and_fixed() -> void:
+	var rays := 0
+	var rolls := 3000
+	for seed_value: int in rolls:
+		var gun := GunGenerator.generate(_rng(seed_value))
+		if GunGenerator.is_ray_gun(gun):
+			rays += 1
+			assert_eq(gun, GunGenerator.ray_gun())
+	assert_gt(rays, 0, "the Ray Gun should be obtainable")
+	assert_lt(float(rays) / rolls, 0.07, "the Ray Gun should stay rare")
+
+
+func test_ray_gun_matches_zombies_ammo_and_splashes() -> void:
+	var ray := GunGenerator.ray_gun()
+	assert_eq(ray["display_name"], "Ray Gun")
+	assert_eq(int(ray["magazine_size"]), 20)
+	assert_eq(int(ray["total_ammo"]), 160)
+	assert_gt(float(GunGenerator.profile(GunGenerator.AmmoType.RAY)["explosion_radius"]), 0.0)
+
+
+func test_ray_gun_view_has_glowing_rings_and_muzzle() -> void:
+	var view := GunView.build(GunGenerator.ray_gun())
+	assert_not_null(view.get_node_or_null("RayRing0"))
+	assert_not_null(view.get_node_or_null("Muzzle"))
+	view.free()

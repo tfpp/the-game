@@ -13,6 +13,14 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Developer console",
 		"summary": "Press ~ for settings commands, autocomplete and sv_cheats to unlock noclip.",
+		"title": "Boxing",
+		"summary":
+		"Empty-handed, click to jab or hold and release to power punch; knock dummies flat.",
+	},
+	{
+		"title": "Ray Gun",
+		"summary":
+		"The Gun-O-Matic has a rare 1-in-30 chance to hand out the Ray Gun from Zombies.",
 	},
 	{
 		"title": "Remembered leaderboard",
