@@ -133,7 +133,7 @@ func newEnv(t *testing.T) *env {
 		now: time.Unix(1_800_000_000, 0)}
 	e.svc = New(Config{
 		Repo: "o/r", Ref: "main", Workflow: "agent.yml", CIWorkflow: "game-ci.yml", Agent: "claude",
-		ServerWorkflow: "server-image.yml", PagesWorkflow: "pages.yml", Deployer: e.deploy,
+		ServerWorkflow: "server-image.yml", PagesWorkflow: "pages.yml", APIWorkflow: "api-image.yml", Deployer: e.deploy,
 		PreviewWorkflow: "preview.yml", PreviewURL: "https://pr-{pr}.example.dev/",
 		Limits: store.Limits{PerUser: 2, Window: 24 * time.Hour, MaxActive: 2, StaleAfter: 3 * time.Hour},
 		Now:    func() time.Time { return e.now },

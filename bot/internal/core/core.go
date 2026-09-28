@@ -47,10 +47,13 @@ type Chat interface {
 	PostButton(ctx context.Context, threadID, content, label, id string) error
 }
 
-// Deployer asks the host to deploy a game server build. Nil turns deploys off.
+// Deployer asks the host to deploy game server and accounts API builds. Nil turns
+// deploys off.
 type Deployer interface {
 	// Deploy requests a deploy of the server image built from commit sha.
 	Deploy(ctx context.Context, sha string) error
+	// DeployAPI requests a deploy of the accounts API image built from commit sha.
+	DeployAPI(ctx context.Context, sha string) error
 	// Deployed returns the commit of the last successful deploy, or "".
 	Deployed(ctx context.Context) (string, error)
 }
@@ -78,6 +81,8 @@ type Config struct {
 	// is deployed once both have finished for the same commit.
 	ServerWorkflow string // server-image.yml
 	PagesWorkflow  string // pages.yml
+	// A successful run of APIWorkflow on Ref deploys the accounts API built from it.
+	APIWorkflow string // api-image.yml
 	// PR previews: successful "preview #N deploy" runs of PreviewWorkflow on agent
 	// branches post PreviewURL, with {pr} replaced by N, to the thread. Empty turns it off.
 	PreviewWorkflow string // preview.yml
@@ -419,6 +424,8 @@ func (s *Service) WorkflowRun(ctx context.Context, wr github.WorkflowRun) error 
 			return s.built(ctx, "server", wr.HeadSHA)
 		case strings.HasSuffix(wr.Path, "/"+s.cfg.PagesWorkflow):
 			return s.built(ctx, "pages", wr.HeadSHA)
+		case s.cfg.APIWorkflow != "" && strings.HasSuffix(wr.Path, "/"+s.cfg.APIWorkflow):
+			return s.builtAPI(ctx, wr.HeadSHA)
 		}
 	}
 	return nil
