@@ -98,6 +98,12 @@ the waiting ones in the order they'll start (issue or PR, mode, status, who star
 run link), and `/queue which:merge queue`
 lists approved PRs in merge order with their state.
 
+**`/usage`** answers privately, to anyone: how much of the Claude subscription's 5-hour and
+weekly limits the agent has used, with when each resets, and a warning when a limit is near
+or reached. The agent's `claude setup-token` token can't read the account's usage endpoint,
+so the bot sends a one-token Haiku request with it and reads the `anthropic-ratelimit-unified-*`
+response headers. The answer is cached for a minute, so repeated `/usage` costs almost nothing.
+
 **Limits** count every run (features and revisions) except ones that never started:
 `BOT_RUNS_PER_USER` per rolling 24 hours (default 5), and at most `BOT_MAX_ACTIVE_RUNS`
 at once (default 2). Active runs older than 3 hours stop counting. The per-user limit
@@ -122,6 +128,7 @@ Environment variables; secrets are files.
 | `BOT_GITHUB_PRIVATE_KEY_FILE` | `/run/secrets/bot/github-app.pem` | App private key |
 | `BOT_GITHUB_WEBHOOK_SECRET_FILE` | `/run/secrets/bot/github-webhook-secret` | Webhook secret |
 | `BOT_DISCORD_TOKEN_FILE` | `/run/secrets/bot/discord-token` | Discord bot token |
+| `BOT_CLAUDE_TOKEN_FILE` | `/run/secrets/bot/claude-token` | The agent's `CLAUDE_CODE_OAUTH_TOKEN`, for `/usage`; optional |
 | `BOT_GUILD_ID` | required | The Discord server |
 | `BOT_REQUESTER_ROLE_ID` | required | Role allowed to use `/feature`, `/revise` and `/close` |
 | `BOT_APPROVER_ROLE_ID` | none | Role allowed to approve merges; without it nobody can |
@@ -172,14 +179,14 @@ In the [developer portal](https://discord.com/developers/applications):
 - With Developer Mode on (User Settings → Advanced), copy the server ID, the requester
   role's ID, the approver role's ID and, optionally, the feature channel's ID.
 
-The bot registers `/feature`, `/revise`, `/approve`, `/close` and `/queue` in that server when it
+The bot registers `/feature`, `/revise`, `/approve`, `/close`, `/queue` and `/usage` in that server when it
 starts.
 
 ### Deploy
 
 The image is `ghcr.io/tfpp/the-game-bot`, built by `bot-image.yml` on pushes to `main`
 that touch `bot/`. It runs as UID 10040 with a read-only root filesystem. State goes in
-`/data`, and the three secret files in `/run/secrets/bot/`. For automatic server and API deploys,
+`/data`, and the secret files in `/run/secrets/bot/` (the Claude token is optional). For automatic server and API deploys,
 mount a directory the host's deploy service watches and set `BOT_DEPLOY_DIR` to it. Add a Cloudflare Tunnel route
 for exactly `game.chrisbox.dev` path `^/bot/github$` → `http://bot:8081`, placed before
 the catch-all game-server rule. Don't route `/bot/health` publicly.

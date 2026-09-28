@@ -33,6 +33,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Close a Discord feature's issue automatically when the agent makes no changes for it.
 - Show each agent run's token usage and estimated cost in its PR and in the Discord thread.
 - Give the girl model a smaller collision hitbox and 15% less passive income.
+- Add `/usage` to the Discord bot: it shows how much of Claude's 5-hour and weekly usage
+  limits the agent has used, and when they reset.
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
