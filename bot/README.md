@@ -29,7 +29,9 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
      run ends without any 🤖 comment: the gate refused it (for example, the App's login
      isn't in `AGENT_TRUSTED_BOTS`, which has to change if the App is renamed) or it was
      cancelled. `game-ci` runs on
-     `agent/<issue>-…` branches post "CI passed" or "CI failed".
+     `agent/<issue>-…` branches post "CI passed" or "CI failed", and successful
+     `preview.yml` deploys there (run name `preview #<pr> deploy`) post the preview link
+     (`BOT_PREVIEW_URL`).
    - `pull_request`: merged or closed.
    A reconcile loop (every 2 minutes, only while runs are active) polls the agent runs and
    comments in case a webhook was missed, and expires runs that never started.
@@ -109,6 +111,7 @@ Environment variables; secrets are files.
 | `BOT_DEPLOY_DIR` | off | Directory shared with the host's deploy service |
 | `BOT_REF`, `BOT_WORKFLOW`, `BOT_CI_WORKFLOW`, `BOT_AGENT` | `main`, `agent.yml`, `game-ci.yml`, `claude` | |
 | `BOT_SERVER_WORKFLOW`, `BOT_PAGES_WORKFLOW` | `server-image.yml`, `pages.yml` | Builds that gate a deploy |
+| `BOT_PREVIEW_WORKFLOW`, `BOT_PREVIEW_URL` | `preview.yml`, `https://pr-{pr}.tfpp-game.pages.dev/` | PR preview deploys and their link (`{pr}` is the PR number) |
 
 ## Setup
 

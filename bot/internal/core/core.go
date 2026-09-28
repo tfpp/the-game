@@ -78,10 +78,14 @@ type Config struct {
 	// is deployed once both have finished for the same commit.
 	ServerWorkflow string // server-image.yml
 	PagesWorkflow  string // pages.yml
-	Limits         store.Limits
-	Deployer       Deployer
-	Logger         *slog.Logger
-	Now            func() time.Time
+	// PR previews: successful "preview #N deploy" runs of PreviewWorkflow on agent
+	// branches post PreviewURL, with {pr} replaced by N, to the thread. Empty turns it off.
+	PreviewWorkflow string // preview.yml
+	PreviewURL      string // https://pr-{pr}.tfpp-game.pages.dev/
+	Limits          store.Limits
+	Deployer        Deployer
+	Logger          *slog.Logger
+	Now             func() time.Time
 }
 
 // Service implements the bot's commands and event handling.
@@ -380,6 +384,7 @@ func (s *Service) post(ctx context.Context, job store.Job, content string, ping 
 
 var (
 	runTitle     = regexp.MustCompile(`^agent #\d+ \S+ \[bot-(\d+)\]$`)
+	previewTitle = regexp.MustCompile(`^preview #(\d+) deploy$`)
 	agentBranch  = regexp.MustCompile(`^agent/(\d+)-`)
 	detailsBlock = regexp.MustCompile(`(?s)\s*<details>.*?</details>`)
 )
@@ -402,6 +407,9 @@ func (s *Service) WorkflowRun(ctx context.Context, wr github.WorkflowRun) error 
 	case strings.HasSuffix(wr.Path, "/"+s.cfg.CIWorkflow) && wr.Event == "pull_request":
 		defer s.Kick()
 		return s.ciRun(ctx, wr)
+	case s.cfg.PreviewWorkflow != "" && strings.HasSuffix(wr.Path, "/"+s.cfg.PreviewWorkflow) &&
+		wr.Event == "pull_request":
+		return s.previewRun(ctx, wr)
 	case wr.Event == "push" && wr.HeadBranch == s.cfg.Ref && wr.Conclusion == "success":
 		switch {
 		case strings.HasSuffix(wr.Path, "/"+s.cfg.CIWorkflow):
@@ -484,6 +492,28 @@ func (s *Service) ciRun(ctx context.Context, wr github.WorkflowRun) error {
 	} else {
 		s.post(ctx, job, fmt.Sprintf("❌ CI `%s` on `%s`. [Details](<%s>)", wr.Conclusion, sha, wr.HTMLURL))
 	}
+	return nil
+}
+
+// previewRun posts the link to a PR's preview deployment to its thread.
+func (s *Service) previewRun(ctx context.Context, wr github.WorkflowRun) error {
+	t := previewTitle.FindStringSubmatch(wr.DisplayTitle)
+	m := agentBranch.FindStringSubmatch(wr.HeadBranch)
+	if t == nil || m == nil || wr.Conclusion != "success" || s.cfg.PreviewURL == "" {
+		return nil
+	}
+	issue, _ := strconv.Atoi(m[1])
+	job, err := s.st.JobByIssue(ctx, issue)
+	if errors.Is(err, store.ErrNotFound) {
+		return nil
+	} else if err != nil {
+		return err
+	}
+	if fresh, err := s.st.MarkSeen(ctx, fmt.Sprintf("preview:%d", wr.ID), s.cfg.Now()); err != nil || !fresh {
+		return err
+	}
+	url := strings.ReplaceAll(s.cfg.PreviewURL, "{pr}", t[1])
+	s.post(ctx, job, fmt.Sprintf("🔍 Preview of `%s` (offline, single player): <%s>", short(wr.HeadSHA), url))
 	return nil
 }
 

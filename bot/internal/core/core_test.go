@@ -134,6 +134,7 @@ func newEnv(t *testing.T) *env {
 	e.svc = New(Config{
 		Repo: "o/r", Ref: "main", Workflow: "agent.yml", CIWorkflow: "game-ci.yml", Agent: "claude",
 		ServerWorkflow: "server-image.yml", PagesWorkflow: "pages.yml", Deployer: e.deploy,
+		PreviewWorkflow: "preview.yml", PreviewURL: "https://pr-{pr}.example.dev/",
 		Limits: store.Limits{PerUser: 2, Window: 24 * time.Hour, MaxActive: 2, StaleAfter: 3 * time.Hour},
 		Now:    func() time.Time { return e.now },
 		Logger: slog.New(slog.DiscardHandler),
@@ -318,6 +319,40 @@ func TestWorkflowRunAndCommentsReachTheThread(t *testing.T) {
 	must(t, e.svc.WorkflowRun(ctx, ci))
 	if len(e.chat.posts) != n+1 || !strings.Contains(e.chat.last().content, "CI `failure` on `abcdef1`") {
 		t.Errorf("ci posts %+v", e.chat.posts[n:])
+	}
+}
+
+func TestPreviewDeployReachesTheThread(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.feature(t, "42", "add jump pads please")
+	run := github.WorkflowRun{ID: 7, Path: ".github/workflows/preview.yml", Event: "pull_request",
+		DisplayTitle: "preview #12 deploy", Status: "completed", Conclusion: "success",
+		HeadBranch: "agent/11-add-jump-pads-please", HeadSHA: "abcdef123"}
+	n := len(e.chat.posts)
+	for _, wr := range []github.WorkflowRun{
+		{ID: 1, Path: run.Path, Event: run.Event, DisplayTitle: "preview #12 cleanup", Status: "completed",
+			Conclusion: "success", HeadBranch: run.HeadBranch},
+		{ID: 2, Path: run.Path, Event: run.Event, DisplayTitle: run.DisplayTitle, Status: "completed",
+			Conclusion: "failure", HeadBranch: run.HeadBranch},
+		{ID: 3, Path: run.Path, Event: run.Event, DisplayTitle: run.DisplayTitle, Status: "in_progress",
+			HeadBranch: run.HeadBranch},
+		{ID: 4, Path: run.Path, Event: run.Event, DisplayTitle: "preview #50 deploy", Status: "completed",
+			Conclusion: "success", HeadBranch: "ci/pr-previews"},
+	} {
+		must(t, e.svc.WorkflowRun(ctx, wr))
+	}
+	if len(e.chat.posts) != n {
+		t.Fatalf("unexpected posts %+v", e.chat.posts[n:])
+	}
+	must(t, e.svc.WorkflowRun(ctx, run))
+	must(t, e.svc.WorkflowRun(ctx, run)) // redelivered
+	if len(e.chat.posts) != n+1 {
+		t.Fatalf("posts %+v", e.chat.posts[n:])
+	}
+	if p := e.chat.last(); p.thread != "thread1" || p.ping != "" ||
+		p.content != "🔍 Preview of `abcdef1` (offline, single player): <https://pr-12.example.dev/>" {
+		t.Errorf("post %+v", p)
 	}
 }
 

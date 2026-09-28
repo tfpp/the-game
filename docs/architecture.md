@@ -256,7 +256,7 @@ live. The API and the bot are still deployed by hand.
 
 **PR previews.** For each same-repo PR that touches `game/`, `preview.yml` exports the
 web client and deploys it to its own Cloudflare Pages origin, then posts the link on the
-PR. Previews default to offline (the tab is its own server), so they need no game server
+PR; for agent PRs the bot also posts it in the Discord thread. Previews default to offline (the tab is its own server), so they need no game server
 or API and never reach production: a separate origin keeps them away from production
 sessions, and the API's CORS rejects them. The build job holds no secrets because a Godot
 import can run PR code; the deploy job only uploads files. When the PR is merged or
