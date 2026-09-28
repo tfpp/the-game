@@ -16,6 +16,14 @@ const ENTRIES: Array[Dictionary] = [
 		"A Doom-style arena of killable, gory humanoid dummies. Every weapon can now hurt animals too."
 	},
 	{
+		"title": "Steadier gun viewmodels",
+		"summary":
+		(
+			"Generated guns no longer jitter in first person, shots fire from where you aim and"
+			+ " stay visible, and each gunshot now plays from the gun that fired it."
+		)
+	},
+	{
 		"title": "New fonts",
 		"summary": "Cleaner text everywhere, with bolder headings and a sharper HUD."
 	},

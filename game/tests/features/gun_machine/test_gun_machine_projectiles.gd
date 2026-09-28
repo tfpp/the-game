@@ -45,7 +45,12 @@ class KillableStub:
 		add_to_group(&"killable")
 		var shape := CollisionShape3D.new()
 		var box := BoxShape3D.new()
-		box.size = Vector3.ONE
+		# Sized and centered like a standing NPC (see
+		# features/shooting_gallery/humanoid_target.tscn's capsule), so it spans eye
+		# height — GunRig.request_fire now fires from the shooter's actual eye height
+		# rather than the shoulder-mount offset it used to.
+		box.size = Vector3(1, 2, 1)
+		shape.position = Vector3(0, 0.9, 0)
 		shape.shape = box
 		add_child(shape)
 
