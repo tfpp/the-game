@@ -12,6 +12,14 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 ## [edge]
 
+- Add an F-toggle flashlight with shared beams and a rebindable Controls entry.
+
+## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
+
+- Stop the HUD version test from failing CI after every release.
+
+## [0.7.0](https://github.com/tfpp/the-game/releases/tag/v0.7.0) - 2026-09-28
+
 - Character Model (Esc menu) now picks a body, a head and a tail independently: a
   frog head or bird head, and a lizard, fin or fluffy tail, on any body (including
   the girl and penguin builds), so you can mix and match your own impossible

@@ -16,6 +16,11 @@ const ENTRIES: Array[Dictionary] = [
 		"The Gun-O-Matic builds each gun; guns get stocks, grips, sights, rails, triggers."
 	},
 	{
+		"title": "Flashlights",
+		"summary":
+		"Press F to toggle a flashlight that follows your aim and lights the way for everyone."
+	},
+	{
 		"title": "Scavenging",
 		"summary":
 		"Search wrecked cars in the parking garage with Use for wallets, watches, cash and more."
