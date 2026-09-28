@@ -66,13 +66,12 @@ func test_apply_scheme_switches_to_left_handed_arrows_and_shift() -> void:
 	assert_eq(_physical_keys("jump"), [KEY_SHIFT])
 
 
-func test_scroll_wheel_and_controller_a_still_jump_in_either_scheme() -> void:
+func test_controller_a_still_jumps_in_either_scheme() -> void:
 	for scheme: int in [Controls.Scheme.LEFT_HANDED, Controls.Scheme.RIGHT_HANDED]:
 		Controls.apply_scheme(scheme)
 		var jump := InputMap.action_get_events("jump")
-		assert_eq((jump[1] as InputEventMouseButton).button_index, MOUSE_BUTTON_WHEEL_DOWN)
-		assert_eq((jump[2] as InputEventMouseButton).button_index, MOUSE_BUTTON_WHEEL_UP)
-		assert_eq((jump[3] as InputEventJoypadButton).button_index, JOY_BUTTON_A)
+		assert_eq(jump.size(), 2, "Just the handedness key and the controller button")
+		assert_eq((jump[1] as InputEventJoypadButton).button_index, JOY_BUTTON_A)
 
 
 func test_default_resolves_to_left_handed_for_doctor_dalek() -> void:

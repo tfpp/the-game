@@ -31,11 +31,22 @@ static func kick_for_damage(damage: float) -> float:
 ## Index of the next non-empty `backpack` slot, cycling from `current` in `direction`
 ## (+1 or -1) and wrapping around; -1 if every slot is empty.
 static func next_slot(backpack: PackedStringArray, current: int, direction: int) -> int:
-	var count := backpack.size()
+	var occupied: Array[bool] = []
+	for id: String in backpack:
+		occupied.append(not id.is_empty())
+	return next_occupied(occupied, current, direction)
+
+
+## Index of the next `true` entry in `occupied`, cycling from `current` in `direction`
+## (+1 or -1) and wrapping around; -1 if nothing is occupied. The general form of
+## `next_slot`, also used to cycle in an extra non-backpack slot (features/gun_machine's
+## rig) alongside the backpack.
+static func next_occupied(occupied: Array[bool], current: int, direction: int) -> int:
+	var count := occupied.size()
 	if count == 0:
 		return -1
 	for step: int in count:
 		var index := posmod(current + direction * (step + 1), count)
-		if not backpack[index].is_empty():
+		if occupied[index]:
 			return index
 	return -1

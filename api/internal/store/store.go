@@ -130,6 +130,8 @@ var migrations = []string{
 		amount INTEGER NOT NULL,
 		balance INTEGER NOT NULL
 	);`,
+	`ALTER TABLE accounts ADD COLUMN income_units INTEGER NOT NULL DEFAULT 0;
+	UPDATE accounts SET income_units = income_seconds * 500;`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {

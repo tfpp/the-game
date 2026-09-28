@@ -5,7 +5,7 @@ controllers such as Backbone). Online and offline play use the same inputs.
 
 | Input | Move | Look | Jump | Use | Menu |
 | --- | --- | --- | --- | --- | --- |
-| Desktop | WASD / arrows | Mouse | Space / wheel up or down | E | Escape |
+| Desktop | WASD / arrows | Mouse | Space | E | Escape |
 | Controller | Left stick | Right stick | A / Cross (bottom face button) | B / Circle | Start |
 | Touch | Drag left side | Drag right side | JUMP button | USE button | II button |
 
@@ -13,9 +13,11 @@ Use works while looking at a nearby interactable. A prompt identifies the target
 menus and chat suppress interaction. The slot machine is near the initial spawn area.
 
 Desktop mouse sensitivity and movement bindings are unchanged. Jump remains a press,
-not a hold-to-bunny-hop action, for every input device. Joysticks preserve analog
-movement speed. Controller sticks use a radial 0.18 deadzone and right-stick look is
-scaled by elapsed time.
+not a hold-to-bunny-hop action, for every input device. The mouse wheel no longer
+doubles as a jump bind — it cycles weapon slots instead (see
+`game/features/weapon_hotbar/README.md`). Joysticks preserve analog movement speed.
+Controller sticks use a radial 0.18 deadzone and right-stick look is scaled by
+elapsed time.
 
 On phones, Resume/Play starts without requesting mouse capture. Touch movement,
 looking, and jumping use separate finger IDs, so they work simultaneously. The web

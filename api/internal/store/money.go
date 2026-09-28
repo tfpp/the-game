@@ -140,26 +140,30 @@ func (s *Store) ChargeAccount(ctx context.Context, accountID int64, id string, a
 // AccrueIncome is a server heartbeat for connected players. Short gaps accrue
 // play time; gaps over 15 seconds pause it, so offline time never earns money.
 // Keeping the timestamp and remainder in SQLite prevents reconnect/restart grants.
-func (s *Store) AccrueIncome(ctx context.Context, accountID, now int64) (int64, error) {
+func (s *Store) AccrueIncome(ctx context.Context, accountID, now, incomeCents int64) (int64, error) {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return 0, err
 	}
 	defer tx.Rollback()
-	var balance, seconds, seen int64
-	if err = tx.QueryRowContext(ctx, "SELECT money, income_seconds, income_seen FROM accounts WHERE id = ?", accountID).Scan(&balance, &seconds, &seen); err != nil {
+	var balance, seconds, seen, units int64
+	if err = tx.QueryRowContext(ctx, "SELECT money, income_seconds, income_seen, income_units FROM accounts WHERE id = ?", accountID).Scan(&balance, &seconds, &seen, &units); err != nil {
 		return 0, err
 	}
 	elapsed := now - seen
 	if seen > 0 && elapsed > 0 && elapsed <= 15 {
 		seconds += elapsed
+		units += elapsed * incomeCents
 	}
-	balance += (seconds / 60) * 500
-	seconds %= 60
+	if seconds >= 60 {
+		balance += units / 60
+		seconds %= 60
+		units %= 60
+	}
 	if now < seen {
 		now = seen
 	}
-	if _, err = tx.ExecContext(ctx, "UPDATE accounts SET money = ?, income_seconds = ?, income_seen = ? WHERE id = ?", balance, seconds, now, accountID); err != nil {
+	if _, err = tx.ExecContext(ctx, "UPDATE accounts SET money = ?, income_seconds = ?, income_seen = ?, income_units = ? WHERE id = ?", balance, seconds, now, units, accountID); err != nil {
 		return 0, err
 	}
 	return balance, tx.Commit()

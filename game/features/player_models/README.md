@@ -3,8 +3,7 @@
 Adds an original voxel-style avatar under each existing `Player/Body`. Cuboid
 heads, torsos, separate arms and legs, and pixel face details replace the capsule
 visual. Players start barefoot in white underwear. The inventory supplies equipped
-shirts and pants with fixed colors, replicated for everyone to see. Player collision and movement
-are unchanged. The existing F3 camera displays your own model in third person;
+shirts and pants with fixed colors, replicated for everyone to see. The existing F3 camera displays your own model in third person;
 your body remains hidden in first person.
 
 ## Body model
@@ -24,6 +23,10 @@ outfit) and scales the whole rig down to `BlockPlayerModel.PENGUIN_HEIGHT_SCALE`
 item and hands — to match, without holdables needing to know about body types.
 The penguin NPC itself notices a nearby player wearing this costume and waves a
 flipper and hops in place at them; see `features/penguin/penguin.gd`.
+
+The girl variant's collision capsule is 60% as wide and 75% as tall as the default
+capsule, with its bottom kept at the same height. It earns $4.25 instead of $5 per
+minute connected; the $20 starting balance, map coins and game prizes are unchanged.
 
 ## Skin tones
 

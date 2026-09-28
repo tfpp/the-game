@@ -185,7 +185,7 @@ func TestIncomePausesAndSurvivesRestart(t *testing.T) {
 	ctx := context.Background()
 	a, _ := s.CreateEmailAccount(ctx, "a@example.com", "hash", "Alice", time.Now())
 	for now := int64(1000); now <= 1060; now += 5 {
-		balance, err := s.AccrueIncome(ctx, a.ID, now)
+		balance, err := s.AccrueIncome(ctx, a.ID, now, 500)
 		want := int64(2000)
 		if now == 1060 {
 			want = 2500
@@ -194,7 +194,7 @@ func TestIncomePausesAndSurvivesRestart(t *testing.T) {
 			t.Fatalf("at %d: %d %v", now, balance, err)
 		}
 	}
-	balance, _ := s.AccrueIncome(ctx, a.ID, 1060)
+	balance, _ := s.AccrueIncome(ctx, a.ID, 1060, 500)
 	if balance != 2500 {
 		t.Fatal(balance)
 	}
@@ -204,17 +204,49 @@ func TestIncomePausesAndSurvivesRestart(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer s.Close()
-	balance, _ = s.AccrueIncome(ctx, a.ID, 2000)
+	balance, _ = s.AccrueIncome(ctx, a.ID, 2000, 500)
 	if balance != 2500 {
 		t.Fatal("offline income", balance)
 	}
 	for now := int64(2005); now <= 2060; now += 5 {
-		balance, err = s.AccrueIncome(ctx, a.ID, now)
+		balance, err = s.AccrueIncome(ctx, a.ID, now, 500)
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
 	if balance != 3000 {
 		t.Fatal(balance)
+	}
+}
+
+func TestIncomeUsesRateAcrossModelChanges(t *testing.T) {
+	s, err := Open(":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	ctx := context.Background()
+	a, _ := s.CreateEmailAccount(ctx, "girl@example.com", "hash", "Girl", time.Now())
+	s.AccrueIncome(ctx, a.ID, 1000, 500)
+	for now := int64(1005); now <= 1030; now += 5 {
+		s.AccrueIncome(ctx, a.ID, now, 500)
+	}
+	for now := int64(1035); now <= 1060; now += 5 {
+		balance, err := s.AccrueIncome(ctx, a.ID, now, 425)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if now == 1060 && balance != 2462 {
+			t.Fatalf("mixed minute earned %d, want 2462", balance)
+		}
+	}
+	for now := int64(1065); now <= 1120; now += 5 {
+		balance, err := s.AccrueIncome(ctx, a.ID, now, 425)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if now == 1120 && balance != 2887 {
+			t.Fatalf("girl minute earned %d, want 2887", balance)
+		}
 	}
 }

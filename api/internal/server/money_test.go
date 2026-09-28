@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/tfpp/the-game/api/internal/store"
 )
@@ -53,6 +54,38 @@ func TestGameMoneyRequiresServerAndRetriesSafely(t *testing.T) {
 	stale := bytes.Replace(body, []byte(fmt.Sprint(h.now.Unix())), []byte(fmt.Sprint(h.now.Unix()-61)), 1)
 	if res := request(testKey, stale); res.Code != 400 {
 		t.Fatal(res.Code)
+	}
+}
+
+func TestGameMoneyGirlIncomeRate(t *testing.T) {
+	h := newHarness(t)
+	account, err := h.srv.store.CreateEmailAccount(context.Background(), "girl@example.com", "hash", "Girl", h.now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := func(rate int64) *httptest.ResponseRecorder {
+		body := []byte(fmt.Sprintf(`{"account_id":%d,"action":"balance","timestamp":%d,"income_cents":%d}`, account.ID, h.now.Unix(), rate))
+		req := httptest.NewRequest("POST", "/api/game/money", bytes.NewReader(body))
+		mac := hmac.New(sha256.New, testKey)
+		mac.Write([]byte("game-money-v1\n"))
+		mac.Write(body)
+		req.Header.Set("X-Game-Signature", hex.EncodeToString(mac.Sum(nil)))
+		res := httptest.NewRecorder()
+		h.h.ServeHTTP(res, req)
+		return res
+	}
+	if res := request(400); res.Code != 400 {
+		t.Fatal(res.Body.String())
+	}
+	for i := 0; i <= 12; i++ {
+		res := request(425)
+		if res.Code != 200 {
+			t.Fatal(res.Body.String())
+		}
+		if i == 12 && !strings.Contains(res.Body.String(), `"balance":2425`) {
+			t.Fatal(res.Body.String())
+		}
+		h.now = h.now.Add(5 * time.Second)
 	}
 }
 
