@@ -6,9 +6,6 @@ Every notable change, newest first. `edge` is what's on `main` but not released 
 a bullet to the end of `## [edge]`:** imperative, one line per change where possible, no
 version. Releases are cut by hand (the `release` workflow): it moves `edge` into a section
 for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
-- Search wrecked cars in the parking garage for randomized loot (wallets, watches,
-  jewelry, electronics, scrap, cash bundles) through a reusable, server-authoritative
-  loot container and data-driven loot tables that can be reset between visits.
 
 ## [edge]
 
@@ -92,6 +89,9 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Give the casino generated carpet, wallpaper and walnut textures with PBR finishes, plus detailed stools, benches, planters and chandeliers.
 - Rebuild the slots with bevelled cabinets, animated printed reels, metal trim, buttons and coin trays while preserving payouts and multiplayer state.
 - Size the shooting-gallery entrance sign to fit its doorway instead of floating across the casino view.
+- Search wrecked cars in the parking garage for randomized loot (wallets, watches,
+  jewelry, electronics, scrap, cash bundles) through a reusable, server-authoritative
+  loot container and data-driven loot tables that can be reset between visits.
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
