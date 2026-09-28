@@ -40,6 +40,7 @@ func _ready() -> void:
 	_configure_hull()
 	if is_local():
 		add_to_group(&"local_player")
+		Controls.input_reset.connect(_reset_input)
 		net_position = global_position
 		_camera.top_level = true
 		_camera.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
@@ -61,7 +62,7 @@ func is_local() -> bool:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not is_local():
+	if not is_local() or not Controls.gameplay_active():
 		return
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:
 		var motion := event as InputEventMouseMotion
@@ -74,13 +75,16 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	var input := Vector2.ZERO
-	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		input = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	var input := Controls.movement()
+	var look := Controls.consume_look(delta)
+	yaw -= look.x
+	pitch = clampf(pitch - look.y, deg_to_rad(-89.0), deg_to_rad(89.0))
+	var extra_jump := Controls.consume_jump()
+	_jump_queued = Controls.gameplay_active() and (_jump_queued or extra_jump)
 	var wish_dir := SourceMovement.wish_direction(yaw, input)
 
 	var result := SourceMovement.step(
-		velocity, wish_dir, is_on_floor(), _jump_queued, movement, delta
+		velocity, wish_dir, is_on_floor(), _jump_queued, movement, delta, input.length()
 	)
 	# The queued press is consumed this tick either way: no jump buffering.
 	_jump_queued = false
@@ -158,3 +162,7 @@ func _configure_hull() -> void:
 	floor_stop_on_slope = true
 	floor_block_on_wall = false
 	max_slides = 4
+
+
+func _reset_input() -> void:
+	_jump_queued = false

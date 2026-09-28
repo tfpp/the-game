@@ -1,8 +1,8 @@
 extends CanvasLayer
 ## Sign-in screen shown before joining an online server (`Network.login_required`), and
-## the in-game menu. The game view is either playing (mouse captured) or showing this
-## screen: whenever the mouse is free with nothing on screen (Esc, a lost pointer lock,
-## a refused lock), the menu opens. Buttons that return to the game capture the mouse.
+## the in-game menu. Desktop play uses mouse capture; touch and gamepads use an explicit
+## playing state. Losing desktop pointer lock or pausing opens the menu. Resume only
+## requests mouse capture for keyboard/mouse input.
 ##
 ## Email/password or Discord sign-in, display-name picker, then "Play" fetches a join
 ## ticket and connects. The offline room keeps running behind it, and "Play offline"
@@ -39,6 +39,7 @@ func _ready() -> void:
 	layer = 10
 	_build()
 	_close()
+	Controls.menu_requested.connect(_on_menu_requested)
 	Network.login_required.connect(_on_login_required)
 	Network.connection_failed.connect(_on_connection_failed)
 	if not Network.pending_url.is_empty():
@@ -46,12 +47,14 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if visible and Controls.device == Controls.Device.GAMEPAD:
+		_focus_default_button()
 	if visible or DisplayServer.get_name() == "headless":
 		_idle_s = 0.0
 		return
 	# Browsers exit pointer lock on Esc without passing the key on, so watch the mouse
 	# mode rather than the key. The grace period covers a lock request still in flight.
-	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	if Controls.gameplay_active():
 		_idle_s = 0.0
 		return
 	_idle_s += delta
@@ -67,6 +70,14 @@ func _input(event: InputEvent) -> void:
 	if _menu_open and visible and event.is_action_pressed("release_mouse"):
 		get_viewport().set_input_as_handled()
 		_resume()
+
+
+func _on_menu_requested() -> void:
+	if visible:
+		if _menu_open:
+			_resume()
+	else:
+		open_menu()
 
 
 ## Shows the menu that fits the current state: in game, signed out, or offline only.
@@ -332,7 +343,7 @@ func _resume_button() -> void:
 	_game_button("Resume", _close, true)
 
 
-## A button that returns to the game: it grabs the mouse, then runs `action`. It fires on
+## A button that returns to the game: it starts input, then runs `action`. It fires on
 ## press so the capture happens inside the click, the user gesture browsers require
 ## for pointer lock. If the lock is refused anyway, the menu comes back.
 func _game_button(text: String, action: Callable, primary: bool) -> Button:
@@ -346,14 +357,16 @@ func _game_button(text: String, action: Callable, primary: bool) -> Button:
 
 
 func _capture_then(action: Callable) -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	# Closing the button during its press must not leak that press into gameplay.
+	get_viewport().set_input_as_handled()
+	Controls.start()
 	action.call()
 
 
-## Closes the menu and grabs the mouse again (native Esc).
+## Closes the menu and resumes the current input device (also native Esc).
 func _resume() -> void:
 	_close()
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Controls.start()
 
 
 ## Disconnects and keeps playing in the offline room.
@@ -374,7 +387,7 @@ func _sign_out() -> void:
 func _open() -> void:
 	visible = true
 	add_to_group(MODAL_GROUP)
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	Controls.pause()
 
 
 func _close() -> void:
@@ -504,3 +517,12 @@ func _link(text: String, action: Callable) -> Button:
 
 func _on_submit(edit: LineEdit, action: Callable) -> void:
 	edit.text_submitted.connect(func(_text: String) -> void: action.call())
+
+
+func _focus_default_button() -> void:
+	if get_viewport().gui_get_focus_owner() != null:
+		return
+	for child: Node in _box.get_children():
+		if child is Button and not (child as Button).disabled:
+			(child as Button).grab_focus()
+			return

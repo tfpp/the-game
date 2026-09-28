@@ -1,7 +1,7 @@
 extends CanvasLayer
 ## Corner readouts: version (top left), players and connection (top right) and controls
-## (bottom left). Styled with Kenney's UI Pack - Space Expansion. When the mouse isn't
-## captured, the menu (ui/login/) is up instead of a click-to-play overlay.
+## (bottom left). Styled with Kenney's UI Pack - Space Expansion. Desktop play uses
+## pointer lock; touch and controller play can keep the pointer free.
 
 const REFRESH_S := 0.25
 
@@ -25,14 +25,27 @@ func _input(event: InputEvent) -> void:
 		return
 	# Browsers only grant pointer lock inside a user-gesture handler, so capture on click.
 	var click := event as InputEventMouseButton
-	if click and click.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if (
+		click
+		and click.pressed
+		and click.device != InputEvent.DEVICE_ID_EMULATION
+		and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED
+	):
+		Controls.select_device(Controls.Device.KEYBOARD)
+		Controls.start()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("release_mouse"):
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		Controls.pause()
+		Controls.menu_requested.emit()
 
 
 func _process(delta: float) -> void:
+	$Corners/Keys.visible = not Controls.touch_visible()
+	var pad := Controls.device == Controls.Device.GAMEPAD
+	$Corners/Keys/Grid/Key0.text = "Left stick" if pad else "W A S D"
+	$Corners/Keys/Grid/Key1.text = "A / Cross" if pad else "Space / Wheel"
+	$Corners/Keys/Grid/Key2.text = "Right stick" if pad else "Mouse"
+	$Corners/Keys/Grid/Key3.text = "Start" if pad else "Esc"
 	_refresh_in -= delta
 	if _refresh_in <= 0.0:
 		_refresh_in = REFRESH_S
