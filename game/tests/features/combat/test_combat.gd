@@ -64,6 +64,32 @@ func test_keeps_separate_health_per_peer() -> void:
 	assert_eq(_combat.health_for(2), Combat.MAX_HEALTH)
 
 
+func test_an_untouched_peer_starts_with_no_kills() -> void:
+	assert_eq(_combat.kills_for(2), 0)
+
+
+func test_lethal_damage_awards_the_attacker_a_kill() -> void:
+	_combat.apply_damage(1, Combat.MAX_HEALTH, 2)
+	assert_eq(_combat.kills_for(2), 1)
+	assert_eq(_combat.kills_for(1), 0)
+
+
+func test_kills_accumulate_across_victims() -> void:
+	_combat.apply_damage(1, Combat.MAX_HEALTH, 2)
+	_combat.apply_damage(3, Combat.MAX_HEALTH, 2)
+	assert_eq(_combat.kills_for(2), 2)
+
+
+func test_non_lethal_damage_does_not_award_a_kill() -> void:
+	_combat.apply_damage(1, 30.0, 2)
+	assert_eq(_combat.kills_for(2), 0)
+
+
+func test_self_damage_does_not_award_a_kill() -> void:
+	_combat.apply_damage(1, Combat.MAX_HEALTH, 1)
+	assert_eq(_combat.kills_for(1), 0)
+
+
 func test_hud_bar_tracks_local_health() -> void:
 	_combat.apply_damage(1, 30.0, 2)
 	await wait_process_frames(1)

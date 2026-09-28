@@ -20,6 +20,8 @@ const RESPAWN_JITTER := 3.0
 
 ## peer_id (as String, since Dictionary keys round-trip through replication that way) -> float
 @export var health: Dictionary = {}
+## peer_id (as String) -> int of other players killed. Self-damage never counts.
+@export var kills: Dictionary = {}
 
 
 func _ready() -> void:
@@ -29,6 +31,10 @@ func _ready() -> void:
 
 func health_for(peer_id: int) -> float:
 	return float(health.get(str(peer_id), MAX_HEALTH))
+
+
+func kills_for(peer_id: int) -> int:
+	return int(kills.get(str(peer_id), 0))
 
 
 ## Server-only: `attacker_peer` deals `amount` damage to `target_peer`. Once that
@@ -44,6 +50,8 @@ func apply_damage(target_peer: int, amount: float, attacker_peer: int) -> void:
 	var player := _player_for_peer(target_peer)
 	if player != null:
 		player.server_teleport.rpc_id(target_peer, _respawn_position())
+	if attacker_peer != target_peer:
+		_add_kill(attacker_peer)
 	_announce_death.rpc(target_peer, attacker_peer)
 
 
@@ -54,12 +62,19 @@ func _announce_death(victim_peer: int, attacker_peer: int) -> void:
 
 func _reset(_mode: Network.Mode) -> void:
 	health = {}
+	kills = {}
 
 
 func _set_health(peer_id: int, value: float) -> void:
 	var next := health.duplicate()
 	next[str(peer_id)] = value
 	health = next
+
+
+func _add_kill(peer_id: int) -> void:
+	var next := kills.duplicate()
+	next[str(peer_id)] = kills_for(peer_id) + 1
+	kills = next
 
 
 func _respawn_position() -> Vector3:

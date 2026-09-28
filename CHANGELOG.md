@@ -9,6 +9,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 ## [edge]
 
+- Character Model (Esc menu) now picks a body, a head and a tail independently: a
+  frog head or bird head, and a lizard, fin or fluffy tail, on any body (including
+  the girl and penguin builds), so you can mix and match your own impossible
+  creature.
 - Add a day/night cycle: a full day repeats every 48 real-time minutes, with the sun
   swinging across the sky, the skybox fading between day and night, and ambient
   lighting dimming at night. It runs off the real-world clock, so it stays in sync

@@ -15,20 +15,20 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Brass 1960s wall sconces light the annex, glowing brightest at night."
 	},
 	{
-		"title": "Sprays",
+		"title": "Mix-and-match creatures",
 		"summary":
 		(
-			"Press T to spray a decal onto the wall, floor or object you're looking at."
-			+ " Everyone sees it, and the newest 60 sprays stay in the world."
+			"Character Model (Esc menu) now picks a body, head and tail independently — a"
+			+ " frog head or bird head, a lizard, fin or fluffy tail, on any body. Mix them"
+			+ " into your own impossible creature."
 		)
 	},
 	{
 		"title": "Day/night cycle",
 		"summary":
 		(
-			"A full day/night cycle now repeats every 48 real-time minutes: the sun swings"
-			+ " across the sky, the sky itself fades between day and night skyboxes, and"
-			+ " lighting dims at night. It's the same for everyone in the world."
+			"Esc > Leaderboard ranks every connected player by money, jumps and kills, in"
+			+ " three tabs."
 		)
 	},
 	{
