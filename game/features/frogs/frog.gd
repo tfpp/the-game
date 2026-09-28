@@ -21,6 +21,9 @@ var jump_distance := 1.5
 var jump_height := 0.5
 var jump_duration := 0.45
 var rest_time := 1.0
+## Set by features/game_config/game_config.gd: scales how often this frog hops
+## (server-only, since hopping is only simulated on the server).
+var hop_rate_scale := 1.0
 
 var _home := Vector3.ZERO
 var _respawn_timer := 0.0
@@ -47,13 +50,14 @@ var _navigation := FrogNavigation.new()
 func _ready() -> void:
 	_home = position
 	add_to_group(&"killable")
+	add_to_group(&"frogs")
 	_navigation.configure(body_size, get_rid())
 	_collider.shape = _navigation.body_shape
 	_collider.position.y = _navigation.radius + 0.04
 	_body.build(body_color, body_size)
 	if multiplayer.is_server():
 		net_position = position
-		_rest_timer = randf_range(0.3, rest_time)
+		_rest_timer = randf_range(0.3, _resting_time())
 		_heading = Vector3.FORWARD.rotated(Vector3.UP, randf() * TAU)
 	else:
 		physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
@@ -162,7 +166,7 @@ func _start_hop() -> void:
 func _finish_hop() -> void:
 	_hopping = false
 	net_phase = -1.0
-	_rest_timer = randf_range(0.08, 0.18) if _fleeing else rest_time * randf_range(0.7, 1.3)
+	_rest_timer = (randf_range(0.08, 0.18) if _fleeing else _resting_time() * randf_range(0.7, 1.3))
 
 
 func _render_remote(smoothing: float) -> void:
@@ -201,7 +205,7 @@ func _respawn() -> void:
 	_fleeing = false
 	_threat = Vector3.INF
 	_sense_timer = 0.0
-	_rest_timer = rest_time
+	_rest_timer = _resting_time()
 	net_alive = true
 	reset_physics_interpolation()
 
@@ -209,3 +213,8 @@ func _respawn() -> void:
 @rpc("authority", "call_local", "reliable")
 func _explode() -> void:
 	MeshExplosion.spawn(self, _body)
+
+
+## Time to rest between hops, `rest_time` scaled down as `hop_rate_scale` rises.
+func _resting_time() -> float:
+	return rest_time / maxf(hop_rate_scale, 0.01)
