@@ -86,12 +86,17 @@ func test_does_not_react_to_a_penguin_player_far_away() -> void:
 
 
 func test_beak_points_along_patrol_travel() -> void:
-	for angle: float in [0.0, PI * 0.5, PI, PI * 1.5]:
-		_penguin.net_yaw = PenguinWaddle.facing_yaw(angle)
-		_penguin._process(0.0)
-		var torso := _penguin.get_node("Body/Torso") as Node3D
-		var beak := torso.get_node("Beak") as Node3D
-		var facing := (beak.global_position - torso.global_position) * Vector3(1, 0, 1)
-		var before := PenguinWaddle.position_on_circle(Vector3.ZERO, 2.0, angle - 0.001)
-		var after := PenguinWaddle.position_on_circle(Vector3.ZERO, 2.0, angle + 0.001)
-		assert_gt(facing.normalized().dot((after - before).normalized()), 0.99)
+	for phase: float in [0.0, 0.25, 0.5, 0.75]:
+		_penguin._elapsed = phase / PenguinWaddle.WADDLE_FREQUENCY
+		for angle: float in [0.0, PI * 0.5, PI, PI * 1.5]:
+			_penguin.net_yaw = PenguinWaddle.facing_yaw(angle)
+			_penguin._process(0.0)
+			var torso := _penguin.get_node("Body/Torso") as Node3D
+			var beak := torso.get_node("Beak") as Node3D
+			# Remove the beak's height in model space before the waddle roll turns
+			# that vertical offset into a sideways displacement. Facing is the
+			# forward offset, not the torso-to-beak diagonal at an arbitrary frame.
+			var facing := torso.global_basis * (beak.position * Vector3(1, 0, 1))
+			var before := PenguinWaddle.position_on_circle(Vector3.ZERO, 2.0, angle - 0.001)
+			var after := PenguinWaddle.position_on_circle(Vector3.ZERO, 2.0, angle + 0.001)
+			assert_gt(facing.normalized().dot((after - before).normalized()), 0.99)
