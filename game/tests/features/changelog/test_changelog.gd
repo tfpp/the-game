@@ -109,6 +109,24 @@ func test_releases_are_absent_outside_release_exports() -> void:
 	assert_eq(Changelog.load_releases(), [])
 
 
+func test_releases_from_puts_the_edge_first() -> void:
+	var script := GDScript.new()
+	script.source_code = (
+		"extends RefCounted\n"
+		+ 'const EDGE: Array[String] = ["Boats"]\n'
+		+ 'const RELEASES: Array[Dictionary] = [{"version": "0.6.0", "titles": ["Frogs"]}]\n'
+	)
+	assert_eq(script.reload(), OK)
+	assert_eq(
+		Changelog.releases_from(script),
+		[
+			{"version": "edge", "titles": ["Boats"]},
+			{"version": "0.6.0", "titles": ["Frogs"]},
+		]
+	)
+	assert_eq(Changelog.releases_from(null), [])
+
+
 func test_registers_a_release_notes_link_in_the_esc_menu() -> void:
 	var node := Changelog.new()
 	add_child_autofree(node)

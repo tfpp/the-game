@@ -6,10 +6,11 @@ extends CanvasLayer
 ## this script (see AGENTS.md for the rule that every new feature must add one). This
 ## is static, read-only content baked into the client, so it needs no server round trip.
 ##
-## Builds from main group entries under "Edge" (added since the latest release) and the
-## last 10 releases: the web export generates releases.gd (scripts/release_notes.sh at
-## the repo root) from the vX.Y.Z tags, mapping each release to the entry titles it
-## added. Builds without releases.gd (local runs, PR previews) list every entry.
+## Entries are grouped under "Edge" (added since the latest release) and the last 10
+## releases, from scripts/release_notes.sh at the repo root, which maps each vX.Y.Z tag
+## to the entry titles it added. The web export bakes its output into releases.gd; local
+## debug runs call it on the checkout (with uncommitted entries) when the panel first
+## opens. Without either (PR previews, or no git), the panel lists every entry.
 
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const TOGGLE_ACTION := &"toggle_changelog"
@@ -28,6 +29,7 @@ const MONTHS: Array[String] = [
 ]
 
 var _backdrop: Control
+var _body: RichTextLabel
 
 
 func _ready() -> void:
@@ -77,12 +79,33 @@ static func body_text(entries: Array[Dictionary]) -> String:
 	return "\n".join(lines)
 
 
-## The generated releases (see releases.gd above), newest first, after an EDGE
-## pseudo-release with the entries since the latest one; [] without releases.gd.
+## The exported releases.gd's releases (see releases_from), or [] without it.
 static func load_releases() -> Array:
 	if not ResourceLoader.exists(RELEASES_PATH):
 		return []
-	var script := load(RELEASES_PATH) as GDScript
+	return releases_from(load(RELEASES_PATH) as GDScript)
+
+
+## Local debug runs: runs scripts/release_notes.sh on the checkout, or [] if it can't.
+## Skipped headless (tests, the dedicated server).
+static func local_releases() -> Array:
+	if not OS.is_debug_build() or OS.has_feature("web") or DisplayServer.get_name() == "headless":
+		return []
+	var notes := ProjectSettings.globalize_path("res://").path_join("../scripts/release_notes.sh")
+	if not FileAccess.file_exists(notes):
+		return []
+	var output := []
+	if OS.execute("bash", [notes, "WORKTREE"], output) != OK or output.is_empty():
+		push_warning("scripts/release_notes.sh failed; listing every changelog entry")
+		return []
+	var script := GDScript.new()
+	script.source_code = str(output[0])
+	return releases_from(script) if script.reload() == OK else []
+
+
+## A release notes script's releases, newest first, after an EDGE pseudo-release with
+## the entries since the latest one.
+static func releases_from(script: GDScript) -> Array:
 	if script == null:
 		return []
 	var constants := script.get_script_constant_map()
@@ -137,8 +160,20 @@ static func releases_text(releases: Array, entries: Array[Dictionary]) -> String
 
 
 func _open() -> void:
+	if _body.text.is_empty():
+		_body.text = _text()
 	add_to_group(MODAL_GROUP)
 	_backdrop.visible = true
+
+
+## The panel's body, built on first open so local runs only call git when asked.
+func _text() -> String:
+	var releases := load_releases()
+	if releases.is_empty():
+		releases = local_releases()
+	if releases.is_empty():
+		return body_text(ChangelogEntries.ENTRIES)
+	return releases_text(releases, ChangelogEntries.ENTRIES)
 
 
 func _close() -> void:
@@ -180,20 +215,14 @@ func _build() -> void:
 	scroll.custom_minimum_size = Vector2(PANEL_WIDTH, PANEL_MAX_HEIGHT)
 	box.add_child(scroll)
 
-	var body := RichTextLabel.new()
-	body.bbcode_enabled = true
-	body.fit_content = true
-	body.scroll_active = false
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	body.custom_minimum_size = Vector2(PANEL_WIDTH, 0.0)
-	body.add_theme_color_override("default_color", Color.WHITE)
-	var releases := load_releases()
-	body.text = (
-		releases_text(releases, ChangelogEntries.ENTRIES)
-		if releases
-		else body_text(ChangelogEntries.ENTRIES)
-	)
-	scroll.add_child(body)
+	_body = RichTextLabel.new()
+	_body.bbcode_enabled = true
+	_body.fit_content = true
+	_body.scroll_active = false
+	_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_body.custom_minimum_size = Vector2(PANEL_WIDTH, 0.0)
+	_body.add_theme_color_override("default_color", Color.WHITE)
+	scroll.add_child(_body)
 
 	var footer := Label.new()
 	footer.text = "Esc or L to close"

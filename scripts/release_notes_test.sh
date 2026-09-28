@@ -2,11 +2,15 @@
 # Tests for scripts/release_notes.sh against a throwaway repository.
 # Run: scripts/release_notes_test.sh
 set -euo pipefail
-notes="$(cd "$(dirname "$0")" && pwd)/release_notes.sh"
+here="$(cd "$(dirname "$0")" && pwd)"
 failures=0
 
+# The script runs from its repo's root, wherever it's called from.
 cd "$(mktemp -d)"
 git init -q -b main
+mkdir scripts
+cp "$here/release_notes.sh" scripts/
+notes="$PWD/scripts/release_notes.sh"
 git config user.email test@example.com
 git config user.name test
 mkdir -p game/features/changelog
@@ -62,6 +66,13 @@ const RELEASES: Array[Dictionary] = [
 check "COUNT keeps what each release added" "	{\"version\": \"0.7.0\", \"date\": \"$date\", \"titles\": []},
 	{\"version\": \"0.6.1\", \"date\": \"$date\", \"titles\": [\"Say \\\"hi\\\"\", \"Frogs\"]},
 ]" "$("$notes" HEAD 2 | tail -n 3)"
+
+sed -i.bak 's/^\t\t"title": "Hats",/\t\t"title": "Hats",\n\t\t"title": "Uncommitted",/' game/features/changelog/entries.gd
+rm -f game/features/changelog/entries.gd.bak
+check "WORKTREE adds uncommitted entries to the edge" 'const EDGE: Array[String] = ["Hats", "Uncommitted"]' \
+  "$(cd / && "$notes" WORKTREE | sed -n 5p)"
+check "HEAD ignores them" 'const EDGE: Array[String] = ["Hats"]' "$("$notes" | sed -n 5p)"
+git checkout -q -- game/features/changelog/entries.gd
 
 check "at a release, the edge is empty" 'const EDGE: Array[String] = []' "$("$notes" v0.6.1 | sed -n 5p)"
 

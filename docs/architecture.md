@@ -296,7 +296,9 @@ the bump, `patch`, `minor` or `major`.
   latest release) and the last 10 releases. `pages.yml` sets `RELEASE_NOTES=1`, and
   `export.sh` runs `scripts/release_notes.sh` (tested by `scripts/release_notes_test.sh`)
   to generate `releases.gd` from the tags. An entry belongs to the first release whose
-  tagged `entries.gd` has its title. Local runs and PR previews list every entry.
+  tagged `entries.gd` has its title. Local debug runs call the script on the checkout
+  (including uncommitted entries) when the panel first opens; PR previews list every
+  entry.
 - Joining still compares commits, not versions (see "Version check").
 
 Versioning started at `v0.6.0`, matching the milestones below.
