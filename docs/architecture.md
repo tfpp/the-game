@@ -290,7 +290,8 @@ the bump, `patch`, `minor` or `major`.
   "protect main" ruleset. Then it publishes a GitHub Release with the edge's notes.
 - The release commit changes `game/`, so the web client and server rebuild and deploy like
   any merge. Once the deployed server contains the release, the Discord bot posts it to
-  the release channel (`bot/README.md`).
+  the release channel (`bot/README.md`). Between releases, each deploy's new edge bullets
+  are posted there too, as "New on edge".
 - The in-game changelog (`features/changelog/`, `L`) shows "Edge" (entries since the
   latest release) and the last 10 releases. `pages.yml` sets `RELEASE_NOTES=1`, and
   `export.sh` runs `scripts/release_notes.sh` (tested by `scripts/release_notes_test.sh`)

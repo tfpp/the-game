@@ -14,7 +14,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Keep this changelog, with an `edge` section rolled into each release.
 - Group the in-game release notes (`L`) by version, showing the last 10 releases and what's
   new since the latest one.
-- Announce each release in Discord once it is live, with its changelog notes.
+- Announce each release in Discord once it is live, with its changelog notes, and each
+  deploy's new edge changes as "New on edge".
 - Deploy the accounts API automatically when its image is built, so API changes (like the
   wallet endpoint) no longer wait for a manual deploy.
 
