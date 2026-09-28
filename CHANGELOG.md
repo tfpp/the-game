@@ -45,6 +45,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   limits the agent has used, and when they reset.
 - Add sprays: press T to spray a decal on the surface you're looking at, visible to
   everyone (placeholder image for now).
+- Add 1960s brass wall sconces to the annex corridors and rooms, dim by day and
+  glowing at night, so they no longer go pitch black after dark.
 - Run Codex on GitHub-hosted Actions runners with a ChatGPT subscription login and the existing agent verification and PR publishing flow.
 - Require a Claude or Codex harness choice for Discord `/feature` requests, preserve it for revisions and conflict fixes, and default to Opus 5.5 or GPT-6 Astra respectively with low reasoning.
 - Include model, token usage and estimated API-equivalent cost in PR templates and Opened/Pushed Discord notifications, with readable PR-number links.

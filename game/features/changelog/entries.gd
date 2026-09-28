@@ -35,6 +35,10 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Wall sconces",
+		"summary": "Brass 1960s wall sconces light the annex, glowing brightest at night."
+	},
+	{
 		"title": "Mix-and-match creatures",
 		"summary":
 		(
