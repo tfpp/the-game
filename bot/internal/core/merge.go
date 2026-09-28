@@ -674,7 +674,27 @@ func (s *Service) built(ctx context.Context, kind, sha string) error {
 	if err != nil || server != pages {
 		return err
 	}
-	last, err := s.st.Get(ctx, deployRequestedKey)
+	return s.requestDeploy(ctx, "server", deployRequestedKey, sha, s.cfg.Deployer.Deploy)
+}
+
+const apiDeployRequestedKey = "api_deploy_requested"
+
+// builtAPI deploys the accounts API image built from sha on the base branch. The API
+// image only builds when api/ changes, and it doesn't wait for the game: API changes
+// stay backward compatible, and the API builds faster than the server and web client,
+// so a merge touching both deploys the API first.
+func (s *Service) builtAPI(ctx context.Context, sha string) error {
+	if s.cfg.Deployer == nil || sha == "" {
+		return nil
+	}
+	return s.requestDeploy(ctx, "api", apiDeployRequestedKey, sha, s.cfg.Deployer.DeployAPI)
+}
+
+// requestDeploy asks the host to deploy sha unless it (or a newer commit) was already
+// requested under key, so an older build finishing late never rolls a deploy back.
+func (s *Service) requestDeploy(ctx context.Context, what, key, sha string,
+	deploy func(context.Context, string) error) error {
+	last, err := s.st.Get(ctx, key)
 	if err != nil {
 		return err
 	}
@@ -690,11 +710,11 @@ func (s *Service) built(ctx context.Context, kind, sha string) error {
 			return nil // an older build finished late
 		}
 	}
-	if err := s.cfg.Deployer.Deploy(ctx, sha); err != nil {
-		return fmt.Errorf("deploy %s: %w", short(sha), err)
+	if err := deploy(ctx, sha); err != nil {
+		return fmt.Errorf("deploy %s %s: %w", what, short(sha), err)
 	}
-	s.log.Info("requested server deploy", "sha", sha)
-	return s.st.Set(ctx, deployRequestedKey, sha)
+	s.log.Info("requested deploy", "what", what, "sha", sha)
+	return s.st.Set(ctx, key, sha)
 }
 
 const deployAnnouncedKey = "deploy_announced"

@@ -170,6 +170,7 @@ func run(log *slog.Logger) error {
 		CIWorkflow:      env("BOT_CI_WORKFLOW", "game-ci.yml"),
 		ServerWorkflow:  env("BOT_SERVER_WORKFLOW", "server-image.yml"),
 		PagesWorkflow:   env("BOT_PAGES_WORKFLOW", "pages.yml"),
+		APIWorkflow:     env("BOT_API_WORKFLOW", "api-image.yml"),
 		PreviewWorkflow: env("BOT_PREVIEW_WORKFLOW", "preview.yml"),
 		PreviewURL:      env("BOT_PREVIEW_URL", "https://pr-{pr}.tfpp-game.pages.dev/"),
 		Agent:           env("BOT_AGENT", "claude"),
@@ -246,22 +247,32 @@ func loop(ctx context.Context, log *slog.Logger, name string, every time.Duratio
 	}
 }
 
-// fileDeployer asks the host to deploy the game server through files in a directory it
-// shares with the bot: the bot writes the commit to deploy to "request", and the host's
-// deploy script writes the commit it deployed to "deployed".
+// fileDeployer asks the host to deploy builds through files in a directory it shares
+// with the bot: the bot writes the commit to deploy to "request" (game server) or
+// "api-request" (accounts API), and the host's deploy script writes the game server
+// commit it deployed to "deployed".
 type fileDeployer string
 
 var shaRE = regexp.MustCompile(`^[0-9a-f]{40}$`)
 
 func (d fileDeployer) Deploy(_ context.Context, sha string) error {
+	return d.request("request", sha)
+}
+
+func (d fileDeployer) DeployAPI(_ context.Context, sha string) error {
+	return d.request("api-request", sha)
+}
+
+// request atomically replaces the request file name with sha.
+func (d fileDeployer) request(name, sha string) error {
 	if !shaRE.MatchString(sha) {
 		return fmt.Errorf("not a commit SHA: %q", sha)
 	}
-	tmp := filepath.Join(string(d), ".request.tmp")
+	tmp := filepath.Join(string(d), "."+name+".tmp")
 	if err := os.WriteFile(tmp, []byte(sha+"\n"), 0o644); err != nil {
 		return err
 	}
-	return os.Rename(tmp, filepath.Join(string(d), "request"))
+	return os.Rename(tmp, filepath.Join(string(d), name))
 }
 
 func (d fileDeployer) Deployed(context.Context) (string, error) {

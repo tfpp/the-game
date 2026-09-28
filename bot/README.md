@@ -72,6 +72,10 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    `the-game-deploy-server`) and writes the commit to `$BOT_DEPLOY_DIR/deployed`. The bot
    then posts "🚀 PR #n is live" in the threads of the merged PRs it contains. Waiting for
    both builds keeps the server from getting ahead of the web client.
+   The accounts API deploys on its own: when `api-image.yml` succeeds for a newer `main`
+   commit (it only runs when `api/` changes), the bot writes that commit to
+   `$BOT_DEPLOY_DIR/api-request`, and the host deploys it (`the-game-deploy api`). The API
+   builds faster than the server and web client, so a merge touching both deploys it first.
 
 **`/queue`** answers privately, to anyone: `/queue which:agent runs` lists the active runs, then
 the waiting ones in the order they'll start (issue or PR, mode, status, who started it, age,
@@ -111,6 +115,7 @@ Environment variables; secrets are files.
 | `BOT_DEPLOY_DIR` | off | Directory shared with the host's deploy service |
 | `BOT_REF`, `BOT_WORKFLOW`, `BOT_CI_WORKFLOW`, `BOT_AGENT` | `main`, `agent.yml`, `game-ci.yml`, `claude` | |
 | `BOT_SERVER_WORKFLOW`, `BOT_PAGES_WORKFLOW` | `server-image.yml`, `pages.yml` | Builds that gate a deploy |
+| `BOT_API_WORKFLOW` | `api-image.yml` | Build that deploys the accounts API |
 | `BOT_PREVIEW_WORKFLOW`, `BOT_PREVIEW_URL` | `preview.yml`, `https://pr-{pr}.tfpp-game.pages.dev/` | PR preview deploys and their link (`{pr}` is the PR number) |
 
 ## Setup
@@ -157,7 +162,7 @@ starts.
 
 The image is `ghcr.io/tfpp/the-game-bot`, built by `bot-image.yml` on pushes to `main`
 that touch `bot/`. It runs as UID 10040 with a read-only root filesystem. State goes in
-`/data`, and the three secret files in `/run/secrets/bot/`. For automatic server deploys,
+`/data`, and the three secret files in `/run/secrets/bot/`. For automatic server and API deploys,
 mount a directory the host's deploy service watches and set `BOT_DEPLOY_DIR` to it. Add a Cloudflare Tunnel route
 for exactly `game.chrisbox.dev` path `^/bot/github$` → `http://bot:8081`, placed before
 the catch-all game-server rule. Don't route `/bot/health` publicly.
