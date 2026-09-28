@@ -6,27 +6,37 @@ visual. Players start barefoot in white underwear. The inventory supplies equipp
 shirts and pants with fixed colors, replicated for everyone to see. The existing F3 camera displays your own model in third person;
 your body remains hidden in first person.
 
-## Body model
+## Body, head and tail
 
-Open the Esc menu and pick **Character Model** to switch between the default build,
-a girl variant (narrower shoulders and waist, wider hips, and longer hair), and a
-penguin costume. The picker shows a live preview in your current skin tone and
-clothing. Your choice is just a request; the server validates it and replicates it
-to everyone (like clothing), so other players always see the same model you
-picked. It defaults to the original build and is not saved between sessions.
+Open the Esc menu and pick **Character Model** to mix and match a body, a head and
+a tail, independently, like an impossible creature: a girl body with a frog head
+and a fish fin, a default body with a bird head and a fluffy tail, and so on. The
+picker shows a live preview in your current skin tone and clothing. Each choice is
+just a request; the server validates it and replicates it to everyone (like
+clothing), so other players always see the same combination you picked. Every
+axis defaults to the original build and none are saved between sessions.
 
-The penguin costume replaces clothing entirely (it's a full costume, not an
-outfit) and scales the whole rig down to `BlockPlayerModel.PENGUIN_HEIGHT_SCALE`
-(see `block_player_model.gd`) so it reads as short as the penguin NPC
+**Body** is the original default build, a girl variant (narrower shoulders and
+waist, wider hips, and longer hair), or a penguin costume. **Head** is the
+original human face, a wide-mouthed frog face, or a beaked bird head. **Tail** is
+none, a tapering lizard tail, a fish fin, or a round fluffy tail; it attaches
+behind the hips on any body, including the penguin costume.
+
+The penguin body replaces clothing and the head entirely (it's a full costume,
+not an outfit, so the head choice above has no effect while it's selected) and
+scales the whole rig down to `BlockPlayerModel.PENGUIN_HEIGHT_SCALE` (see
+`block_player_model.gd`) so it reads as short as the penguin NPC
 (`features/penguin`). `BlockPlayerModel.height_scale()` exposes that scale so
 `features/holdables/hand.gd` can shorten your first-person view model — the held
 item and hands — to match, without holdables needing to know about body types.
 The penguin NPC itself notices a nearby player wearing this costume and waves a
 flipper and hops in place at them; see `features/penguin/penguin.gd`.
 
-The girl variant's collision capsule is 60% as wide and 75% as tall as the default
+The girl body's collision capsule is 60% as wide and 75% as tall as the default
 capsule, with its bottom kept at the same height. It earns $4.25 instead of $5 per
-minute connected; the $20 starting balance, map coins and game prizes are unchanged.
+minute connected; the $20 starting balance, map coins and game prizes are
+unchanged. Head and tail choices are purely cosmetic: they don't affect the
+collision capsule or income.
 
 ## Skin tones
 

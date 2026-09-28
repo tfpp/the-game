@@ -9,6 +9,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 ## [edge]
 
+- Character Model (Esc menu) now picks a body, a head and a tail independently: a
+  frog head or bird head, and a lizard, fin or fluffy tail, on any body (including
+  the girl and penguin builds), so you can mix and match your own impossible
+  creature.
 - Frogs jump twice as high by default now, with a new "Frog jump height" slider in
   Game settings (Esc > Settings > Game) to tune it further; they also bounce off walls
   at an oblique angle mid-hop instead of stopping dead, ribbit when shot, and there are
