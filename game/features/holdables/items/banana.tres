@@ -9,3 +9,4 @@ id = "banana"
 display_name = "Banana"
 category = 1
 view_scene = ExtResource("2_view")
+weight = 0.35

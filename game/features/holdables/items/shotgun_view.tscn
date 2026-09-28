@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_barrel"]
+top_radius = 0.026
+bottom_radius = 0.026
+height = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barrel"]
+albedo_color = Color(0.06, 0.06, 0.07, 1)
+metallic = 0.7
+roughness = 0.3
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pump"]
+top_radius = 0.035
+bottom_radius = 0.035
+height = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wood"]
+albedo_color = Color(0.32, 0.19, 0.08, 1)
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="BoxMesh_stock"]
+size = Vector3(0.08, 0.12, 0.32)
+
+[node name="ShotgunView" type="Node3D"]
+
+[node name="Barrel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.03, -0.65)
+mesh = SubResource("CylinderMesh_barrel")
+surface_material_override/0 = SubResource("StandardMaterial3D_barrel")
+
+[node name="Pump" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, -0.02, -0.5)
+mesh = SubResource("CylinderMesh_pump")
+surface_material_override/0 = SubResource("StandardMaterial3D_wood")
+
+[node name="Stock" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.35)
+mesh = SubResource("BoxMesh_stock")
+surface_material_override/0 = SubResource("StandardMaterial3D_wood")
+
+[node name="Muzzle" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -1.0)

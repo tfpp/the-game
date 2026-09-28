@@ -16,3 +16,15 @@ enum Category {
 @export var category: Category = Category.PROP
 ## Purely visual: instanced under the pickup and under whichever hand holds it.
 @export var view_scene: PackedScene
+
+## Kilograms-ish. Thrown or dropped items bounce less the heavier they are (see
+## throw_math.gd's `bounce_height`); heavy weapons barely bounce at all.
+@export var weight := 1.0
+## WEAPON only: health removed from whoever a hitscan hit lands on.
+@export var damage := 0.0
+## WEAPON only: minimum seconds between shots.
+@export var fire_cooldown_s := 0.25
+## WEAPON only: hitscans fired per shot (a shotgun fires several at once).
+@export var pellet_count := 1
+## WEAPON only: random aim jitter applied to each pellet, in degrees.
+@export var spread_degrees := 0.0

@@ -8,6 +8,15 @@ class_name ChangelogEntries
 ## `title`: the feature's display name. `summary`: a one-line, player-facing
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
+	{
+		"title": "Combat",
+		"summary": "Weapons can now kill — take damage and respawn once your health runs out."
+	},
+	{
+		"title": "Item drops & new guns",
+		"summary":
+		"Drop any held item with G; thrown items bounce based on weight. Added an SMG and a shotgun."
+	},
 	{"title": "Esc menu", "summary": "Controls and Release notes moved into the Esc menu."},
 	{"title": "AWP", "summary": "The AWP in the middle of the map is now a pickup."},
 	{

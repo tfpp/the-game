@@ -8,6 +8,7 @@ extends GutTest
 const HandScene := preload("res://features/holdables/hand.tscn")
 const ItemPickupScene := preload("res://features/holdables/item_pickup.tscn")
 const PlayerScene := preload("res://core/player/player.tscn")
+const ItemCatalog := preload("res://features/holdables/item_catalog.gd")
 
 var _player: Player
 var _hand: Hand
@@ -113,3 +114,57 @@ func test_requests_from_another_peer_are_ignored() -> void:
 	_hand.peer_id = 2  # Pretend this hand belongs to someone else.
 	_hand.request_primary_action()
 	assert_eq(_hand.net_item_id, "banana")
+
+
+func test_dropping_a_weapon_empties_the_hand_and_asks_holdables_to_spawn_it() -> void:
+	var stub := _ThrowStub.new()
+	stub.add_to_group(&"holdables_root")
+	add_child_autofree(stub)
+	_hand.net_item_id = "pistol"
+	_hand.request_drop_item()
+	assert_eq(_hand.net_item_id, "")
+	assert_eq(stub.spawned_item_id, "pistol")
+
+
+func test_dropping_an_empty_hand_does_nothing() -> void:
+	var stub := _ThrowStub.new()
+	stub.add_to_group(&"holdables_root")
+	add_child_autofree(stub)
+	_hand.request_drop_item()
+	assert_eq(stub.spawned_item_id, "")
+
+
+func test_drop_requests_from_another_peer_are_ignored() -> void:
+	var stub := _ThrowStub.new()
+	stub.add_to_group(&"holdables_root")
+	add_child_autofree(stub)
+	_hand.net_item_id = "banana"
+	_hand.peer_id = 2
+	_hand.request_drop_item()
+	assert_eq(_hand.net_item_id, "banana")
+	assert_eq(stub.spawned_item_id, "")
+
+
+func test_firing_a_weapon_damages_a_player_in_the_line_of_fire() -> void:
+	var combat := Combat.new()
+	add_child_autofree(combat)
+	var target := PlayerScene.instantiate() as Player
+	target.name = "2"
+	target.set_multiplayer_authority(2)
+	target.position = Vector3(0, 0, -10)
+	target.net_position = target.position
+	add_child_autofree(target)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	_hand.net_item_id = "pistol"
+	_hand.request_primary_action()
+	var expected := Combat.MAX_HEALTH - ItemCatalog.find("pistol").damage
+	assert_almost_eq(combat.health_for(2), expected, 0.01)
+
+
+func test_firing_a_weapon_with_nobody_in_the_line_of_fire_does_not_error() -> void:
+	var combat := Combat.new()
+	add_child_autofree(combat)
+	_hand.net_item_id = "pistol"
+	_hand.request_primary_action()
+	assert_eq(combat.health_for(1), Combat.MAX_HEALTH)

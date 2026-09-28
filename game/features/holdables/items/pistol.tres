@@ -9,3 +9,4 @@ id = "pistol"
 display_name = "Pistol"
 category = 0
 view_scene = ExtResource("2_view")
+damage = 25.0
