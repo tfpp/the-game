@@ -14,6 +14,9 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Keep this changelog, with an `edge` section rolled into each release.
 - Group the in-game release notes (`L`) by version, showing the last 10 releases and what's
   new since the latest one.
+- Announce each release in Discord once it is live, with its changelog notes.
+- Deploy the accounts API automatically when its image is built, so API changes (like the
+  wallet endpoint) no longer wait for a manual deploy.
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
