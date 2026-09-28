@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://features/gnomes/gnome_train.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://features/gnomes/gnome_hole.tscn" id="2_hole"]
+[ext_resource type="PackedScene" path="res://features/gnomes/gnome_body.tscn" id="3_body"]
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:net_progress")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:net_forward")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="GnomeTrain" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="HoleA" parent="." instance=ExtResource("2_hole")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 0)
+
+[node name="HoleB" parent="." instance=ExtResource("2_hole")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.5, 0, 0)
+
+[node name="Gnome0" parent="." instance=ExtResource("3_body")]
+
+[node name="Gnome1" parent="." instance=ExtResource("3_body")]
+
+[node name="Gnome2" parent="." instance=ExtResource("3_body")]
+
+[node name="Gnome3" parent="." instance=ExtResource("3_body")]
+
+[node name="Sync" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath("..")
+replication_interval = 0.04
+replication_config = SubResource("Replication")
