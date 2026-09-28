@@ -24,6 +24,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   wallet endpoint) no longer wait for a manual deploy.
 - Add `/close` to the Discord bot: in a feature thread, it closes the feature's PR without
   merging and its issue as not planned.
+- Close a Discord feature's issue automatically when the agent makes no changes for it.
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 

@@ -33,6 +33,9 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
      `preview.yml` deploys there (run name `preview #<pr> deploy`) post the preview link
      (`BOT_PREVIEW_URL`).
    - `pull_request`: merged or closed.
+   If the agent declines an `implement` run (the harness's "🤖 … (`implement`) made no
+   changes" comment on the issue, before any PR exists), the bot closes the issue as not
+   planned and marks the job closed; the requester asks again with a new `/feature`.
    A reconcile loop (every 2 minutes, only while runs are active) polls the agent runs and
    comments in case a webhook was missed, and expires runs that never started.
 3. **`/revise <changes>`** inside a feature thread, once its PR exists, from the requester

@@ -304,6 +304,40 @@ func TestFeatureIssueFailureFreesTheSlot(t *testing.T) {
 	}
 }
 
+func TestNoChangesClosesTheIssue(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.feature(t, "42", "add jump pads please")
+	bot := github.User{Login: "the-game[bot]", Type: "Bot"}
+	body := "🤖 `claude` (`implement`) made no changes ([run](https://run)).\n\nThis is unclear."
+	must(t, e.svc.Comment(ctx, 11, github.Comment{ID: 1, User: bot, Body: body}))
+	if fmt.Sprint(e.gh.closedIssues) != "[11]" {
+		t.Errorf("closed %v", e.gh.closedIssues)
+	}
+	job, _ := e.st.JobByIssue(ctx, 11)
+	if job.State != store.JobClosed || !strings.Contains(e.chat.last().content, "closed issue #11") {
+		t.Errorf("job %+v post %+v", job, e.chat.last())
+	}
+	if len(e.chat.posts) < 2 || !strings.Contains(e.chat.posts[len(e.chat.posts)-2].content, "made no changes") {
+		t.Errorf("comment not relayed first: %+v", e.chat.posts)
+	}
+}
+
+func TestNoChangesOnARevisionKeepsTheIssue(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.feature(t, "42", "add jump pads please")
+	job, _ := e.st.JobByIssue(ctx, 11)
+	must(t, e.st.SetPR(ctx, job.ID, 12, e.now))
+	bot := github.User{Login: "the-game[bot]", Type: "Bot"}
+	must(t, e.svc.Comment(ctx, 12, github.Comment{ID: 1, User: bot, Body: "🤖 `claude` (`revise`) made no changes (x)."}))
+	must(t, e.svc.Comment(ctx, 11, github.Comment{ID: 2, User: bot, Body: "🤖 `claude` (`implement`) made no changes (x)."}))
+	job, _ = e.st.JobByIssue(ctx, 11)
+	if len(e.gh.closedIssues) != 0 || job.State != store.JobOpen {
+		t.Errorf("closed %v, job %+v", e.gh.closedIssues, job)
+	}
+}
+
 func TestWorkflowRunAndCommentsReachTheThread(t *testing.T) {
 	e := newEnv(t)
 	ctx := context.Background()

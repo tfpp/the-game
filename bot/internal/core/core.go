@@ -498,6 +498,8 @@ var (
 	previewTitle = regexp.MustCompile(`^preview #(\d+) deploy$`)
 	agentBranch  = regexp.MustCompile(`^agent/(\d+)-`)
 	detailsBlock = regexp.MustCompile(`(?s)\s*<details>.*?</details>`)
+	// harness/publish.sh's comment when the agent declined an implement run.
+	noChanges = regexp.MustCompile("^🤖 `[^`]+` \\(`implement`\\) made no changes")
 )
 
 func requestID(runID int64) string { return "bot-" + strconv.FormatInt(runID, 10) }
@@ -658,10 +660,29 @@ func (s *Service) Comment(ctx context.Context, number int, c github.Comment) err
 		ping = []string{job.RequesterID}
 	}
 	s.post(ctx, job, content, ping...)
+	if number == job.Issue && job.PR == 0 && job.State == store.JobOpen && noChanges.MatchString(c.Body) {
+		s.closeDeclined(ctx, job)
+	}
 	if run, err := s.st.ActiveRunForJob(ctx, job.ID); err == nil {
 		return s.st.CountRelayed(ctx, run.ID)
 	}
 	return nil
+}
+
+// closeDeclined closes the issue of a feature the agent declined to build: with no PR
+// there is nothing left to revise, so a new request is a new /feature. Errors are logged:
+// /close can still close it.
+func (s *Service) closeDeclined(ctx context.Context, job store.Job) {
+	if err := s.gh.CloseIssue(ctx, job.Issue); err != nil {
+		s.log.Error("close declined issue", "err", err, "issue", job.Issue)
+		return
+	}
+	if err := s.st.SetJobState(ctx, job.ID, store.JobClosed, s.cfg.Now()); err != nil {
+		s.log.Error("close declined job", "err", err, "job", job.ID)
+		return
+	}
+	s.post(ctx, job, fmt.Sprintf("🔒 I closed issue #%d since the agent made no changes. "+
+		"Use `/feature` to ask again with more detail.", job.Issue))
 }
 
 // PullRequest handles pull_request events for agent branches.
