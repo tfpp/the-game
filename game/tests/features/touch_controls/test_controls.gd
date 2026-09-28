@@ -44,10 +44,11 @@ func test_default_bindings_are_left_handed_and_sensitivity_unchanged() -> void:
 			keys.append((event as InputEventKey).physical_keycode)
 		assert_eq(keys, expected[action])
 	var jump := InputMap.action_get_events("jump")
-	assert_eq(jump.size(), 3)
+	assert_eq(jump.size(), 4)
 	assert_eq((jump[0] as InputEventKey).physical_keycode, KEY_SHIFT)
 	assert_eq((jump[1] as InputEventMouseButton).button_index, MOUSE_BUTTON_WHEEL_DOWN)
 	assert_eq((jump[2] as InputEventMouseButton).button_index, MOUSE_BUTTON_WHEEL_UP)
+	assert_eq((jump[3] as InputEventJoypadButton).button_index, JOY_BUTTON_A)
 	assert_almost_eq(Controls.look_radians_per_count(), deg_to_rad(0.044), 0.000001)
 	Controls.apply_scheme(saved_scheme)
 

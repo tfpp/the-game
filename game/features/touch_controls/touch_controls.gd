@@ -112,7 +112,7 @@ func _input(event: InputEvent) -> void:
 			var change := drag.position - look_position
 			look_position = drag.position
 			var screen_delta := get_viewport().get_screen_transform().basis_xform(change)
-			Controls.look_delta += screen_delta * Controls.TOUCH_SENSITIVITY
+			Controls.look_delta += screen_delta * Controls.touch_sensitivity
 		get_viewport().set_input_as_handled()
 
 
