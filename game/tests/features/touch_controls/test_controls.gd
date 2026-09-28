@@ -29,12 +29,14 @@ func after_each() -> void:
 	Input.action_release("move_forward")
 
 
-func test_desktop_bindings_and_sensitivity_unchanged() -> void:
+func test_default_bindings_are_left_handed_and_sensitivity_unchanged() -> void:
+	var saved_scheme := Controls.scheme
+	Controls.apply_scheme(Controls.Scheme.LEFT_HANDED)
 	var expected := {
-		"move_forward": [KEY_W, KEY_UP],
-		"move_back": [KEY_S, KEY_DOWN],
-		"move_left": [KEY_A, KEY_LEFT],
-		"move_right": [KEY_D, KEY_RIGHT]
+		"move_forward": [KEY_UP],
+		"move_back": [KEY_DOWN],
+		"move_left": [KEY_LEFT],
+		"move_right": [KEY_RIGHT]
 	}
 	for action: String in expected:
 		var keys: Array[int] = []
@@ -43,10 +45,27 @@ func test_desktop_bindings_and_sensitivity_unchanged() -> void:
 		assert_eq(keys, expected[action])
 	var jump := InputMap.action_get_events("jump")
 	assert_eq(jump.size(), 3)
-	assert_eq((jump[0] as InputEventKey).physical_keycode, KEY_SPACE)
+	assert_eq((jump[0] as InputEventKey).physical_keycode, KEY_SHIFT)
 	assert_eq((jump[1] as InputEventMouseButton).button_index, MOUSE_BUTTON_WHEEL_DOWN)
 	assert_eq((jump[2] as InputEventMouseButton).button_index, MOUSE_BUTTON_WHEEL_UP)
 	assert_almost_eq(Controls.look_radians_per_count(), deg_to_rad(0.044), 0.000001)
+	Controls.apply_scheme(saved_scheme)
+
+
+func test_right_handed_scheme_restores_classic_wasd_and_space() -> void:
+	var saved_scheme := Controls.scheme
+	Controls.apply_scheme(Controls.Scheme.RIGHT_HANDED)
+	var expected := {
+		"move_forward": [KEY_W], "move_back": [KEY_S], "move_left": [KEY_A], "move_right": [KEY_D]
+	}
+	for action: String in expected:
+		var keys: Array[int] = []
+		for event: InputEvent in InputMap.action_get_events(action):
+			keys.append((event as InputEventKey).physical_keycode)
+		assert_eq(keys, expected[action])
+	var jump := InputMap.action_get_events("jump")
+	assert_eq((jump[0] as InputEventKey).physical_keycode, KEY_SPACE)
+	Controls.apply_scheme(saved_scheme)
 
 
 func test_radial_deadzone_and_diagonal_limit() -> void:
