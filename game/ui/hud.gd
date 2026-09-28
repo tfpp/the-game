@@ -15,7 +15,7 @@ var _refresh_in := 0.0
 
 func _ready() -> void:
 	_release.text = release_text(Network.game_version())
-	# The hash sits in the body font: Kenney Future would uppercase it.
+	# The hash sits in the detail font (Barlow), which reads better than Orbitron for hex.
 	_commit.text = Network.short_version(Network.build_version)
 
 

@@ -1,0 +1,81 @@
+name: release
+
+# Cuts a release by hand: Actions > release > Run workflow, then pick the bump. It rolls
+# the `## [edge]` section of CHANGELOG.md into the new version, bumps
+# application/config/version in game/project.godot (scripts/release.sh), and pushes that
+# commit to main together with its vX.Y.Z tag. The commit touches game/, so the web
+# client and server rebuild and deploy with the new version, and the Discord bot
+# announces it once it's live. Last, it publishes a GitHub Release with the notes.
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Which part of the version to bump"
+        type: choice
+        options: [patch, minor, major]
+        default: minor
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Test the release scripts
+        run: scripts/release_test.sh && scripts/release_notes_test.sh
+      # The release commit goes straight to main: this App bypasses the "protect main"
+      # ruleset. Only this job pushes with it, and only CHANGELOG.md and project.godot.
+      - name: App token
+        id: app
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.AGENT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.AGENT_APP_PRIVATE_KEY }}
+      - name: Commit and tag
+        id: cut
+        env:
+          BUMP: ${{ inputs.bump }}
+          TOKEN: ${{ steps.app.outputs.token }}
+          NAME: ${{ vars.AGENT_GIT_NAME }}
+          EMAIL: ${{ vars.AGENT_GIT_EMAIL }}
+        run: |
+          git config user.name "$NAME"
+          git config user.email "$EMAIL"
+          remote="https://x-access-token:$TOKEN@github.com/$GITHUB_REPOSITORY.git"
+          # Build on the newest main; retry if a merge lands first.
+          for attempt in 1 2 3; do
+            git fetch -q --tags origin main
+            git checkout -q --detach origin/main
+            version="$(scripts/release.sh "$BUMP" "$RUNNER_TEMP/notes.md")"
+            git commit -q -am "chore(release): v$version"
+            git tag "v$version"
+            # Atomic: builds of the release commit must see its tag (the in-game changelog).
+            if git push -q --atomic "$remote" HEAD:refs/heads/main "refs/tags/v$version"; then
+              echo "version=$version" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "push failed (attempt $attempt); retrying on the new main"
+            git tag -d "v$version"
+            sleep $((attempt * 5))
+          done
+          exit 1
+      - name: Publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.cut.outputs.version }}
+        run: |
+          gh release create "v$VERSION" --verify-tag --title "v$VERSION" \
+            --notes-file "$RUNNER_TEMP/notes.md"
+          echo "Released v$VERSION" >> "$GITHUB_STEP_SUMMARY"
