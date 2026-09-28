@@ -54,3 +54,22 @@ func test_waddle_rock_is_zero_at_the_start_and_oscillates_within_amplitude() -> 
 func test_waddle_rock_scales_with_amplitude() -> void:
 	var rock := PenguinWaddle.waddle_rock(0.25, 1.0, 0.5)
 	assert_almost_eq(rock, 0.5, 0.0001)
+
+
+func test_wave_angle_is_zero_at_the_start_and_oscillates_within_amplitude() -> void:
+	assert_almost_eq(PenguinWaddle.wave_angle(0.0, 3.0, 0.9), 0.0, 0.0001)
+	for i: int in 20:
+		var t := i * 0.05
+		var wave := PenguinWaddle.wave_angle(t, 3.0, 0.9)
+		assert_true(wave >= -0.9 - 0.0001 and wave <= 0.9 + 0.0001)
+
+
+func test_react_bounce_is_never_negative_and_stays_within_height() -> void:
+	for i: int in 20:
+		var t := i * 0.05
+		var bounce := PenguinWaddle.react_bounce(t, 2.6, 0.22)
+		assert_true(bounce >= -0.0001 and bounce <= 0.22 + 0.0001)
+
+
+func test_react_bounce_touches_the_ground_between_hops() -> void:
+	assert_almost_eq(PenguinWaddle.react_bounce(0.0, 2.6, 0.22), 0.0, 0.0001)

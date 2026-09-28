@@ -12,6 +12,9 @@ extends Node3D
 const REMOTE_SMOOTHING := 24.0
 const MAX_LIFETIME_S := 6.0
 const COLLISION_MASK := 1
+## How long the visual takes to ease from the shooter's muzzle onto the real
+## trajectory. See `_visual_offset`.
+const MUZZLE_VISUAL_EASE_S := 0.08
 
 ## Replicated (server -> everyone). See the synchronizer config in projectile.tscn.
 @export var net_position := Vector3.ZERO
@@ -28,12 +31,27 @@ var _bounces_left := 0
 var _elapsed := 0.0
 var _finished := false
 
+## A purely cosmetic, per-viewer local-space offset on `_visual` (never networked;
+## `position`/`net_position` stay exactly on the real, authoritative trajectory).
+## The true shot origin is the shooter's eye (`GunRig._aim_origin`) so aiming is
+## accurate, but a shot fired straight down the shooter's own view axis barely
+## moves in screen space and is nearly invisible at this small a size. Starting the
+## visual at the shooter's muzzle (offscreen-center, `GunRig.muzzle_position`) and
+## easing it onto the real path over `MUZZLE_VISUAL_EASE_S` gives it visible
+## motion for both the shooter and any third-person viewer, without changing where
+## the shot actually is.
+var _visual_offset := Vector3.ZERO
+var _visual_offset_elapsed := 0.0
+
 @onready var _visual: MeshInstance3D = $Visual
 
 
 func _ready() -> void:
 	position = net_position
 	net_position = position
+	var rig := GunRig.for_peer(get_tree(), shooter_peer)
+	if rig != null:
+		_visual_offset = rig.muzzle_position() - position
 	var profile := GunGenerator.profile(ammo_type)
 	_bounces_left = int(profile["bounces"])
 	var color: Color = profile["color"]
@@ -105,43 +123,69 @@ func _apply_direct_hit(player: Player, profile: Dictionary) -> void:
 	if combat != null:
 		combat.call("apply_damage", player.get_multiplayer_authority(), damage, shooter_peer)
 	_splash(profile, player.get_multiplayer_authority())
-	_finish()
+	_finish(float(profile["explosion_radius"]))
 
 
 func _explode(profile: Dictionary) -> void:
 	_splash(profile, 0)
-	_finish()
+	_finish(float(profile["explosion_radius"]))
 
 
-## Everyone within the ammo type's explosion radius except `already_hit_peer` (the
-## direct-hit target, if any — splash tapers to 0 at the radius, so a direct hit
-## already covers that case) takes falloff damage, for the rockets and grenades that
-## have one; a radius of 0 (every other ammo type) makes this a no-op.
+## Everyone within the ammo type's explosion radius, for the rockets and grenades
+## that have one (a radius of 0, every other ammo type, makes this a no-op): falloff
+## damage (skipping `already_hit_peer`, the direct-hit target if any, whose full-
+## damage direct hit already covers that case) and a falloff splash force that
+## shoves them away from the blast, direct-hit target included — a rocket that hits
+## you should still fling you back, not just the bystanders around you.
 func _splash(profile: Dictionary, already_hit_peer: int) -> void:
 	var radius := float(profile["explosion_radius"])
 	if radius <= 0.0:
 		return
 	var combat := get_tree().get_first_node_in_group(&"combat")
-	if combat == null:
-		return
+	var max_force := float(profile.get("splash_force", 0.0))
 	for node: Node in get_tree().get_nodes_in_group(&"players"):
 		var player := node as Player
 		if player == null:
 			continue
 		var peer := player.get_multiplayer_authority()
-		if peer == already_hit_peer:
-			continue
 		var distance := player.net_position.distance_to(net_position)
-		var splash_damage := ProjectileMath.splash_damage(distance, radius, damage)
-		if splash_damage > 0.0:
-			combat.call("apply_damage", peer, splash_damage, shooter_peer)
+		if distance >= radius:
+			continue
+		if peer != already_hit_peer and combat != null:
+			var splash_damage := ProjectileMath.splash_damage(distance, radius, damage)
+			if splash_damage > 0.0:
+				combat.call("apply_damage", peer, splash_damage, shooter_peer)
+		_apply_splash_force(player, distance, radius, max_force)
 
 
-func _finish() -> void:
+## Shoves `player` away from the blast (and slightly upward, so a close call
+## launches instead of just sliding them), the sanctioned way to move a player from
+## the server (game/AGENTS.md) since movement is otherwise client-authoritative and
+## `core/player` isn't ours to edit.
+func _apply_splash_force(player: Player, distance: float, radius: float, max_force: float) -> void:
+	var push := ProjectileMath.splash_force(distance, radius, max_force)
+	if push <= 0.0:
+		return
+	var away := player.net_position - net_position
+	var direction := away.normalized() if away.length() > 0.001 else Vector3.UP
+	direction.y = maxf(direction.y, 0.35)
+	direction = direction.normalized()
+	var destination := player.net_position + direction * push
+	# Broadcast rather than `rpc_id(player.get_multiplayer_authority(), ...)`: a splash
+	# can reach several players' worth of targeted calls per explosion, and
+	# `server_teleport`'s own `is_local()` guard already makes sure only the owning
+	# peer ever applies it, so there's no need to address each one individually.
+	player.server_teleport.rpc(destination)
+
+
+func _finish(explosion_radius: float = 0.0) -> void:
 	if _finished:
 		return
 	_finished = true
-	_play_impact.rpc(net_position)
+	if explosion_radius > 0.0:
+		_play_explosion.rpc(net_position, explosion_radius)
+	else:
+		_play_impact.rpc(net_position)
 	queue_free()
 
 
@@ -162,7 +206,24 @@ func _play_impact(at: Vector3) -> void:
 	flash.queue_free()
 
 
+## An event, not saved state, like `_play_impact` — the bigger, louder version for
+## an explosive round (nonzero `explosion_radius`) going off, whether that's a
+## direct hit or a fuse/world-impact detonation.
+@rpc("authority", "call_local", "reliable")
+func _play_explosion(at: Vector3, radius: float) -> void:
+	var parent := get_parent()
+	if parent == null:
+		return
+	GunExplosionEffect.spawn(parent, at, radius)
+
+
 func _process(delta: float) -> void:
+	if _visual_offset != Vector3.ZERO:
+		_visual_offset_elapsed += delta
+		var ease := clampf(_visual_offset_elapsed / MUZZLE_VISUAL_EASE_S, 0.0, 1.0)
+		_visual.position = _visual_offset.lerp(Vector3.ZERO, ease)
+		if ease >= 1.0:
+			_visual_offset = Vector3.ZERO
 	if multiplayer.is_server() or _finished:
 		return
 	var t := 1.0 - exp(-REMOTE_SMOOTHING * delta)

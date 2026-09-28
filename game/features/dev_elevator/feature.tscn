@@ -1,0 +1,99 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://features/dev_elevator/dev_elevator.gd" id="1_pad"]
+
+[sub_resource type="StandardMaterial3D" id="Concrete"]
+albedo_color = Color(0.16, 0.16, 0.18, 1)
+
+[sub_resource type="StandardMaterial3D" id="Hazard"]
+albedo_color = Color(0.05, 0.05, 0.05, 1)
+
+[sub_resource type="StandardMaterial3D" id="Stripe"]
+albedo_color = Color(1, 0.75, 0, 1)
+emission_enabled = true
+emission = Color(1, 0.6, 0, 1)
+emission_energy_multiplier = 0.6
+
+[sub_resource type="StandardMaterial3D" id="Pad"]
+albedo_color = Color(1, 0.35, 0, 1)
+emission_enabled = true
+emission = Color(1, 0.3, 0, 1)
+emission_energy_multiplier = 0.8
+
+[node name="DevElevator" type="Node3D"]
+position = Vector3(0, 0, 900)
+
+[node name="Floor" type="CSGBox3D" parent="."]
+position = Vector3(0, -0.1, 0)
+size = Vector3(6, 0.2, 6)
+material = SubResource("Concrete")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="."]
+position = Vector3(0, 3.1, 0)
+size = Vector3(6, 0.2, 6)
+material = SubResource("Concrete")
+use_collision = true
+
+[node name="WallNorth" type="CSGBox3D" parent="."]
+position = Vector3(0, 1.5, -3)
+size = Vector3(6, 3, 0.2)
+material = SubResource("Hazard")
+use_collision = true
+
+[node name="WallSouth" type="CSGBox3D" parent="."]
+position = Vector3(0, 1.5, 3)
+size = Vector3(6, 3, 0.2)
+material = SubResource("Hazard")
+use_collision = true
+
+[node name="WallEast" type="CSGBox3D" parent="."]
+position = Vector3(3, 1.5, 0)
+size = Vector3(0.2, 3, 6)
+material = SubResource("Hazard")
+use_collision = true
+
+[node name="WallWest" type="CSGBox3D" parent="."]
+position = Vector3(-3, 1.5, 0)
+size = Vector3(0.2, 3, 6)
+material = SubResource("Hazard")
+use_collision = true
+
+[node name="HazardStripeNorth" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.03, -2.85)
+size = Vector3(6, 0.06, 0.4)
+material = SubResource("Stripe")
+
+[node name="HazardStripeSouth" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.03, 2.85)
+size = Vector3(6, 0.06, 0.4)
+material = SubResource("Stripe")
+
+[node name="Pad" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.05, 0)
+size = Vector3(2.2, 0.1, 2.2)
+material = SubResource("Pad")
+use_collision = true
+script = ExtResource("1_pad")
+
+[node name="Light" type="OmniLight3D" parent="."]
+position = Vector3(0, 2.6, 0)
+light_color = Color(1, 0.55, 0.2, 1)
+light_energy = 1.4
+omni_range = 8.0
+
+[node name="TitleSign" type="Label3D" parent="."]
+position = Vector3(0, 2.4, -2.85)
+billboard = 1
+text = "DEVELOPMENT ELEVATOR
+INTERNAL TESTING ONLY — NOT PART OF THE GAME"
+font_size = 24
+outline_size = 6
+modulate = Color(1, 0.6, 0.1, 1)
+
+[node name="DestinationSign" type="Label3D" parent="."]
+position = Vector3(0, 1.5, -2.85)
+billboard = 1
+text = "Destination: Parking Garage"
+font_size = 18
+outline_size = 6

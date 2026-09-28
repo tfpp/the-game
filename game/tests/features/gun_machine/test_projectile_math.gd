@@ -30,3 +30,11 @@ func test_splash_damage_falls_off_linearly_to_zero_at_the_radius() -> void:
 	assert_eq(ProjectileMath.splash_damage(4.0, 4.0, 100.0), 0.0)
 	assert_eq(ProjectileMath.splash_damage(10.0, 4.0, 100.0), 0.0)
 	assert_eq(ProjectileMath.splash_damage(1.0, 0.0, 100.0), 0.0)
+
+
+func test_splash_force_falls_off_linearly_to_zero_at_the_radius() -> void:
+	assert_eq(ProjectileMath.splash_force(0.0, 4.0, 5.0), 5.0)
+	assert_eq(ProjectileMath.splash_force(2.0, 4.0, 5.0), 2.5)
+	assert_eq(ProjectileMath.splash_force(4.0, 4.0, 5.0), 0.0)
+	assert_eq(ProjectileMath.splash_force(10.0, 4.0, 5.0), 0.0)
+	assert_eq(ProjectileMath.splash_force(1.0, 0.0, 5.0), 0.0)

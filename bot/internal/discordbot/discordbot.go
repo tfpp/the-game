@@ -89,6 +89,11 @@ var (
 			Contexts:    []discord.InteractionContextType{discord.InteractionContextTypeGuild},
 		},
 		discord.SlashCommandCreate{
+			Name:        "close",
+			Description: "Close this thread's PR and issue without merging",
+			Contexts:    []discord.InteractionContextType{discord.InteractionContextTypeGuild},
+		},
+		discord.SlashCommandCreate{
 			Name:        "queue",
 			Description: "Show the agent runs or the merge queue",
 			Contexts:    []discord.InteractionContextType{discord.InteractionContextTypeGuild},
@@ -193,6 +198,11 @@ func (b *Bot) onCommand(e *events.ApplicationCommandInteractionCreate) {
 	case "approve":
 		r = private
 		err = b.Service.Approve(ctx, b.approveRequest(member, ch.ID(), ""), r)
+	case "close":
+		err = b.Service.Close(ctx, core.CloseRequest{
+			UserID: member.User.ID.String(), UserName: name, ThreadID: ch.ID().String(),
+			HasRole: hasRole || (b.cfg.ApproverRoleID != 0 && slices.Contains(member.RoleIDs, b.cfg.ApproverRoleID)),
+		}, r)
 	case "queue":
 		var text string
 		if text, err = b.Service.Queue(ctx, data.String("which")); err == nil {

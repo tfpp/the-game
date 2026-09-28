@@ -16,6 +16,35 @@ const ENTRIES: Array[Dictionary] = [
 		"Frogs jump twice as high, bounce off walls, ribbit when hit, and there are twice as many."
 	},
 	{
+		"title": "Dev elevator",
+		"summary":
+		(
+			"A hazard-striped debug warp pad (noclip to find it) instantly sends you to the"
+			+ " parking garage for testing — internal, not part of the game proper."
+		)
+	},
+	{
+		"title": "Parking garage",
+		"summary":
+		(
+			"A dark three-story parking structure outside the casino — take the staff door"
+			+ " near the trampolines. Ramps and a stairwell connect all three levels."
+		)
+	},
+	{
+		"title": "Wandering gnomes",
+		"summary":
+		"Gnome burrows hug the outer walls, dash to far-off holes along real routed paths, and dodge you."
+	},
+	{
+		"title": "Steadier gun viewmodels",
+		"summary":
+		(
+			"Generated guns no longer jitter in first person, shots fire from where you aim and"
+			+ " stay visible, and each gunshot now plays from the gun that fired it."
+		)
+	},
+	{
 		"title": "New fonts",
 		"summary": "Cleaner text everywhere, with bolder headings and a sharper HUD."
 	},
