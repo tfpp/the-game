@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Weapon hotbar & gun recoil",
+		"summary":
+		"Press 1-8 or scroll to swap between carried items instantly. Guns now kick back when fired."
+	},
+	{
 		"title": "Gameplay sound effects",
 		"summary":
 		"Guns, hits and animal explosions now make sound. Pickups and inventory actions have audio cues."
