@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Noclip for everyone",
+		"summary":
+		"Press V to toggle noclip. Switching control schemes no longer needs play time first."
+	},
+	{
 		"title": "Trampolines",
 		"summary": "Trampoline squares on the map launch you into the air when you stand on them."
 	},

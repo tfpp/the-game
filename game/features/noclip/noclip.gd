@@ -1,11 +1,10 @@
 extends Node
-## Lets the player named "jos" toggle noclip (no collision, free fly) by pressing V.
+## Lets any player toggle noclip (no collision, free fly) by pressing V.
 ##
 ## Player movement is already client-authoritative (see game/AGENTS.md), so this only
 ## ever drives the local player's own node; nothing here needs the server involved.
 
 const TOGGLE_ACTION := &"toggle_noclip"
-const ALLOWED_NAME := "jos"
 ## Multiple of the player's normal ground speed while noclipping.
 const SPEED_MULTIPLIER := 2.5
 
@@ -20,7 +19,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed(TOGGLE_ACTION) or not Controls.gameplay_active():
 		return
 	var player := _local_player()
-	if player == null or not is_authorized(player.display_name):
+	if player == null:
 		return
 	get_viewport().set_input_as_handled()
 	_set_active(player, not _active)
@@ -43,11 +42,6 @@ func _physics_process(delta: float) -> void:
 	player.net_position = player.global_position
 	player.velocity = Vector3.ZERO
 	player.net_velocity = Vector3.ZERO
-
-
-## Whether `display_name` may toggle noclip. Only jos asked for this.
-static func is_authorized(display_name: String) -> bool:
-	return display_name == ALLOWED_NAME
 
 
 ## A normalized fly direction from view angles and a 2D input (x = strafe right,

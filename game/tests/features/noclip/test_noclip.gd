@@ -1,18 +1,8 @@
 extends GutTest
-## Pure gating and direction math for noclip (features/noclip/noclip.gd), kept free of
-## scene access so it's unit-testable.
+## Pure direction math for noclip (features/noclip/noclip.gd), kept free of scene
+## access so it's unit-testable.
 
 const Noclip := preload("res://features/noclip/noclip.gd")
-
-
-func test_jos_is_authorized() -> void:
-	assert_true(Noclip.is_authorized("jos"))
-
-
-func test_other_names_are_not_authorized() -> void:
-	assert_false(Noclip.is_authorized("Jos"))
-	assert_false(Noclip.is_authorized("josephine"))
-	assert_false(Noclip.is_authorized(""))
 
 
 func test_fly_direction_is_zero_with_no_input() -> void:
