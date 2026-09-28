@@ -46,6 +46,12 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    planned and marks the job closed; the requester asks again with a new `/feature`.
    A reconcile loop (every 2 minutes, only while runs are active) polls the agent runs and
    comments in case a webhook was missed, and expires runs that never started.
+   When an `implement` or `revise` run fails without a change (the harness's "🤖 … did
+   not produce a change" comment, a run cancelled or crashed before it commented, or a run
+   that never started), the thread message gets a **Retry** button. The requester or
+   anyone with the role can press it to start the same run again, with the same
+   instructions and harness, counting toward the presser's limit. Only the feature's
+   newest run can be retried, and only once it has finished and no other run is active.
 3. **`/revise <changes>`** inside a feature thread, once its PR exists, from the requester
    or anyone with the role, and only when no run is active for it. It dispatches
    `mode=revise` on the PR, with the text as the newest instructions

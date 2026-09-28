@@ -25,7 +25,7 @@ func (c chat) Post(_ context.Context, _, content string, _ ...string) error {
 	return nil
 }
 
-func (c chat) PostButton(_ context.Context, _, content, _, _ string) error {
+func (c chat) PostButton(_ context.Context, _, content, _, _ string, _ ...string) error {
 	c.posts <- content
 	return nil
 }

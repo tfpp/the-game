@@ -152,14 +152,14 @@ func (b *Bot) Post(ctx context.Context, threadID, content string, ping ...string
 }
 
 // PostButton implements core.Chat.
-func (b *Bot) PostButton(ctx context.Context, threadID, content, label, id string) error {
+func (b *Bot) PostButton(ctx context.Context, threadID, content, label, id string, ping ...string) error {
 	ch, err := snowflake.Parse(threadID)
 	if err != nil {
 		return err
 	}
 	_, err = b.client.Rest.CreateMessage(ch, discord.MessageCreate{
 		Content:         content,
-		AllowedMentions: &noMentions,
+		AllowedMentions: mentions(ping),
 		Components:      []discord.LayoutComponent{discord.NewActionRow(discord.NewSuccessButton(label, id))},
 	}, rest.WithCtx(ctx))
 	return err
@@ -254,15 +254,29 @@ func (b *Bot) onComponent(e *events.ComponentInteractionCreate) {
 	}
 	id := e.ButtonInteractionData().CustomID()
 	member := e.Member()
-	if member == nil || !core.IsApproveButton(id) {
+	if member == nil {
 		return
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
-	r := &responder{client: b.client, e: e, ephemeral: true}
-	if err := b.Service.Approve(ctx, b.approveRequest(member, e.Channel().ID(), id), r); err != nil {
-		b.cfg.Logger.Error("approve failed", "err", err)
-		r.fail(ctx)
+	switch {
+	case core.IsApproveButton(id):
+		r := &responder{client: b.client, e: e, ephemeral: true}
+		if err := b.Service.Approve(ctx, b.approveRequest(member, e.Channel().ID(), id), r); err != nil {
+			b.cfg.Logger.Error("approve failed", "err", err)
+			r.fail(ctx)
+		}
+	case core.IsRetryButton(id):
+		// Rejections are private; a started retry is announced in the thread.
+		r := &responder{client: b.client, e: e}
+		err := b.Service.Retry(ctx, core.RetryRequest{
+			UserID: member.User.ID.String(), UserName: member.EffectiveName(), ThreadID: e.Channel().ID().String(),
+			HasRole: slices.Contains(member.RoleIDs, b.cfg.RequesterRoleID), ButtonID: id,
+		}, r)
+		if err != nil {
+			b.cfg.Logger.Error("retry failed", "err", err)
+			r.fail(ctx)
+		}
 	}
 }
 

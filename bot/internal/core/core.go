@@ -51,8 +51,8 @@ type GitHub interface {
 type Chat interface {
 	Post(ctx context.Context, threadID, content string, ping ...string) error
 	// PostButton posts content with one button; pressing it reaches the Discord adapter
-	// with id as its custom ID. It pings nobody.
-	PostButton(ctx context.Context, threadID, content, label, id string) error
+	// with id as its custom ID. content may mention only the users in ping.
+	PostButton(ctx context.Context, threadID, content, label, id string, ping ...string) error
 }
 
 // Deployer asks the host to deploy game server and accounts API builds. Nil turns
@@ -518,6 +518,8 @@ var (
 	detailsBlock = regexp.MustCompile(`(?s)\s*<details>.*?</details>`)
 	// harness/publish.sh's comment when the agent declined an implement run.
 	noChanges = regexp.MustCompile("^🤖 `[^`]+` \\(`implement`\\) made no changes")
+	// harness/publish.sh's comment when a run ended without pushing anything.
+	noChange = regexp.MustCompile("^🤖 `[^`]+` \\(`[a-z-]+`\\) did not produce a change")
 )
 
 func requestID(runID int64) string { return "bot-" + strconv.FormatInt(runID, 10) }
@@ -594,13 +596,13 @@ func (s *Service) agentRun(ctx context.Context, wr github.WorkflowRun) error {
 	if err != nil {
 		return err
 	}
-	msg := fmt.Sprintf("⚠️ <@%s> The agent run ended without a result (`%s`). [Run](<%s>)",
-		job.RequesterID, wr.Conclusion, wr.HTMLURL)
 	if wr.Conclusion == "success" {
-		msg = fmt.Sprintf("⚠️ <@%s> The workflow refused to start the agent; its gate log says why. [Run](<%s>)",
-			job.RequesterID, wr.HTMLURL)
+		s.post(ctx, job, fmt.Sprintf("⚠️ <@%s> The workflow refused to start the agent; its gate log says why. [Run](<%s>)",
+			job.RequesterID, wr.HTMLURL), job.RequesterID)
+		return nil
 	}
-	s.post(ctx, job, msg, job.RequesterID)
+	s.postFailure(ctx, job, run, fmt.Sprintf("⚠️ <@%s> The agent run ended without a result (`%s`). [Run](<%s>)",
+		job.RequesterID, wr.Conclusion, wr.HTMLURL), job.RequesterID)
 	return nil
 }
 
@@ -677,11 +679,16 @@ func (s *Service) Comment(ctx context.Context, number int, c github.Comment) err
 		content = "<@" + job.RequesterID + "> " + content
 		ping = []string{job.RequesterID}
 	}
-	s.post(ctx, job, content, ping...)
+	run, runErr := s.st.ActiveRunForJob(ctx, job.ID)
+	if runErr == nil && noChange.MatchString(c.Body) {
+		s.postFailure(ctx, job, run, content, ping...)
+	} else {
+		s.post(ctx, job, content, ping...)
+	}
 	if number == job.Issue && job.PR == 0 && job.State == store.JobOpen && noChanges.MatchString(c.Body) {
 		s.closeDeclined(ctx, job)
 	}
-	if run, err := s.st.ActiveRunForJob(ctx, job.ID); err == nil {
+	if runErr == nil {
 		return s.st.CountRelayed(ctx, run.ID)
 	}
 	return nil
@@ -792,7 +799,7 @@ func (s *Service) Reconcile(ctx context.Context) error {
 		case cur.Status == store.RunDispatched && age > dispatchedTimeout:
 			s.failRun(ctx, cur.ID)
 			if job, err := s.st.JobByID(ctx, cur.JobID); err == nil {
-				s.post(ctx, job, fmt.Sprintf("⚠️ <@%s> The agent run never started. Try again.", job.RequesterID), job.RequesterID)
+				s.postFailure(ctx, job, cur, fmt.Sprintf("⚠️ <@%s> The agent run never started.", job.RequesterID), job.RequesterID)
 			}
 		case (cur.Status == store.RunQueued || cur.Status == store.RunInProgress) && age > s.cfg.Limits.StaleAfter:
 			if err := s.setRun(ctx, cur.ID, store.RunCompleted, "stale", 0, ""); err != nil {

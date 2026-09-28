@@ -100,8 +100,8 @@ type post struct{ thread, content, ping, button string }
 
 type fakeChat struct{ posts []post }
 
-func (c *fakeChat) PostButton(_ context.Context, thread, content, _, id string) error {
-	c.posts = append(c.posts, post{thread: thread, content: content, button: id})
+func (c *fakeChat) PostButton(_ context.Context, thread, content, _, id string, ping ...string) error {
+	c.posts = append(c.posts, post{thread: thread, content: content, button: id, ping: strings.Join(ping, ",")})
 	return nil
 }
 
