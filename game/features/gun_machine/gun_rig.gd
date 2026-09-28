@@ -24,6 +24,7 @@ const AMMO_SOUND_CUES := {
 	GunGenerator.AmmoType.ROCKET: &"awp",
 	GunGenerator.AmmoType.GRENADE: &"awp",
 	GunGenerator.AmmoType.PLASMA: &"smg",
+	GunGenerator.AmmoType.RAY: &"pistol",
 }
 
 ## Replicated (server -> everyone). See the synchronizer config in gun_rig.tscn.

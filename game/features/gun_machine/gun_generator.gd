@@ -6,7 +6,23 @@ extends RefCounted
 ## unit-testable the same way features/gnomes/gnome_math.gd keeps its math
 ## separate from the node that uses it.
 
-enum AmmoType { BUCKSHOT, RIFLE, LOW_CALIBER, ROCKET, GRENADE, PLASMA }
+enum AmmoType { BUCKSHOT, RIFLE, LOW_CALIBER, ROCKET, GRENADE, PLASMA, RAY }
+
+## The ammo types an ordinary roll picks from. `RAY` is left out: it only ever comes
+## as the Ray Gun, a fixed rare jackpot (`RAY_GUN_CHANCE`).
+const REGULAR_AMMO_TYPES: Array[AmmoType] = [
+	AmmoType.BUCKSHOT,
+	AmmoType.RIFLE,
+	AmmoType.LOW_CALIBER,
+	AmmoType.ROCKET,
+	AmmoType.GRENADE,
+	AmmoType.PLASMA,
+]
+
+## Odds a purchase rolls the Ray Gun instead of a random gun. Call of Duty Zombies'
+## mystery box gives it roughly a 1-in-30 chance on most maps, so this matches it.
+const RAY_GUN_CHANCE := 1.0 / 30.0
+const RAY_GUN_NAME := "Ray Gun"
 
 const AMMO_NAMES := {
 	AmmoType.BUCKSHOT: "Buckshot",
@@ -15,6 +31,7 @@ const AMMO_NAMES := {
 	AmmoType.ROCKET: "Rocket",
 	AmmoType.GRENADE: "Grenade",
 	AmmoType.PLASMA: "Plasma",
+	AmmoType.RAY: "Ray",
 }
 
 const BARREL_NAMES := {1: "", 2: "Double-Barrel ", 3: "Triple-Barrel ", 4: "Quad-Barrel "}
@@ -127,6 +144,24 @@ const AMMO_PROFILES := {
 		"spread_degrees": [0.0, 1.0],
 		"color": Color(0.3, 0.75, 0.95),
 	},
+	# Only the Ray Gun uses this, with fixed stats modeled on the Zombies original:
+	# 20-round magazine, 160 rounds total, semi-auto green bolts that splash.
+	AmmoType.RAY:
+	{
+		"pellets": 1,
+		"gravity_scale": 0.0,
+		"bounces": 0,
+		"fuse_s": 0.0,
+		"explosion_radius": 2.0,
+		"splash_force": 1.5,
+		"fire_rate": [3.0, 3.0],
+		"damage": [60.0, 60.0],
+		"magazine_size": [20, 20],
+		"ammo_multiplier": [8, 8],
+		"projectile_speed": [60.0, 60.0],
+		"spread_degrees": [0.5, 0.5],
+		"color": Color(0.3, 1.0, 0.25),
+	},
 }
 
 const MIN_BARRELS := 1
@@ -151,7 +186,9 @@ static func profile(ammo_type: AmmoType) -> Dictionary:
 ## keyed the same way for every ammo type so callers never branch on which fields
 ## exist. `rng` is injected so callers get deterministic, testable results.
 static func generate(rng: RandomNumberGenerator) -> Dictionary:
-	var ammo_type: AmmoType = rng.randi_range(0, AMMO_NAMES.size() - 1)
+	if rng.randf() < RAY_GUN_CHANCE:
+		return ray_gun()
+	var ammo_type: AmmoType = REGULAR_AMMO_TYPES[rng.randi_range(0, REGULAR_AMMO_TYPES.size() - 1)]
 	var stats: Dictionary = AMMO_PROFILES[ammo_type]
 	var magazine_size := rng.randi_range(stats["magazine_size"][0], stats["magazine_size"][1])
 	# A gun can never fire if it has more barrels than rounds in a full magazine, so
@@ -174,6 +211,28 @@ static func generate(rng: RandomNumberGenerator) -> Dictionary:
 		"spread_degrees": rng.randf_range(stats["spread_degrees"][0], stats["spread_degrees"][1]),
 		"display_name": display_name(ammo_type, barrel_count, is_automatic),
 	}
+
+
+## The Ray Gun's fixed stats, in the same shape `generate` returns.
+static func ray_gun() -> Dictionary:
+	var stats: Dictionary = AMMO_PROFILES[AmmoType.RAY]
+	var magazine_size: int = stats["magazine_size"][0]
+	return {
+		"ammo_type": AmmoType.RAY,
+		"barrel_count": 1,
+		"is_automatic": false,
+		"fire_rate": stats["fire_rate"][0],
+		"magazine_size": magazine_size,
+		"damage": stats["damage"][0],
+		"total_ammo": magazine_size * int(stats["ammo_multiplier"][0]),
+		"projectile_speed": stats["projectile_speed"][0],
+		"spread_degrees": stats["spread_degrees"][0],
+		"display_name": RAY_GUN_NAME,
+	}
+
+
+static func is_ray_gun(stats: Dictionary) -> bool:
+	return int(stats.get("ammo_type", -1)) == AmmoType.RAY
 
 
 static func display_name(
