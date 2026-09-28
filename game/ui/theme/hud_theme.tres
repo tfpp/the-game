@@ -41,8 +41,7 @@ texture_margin_bottom = 16.0
 [resource]
 HudKey/base_type = &"Label"
 HudKey/colors/font_color = Color(0.2, 0.24, 0.33, 1)
-HudKey/fonts/font = ExtResource("font_heading")
-HudKey/font_sizes/font_size = 12
+HudKey/font_sizes/font_size = 13
 HudPanelBottomLeft/base_type = &"PanelContainer"
 HudPanelBottomLeft/styles/panel = SubResource("glass_bottom_left")
 HudPanelLeft/base_type = &"PanelContainer"

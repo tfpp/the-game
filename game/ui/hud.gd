@@ -42,13 +42,9 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	$Corners/Keys.visible = not Controls.touch_visible()
 	var pad := Controls.device == Controls.Device.GAMEPAD
-	var left_handed := Controls.scheme == Controls.Scheme.LEFT_HANDED
-	$Corners/Keys/Grid/Key0.text = (
-		"Left stick" if pad else ("Arrow keys" if left_handed else "W A S D")
-	)
-	$Corners/Keys/Grid/Key1.text = (
-		"A / Cross" if pad else ("Shift / Wheel" if left_handed else "Space / Wheel")
-	)
+	# Read from the live bindings, so rebinding in Settings > Controls shows up here.
+	$Corners/Keys/Grid/Key0.text = InputLabels.movement_label(pad)
+	$Corners/Keys/Grid/Key1.text = InputLabels.action_label(&"jump", pad)
 	$Corners/Keys/Grid/Key2.text = "Right stick" if pad else "Mouse"
 	$Corners/Keys/Grid/Key3.text = "Start" if pad else "Esc"
 	_refresh_in -= delta
