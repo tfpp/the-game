@@ -1,0 +1,57 @@
+[gd_scene load_steps=4 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Kiswah"]
+albedo_color = Color(0.04, 0.04, 0.045, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Hizam"]
+albedo_color = Color(0.83, 0.68, 0.21, 1)
+metallic = 0.6
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Plinth"]
+albedo_color = Color(0.78, 0.76, 0.7, 1)
+roughness = 0.9
+
+[node name="Kaaba" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 0, -24)
+
+[node name="Plinth" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+size = Vector3(7, 0.2, 7)
+material = SubResource("Plinth")
+
+[node name="Structure" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Cube" type="CSGBox3D" parent="Structure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)
+size = Vector3(4.5, 4.5, 4.5)
+material = SubResource("Kiswah")
+
+[node name="HizamNorth" type="CSGBox3D" parent="Structure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -2.28)
+size = Vector3(4.6, 0.5, 0.06)
+material = SubResource("Hizam")
+
+[node name="HizamSouth" type="CSGBox3D" parent="Structure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 2.28)
+size = Vector3(4.6, 0.5, 0.06)
+material = SubResource("Hizam")
+
+[node name="HizamEast" type="CSGBox3D" parent="Structure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.28, 3.2, 0)
+size = Vector3(0.06, 0.5, 4.6)
+material = SubResource("Hizam")
+
+[node name="HizamWest" type="CSGBox3D" parent="Structure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.28, 3.2, 0)
+size = Vector3(0.06, 0.5, 4.6)
+material = SubResource("Hizam")
+
+[node name="Sign" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.2, 0)
+billboard = 1
+text = "KAABA"
+font_size = 40
+outline_size = 8
