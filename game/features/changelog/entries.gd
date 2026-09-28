@@ -9,6 +9,14 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Parking garage",
+		"summary":
+		(
+			"A dark three-story parking structure outside the casino — take the staff door"
+			+ " near the trampolines. Ramps and a stairwell connect all three levels."
+		)
+	},
+	{
 		"title": "Soccer ball physics",
 		"summary":
 		"The map's soccer ball rolls and bounces now — bump it with your body or shoot it."
