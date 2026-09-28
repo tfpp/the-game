@@ -42,12 +42,16 @@ instance, so it needs its own holding, firing and projectile system rather than
 - `projectile.gd` / `projectile.tscn`: a fired round in flight. Server-authoritative
   like `features/holdables/thrown_item.gd` — the server integrates position each
   physics tick (gravity scale from the ammo profile) and publishes `net_position`;
-  other peers only smooth toward it. A ray query each tick checks for a hit: a
-  direct hit on a `Player` deals damage through `features/combat` (the same
-  cross-feature `apply_damage` pattern `features/holdables/hand.gd` uses) and, for
-  rockets and grenades, splashes everyone else within `explosion_radius`
-  (`ProjectileMath.splash_damage`, falling off linearly to 0 at the edge). A world
-  hit either bounces (grenades, losing energy each time —
+  other peers only smooth toward it. A ray query each tick (mask `1 | 2`, the same
+  mask `features/holdables/hand.gd`'s hitscan uses so rounds also reach small
+  wildlife and gallery targets on layer 2) checks for a hit: a direct hit on a
+  `Player` deals damage through `features/combat` (the same cross-feature
+  `apply_damage` pattern `features/holdables/hand.gd` uses); a hit on anything else
+  in the `killable` group (frogs, the penguin, `features/shooting_gallery`'s
+  targets) calls its `take_hit` instead, since those have no player peer id for
+  `apply_damage` to key on. For rockets and grenades, a direct hit also splashes
+  everyone else within `explosion_radius` (`ProjectileMath.splash_damage`, falling
+  off linearly to 0 at the edge). A world hit either bounces (grenades, losing energy each time —
   `ProjectileMath.bounce`/`should_settle` — until they settle and explode) or ends
   the shot outright (everything else). Grenades also detonate on a fuse regardless
   of what they've hit. Every ammo type is a real projectile, not a hitscan.
