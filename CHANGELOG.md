@@ -76,6 +76,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Open blocked annex junctions, restore solid room floors and walls, and clear the west petting-parlor exit.
 - Add a desktop-only top-right radar with a roof-free floor plan, facing arrow and nearby player markers.
 
+- Give the casino generated carpet, wallpaper and walnut textures with PBR finishes, plus detailed stools, benches, planters and chandeliers.
+- Rebuild the slots with bevelled cabinets, animated printed reels, metal trim, buttons and coin trays while preserving payouts and multiplayer state.
+- Size the shooting-gallery entrance sign to fit its doorway instead of floating across the casino view.
+
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
 Versioning starts here, matching milestones v0.1 to v0.6. Highlights so far:
