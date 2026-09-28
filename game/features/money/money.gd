@@ -33,6 +33,7 @@ func _reset(_mode: Network.Mode) -> void:
 
 func _process(delta: float) -> void:
 	_poll_elapsed += delta
+	var poorest := poorest_peers(balances)
 	for player: Player in get_tree().get_nodes_in_group(&"players"):
 		var peer := player.get_multiplayer_authority()
 		if multiplayer.is_server() and _temporary() and _account(peer) <= 0:
@@ -65,6 +66,15 @@ func _process(delta: float) -> void:
 			label.offset.y = -26.0
 			player.add_child(label)
 		label.text = format_money(int(balances[peer])) if balances.has(peer) else "…"
+		var flies := player.get_node_or_null("PovertyFlies") as PovertyFlies
+		if poorest.has(peer):
+			if flies == null:
+				flies = PovertyFlies.new()
+				flies.name = "PovertyFlies"
+				flies.position.y = player.movement.hull_height_m() * 0.5 + 0.65
+				player.add_child(flies)
+		elif flies != null:
+			flies.queue_free()
 	if _poll_elapsed >= 5.0:
 		_poll_elapsed = 0.0
 		if multiplayer.is_server():
@@ -83,6 +93,25 @@ func _set_balance(peer: int, cents: int) -> void:
 
 static func format_money(cents: int) -> String:
 	return "$%.2f" % (float(cents) / 100.0)
+
+
+## Peers in the poorest 80% by wallet balance (rounded down), poorest first. A lone
+## wallet is never "poorer" than anyone, so it takes at least two known balances
+## before anyone is flagged. Ties break on peer ID so every client agrees.
+static func poorest_peers(all_balances: Dictionary) -> Dictionary:
+	var peers: Array[int] = []
+	for peer: int in all_balances.keys():
+		peers.append(peer)
+	peers.sort_custom(
+		func(a: int, b: int) -> bool:
+			var balance_a: int = all_balances[a]
+			var balance_b: int = all_balances[b]
+			return balance_a < balance_b if balance_a != balance_b else a < b
+	)
+	var result := {}
+	for i in (peers.size() * 4) / 5:
+		result[peers[i]] = true
+	return result
 
 
 func _account(peer: int) -> int:
