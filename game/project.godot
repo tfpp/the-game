@@ -52,6 +52,10 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 network/default_server_url="wss://game.chrisbox.dev"
 network/api_url="https://game.chrisbox.dev/api"
 
+[gui]
+
+theme/custom_font="res://assets/fonts/inter/Inter-Regular.ttf"
+
 [physics]
 
 common/physics_ticks_per_second=64
