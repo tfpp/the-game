@@ -441,6 +441,12 @@ func (s *Store) ActiveRunForJob(ctx context.Context, jobID int64) (Run, error) {
 		append([]any{jobID}, anys(PendingStatuses)...)...))
 }
 
+// LatestRunForJob returns the newest run of a job in any status, or ErrNotFound.
+func (s *Store) LatestRunForJob(ctx context.Context, jobID int64) (Run, error) {
+	return scanRun(s.db.QueryRowContext(ctx,
+		"SELECT "+runCols+" FROM runs WHERE job_id = ? ORDER BY id DESC LIMIT 1", jobID))
+}
+
 // ActiveRuns lists every active run, oldest first.
 func (s *Store) ActiveRuns(ctx context.Context) ([]Run, error) {
 	return s.runs(ctx, "status IN ("+placeholders(len(ActiveStatuses))+") ORDER BY id", anys(ActiveStatuses)...)

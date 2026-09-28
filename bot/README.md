@@ -26,12 +26,17 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    opens an issue whose body ends in `Requested-by: <name> <discord:<id>>` (the harness
    credits that person in the PR), answers publicly, opens a thread on the answer, and
    dispatches `agent.yml` (`mode=implement`, `request_id=bot-<run>`).
-2. **Progress** reaches the thread from the App's webhooks:
+2. **Progress** reaches the thread from the App's webhooks. Every bot message in a
+   feature thread is a colour-coded embed titled with what happened (🤖 agent, ✅/❌ CI,
+   🔍 preview, 👍 approval, ⚠️ conflict or queue drop, 🎉 merged, 🚀 live), linked to the
+   PR or run; pings go in the message text, since embeds can't ping.
    - `issue_comment`: the harness's 🤖 comments on the issue or PR ("Starting…",
-     "Opened <PR>", failures with a link to the logs). Opened and Pushed notifications
-     include the model(s), tokens used, and estimated API-equivalent cost for that run;
-     missing telemetry is marked unavailable. PR links display as **PR #123** rather
-     than a bare URL.
+     "Opened <PR>", failures with a link to the logs). They're posted as colour-coded
+     embeds (started, opened or pushed, no changes, failed), with the requester's ping in
+     the message itself. Opened and Pushed notifications show the model(s), reasoning
+     effort, tokens used (shortened, such as 1.4M or 42K) and estimated API-equivalent
+     cost for that run as embed fields; missing telemetry is marked unavailable. PR links
+     display as **PR #123** rather than a bare URL.
    - `workflow_run`: agent runs are matched by their run name
      (`agent #N mode [bot-<run>]`) to track status. The bot speaks up itself only if a
      run ends without any 🤖 comment: the gate refused it (for example, the App's login
@@ -46,6 +51,12 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    planned and marks the job closed; the requester asks again with a new `/feature`.
    A reconcile loop (every 2 minutes, only while runs are active) polls the agent runs and
    comments in case a webhook was missed, and expires runs that never started.
+   When an `implement` or `revise` run fails without a change (the harness's "🤖 … did
+   not produce a change" comment, a run cancelled or crashed before it commented, or a run
+   that never started), the thread message gets a **Retry** button. The requester or
+   anyone with the role can press it to start the same run again, with the same
+   instructions and harness, counting toward the presser's limit. Only the feature's
+   newest run can be retried, and only once it has finished and no other run is active.
 3. **`/revise <changes>`** inside a feature thread, once its PR exists, from the requester
    or anyone with the role, and only when no run is active for it. It dispatches
    `mode=revise` on the PR, with the text as the newest instructions

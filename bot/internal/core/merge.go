@@ -149,7 +149,8 @@ func (s *Service) Approve(ctx context.Context, req ApproveRequest, r Responder) 
 	if err := r.Respond(ctx, fmt.Sprintf("Approved `%s`. %s", short(head), pos)); err != nil {
 		s.log.Error("respond to approval", "err", err)
 	}
-	s.post(ctx, job, fmt.Sprintf("👍 <@%s> approved `%s` for merging. %s", req.UserID, short(head), pos))
+	s.card(ctx, job, Embed{Title: "👍 Approved for merging", URL: s.pullURL(job.PR), Color: colorSuccess,
+		Description: fmt.Sprintf("<@%s> approved `%s` of %s for merging. %s", req.UserID, short(head), s.prLabel(job.PR), pos)})
 	s.Kick()
 	return nil
 }
@@ -194,27 +195,31 @@ func (s *Service) approvable(ctx context.Context, job store.Job, sha string) (st
 // ciPassed announces a green CI run in the job's thread, with the Approve & merge button
 // when the PR could be approved from Discord.
 func (s *Service) ciPassed(ctx context.Context, job store.Job, sha string) {
-	msg := fmt.Sprintf("✅ CI passed on `%s`.", short(sha))
+	card := Embed{Title: "✅ CI passed", Color: colorSuccess, Description: fmt.Sprintf("CI passed on `%s`.", short(sha))}
+	if job.PR != 0 {
+		card.URL = s.pullURL(job.PR)
+	}
 	if job.PR == 0 || job.State != store.JobOpen || job.ThreadID == "" {
-		s.post(ctx, job, msg)
+		s.card(ctx, job, card)
 		return
 	}
 	if _, err := s.st.ActiveMergeForJob(ctx, job.ID); err == nil {
-		s.post(ctx, job, msg+" The merge queue carries on.")
+		card.Description += " The merge queue carries on."
+		s.card(ctx, job, card)
 		return
 	}
 	hits, err := s.protectedFiles(ctx, job.PR)
 	if err != nil {
 		s.log.Error("protected files", "err", err, "pr", job.PR)
 	} else if len(hits) > 0 {
-		s.post(ctx, job, fmt.Sprintf("%s PR #%d changes %s, so a maintainer has to review and merge it on GitHub.",
-			msg, job.PR, listPaths(hits)))
+		card.Color = colorWarning
+		card.Description += fmt.Sprintf(" %s changes %s, so a maintainer has to review and merge it on GitHub.",
+			s.prLabel(job.PR), listPaths(hits))
+		s.card(ctx, job, card)
 		return
 	}
-	if err := s.chat.PostButton(ctx, job.ThreadID, msg+" Anyone with the approver role can merge it.",
-		"Approve & merge", ApproveButtonID(job.PR, sha)); err != nil {
-		s.log.Error("post to thread", "err", err, "issue", job.Issue)
-	}
+	card.Description += " Anyone with the approver role can merge it."
+	s.postEmbed(ctx, job.ThreadID, job.Issue, card, &Button{Label: "Approve & merge", ID: ApproveButtonID(job.PR, sha)})
 }
 
 // ciState is the newest pull_request CI run for sha: success, failure, pending or none.
@@ -317,8 +322,8 @@ func (s *Service) pushed(ctx context.Context, job store.Job, head string) error 
 }
 
 func (s *Service) dropNewCommits(ctx context.Context, job store.Job, m store.Merge) error {
-	s.post(ctx, job, fmt.Sprintf("↩️ New commits were pushed to PR #%d after it was approved, so it left the "+
-		"merge queue. Approve it again once CI passes.", m.PR))
+	s.card(ctx, job, Embed{Title: "↩️ Left the merge queue", URL: s.pullURL(m.PR), Color: colorWarning, Description: fmt.Sprintf(
+		"New commits were pushed to %s after it was approved. Approve it again once CI passes.", s.prLabel(m.PR))})
 	return s.st.UpdateMerge(ctx, m.ID, store.MergeDropped, "", "new commits", s.cfg.Now())
 }
 
@@ -405,7 +410,7 @@ func (s *Service) advance(ctx context.Context, m store.Merge) (bool, error) {
 		if m.Status == store.MergeUpdating {
 			if now.Sub(m.UpdatedAt) > updateTimeout {
 				return true, s.drop(ctx, job, m, "update timed out", fmt.Sprintf(
-					"⚠️ GitHub didn't bring PR #%d up to date with %s, so it left the merge queue. Approve it again to retry.",
+					"GitHub didn't bring PR #%d up to date with %s, so it left the merge queue. Approve it again to retry.",
 					m.PR, pr.Base.Ref))
 			}
 			return false, nil
@@ -418,7 +423,7 @@ func (s *Service) advance(ctx context.Context, m store.Merge) (bool, error) {
 			return true, s.conflict(ctx, job, m, head)
 		case errors.As(err, &apiErr) && apiErr.Status/100 == 4:
 			return true, s.drop(ctx, job, m, "update failed: "+apiErr.Message, fmt.Sprintf(
-				"⚠️ I couldn't bring PR #%d up to date with %s (GitHub said: %s), so it left the merge queue. "+
+				"I couldn't bring PR #%d up to date with %s (GitHub said: %s), so it left the merge queue. "+
 					"A maintainer has to merge it on GitHub.", m.PR, pr.Base.Ref, apiErr.Message))
 		case err != nil:
 			return false, err
@@ -426,8 +431,8 @@ func (s *Service) advance(ctx context.Context, m store.Merge) (bool, error) {
 		if err := s.st.UpdateMerge(ctx, m.ID, store.MergeUpdating, head, "", now); err != nil {
 			return false, err
 		}
-		s.post(ctx, job, fmt.Sprintf("🔄 PR #%d is next in the merge queue. Bringing it up to date with %s, "+
-			"then waiting for CI.", m.PR, pr.Base.Ref))
+		s.card(ctx, job, Embed{Title: "🔄 Updating the branch", URL: s.pullURL(m.PR), Color: colorInfo, Description: fmt.Sprintf(
+			"%s is next in the merge queue. Bringing it up to date with `%s`, then waiting for CI.", s.prLabel(m.PR), pr.Base.Ref)})
 		return false, nil
 	}
 
@@ -443,17 +448,13 @@ func (s *Service) advance(ctx context.Context, m store.Merge) (bool, error) {
 			}
 		} else if now.Sub(m.UpdatedAt) > ciTimeout {
 			return true, s.drop(ctx, job, m, "CI timed out", fmt.Sprintf(
-				"⚠️ CI didn't finish on `%s`, so PR #%d left the merge queue. Approve it again to retry.", short(head), m.PR))
+				"CI didn't finish on `%s`, so PR #%d left the merge queue. Approve it again to retry.", short(head), m.PR))
 		}
 		return false, nil
 	case "failure":
-		msg := fmt.Sprintf("❌ <@%s> CI failed on `%s` after bringing PR #%d up to date, so it left the merge queue. "+
-			"Use `/revise` to fix it.", job.RequesterID, short(head), m.PR)
-		if job.ThreadID != "" {
-			if err := s.chat.Post(ctx, job.ThreadID, msg, job.RequesterID); err != nil {
-				s.log.Error("post to thread", "err", err, "issue", job.Issue)
-			}
-		}
+		s.card(ctx, job, Embed{Title: "❌ CI failed", URL: s.pullURL(m.PR), Color: colorFailure, Description: fmt.Sprintf(
+			"CI failed on `%s` after bringing %s up to date, so it left the merge queue. Use `/revise` to fix it.",
+			short(head), s.prLabel(m.PR))}, job.RequesterID)
 		return true, s.st.UpdateMerge(ctx, m.ID, store.MergeDropped, "", "CI failed", now)
 	}
 
@@ -466,7 +467,7 @@ func (s *Service) advance(ctx context.Context, m store.Merge) (bool, error) {
 		return false, nil // the head moved under us; the next step sees it
 	case errors.As(err, &apiErr) && apiErr.Status/100 == 4:
 		return true, s.drop(ctx, job, m, "merge failed: "+apiErr.Message, fmt.Sprintf(
-			"⚠️ GitHub refused to merge PR #%d (%s), so it left the merge queue.", m.PR, apiErr.Message))
+			"GitHub refused to merge PR #%d (%s), so it left the merge queue.", m.PR, apiErr.Message))
 	case err != nil:
 		return false, err
 	}
@@ -503,19 +504,15 @@ func (s *Service) merged(ctx context.Context, job store.Job, m store.Merge, sha 
 		if err := s.st.SetJobState(ctx, job.ID, store.JobMerged, now); err != nil {
 			return err
 		}
-		if job.ThreadID != "" {
-			msg := fmt.Sprintf("🎉 <@%s> PR #%d was merged (approved by %s). It goes live once the web client "+
-				"and server builds finish.", job.RequesterID, m.PR, m.ApproverName)
-			if err := s.chat.Post(ctx, job.ThreadID, msg, job.RequesterID); err != nil {
-				s.log.Error("post to thread", "err", err, "issue", job.Issue)
-			}
-		}
+		s.card(ctx, job, Embed{Title: "🎉 PR merged", URL: s.pullURL(m.PR), Color: colorSuccess, Description: fmt.Sprintf(
+			"%s was merged (approved by %s). It goes live once the web client and server builds finish.",
+			s.prLabel(m.PR), m.ApproverName)}, job.RequesterID)
 	}
 	return nil
 }
 
 func (s *Service) drop(ctx context.Context, job store.Job, m store.Merge, detail, msg string) error {
-	s.post(ctx, job, msg)
+	s.card(ctx, job, Embed{Title: "⚠️ Left the merge queue", URL: s.pullURL(m.PR), Color: colorWarning, Description: msg})
 	return s.st.UpdateMerge(ctx, m.ID, store.MergeDropped, "", detail, s.cfg.Now())
 }
 
@@ -526,8 +523,9 @@ func (s *Service) conflict(ctx context.Context, job store.Job, m store.Merge, he
 	if err := s.st.UpdateMerge(ctx, m.ID, store.MergeDropped, "", "conflicts", s.cfg.Now()); err != nil {
 		return err
 	}
-	s.post(ctx, job, fmt.Sprintf("⚠️ PR #%d conflicts with %s, so it left the merge queue. I'll ask the agent to "+
-		"resolve the conflicts; approve it again once CI passes.", m.PR, s.cfg.Ref))
+	s.card(ctx, job, Embed{Title: "⚠️ Merge conflict", URL: s.pullURL(m.PR), Color: colorWarning, Description: fmt.Sprintf(
+		"%s conflicts with `%s`, so it left the merge queue. I'll ask the agent to resolve the conflicts; "+
+			"approve it again once CI passes.", s.prLabel(m.PR), s.cfg.Ref)})
 	return s.markConflict(ctx, job, head)
 }
 
@@ -562,14 +560,15 @@ func (s *Service) resolve(ctx context.Context, job store.Job) error {
 		return err
 	}
 	if run.Status == store.RunWaiting {
-		s.post(ctx, job, fmt.Sprintf("🔧 The agent is busy; it will resolve PR #%d's conflicts when a slot frees up (%s).",
-			job.PR, s.linePosition(ctx, run.ID)))
+		s.card(ctx, job, Embed{Title: "🔧 Conflicts waiting for the agent", URL: s.pullURL(job.PR), Color: colorInfo,
+			Description: fmt.Sprintf("The agent is busy; it will resolve %s's conflicts when a slot frees up (%s).",
+				s.prLabel(job.PR), s.linePosition(ctx, run.ID))})
 		return nil
 	}
 	if err := s.dispatch(ctx, run, job.PR, ""); err != nil {
 		return s.st.SetResolve(ctx, job.ID, "", s.cfg.Now()) // retry later
 	}
-	s.post(ctx, job, fmt.Sprintf("🔧 The agent is merging %s into PR #%d and resolving the conflicts.", s.cfg.Ref, job.PR))
+	s.resolvingCard(ctx, job)
 	return nil
 }
 
@@ -638,13 +637,9 @@ func (s *Service) checkConflicts(ctx context.Context) error {
 			if _, err := s.st.ActiveMergeForJob(ctx, job.ID); err == nil {
 				continue // the coordinator deals with it when its turn comes
 			}
-			if job.ThreadID != "" {
-				msg := fmt.Sprintf("⚠️ <@%s> PR #%d conflicts with %s now. I'll ask the agent to resolve the conflicts.",
-					job.RequesterID, job.PR, s.cfg.Ref)
-				if err := s.chat.Post(ctx, job.ThreadID, msg, job.RequesterID); err != nil {
-					s.log.Error("post to thread", "err", err, "issue", job.Issue)
-				}
-			}
+			s.card(ctx, job, Embed{Title: "⚠️ Merge conflict", URL: s.pullURL(job.PR), Color: colorWarning, Description: fmt.Sprintf(
+				"%s conflicts with `%s` now. I'll ask the agent to resolve the conflicts.", s.prLabel(job.PR), s.cfg.Ref)},
+				job.RequesterID)
 			if err := s.markConflict(ctx, job, pr.Head.SHA); err != nil {
 				return err
 			}
@@ -748,7 +743,8 @@ func (s *Service) announceDeploys(ctx context.Context) error {
 				continue // not in this deploy
 			}
 			if job, err := s.st.JobByID(ctx, m.JobID); err == nil {
-				s.post(ctx, job, fmt.Sprintf("🚀 PR #%d is live. Reload the game to try it.", m.PR))
+				s.card(ctx, job, Embed{Title: "🚀 Live", URL: s.pullURL(m.PR), Color: colorSuccess,
+					Description: fmt.Sprintf("%s is live. Reload the game to try it.", s.prLabel(m.PR))})
 			}
 		}
 		if err := s.st.SetAnnounced(ctx, m.ID); err != nil {

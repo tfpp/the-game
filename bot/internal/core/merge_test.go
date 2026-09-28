@@ -193,7 +193,7 @@ func TestApproveAndMerge(t *testing.T) {
 	if job.State != store.JobMerged {
 		t.Errorf("job %+v", job)
 	}
-	if p := e.chat.last(); !strings.Contains(p.content, "🎉 <@42> PR #12 was merged (approved by Carol)") || p.ping != "42" {
+	if p := e.chat.last(); p.embed == nil || p.embed.Title != "🎉 PR merged" || !strings.Contains(p.content, "PR #12 was merged (approved by Carol)") || p.ping != "42" {
 		t.Errorf("merged post %+v", p)
 	}
 	if m := e.mergeStatus(t, 1); m.Status != store.MergeMerged || m.MergedSHA != "merged-aaa" {
@@ -365,7 +365,7 @@ func TestConflictStartsAResolveRun(t *testing.T) {
 	if err != nil || run.UserID != autoUser {
 		t.Errorf("run %+v %v", run, err)
 	}
-	if e.postsContaining("conflicts with main, so it left the merge queue") != 1 || e.postsContaining("resolving the conflicts") != 1 {
+	if e.postsContaining("conflicts with `main`, so it left the merge queue") != 1 || e.postsContaining("resolving the conflicts") != 1 {
 		t.Errorf("posts %+v", e.chat.posts)
 	}
 	// Same head again: no second run.
@@ -388,7 +388,7 @@ func TestConflictWaitsForAFreeAgentSlot(t *testing.T) {
 	must(t, e.svc.scheduleConflictCheck(ctx))
 	n := len(e.gh.dispatches)
 	must(t, e.svc.MergeStep(ctx))
-	if len(e.gh.dispatches) != n || e.postsContaining("PR #12 conflicts with main now") != 1 {
+	if len(e.gh.dispatches) != n || e.postsContaining("PR #12 conflicts with `main` now") != 1 {
 		t.Fatalf("dispatches %v posts %+v", e.gh.dispatches[n:], e.chat.posts)
 	}
 	runs, _ := e.st.ActiveRuns(ctx)
@@ -416,11 +416,11 @@ func TestMergeChecksOtherPRsForConflicts(t *testing.T) {
 	no := false
 	e.gh.prs[14].Mergeable = &no
 	must(t, e.svc.MergeStep(ctx))
-	if e.postsContaining("<@43> PR #14 conflicts with main now") != 1 {
+	if e.postsContaining("<@43>\n⚠️ Merge conflict\nPR #14 conflicts with `main` now") != 1 {
 		t.Errorf("posts %+v", e.chat.posts)
 	}
 	must(t, e.svc.MergeStep(ctx)) // the check is done; nothing more
-	if e.postsContaining("PR #14 conflicts with main now") != 1 {
+	if e.postsContaining("PR #14 conflicts with `main` now") != 1 {
 		t.Errorf("posts %+v", e.chat.posts)
 	}
 }
@@ -483,7 +483,7 @@ func TestDeployAfterBothBuilds(t *testing.T) {
 	e.gh.compare["merged-aaa...s3"] = "ahead"
 	must(t, e.svc.MergeStep(ctx))
 	must(t, e.svc.MergeStep(ctx))
-	if e.postsContaining("🚀 PR #12 is live") != 1 {
+	if e.postsContaining("🚀 Live\nPR #12 is live") != 1 {
 		t.Errorf("posts %+v", e.chat.posts)
 	}
 }

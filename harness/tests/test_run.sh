@@ -9,6 +9,8 @@ trap 'rm -rf "$work"' EXIT
 export GIT_AUTHOR_NAME=test GIT_AUTHOR_EMAIL=test@example.com
 export GIT_COMMITTER_NAME=test GIT_COMMITTER_EMAIL=test@example.com
 export GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1
+# Test defaults independently of the reasoning effort configured for the outer agent.
+unset HARNESS_REASONING_EFFORT
 failures=0 n=0
 
 fail() {
@@ -123,6 +125,11 @@ agent <<<'echo x >game/x.txt'
 HARNESS_MODEL=configured-model run --mode implement --branch agent/22-x
 expect_eq "$(jq -c .usage "$out/result.json")" null "no usage"
 expect_eq "$(jq -c .models "$out/result.json")" '["configured-model"]' "configured model without usage"
+expect_eq "$(jq -c .reasoning_effort "$out/result.json")" null "no effort for an adapter that takes none"
+new_repo
+agent <<<'echo x >game/x.txt'
+HARNESS_REASONING_EFFORT=high run --mode implement --branch agent/23-x
+expect_eq "$(jq -c .reasoning_effort "$out/result.json")" '"high"' "configured reasoning effort"
 
 case_ "implement: gives up after --attempts"
 new_repo

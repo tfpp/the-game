@@ -53,6 +53,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Make the penguin-facing regression test independent of frame timing by checking its forward offset at fixed waddle phases.
 - Show Claude and Codex subscription limits together in Discord `/usage`, with independent error handling and a read-only Codex login file.
 - Add a free shared craps table opposite roulette: roll two dice, establish a point and try to hit it before seven.
+- Add a Retry button to Discord messages about failed, cancelled or never-started `implement` and `revise` runs, so the requester can start the run again.
+- Name cancelled, failed and skipped agent jobs in the "did not produce a change" comment, without listing unavailable model, token and cost fields.
+- Post every bot message in Discord feature threads as a colour-coded embed (agent progress, CI, previews, approvals, merge queue, conflicts, merges and deploys), with model, shortened token count (such as 1.4M) and estimated cost as fields on agent notifications.
+- Show the agent's reasoning effort next to its model in PR descriptions, 🤖 comments and Discord notifications.
 
 - Add a Monkey Island demo arcade with a brass-trimmed cabinet and synchronized local emulation for every player.
 - Autosave shared arcade progress, restore it after server restarts, and pause the demo when everyone disconnects.

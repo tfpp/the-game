@@ -14,6 +14,7 @@ Brief explanation of the PR and why it's needed.
 | Metric | Value |
 | --- | --- |
 | Model(s) used | |
+| Reasoning effort | |
 | Tokens used (input + output + cache reads/writes) | |
 | Estimated cost (USD, API-equivalent) | |
 

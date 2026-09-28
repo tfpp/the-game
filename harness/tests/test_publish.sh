@@ -81,7 +81,7 @@ scenario() {
 publish() {
   code=0
   OUT="$out" MODE="${PUBLISH_MODE:-implement}" AGENT=fake ISSUE=5 PR="${PUBLISH_PR:-}" BRANCH=agent/5-jump-pads TARGET=5 \
-    AGENT_JOB_RESULT=success HARNESS_PUSH_URL="$origin" "$pub/harness/publish.sh" >"$work/publish.log" 2>&1 || code=$?
+    AGENT_JOB_RESULT="${PUBLISH_JOB_RESULT:-success}" HARNESS_PUSH_URL="$origin" "$pub/harness/publish.sh" >"$work/publish.log" 2>&1 || code=$?
 }
 
 echo "- success: pushes the branch and opens a PR with the request quoted"
@@ -90,7 +90,7 @@ echo '{"input_tokens":1200,"output_tokens":34000,"cache_read_tokens":1200000,"ca
 mkdir -p game/core/net && echo x >game/core/net/n.gd && echo pad >game/pad.txt
 printf 'feat(game): add jump pads\n\n## Summary\nBoing.\n\n## Changes\n- **Pads**: new\n' >"$HARNESS_OUT/summary.md"
 EOF
-jq '.models = ["openai/gpt-5.4", "claude-sonnet-4-6"]' "$out/result.json" >"$out/result.tmp"
+jq '.models = ["openai/gpt-5.4", "claude-sonnet-4-6"] | .reasoning_effort = "high"' "$out/result.json" >"$out/result.tmp"
 mv "$out/result.tmp" "$out/result.json"
 publish
 [[ "$code" == 0 ]] || fail "exit $code: $(cat "$work/publish.log")"
@@ -100,12 +100,12 @@ publish
 body="$(cat "$work/pr-body" 2>/dev/null)"
 for want in "## Summary" "Boing." "Closes #5" "## Discord Request" "> **Jump pads**" "> pads" \
   "requested by @alice" "game/core/net/n.gd" "verify passed after 1 attempt(s)" \
-  "## Agent Usage (this run)" "Model(s): claude-sonnet-4-6, openai/gpt-5.4" \
+  "## Agent Usage (this run)" "Model(s): claude-sonnet-4-6, openai/gpt-5.4" "Reasoning effort: high" \
   "Tokens used: 1235200" "Estimated cost (USD API-equivalent): \$3.46" "not subscription billing" \
   "Verified with base commit" "$(jq -r .base_sha "$out/result.json")"; do
   [[ "$body" == *"$want"* ]] || fail "PR body lacks '$want'"
 done
-grep -qFx "🤖 Opened https://github.com/o/r/pull/99 · Model(s): claude-sonnet-4-6, openai/gpt-5.4 · Tokens used: 1235200 · Estimated cost (USD API-equivalent): \$3.46" "$work/comments" ||
+grep -qFx "🤖 Opened https://github.com/o/r/pull/99 · Model(s): claude-sonnet-4-6, openai/gpt-5.4 · Reasoning: high · Tokens used: 1235200 · Estimated cost (USD API-equivalent): \$3.46" "$work/comments" ||
   fail "no PR link comment with usage on the issue: $(cat "$work/comments")"
 grep -q unlabeled "$work/labels" || fail "label not removed"
 
@@ -113,29 +113,30 @@ echo "- revise first line includes PR URL and this run metadata"
 rm -f "$work/comments"
 PUBLISH_MODE=revise PUBLISH_PR=99 publish
 [[ "$code" == 0 ]] || fail "revise exit $code: $(cat "$work/publish.log")"
-expected="🤖 Pushed $(jq -r .head_sha "$out/result.json") https://github.com/o/r/pull/99 · Model(s): claude-sonnet-4-6, openai/gpt-5.4 · Tokens used: 1235200 · Estimated cost (USD API-equivalent): \$3.46"
+expected="🤖 Pushed $(jq -r .head_sha "$out/result.json") https://github.com/o/r/pull/99 · Model(s): claude-sonnet-4-6, openai/gpt-5.4 · Reasoning: high · Tokens used: 1235200 · Estimated cost (USD API-equivalent): \$3.46"
 [[ "$(head -n 1 "$work/comments")" == "$expected" ]] || fail "revise first line metadata"
 
 echo "- missing, invalid, and zero-attempt telemetry are explicit"
 for mutation in \
-  'del(.models, .usage, .attempts)' \
-  '.attempts=1 | .models=["bad\nmodel", "trailing\n", "[injected](url)", 7, ("x" * 121)] | .usage={input_tokens:-1,output_tokens:1e16,cache_read_tokens:0,cache_write_tokens:0,cost_usd:-1}' \
-  '.attempts=1 | .models="not-an-array" | .usage={cost_usd:"$9"}' \
-  '.attempts=1 | .models=[] | .usage={cost_usd:1e6}' \
+  'del(.models, .usage, .attempts, .reasoning_effort)' \
+  '.attempts=1 | .models=["bad\nmodel", "trailing\n", "[injected](url)", 7, ("x" * 121)] | .usage={input_tokens:-1,output_tokens:1e16,cache_read_tokens:0,cache_write_tokens:0,cost_usd:-1} | .reasoning_effort="[x](y)"' \
+  '.attempts=1 | .models="not-an-array" | .usage={cost_usd:"$9"} | .reasoning_effort=7' \
+  '.attempts=1 | .models=[] | .usage={cost_usd:1e6} | .reasoning_effort="HIGH"' \
   '.attempts=0 | del(.models, .usage)'; do
   jq "$mutation | .cost_basis=[\"INJECTED_MARKDOWN\"]" "$out/result.json" >"$out/result.tmp"
   mv "$out/result.tmp" "$out/result.json"
   rm -f "$work/comments"
   publish
   [[ "$code" == 0 ]] || fail "telemetry case exit $code"
-  expected='Model(s): unavailable · Tokens used: unavailable · Estimated cost (USD API-equivalent): unavailable'
+  expected='Model(s): unavailable · Reasoning: unavailable · Tokens used: unavailable · Estimated cost (USD API-equivalent): unavailable'
   if [[ "$mutation" == '.attempts=0'* ]]; then
-    expected='Model(s): none (no agent run) · Tokens used: 0 · Estimated cost (USD API-equivalent): $0.00'
+    expected='Model(s): none (no agent run) · Reasoning: none · Tokens used: 0 · Estimated cost (USD API-equivalent): $0.00'
   fi
   [[ "$(head -n 1 "$work/comments")" == "🤖 Opened https://github.com/o/r/pull/99 · $expected" ]] || fail "telemetry first line: $(head -n 1 "$work/comments")"
   grep -qF '## Agent Usage (this run)' "$work/pr-body" || fail "missing usage section"
   grep -qF 'INJECTED_MARKDOWN' "$work/pr-body" && fail "untrusted cost basis rendered"
   grep -qF '[injected]' "$work/pr-body" && fail "untrusted model rendered"
+  grep -qF '[x](y)' "$work/pr-body" && fail "untrusted reasoning effort rendered"
 done
 
 echo "- model output is bounded to eight safe IDs"
@@ -209,6 +210,13 @@ scenario <<<'true'
 out="$work/nothing" publish
 [[ "$code" == 1 ]] || fail "expected exit 1, got $code"
 grep -q "without a result" "$work/comments" || fail "no crash comment"
+
+echo "- a cancelled agent job is named and lists no unavailable usage"
+rm -f "$work/comments"
+out="$work/nothing" PUBLISH_JOB_RESULT=cancelled publish
+[[ "$code" == 1 ]] || fail "expected exit 1, got $code"
+[[ "$(head -n 1 "$work/comments")" == '🤖 `fake` (`implement`) did not produce a change: the agent job was cancelled before it finished (stopped by hand or it hit its time limit) ([run](https://run))' ]] ||
+  fail "cancelled comment: $(head -n 1 "$work/comments")"
 
 if [[ "$failures" -gt 0 ]]; then
   echo "publish tests: $failures failure(s)"
