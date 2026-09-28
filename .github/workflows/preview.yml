@@ -9,6 +9,11 @@ name: preview
 #   cleanup  deletes the PR's deployments when it is merged or closed
 # Secrets live in the `preview` environment: CLOUDFLARE_API_TOKEN (Pages: Edit) and
 # CLOUDFLARE_ACCOUNT_ID.
+# The run name ("preview #12 deploy") lets the Discord bot post the link to the PR's
+# thread once a deploy succeeds.
+run-name: >-
+  preview #${{ github.event.pull_request.number }}
+  ${{ github.event.action == 'closed' && 'cleanup' || 'deploy' }}
 
 on:
   pull_request:
