@@ -11,6 +11,11 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Gun-O-Matic workshop",
+		"summary":
+		"The Gun-O-Matic builds each gun; guns get stocks, grips, sights, rails, triggers."
+	},
+	{
 		"title": "Scavenging",
 		"summary":
 		"Search wrecked cars in the parking garage with Use for wallets, watches, cash and more."

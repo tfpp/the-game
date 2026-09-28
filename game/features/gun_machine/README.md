@@ -50,7 +50,14 @@ ever in hand. See `gun_rig.gd`'s `holster`/`net_equipped` and
   at its own fire rate for as long as the button stays held.
 - `gun_view.gd`: builds a gun's mesh straight from its rolled stats (barrel count,
   thickness from damage, length from projectile speed, color from ammo type) — there's
-  no fixed asset, since every gun is a one-off.
+  no fixed asset, since every gun is a one-off. Around the stat-driven barrels every
+  gun gets a receiver, stock, pistol grip, trigger and guard, magazine (deeper for
+  bigger magazines), handguard, top and under rails and front/rear sights, each a
+  named part (`GunView.PART_NAMES`) so they can be revealed one at a time.
+- `gun_machine_cabinet.gd`: the kiosk's look — a vending machine with a glass build
+  chamber, gantry mill, robot arm and pickup tray. After a successful sale the kiosk
+  calls `play_assembly` (server → all, cosmetic only) and every peer's cabinet reveals
+  the sold gun part by part, then returns to its demo gun.
 - `projectile.gd` / `projectile.tscn`: a fired round in flight. Server-authoritative
   like `features/holdables/thrown_item.gd` — the server integrates position each
   physics tick (gravity scale from the ammo profile) and publishes `net_position`;

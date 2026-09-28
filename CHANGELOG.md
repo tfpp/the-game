@@ -83,6 +83,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Give the casino generated carpet, wallpaper and walnut textures with PBR finishes, plus detailed stools, benches, planters and chandeliers.
 - Rebuild the slots with bevelled cabinets, animated printed reels, metal trim, buttons and coin trays while preserving payouts and multiplayer state.
 - Size the shooting-gallery entrance sign to fit its doorway instead of floating across the casino view.
+- Rebuild the Gun-O-Matic as a detailed vending machine: a lit glass chamber where a
+  gantry mill and robot arm assemble each gun you buy, part by part, above a pickup
+  tray. Generated guns now have a receiver, stock, pistol grip, trigger and guard,
+  magazine, handguard, top and under rails, and front and rear sights.
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 

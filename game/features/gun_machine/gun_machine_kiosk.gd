@@ -48,8 +48,22 @@ func request_purchase() -> void:
 	_pending = true
 	var machine := get_tree().get_first_node_in_group(&"gun_machine_root")
 	if machine != null:
-		await machine.call("purchase", peer_id)
+		var error: String = await machine.call("purchase", peer_id)
+		var rig := GunRig.for_peer(get_tree(), peer_id)
+		if error == "" and rig != null:
+			play_assembly.rpc(rig.net_stats)
 	_pending = false
+
+
+## Server -> everyone: animate the machine building the gun that was just sold.
+## Cosmetic only; the gun itself is already equipped server-side.
+@rpc("authority", "call_local", "reliable")
+func play_assembly(stats: Dictionary) -> void:
+	if stats.is_empty():
+		return
+	var cabinet := get_node_or_null(^"Cabinet") as GunMachineCabinet
+	if cabinet != null:
+		cabinet.assemble(stats)
 
 
 func _price_cents() -> int:
