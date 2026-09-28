@@ -1,29 +1,43 @@
 # Leaderboard
 
-"Leaderboard" in the Esc menu: three tabs ranking every connected player by money,
-jumps and kills, highest first.
+Open **Leaderboard** in the Esc menu for Money, Jumps and Kills rankings. Everyone
+seen by this server remains listed after leaving, marked **(offline)**. Money is
+the last observed wallet balance; jumps and kills accumulate across connections
+for signed-in accounts. New players appear even with zero scores. Equal scores
+keep the server's roster insertion order, consistently on every client.
 
-## How it works
+## Ownership and networking
 
-- `leaderboard_panel.gd` is read-only UI. It reads `features/money`'s
-  `PlayerMoney.balances` for the Money tab and `features/combat`'s `Combat.kills`
-  for the Kills tab — both already server-authoritative and replicated — by looking
-  those features up by group (`player_money`, `combat`), the same cross-feature
-  pattern `features/slot_machine` uses to reach the wallet.
-- Jump counts belong to neither of those, so `leaderboard.gd` adds the one dictionary
-  this feature needs: a peer-keyed `jumps` count, replicated like `PlayerMoney.
-  balances`. `core/player/player.gd`'s `jumped` signal only ever fires for the local
-  peer's own `Player` (puppets skip physics), so each client reports its own jumps
-  with the server-validated `request_record_jump` RPC, the same any_peer pattern
-  `features/player_models` uses for body type requests.
-- Every list is built fresh each frame the panel is open, from every `Player` node
-  currently in the `players` group — nobody who has left the world shows up, and
-  everybody currently in it does, even with a score of zero.
-- Ties break on peer id, so every client's ranking agrees.
+`leaderboard.gd` owns history and jump counting. It reads `PlayerMoney.balances`
+and `Combat.kills_for()` without changing wallets, combat scores or their callers.
+It accumulates connection counter differences once, retaining final values on
+disconnect. Jump requests still use the actual RPC sender and now require an
+existing player. `jumps_for(peer)` remains the current connection's count.
 
-## Adding a new tab
+The server associates players with immutable IDs from `Network.peer_accounts`,
+so reconnecting with a new peer ID or renaming updates the same historical row.
+Authenticated names come from Network, not client-provided row data. Account IDs
+stay private: only display names, scores and the current peer (zero when offline)
+are replicated through the existing authority-1 synchronizer, including at spawn
+for late joiners. The panel reads these snapshots and never writes scores.
+Offline and dev-auth players are remembered for that session only, without merging
+people by display name or sharing temporary scores with real accounts.
 
-Add a tab to `LeaderboardPanel.TABS`, a case to `_values()` reading whichever
-feature owns that stat, and a case to `value_text()` if it needs custom formatting
-(like Money's dollar amounts). Don't add a new dictionary here for a stat another
-feature already tracks — read it from that feature instead, like Money and Kills do.
+## Persistence
+
+Authenticated history is saved to `user://leaderboard.json`, with a temporary file
+and atomic replacement, every five seconds when changed, on disconnect and on
+feature shutdown. Pass `-- --leaderboard-save-path=/persistent-volume/leaderboard.json`
+to override the location. The parent directory must exist and **container operators
+must mount persistent storage** to retain history across container replacements.
+A crash can lose up to five seconds of recent updates. Invalid saved rows are skipped.
+Clients do not read or write this file; changing network sessions clears their roster.
+
+History starts when this feature is deployed; the old live roster provides no
+records to backfill players who never return. Money remains owned by the accounts
+API; the historical snapshot is refreshed when a player returns and their wallet
+loads, and is not an offline query of the accounts database.
+
+Tests in `tests/features/leaderboard/` cover the existing menu, ranking and jump
+behavior plus disconnect snapshots, account reconnects/renames, reused peer IDs,
+save/load, malformed rows, guest isolation, session clearing and late-join sync config.

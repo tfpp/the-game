@@ -26,6 +26,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   clients never call TheNewsAPI and restarts reuse recent headlines.
 - Make phones and tablets run faster: render fewer 3D pixels, keep two nearby lights, hide
   small props past 40 metres and cap physics catch-up on slow frames.
+- Keep offline players on the leaderboard and remember signed-in scores across reconnects
+  and server restarts.
 - Roll the Ray Gun from Call of Duty Zombies at the Gun-O-Matic, with the same rare 1-in-30
   odds as the mystery box: green splashing bolts, 20-round magazine and 160 rounds total.
 

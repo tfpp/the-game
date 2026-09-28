@@ -1,10 +1,6 @@
 class_name LeaderboardPanel
 extends CanvasLayer
-## The "Leaderboard" entry in the Esc menu: tabs for money, jumps and kills, each
-## ranking every currently connected player highest-first. Reads
-## `features/money`'s `PlayerMoney.balances`, this feature's own `Leaderboard.jumps`
-## (see leaderboard.gd) and `features/combat`'s `Combat.kills` — nothing here owns
-## any of that state, it only displays it.
+## Read-only leaderboard UI for server-replicated historical display snapshots.
 
 enum Tab { MONEY, JUMPS, KILLS }
 
@@ -100,60 +96,35 @@ func _close() -> void:
 func _refresh() -> void:
 	for tab_id: int in _tab_buttons:
 		(_tab_buttons[tab_id] as Button).button_pressed = tab_id == _tab
-	var peer_ids := _peer_ids()
-	var values := _values(_tab, peer_ids)
-	var order := ranked_peer_ids(peer_ids, values)
+	var board := get_tree().get_first_node_in_group(&"leaderboard") as Leaderboard
+	if board == null:
+		return
+	board.capture_players()
+	var rows := board.entries
+	var indices: Array[int] = []
+	var values := {}
+	var stat: String = ["money", "jumps", "kills"][_tab]
+	for index: int in rows.size():
+		indices.append(index)
+		values[index] = rows[index][stat]
+	var order := ranked_peer_ids(indices, values)
 	for child: Node in _rows.get_children():
-		child.queue_free()
+		child.free()
 	if order.is_empty():
 		var empty := Label.new()
-		empty.text = "Nobody's here yet."
+		empty.text = "Nobody has played yet."
 		_rows.add_child(empty)
 		return
 	var local_peer := multiplayer.get_unique_id()
 	for rank: int in order.size():
-		var peer_id: int = order[rank]
+		var row: Dictionary = rows[order[rank]]
+		var peer := int(row["peer"])
 		_add_row(
 			rank + 1,
-			player_label(_name_for(peer_id), peer_id),
-			value_text(_tab, int(values.get(peer_id, 0))),
-			peer_id == local_peer
+			str(row["name"]) + (" (offline)" if peer == 0 else ""),
+			value_text(_tab, int(row[stat])),
+			peer == local_peer
 		)
-
-
-func _peer_ids() -> Array[int]:
-	var peer_ids: Array[int] = []
-	for node: Node in get_tree().get_nodes_in_group(&"players"):
-		var player := node as Player
-		if player != null:
-			peer_ids.append(player.get_multiplayer_authority())
-	return peer_ids
-
-
-func _values(tab: int, peer_ids: Array[int]) -> Dictionary:
-	var values := {}
-	match tab:
-		Tab.MONEY:
-			var money := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
-			for peer_id: int in peer_ids:
-				values[peer_id] = int(money.balances.get(peer_id, 0)) if money != null else 0
-		Tab.JUMPS:
-			var board := get_tree().get_first_node_in_group(&"leaderboard") as Leaderboard
-			for peer_id: int in peer_ids:
-				values[peer_id] = board.jumps_for(peer_id) if board != null else 0
-		Tab.KILLS:
-			var combat := get_tree().get_first_node_in_group(&"combat") as Combat
-			for peer_id: int in peer_ids:
-				values[peer_id] = combat.kills_for(peer_id) if combat != null else 0
-	return values
-
-
-func _name_for(peer_id: int) -> String:
-	for node: Node in get_tree().get_nodes_in_group(&"players"):
-		var player := node as Player
-		if player != null and player.get_multiplayer_authority() == peer_id:
-			return player.display_name
-	return ""
 
 
 func _add_row(rank: int, player_name: String, value: String, is_local: bool) -> void:
