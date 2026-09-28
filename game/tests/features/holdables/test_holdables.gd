@@ -24,6 +24,25 @@ class _ThrowStub:
 		spawned_from = from
 
 
+## A stand-in for a non-player hitscan target (e.g. features/penguin's Penguin): a
+## physics body in the `killable` group, so `_fire` routes hits to `take_hit` instead
+## of features/combat's `apply_damage`.
+class _KillableStub:
+	extends StaticBody3D
+	var hits: Array = []
+
+	func _init() -> void:
+		add_to_group(&"killable")
+		var collider := CollisionShape3D.new()
+		var shape := BoxShape3D.new()
+		shape.size = Vector3(1.0, 2.0, 1.0)
+		collider.shape = shape
+		add_child(collider)
+
+	func take_hit(attacker_peer: int) -> void:
+		hits.append(attacker_peer)
+
+
 func before_each() -> void:
 	_player = PlayerScene.instantiate() as Player
 	_player.name = "1"
@@ -168,3 +187,14 @@ func test_firing_a_weapon_with_nobody_in_the_line_of_fire_does_not_error() -> vo
 	_hand.net_item_id = "pistol"
 	_hand.request_primary_action()
 	assert_eq(combat.health_for(1), Combat.MAX_HEALTH)
+
+
+func test_firing_a_weapon_kills_a_killable_target_in_the_line_of_fire() -> void:
+	var target := _KillableStub.new()
+	target.position = Vector3(0, 0, -10)
+	add_child_autofree(target)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	_hand.net_item_id = "pistol"
+	_hand.request_primary_action()
+	assert_eq(target.hits, [1])

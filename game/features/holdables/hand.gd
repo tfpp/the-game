@@ -134,9 +134,9 @@ func _fire(def: ItemDefinition) -> void:
 	if def.damage <= 0.0:
 		return
 	var player := _player()
-	var combat := get_tree().get_first_node_in_group(&"combat")
-	if player == null or combat == null:
+	if player == null:
 		return
+	var combat := get_tree().get_first_node_in_group(&"combat")
 	var origin := _mount_transform(player).origin
 	for _pellet: int in maxi(def.pellet_count, 1):
 		var jitter := deg_to_rad(def.spread_degrees)
@@ -145,16 +145,26 @@ func _fire(def: ItemDefinition) -> void:
 			player.net_pitch + randf_range(-jitter, jitter), deg_to_rad(-89.0), deg_to_rad(89.0)
 		)
 		var target := _hitscan(player, origin, ThrowMath.aim_direction(yaw, pitch))
-		if target != null:
-			combat.call("apply_damage", target.get_multiplayer_authority(), def.damage, peer_id)
+		if target == null:
+			continue
+		var target_player := target as Player
+		if target_player != null and combat != null:
+			combat.call(
+				"apply_damage", target_player.get_multiplayer_authority(), def.damage, peer_id
+			)
+		elif target_player == null and target.is_in_group(&"killable"):
+			target.call("take_hit", peer_id)
 
 
-func _hitscan(shooter: Player, origin: Vector3, direction: Vector3) -> Player:
+## Returns whatever physics body the shot hit — a `Player` for combat damage, or
+## anything else (e.g. features/penguin's `killable` group) for features that handle
+## being shot on their own terms.
+func _hitscan(shooter: Player, origin: Vector3, direction: Vector3) -> Node3D:
 	var query := PhysicsRayQueryParameters3D.create(
 		origin, origin + direction * HITSCAN_RANGE_M, 1, [shooter.get_rid()]
 	)
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
-	return hit["collider"] as Player if hit else null
+	return hit["collider"] as Node3D if hit else null
 
 
 @rpc("authority", "call_local", "reliable")

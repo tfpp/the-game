@@ -35,9 +35,11 @@ action all key off the category.
   - `WEAPON`: hitscans from the hand, once per `pellet_count` (a shotgun fires
     several at slightly randomized angles — `spread_degrees`), and deals `damage` to
     whichever `Player` a pellet hits by calling `apply_damage` on
-    `features/combat` (see that feature for health and kills). `fire_cooldown_s`
-    caps the rate of fire, so an SMG just needs a short cooldown to feel automatic
-    even though every shot is still its own click.
+    `features/combat` (see that feature for health and kills). A pellet that hits
+    anything else in the `killable` group (e.g. `features/penguin`) instead calls
+    `take_hit` on it, so non-player targets can handle being shot on their own
+    terms. `fire_cooldown_s` caps the rate of fire, so an SMG just needs a short
+    cooldown to feel automatic even though every shot is still its own click.
   - `FOOD`: eaten once and gone.
   - `PROP`: thrown.
   - Any held item can also be dropped with G / left shoulder button
