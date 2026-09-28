@@ -14,8 +14,9 @@ are counted. API downtime pauses income and blocks paid spins.
 
 Other players see the current balance below the character name. A server-owned
 synchronizer sends balances to every peer, including late joiners. Clients cannot
-set balances or submit payouts. The slot interaction prompt also shows your own
-balance. Offline and dev-auth play use temporary $20 wallets and the same income
+set balances or submit payouts. Your own balance shows in the bottom-right corner
+(`money_hud.gd`), just above `features/combat`'s health bar, and in the slot
+interaction prompt. Offline and dev-auth play use temporary $20 wallets and the same income
 and payout rules; these never transfer to a real account.
 
 `PlayerMoney.charge(peer, id, amount_cents)` deducts a flat, feature-chosen price the

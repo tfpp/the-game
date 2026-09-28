@@ -9,6 +9,10 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Wallet and health HUD",
+		"summary": "Your money now shows in the bottom-right corner, above a proper health bar."
+	},
+	{
 		"title": "Casino skylights",
 		"summary":
 		"Two skylights over the gaming floor let you see the daytime sky from the casino."
