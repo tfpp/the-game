@@ -7,6 +7,7 @@ extends CanvasLayer
 ## - `settings_page_label() -> String`: the hub button and page heading.
 ## - `settings_page_build() -> Control`: fresh page content, built each time it opens
 ##   and freed when it closes.
+## - optionally `settings_page_icon() -> Texture2D`: a white icon for the hub button.
 ## - optionally `settings_page_input(event: InputEvent) -> bool`: sees input first
 ##   while its page is open; return true to consume it (e.g. while capturing a key to
 ##   rebind).
@@ -58,6 +59,10 @@ func esc_menu_label() -> String:
 	return "Settings"
 
 
+func esc_menu_icon() -> Texture2D:
+	return preload("res://assets/kenney/game-icons/PNG/White/1x/gear.png")
+
+
 func esc_menu_open() -> void:
 	open()
 
@@ -107,6 +112,8 @@ func show_hub() -> void:
 	for page: Node in pages():
 		var button := Button.new()
 		button.text = _label_of(page)
+		if page.has_method(&"settings_page_icon"):
+			button.icon = page.settings_page_icon()
 		button.custom_minimum_size.y = 48
 		button.pressed.connect(show_page.bind(page))
 		_body.add_child(button)

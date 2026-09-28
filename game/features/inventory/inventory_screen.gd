@@ -2,6 +2,11 @@ extends CanvasLayer
 ## Kenney panel/button theme, live avatar preview, keyboard/controller/touch access.
 
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
+const BASKET_ICON := preload("res://assets/kenney/game-icons/PNG/White/1x/basket.png")
+const EQUIP_ICON := preload("res://assets/kenney/game-icons/PNG/White/1x/checkmark.png")
+const DROP_ICON := preload("res://assets/kenney/game-icons/PNG/White/1x/down.png")
+## Below this window width the action buttons drop their icons to fit.
+const ACTION_ICONS_MIN_WIDTH := 500.0
 
 var _body_font: Font = ThemeDB.fallback_font.duplicate()
 var _heading_font: Font = preload("res://assets/kenney/ui/Font/Kenney Future.ttf").duplicate()
@@ -71,6 +76,10 @@ func _input(event: InputEvent) -> void:
 
 func esc_menu_label() -> String:
 	return "Inventory"
+
+
+func esc_menu_icon() -> Texture2D:
+	return BASKET_ICON
 
 
 func esc_menu_open() -> void:
@@ -278,6 +287,10 @@ func _resize(
 	_heading.add_theme_font_size_override("font_size", 18 if physical.x < 500 else 22)
 	_preview.custom_minimum_size.y = 260 if physical.x >= 700 else 170
 	bag.custom_minimum_size.x = minf(380, columns.custom_minimum_size.x)
+	var icons := physical.x >= ACTION_ICONS_MIN_WIDTH
+	_equip.icon = EQUIP_ICON if icons else null
+	_stow.icon = BASKET_ICON if icons else null
+	_drop.icon = DROP_ICON if icons else null
 	var grid := _slots[0].get_parent() as GridContainer
 	grid.columns = clampi(int((bag.custom_minimum_size.x + 6.0) / 95.0), 2, 4)
 

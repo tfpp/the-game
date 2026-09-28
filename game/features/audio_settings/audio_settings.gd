@@ -32,6 +32,10 @@ func settings_page_label() -> String:
 	return "Audio"
 
 
+func settings_page_icon() -> Texture2D:
+	return preload("res://assets/kenney/game-icons/PNG/White/1x/audioOn.png")
+
+
 func settings_page_build() -> Control:
 	var page := VBoxContainer.new()
 	page.add_theme_constant_override("separation", 10)

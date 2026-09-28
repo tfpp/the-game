@@ -10,7 +10,8 @@ const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const TOGGLE_ACTION := &"toggle_changelog"
 const MODAL_GROUP := &"modal_ui"
 ## Nodes in this group get a link in the Esc menu (`ui/login/login_screen.gd`); they
-## must implement `esc_menu_label() -> String` and `esc_menu_open() -> void`.
+## must implement `esc_menu_label() -> String` and `esc_menu_open() -> void`, and may
+## implement `esc_menu_icon() -> Texture2D`.
 const ESC_MENU_GROUP := &"esc_menu_links"
 const PANEL_WIDTH := 420.0
 const PANEL_MAX_HEIGHT := 480.0
@@ -39,6 +40,10 @@ func _input(event: InputEvent) -> void:
 
 func esc_menu_label() -> String:
 	return "Release notes"
+
+
+func esc_menu_icon() -> Texture2D:
+	return preload("res://assets/kenney/game-icons/PNG/White/1x/information.png")
 
 
 func esc_menu_open() -> void:

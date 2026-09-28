@@ -50,6 +50,10 @@ func settings_page_label() -> String:
 	return "Controls"
 
 
+func settings_page_icon() -> Texture2D:
+	return preload("res://assets/kenney/game-icons/PNG/White/1x/gamepad.png")
+
+
 func settings_page_build() -> Control:
 	capture = {}
 	_page = ControlsPage.new(self)

@@ -14,7 +14,8 @@ extends CanvasLayer
 
 const MODAL_GROUP := &"modal_ui"
 ## Feature panels that want an entry here (e.g. Controls, Release notes) join this group
-## and implement `esc_menu_label() -> String` and `esc_menu_open() -> void`.
+## and implement `esc_menu_label() -> String` and `esc_menu_open() -> void`, and
+## optionally `esc_menu_icon() -> Texture2D` (a white icon, tinted by the theme).
 const ESC_MENU_LINKS_GROUP := &"esc_menu_links"
 const PANEL_WIDTH := 400.0
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
@@ -405,7 +406,9 @@ func _add_esc_menu_links() -> void:
 	var entries := get_tree().get_nodes_in_group(ESC_MENU_LINKS_GROUP)
 	entries.sort_custom(_esc_menu_label_is_before)
 	for entry: Node in entries:
-		_link(entry.esc_menu_label(), _open_esc_menu_link.bind(entry))
+		var link := _link(entry.esc_menu_label(), _open_esc_menu_link.bind(entry))
+		if entry.has_method(&"esc_menu_icon"):
+			link.icon = entry.esc_menu_icon()
 
 
 ## Closes this menu and hands off to the feature panel's own open/close handling.
