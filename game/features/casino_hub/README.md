@@ -1,6 +1,6 @@
 # The Gilded Lily
 
-A windowless, faded 1964 casino. `world/room.tscn` instances `interior.tscn` and
+A faded 1964 casino. `world/room.tscn` instances `interior.tscn` and
 retains the stable `Room/Spawn` path and all five original annex entrances. This
 folder intentionally has no `feature.tscn`: the architecture is part of the room,
 not a second copy loaded by the feature loader. All geometry is editable CSG.
@@ -13,6 +13,10 @@ not a second copy loaded by the feature loader. All geometry is editable CSG.
 - East harbor room: x 18…34, z -21…21. The original ferry travels its full 30m
   route along x 26, from z -15 to 15. Both end landings clear its 9m hull.
   Solid shallow flooring prevents players from falling into the basin.
+- Skylights: two glazed openings in the gaming floor's coffered ceiling (x -12…-7 and
+  3…8, z -9…9), either side of the chandeliers, show the day skybox set in
+  `world/room.tscn`. The glass has collision. The room's lighting ignores the sky
+  (fixed ambient color, no sky reflections) so the interior keeps its warm look.
 - South lobby: spawn at (0, 1.2, 23); weapons, banana and ball at security,
   all six clothing pickups at coat check. The gun vending machine and its trash
   can stand beside security. Trampolines in the southeast lounge;

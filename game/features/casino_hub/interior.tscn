@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
@@ -12,6 +12,7 @@
 [ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="carpet"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="wallpaper"]
 [ext_resource type="Material" path="res://features/water/materials/water_surface.tres" id="water"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/glass.tres" id="glass"]
 
 [node name="CasinoInterior" type="Node3D"]
 
@@ -394,6 +395,148 @@ position = Vector3(0, 8.3, 0)
 size = Vector3(70, 0.6, 70)
 material = ExtResource("plaster")
 use_collision = true
+
+[node name="SkylightWestOpening" type="CSGBox3D" parent="Ceiling"]
+position = Vector3(-9.5, 0, 0)
+operation = 2
+size = Vector3(5.0, 1, 18.0)
+
+[node name="SkylightWestGlass" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.5, 0)
+size = Vector3(5.0, 0.06, 18.0)
+material = ExtResource("glass")
+use_collision = true
+
+[node name="SkylightWestTrimN" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 7.94, -9.0)
+size = Vector3(5.5, 0.14, 0.25)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestTrimS" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 7.94, 9.0)
+size = Vector3(5.5, 0.14, 0.25)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestTrimW" type="CSGBox3D" parent="."]
+position = Vector3(-12.0, 7.94, 0)
+size = Vector3(0.25, 0.14, 18.5)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestTrimE" type="CSGBox3D" parent="."]
+position = Vector3(-7.0, 7.94, 0)
+size = Vector3(0.25, 0.14, 18.5)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBarSpine" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, 0)
+size = Vector3(0.08, 0.08, 18.0)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBar0" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, -6.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBar1" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, -3.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBar2" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, 0.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBar3" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, 3.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightWestBar4" type="CSGBox3D" parent="."]
+position = Vector3(-9.5, 8.44, 6.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastOpening" type="CSGBox3D" parent="Ceiling"]
+position = Vector3(5.5, 0, 0)
+operation = 2
+size = Vector3(5.0, 1, 18.0)
+
+[node name="SkylightEastGlass" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.5, 0)
+size = Vector3(5.0, 0.06, 18.0)
+material = ExtResource("glass")
+use_collision = true
+
+[node name="SkylightEastTrimN" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 7.94, -9.0)
+size = Vector3(5.5, 0.14, 0.25)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastTrimS" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 7.94, 9.0)
+size = Vector3(5.5, 0.14, 0.25)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastTrimW" type="CSGBox3D" parent="."]
+position = Vector3(3.0, 7.94, 0)
+size = Vector3(0.25, 0.14, 18.5)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastTrimE" type="CSGBox3D" parent="."]
+position = Vector3(8.0, 7.94, 0)
+size = Vector3(0.25, 0.14, 18.5)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBarSpine" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, 0)
+size = Vector3(0.08, 0.08, 18.0)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBar0" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, -6.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBar1" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, -3.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBar2" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, 0.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBar3" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, 3.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="SkylightEastBar4" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 8.44, 6.0)
+size = Vector3(5.0, 0.08, 0.08)
+material = ExtResource("brass")
+use_collision = false
 
 [node name="CofferSide-16" type="CSGBox3D" parent="."]
 position = Vector3(-16, 7.6, 0)
@@ -1491,7 +1634,7 @@ material = ExtResource("stain")
 use_collision = false
 
 [node name="CeilingWaterStain12" type="CSGBox3D" parent="."]
-position = Vector3(-9, 7.965, 2)
+position = Vector3(-4, 7.965, 2)
 size = Vector3(1.3, 0.015, 0.7)
 material = ExtResource("stain")
 use_collision = false
