@@ -1,15 +1,18 @@
 class_name GnomeMath
 extends RefCounted
 ## Pure math for the gnomes feature: single-file "train" spacing as a line of gnomes
-## dashes between two holes. Deterministic given its inputs and free of scene access,
-## so it's unit-testable the same way core/movement/source_movement.gd keeps math
-## separate from the node that uses it.
+## dashes between holes picked at random from a burrow's set. Deterministic given its
+## inputs and free of scene access, so it's unit-testable the same way
+## core/movement/source_movement.gd keeps math separate from the node that uses it.
 
-const RUN_SPEED := 10.5
-const FOLLOW_SPACING := 0.4
-const REST_MIN := 1.5
-const REST_MAX := 4.5
-const GNOME_COUNT := 4
+const RUN_SPEED := 7.0
+const FOLLOW_SPACING := 0.7
+const REST_MIN := 1.0
+const REST_MAX := 5.5
+const GNOME_COUNT := 3
+const SPEED_JITTER := 0.2
+const AVOID_RADIUS := 3.0
+const AVOID_MAX_OFFSET := 1.1
 
 
 ## Total distance (meters) the leader must cover for the whole line to clear a
@@ -75,3 +78,49 @@ static func facing_yaw(hole_a: Vector3, hole_b: Vector3, forward: bool) -> float
 		return 0.0
 	direction = direction.normalized()
 	return atan2(-direction.x, -direction.z)
+
+
+## Picks the next hole a leg should run to, uniformly at random among every index
+## other than `current`, so gnomes wander a burrow's whole hole set instead of
+## shuttling between the same two. `rng` is a caller-supplied random value in
+## [0, 1); pass `randf()` from game code and a fixed value from tests. Returns
+## `current` unchanged when there is nothing else to pick.
+static func next_hole_index(current: int, hole_count: int, rng: float) -> int:
+	if hole_count <= 1:
+		return current
+	var choice := clampi(int(rng * (hole_count - 1)), 0, hole_count - 2)
+	return choice + 1 if choice >= current else choice
+
+
+## Per-leg run speed with a bit of randomness so consecutive legs don't feel
+## identical: scales `base_speed` linearly across [1 - SPEED_JITTER, 1 + SPEED_JITTER]
+## as `rng` (a caller-supplied value, normally `randf()`) goes from 0 to 1.
+static func leg_speed(base_speed: float, rng: float) -> float:
+	var t := clampf(rng, 0.0, 1.0)
+	return base_speed * (1.0 - SPEED_JITTER + 2.0 * SPEED_JITTER * t)
+
+
+## Sideways nudge (world-space, y = 0) that steers a gnome at `gnome_pos` away from
+## every position in `player_positions` within AVOID_RADIUS, perpendicular to
+## `travel_dir` so it reads as a sidestep rather than a slowdown. Contributions from
+## multiple nearby players stack, then the total is capped at AVOID_MAX_OFFSET.
+static func avoidance_offset(
+	gnome_pos: Vector3, travel_dir: Vector3, player_positions: Array[Vector3]
+) -> Vector3:
+	var flat_dir := travel_dir
+	flat_dir.y = 0.0
+	var perp := Vector3(-flat_dir.z, 0.0, flat_dir.x)
+	perp = perp.normalized() if not perp.is_zero_approx() else Vector3.RIGHT
+	var push := Vector3.ZERO
+	for player_pos: Vector3 in player_positions:
+		var to_gnome := gnome_pos - player_pos
+		to_gnome.y = 0.0
+		var distance := to_gnome.length()
+		if distance <= 0.0001 or distance >= AVOID_RADIUS:
+			continue
+		var side := 1.0 if perp.dot(to_gnome) >= 0.0 else -1.0
+		var strength := (AVOID_RADIUS - distance) / AVOID_RADIUS
+		push += perp * side * strength
+	if push.length() > AVOID_MAX_OFFSET:
+		push = push.normalized() * AVOID_MAX_OFFSET
+	return push
