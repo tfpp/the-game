@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Paint"]
+albedo_color = Color(0.08, 0.08, 0.1, 1)
+metallic = 0.3
+roughness = 0.6
+
+[sub_resource type="BoxMesh" id="Shape"]
+size = Vector3(0.08, 0.015, 0.16)
+
+[node name="View" type="Node3D"]
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("Shape")
+material_override = SubResource("Paint")
+
+[node name="Grip" type="Marker3D" parent="."]

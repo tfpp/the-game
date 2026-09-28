@@ -14,6 +14,8 @@
 [ext_resource type="Material" path="res://features/parking_garage/materials/city_building.tres" id="12_building"]
 [ext_resource type="Material" path="res://features/parking_garage/materials/city_window.tres" id="13_window"]
 [ext_resource type="Script" path="res://features/dev_elevator/slum_arrival_point.gd" id="14_slum_arrival"]
+[ext_resource type="PackedScene" path="res://features/loot/loot_container.tscn" id="15_loot"]
+[ext_resource type="Resource" path="res://features/parking_garage/car_loot.tres" id="16_car_loot"]
 
 [sub_resource type="BoxMesh" id="PuddleMesh"]
 size = Vector3(1, 0.02, 1)
@@ -910,3 +912,39 @@ volume_db = -16.0
 [node name="Creaks" type="AudioStreamPlayer3D" parent="Garage/Ambience"]
 max_distance = 40.0
 unit_size = 10.0
+
+[node name="Loot" parent="Garage/Car_F0_1" instance=ExtResource("15_loot")]
+loot_table = ExtResource("16_car_loot")
+noun = "wrecked car"
+
+[node name="Loot" parent="Garage/Car_F0_3" instance=ExtResource("15_loot")]
+loot_table = ExtResource("16_car_loot")
+noun = "wrecked car"
+
+[node name="Loot" parent="Garage/Car_F0_5" instance=ExtResource("15_loot")]
+loot_table = ExtResource("16_car_loot")
+noun = "wrecked car"
+
+[node name="Loot" parent="Garage/Car_F1_2" instance=ExtResource("15_loot")]
+loot_table = ExtResource("16_car_loot")
+noun = "wrecked car"
+
+[node name="Loot" parent="Garage/Car_F1_4" instance=ExtResource("15_loot")]
+loot_table = ExtResource("16_car_loot")
+noun = "wrecked car"
+
+[node name="Loot" parent="Garage/Car_F1_5" instance=ExtResource("15_loot")]
+loot_table = ExtResource("16_car_loot")
+noun = "wrecked car"
+
+[node name="Loot" parent="Garage/Car_F1_7" instance=ExtResource("15_loot")]
+loot_table = ExtResource("16_car_loot")
+noun = "wrecked car"
+
+[node name="Loot" parent="Garage/Car_F2_1" instance=ExtResource("15_loot")]
+loot_table = ExtResource("16_car_loot")
+noun = "wrecked car"
+
+[node name="Loot" parent="Garage/Car_F2_3" instance=ExtResource("15_loot")]
+loot_table = ExtResource("16_car_loot")
+noun = "wrecked car"

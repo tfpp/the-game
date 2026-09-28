@@ -45,3 +45,7 @@ stair flights — the same way `test_casino_layout.gd` checks the casino.
 which registers it as a valid landing spot for a randomized slum destination system
 (not built yet — see `features/dev_elevator/README.md`). For now the only way to reach
 it without walking through the casino is `features/dev_elevator/`'s debug warp pad.
+
+Nine of the wrecked cars carry a `features/loot/` `LootContainer` named `Loot`
+using `car_loot.tres`: walk up, press Use to search, and the server rolls
+randomized valuables into your inventory.

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/holdables/item_definition.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://features/holdables/items/cash_bundle_view.tscn" id="2_view"]
+
+[resource]
+script = ExtResource("1_script")
+id = "cash_bundle"
+display_name = "Cash Bundle"
+category = 2
+view_scene = ExtResource("2_view")
+weight = 0.15
+ground_clearance = 0.03
+first_person_offset = Vector3(0.24, -0.23, -0.55)
