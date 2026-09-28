@@ -38,6 +38,7 @@ type fakeGitHub struct {
 	// Releases (release_test.go).
 	releases     []github.Release
 	releaseCalls int
+	contents     map[string]string // "path@ref" -> file content
 }
 
 func (f *fakeGitHub) CreateIssue(_ context.Context, title, body string) (github.Issue, error) {
@@ -132,7 +133,7 @@ func newEnv(t *testing.T) *env {
 	}
 	t.Cleanup(func() { st.Close() })
 	e := &env{deploy: &fakeDeployer{}, st: st, gh: &fakeGitHub{comments: map[int][]github.Comment{}, prs: map[int]*github.PullRequest{},
-		files: map[int][]string{}, ci: map[string]string{}, behind: map[string]int{}, compare: map[string]string{},
+		files: map[int][]string{}, contents: map[string]string{}, ci: map[string]string{}, behind: map[string]int{}, compare: map[string]string{},
 		parents: map[string][]string{}, owners: "/.github/ @x\n/bot/ @x\n/game/project.godot @x\n"}, chat: &fakeChat{},
 		now: time.Unix(1_800_000_000, 0)}
 	e.svc = New(Config{

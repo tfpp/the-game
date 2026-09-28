@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"slices"
 	"strings"
 	"testing"
 
@@ -85,5 +86,83 @@ func TestReleasePostFitsInADiscordMessage(t *testing.T) {
 	}
 	if got := releasePost(release("v1.2.3", "x", " ")); got != "🎉 **v1.2.3 is out!** Reload the game to play it.\n<https://gh/releases/tag/v1.2.3>" {
 		t.Errorf("empty notes %q", got)
+	}
+}
+
+func changelog(edge ...string) string {
+	return "# Changelog\n\nIntro.\n\n## [edge]\n\n" + strings.Join(edge, "\n") +
+		"\n\n## [0.6.0](https://x) - 2026-09-28\n\n- Seed.\n"
+}
+
+func TestEdgeBullets(t *testing.T) {
+	got := edgeBullets(changelog("- Add hats.\n  With feathers.", "", "- Fix frogs.", "Not a bullet."))
+	want := []string{"- Add hats.\n  With feathers.", "- Fix frogs."}
+	if !slices.Equal(got, want) {
+		t.Errorf("bullets %q", got)
+	}
+	if got := edgeBullets("# Changelog\n\n## [0.6.0]\n\n- Old.\n"); len(got) != 0 {
+		t.Errorf("no edge: %q", got)
+	}
+}
+
+func TestEdgeChangesAreAnnouncedOnceLive(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.gh.releases = []github.Release{release("v0.6.0", "t0", "- Seed.")}
+	e.gh.compare["t0...d1"] = "ahead"
+	e.gh.compare["t0...d2"] = "ahead"
+	e.gh.compare["t0...d3"] = "ahead"
+	e.gh.compare["t0...d4"] = "ahead"
+
+	// First run: the edge is recorded, not replayed.
+	e.deploy.deployed = "d1"
+	e.gh.contents["CHANGELOG.md@d1"] = changelog("- Add hats.")
+	must(t, e.svc.MergeStep(ctx))
+	if posts := e.releasePosts(); len(posts) != 1 || !strings.Contains(posts[0], "v0.6.0 is out") {
+		t.Fatalf("posts %q", posts)
+	}
+
+	// New bullets are posted once, with a link to the changelog at the deploy.
+	e.deploy.deployed = "d2"
+	e.gh.contents["CHANGELOG.md@d2"] = changelog("- Add hats.", "- Add boats.\n  Big ones.", "- Fix frogs.")
+	must(t, e.svc.MergeStep(ctx))
+	must(t, e.svc.MergeStep(ctx))
+	posts := e.releasePosts()
+	want := "🧪 **New on edge** (coming in the next release). Reload the game to try it.\n\n" +
+		"- Add boats.\n  Big ones.\n- Fix frogs.\n\n<https://github.com/o/r/blob/d2/CHANGELOG.md>"
+	if len(posts) != 2 || posts[1] != want {
+		t.Fatalf("posts %q", posts)
+	}
+
+	// A deploy with no new edge bullets posts nothing.
+	e.deploy.deployed = "d3"
+	e.gh.contents["CHANGELOG.md@d3"] = changelog("- Add hats.", "- Add boats.\n  Big ones.", "- Fix frogs.")
+	must(t, e.svc.MergeStep(ctx))
+	if len(e.releasePosts()) != 2 {
+		t.Fatalf("posts %q", e.releasePosts())
+	}
+
+	// A release empties the edge: the release is announced, then only what's new since.
+	e.gh.releases = append([]github.Release{release("v0.7.0", "d4", "- Add hats.\n- Add boats.")}, e.gh.releases...)
+	e.deploy.deployed = "d4"
+	e.gh.contents["CHANGELOG.md@d4"] = changelog("- Add hats.", "- Add kites.")
+	must(t, e.svc.MergeStep(ctx))
+	posts = e.releasePosts()
+	if len(posts) != 4 || !strings.Contains(posts[2], "v0.7.0 is out") ||
+		!strings.Contains(posts[3], "\n\n- Add kites.\n\n") {
+		t.Fatalf("posts %q", posts)
+	}
+}
+
+func TestEdgeWithoutAChangelog(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.deploy.deployed = "d1"
+	must(t, e.svc.MergeStep(ctx)) // CHANGELOG.md is missing: nothing to announce
+	e.deploy.deployed = "d2"
+	e.gh.contents["CHANGELOG.md@d2"] = changelog("- Add hats.")
+	must(t, e.svc.MergeStep(ctx))
+	if posts := e.releasePosts(); len(posts) != 1 || !strings.Contains(posts[0], "- Add hats.") {
+		t.Fatalf("posts %q", posts)
 	}
 }

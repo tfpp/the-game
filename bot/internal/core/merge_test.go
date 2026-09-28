@@ -24,10 +24,13 @@ func (f *fakeGitHub) PullRequestFiles(_ context.Context, n int) ([]string, error
 }
 
 func (f *fakeGitHub) FileContent(_ context.Context, path, ref string) ([]byte, error) {
-	if path != ".github/CODEOWNERS" || ref != "main" {
-		return nil, errors.New("unexpected file")
+	if path == ".github/CODEOWNERS" && ref == "main" {
+		return []byte(f.owners), nil
 	}
-	return []byte(f.owners), nil
+	if c, ok := f.contents[path+"@"+ref]; ok {
+		return []byte(c), nil
+	}
+	return nil, &github.APIError{Status: 404, Message: "Not Found"}
 }
 
 func (f *fakeGitHub) Compare(_ context.Context, base, head string) (github.Comparison, error) {
