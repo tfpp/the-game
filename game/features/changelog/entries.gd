@@ -16,6 +16,11 @@ const ENTRIES: Array[Dictionary] = [
 		"Use any gnome hole to enter the tunnels, run at 4x speed and exit at any other hole."
 	},
 	{
+		"title": "Flashlights",
+		"summary":
+		"Press F to toggle a flashlight that follows your aim and lights the way for everyone."
+	},
+	{
 		"title": "Scavenging",
 		"summary":
 		"Search wrecked cars in the parking garage with Use for wallets, watches, cash and more."
