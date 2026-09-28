@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-const testUsage = " · Model(s): gpt-6-astra · Tokens used: 1397530 · Estimated cost (USD API-equivalent): $2.44"
+const testUsage = " · Model(s): gpt-6-astra · Reasoning: low · Tokens used: 1397530 · Estimated cost (USD API-equivalent): $2.44"
 
 func TestCompactTokens(t *testing.T) {
 	for in, want := range map[string]string{
@@ -32,8 +32,24 @@ func TestRelayEmbedOpened(t *testing.T) {
 	if e.Title != "📬 PR #150 opened" || e.URL != "https://github.com/o/r/pull/150" || e.Color != colorSuccess || e.Description != "" {
 		t.Errorf("embed %+v", e)
 	}
-	if f := fields(e); f["Model"] != "gpt-6-astra" || f["Tokens"] != "1.4M" || f["Est. cost (API)"] != "$2.44" {
+	if f := fields(e); f["Model"] != "gpt-6-astra" || f["Reasoning"] != "low" || f["Tokens"] != "1.4M" || f["Est. cost (API)"] != "$2.44" {
 		t.Errorf("fields %v", f)
+	}
+	names := []string{}
+	for _, f := range e.Fields {
+		names = append(names, f.Name)
+	}
+	if got := strings.Join(names, ","); got != "Model,Reasoning,Tokens,Est. cost (API)" {
+		t.Errorf("field order %s", got)
+	}
+}
+
+func TestRelayEmbedWithoutReasoning(t *testing.T) {
+	// Comments from before the harness reported the reasoning effort.
+	e := relayEmbed("🤖 Opened https://github.com/o/r/pull/150 · Model(s): m · Tokens used: 42000 · Estimated cost (USD API-equivalent): $0.12", "https://c")
+	f := fields(e)
+	if _, ok := f["Reasoning"]; ok || f["Model"] != "m" || f["Tokens"] != "42K" || e.Title != "📬 PR #150 opened" {
+		t.Errorf("embed %+v", e)
 	}
 }
 

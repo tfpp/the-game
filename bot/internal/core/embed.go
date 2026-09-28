@@ -82,7 +82,8 @@ func (s *Service) prLabel(n int) string { return fmt.Sprintf("PR #%d", n) }
 
 var (
 	// harness/publish.sh's per-run usage note.
-	usageNote = regexp.MustCompile(` · Model\(s\): ([^·\n]+?) · Tokens used: ([^·\s)]+) · Estimated cost \(USD API-equivalent\): ([^\s)]+)`)
+	// Older notes have no Reasoning part.
+	usageNote = regexp.MustCompile(` · Model\(s\): ([^·\n]+?)(?: · Reasoning: ([^·\s)]+))? · Tokens used: ([^·\s)]+) · Estimated cost \(USD API-equivalent\): ([^\s)]+)`)
 	startedRe = regexp.MustCompile("^Starting `([^`]+)` \\(`([^`]+)`\\) on `([^`]+)`\\. \\[Follow the run\\]\\(([^)\\s]+)\\)\\.?$")
 	openedRe  = regexp.MustCompile(`^Opened (https://github\.com/\S+/pull/(\d+))\s*$`)
 	pushedRe  = regexp.MustCompile(`^Pushed ([0-9a-f]+) (https://github\.com/\S+/pull/(\d+))\s*`)
@@ -101,11 +102,13 @@ func relayEmbed(body, url string) Embed {
 	var usage []EmbedField
 	if m := usageNote.FindStringSubmatch(text); m != nil {
 		text = strings.Replace(text, m[0], "", 1)
-		usage = []EmbedField{
-			{Name: "Model", Value: fieldValue(m[1]), Inline: true},
-			{Name: "Tokens", Value: fieldValue(compactTokens(m[2])), Inline: true},
-			{Name: "Est. cost (API)", Value: fieldValue(m[3]), Inline: true},
+		usage = []EmbedField{{Name: "Model", Value: fieldValue(m[1]), Inline: true}}
+		if m[2] != "" {
+			usage = append(usage, EmbedField{Name: "Reasoning", Value: fieldValue(m[2]), Inline: true})
 		}
+		usage = append(usage,
+			EmbedField{Name: "Tokens", Value: fieldValue(compactTokens(m[3])), Inline: true},
+			EmbedField{Name: "Est. cost (API)", Value: fieldValue(m[4]), Inline: true})
 	}
 
 	e := Embed{Title: "🤖 Agent update", Color: colorNeutral}

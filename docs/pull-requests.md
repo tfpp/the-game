@@ -18,6 +18,7 @@ Brief explanation of the PR and why it's needed.
 | Metric | Value |
 | --- | --- |
 | Model(s) used | Exact model IDs, including additional models if used |
+| Reasoning effort | Reasoning or thinking effort the model ran with (e.g. low), or Unavailable |
 | Tokens used (input + output + cache reads/writes) | Total tokens for this run, including retries |
 | Estimated cost (USD, API-equivalent) | Estimated USD cost, or Unavailable |
 
