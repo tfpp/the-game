@@ -6,7 +6,8 @@ extends CanvasLayer
 ## this script (see AGENTS.md for the rule that every new feature must add one). This
 ## is static, read-only content baked into the client, so it needs no server round trip.
 ##
-## Entries are grouped under "Edge" (added since the latest release) and the last 10
+## Entries are grouped under "Edge" (added since the latest release, headed with the
+## build's short commit) and the last 10
 ## releases, from scripts/release_notes.sh at the repo root, which maps each vX.Y.Z tag
 ## to the entry titles it added. The web export bakes its output into releases.gd; local
 ## debug runs call it on the checkout (with uncommitted entries) when the panel first
@@ -27,13 +28,12 @@ const SCREEN_MARGIN := 32.0
 const SHEET_COLOR := Color("#f6f7fb")
 const SHEET_BORDER := Color("#c3c9d6")
 const SHEET_PADDING := 16.0
-## Colors on the sheet: slate text, a lighter slate for summaries and dates, and accents
-## from ui_theme.tres darkened for text: the blue buttons (#1c9fd7) for releases, the
-## yellow focus border (#ffd94d) for edge.
+## Colors on the sheet: slate text, a lighter slate for summaries and dates, and a light
+## blue from ui_theme.tres's buttons for the edge and release headings (and bullets).
 const TEXT_COLOR := "#232838"
 const MUTED_COLOR := "#566074"
-const RELEASE_COLOR := "#1677ab"
-const EDGE_COLOR := "#a97c10"
+const RELEASE_COLOR := "#36bdf7"
+const EDGE_COLOR := "#36bdf7"
 ## A short blank line between releases.
 const RELEASE_GAP := "\n[font_size=8]\n[/font_size]"
 ## The body's bold font, so `[b]` means a heading (and nothing gets a faux bold).
@@ -154,7 +154,13 @@ static func releases_from(script: GDScript) -> Array:
 		return []
 	var constants := script.get_script_constant_map()
 	return (
-		[{"version": EDGE, "titles": constants.get("EDGE", [])}]
+		[
+			{
+				"version": EDGE,
+				"commit": constants.get("COMMIT", ""),
+				"titles": constants.get("EDGE", [])
+			}
+		]
 		+ Array(constants.get("RELEASES", []))
 	)
 
@@ -185,7 +191,7 @@ static func releases_text(releases: Array, entries: Array[Dictionary]) -> String
 		if version == EDGE and titles.is_empty():
 			continue
 		var head := (
-			heading_text("Edge", EDGE_COLOR, "not released yet")
+			heading_text("Edge", EDGE_COLOR, str(release.get("commit", "")))
 			if version == EDGE
 			else heading_text("v" + version, RELEASE_COLOR, date_text(str(release.get("date", ""))))
 		)

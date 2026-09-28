@@ -11,7 +11,7 @@ func test_entry_line_is_a_bulleted_row_with_the_summary_under_the_title() -> voi
 	assert_eq(
 		line,
 		(
-			"[cell padding=0,1,10,0][color=#1677ab]•[/color][/cell]"
+			"[cell padding=0,1,10,0][color=#36bdf7]•[/color][/cell]"
 			+ "[cell padding=0,0,0,10][color=#232838][font_size=19]Frogs[/font_size][/color]\n"
 			+ "[color=#566074][font_size=16]Frogs hop around.[/font_size][/color][/cell]"
 		)
@@ -22,7 +22,7 @@ func test_entry_line_tolerates_missing_keys() -> void:
 	assert_eq(
 		Changelog.entry_line({}),
 		(
-			"[cell padding=0,1,10,0][color=#1677ab]•[/color][/cell]"
+			"[cell padding=0,1,10,0][color=#36bdf7]•[/color][/cell]"
 			+ "[cell padding=0,0,0,10][color=#232838][font_size=19][/font_size][/color][/cell]"
 		)
 	)
@@ -53,9 +53,9 @@ func test_body_text_of_an_empty_list_is_empty() -> void:
 
 func test_heading_text_uses_the_heading_font_and_a_muted_detail() -> void:
 	assert_eq(
-		Changelog.heading_text("v0.6.0", "#1677ab", "Sep 28, 2026"),
+		Changelog.heading_text("v0.6.0", "#36bdf7", "Sep 28, 2026"),
 		(
-			"[b][font_size=24][color=#1677ab]v0.6.0[/color][/font_size][/b]"
+			"[b][font_size=24][color=#36bdf7]v0.6.0[/color][/font_size][/b]"
 			+ "   [color=#566074][font_size=15]Sep 28, 2026[/font_size][/color]"
 		)
 	)
@@ -94,7 +94,7 @@ func test_releases_text_groups_entries_under_each_release() -> void:
 		{"title": "Frogs", "summary": "Frogs hop around."},
 	]
 	var releases := [
-		{"version": "edge", "titles": ["Boats"]},
+		{"version": "edge", "commit": "90ccba1", "titles": ["Boats"]},
 		{"version": "0.7.0", "date": "2026-10-02", "titles": ["Hats", "Gone"]},
 		{"version": "0.6.2", "date": "2026-09-28", "titles": []},
 		{"version": "0.6.1", "date": "2026-09-28", "titles": ["Frogs"]},
@@ -109,7 +109,7 @@ func test_releases_text_groups_entries_under_each_release() -> void:
 			. join(
 				[
 					(
-						Changelog.heading_text("Edge", edge, "not released yet")
+						Changelog.heading_text("Edge", edge, "90ccba1")
 						+ "\n"
 						+ Changelog.entry_list([Changelog.entry_line(entries[0])])
 					),
@@ -172,6 +172,7 @@ func test_releases_from_puts_the_edge_first() -> void:
 	var script := GDScript.new()
 	script.source_code = (
 		"extends RefCounted\n"
+		+ 'const COMMIT := "90ccba1"\n'
 		+ 'const EDGE: Array[String] = ["Boats"]\n'
 		+ 'const RELEASES: Array[Dictionary] = [{"version": "0.6.0", "titles": ["Frogs"]}]\n'
 	)
@@ -179,7 +180,7 @@ func test_releases_from_puts_the_edge_first() -> void:
 	assert_eq(
 		Changelog.releases_from(script),
 		[
-			{"version": "edge", "titles": ["Boats"]},
+			{"version": "edge", "commit": "90ccba1", "titles": ["Boats"]},
 			{"version": "0.6.0", "titles": ["Frogs"]},
 		]
 	)
