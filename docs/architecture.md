@@ -160,9 +160,9 @@ The version is the git commit: `pages.yml` and `server-image.yml` pass `BUILD_VE
 (the commit SHA) to `scripts/export.sh`, which bakes it into a generated
 `res://build_info.gd`. Unexported runs report `dev` and match each other;
 `--build-version=X` overrides it for tests. A refused web client explains the mismatch
-and offers **Reload page**. The HUD's top-left corner shows the release version
-(`application/config/version` in `project.godot`, bumped by hand at milestones) and the
-short commit hash; the top-right corner shows the player count and connection state.
+and offers **Reload page**. The HUD's top-left corner shows the release version (see
+"Versioning") and the short commit hash; the top-right corner shows the player count and
+connection state.
 
 Because both artifacts come from the same commit, **the server must be deployed right
 after each merge that changes `game/`**: until then, freshly loaded Pages clients are
@@ -261,7 +261,9 @@ The client and server must run the same code, and the join handshake enforces it
 "Version check"). Once `pages.yml` and `server-image.yml` have both succeeded for the same
 `main` commit, the bot asks the homelab to deploy that server image (a request file that
 a host service acts on; see `bot/README.md`), then tells the merged PRs' threads they're
-live. The API and the bot are still deployed by hand.
+live and posts each release the deploy contains to the release channel, with its
+`CHANGELOG.md` notes. Each successful `api-image.yml` build of a newer `main` commit
+deploys the API the same way (an `api-request` file). The bot is still deployed by hand.
 
 **PR previews.** For each same-repo PR that touches `game/`, `preview.yml` exports the
 web client and deploys it to its own Cloudflare Pages origin, then posts the link on the
@@ -271,6 +273,35 @@ sessions, and the API's CORS rejects them. The build job holds no secrets becaus
 import can run PR code; the deploy job only uploads files. When the PR is merged or
 closed, the workflow deletes that branch's deployments. Secrets are in the `preview`
 environment: `CLOUDFLARE_API_TOKEN` (Pages: Edit) and `CLOUDFLARE_ACCOUNT_ID`.
+
+## Versioning
+
+The whole repo shares one [SemVer](https://semver.org/) version,
+`application/config/version` in `game/project.godot` (the HUD's top-left corner). Releases
+are cut by hand: run the `release` workflow (Actions > release > Run workflow) and pick
+the bump, `patch`, `minor` or `major`.
+
+- **`CHANGELOG.md`** has an `## [edge]` section for what's on `main` but not released.
+  Every pull request with a notable change adds a bullet there (see `AGENTS.md`).
+- **`release.yml`** runs `scripts/release.sh` (tested by `scripts/release_test.sh`) on the
+  tip of `main`. It moves the edge into a `## [X.Y.Z]` section, leaves an empty edge and
+  bumps `config/version`. It pushes that `chore(release): vX.Y.Z` commit and the
+  `vX.Y.Z` tag to `main` together, using the `tfpp-clanker` App, which bypasses the
+  "protect main" ruleset. Then it publishes a GitHub Release with the edge's notes.
+- The release commit changes `game/`, so the web client and server rebuild and deploy like
+  any merge. Once the deployed server contains the release, the Discord bot posts it to
+  the release channel (`bot/README.md`). Between releases, each deploy's new edge bullets
+  are posted there too, as "New on edge".
+- The in-game changelog (`features/changelog/`, `L`) shows "Edge" (entries since the
+  latest release) and the last 10 releases. `pages.yml` sets `RELEASE_NOTES=1`, and
+  `export.sh` runs `scripts/release_notes.sh` (tested by `scripts/release_notes_test.sh`)
+  to generate `releases.gd` from the tags. An entry belongs to the first release whose
+  tagged `entries.gd` has its title. Local debug runs call the script on the checkout
+  (including uncommitted entries) when the panel first opens; PR previews list every
+  entry.
+- Joining still compares commits, not versions (see "Version check").
+
+Versioning started at `v0.6.0`, matching the milestones below.
 
 ## Milestones
 

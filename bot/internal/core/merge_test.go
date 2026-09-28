@@ -24,10 +24,13 @@ func (f *fakeGitHub) PullRequestFiles(_ context.Context, n int) ([]string, error
 }
 
 func (f *fakeGitHub) FileContent(_ context.Context, path, ref string) ([]byte, error) {
-	if path != ".github/CODEOWNERS" || ref != "main" {
-		return nil, errors.New("unexpected file")
+	if path == ".github/CODEOWNERS" && ref == "main" {
+		return []byte(f.owners), nil
 	}
-	return []byte(f.owners), nil
+	if c, ok := f.contents[path+"@"+ref]; ok {
+		return []byte(c), nil
+	}
+	return nil, &github.APIError{Status: 404, Message: "Not Found"}
 }
 
 func (f *fakeGitHub) Compare(_ context.Context, base, head string) (github.Comparison, error) {
@@ -38,6 +41,11 @@ func (f *fakeGitHub) Compare(_ context.Context, base, head string) (github.Compa
 		return github.Comparison{Status: s}, nil
 	}
 	return github.Comparison{Status: "diverged"}, nil
+}
+
+func (f *fakeGitHub) Releases(context.Context) ([]github.Release, error) {
+	f.releaseCalls++
+	return f.releases, nil
 }
 
 func (f *fakeGitHub) CommitParents(_ context.Context, sha string) ([]string, error) {
@@ -87,8 +95,14 @@ func (f *fakeGitHub) DeleteBranch(_ context.Context, branch string) error {
 }
 
 type fakeDeployer struct {
-	requests []string
-	deployed string
+	requests    []string
+	apiRequests []string
+	deployed    string
+}
+
+func (d *fakeDeployer) DeployAPI(_ context.Context, sha string) error {
+	d.apiRequests = append(d.apiRequests, sha)
+	return nil
 }
 
 func (d *fakeDeployer) Deploy(_ context.Context, sha string) error {
@@ -471,6 +485,33 @@ func TestDeployAfterBothBuilds(t *testing.T) {
 	must(t, e.svc.MergeStep(ctx))
 	if e.postsContaining("🚀 PR #12 is live") != 1 {
 		t.Errorf("posts %+v", e.chat.posts)
+	}
+}
+
+func TestDeployAPIAfterItsBuild(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	build := func(wf, branch, conclusion, sha string) {
+		must(t, e.svc.WorkflowRun(ctx, github.WorkflowRun{Path: ".github/workflows/" + wf, Event: "push",
+			Status: "completed", Conclusion: conclusion, HeadBranch: branch, HeadSHA: sha}))
+	}
+	build("api-image.yml", "feat/x", "success", "a0")
+	build("api-image.yml", "main", "failure", "a0")
+	if len(e.deploy.apiRequests) != 0 {
+		t.Fatalf("deployed a branch or failed build: %v", e.deploy.apiRequests)
+	}
+	build("api-image.yml", "main", "success", "a1")
+	build("api-image.yml", "main", "success", "a1") // redelivered event
+	// An older build finishing late doesn't roll back.
+	e.gh.compare["a1...a0"] = "behind"
+	build("api-image.yml", "main", "success", "a0")
+	e.gh.compare["a1...a2"] = "ahead"
+	build("api-image.yml", "main", "success", "a2")
+	if strings.Join(e.deploy.apiRequests, ",") != "a1,a2" {
+		t.Errorf("api requests %v", e.deploy.apiRequests)
+	}
+	if len(e.deploy.requests) != 0 {
+		t.Errorf("an API build deployed the game server: %v", e.deploy.requests)
 	}
 }
 
