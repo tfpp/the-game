@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Settings menu",
+		"summary":
+		"Esc > Settings: rebind keys and controller buttons, tune look sensitivity and set volume."
+	},
+	{
 		"title": "Gameplay sound effects",
 		"summary":
 		"Guns, hits and animal explosions now make sound. Pickups and inventory actions have audio cues."
