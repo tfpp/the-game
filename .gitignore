@@ -12,6 +12,8 @@ game/*.translation
 game/export_credentials.cfg
 game/build_info.gd
 game/build_info.gd.uid
+game/features/changelog/releases.gd
+game/features/changelog/releases.gd.uid
 
 # Local tooling
 .playwright-mcp/

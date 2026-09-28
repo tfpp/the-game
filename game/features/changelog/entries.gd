@@ -5,8 +5,10 @@ class_name ChangelogEntries
 ## Whenever a new feature ships under `game/features/<name>/`, add one entry here in
 ## the same change (see AGENTS.md). Newest entries go at the top of the array.
 
-## `title`: the feature's display name. `summary`: a one-line, player-facing
-## description of what it does.
+## `title`: the feature's display name, unique across the list: released builds use it to
+## find the release that added the entry (scripts/release_notes.sh), so don't rename one
+## once it ships. `summary`: a one-line, player-facing description of what it does.
+## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Dev elevator",
@@ -23,6 +25,32 @@ const ENTRIES: Array[Dictionary] = [
 			"A dark three-story parking structure outside the casino — take the staff door"
 			+ " near the trampolines. Ramps and a stairwell connect all three levels."
 		)
+	},
+	{
+		"title": "Wandering gnomes",
+		"summary":
+		"Gnome burrows hug the outer walls, dash to far-off holes along real routed paths, and dodge you."
+	},
+	{
+		"title": "Steadier gun viewmodels",
+		"summary":
+		(
+			"Generated guns no longer jitter in first person, shots fire from where you aim and"
+			+ " stay visible, and each gunshot now plays from the gun that fired it."
+		)
+	},
+	{
+		"title": "New fonts",
+		"summary": "Cleaner text everywhere, with bolder headings and a sharper HUD."
+	},
+	{
+		"title": "Versioned release notes",
+		"summary": "Release notes group what's new by version, starting from v0.6.0."
+	},
+	{
+		"title": "Game settings",
+		"summary":
+		"Esc > Settings > Game: tune jump height and frog hop rate for everyone in the world."
 	},
 	{
 		"title": "Soccer ball physics",
