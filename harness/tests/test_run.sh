@@ -2,6 +2,8 @@
 # Tests for harness/run.sh and lib.sh. Each case runs run.sh in a throwaway repo (with a
 # bare "origin") using a scripted fake agent and a fake verify, so no LLM or Godot is used.
 set -euo pipefail
+# Tests set their own agent config; do not inherit the runner's.
+unset HARNESS_MODEL HARNESS_REASONING_EFFORT HARNESS_MAX_TURNS
 here="$(cd "$(dirname "$0")" && pwd)"
 src="$(cd "$here/../.." && pwd)"
 work="$(mktemp -d)"
