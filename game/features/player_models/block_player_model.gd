@@ -15,6 +15,8 @@ var pants_color := skin_color
 var shirt_id := ""
 var pants_id := ""
 var body_type: StringName = &"default"
+var head_type: StringName = &"human"
+var tail_type: StringName = &"none"
 var locomotion: StringName = &"idle"
 var _height_scale := 1.0
 var _skin_material: StandardMaterial3D
@@ -33,6 +35,7 @@ var _left_leg := Node3D.new()
 var _right_leg := Node3D.new()
 var _left_shoulder := Marker3D.new()
 var _right_shoulder := Marker3D.new()
+var _tail := Node3D.new()
 
 
 func _ready() -> void:
@@ -54,7 +57,10 @@ func _process(delta: float) -> void:
 		set_clothing(hand.inventory().shirt, hand.inventory().pants)
 	var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
 	if models != null:
-		set_body_type(models.type_for(player.get_multiplayer_authority()))
+		var peer_id := player.get_multiplayer_authority()
+		set_body_type(models.type_for(peer_id))
+		set_head_type(models.type_for_head(peer_id))
+		set_tail_type(models.type_for_tail(peer_id))
 	var holding := hand != null and ItemCatalog.find(hand.net_item_id) != null
 	var support := holding and hand.support_grip() != null
 	var pitch := player.pitch if player.is_local() else player.net_pitch
@@ -137,6 +143,7 @@ func _build() -> void:
 	_pivot(_right_shoulder, _torso, "RightShoulder", Vector3.ZERO)
 	_pivot(_left_leg, _rig, "LeftLeg", Vector3.ZERO)
 	_pivot(_right_leg, _rig, "RightLeg", Vector3.ZERO)
+	_pivot(_tail, _torso, "Tail", Vector3(0, -0.05, 0.18))
 	_decorate()
 
 
@@ -146,12 +153,13 @@ func _build() -> void:
 ## the GUT tests).
 func _decorate() -> void:
 	_height_scale = PENGUIN_HEIGHT_SCALE if body_type == &"penguin" else 1.0
-	for node: Node3D in [_torso, _head, _left_arm, _right_arm, _left_leg, _right_leg]:
+	for node: Node3D in [_torso, _head, _left_arm, _right_arm, _left_leg, _right_leg, _tail]:
 		_clear_boxes(node)
 	if body_type == &"penguin":
 		_decorate_penguin()
 	else:
 		_decorate_humanoid()
+	_decorate_tail()
 	_apply_clothing()
 
 
@@ -161,30 +169,16 @@ func _decorate_humanoid() -> void:
 	var trim := _trim_material
 	var pants := _pants_material
 	var underwear := _material(Color("f8f8f1"))
-	var hair := _material(Color(0.12, 0.075, 0.05))
-	var whites := _material(Color(0.92, 0.94, 0.88))
-	var eyes := _material(Color(0.12, 0.20, 0.22))
 	var feminine := body_type == &"girl"
 	var shoulder_width := 0.295 if feminine else 0.335
 	var hip_width := 0.145 if feminine else 0.12
 	var shirt_size := Vector3(0.40, 0.62, 0.25) if feminine else Vector3(0.46, 0.62, 0.25)
 	var trouser_width := 0.25 if feminine else 0.22
-	var hair_back_size := Vector3(0.44, 0.62, 0.025) if feminine else Vector3(0.44, 0.27, 0.025)
-	var hair_back_y := 0.06 if feminine else 0.24
 	_box(_torso, "Shirt", Vector3(0, 0.31, 0), shirt_size, shirt)
 	_box(_torso, "Hem", Vector3(0, 0.028, 0), Vector3(shirt_size.x + 0.008, 0.055, 0.26), trim)
 	_box(_torso, "Collar", Vector3(0, 0.59, -0.131), Vector3(0.15, 0.06, 0.012), skin)
 	_box(_torso, "Pocket", Vector3(-0.115, 0.41, -0.134), Vector3(0.11, 0.10, 0.014), trim)
-	_box(_head, "Face", Vector3(0, 0.19, 0), Vector3(0.43, 0.42, 0.43), skin)
-	_box(_head, "HairTop", Vector3(0, 0.405, 0), Vector3(0.45, 0.075, 0.45), hair)
-	_box(_head, "HairBack", Vector3(0, hair_back_y, 0.211), hair_back_size, hair)
-	_box(_head, "Fringe", Vector3(-0.075, 0.342, -0.22), Vector3(0.29, 0.07, 0.025), hair)
-	_box(_head, "FringeLock", Vector3(-0.15, 0.295, -0.22), Vector3(0.085, 0.07, 0.025), hair)
-	for side: float in [-1.0, 1.0]:
-		_box(_head, "Eye", Vector3(side * 0.105, 0.23, -0.22), Vector3(0.085, 0.048, 0.014), whites)
-		_box(_head, "Pupil", Vector3(side * 0.09, 0.23, -0.23), Vector3(0.035, 0.048, 0.01), eyes)
-	_box(_head, "Nose", Vector3(0, 0.16, -0.23), Vector3(0.065, 0.055, 0.045), skin)
-	_box(_head, "Mouth", Vector3(0, 0.09, -0.22), Vector3(0.095, 0.02, 0.014), hair)
+	_decorate_head(feminine)
 	for side: float in [-1.0, 1.0]:
 		var arm := _left_arm if side < 0 else _right_arm
 		var leg := _left_leg if side < 0 else _right_leg
@@ -206,6 +200,111 @@ func _decorate_humanoid() -> void:
 			Vector3(trouser_width + 0.009, 0.19, 0.26),
 			underwear
 		)
+
+
+## Builds the head for the current `head_type`, independent of `body_type` so any
+## body can wear any head. Not called for the "penguin" body: that costume keeps
+## its own fixed head, the same way it ignores clothing (see `_decorate_penguin`).
+func _decorate_head(feminine: bool) -> void:
+	match head_type:
+		&"frog":
+			_decorate_frog_head()
+		&"bird":
+			_decorate_bird_head()
+		_:
+			_decorate_human_head(feminine)
+
+
+func _decorate_human_head(feminine: bool) -> void:
+	var skin := _skin_material
+	var hair := _material(Color(0.12, 0.075, 0.05))
+	var whites := _material(Color(0.92, 0.94, 0.88))
+	var eyes := _material(Color(0.12, 0.20, 0.22))
+	var hair_back_size := Vector3(0.44, 0.62, 0.025) if feminine else Vector3(0.44, 0.27, 0.025)
+	var hair_back_y := 0.06 if feminine else 0.24
+	_box(_head, "Face", Vector3(0, 0.19, 0), Vector3(0.43, 0.42, 0.43), skin)
+	_box(_head, "HairTop", Vector3(0, 0.405, 0), Vector3(0.45, 0.075, 0.45), hair)
+	_box(_head, "HairBack", Vector3(0, hair_back_y, 0.211), hair_back_size, hair)
+	_box(_head, "Fringe", Vector3(-0.075, 0.342, -0.22), Vector3(0.29, 0.07, 0.025), hair)
+	_box(_head, "FringeLock", Vector3(-0.15, 0.295, -0.22), Vector3(0.085, 0.07, 0.025), hair)
+	for side: float in [-1.0, 1.0]:
+		_box(_head, "Eye", Vector3(side * 0.105, 0.23, -0.22), Vector3(0.085, 0.048, 0.014), whites)
+		_box(_head, "Pupil", Vector3(side * 0.09, 0.23, -0.23), Vector3(0.035, 0.048, 0.01), eyes)
+	_box(_head, "Nose", Vector3(0, 0.16, -0.23), Vector3(0.065, 0.055, 0.045), skin)
+	_box(_head, "Mouth", Vector3(0, 0.09, -0.22), Vector3(0.095, 0.02, 0.014), hair)
+
+
+## A wide-mouthed frog head with bulging eyes on top, regardless of skin tone.
+func _decorate_frog_head() -> void:
+	var skin := _material(Color(0.35, 0.55, 0.20))
+	var belly := _material(Color(0.72, 0.80, 0.45))
+	var eyes := _material(Color(0.85, 0.85, 0.20))
+	var pupils := _material(Color(0.05, 0.05, 0.05))
+	_box(_head, "Face", Vector3(0, 0.16, 0), Vector3(0.46, 0.36, 0.46), skin)
+	_box(_head, "Snout", Vector3(0, 0.06, -0.235), Vector3(0.30, 0.12, 0.06), belly)
+	for side: float in [-1.0, 1.0]:
+		_box(_head, "EyeBulge", Vector3(side * 0.15, 0.36, -0.08), Vector3(0.16, 0.16, 0.16), eyes)
+		_box(_head, "Pupil", Vector3(side * 0.15, 0.36, -0.16), Vector3(0.06, 0.06, 0.02), pupils)
+	_box(_head, "Mouth", Vector3(0, -0.02, -0.235), Vector3(0.34, 0.03, 0.02), pupils)
+
+
+## A beaked bird head, independent of and visually distinct from the full "penguin"
+## body costume so the two can be mixed (a bird head on a human or girl body).
+func _decorate_bird_head() -> void:
+	var feathers := _material(Color(0.82, 0.62, 0.12))
+	var mask := _material(Color(0.96, 0.93, 0.80))
+	var beak := _material(Color(0.90, 0.45, 0.08))
+	var eyes := _material(Color(0.05, 0.05, 0.05))
+	_box(_head, "Face", Vector3(0, 0.19, 0), Vector3(0.40, 0.38, 0.40), feathers)
+	_box(_head, "FaceMask", Vector3(0, 0.11, -0.15), Vector3(0.22, 0.18, 0.10), mask)
+	_box(_head, "Beak", Vector3(0, 0.15, -0.25), Vector3(0.11, 0.08, 0.13), beak)
+	for side: float in [-1.0, 1.0]:
+		_box(_head, "Eye", Vector3(side * 0.10, 0.27, -0.20), Vector3(0.06, 0.06, 0.01), eyes)
+
+
+## Attaches the current `tail_type` behind the hips, on any body type (including
+## "penguin") since it's a small additive accessory, not a full costume.
+func _decorate_tail() -> void:
+	match tail_type:
+		&"lizard":
+			_decorate_lizard_tail()
+		&"fin":
+			_decorate_fin_tail()
+		&"fluffy":
+			_decorate_fluffy_tail()
+
+
+## A tapering row of scaly segments.
+func _decorate_lizard_tail() -> void:
+	var scales := _material(Color(0.30, 0.55, 0.25))
+	var sizes: Array[Vector3] = [
+		Vector3(0.16, 0.16, 0.22),
+		Vector3(0.13, 0.13, 0.20),
+		Vector3(0.09, 0.09, 0.18),
+		Vector3(0.05, 0.05, 0.14),
+	]
+	var z := 0.0
+	var y := 0.0
+	for index: int in sizes.size():
+		var size: Vector3 = sizes[index]
+		z += size.z * 0.5
+		_box(_tail, "Segment%d" % index, Vector3(0, y, z), size, scales)
+		z += size.z * 0.5
+		y -= 0.02
+
+
+## A flat, fanned fish tail.
+func _decorate_fin_tail() -> void:
+	var fin := _material(Color(0.20, 0.45, 0.65))
+	_box(_tail, "Base", Vector3(0, 0, 0.08), Vector3(0.10, 0.10, 0.16), fin)
+	_box(_tail, "Fan", Vector3(0, 0, 0.22), Vector3(0.32, 0.22, 0.03), fin)
+
+
+## A round, puffy fur tail.
+func _decorate_fluffy_tail() -> void:
+	var fur := _material(Color(0.55, 0.40, 0.25))
+	_box(_tail, "Puff", Vector3(0, 0.02, 0.11), Vector3(0.22, 0.22, 0.22), fur)
+	_box(_tail, "PuffTip", Vector3(0, 0.05, 0.25), Vector3(0.15, 0.15, 0.15), fur)
 
 
 ## A short, rounded penguin costume: black feathers, a white belly, an orange beak
@@ -306,6 +405,39 @@ func set_body_type(new_type: String) -> void:
 	if next == body_type:
 		return
 	body_type = next
+	if _skin_material != null:
+		_decorate()
+
+
+## "frog" and "bird" reshape the head (see `_decorate_head`). Anything else
+## (including an unrecognized value) keeps the original human head. Has no effect
+## while `body_type` is "penguin", which keeps its own fixed head.
+func set_head_type(new_type: String) -> void:
+	var next: StringName = &"human"
+	if new_type == "frog":
+		next = &"frog"
+	elif new_type == "bird":
+		next = &"bird"
+	if next == head_type:
+		return
+	head_type = next
+	if _skin_material != null:
+		_decorate()
+
+
+## "lizard", "fin" and "fluffy" attach a tail behind the hips. Anything else
+## (including an unrecognized value) has no tail.
+func set_tail_type(new_type: String) -> void:
+	var next: StringName = &"none"
+	if new_type == "lizard":
+		next = &"lizard"
+	elif new_type == "fin":
+		next = &"fin"
+	elif new_type == "fluffy":
+		next = &"fluffy"
+	if next == tail_type:
+		return
+	tail_type = next
 	if _skin_material != null:
 		_decorate()
 

@@ -47,6 +47,7 @@ const SECTIONS: Array[Dictionary] = [
 		[
 			[&"toggle_third_person", "Third-person camera"],
 			[&"toggle_noclip", "Noclip"],
+			[&"spray", "Spray"],
 			[&"toggle_changelog", "Release notes"],
 		],
 	},

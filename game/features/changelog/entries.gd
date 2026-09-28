@@ -27,6 +27,23 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Mix-and-match creatures",
+		"summary":
+		(
+			"Character Model (Esc menu) now picks a body, head and tail independently — a"
+			+ " frog head or bird head, a lizard, fin or fluffy tail, on any body. Mix them"
+			+ " into your own impossible creature."
+		)
+	},
+	{
+		"title": "Day/night cycle",
+		"summary":
+		(
+			"Esc > Leaderboard ranks every connected player by money, jumps and kills, in"
+			+ " three tabs."
+		)
+	},
+	{
 		"title": "Eight slot machines, eight stakes",
 		"summary":
 		(

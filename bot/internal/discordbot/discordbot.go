@@ -19,6 +19,7 @@ import (
 	"github.com/disgoorg/disgo/rest"
 	"github.com/disgoorg/snowflake/v2"
 
+	"github.com/tfpp/the-game/bot/internal/claude"
 	"github.com/tfpp/the-game/bot/internal/core"
 )
 
@@ -33,11 +34,12 @@ type Config struct {
 	Logger           *slog.Logger
 }
 
-// Bot is the Discord side of the bot. Set Service before Open.
+// Bot is the Discord side of the bot. Set Service (and optionally Claude) before Open.
 type Bot struct {
 	cfg     Config
 	client  *bot.Client
 	Service *core.Service
+	Claude  *claude.Client // nil: /usage says it isn't set up
 }
 
 // noMentions is the default: messages never ping anyone unless a call allows it.
@@ -113,6 +115,11 @@ var (
 					{Name: "merge queue", Value: "merge"},
 				},
 			}},
+		},
+		discord.SlashCommandCreate{
+			Name:        "usage",
+			Description: "Show how much of Claude's usage limits the agent has used",
+			Contexts:    []discord.InteractionContextType{discord.InteractionContextTypeGuild},
 		},
 	}
 )
@@ -217,6 +224,20 @@ func (b *Bot) onCommand(e *events.ApplicationCommandInteractionCreate) {
 		if text, err = b.Service.Queue(ctx, data.String("which")); err == nil {
 			err = r.Reject(ctx, text) // private
 		}
+	case "usage":
+		r = private
+		if err = r.Defer(ctx); err != nil {
+			break
+		}
+		text, uerr := b.Claude.Report(ctx)
+		switch {
+		case errors.Is(uerr, claude.ErrNoToken):
+			text = "Claude usage isn't set up on this bot."
+		case uerr != nil:
+			b.cfg.Logger.Error("claude usage failed", "err", uerr)
+			text = "❌ Couldn't get Claude's usage limits. Try again later."
+		}
+		err = r.Respond(ctx, text)
 	default:
 		return
 	}
