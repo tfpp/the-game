@@ -11,6 +11,14 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Craps table",
+		"summary":
+		(
+			"Roll free shared pass-line rounds at the craps table opposite roulette."
+			+ " Use E, B / Circle or USE."
+		)
+	},
+	{
 		"title": "Codex subscription usage",
 		"summary":
 		(
