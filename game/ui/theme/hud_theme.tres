@@ -2,7 +2,8 @@
 
 [ext_resource type="Texture2D" path="res://assets/kenney/ui-space/PNG/Extra/Default/panel_glass_notch_br.png" id="glass_br"]
 [ext_resource type="Texture2D" path="res://assets/kenney/ui-space/PNG/Extra/Default/panel_glass_notch_bl.png" id="glass_bl"]
-[ext_resource type="FontFile" path="res://assets/kenney/ui/Font/Kenney Future.ttf" id="font_heading"]
+[ext_resource type="FontFile" path="res://assets/fonts/orbitron/Orbitron-Bold.ttf" id="font_heading"]
+[ext_resource type="FontFile" path="res://assets/fonts/barlow/Barlow-Medium.ttf" id="font_detail"]
 
 [sub_resource type="StyleBoxTexture" id="glass_left"]
 content_margin_left = 16.0
@@ -37,4 +38,5 @@ HudTitle/fonts/font = ExtResource("font_heading")
 HudTitle/font_sizes/font_size = 16
 HudDetail/base_type = &"Label"
 HudDetail/colors/font_color = Color(0.3, 0.35, 0.45, 1)
+HudDetail/fonts/font = ExtResource("font_detail")
 HudDetail/font_sizes/font_size = 13
