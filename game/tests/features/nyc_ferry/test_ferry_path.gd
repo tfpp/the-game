@@ -41,3 +41,28 @@ func test_schedule_repeats_after_a_full_cycle() -> void:
 	var a := NycFerryPath.distance_along_route(4.0, ROUTE_M, SPEED, WAIT_S)
 	var b := NycFerryPath.distance_along_route(4.0 + cycle_s, ROUTE_M, SPEED, WAIT_S)
 	assert_almost_eq(a, b, 0.001)
+
+
+func test_elapsed_for_distance_at_dock_a() -> void:
+	var elapsed := NycFerryPath.elapsed_for_distance(0.0, 1, ROUTE_M, SPEED, WAIT_S)
+	assert_almost_eq(elapsed, 0.0, 0.001)
+
+
+func test_elapsed_for_distance_at_dock_b() -> void:
+	var leg_s := ROUTE_M / SPEED
+	var elapsed := NycFerryPath.elapsed_for_distance(ROUTE_M, -1, ROUTE_M, SPEED, WAIT_S)
+	assert_almost_eq(elapsed, WAIT_S + leg_s, 0.001)
+
+
+func test_elapsed_for_distance_round_trips_heading_forward() -> void:
+	var distance := 12.0
+	var elapsed := NycFerryPath.elapsed_for_distance(distance, 1, ROUTE_M, SPEED, WAIT_S)
+	var back := NycFerryPath.distance_along_route(elapsed, ROUTE_M, SPEED, WAIT_S)
+	assert_almost_eq(back, distance, 0.001)
+
+
+func test_elapsed_for_distance_round_trips_heading_backward() -> void:
+	var distance := 18.0
+	var elapsed := NycFerryPath.elapsed_for_distance(distance, -1, ROUTE_M, SPEED, WAIT_S)
+	var back := NycFerryPath.distance_along_route(elapsed, ROUTE_M, SPEED, WAIT_S)
+	assert_almost_eq(back, distance, 0.001)
