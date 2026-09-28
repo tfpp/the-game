@@ -18,6 +18,7 @@ var ErrNotFound = errors.New("not found")
 // Run statuses. A run is active from the moment a user asks for it until its workflow
 // run completes, so reservations count against the limits before GitHub is called.
 const (
+	RunWaiting    = "waiting"     // queued behind other runs for a free agent slot
 	RunReserved   = "reserved"    // limits checked, not dispatched yet
 	RunDispatched = "dispatched"  // workflow_dispatch accepted, no workflow run seen yet
 	RunQueued     = "queued"      // workflow run seen, waiting for a runner
@@ -28,6 +29,9 @@ const (
 
 // ActiveStatuses are the statuses that count toward the concurrency cap.
 var ActiveStatuses = []string{RunReserved, RunDispatched, RunQueued, RunInProgress}
+
+// PendingStatuses are the statuses of runs that haven't finished: active or waiting.
+var PendingStatuses = append([]string{RunWaiting}, ActiveStatuses...)
 
 // Job states.
 const (
@@ -57,6 +61,7 @@ type Run struct {
 	ID            int64
 	JobID         int64 // 0 while a feature's issue doesn't exist yet
 	Mode          string
+	Instructions  string // for revise runs; kept so a waiting run can be dispatched later
 	UserID        string
 	Status        string
 	Conclusion    string
@@ -158,6 +163,8 @@ var migrations = []string{
 		key   TEXT PRIMARY KEY,
 		value TEXT NOT NULL
 	);`,
+	// 3: runs wait for a free agent slot instead of being refused.
+	`ALTER TABLE runs ADD COLUMN instructions TEXT NOT NULL DEFAULT '';`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {
@@ -188,6 +195,7 @@ func (s *Store) migrate(ctx context.Context) error {
 // --- limits and reservations ------------------------------------------------------------
 
 // Limits caps how many runs one user may start per window and how many may be active.
+// Runs beyond MaxActive wait for a free slot.
 type Limits struct {
 	PerUser    int
 	Window     time.Duration
@@ -195,23 +203,20 @@ type Limits struct {
 	StaleAfter time.Duration // active runs older than this no longer count
 }
 
-// LimitError says which limit refused a reservation.
+// LimitError says a reservation was refused by the per-user limit.
 type LimitError struct {
-	Active bool // true: the concurrency cap; false: the per-user limit
-	Limit  int
-	Retry  time.Time // per-user: when the oldest counted run leaves the window
+	Limit int
+	Retry time.Time // when the oldest counted run leaves the window
 }
 
 func (e *LimitError) Error() string {
-	if e.Active {
-		return fmt.Sprintf("%d agent runs are already active", e.Limit)
-	}
 	return fmt.Sprintf("per-user limit of %d runs reached", e.Limit)
 }
 
-// Reserve atomically checks the limits and records a reserved run for userID.
-// jobID may be 0 for a feature whose issue doesn't exist yet.
-func (s *Store) Reserve(ctx context.Context, userID string, jobID int64, mode string, lim Limits, now time.Time) (Run, error) {
+// Reserve atomically checks the per-user limit and records a run for userID. The run is
+// reserved if an agent slot is free and nobody is waiting for one; otherwise it waits
+// (see StartWaiting). jobID may be 0 for a feature whose issue doesn't exist yet.
+func (s *Store) Reserve(ctx context.Context, userID string, jobID int64, mode, instructions string, lim Limits, now time.Time) (Run, error) {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return Run{}, err
@@ -229,19 +234,21 @@ func (s *Store) Reserve(ctx context.Context, userID string, jobID int64, mode st
 	if lim.PerUser > 0 && used >= lim.PerUser {
 		return Run{}, &LimitError{Limit: lim.PerUser, Retry: time.Unix(oldest.Int64, 0).Add(lim.Window)}
 	}
-	var active int
-	err = tx.QueryRowContext(ctx,
-		`SELECT COUNT(*) FROM runs WHERE status IN (`+placeholders(len(ActiveStatuses))+`) AND updated_at > ?`,
-		append(anys(ActiveStatuses), now.Add(-lim.StaleAfter).Unix())...).Scan(&active)
+	free, err := slotFree(ctx, tx, lim, now)
 	if err != nil {
 		return Run{}, err
 	}
-	if lim.MaxActive > 0 && active >= lim.MaxActive {
-		return Run{}, &LimitError{Active: true, Limit: lim.MaxActive}
+	var waiting int
+	if err := tx.QueryRowContext(ctx, `SELECT COUNT(*) FROM runs WHERE status = ?`, RunWaiting).Scan(&waiting); err != nil {
+		return Run{}, err
+	}
+	status := RunReserved
+	if !free || waiting > 0 {
+		status = RunWaiting
 	}
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO runs (job_id, mode, user_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
-		nullableID(jobID), mode, userID, RunReserved, now.Unix(), now.Unix())
+		`INSERT INTO runs (job_id, mode, instructions, user_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+		nullableID(jobID), mode, instructions, userID, status, now.Unix(), now.Unix())
 	if err != nil {
 		return Run{}, err
 	}
@@ -252,7 +259,55 @@ func (s *Store) Reserve(ctx context.Context, userID string, jobID int64, mode st
 	if err := tx.Commit(); err != nil {
 		return Run{}, err
 	}
-	return Run{ID: id, JobID: jobID, Mode: mode, UserID: userID, Status: RunReserved, CreatedAt: now, UpdatedAt: now}, nil
+	return Run{ID: id, JobID: jobID, Mode: mode, Instructions: instructions, UserID: userID, Status: status,
+		CreatedAt: now, UpdatedAt: now}, nil
+}
+
+// slotFree reports whether fewer than MaxActive runs are active.
+func slotFree(ctx context.Context, tx *sql.Tx, lim Limits, now time.Time) (bool, error) {
+	if lim.MaxActive <= 0 {
+		return true, nil
+	}
+	var active int
+	err := tx.QueryRowContext(ctx,
+		`SELECT COUNT(*) FROM runs WHERE status IN (`+placeholders(len(ActiveStatuses))+`) AND updated_at > ?`,
+		append(anys(ActiveStatuses), now.Add(-lim.StaleAfter).Unix())...).Scan(&active)
+	return active < lim.MaxActive, err
+}
+
+// StartWaiting moves the oldest waiting run to reserved if an agent slot is free, and
+// returns it; ErrNotFound means no slot or no waiting run. Runs of features whose issue
+// is still being opened are skipped until they have a job.
+func (s *Store) StartWaiting(ctx context.Context, lim Limits, now time.Time) (Run, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return Run{}, err
+	}
+	defer tx.Rollback()
+	if free, err := slotFree(ctx, tx, lim, now); err != nil || !free {
+		if err == nil {
+			err = ErrNotFound
+		}
+		return Run{}, err
+	}
+	r, err := scanRun(tx.QueryRowContext(ctx,
+		"SELECT "+runCols+" FROM runs WHERE status = ? AND job_id IS NOT NULL ORDER BY id LIMIT 1", RunWaiting))
+	if err != nil {
+		return Run{}, err
+	}
+	if _, err := tx.ExecContext(ctx, `UPDATE runs SET status = ?, updated_at = ? WHERE id = ?`,
+		RunReserved, now.Unix(), r.ID); err != nil {
+		return Run{}, err
+	}
+	r.Status, r.UpdatedAt = RunReserved, time.Unix(now.Unix(), 0)
+	return r, tx.Commit()
+}
+
+// WaitingPosition is the run's place in line among waiting runs (1 is next).
+func (s *Store) WaitingPosition(ctx context.Context, id int64) (int, error) {
+	var n int
+	err := s.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM runs WHERE status = ? AND id <= ?`, RunWaiting, id).Scan(&n)
+	return n, err
 }
 
 // --- jobs ----------------------------------------------------------------------------------
@@ -356,13 +411,13 @@ func (s *Store) OpenJobsWithPR(ctx context.Context) ([]Job, error) {
 
 // --- runs ----------------------------------------------------------------------------------
 
-const runCols = `id, COALESCE(job_id, 0), mode, user_id, status, conclusion, COALESCE(workflow_run_id, 0),
+const runCols = `id, COALESCE(job_id, 0), mode, instructions, user_id, status, conclusion, COALESCE(workflow_run_id, 0),
 	run_url, relayed, created_at, updated_at`
 
 func scanRun(row interface{ Scan(...any) error }) (Run, error) {
 	var r Run
 	var created, updated int64
-	err := row.Scan(&r.ID, &r.JobID, &r.Mode, &r.UserID, &r.Status, &r.Conclusion, &r.WorkflowRunID,
+	err := row.Scan(&r.ID, &r.JobID, &r.Mode, &r.Instructions, &r.UserID, &r.Status, &r.Conclusion, &r.WorkflowRunID,
 		&r.RunURL, &r.Relayed, &created, &updated)
 	if errors.Is(err, sql.ErrNoRows) {
 		return Run{}, ErrNotFound
@@ -375,19 +430,26 @@ func (s *Store) RunByID(ctx context.Context, id int64) (Run, error) {
 	return scanRun(s.db.QueryRowContext(ctx, "SELECT "+runCols+" FROM runs WHERE id = ?", id))
 }
 
-// ActiveRunForJob returns the newest active run of a job, or ErrNotFound.
+// ActiveRunForJob returns the newest active or waiting run of a job, or ErrNotFound.
 func (s *Store) ActiveRunForJob(ctx context.Context, jobID int64) (Run, error) {
 	return scanRun(s.db.QueryRowContext(ctx,
-		"SELECT "+runCols+" FROM runs WHERE job_id = ? AND status IN ("+placeholders(len(ActiveStatuses))+
+		"SELECT "+runCols+" FROM runs WHERE job_id = ? AND status IN ("+placeholders(len(PendingStatuses))+
 			") ORDER BY id DESC LIMIT 1",
-		append([]any{jobID}, anys(ActiveStatuses)...)...))
+		append([]any{jobID}, anys(PendingStatuses)...)...))
 }
 
 // ActiveRuns lists every active run, oldest first.
 func (s *Store) ActiveRuns(ctx context.Context) ([]Run, error) {
-	rows, err := s.db.QueryContext(ctx,
-		"SELECT "+runCols+" FROM runs WHERE status IN ("+placeholders(len(ActiveStatuses))+") ORDER BY id",
-		anys(ActiveStatuses)...)
+	return s.runs(ctx, "status IN ("+placeholders(len(ActiveStatuses))+") ORDER BY id", anys(ActiveStatuses)...)
+}
+
+// WaitingRuns lists the runs waiting for an agent slot, in the order they will start.
+func (s *Store) WaitingRuns(ctx context.Context) ([]Run, error) {
+	return s.runs(ctx, "status = ? ORDER BY id", RunWaiting)
+}
+
+func (s *Store) runs(ctx context.Context, where string, args ...any) ([]Run, error) {
+	rows, err := s.db.QueryContext(ctx, "SELECT "+runCols+" FROM runs WHERE "+where, args...)
 	if err != nil {
 		return nil, err
 	}
