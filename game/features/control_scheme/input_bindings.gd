@@ -7,6 +7,8 @@ extends RefCounted
 ## Bindings are saved as small dictionaries: {"key": physical_keycode},
 ## {"mouse": button_index} or {"pad": button_index}.
 
+const Glyphs := preload("res://features/control_scheme/input_glyphs.gd")
+
 ## Actions listed on the Controls page, by section: [action, label]. Actions a feature
 ## registers that aren't listed here still show up, under "Other".
 const SECTIONS: Array[Dictionary] = [
@@ -244,3 +246,27 @@ static func slot_text(action: StringName, pad: bool) -> String:
 	if pad and STICK_ACTIONS.has(action):
 		return "Left stick" if text.is_empty() else "Left stick, " + text
 	return text if not text.is_empty() else "—"
+
+
+## The slot's bindings as glyphs, in the same order as `slot_text`. Empty if any
+## binding has no glyph (the page shows `slot_text` then) or nothing is bound.
+static func slot_glyphs(action: StringName, pad: bool) -> Array[Texture2D]:
+	var result: Array[Texture2D] = []
+	if pad and STICK_ACTIONS.has(action):
+		result.append(Glyphs.named("Left stick"))
+	if not InputMap.has_action(action):
+		return result
+	for event: InputEvent in InputMap.action_get_events(action):
+		if InputLabels.is_pad(event) != pad:
+			continue
+		var glyph := Glyphs.for_event(event)
+		var button := event as InputEventMouseButton
+		# Like slot_text, either wheel direction reads as just "Wheel".
+		if button and button.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
+			glyph = Glyphs.named("Wheel")
+		if glyph == null:
+			result.clear()
+			return result
+		if not result.has(glyph):
+			result.append(glyph)
+	return result

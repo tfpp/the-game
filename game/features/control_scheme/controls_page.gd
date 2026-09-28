@@ -4,8 +4,13 @@ extends VBoxContainer
 ## rebindable list of every action with a keyboard & mouse and a controller column.
 
 const Bindings := preload("res://features/control_scheme/input_bindings.gd")
+const Glyphs := preload("res://features/control_scheme/input_glyphs.gd")
+## Glyph tiles are 16px pixel art, drawn at 2x; taller glyphs (Enter) shrink to fit.
+const GLYPH_HEIGHT := 32.0
 const SLOT_WIDTH := 180.0
 const CONFLICT_COLOR := Color(0.8, 0.2, 0.2)
+## Tints a conflicting slot's glyphs red.
+const CONFLICT_TINT := Color(1.0, 0.45, 0.45)
 const HINT_COLOR := Color(0.22, 0.25, 0.33, 0.75)
 ## Slider ranges as (min, max, step): Source-style mouse sensitivity, and controller or
 ## touch look speed as a multiple of its default.
@@ -44,8 +49,16 @@ func refresh() -> void:
 			capture.get("action", &"") == action and capture.get("pad", false) == pad
 		)
 		var clashes := Bindings.conflicts(action, pad)
-		button.text = "Press…" if capturing else Bindings.slot_text(action, pad)
-		button.tooltip_text = _conflict_text(clashes)
+		var text := Bindings.slot_text(action, pad)
+		var glyphs: Array[Texture2D] = [] if capturing else Bindings.slot_glyphs(action, pad)
+		var box := button.get_node("Glyphs") as HBoxContainer
+		_show_glyphs(box, glyphs)
+		box.modulate = Color.WHITE if clashes.is_empty() else CONFLICT_TINT
+		button.text = "Press…" if capturing else ("" if not glyphs.is_empty() else text)
+		# The tooltip names the binding too, since glyphs can be ambiguous.
+		button.tooltip_text = text
+		if not clashes.is_empty():
+			button.tooltip_text += "\n" + _conflict_text(clashes)
 		for color: StringName in [&"font_color", &"font_hover_color", &"font_focus_color"]:
 			if clashes.is_empty():
 				button.remove_theme_color_override(color)
@@ -167,6 +180,10 @@ func _binding_row(action: StringName, label: String) -> HBoxContainer:
 		button.add_theme_font_override("font", ThemeDB.fallback_font)
 		button.add_theme_font_size_override("font_size", 15)
 		button.pressed.connect(_feature.begin_capture.bind(action, pad))
+		var glyphs := _glyph_box()
+		glyphs.name = "Glyphs"
+		glyphs.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		button.add_child(glyphs)
 		row.add_child(button)
 		_slots["%s:%s" % [action, "pad" if pad else "kbm"]] = button
 	return row
@@ -178,6 +195,15 @@ func _row(label: String, keyboard: String, pad: String) -> HBoxContainer:
 	row.add_theme_constant_override("separation", 8)
 	var texts: Array[String] = [label, keyboard, pad]
 	for index: int in texts.size():
+		var glyph := Glyphs.named(texts[index]) if index > 0 else null
+		if glyph:
+			var box := _glyph_box()
+			box.custom_minimum_size.x = SLOT_WIDTH
+			box.tooltip_text = texts[index]
+			box.mouse_filter = Control.MOUSE_FILTER_PASS
+			_show_glyphs(box, [glyph])
+			row.add_child(box)
+			continue
 		var cell := Label.new()
 		cell.text = texts[index]
 		if index == 0:
@@ -187,6 +213,31 @@ func _row(label: String, keyboard: String, pad: String) -> HBoxContainer:
 			cell.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		row.add_child(cell)
 	return row
+
+
+## A centered row of input glyphs that lets clicks through to its button.
+static func _glyph_box() -> HBoxContainer:
+	var box := HBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_theme_constant_override("separation", 4)
+	return box
+
+
+static func _show_glyphs(box: HBoxContainer, glyphs: Array[Texture2D]) -> void:
+	for child: Node in box.get_children():
+		box.remove_child(child)
+		child.queue_free()
+	for glyph: Texture2D in glyphs:
+		var rect := TextureRect.new()
+		rect.texture = glyph
+		rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		rect.custom_minimum_size = glyph.get_size() * (GLYPH_HEIGHT / glyph.get_height())
+		rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(rect)
 
 
 func _slider(
