@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Soccer ball physics",
+		"summary":
+		"The map's soccer ball rolls and bounces now — bump it with your body or shoot it."
+	},
+	{
 		"title": "Girl model option",
 		"summary":
 		"Pick a girl body model from the Esc menu's Character Model screen. Everyone sees your choice."
