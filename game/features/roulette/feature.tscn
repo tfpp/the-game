@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://features/roulette/table.tscn" id="1"]
+
+[node name="RouletteTables" type="Node3D"]
+
+[node name="Table" parent="." instance=ExtResource("1")]
+position = Vector3(6, 0, -4)
