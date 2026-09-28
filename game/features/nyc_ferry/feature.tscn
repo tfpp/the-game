@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://features/nyc_ferry/nyc_ferry.gd" id="1_script"]
 
@@ -17,13 +17,28 @@ size = Vector3(3, 1.4, 3)
 [sub_resource type="StandardMaterial3D" id="CabinMat"]
 albedo_color = Color(0.92, 0.93, 0.95, 1)
 
-[sub_resource type="CylinderMesh" id="WheelMesh"]
-top_radius = 0.35
-bottom_radius = 0.35
-height = 0.08
+[sub_resource type="CylinderMesh" id="PedestalMesh"]
+top_radius = 0.1
+bottom_radius = 0.16
+height = 0.85
 
-[sub_resource type="StandardMaterial3D" id="WheelMat"]
-albedo_color = Color(0.35, 0.22, 0.08, 1)
+[sub_resource type="TorusMesh" id="RimMesh"]
+inner_radius = 0.3
+outer_radius = 0.38
+
+[sub_resource type="CylinderMesh" id="HubMesh"]
+top_radius = 0.08
+bottom_radius = 0.08
+height = 0.12
+
+[sub_resource type="BoxMesh" id="SpokeMesh"]
+size = Vector3(0.9, 0.05, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="WoodMat"]
+albedo_color = Color(0.32, 0.19, 0.08, 1)
+
+[sub_resource type="StandardMaterial3D" id="BrassMat"]
+albedo_color = Color(0.72, 0.58, 0.24, 1)
 
 [sub_resource type="SceneReplicationConfig" id="Replication"]
 properties/0/path = NodePath(".:net_position")
@@ -49,10 +64,43 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, -2)
 mesh = SubResource("CabinMesh")
 surface_material_override/0 = SubResource("CabinMat")
 
-[node name="Wheel" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 1.0, -0.2)
-mesh = SubResource("WheelMesh")
-surface_material_override/0 = SubResource("WheelMat")
+[node name="Helm" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+
+[node name="Pedestal" type="MeshInstance3D" parent="Helm"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.575, 0)
+mesh = SubResource("PedestalMesh")
+surface_material_override/0 = SubResource("WoodMat")
+
+[node name="Wheel" type="Node3D" parent="Helm"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 1.0, 0)
+
+[node name="Rim" type="MeshInstance3D" parent="Helm/Wheel"]
+mesh = SubResource("RimMesh")
+surface_material_override/0 = SubResource("WoodMat")
+
+[node name="Hub" type="MeshInstance3D" parent="Helm/Wheel"]
+mesh = SubResource("HubMesh")
+surface_material_override/0 = SubResource("BrassMat")
+
+[node name="Spoke0" type="MeshInstance3D" parent="Helm/Wheel"]
+mesh = SubResource("SpokeMesh")
+surface_material_override/0 = SubResource("WoodMat")
+
+[node name="Spoke45" type="MeshInstance3D" parent="Helm/Wheel"]
+transform = Transform3D(0.7071, 0, -0.7071, 0, 1, 0, 0.7071, 0, 0.7071, 0, 0, 0)
+mesh = SubResource("SpokeMesh")
+surface_material_override/0 = SubResource("WoodMat")
+
+[node name="Spoke90" type="MeshInstance3D" parent="Helm/Wheel"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0, 0, 0)
+mesh = SubResource("SpokeMesh")
+surface_material_override/0 = SubResource("WoodMat")
+
+[node name="Spoke135" type="MeshInstance3D" parent="Helm/Wheel"]
+transform = Transform3D(-0.7071, 0, -0.7071, 0, 1, 0, 0.7071, 0, -0.7071, 0, 0, 0)
+mesh = SubResource("SpokeMesh")
+surface_material_override/0 = SubResource("WoodMat")
 
 [node name="Sign" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, -2)

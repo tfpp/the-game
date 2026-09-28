@@ -9,9 +9,9 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
-		"title": "Weapon hotbar & gun recoil",
+		"title": "Ferry helm",
 		"summary":
-		"Press 1-8 or scroll to swap between carried items instantly. Guns now kick back when fired."
+		"Taking the ferry's wheel now plants you at its old-timey helm instead of wandering off."
 	},
 	{
 		"title": "Gameplay sound effects",
