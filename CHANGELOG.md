@@ -12,6 +12,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 ## [edge]
 
+- Add an F-toggle flashlight with shared beams and a rebindable Controls entry.
+
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
 - Stop the HUD version test from failing CI after every release.
