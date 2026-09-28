@@ -27,8 +27,9 @@ if the wallet can't cover it. It's the `charge` action on `POST /api/game/money`
 
 ## Server connection
 
-Deploy the updated **API first**, then the matching game server and web client.
-The API migration is automatic on startup. Keep its existing persistent API_DB
+Deploy the updated **API first**, then the matching game server and web client. The bot
+does this automatically: API builds deploy as soon as they finish, ahead of the slower
+server and web client builds. The API migration is automatic on startup. Keep its existing persistent API_DB
 volume. No new secret is required: the server's `--ticket-key-file` and the API's
 `API_TICKET_KEY_FILE` share the existing ticket key.
 
