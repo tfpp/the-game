@@ -17,6 +17,11 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Game settings",
+		"summary":
+		"Esc > Settings > Game: tune jump height and frog hop rate for everyone in the world."
+	},
+	{
 		"title": "Soccer ball physics",
 		"summary":
 		"The map's soccer ball rolls and bounces now — bump it with your body or shoot it."
