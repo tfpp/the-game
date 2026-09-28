@@ -16,6 +16,11 @@ const ENTRIES: Array[Dictionary] = [
 		"Offline players stay ranked; signed-in scores survive reconnects and server restarts."
 	},
 	{
+		"title": "Gnome express tunnels",
+		"summary":
+		"Use any gnome hole to enter the tunnels, run at 4x speed and exit at any other hole."
+	},
+	{
 		"title": "Flashlights",
 		"summary":
 		"Press F to toggle a flashlight that follows your aim and lights the way for everyone."
