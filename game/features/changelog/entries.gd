@@ -9,6 +9,10 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Combat",
+		"summary": "Weapons can now kill — take damage and respawn once your health runs out."
+	},
+	{
 		"title": "Item drops & new guns",
 		"summary":
 		"Drop any held item with G; thrown items bounce based on weight. Added an SMG and a shotgun."
