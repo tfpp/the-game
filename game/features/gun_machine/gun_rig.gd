@@ -30,6 +30,11 @@ const AMMO_SOUND_CUES := {
 @export var net_stats: Dictionary = {}
 @export var net_ammo_in_mag := 0
 @export var net_ammo_reserve := 0
+## False while a rolled gun sits in reserve instead of in the player's hand — e.g.
+## after `holster()` makes room for a holdable weapon (features/holdables). The rolled
+## stats stay put either way, so re-selecting this slot (see `request_equip_rig`)
+## doesn't cost another trip to the machine.
+@export var net_equipped := true
 
 ## Set from spawn data (see gun_machine.gd), identically on every peer, before this
 ## node enters the tree, so it doesn't need its own synchronizer property.
@@ -72,7 +77,7 @@ func _process(delta: float) -> void:
 	if _signature(net_stats) != _mounted_signature:
 		_rebuild_view()
 	var player := _player()
-	visible = player != null and not net_stats.is_empty()
+	visible = player != null and is_active()
 	if player != null:
 		global_transform = _mount_transform(player)
 	if _flash_timer > 0.0:
@@ -89,7 +94,7 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if peer_id != multiplayer.get_unique_id() or not Controls.gameplay_active():
 		return
-	if net_stats.is_empty():
+	if not is_active():
 		return
 	if event.is_action_pressed(&"gun_fire"):
 		get_viewport().set_input_as_handled()
@@ -127,12 +132,25 @@ static func should_auto_fire(is_automatic: bool, held: bool, cooldown_remaining:
 
 ## Server-only: equips `stats` (see GunGenerator.generate), fully loaded. Replaces
 ## whatever was held before — the machine calls this after a successful purchase.
+## Also holsters any holdable weapon (features/holdables) the player has in hand, so
+## the two systems never both keep a weapon equipped at once.
 func equip(stats: Dictionary) -> void:
 	if not multiplayer.is_server():
 		return
+	_holster_holdable_weapon()
 	net_stats = stats.duplicate(true)
 	net_ammo_in_mag = int(stats["magazine_size"])
 	net_ammo_reserve = int(stats["total_ammo"]) - net_ammo_in_mag
+	net_equipped = true
+
+
+## Server-only: hides this rig's gun without discarding its rolled stats, so a
+## holdable weapon (features/holdables) can take over the hand. Called by
+## PlayerInventory when a weapon is equipped or picked up.
+func holster() -> void:
+	if not multiplayer.is_server():
+		return
+	net_equipped = false
 
 
 ## Server-only: the trash can empties the rig with no refund.
@@ -142,17 +160,35 @@ func discard() -> void:
 	net_stats = {}
 	net_ammo_in_mag = 0
 	net_ammo_reserve = 0
+	net_equipped = true
+
+
+## True while this rig's gun is the one actually in the player's hand — as opposed to
+## holstered in reserve (see `holster`) or never rolled at all.
+func is_active() -> bool:
+	return net_equipped and not net_stats.is_empty()
 
 
 func has_ammo_to_fire() -> bool:
 	return not net_stats.is_empty() and net_ammo_in_mag >= int(net_stats["barrel_count"])
 
 
+## Re-selects this rig's holstered gun, holstering any holdable weapon in hand first —
+## the reverse of a holdable weapon holstering this rig. Used by
+## features/weapon_hotbar to let scrolling or a hotbar key bring the rig gun back out.
+@rpc("any_peer", "call_local", "reliable")
+func request_equip_rig() -> void:
+	if not multiplayer.is_server() or not _is_own_request() or net_stats.is_empty():
+		return
+	_holster_holdable_weapon()
+	net_equipped = true
+
+
 @rpc("any_peer", "call_local", "reliable")
 func request_fire() -> void:
 	if not multiplayer.is_server() or not _is_own_request() or _fire_cooldown > 0.0:
 		return
-	if not has_ammo_to_fire():
+	if not is_active() or not has_ammo_to_fire():
 		return
 	var player := _player()
 	var gun_machine := get_tree().get_first_node_in_group(&"gun_machine_root")
@@ -200,7 +236,7 @@ func _play_fire(ammo_type: GunGenerator.AmmoType, origin: Vector3) -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func request_reload() -> void:
-	if not multiplayer.is_server() or not _is_own_request() or net_stats.is_empty():
+	if not multiplayer.is_server() or not _is_own_request() or not is_active():
 		return
 	var needed := int(net_stats["magazine_size"]) - net_ammo_in_mag
 	var moved := mini(needed, net_ammo_reserve)
@@ -222,6 +258,15 @@ func _is_own_request() -> bool:
 	var sender := multiplayer.get_remote_sender_id()
 	var effective := sender if sender != 0 else multiplayer.get_unique_id()
 	return effective == peer_id
+
+
+## Server-only: stows whatever holdable weapon (features/holdables) this peer has in
+## hand, if any, so this rig can take over the hand without two weapons showing at
+## once. A no-op if there's no matching Hand or it isn't holding a weapon.
+func _holster_holdable_weapon() -> void:
+	var hand := Hand.for_peer(get_tree(), peer_id)
+	if hand != null:
+		hand.inventory().holster_weapon()
 
 
 func _player() -> Player:

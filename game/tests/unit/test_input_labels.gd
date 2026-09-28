@@ -27,9 +27,9 @@ func test_event_labels() -> void:
 	assert_eq(InputLabels.event_label(pad), "A / Cross")
 
 
-func test_jump_label_collapses_the_wheel_and_splits_by_device() -> void:
+func test_jump_label_splits_by_device() -> void:
 	Controls.apply_scheme(Controls.Scheme.RIGHT_HANDED)
-	assert_eq(InputLabels.action_label(&"jump", false), "Space / Wheel")
+	assert_eq(InputLabels.action_label(&"jump", false), "Space")
 	assert_eq(InputLabels.action_label(&"jump", true), "A / Cross")
 
 

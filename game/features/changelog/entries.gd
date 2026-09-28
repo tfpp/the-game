@@ -11,8 +11,13 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
-		"title": "Girl model balance",
-		"summary": "The girl model has a smaller hitbox and earns 15% less passive income."
+		"title": "One weapon at a time",
+		"summary":
+		(
+			"Equipping a gun now holsters whatever else you had out. A strip at the bottom of"
+			+ " the screen shows every weapon slot (1-8, 9 for the gun machine) and which one's"
+			+ " active. Scroll now cycles weapon slots instead of also jumping."
+		)
 	},
 	{
 		"title": "Bouncier frogs",

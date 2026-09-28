@@ -63,3 +63,25 @@ func test_next_slot_searches_backward() -> void:
 func test_next_slot_returns_negative_one_when_the_backpack_is_empty() -> void:
 	var backpack := PackedStringArray(["", "", "", "", "", "", "", ""])
 	assert_eq(WeaponHotbarMath.next_slot(backpack, -1, 1), -1)
+
+
+func test_next_occupied_finds_the_nearest_true_entry_forward() -> void:
+	var occupied: Array[bool] = [false, false, true, false, true, false, false, false, true]
+	assert_eq(WeaponHotbarMath.next_occupied(occupied, -1, 1), 2)
+	assert_eq(WeaponHotbarMath.next_occupied(occupied, 2, 1), 4)
+	assert_eq(WeaponHotbarMath.next_occupied(occupied, 4, 1), 8, "Wraps into the extra slot")
+
+
+func test_next_occupied_wraps_around() -> void:
+	var occupied: Array[bool] = [false, false, false, false, false, false, false, false, true]
+	assert_eq(WeaponHotbarMath.next_occupied(occupied, 8, 1), 8)
+
+
+func test_next_occupied_searches_backward() -> void:
+	var occupied: Array[bool] = [false, false, true, false, false, false, false, false, true]
+	assert_eq(WeaponHotbarMath.next_occupied(occupied, 0, -1), 8)
+
+
+func test_next_occupied_returns_negative_one_when_nothing_is_occupied() -> void:
+	var occupied: Array[bool] = [false, false, false]
+	assert_eq(WeaponHotbarMath.next_occupied(occupied, -1, 1), -1)

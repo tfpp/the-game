@@ -39,6 +39,8 @@ func collect(id: String) -> bool:
 	if not item_at(target).is_empty():
 		target = backpack.find("")
 	_set_item(target, id)
+	if target == -1:
+		_holster_gun_rig_if_weapon(id)
 	hand()._play_inventory.rpc_id(hand().peer_id, &"pickup")
 	return true
 
@@ -54,6 +56,8 @@ func request_equip(index: int) -> void:
 	var previous := item_at(target)
 	_set_item(target, id)
 	_set_item(index, previous)
+	if target == -1:
+		_holster_gun_rig_if_weapon(id)
 	hand()._play_inventory.rpc_id(hand().peer_id, &"equip")
 
 
@@ -78,6 +82,38 @@ func request_drop(slot: int) -> void:
 		return
 	_set_item(slot, "")
 	hand()._play_inventory.rpc_id(hand().peer_id, &"drop")
+
+
+## Server-only: moves whatever weapon is currently held out of the hand and into an
+## empty backpack slot, dropping it instead if the backpack is full. Called by
+## features/gun_machine's GunRig before it takes over the hand, so a rig gun and a
+## holdable weapon can never both be equipped at once (see also
+## `_holster_gun_rig_if_weapon`, which does the reverse).
+func holster_weapon() -> void:
+	if not multiplayer.is_server():
+		return
+	var id := hand().net_item_id
+	var def := ItemCatalog.find(id)
+	if def == null or def.category != ItemDefinition.Category.WEAPON:
+		return
+	var empty := backpack.find("")
+	if empty != -1:
+		_set_item(empty, id)
+	else:
+		hand().drop_inventory_item(id)
+	_set_item(-1, "")
+
+
+## Server-only: if `id` is a weapon that just moved into the hand, holsters the gun
+## machine's rig (features/gun_machine) for the same peer so it can't stay equipped
+## alongside a holdable weapon.
+func _holster_gun_rig_if_weapon(id: String) -> void:
+	var def := ItemCatalog.find(id)
+	if def == null or def.category != ItemDefinition.Category.WEAPON:
+		return
+	var rig := GunRig.for_peer(get_tree(), hand().peer_id)
+	if rig != null:
+		rig.holster()
 
 
 func _authorized() -> bool:
