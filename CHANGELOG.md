@@ -24,6 +24,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Remodel the card tables, chairs and salon patrons with curved upholstery, shaped supports and fitted anatomy; use a shared 128px surface atlas and texture previously plain model materials.
 - Fetch news headlines only on the server, every 15 minutes, and cache them there so
   clients never call TheNewsAPI and restarts reuse recent headlines.
+- Box with your bare hands: click to jab, hold and release to power punch. Knock the
+  shooting gallery dummies into a ragdoll and power punch them across the floor.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
