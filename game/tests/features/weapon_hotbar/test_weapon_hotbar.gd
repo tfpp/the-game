@@ -7,6 +7,7 @@ extends GutTest
 const PlayerScene := preload("res://core/player/player.tscn")
 const HandScene := preload("res://features/holdables/hand.tscn")
 const WeaponHotbarScene := preload("res://features/weapon_hotbar/feature.tscn")
+const GunRigScene := preload("res://features/gun_machine/gun_rig.tscn")
 
 var _player: Player
 var _hand: Hand
@@ -62,6 +63,40 @@ func test_cycle_backward_wraps_to_the_previous_occupied_slot() -> void:
 func test_cycle_does_nothing_with_an_empty_backpack() -> void:
 	_hotbar._cycle(_hand, 1)
 	assert_eq(_hand.net_item_id, "")
+
+
+func test_equip_rig_selects_a_holstered_gun_machine_gun() -> void:
+	var rig := _spawn_rig()
+	rig.equip(GunGenerator.generate(RandomNumberGenerator.new()))
+	rig.holster()
+	_hotbar._equip_rig(_hand)
+	assert_true(rig.is_active())
+
+
+func test_equip_rig_does_nothing_without_a_rolled_gun() -> void:
+	var rig := _spawn_rig()
+	_hotbar._equip_rig(_hand)
+	assert_false(rig.is_active())
+
+
+func test_cycle_reaches_the_rig_slot_after_the_backpack_and_holsters_the_hand() -> void:
+	var rig := _spawn_rig()
+	rig.equip(GunGenerator.generate(RandomNumberGenerator.new()))
+	_hand.inventory().backpack[1] = "pistol"
+	_hotbar._cycle(_hand, 1)
+	assert_eq(_hand.net_item_id, "pistol")
+	_hotbar._cycle(_hand, 1)
+	assert_eq(_hand.net_item_id, "", "The rig gun took over the hand")
+	assert_true(rig.is_active())
+	assert_true(_hand.inventory().backpack.has("pistol"), "The pistol was stowed, not lost")
+
+
+func _spawn_rig() -> GunRig:
+	var rig := GunRigScene.instantiate() as GunRig
+	rig.peer_id = 1
+	add_child_autofree(rig)
+	rig.set_process(false)
+	return rig
 
 
 func test_firing_starts_a_recoil_kick_that_moves_the_held_view() -> void:

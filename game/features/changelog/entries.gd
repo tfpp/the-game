@@ -9,6 +9,15 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "One weapon at a time",
+		"summary":
+		(
+			"Equipping a gun now holsters whatever else you had out. A strip at the bottom of"
+			+ " the screen shows every weapon slot (1-8, 9 for the gun machine) and which one's"
+			+ " active. Scroll now cycles weapon slots instead of also jumping."
+		)
+	},
+	{
 		"title": "Soccer ball physics",
 		"summary":
 		"The map's soccer ball rolls and bounces now — bump it with your body or shoot it."

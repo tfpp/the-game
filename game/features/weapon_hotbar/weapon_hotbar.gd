@@ -1,10 +1,14 @@
 extends Node
-## Quick item switching for the local player, layered on features/inventory's
-## backpack: number keys 1-8 jump straight to a slot, the mouse wheel cycles to the
-## next or previous non-empty one. Both reuse `PlayerInventory.request_equip` — the
-## same swap the inventory screen's Equip button sends — so the server still
-## validates ownership and slot bounds; this feature only decides *which* slot to
-## ask for.
+## Quick weapon switching for the local player, layered on features/inventory's
+## backpack and features/gun_machine's rig: number keys 1-8 jump straight to a
+## backpack slot, 9 jumps to the gun machine's rig, and the mouse wheel cycles through
+## every occupied slot in turn (backpack, then the rig). Backpack slots reuse
+## `PlayerInventory.request_equip` — the same swap the inventory screen's Equip button
+## sends — and the rig slot reuses `GunRig.request_equip_rig`; either way the server
+## still validates ownership, so this feature only decides *which* slot to ask for.
+## Equipping a weapon from one system automatically holsters the other (see
+## `PlayerInventory.holster_weapon` and `GunRig.holster`), so only one weapon is ever
+## held at once.
 ##
 ## Also drives a fire recoil animation on every hand's held item view, listening for
 ## features/holdables/hand.gd's `fired` signal (broadcast to every peer alongside the
@@ -14,6 +18,10 @@ extends Node
 const RECOIL_DURATION_S := 0.16
 const HOTBAR_NEXT_ACTION := &"hotbar_next"
 const HOTBAR_PREV_ACTION := &"hotbar_prev"
+const RIG_ACTION := &"hotbar_rig"
+## The extra cycle slot for features/gun_machine's rig, one past the last backpack
+## index.
+const RIG_SLOT := PlayerInventory.CAPACITY
 
 ## Hand -> {view: Node3D, base: Transform3D, t: float, kick: float}
 var _recoil: Dictionary = {}
@@ -30,6 +38,9 @@ func _ready() -> void:
 		var key := InputEventKey.new()
 		key.physical_keycode = KEY_1 + slot
 		Controls.ensure_action(_slot_action(slot), [key])
+	var rig_key := InputEventKey.new()
+	rig_key.physical_keycode = KEY_9
+	Controls.ensure_action(RIG_ACTION, [rig_key])
 	var wheel_up := InputEventMouseButton.new()
 	wheel_up.button_index = MOUSE_BUTTON_WHEEL_UP
 	Controls.ensure_action(HOTBAR_NEXT_ACTION, [wheel_up])
@@ -68,12 +79,16 @@ func _unhandled_input(event: InputEvent) -> void:
 			_equip_slot(hand, slot)
 			get_viewport().set_input_as_handled()
 			return
-	# Mouse-wheel notches also queue a jump (Controls' classic b-hop bind); left
-	# unhandled here so that still fires alongside the weapon swap.
+	if event.is_action_pressed(RIG_ACTION):
+		_equip_rig(hand)
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed(HOTBAR_NEXT_ACTION):
 		_cycle(hand, 1)
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed(HOTBAR_PREV_ACTION):
 		_cycle(hand, -1)
+		get_viewport().set_input_as_handled()
 
 
 ## Equip whatever is in `slot`, swapping it with the currently held item — the same
@@ -82,14 +97,39 @@ func _equip_slot(hand: Hand, slot: int) -> void:
 	hand.inventory().request_equip.rpc_id(1, slot)
 
 
-## Advances a per-session cursor to the next occupied backpack slot in `direction`
-## and equips it, so repeated scrolling steps through every carried item in turn.
+## Re-equips features/gun_machine's rig for this hand's peer, if it has a holstered
+## gun to bring back out. A no-op with no rig or an empty one.
+func _equip_rig(hand: Hand) -> void:
+	var rig := GunRig.for_peer(get_tree(), hand.peer_id)
+	if rig == null or rig.net_stats.is_empty():
+		return
+	rig.request_equip_rig.rpc_id(1)
+
+
+## Advances a per-session cursor to the next occupied slot in `direction` and equips
+## it — a backpack slot, or `RIG_SLOT` for features/gun_machine's rig — so repeated
+## scrolling steps through every weapon the player is carrying, in either system, in
+## turn.
 func _cycle(hand: Hand, direction: int) -> void:
-	var slot := WeaponHotbarMath.next_slot(hand.inventory().backpack, _cursor, direction)
+	var slot := WeaponHotbarMath.next_occupied(_occupancy(hand), _cursor, direction)
 	if slot == -1:
 		return
 	_cursor = slot
-	_equip_slot(hand, slot)
+	if slot == RIG_SLOT:
+		_equip_rig(hand)
+	else:
+		_equip_slot(hand, slot)
+
+
+## One `bool` per cycle slot: whether each backpack slot holds an item, followed by
+## whether features/gun_machine's rig has a gun rolled (equipped or holstered).
+func _occupancy(hand: Hand) -> Array[bool]:
+	var occupied: Array[bool] = []
+	for id: String in hand.inventory().backpack:
+		occupied.append(not id.is_empty())
+	var rig := GunRig.for_peer(get_tree(), hand.peer_id)
+	occupied.append(rig != null and not rig.net_stats.is_empty())
+	return occupied
 
 
 func _on_fired(item_id: String, hand: Hand) -> void:

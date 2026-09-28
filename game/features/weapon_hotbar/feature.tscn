@@ -1,6 +1,26 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://features/weapon_hotbar/weapon_hotbar.gd" id="1_script"]
+[ext_resource type="Script" path="res://features/weapon_hotbar/weapon_hotbar_hud.gd" id="2_hud"]
 
 [node name="WeaponHotbar" type="Node"]
 script = ExtResource("1_script")
+
+[node name="Hud" type="CanvasLayer" parent="."]
+script = ExtResource("2_hud")
+
+[node name="Row" type="HBoxContainer" parent="Hud"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -270.0
+offset_top = -250.0
+offset_right = 270.0
+offset_bottom = -210.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
