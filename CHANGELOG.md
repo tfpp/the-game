@@ -28,6 +28,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   small props past 40 metres and cap physics catch-up on slow frames.
 - Keep offline players on the leaderboard and remember signed-in scores across reconnects
   and server restarts.
+- Roll the Ray Gun from Call of Duty Zombies at the Gun-O-Matic, with the same rare 1-in-30
+  odds as the mystery box: green splashing bolts, 20-round magazine and 160 rounds total.
+- Box with your bare hands: click to jab, hold and release to power punch. Knock the
+  shooting gallery dummies into a ragdoll and power punch them across the floor.
 - Press ~ for a Source-style settings console with autocomplete and command history;
   use sv_cheats 1 to unlock noclip and sv_cheats 0 to disable it for everyone.
 

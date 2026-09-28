@@ -13,6 +13,8 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Developer console",
 		"summary": "Press ~ for settings commands, autocomplete and sv_cheats to unlock noclip.",
+	},
+	{
 		"title": "Boxing",
 		"summary":
 		"Empty-handed, click to jab or hold and release to power punch; knock dummies flat.",
