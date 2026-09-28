@@ -9,6 +9,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 ## [edge]
 
+- Add a day/night cycle: a full day repeats every 48 real-time minutes, with the sun
+  swinging across the sky, the skybox fading between day and night, and ambient
+  lighting dimming at night. It runs off the real-world clock, so it stays in sync
+  for everyone without any extra networking.
 - Frogs jump twice as high by default now, with a new "Frog jump height" slider in
   Game settings (Esc > Settings > Game) to tune it further; they also bounce off walls
   at an oblique angle mid-hop instead of stopping dead, ribbit when shot, and there are
