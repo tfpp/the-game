@@ -180,6 +180,16 @@ client with a server configured (the web default) shows the login screen
 (`ui/login/`) over the offline room. `--api=` / `?api=` override the API URL
 (`game/network/api_url`).
 
+### Player economy
+
+`features/money/` maintains server-owned replicated balances and the labels beneath
+player names. SQLite account wallets start at $20 and accrue $5 per connected minute.
+`POST /api/game/money` accepts HMAC-authenticated game-server balance heartbeats and
+idempotent slot operations; client sessions cannot access it. Slots cost $1 and pay
+$10–$30 for triples, with an 80% expected return. Charges, prizes, and spin results
+commit in one transaction. See [player money](../game/features/money/README.md) for
+protocol, income timing, offline behavior and deployment order.
+
 ## Agent pipeline
 
 1. `/feature <text>` in Discord. The bot (`bot/`, details in `bot/README.md`) checks the

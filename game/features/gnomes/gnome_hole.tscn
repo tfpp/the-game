@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=3]
+
+[sub_resource type="CylinderMesh" id="MoundMesh"]
+top_radius = 0.55
+bottom_radius = 0.7
+height = 0.3
+
+[sub_resource type="StandardMaterial3D" id="MoundMat"]
+albedo_color = Color(0.36, 0.24, 0.14, 1)
+
+[sub_resource type="BoxMesh" id="FrameMesh"]
+size = Vector3(0.5, 0.6, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="FrameMat"]
+albedo_color = Color(0.42, 0.29, 0.17, 1)
+
+[sub_resource type="BoxMesh" id="DoorMesh"]
+size = Vector3(0.38, 0.48, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="DoorMat"]
+albedo_color = Color(0.05, 0.04, 0.03, 1)
+
+[node name="Hole" type="Node3D"]
+
+[node name="Mound" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+mesh = SubResource("MoundMesh")
+surface_material_override/0 = SubResource("MoundMat")
+
+[node name="Frame" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+mesh = SubResource("FrameMesh")
+surface_material_override/0 = SubResource("FrameMat")
+
+[node name="Door" type="MeshInstance3D" parent="Frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.06, 0.01)
+mesh = SubResource("DoorMesh")
+surface_material_override/0 = SubResource("DoorMat")
