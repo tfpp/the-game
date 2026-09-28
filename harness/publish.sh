@@ -17,6 +17,7 @@ repo="$GITHUB_REPOSITORY"
 base="${BASE:-main}"
 label="${AGENT_LABEL:-agent}"
 run_link="[run](${RUN_URL:-})"
+usage_note="" # " · 1.2M tokens (34k output) · ~$3.45", from result.json
 tmp="$(mktemp -d)"
 cd "$REPO_ROOT"
 
@@ -37,7 +38,7 @@ fence() {
 
 report_failure() { # report_failure MESSAGE [nologs]
   {
-    printf '🤖 `%s` (`%s`) did not produce a change: %s (%s)\n' "$AGENT" "$MODE" "$1" "$run_link"
+    printf '🤖 `%s` (`%s`) did not produce a change: %s (%s%s)\n' "$AGENT" "$MODE" "$1" "$run_link" "$usage_note"
     if [[ -d "${OUT:-}" && -z "${2:-}" ]]; then
       last_verify="$(find "$OUT" -name 'verify-*.log' | sort -V | tail -n 1)"
       [[ -z "$last_verify" ]] || fence "$last_verify" 60
@@ -57,11 +58,28 @@ status="$(jq -r '.status // empty' "$result")"
 attempts="$(jq -r '.attempts // 0 | tonumber? // 0' "$result")"
 title="$(jq -r '.title // empty' "$result" | head -n 1)"
 
+# Token usage (and cost, when the adapter knows it). result.json is untrusted: only
+# non-negative numbers are read, and the text is built here.
+usage_fields="$(jq -r '.usage | select(type == "object") |
+  def n: if type == "number" and . >= 0 and . < 1e15 then . else 0 end;
+  def h: if . >= 999500 then "\((. / 1e5 | round) / 10)M" elif . >= 1000 then "\(. / 1e3 | round)k"
+    else "\(round)" end;
+  ([.input_tokens, .output_tokens, .cache_read_tokens, .cache_write_tokens] | map(n) | add) as $total |
+  select($total > 0) |
+  [($total | h), (.output_tokens | n | h),
+   (if (.cost_usd | type) == "number" and .cost_usd >= 0 and .cost_usd < 1e6 then .cost_usd else "-" end)] |
+  @tsv' "$result" 2>/dev/null || true)"
+if [[ -n "$usage_fields" ]]; then
+  IFS=$'\t' read -r usage_total usage_output usage_cost <<<"$usage_fields"
+  usage_note=" · $usage_total tokens ($usage_output output)"
+  [[ "$usage_cost" == - ]] || usage_note+="$(LC_NUMERIC=C printf ' · ~$%.2f' "$usage_cost")"
+fi
+
 case "$status" in
   success) ;;
   no_changes)
     {
-      printf '🤖 `%s` (`%s`) made no changes (%s).\n\n' "$AGENT" "$MODE" "$run_link"
+      printf '🤖 `%s` (`%s`) made no changes (%s%s).\n\n' "$AGENT" "$MODE" "$run_link" "$usage_note"
       if [[ -s "$OUT/summary.md" ]]; then
         tail -n +2 "$OUT/summary.md" | head -c 20000
       else
@@ -126,7 +144,7 @@ warning() {
   sed 's/^/> - `/; s/$/`/' <<<"$protected"
 }
 footer() {
-  printf '\n---\n🤖 `%s` · %s · verify passed after %s attempt(s)\n' "$AGENT" "$run_link" "$attempts"
+  printf '\n---\n🤖 `%s` · %s · verify passed after %s attempt(s)%s\n' "$AGENT" "$run_link" "$attempts" "$usage_note"
   local checked_base
   checked_base="$(jq -r '.base_sha // empty' "$result")"
   if [[ "$checked_base" =~ ^[0-9a-f]{40}$ ]]; then
@@ -149,12 +167,12 @@ if [[ "$MODE" == implement ]]; then
     footer
   } >"$tmp/pr.md"
   url="$(gh pr create --repo "$repo" --base "$base" --head "$BRANCH" --title "$title" --body-file "$tmp/pr.md")"
-  printf '🤖 Opened %s\n' "$url" >"$tmp/body.md"
+  printf '🤖 Opened %s%s\n' "$url" "$usage_note" >"$tmp/body.md"
   comment "$ISSUE" "$tmp/body.md"
   log "opened $url"
 else
   {
-    printf '🤖 Pushed %s: **%s**\n\n' "$head_sha" "${title:-update}"
+    printf '🤖 Pushed %s: **%s**%s\n\n' "$head_sha" "${title:-update}" "$usage_note"
     summary_body
     warning
     footer
