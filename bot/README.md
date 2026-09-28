@@ -28,10 +28,12 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    dispatches `agent.yml` (`mode=implement`, `request_id=bot-<run>`).
 2. **Progress** reaches the thread from the App's webhooks:
    - `issue_comment`: the harness's 🤖 comments on the issue or PR ("Starting…",
-     "Opened <PR>", failures with a link to the logs). Opened and Pushed notifications
-     include the model(s), tokens used, and estimated API-equivalent cost for that run;
-     missing telemetry is marked unavailable. PR links display as **PR #123** rather
-     than a bare URL.
+     "Opened <PR>", failures with a link to the logs). They're posted as colour-coded
+     embeds (started, opened or pushed, no changes, failed), with the requester's ping in
+     the message itself. Opened and Pushed notifications show the model(s), tokens used
+     (shortened, such as 1.4M or 42K) and estimated API-equivalent cost for that run as
+     embed fields; missing telemetry is marked unavailable. PR links display as
+     **PR #123** rather than a bare URL.
    - `workflow_run`: agent runs are matched by their run name
      (`agent #N mode [bot-<run>]`) to track status. The bot speaks up itself only if a
      run ends without any 🤖 comment: the gate refused it (for example, the App's login

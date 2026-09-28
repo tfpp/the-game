@@ -30,6 +30,11 @@ func (c chat) PostButton(_ context.Context, _, content, _, _ string, _ ...string
 	return nil
 }
 
+func (c chat) PostEmbed(_ context.Context, _, content string, e core.Embed, _ *core.Button, _ ...string) error {
+	c.posts <- content + " " + e.Title + " " + e.Description
+	return nil
+}
+
 func sign(secret, body string) string {
 	m := hmac.New(sha256.New, []byte(secret))
 	m.Write([]byte(body))
@@ -78,7 +83,7 @@ func TestHandler(t *testing.T) {
 	}
 	select {
 	case p := <-c.posts:
-		if !strings.Contains(p, "Opened") {
+		if !strings.Contains(p, "PR #8 opened") {
 			t.Errorf("post %q", p)
 		}
 	case <-time.After(5 * time.Second):

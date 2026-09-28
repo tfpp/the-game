@@ -53,6 +53,9 @@ type Chat interface {
 	// PostButton posts content with one button; pressing it reaches the Discord adapter
 	// with id as its custom ID. content may mention only the users in ping.
 	PostButton(ctx context.Context, threadID, content, label, id string, ping ...string) error
+	// PostEmbed posts content (usually just the pings) with an embed and, if button isn't
+	// nil, a button. content may mention only the users in ping.
+	PostEmbed(ctx context.Context, threadID, content string, embed Embed, button *Button, ping ...string) error
 }
 
 // Deployer asks the host to deploy game server and accounts API builds. Nil turns
@@ -597,12 +600,14 @@ func (s *Service) agentRun(ctx context.Context, wr github.WorkflowRun) error {
 		return err
 	}
 	if wr.Conclusion == "success" {
-		s.post(ctx, job, fmt.Sprintf("⚠️ <@%s> The workflow refused to start the agent; its gate log says why. [Run](<%s>)",
-			job.RequesterID, wr.HTMLURL), job.RequesterID)
+		s.postEmbed(ctx, job.ThreadID, job.Issue, Embed{Title: "The agent didn't start", URL: wr.HTMLURL, Color: colorFailure,
+			Description: fmt.Sprintf("The workflow refused to start the agent; [its gate log](%s) says why.", wr.HTMLURL)},
+			nil, job.RequesterID)
 		return nil
 	}
-	s.postFailure(ctx, job, run, fmt.Sprintf("⚠️ <@%s> The agent run ended without a result (`%s`). [Run](<%s>)",
-		job.RequesterID, wr.Conclusion, wr.HTMLURL), job.RequesterID)
+	s.postFailure(ctx, job, run, Embed{Title: "The agent run ended without a result", URL: wr.HTMLURL, Color: colorFailure,
+		Description: fmt.Sprintf("The workflow run finished as `%s` before the agent reported back. [Run](%s)", wr.Conclusion, wr.HTMLURL)},
+		job.RequesterID)
 	return nil
 }
 
@@ -673,17 +678,16 @@ func (s *Service) Comment(ctx context.Context, number int, c github.Comment) err
 			return err
 		}
 	}
-	content := relayText(c.Body, c.HTMLURL)
+	embed := relayEmbed(c.Body, c.HTMLURL)
 	var ping []string
 	if !strings.HasPrefix(c.Body, "🤖 Starting") {
-		content = "<@" + job.RequesterID + "> " + content
 		ping = []string{job.RequesterID}
 	}
 	run, runErr := s.st.ActiveRunForJob(ctx, job.ID)
 	if runErr == nil && noChange.MatchString(c.Body) {
-		s.postFailure(ctx, job, run, content, ping...)
+		s.postFailure(ctx, job, run, embed, ping...)
 	} else {
-		s.post(ctx, job, content, ping...)
+		s.postEmbed(ctx, job.ThreadID, job.Issue, embed, nil, ping...)
 	}
 	if number == job.Issue && job.PR == 0 && job.State == store.JobOpen && noChanges.MatchString(c.Body) {
 		s.closeDeclined(ctx, job)
@@ -799,7 +803,8 @@ func (s *Service) Reconcile(ctx context.Context) error {
 		case cur.Status == store.RunDispatched && age > dispatchedTimeout:
 			s.failRun(ctx, cur.ID)
 			if job, err := s.st.JobByID(ctx, cur.JobID); err == nil {
-				s.postFailure(ctx, job, cur, fmt.Sprintf("⚠️ <@%s> The agent run never started.", job.RequesterID), job.RequesterID)
+				s.postFailure(ctx, job, cur, Embed{Title: "The agent run never started", Color: colorFailure,
+					Description: "GitHub never picked up the run."}, job.RequesterID)
 			}
 		case (cur.Status == store.RunQueued || cur.Status == store.RunInProgress) && age > s.cfg.Limits.StaleAfter:
 			if err := s.setRun(ctx, cur.ID, store.RunCompleted, "stale", 0, ""); err != nil {
@@ -912,20 +917,4 @@ func formatPRLinks(text string) string {
 		}
 		return fmt.Sprintf("[PR #%s](<%s>)%s", match[1], clean, target[len(clean):])
 	})
-}
-
-// relayText shortens a harness comment for Discord: collapsed logs become a link.
-func relayText(body, url string) string {
-	body = strings.ReplaceAll(body, "\r", "")
-	stripped := detailsBlock.ReplaceAllString(body, "")
-	link := ""
-	if stripped != body {
-		link = fmt.Sprintf("\n[Logs on GitHub](<%s>)", url)
-	}
-	stripped = formatPRLinks(strings.TrimSpace(stripped))
-	if r := []rune(stripped); len(r) > 1500 {
-		stripped = string(r[:1500]) + "…"
-		link = fmt.Sprintf("\n[More on GitHub](<%s>)", url)
-	}
-	return stripped + link
 }

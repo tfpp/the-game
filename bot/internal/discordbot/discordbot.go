@@ -165,6 +165,31 @@ func (b *Bot) PostButton(ctx context.Context, threadID, content, label, id strin
 	return err
 }
 
+// PostEmbed implements core.Chat.
+func (b *Bot) PostEmbed(ctx context.Context, threadID, content string, embed core.Embed, button *core.Button, ping ...string) error {
+	ch, err := snowflake.Parse(threadID)
+	if err != nil {
+		return err
+	}
+	msg := discord.MessageCreate{
+		Content: content, AllowedMentions: mentions(ping), Embeds: []discord.Embed{toEmbed(embed)},
+	}
+	if button != nil {
+		msg.Components = []discord.LayoutComponent{discord.NewActionRow(discord.NewPrimaryButton(button.Label, button.ID))}
+	}
+	_, err = b.client.Rest.CreateMessage(ch, msg, rest.WithCtx(ctx))
+	return err
+}
+
+func toEmbed(e core.Embed) discord.Embed {
+	out := discord.Embed{Title: e.Title, URL: e.URL, Description: e.Description, Color: e.Color}
+	for _, f := range e.Fields {
+		inline := f.Inline
+		out.Fields = append(out.Fields, discord.EmbedField{Name: f.Name, Value: f.Value, Inline: &inline})
+	}
+	return out
+}
+
 func mentions(users []string) *discord.AllowedMentions {
 	am := noMentions
 	for _, u := range users {

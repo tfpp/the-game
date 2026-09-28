@@ -33,17 +33,12 @@ type RetryRequest struct {
 
 // postFailure tells the thread that run ended without a change, with a Retry button when
 // the run can be retried.
-func (s *Service) postFailure(ctx context.Context, job store.Job, run store.Run, content string, ping ...string) {
-	if job.ThreadID == "" {
-		return
+func (s *Service) postFailure(ctx context.Context, job store.Job, run store.Run, embed Embed, ping ...string) {
+	var button *Button
+	if retryable(run.Mode) {
+		button = &Button{Label: "Retry", ID: RetryButtonID(run.ID)}
 	}
-	if !retryable(run.Mode) {
-		s.post(ctx, job, content, ping...)
-		return
-	}
-	if err := s.chat.PostButton(ctx, job.ThreadID, content, "Retry", RetryButtonID(run.ID), ping...); err != nil {
-		s.log.Error("post to thread", "err", err, "issue", job.Issue)
-	}
+	s.postEmbed(ctx, job.ThreadID, job.Issue, embed, button, ping...)
 }
 
 // Retry starts a failed implement or revise run again with the same instructions. Only
