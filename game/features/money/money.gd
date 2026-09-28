@@ -4,6 +4,8 @@ extends Node
 ## offline/dev wallets are temporary and never cross into authenticated accounts.
 
 const COIN_CREDIT_CENTS := 1000
+const DEFAULT_INCOME_CENTS := 500
+const GIRL_INCOME_CENTS := 425
 
 @export var balances: Dictionary = {}
 var _busy: Dictionary = {}
@@ -11,6 +13,7 @@ var _generation := 0
 var _poll_elapsed := 5.0
 var _unresolved: Dictionary = {}
 var _temporary_seconds: Dictionary = {}
+var _temporary_income_units: Dictionary = {}
 
 
 func _ready() -> void:
@@ -23,20 +26,25 @@ func _reset(_mode: Network.Mode) -> void:
 	balances = {}
 	_busy.clear()
 	_temporary_seconds.clear()
+	_temporary_income_units.clear()
 	_unresolved.clear()
 	_poll_elapsed = 5.0
 
 
 func _process(delta: float) -> void:
 	_poll_elapsed += delta
+	var poorest := poorest_peers(balances)
 	for player: Player in get_tree().get_nodes_in_group(&"players"):
 		var peer := player.get_multiplayer_authority()
 		if multiplayer.is_server() and _temporary() and _account(peer) <= 0:
 			var seconds := float(_temporary_seconds.get(peer, 0.0)) + delta
+			var units := float(_temporary_income_units.get(peer, 0.0)) + delta * _income_cents(peer)
 			if seconds >= 60.0:
-				_set_balance(peer, int(balances.get(peer, 2000)) + 500)
-				seconds -= 60.0
+				_set_balance(peer, int(balances.get(peer, 2000)) + int(units / 60.0))
+				seconds = fmod(seconds, 60.0)
+				units = fmod(units, 60.0)
 			_temporary_seconds[peer] = seconds
+			_temporary_income_units[peer] = units
 		if multiplayer.is_server() and _poll_elapsed >= 5.0 and not _busy.has(peer):
 			_refresh(peer)
 		if player.is_local():
@@ -58,6 +66,15 @@ func _process(delta: float) -> void:
 			label.offset.y = -26.0
 			player.add_child(label)
 		label.text = format_money(int(balances[peer])) if balances.has(peer) else "…"
+		var flies := player.get_node_or_null("PovertyFlies") as PovertyFlies
+		if poorest.has(peer):
+			if flies == null:
+				flies = PovertyFlies.new()
+				flies.name = "PovertyFlies"
+				flies.position.y = player.movement.hull_height_m() * 0.5 + 0.65
+				player.add_child(flies)
+		elif flies != null:
+			flies.queue_free()
 	if _poll_elapsed >= 5.0:
 		_poll_elapsed = 0.0
 		if multiplayer.is_server():
@@ -66,6 +83,7 @@ func _process(delta: float) -> void:
 					balances = balances.duplicate()
 					balances.erase(peer)
 					_temporary_seconds.erase(peer)
+					_temporary_income_units.erase(peer)
 
 
 func _set_balance(peer: int, cents: int) -> void:
@@ -77,6 +95,25 @@ static func format_money(cents: int) -> String:
 	return "$%.2f" % (float(cents) / 100.0)
 
 
+## Peers in the poorest 80% by wallet balance (rounded down), poorest first. A lone
+## wallet is never "poorer" than anyone, so it takes at least two known balances
+## before anyone is flagged. Ties break on peer ID so every client agrees.
+static func poorest_peers(all_balances: Dictionary) -> Dictionary:
+	var peers: Array[int] = []
+	for peer: int in all_balances.keys():
+		peers.append(peer)
+	peers.sort_custom(
+		func(a: int, b: int) -> bool:
+			var balance_a: int = all_balances[a]
+			var balance_b: int = all_balances[b]
+			return balance_a < balance_b if balance_a != balance_b else a < b
+	)
+	var result := {}
+	for i in (peers.size() * 4) / 5:
+		result[peers[i]] = true
+	return result
+
+
 func _account(peer: int) -> int:
 	var account: Dictionary = Network.peer_accounts.get(peer, {})
 	return int(account.get("account_id", 0))
@@ -84,6 +121,15 @@ func _account(peer: int) -> int:
 
 func _temporary() -> bool:
 	return Network.mode == Network.Mode.OFFLINE or Network.insecure_auth
+
+
+func _income_cents(peer: int) -> int:
+	var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
+	return (
+		GIRL_INCOME_CENTS
+		if models != null and models.type_for(peer) == "girl"
+		else DEFAULT_INCOME_CENTS
+	)
 
 
 func _refresh(peer: int) -> void:
@@ -94,7 +140,9 @@ func _refresh(peer: int) -> void:
 		if not balances.has(peer):
 			_set_balance(peer, 2000)
 	else:
-		var result: Dictionary = await _request(account, "balance", "")
+		var result: Dictionary = await _request(
+			account, "balance", "", {"income_cents": _income_cents(peer)}
+		)
 		if generation != _generation:
 			return
 		if _account(peer) == account and result.has("balance"):

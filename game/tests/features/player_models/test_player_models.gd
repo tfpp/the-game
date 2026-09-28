@@ -243,6 +243,26 @@ func test_first_person_view_model_sits_closer_to_the_camera_for_penguin() -> voi
 	assert_almost_eq(penguin_drop, default_drop * BlockPlayerModel.PENGUIN_HEIGHT_SCALE, 0.001)
 
 
+func test_girl_collider_is_smaller_and_switching_back_restores_it() -> void:
+	var models := _feature as PlayerModels
+	var collider := _player.get_node("Collider") as CollisionShape3D
+	var normal := collider.shape as CapsuleShape3D
+	var normal_radius := normal.radius
+	var normal_height := normal.height
+	models.request_body_type("girl")
+	models._process(0.0)
+	var girl := collider.shape as CapsuleShape3D
+	assert_almost_eq(girl.radius, normal_radius * 0.6, 0.001)
+	assert_almost_eq(girl.height, normal_height * 0.75, 0.001)
+	assert_almost_eq(collider.position.y - girl.height * 0.5, -normal_height * 0.5, 0.001)
+	models.request_body_type("default")
+	models._process(0.0)
+	var restored := collider.shape as CapsuleShape3D
+	assert_almost_eq(restored.radius, normal_radius, 0.001)
+	assert_almost_eq(restored.height, normal_height, 0.001)
+	assert_almost_eq(collider.position.y, 0.0, 0.001)
+
+
 func test_new_players_spawn_with_their_already_requested_body_type() -> void:
 	var models := _feature as PlayerModels
 	var remote := PLAYER_SCENE.instantiate() as Player

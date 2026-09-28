@@ -1,16 +1,25 @@
 # Player money
 
-Accounts start with **$20 once** and earn **$5 per minute connected**. Amounts are
+Accounts start with **$20 once** and earn **$5 per minute connected** with the default
+model, or **$4.25 per minute** with the girl model. Amounts are
 integer cents in the accounts API's existing SQLite database, keyed by immutable
 account ID. Renaming, disconnecting, and restarting do not reset money. Existing
 accounts receive the same initial $20 when the append-only migration runs.
 
 The game server sends an authenticated balance heartbeat every five seconds. The
-API accumulates elapsed seconds and awards $5 on reaching 60. The first heartbeat
+API accumulates elapsed seconds at the selected model's rate and awards them on
+reaching 60 seconds. The first heartbeat
 starts the clock; awards can appear up to one heartbeat interval after a minute.
 The fractional minute and last heartbeat persist in SQLite. Gaps over 15 seconds
 pause accrual rather than granting offline income; short gaps between heartbeats
 are counted. API downtime pauses income and blocks paid spins.
+
+Every peer also ranks connected wallets from poorest to richest (`PlayerMoney.poorest_peers`,
+ties broken by peer ID) and shows a small buzzing swarm of flies (`poverty_flies.gd`) over
+the poorest 80% of players, rounded down. A lone connected player is never flagged, since
+there is no one to be poorer than. The ranking and swarm are purely cosmetic and computed
+identically on every client from the same replicated balances, so they need no extra
+networking; like the balance label, they only render over other players, not your own.
 
 Other players see the current balance below the character name. A server-owned
 synchronizer sends balances to every peer, including late joiners. Clients cannot
