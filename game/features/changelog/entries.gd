@@ -9,9 +9,13 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{"title": "Esc menu", "summary": "Controls and Release notes moved into the Esc menu."},
+	{"title": "AWP", "summary": "The AWP in the middle of the map is now a pickup."},
+	{
+		"title": "Pond",
+		"summary": "A pond you can wade through; the water is just for looks, so it's safe."
+	},
 	{"title": "Suicide", "summary": "Type /suicide in chat to respawn."},
 	{"title": "Penguin", "summary": "A penguin waddles around the map."},
-	{"title": "AWP", "summary": "A prop AWP sniper rifle sits in the middle of the map."},
 	{"title": "Slot machine", "summary": "Play the slot machine for a payout."},
 	{"title": "NYC ferry", "summary": "A ferry cruises across the water."},
 	{"title": "Frogs", "summary": "Frogs hop around the world."},

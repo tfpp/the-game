@@ -25,6 +25,12 @@ func test_ball_is_a_prop() -> void:
 	assert_eq(item.category, ItemDefinition.Category.PROP)
 
 
+func test_awp_is_a_weapon() -> void:
+	var item := ItemCatalog.find("awp")
+	assert_not_null(item)
+	assert_eq(item.category, ItemDefinition.Category.WEAPON)
+
+
 func test_every_definition_has_an_id_matching_its_lookup_and_a_view() -> void:
 	for item: ItemDefinition in ItemCatalog.DEFINITIONS:
 		assert_false(item.id.is_empty())
