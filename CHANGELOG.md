@@ -54,6 +54,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Show Claude and Codex subscription limits together in Discord `/usage`, with independent error handling and a read-only Codex login file.
 - Add a Retry button to Discord messages about failed, cancelled or never-started `implement` and `revise` runs, so the requester can start the run again.
 - Name cancelled, failed and skipped agent jobs in the "did not produce a change" comment, without listing unavailable model, token and cost fields.
+- Post every bot message in Discord feature threads as a colour-coded embed (agent progress, CI, previews, approvals, merge queue, conflicts, merges and deploys), with model, shortened token count (such as 1.4M) and estimated cost as fields on agent notifications.
+- Show the agent's reasoning effort next to its model in PR descriptions, 🤖 comments and Discord notifications.
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 

@@ -47,12 +47,14 @@ type GitHub interface {
 	Releases(ctx context.Context) ([]github.Release, error)
 }
 
-// Chat posts to Discord threads. content may mention only the users in ping.
+// Chat posts to Discord channels and threads. content may mention only the users in ping.
 type Chat interface {
+	// Post posts plain text (release announcements).
 	Post(ctx context.Context, threadID, content string, ping ...string) error
-	// PostButton posts content with one button; pressing it reaches the Discord adapter
-	// with id as its custom ID. content may mention only the users in ping.
-	PostButton(ctx context.Context, threadID, content, label, id string, ping ...string) error
+	// PostEmbed posts content (usually just the pings) with an embed and, if button isn't
+	// nil, a button whose custom ID reaches the Discord adapter when pressed. content may
+	// mention only the users in ping.
+	PostEmbed(ctx context.Context, threadID, content string, embed Embed, button *Button, ping ...string) error
 }
 
 // Deployer asks the host to deploy game server and accounts API builds. Nil turns
@@ -205,18 +207,19 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	job.ThreadID = threadID
 
 	if run.Status == store.RunWaiting {
-		s.post(ctx, job, fmt.Sprintf("<@%s> The agent is busy, so this is %s. I'll start it when a slot "+
-			"frees up and post progress here. Once the PR is open, use `/revise` in this thread to ask for changes.",
-			req.UserID, s.linePosition(ctx, run.ID)), req.UserID)
+		s.card(ctx, job, Embed{Title: "⏳ Waiting for the agent", Color: colorInfo, Description: fmt.Sprintf(
+			"The agent is busy, so this is %s. I'll start it when a slot frees up and post progress here.\n\n%s",
+			s.linePosition(ctx, run.ID), reviseHint)}, req.UserID)
 		s.drain(ctx) // a slot may have freed up meanwhile
 		return nil
 	}
 	if err := s.dispatch(ctx, run, issue.Number, ""); err != nil {
-		s.post(ctx, job, "❌ I couldn't start the agent. Try `/feature` again later.")
+		s.card(ctx, job, Embed{Title: "❌ Couldn't start the agent", Color: colorFailure,
+			Description: "Try `/feature` again later."})
 		return nil
 	}
-	s.post(ctx, job, fmt.Sprintf("<@%s> The agent is queued; I'll post progress here. "+
-		"Once the PR is open, use `/revise` in this thread to ask for changes.", req.UserID), req.UserID)
+	s.card(ctx, job, Embed{Title: "📋 Agent queued", Color: colorInfo,
+		Description: "I'll post progress here.\n\n" + reviseHint}, req.UserID)
 	return nil
 }
 
@@ -275,18 +278,19 @@ func (s *Service) startWaiting(ctx context.Context, run store.Run) {
 			}
 			return
 		}
-		s.post(ctx, job, fmt.Sprintf("❌ <@%s> I couldn't start the agent. Try again later.", run.UserID), run.UserID)
+		s.card(ctx, job, Embed{Title: "❌ Couldn't start the agent", Color: colorFailure,
+			Description: "Try again later."}, run.UserID)
 		return
 	}
 	switch run.Mode {
 	case "implement":
-		s.post(ctx, job, fmt.Sprintf("<@%s> A slot freed up: the agent is queued; I'll post progress here.",
-			job.RequesterID), job.RequesterID)
+		s.card(ctx, job, Embed{Title: "📋 Agent queued", Color: colorInfo,
+			Description: "A slot freed up: the agent is queued. I'll post progress here."}, job.RequesterID)
 	case "resolve-conflicts":
-		s.post(ctx, job, fmt.Sprintf("🔧 The agent is merging %s into PR #%d and resolving the conflicts.", s.cfg.Ref, job.PR))
+		s.resolvingCard(ctx, job)
 	default:
-		s.post(ctx, job, fmt.Sprintf("<@%s> A slot freed up: the agent is queued to make your changes to PR #%d.",
-			run.UserID, job.PR), run.UserID)
+		s.card(ctx, job, Embed{Title: "📋 Agent queued", URL: s.pullURL(job.PR), Color: colorInfo, Description: fmt.Sprintf(
+			"A slot freed up: the agent is queued to make your changes to %s.", s.prLabel(job.PR))}, run.UserID)
 	}
 }
 
@@ -498,17 +502,6 @@ func (s *Service) setRun(ctx context.Context, id int64, status, conclusion strin
 	return s.st.SetRunStatus(ctx, id, status, conclusion, wfID, url, s.cfg.Now())
 }
 
-// post writes to a job's thread, if it has one. Errors are logged, not returned: a
-// missed update shouldn't fail the GitHub side.
-func (s *Service) post(ctx context.Context, job store.Job, content string, ping ...string) {
-	if job.ThreadID == "" {
-		return
-	}
-	if err := s.chat.Post(ctx, job.ThreadID, content, ping...); err != nil {
-		s.log.Error("post to thread", "err", err, "issue", job.Issue)
-	}
-}
-
 // --- GitHub events -------------------------------------------------------------------------
 
 var (
@@ -597,12 +590,14 @@ func (s *Service) agentRun(ctx context.Context, wr github.WorkflowRun) error {
 		return err
 	}
 	if wr.Conclusion == "success" {
-		s.post(ctx, job, fmt.Sprintf("⚠️ <@%s> The workflow refused to start the agent; its gate log says why. [Run](<%s>)",
-			job.RequesterID, wr.HTMLURL), job.RequesterID)
+		s.postEmbed(ctx, job.ThreadID, job.Issue, Embed{Title: "⛔ The agent didn't start", URL: wr.HTMLURL, Color: colorFailure,
+			Description: fmt.Sprintf("The workflow refused to start the agent; [its gate log](%s) says why.", wr.HTMLURL)},
+			nil, job.RequesterID)
 		return nil
 	}
-	s.postFailure(ctx, job, run, fmt.Sprintf("⚠️ <@%s> The agent run ended without a result (`%s`). [Run](<%s>)",
-		job.RequesterID, wr.Conclusion, wr.HTMLURL), job.RequesterID)
+	s.postFailure(ctx, job, run, Embed{Title: "❌ The agent run ended without a result", URL: wr.HTMLURL, Color: colorFailure,
+		Description: fmt.Sprintf("The workflow run finished as `%s` before the agent reported back. [Run](%s)", wr.Conclusion, wr.HTMLURL)},
+		job.RequesterID)
 	return nil
 }
 
@@ -625,7 +620,8 @@ func (s *Service) ciRun(ctx context.Context, wr github.WorkflowRun) error {
 	if wr.Conclusion == "success" {
 		s.ciPassed(ctx, job, wr.HeadSHA)
 	} else {
-		s.post(ctx, job, fmt.Sprintf("❌ CI `%s` on `%s`. [Details](<%s>)", wr.Conclusion, sha, wr.HTMLURL))
+		s.card(ctx, job, Embed{Title: "❌ CI didn't pass", URL: wr.HTMLURL, Color: colorFailure,
+			Description: fmt.Sprintf("CI `%s` on `%s`. [Details](%s)", wr.Conclusion, sha, wr.HTMLURL)})
 	}
 	return nil
 }
@@ -648,7 +644,8 @@ func (s *Service) previewRun(ctx context.Context, wr github.WorkflowRun) error {
 		return err
 	}
 	url := strings.ReplaceAll(s.cfg.PreviewURL, "{pr}", t[1])
-	s.post(ctx, job, fmt.Sprintf("🔍 Preview of `%s` (offline, single player): <%s>", short(wr.HeadSHA), url))
+	s.card(ctx, job, Embed{Title: "🔍 Preview ready", URL: url, Color: colorInfo, Description: fmt.Sprintf(
+		"[Play `%s` in the browser](%s) (offline, single player).", short(wr.HeadSHA), url)})
 	return nil
 }
 
@@ -673,17 +670,16 @@ func (s *Service) Comment(ctx context.Context, number int, c github.Comment) err
 			return err
 		}
 	}
-	content := relayText(c.Body, c.HTMLURL)
+	embed := relayEmbed(c.Body, c.HTMLURL)
 	var ping []string
 	if !strings.HasPrefix(c.Body, "🤖 Starting") {
-		content = "<@" + job.RequesterID + "> " + content
 		ping = []string{job.RequesterID}
 	}
 	run, runErr := s.st.ActiveRunForJob(ctx, job.ID)
 	if runErr == nil && noChange.MatchString(c.Body) {
-		s.postFailure(ctx, job, run, content, ping...)
+		s.postFailure(ctx, job, run, embed, ping...)
 	} else {
-		s.post(ctx, job, content, ping...)
+		s.postEmbed(ctx, job.ThreadID, job.Issue, embed, nil, ping...)
 	}
 	if number == job.Issue && job.PR == 0 && job.State == store.JobOpen && noChanges.MatchString(c.Body) {
 		s.closeDeclined(ctx, job)
@@ -706,8 +702,8 @@ func (s *Service) closeDeclined(ctx context.Context, job store.Job) {
 		s.log.Error("close declined job", "err", err, "job", job.ID)
 		return
 	}
-	s.post(ctx, job, fmt.Sprintf("🔒 I closed issue #%d since the agent made no changes. "+
-		"Use `/feature` to ask again with more detail.", job.Issue))
+	s.card(ctx, job, Embed{Title: "🔒 Issue closed", Color: colorNeutral, Description: fmt.Sprintf(
+		"I closed issue #%d since the agent made no changes. Use `/feature` to ask again with more detail.", job.Issue)})
 }
 
 // PullRequest handles pull_request events for agent branches.
@@ -734,7 +730,8 @@ func (s *Service) PullRequest(ctx context.Context, ev github.PullRequestEvent) e
 			}
 		}
 		if ev.Action == "reopened" {
-			s.post(ctx, job, fmt.Sprintf("PR #%d was reopened.", ev.Number))
+			s.card(ctx, job, Embed{Title: "↩️ PR reopened", URL: s.pullURL(ev.Number), Color: colorInfo,
+				Description: fmt.Sprintf("%s was reopened.", s.prLabel(ev.Number))})
 			return s.st.SetJobState(ctx, job.ID, store.JobOpen, now)
 		}
 	case "closed":
@@ -743,14 +740,15 @@ func (s *Service) PullRequest(ctx context.Context, ev github.PullRequestEvent) e
 			if job.State == store.JobMerged {
 				return nil // the merge coordinator merged it and said so
 			}
-			s.post(ctx, job, fmt.Sprintf("🎉 <@%s> PR #%d was merged. It ships with the next deploy.",
-				job.RequesterID, ev.Number), job.RequesterID)
+			s.card(ctx, job, Embed{Title: "🎉 PR merged", URL: s.pullURL(ev.Number), Color: colorSuccess,
+				Description: fmt.Sprintf("%s was merged. It ships with the next deploy.", s.prLabel(ev.Number))}, job.RequesterID)
 			return s.st.SetJobState(ctx, job.ID, store.JobMerged, now)
 		}
 		if job.State == store.JobClosed {
 			return nil // closed with /close, which said so
 		}
-		s.post(ctx, job, fmt.Sprintf("PR #%d was closed without merging.", ev.Number))
+		s.card(ctx, job, Embed{Title: "🔒 PR closed", URL: s.pullURL(ev.Number), Color: colorNeutral,
+			Description: fmt.Sprintf("%s was closed without merging.", s.prLabel(ev.Number))})
 		return s.st.SetJobState(ctx, job.ID, store.JobClosed, now)
 	}
 	return nil
@@ -799,7 +797,8 @@ func (s *Service) Reconcile(ctx context.Context) error {
 		case cur.Status == store.RunDispatched && age > dispatchedTimeout:
 			s.failRun(ctx, cur.ID)
 			if job, err := s.st.JobByID(ctx, cur.JobID); err == nil {
-				s.postFailure(ctx, job, cur, fmt.Sprintf("⚠️ <@%s> The agent run never started.", job.RequesterID), job.RequesterID)
+				s.postFailure(ctx, job, cur, Embed{Title: "❌ The agent run never started", Color: colorFailure,
+					Description: "GitHub never picked up the run."}, job.RequesterID)
 			}
 		case (cur.Status == store.RunQueued || cur.Status == store.RunInProgress) && age > s.cfg.Limits.StaleAfter:
 			if err := s.setRun(ctx, cur.ID, store.RunCompleted, "stale", 0, ""); err != nil {
@@ -912,20 +911,4 @@ func formatPRLinks(text string) string {
 		}
 		return fmt.Sprintf("[PR #%s](<%s>)%s", match[1], clean, target[len(clean):])
 	})
-}
-
-// relayText shortens a harness comment for Discord: collapsed logs become a link.
-func relayText(body, url string) string {
-	body = strings.ReplaceAll(body, "\r", "")
-	stripped := detailsBlock.ReplaceAllString(body, "")
-	link := ""
-	if stripped != body {
-		link = fmt.Sprintf("\n[Logs on GitHub](<%s>)", url)
-	}
-	stripped = formatPRLinks(strings.TrimSpace(stripped))
-	if r := []rune(stripped); len(r) > 1500 {
-		stripped = string(r[:1500]) + "…"
-		link = fmt.Sprintf("\n[More on GitHub](<%s>)", url)
-	}
-	return stripped + link
 }

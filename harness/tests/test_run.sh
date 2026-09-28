@@ -123,6 +123,11 @@ agent <<<'echo x >game/x.txt'
 HARNESS_MODEL=configured-model run --mode implement --branch agent/22-x
 expect_eq "$(jq -c .usage "$out/result.json")" null "no usage"
 expect_eq "$(jq -c .models "$out/result.json")" '["configured-model"]' "configured model without usage"
+expect_eq "$(jq -c .reasoning_effort "$out/result.json")" null "no effort for an adapter that takes none"
+new_repo
+agent <<<'echo x >game/x.txt'
+HARNESS_REASONING_EFFORT=high run --mode implement --branch agent/23-x
+expect_eq "$(jq -c .reasoning_effort "$out/result.json")" '"high"' "configured reasoning effort"
 
 case_ "implement: gives up after --attempts"
 new_repo
