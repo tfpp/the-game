@@ -95,6 +95,7 @@ func (s *Server) WaitMail() { s.mailWG.Wait() }
 
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
+	mux.HandleFunc("POST /api/game/money", s.gameMoney)
 	mux.HandleFunc("GET /api/health", s.health)
 	mux.HandleFunc("POST /api/auth/signup", s.signup)
 	mux.HandleFunc("POST /api/auth/verify-email", s.verifyEmail)

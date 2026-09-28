@@ -10,7 +10,9 @@ const FRAME_S := 0.1
 
 @export var state: Dictionary = initial_state()
 
-var _cycle := SlotSpinCycle.new()
+var _pending := false
+var _generation := 0
+var _prize := 0
 var _result: Array[int] = []
 var _elapsed := 0.0
 var _frame_elapsed := 0.0
@@ -30,12 +32,28 @@ func _ready() -> void:
 
 static func initial_state() -> Dictionary:
 	return {
-		"spin": 0, "spinning": false, "reels": [0, 1, 2], "stopped": 3, "operator": "", "won": false
+		"spin": 0,
+		"spinning": false,
+		"reels": [0, 1, 2],
+		"stopped": 3,
+		"operator": "",
+		"won": false,
+		"payout": 0,
+		"message": ""
 	}
 
 
 func interaction_text() -> String:
-	return "Slot machine — spinning…" if state["spinning"] else "Spin slot machine"
+	if state["spinning"]:
+		return "Slot machine — spinning…"
+	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
+	var text := "Spin slot machine — $1"
+	if wallet != null and wallet.balances.has(multiplayer.get_unique_id()):
+		text += (
+			" (you have %s)"
+			% PlayerMoney.format_money(int(wallet.balances[multiplayer.get_unique_id()]))
+		)
+	return text
 
 
 func interaction_point() -> Vector3:
@@ -69,18 +87,41 @@ func use() -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func request_spin() -> void:
-	if not multiplayer.is_server() or state["spinning"]:
+	if not multiplayer.is_server() or state["spinning"] or _pending:
 		return
 	var sender := multiplayer.get_remote_sender_id()
 	var peer_id := sender if sender != 0 else multiplayer.get_unique_id()
 	var player := _player_for_peer(peer_id)
 	if player == null or not can_use(player):
 		return
-	_begin_spin(peer_id, player.display_name)
+	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
+	if wallet == null:
+		return
+	_pending = true
+	state = state.duplicate(true)
+	state["message"] = "Checking wallet…"
+	var generation := _generation
+	var operator_name := player.display_name
+	var id := Crypto.new().generate_random_bytes(32).hex_encode()
+	var result: Dictionary = await wallet.spin(peer_id, id)
+	if generation != _generation:
+		return
+	_pending = false
+	if result.has("error"):
+		var next := state.duplicate(true)
+		next["message"] = str(result["error"])
+		state = next
+		return
+	var reels: Array[int] = []
+	reels.assign(result["reels"])
+	_begin_spin(peer_id, operator_name, reels, int(result["payout"]))
 
 
-func _begin_spin(peer_id: int, display_name: String) -> void:
-	_result = _cycle.next_result()
+func _begin_spin(
+	peer_id: int, display_name: String, reels: Array[int] = [0, 1, 2], prize: int = 0
+) -> void:
+	_result = reels
+	_prize = prize
 	_elapsed = 0.0
 	_frame_elapsed = 0.0
 	state = {
@@ -89,7 +130,9 @@ func _begin_spin(peer_id: int, display_name: String) -> void:
 		"reels": [0, 1, 2],
 		"stopped": 0,
 		"operator": display_name if display_name else "Player %d" % peer_id,
-		"won": false
+		"won": false,
+		"payout": 0,
+		"message": ""
 	}
 
 
@@ -122,6 +165,7 @@ func _advance(delta: float) -> void:
 	if stopped == 3:
 		next["spinning"] = false
 		next["won"] = SlotSpinCycle.is_win(_result)
+		next["payout"] = _prize
 	state = next
 	if stopped == 3:
 		play_result.rpc(int(state["spin"]), bool(state["won"]))
@@ -149,7 +193,9 @@ func _player_for_peer(peer_id: int) -> Player:
 func _on_mode_changed(_mode: Network.Mode) -> void:
 	# Do not carry local/offline results into a newly joined server, or vice versa.
 	state = initial_state()
-	_cycle = SlotSpinCycle.new()
+	_pending = false
+	_generation += 1
+	_prize = 0
 	_result.clear()
 	_last_sound_spin = 0
 	_audio.stop()
