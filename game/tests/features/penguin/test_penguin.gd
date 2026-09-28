@@ -4,6 +4,8 @@ extends GutTest
 ## peer 1 is the server and `take_hit` resolves as if called from server code.
 
 const PenguinScene := preload("res://features/penguin/feature.tscn")
+const PlayerScene := preload("res://core/player/player.tscn")
+const PlayerModelsScene := preload("res://features/player_models/feature.tscn")
 
 var _penguin: Penguin
 
@@ -46,6 +48,41 @@ func test_respawns_at_home_after_the_respawn_delay() -> void:
 
 func test_is_in_the_killable_group() -> void:
 	assert_true(_penguin.is_in_group(&"killable"))
+
+
+func test_waves_and_hops_when_a_nearby_player_becomes_a_penguin() -> void:
+	var models := PlayerModelsScene.instantiate() as PlayerModels
+	add_child_autofree(models)
+	var player := PlayerScene.instantiate() as Player
+	player.name = "1"
+	add_child_autofree(player)
+	player.set_physics_process(false)
+	player.set_process(false)
+	player.global_position = _penguin.global_position + Vector3(1, 0, 0)
+	_penguin._process(0.0)
+	assert_eq(_penguin._body.position.y, 0.0, "Not reacting to a default-model player nearby")
+	assert_eq(_penguin._wave_flipper.rotation.z, 0.0)
+	models.body_types = {1: "penguin"}
+	_penguin._elapsed = 0.1
+	_penguin._process(0.0)
+	assert_gt(_penguin._body.position.y, 0.0, "Hops once a nearby player becomes a penguin")
+	assert_ne(_penguin._wave_flipper.rotation.z, 0.0, "Waves a flipper at them")
+
+
+func test_does_not_react_to_a_penguin_player_far_away() -> void:
+	var models := PlayerModelsScene.instantiate() as PlayerModels
+	add_child_autofree(models)
+	var player := PlayerScene.instantiate() as Player
+	player.name = "1"
+	add_child_autofree(player)
+	player.set_physics_process(false)
+	player.set_process(false)
+	player.global_position = _penguin.global_position + Vector3(50, 0, 0)
+	models.body_types = {1: "penguin"}
+	_penguin._elapsed = 0.1
+	_penguin._process(0.0)
+	assert_eq(_penguin._body.position.y, 0.0, "Too far away to notice")
+	assert_eq(_penguin._wave_flipper.rotation.z, 0.0)
 
 
 func test_beak_points_along_patrol_travel() -> void:
