@@ -33,6 +33,9 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Close a Discord feature's issue automatically when the agent makes no changes for it.
 - Show each agent run's token usage and estimated cost in its PR and in the Discord thread.
 - Give the girl model a smaller collision hitbox and 15% less passive income.
+- Run Codex on GitHub-hosted Actions runners with a ChatGPT subscription login and the existing agent verification and PR publishing flow.
+- Require a Claude or Codex harness choice for Discord `/feature` requests, preserve it for revisions and conflict fixes, and default to Opus 5.5 or GPT-6 Astra respectively with low reasoning.
+- Include model, token usage and estimated API-equivalent cost in PR templates and Opened/Pushed Discord notifications, with readable PR-number links.
 - Make the penguin-facing regression test independent of frame timing by checking its forward offset at fixed waddle phases.
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28

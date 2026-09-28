@@ -108,6 +108,17 @@ echo "- workflow_dispatch"
 gate workflow_dispatch "{$alice,\"inputs\":{\"number\":\"9\",\"mode\":\"revise\",\"agent\":\"claude\",\"instructions\":\"hi\"}}"
 expect "$(out mode)" revise mode
 expect "$(instructions)" hi instructions
+expect "$(out agent)" claude agent
+
+echo "- Codex dispatch supports each mode"
+for mode in implement revise resolve-conflicts; do
+  number=9
+  [[ "$mode" == implement ]] && number=5
+  gate workflow_dispatch "{$alice,\"inputs\":{\"number\":\"$number\",\"mode\":\"$mode\",\"agent\":\"codex\"}}"
+  expect "$(out ok)" true ok
+  expect "$(out agent)" codex agent
+  expect "$(out mode)" "$mode" mode
+done
 
 if [[ "$failures" -gt 0 ]]; then
   echo "gate tests: $failures failure(s)"

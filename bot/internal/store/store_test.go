@@ -2,7 +2,11 @@ package store
 
 import (
 	"context"
+	"database/sql"
 	"errors"
+	"path/filepath"
+	"reflect"
+	"strings"
 	"testing"
 	"time"
 )
@@ -118,6 +122,133 @@ func TestJobsAndRuns(t *testing.T) {
 	}
 	if _, err := s.ActiveRunForJob(ctx, j.ID); !errors.Is(err, ErrNotFound) {
 		t.Errorf("finished run still active: %v", err)
+	}
+}
+
+func TestJobHarnessRoundTrip(t *testing.T) {
+	for _, harness := range []string{"codex", "claude", ""} {
+		t.Run("harness="+harness, func(t *testing.T) {
+			ctx := context.Background()
+			now := time.Unix(1_800_000_000, 0)
+			path := filepath.Join(t.TempDir(), "jobs.db")
+			s, err := Open(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer func() {
+				if s != nil {
+					s.Close()
+				}
+			}()
+			r, err := s.Reserve(ctx, "u", 0, "implement", "", Limits{}, now)
+			if err != nil {
+				t.Fatal(err)
+			}
+			j, err := s.CreateJob(ctx, Job{Issue: 3, Title: "t", ChannelID: "c", RequesterID: "u", RequesterName: "U", Harness: harness}, r.ID, now)
+			if err != nil || j.Harness != harness {
+				t.Fatalf("CreateJob = %+v, %v", j, err)
+			}
+			if err := s.SetThread(ctx, j.ID, "th", now); err != nil {
+				t.Fatal(err)
+			}
+			if err := s.SetPR(ctx, j.ID, 4, now); err != nil {
+				t.Fatal(err)
+			}
+			j.ThreadID, j.PR = "th", 4
+			check := func() {
+				t.Helper()
+				lookups := map[string]func() (Job, error){
+					"id":           func() (Job, error) { return s.JobByID(ctx, j.ID) },
+					"issue":        func() (Job, error) { return s.JobByIssue(ctx, j.Issue) },
+					"thread":       func() (Job, error) { return s.JobByThread(ctx, j.ThreadID) },
+					"issue number": func() (Job, error) { return s.JobByNumber(ctx, j.Issue) },
+					"PR number":    func() (Job, error) { return s.JobByNumber(ctx, j.PR) },
+				}
+				for name, lookup := range lookups {
+					if got, err := lookup(); err != nil || !reflect.DeepEqual(got, j) {
+						t.Errorf("%s = %+v, %v; want %+v", name, got, err, j)
+					}
+				}
+				if got, err := s.OpenJobsWithPR(ctx); err != nil || !reflect.DeepEqual(got, []Job{j}) {
+					t.Errorf("OpenJobsWithPR = %+v, %v", got, err)
+				}
+				if got, err := s.RunByID(ctx, r.ID); err != nil || got.JobID != j.ID {
+					t.Errorf("attached run = %+v, %v", got, err)
+				}
+			}
+			check()
+			if err := s.Close(); err != nil {
+				t.Fatal(err)
+			}
+			s, err = Open(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			check()
+		})
+	}
+}
+
+func TestJobHarnessConstraints(t *testing.T) {
+	s := open(t)
+	ctx := context.Background()
+	now := time.Unix(1_800_000_000, 0)
+	if _, err := s.CreateJob(ctx, Job{Issue: 1, Harness: "invalid"}, 0, now); err == nil || !strings.Contains(err.Error(), "CHECK constraint failed") {
+		t.Fatalf("invalid CreateJob harness: %v", err)
+	}
+	j, err := s.CreateJob(ctx, Job{Issue: 1}, 0, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, value := range []any{"invalid", "CODEX", nil} {
+		if _, err := s.db.ExecContext(ctx, "UPDATE jobs SET harness = ? WHERE id = ?", value, j.ID); err == nil {
+			t.Errorf("database accepted harness %v", value)
+		}
+	}
+	if got, err := s.JobByID(ctx, j.ID); err != nil || got.Harness != "" {
+		t.Fatalf("legacy harness = %+v, %v", got, err)
+	}
+}
+
+func TestMigrateV3JobHarness(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "v3.db")
+	db, err := sql.Open("sqlite", path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	for _, migration := range migrations[:3] {
+		if _, err := db.ExecContext(ctx, migration); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := db.ExecContext(ctx, `PRAGMA user_version = 3;
+		INSERT INTO jobs (id, issue, pr, title, channel_id, thread_id, requester_id, requester_name, state, conflict_sha, resolve_sha, created_at, updated_at)
+		VALUES (7, 3, 4, 'legacy', 'c', 'th', 'u', 'U', 'open', 'conflict', 'resolve', 1800000000, 1800000010);
+		INSERT INTO runs (id, job_id, mode, instructions, user_id, status, conclusion, workflow_run_id, run_url, relayed, created_at, updated_at)
+		VALUES (9, 7, 'revise', 'keep this', 'u', 'completed', 'success', 11, 'url', 2, 1800000000, 1800000010);`); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Close(); err != nil {
+		t.Fatal(err)
+	}
+	s, err := Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	var version int
+	if err := s.db.QueryRowContext(ctx, "PRAGMA user_version").Scan(&version); err != nil || version != 4 {
+		t.Fatalf("version = %d, %v", version, err)
+	}
+	wantJob := Job{ID: 7, Issue: 3, PR: 4, Title: "legacy", ChannelID: "c", ThreadID: "th", RequesterID: "u", RequesterName: "U", State: JobOpen, ConflictSHA: "conflict", ResolveSHA: "resolve", CreatedAt: time.Unix(1800000000, 0)}
+	if got, err := s.JobByID(ctx, 7); err != nil || !reflect.DeepEqual(got, wantJob) {
+		t.Fatalf("migrated job = %+v, %v; want %+v", got, err, wantJob)
+	}
+	wantRun := Run{ID: 9, JobID: 7, Mode: "revise", Instructions: "keep this", UserID: "u", Status: RunCompleted, Conclusion: "success", WorkflowRunID: 11, RunURL: "url", Relayed: 2, CreatedAt: time.Unix(1800000000, 0), UpdatedAt: time.Unix(1800000010, 0)}
+	if got, err := s.RunByID(ctx, 9); err != nil || !reflect.DeepEqual(got, wantRun) {
+		t.Fatalf("migrated run = %+v, %v; want %+v", got, err, wantRun)
 	}
 }
 

@@ -51,6 +51,7 @@ type Job struct {
 	RequesterID   string
 	RequesterName string
 	State         string
+	Harness       string // empty for legacy jobs, which use Config.Agent
 	ConflictSHA   string // head SHA last found to conflict with the base branch
 	ResolveSHA    string // head SHA a resolve-conflicts run was started for
 	CreatedAt     time.Time
@@ -165,6 +166,8 @@ var migrations = []string{
 	);`,
 	// 3: runs wait for a free agent slot instead of being refused.
 	`ALTER TABLE runs ADD COLUMN instructions TEXT NOT NULL DEFAULT '';`,
+	// 4: pin each job to its agent harness; empty preserves legacy configuration fallback.
+	`ALTER TABLE jobs ADD COLUMN harness TEXT NOT NULL DEFAULT '' CHECK(harness IN ('', 'claude', 'codex'));`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {
@@ -320,9 +323,9 @@ func (s *Store) CreateJob(ctx context.Context, j Job, runID int64, now time.Time
 	}
 	defer tx.Rollback()
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO jobs (issue, title, channel_id, requester_id, requester_name, state, created_at, updated_at)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-		j.Issue, j.Title, j.ChannelID, j.RequesterID, j.RequesterName, JobOpen, now.Unix(), now.Unix())
+		`INSERT INTO jobs (issue, title, channel_id, requester_id, requester_name, state, harness, created_at, updated_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		j.Issue, j.Title, j.ChannelID, j.RequesterID, j.RequesterName, JobOpen, j.Harness, now.Unix(), now.Unix())
 	if err != nil {
 		return Job{}, err
 	}
@@ -337,13 +340,13 @@ func (s *Store) CreateJob(ctx context.Context, j Job, runID int64, now time.Time
 }
 
 const jobCols = `id, issue, COALESCE(pr, 0), title, channel_id, COALESCE(thread_id, ''), requester_id,
-	requester_name, state, conflict_sha, resolve_sha, created_at`
+	requester_name, state, harness, conflict_sha, resolve_sha, created_at`
 
 func scanJob(row interface{ Scan(...any) error }) (Job, error) {
 	var j Job
 	var created int64
 	err := row.Scan(&j.ID, &j.Issue, &j.PR, &j.Title, &j.ChannelID, &j.ThreadID, &j.RequesterID,
-		&j.RequesterName, &j.State, &j.ConflictSHA, &j.ResolveSHA, &created)
+		&j.RequesterName, &j.State, &j.Harness, &j.ConflictSHA, &j.ResolveSHA, &created)
 	if errors.Is(err, sql.ErrNoRows) {
 		return Job{}, ErrNotFound
 	}

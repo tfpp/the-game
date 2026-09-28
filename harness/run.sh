@@ -15,7 +15,10 @@
 # Adapters may write the token usage of each call to $HARNESS_OUT/usage.json
 # ({input_tokens, output_tokens, cache_read_tokens, cache_write_tokens, cost_usd}, cost
 # null when unknown); result.json's usage is the sum over calls, or null.
-# Env: HARNESS_MODEL, HARNESS_MAX_TURNS (passed to adapters), HARNESS_REMOTE (origin),
+# Adapters may also report models (actual IDs) and cost_basis; these are collected
+# across calls. Without reported models, the configured model is recorded.
+# Env: HARNESS_MODEL, HARNESS_REASONING_EFFORT, HARNESS_MAX_TURNS (passed to adapters),
+#      HARNESS_REMOTE (origin),
 #      HARNESS_VERIFY and HARNESS_ADAPTERS (overrides, for tests).
 # Exit: 0 for success or no_changes, 2 when the agent failed, 1 on harness errors.
 set -euo pipefail
@@ -143,10 +146,29 @@ check_work() {
 
 # --- agent loop ------------------------------------------------------------------------
 usage=null
+models='[]'
+cost_basis='[]'
+# Pin the default so reporting and the adapter use the same model. Adapters can
+# report actual model IDs (e.g. Claude aliases/subagents) in their usage record.
+model="${HARNESS_MODEL:-}"
+case "$agent" in
+  claude) model="${model:-claude-opus-5-5}" ;;
+  codex) model="${model:-gpt-6-astra}" ;;
+esac
+export HARNESS_MODEL="$model"
 # add_usage: adds the last adapter call's usage.json to $usage. A missing cost makes the
 # total's cost unknown.
 add_usage() {
-  local call
+  local call reported basis
+  reported="$(jq -c '[.models[]? | select(type == "string" and length > 0)]' "$out/usage.json" 2>/dev/null)" || reported='[]'
+  [[ -n "$reported" ]] || reported='[]'
+  if [[ "$reported" == '[]' ]]; then
+    reported="$(jq -cn --arg model "$model" '[ $model | select(length > 0) ]')"
+  fi
+  models="$(jq -cn --argjson a "$models" --argjson b "$reported" '$a + $b | unique')"
+  basis="$(jq -c '[.cost_basis | select(type == "string" and length > 0)]' "$out/usage.json" 2>/dev/null)" || basis='[]'
+  [[ -n "$basis" ]] || basis='[]'
+  cost_basis="$(jq -cn --argjson a "$cost_basis" --argjson b "$basis" '$a + $b | unique')"
   call="$(jq -c 'select(type == "object") | with_entries(select(.value | type == "number" or . == null))' \
     "$out/usage.json" 2>/dev/null)" || return 0
   rm -f "$out/usage.json"
@@ -249,9 +271,9 @@ jq -n \
   --arg status "$status" --arg mode "$mode" --arg agent "$agent" \
   --arg branch "$branch" --arg base "$base" --arg title "$title" \
   --arg start_sha "$start_sha" --arg head_sha "$head_sha" --arg base_sha "$base_sha" --argjson attempts "$attempt" \
-  --argjson usage "$usage" \
+  --argjson usage "$usage" --argjson models "$models" --argjson cost_basis "$cost_basis" \
   '{status: $status, mode: $mode, agent: $agent, branch: $branch, base: $base,
-    title: $title, start_sha: $start_sha, head_sha: $head_sha, base_sha: $base_sha, attempts: $attempts, usage: $usage}' \
+    title: $title, start_sha: $start_sha, head_sha: $head_sha, base_sha: $base_sha, attempts: $attempts, models: $models, cost_basis: $cost_basis, usage: $usage}' \
   >"$out/result.json"
 
 log "status=$status attempts=$attempt head=${head_sha:0:12} usage=$usage out=$out"

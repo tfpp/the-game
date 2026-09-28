@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Claude Code adapter. Usage: claude.sh PROMPT_FILE LOG_FILE CONTINUE(0|1)
-# Env: HARNESS_OUT (required), HARNESS_MODEL, HARNESS_MAX_TURNS.
+# Env: HARNESS_OUT (required), HARNESS_MODEL (claude-opus-5-5),
+# HARNESS_REASONING_EFFORT (low), HARNESS_MAX_TURNS.
 # Writes the call's token usage to $HARNESS_OUT/usage.json (see run.sh).
 # Auth comes from CLAUDE_CODE_OAUTH_TOKEN (claude setup-token) or ANTHROPIC_API_KEY.
 set -euo pipefail
@@ -8,7 +9,7 @@ prompt="$1" log="$2" cont="$3"
 session_file="$HARNESS_OUT/claude-session"
 
 args=(-p --output-format stream-json --verbose --dangerously-skip-permissions)
-[[ -n "${HARNESS_MODEL:-}" ]] && args+=(--model "$HARNESS_MODEL")
+args+=(--model "${HARNESS_MODEL:-claude-opus-5-5}" --effort "${HARNESS_REASONING_EFFORT:-low}")
 [[ -n "${HARNESS_MAX_TURNS:-}" ]] && args+=(--max-turns "$HARNESS_MAX_TURNS")
 if [[ "$cont" == 1 && -s "$session_file" ]]; then
   args+=(--resume "$(cat "$session_file")")
@@ -32,7 +33,12 @@ set -e
 
 jq -rs 'map(select(.type == "result")) | last | .result // empty' "$log" >"$HARNESS_OUT/last-message.md" 2>/dev/null || true
 # Usage of this call. total_cost_usd is at API prices, also on a subscription.
-jq -cs 'map(select(.type == "result")) | select(length > 0) | {
+jq -cs --arg model "${HARNESS_MODEL:-claude-opus-5-5}" '
+  (([.[] | select(.type == "assistant") | .message.model? | select(type == "string" and length > 0)] +
+    [.[] | select(.type == "result") | .modelUsage? | select(type == "object") | keys[]]) | unique) as $reported |
+  map(select(.type == "result")) | select(length > 0) | {
+  models: (if ($reported | length) > 0 then $reported else [$model] end),
+  cost_basis: "adapter-reported",
   input_tokens: (map(.usage.input_tokens // 0) | add),
   output_tokens: (map(.usage.output_tokens // 0) | add),
   cache_read_tokens: (map(.usage.cache_read_input_tokens // 0) | add),

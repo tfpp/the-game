@@ -191,9 +191,12 @@ protocol, income timing, offline behavior and deployment order.
 
 ## Agent pipeline
 
-1. `/feature <text>` in Discord. The bot (`bot/`, details in `bot/README.md`) checks the
-   requester role and the per-user limit. It then creates a GitHub issue through its GitHub
-   App, ending in a `Requested-by:` trailer, and opens a thread. If the concurrency cap is
+1. `/feature request:<text> harness:<claude|codex>` in Discord. Both parameters are
+   required. The bot (`bot/`, details in `bot/README.md`) checks the requester role and
+   the per-user limit, and persists the harness choice with the feature for queued
+   runs, revisions and conflict resolution. Legacy jobs without a choice use `BOT_AGENT`.
+   It then creates a GitHub issue through its GitHub App, ending in a `Requested-by:`
+   trailer, and opens a thread. If the concurrency cap is
    reached, the request waits in line and starts when a run finishes.
 2. The bot dispatches `agent.yml` with a `request_id`, which the run name echoes. On
    GitHub, a maintainer can also add the `agent` label or comment `/agent` (details in
@@ -219,9 +222,14 @@ protocol, income timing, offline behavior and deployment order.
    run. `/agent resolve-conflicts` merges `main` in and resolves any conflicts.
    `/close` in the thread closes the PR and the issue without merging.
 
-**Agents:** Claude Code runs on GitHub-hosted runners using `CLAUDE_CODE_OAUTH_TOKEN`
-(from `claude setup-token`). Codex and pi need persisted `auth.json` logins, so they run on
-a self-hosted, ephemeral runner on the homelab.
+**Agents:** Claude Code and Codex run on GitHub-hosted runners. Claude uses
+`CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`); Codex restores a ChatGPT subscription
+login from `CODEX_AUTH_JSON` into a temporary `CODEX_HOME`, removed after the run. Refreshed
+Codex tokens are not persisted back to the secret; operators must replace it when login
+expires. Select Codex through Discord's required `harness` option or the workflow
+dispatch's `agent` input. Claude defaults to Opus 5.5 (`claude-opus-5-5`) with low effort;
+Codex defaults to GPT-6 Astra (`gpt-6-astra`) with low reasoning. Pi remains local-only
+until its runner and authentication are wired up.
 
 ## Merging
 
@@ -314,4 +322,5 @@ Versioning started at `v0.6.0`, matching the milestones below.
 4. **v0.4:** `harness/` plus `agent.yml` (Claude), triggered by label/comment/dispatch.
 5. **v0.5:** `bot/` MVP (`/feature`, threads, status), then revise loops.
 6. **v0.6:** Discord approvals, the merge coordinator, `/queue`, self-registering
-   features and automatic server deploys; later, a homelab runner with Codex/pi.
+   features and automatic server deploys; Codex now also runs on GitHub-hosted runners,
+   with pi runner support still pending.

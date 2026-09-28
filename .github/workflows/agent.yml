@@ -30,7 +30,7 @@ on:
         default: implement
       agent:
         type: choice
-        options: [claude]
+        options: [claude, codex]
         default: claude
       instructions:
         description: Extra instructions for the agent
@@ -102,6 +102,13 @@ jobs:
       - name: Install Claude Code
         if: needs.gate.outputs.agent == 'claude'
         run: curl -fsSL https://claude.ai/install.sh | bash
+      - uses: actions/setup-node@v6
+        if: needs.gate.outputs.agent == 'codex'
+        with:
+          node-version: '22'
+      - name: Install Codex
+        if: needs.gate.outputs.agent == 'codex'
+        run: npm install --prefix "$RUNNER_TEMP/codex-cli" @openai/codex && echo "$RUNNER_TEMP/codex-cli/node_modules/.bin" >> "$GITHUB_PATH"
       - name: Configure git
         env:
           NAME: ${{ vars.AGENT_GIT_NAME || 'claude[bot]' }}
@@ -123,16 +130,29 @@ jobs:
           cat "$RUNNER_TEMP/task.md"
       - name: Run agent
         env:
-          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ needs.gate.outputs.agent == 'claude' && secrets.CLAUDE_CODE_OAUTH_TOKEN || '' }}
+          CODEX_AUTH_JSON: ${{ needs.gate.outputs.agent == 'codex' && secrets.CODEX_AUTH_JSON || '' }}
+          CODEX_MODEL: ${{ vars.CODEX_MODEL }}
           HARNESS_MODEL: ${{ vars.AGENT_MODEL }}
+          HARNESS_REASONING_EFFORT: ${{ vars.AGENT_REASONING_EFFORT || 'low' }}
           HARNESS_MAX_TURNS: ${{ vars.AGENT_MAX_TURNS }}
           AGENT: ${{ needs.gate.outputs.agent }}
           MODE: ${{ needs.gate.outputs.mode }}
           BRANCH: ${{ needs.gate.outputs.branch }}
           ATTEMPTS: ${{ vars.AGENT_ATTEMPTS || 3 }}
         run: |
+          if [[ "$AGENT" == codex ]]; then
+            export CODEX_HOME="$RUNNER_TEMP/codex-home"
+            export HARNESS_MODEL="$CODEX_MODEL"
+            trap 'rm -rf -- "$CODEX_HOME"' EXIT
+            harness/codex-auth.sh
+            unset CODEX_AUTH_JSON
+          fi
           harness/run.sh --agent "$AGENT" --mode "$MODE" --branch "$BRANCH" \
             --task "$RUNNER_TEMP/task.md" --out "$RUNNER_TEMP/harness-out" --attempts "$ATTEMPTS"
+      - name: Remove Codex credentials
+        if: always() && needs.gate.outputs.agent == 'codex'
+        run: rm -rf -- "$RUNNER_TEMP/codex-home"
       - uses: actions/upload-artifact@v7
         if: always()
         with:

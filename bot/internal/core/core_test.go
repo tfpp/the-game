@@ -178,11 +178,15 @@ func newEnv(t *testing.T) *env {
 	return e
 }
 
-func (e *env) feature(t *testing.T, user, text string) *fakeResponder {
+func (e *env) feature(t *testing.T, user, text string, harness ...string) *fakeResponder {
 	t.Helper()
+	selected := "claude"
+	if len(harness) > 0 {
+		selected = harness[0]
+	}
 	r := &fakeResponder{counter: &e.nth}
 	err := e.svc.Feature(context.Background(), FeatureRequest{
-		UserID: user, UserName: "Al@ice*", HasRole: true, ChannelID: "c1", Text: text,
+		UserID: user, UserName: "Al@ice*", HasRole: true, ChannelID: "c1", Text: text, Harness: selected,
 	}, r)
 	if err != nil {
 		t.Fatal(err)
@@ -357,16 +361,24 @@ func TestWorkflowRunAndCommentsReachTheThread(t *testing.T) {
 	if len(e.chat.posts) != n+1 || e.chat.last().ping != "" {
 		t.Fatalf("posts %+v", e.chat.posts[n:])
 	}
-	must(t, e.svc.Comment(ctx, 11, github.Comment{ID: 3, User: bot, Body: "🤖 Opened https://github.com/o/r/pull/12 · 1.2M tokens (34k output) · ~$3.46\n"}))
+	metadata := " · Model(s): claude-opus-5-5 · Tokens used: 1235200 · Estimated cost (USD API-equivalent): $3.46"
+	must(t, e.svc.Comment(ctx, 11, github.Comment{ID: 3, User: bot, Body: "🤖 Opened https://github.com/o/r/pull/12" + metadata + "\n"}))
 	if p := e.chat.last(); !strings.HasPrefix(p.content, "<@42> 🤖 Opened") || p.ping != "42" {
 		t.Errorf("opened post %+v", p)
+	}
+	if p := e.chat.last(); !strings.Contains(p.content, "[PR #12](<https://github.com/o/r/pull/12>)"+metadata) {
+		t.Errorf("opened notification lost readable PR link or usage: %s", p.content)
 	}
 	job, _ := e.st.JobByIssue(ctx, 11)
 	if job.PR != 12 {
 		t.Errorf("PR not recorded: %+v", job)
 	}
 	// Comments on the PR reach the same thread.
-	must(t, e.svc.Comment(ctx, 12, github.Comment{ID: 4, User: bot, Body: "🤖 Pushed abc\n<details>log</details>"}))
+	must(t, e.svc.Comment(ctx, 12, github.Comment{ID: 4, User: bot,
+		Body: "🤖 Pushed abc https://github.com/o/r/pull/12" + metadata + "\n\n**update**\n<details>log</details>"}))
+	if p := e.chat.last(); !strings.Contains(p.content, "[PR #12](<https://github.com/o/r/pull/12>)") || !strings.Contains(p.content, metadata) || p.ping != "42" {
+		t.Errorf("pushed notification lost link, usage or ping: %s", p.content)
+	}
 	if p := e.chat.last(); !strings.Contains(p.content, "[Logs on GitHub]") || strings.Contains(p.content, "details") {
 		t.Errorf("details not stripped: %q", p.content)
 	}
@@ -450,7 +462,7 @@ func TestRunRefusedByTheGateIsReported(t *testing.T) {
 func TestRevise(t *testing.T) {
 	e := newEnv(t)
 	ctx := context.Background()
-	e.feature(t, "42", "add jump pads please")
+	e.feature(t, "42", "add jump pads please", "codex")
 	revise := func(user string, role bool, text string) *fakeResponder {
 		r := &fakeResponder{}
 		must(t, e.svc.Revise(ctx, ReviseRequest{UserID: user, UserName: "Bob", HasRole: role, ThreadID: "thread1", Text: text}, r))
@@ -474,7 +486,7 @@ func TestRevise(t *testing.T) {
 		t.Fatalf("revise: %+v", r)
 	}
 	d := e.gh.dispatches[len(e.gh.dispatches)-1]
-	if d["number"] != "12" || d["mode"] != "revise" || d["instructions"] != "From Bob on Discord:\n\nmake them red" || d["request_id"] != "bot-2" {
+	if d["number"] != "12" || d["mode"] != "revise" || d["agent"] != "codex" || d["instructions"] != "From Bob on Discord:\n\nmake them red" || d["request_id"] != "bot-2" {
 		t.Errorf("dispatch %v", d)
 	}
 	r = &fakeResponder{}
@@ -550,7 +562,7 @@ func must(t *testing.T, err error) {
 func TestReviseWaitsForAFreeSlot(t *testing.T) {
 	e := newEnv(t)
 	ctx := context.Background()
-	e.feature(t, "42", "add jump pads please")
+	e.feature(t, "42", "add jump pads please", "codex")
 	job, _ := e.st.JobByIssue(ctx, 11)
 	must(t, e.st.SetPR(ctx, job.ID, 12, e.now))
 	must(t, e.svc.WorkflowRun(ctx, github.WorkflowRun{Path: ".github/workflows/agent.yml",
@@ -573,7 +585,7 @@ func TestReviseWaitsForAFreeSlot(t *testing.T) {
 	if len(e.gh.dispatches) != n+1 {
 		t.Fatalf("dispatches %v", e.gh.dispatches)
 	}
-	if d := e.gh.dispatches[n]; d["number"] != "12" || d["mode"] != "revise" || d["instructions"] != "From Bob on Discord:\n\nmake them red" {
+	if d := e.gh.dispatches[n]; d["number"] != "12" || d["mode"] != "revise" || d["agent"] != "codex" || d["instructions"] != "From Bob on Discord:\n\nmake them red" {
 		t.Errorf("dispatch %v", d)
 	}
 }

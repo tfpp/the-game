@@ -16,14 +16,22 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
 
 ## How it works
 
-1. **`/feature <request>`** in a text channel (optionally only `BOT_FEATURE_CHANNEL_ID`).
+1. **`/feature request:<text> harness:<claude|codex>`** in a text channel (optionally only
+   `BOT_FEATURE_CHANNEL_ID`). Both parameters are required. The selected harness is
+   saved with the feature and used for its initial run, queued runs, `/revise`, and
+   automatic conflict resolution, including after bot restarts. Claude defaults to
+   **Opus 5.5** with low effort; Codex defaults to **GPT-6 Astra** with low reasoning.
+   Configure both credentials in [the harness setup](../harness/README.md#setup).
    The user needs `BOT_REQUESTER_ROLE_ID`. The bot reserves a run against the limits,
    opens an issue whose body ends in `Requested-by: <name> <discord:<id>>` (the harness
    credits that person in the PR), answers publicly, opens a thread on the answer, and
    dispatches `agent.yml` (`mode=implement`, `request_id=bot-<run>`).
 2. **Progress** reaches the thread from the App's webhooks:
    - `issue_comment`: the harness's 🤖 comments on the issue or PR ("Starting…",
-     "Opened <PR>", failures with a link to the logs).
+     "Opened <PR>", failures with a link to the logs). Opened and Pushed notifications
+     include the model(s), tokens used, and estimated API-equivalent cost for that run;
+     missing telemetry is marked unavailable. PR links display as **PR #123** rather
+     than a bare URL.
    - `workflow_run`: agent runs are matched by their run name
      (`agent #N mode [bot-<run>]`) to track status. The bot speaks up itself only if a
      run ends without any 🤖 comment: the gate refused it (for example, the App's login
@@ -130,7 +138,8 @@ Environment variables; secrets are files.
 | `BOT_MAX_ACTIVE_RUNS` | `5` | Concurrent runs; `0` for no limit |
 | `BOT_DEPLOY_DIR` | off | Directory shared with the host's deploy service |
 | `BOT_RELEASE_CHANNEL_ID` | off | Channel for release and edge announcements (needs `BOT_DEPLOY_DIR`) |
-| `BOT_REF`, `BOT_WORKFLOW`, `BOT_CI_WORKFLOW`, `BOT_AGENT` | `main`, `agent.yml`, `game-ci.yml`, `claude` | |
+| `BOT_REF`, `BOT_WORKFLOW`, `BOT_CI_WORKFLOW` | `main`, `agent.yml`, `game-ci.yml` | |
+| `BOT_AGENT` | `claude` | Fallback only for old jobs created before per-feature harness selection; new requests always use their required `harness` choice |
 | `BOT_SERVER_WORKFLOW`, `BOT_PAGES_WORKFLOW` | `server-image.yml`, `pages.yml` | Builds that gate a deploy |
 | `BOT_API_WORKFLOW` | `api-image.yml` | Build that deploys the accounts API |
 | `BOT_PREVIEW_WORKFLOW`, `BOT_PREVIEW_URL` | `preview.yml`, `https://pr-{pr}.tfpp-game.pages.dev/` | PR preview deploys and their link (`{pr}` is the PR number) |

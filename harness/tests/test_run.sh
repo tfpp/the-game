@@ -100,10 +100,10 @@ new_repo
 verify '[[ -f game/fixed ]]'
 agent <<'EOF'
 if [[ "$3" == 0 ]]; then
-  echo '{"input_tokens":10,"output_tokens":5,"cache_read_tokens":100,"cache_write_tokens":20,"cost_usd":0.5}' >"$HARNESS_OUT/usage.json"
+  echo '{"input_tokens":10,"output_tokens":5,"cache_read_tokens":100,"cache_write_tokens":20,"cost_usd":0.5,"models":["model-a"],"cost_basis":"adapter-reported"}' >"$HARNESS_OUT/usage.json"
   echo x >game/x.txt
 else
-  echo '{"input_tokens":1,"output_tokens":2,"cache_read_tokens":3,"cache_write_tokens":4,"cost_usd":0.25,"junk":"x"}' >"$HARNESS_OUT/usage.json"
+  echo '{"input_tokens":1,"output_tokens":2,"cache_read_tokens":3,"cache_write_tokens":4,"cost_usd":0.25,"models":["model-a","model-b"],"cost_basis":"adapter-reported","junk":"x"}' >"$HARNESS_OUT/usage.json"
   touch game/fixed
 fi
 printf 'feat: x\n' >"$HARNESS_OUT/summary.md"
@@ -111,6 +111,8 @@ EOF
 run --mode implement --branch agent/20-x
 expect_eq "$(jq -c .usage "$out/result.json")" \
   '{"input_tokens":11,"output_tokens":7,"cache_read_tokens":103,"cache_write_tokens":24,"cost_usd":0.75}' "summed usage"
+expect_eq "$(jq -c .models "$out/result.json")" '["model-a","model-b"]' "actual models across retries"
+expect_eq "$(jq -c .cost_basis "$out/result.json")" '["adapter-reported"]' "cost basis across retries"
 new_repo
 verify 'exit 0'
 agent <<<'echo "{\"input_tokens\":1,\"output_tokens\":2,\"cost_usd\":null}" >"$HARNESS_OUT/usage.json"; echo x >game/x.txt'
@@ -118,8 +120,9 @@ run --mode implement --branch agent/21-x
 expect_eq "$(jq -c .usage.cost_usd "$out/result.json")" null "unknown cost"
 new_repo
 agent <<<'echo x >game/x.txt'
-run --mode implement --branch agent/22-x
+HARNESS_MODEL=configured-model run --mode implement --branch agent/22-x
 expect_eq "$(jq -c .usage "$out/result.json")" null "no usage"
+expect_eq "$(jq -c .models "$out/result.json")" '["configured-model"]' "configured model without usage"
 
 case_ "implement: gives up after --attempts"
 new_repo

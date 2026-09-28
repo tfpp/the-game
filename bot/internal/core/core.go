@@ -84,7 +84,7 @@ type Config struct {
 	Ref        string // branch agent.yml is dispatched on (main)
 	Workflow   string // agent workflow file (agent.yml)
 	CIWorkflow string // CI workflow file (game-ci.yml)
-	Agent      string // agent input (claude)
+	Agent      string // fallback for legacy jobs without a saved harness (claude)
 	// Workflows whose successful runs on Ref mean a build is ready to deploy: the server
 	// is deployed once both have finished for the same commit.
 	ServerWorkflow string // server-image.yml
@@ -148,6 +148,7 @@ type FeatureRequest struct {
 	HasRole   bool
 	ChannelID string
 	Text      string
+	Harness   string // required: claude or codex; kept for the feature's later runs
 }
 
 // Feature handles /feature: checks, issue, thread, dispatch.
@@ -158,6 +159,9 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	}
 	if n := utf8.RuneCountInString(text); n < minRequest || n > maxRequest {
 		return r.Reject(ctx, fmt.Sprintf("Describe the feature in %d to %d characters.", minRequest, maxRequest))
+	}
+	if req.Harness != "claude" && req.Harness != "codex" {
+		return r.Reject(ctx, "Choose a harness: claude or codex.")
 	}
 	run, err := s.reserve(ctx, req.UserID, 0, "implement", "")
 	if err != nil {
@@ -179,7 +183,7 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	}
 	job, err := s.st.CreateJob(ctx, store.Job{
 		Issue: issue.Number, Title: title, ChannelID: req.ChannelID,
-		RequesterID: req.UserID, RequesterName: name,
+		RequesterID: req.UserID, RequesterName: name, Harness: req.Harness,
 	}, run.ID, s.cfg.Now())
 	if err != nil {
 		s.failRun(ctx, run.ID)
@@ -187,8 +191,8 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	}
 	run.JobID = job.ID
 
-	announce := fmt.Sprintf("**%s**\nRequested by <@%s> · [issue #%d](<%s>)\n%s",
-		escape(title), req.UserID, issue.Number, issue.HTMLURL, quote(text, 300))
+	announce := fmt.Sprintf("**%s**\nRequested by <@%s> · [issue #%d](<%s>) · harness: `%s`\n%s",
+		escape(title), req.UserID, issue.Number, issue.HTMLURL, job.Harness, quote(text, 300))
 	if err := r.Respond(ctx, announce); err != nil {
 		s.log.Error("respond to /feature", "err", err, "issue", issue.Number)
 	}
@@ -455,10 +459,24 @@ func (s *Service) rejectLimit(ctx context.Context, r Responder, err error) error
 }
 
 func (s *Service) dispatch(ctx context.Context, run store.Run, number int, instructions string) error {
-	err := s.gh.Dispatch(ctx, s.cfg.Workflow, s.cfg.Ref, map[string]string{
+	// Resolve from persisted job state for every path: immediate, queued, revisions,
+	// and automatic conflict resolution (including after a bot restart).
+	job, err := s.st.JobByID(ctx, run.JobID)
+	if err != nil {
+		s.failRun(ctx, run.ID)
+		return fmt.Errorf("load dispatch harness: %w", err)
+	}
+	harness := job.Harness
+	if harness == "" {
+		harness = s.cfg.Agent // jobs created before harness selection was introduced
+		if harness == "" {
+			harness = "claude"
+		}
+	}
+	err = s.gh.Dispatch(ctx, s.cfg.Workflow, s.cfg.Ref, map[string]string{
 		"number":       strconv.Itoa(number),
 		"mode":         run.Mode,
-		"agent":        s.cfg.Agent,
+		"agent":        harness,
 		"instructions": instructions,
 		"request_id":   requestID(run.ID),
 	})
@@ -869,6 +887,26 @@ func quote(text string, max int) string {
 	return "> " + strings.ReplaceAll(text, "\n", "\n> ")
 }
 
+// Match existing Markdown links first so they are not nested or relabeled. Bare
+// GitHub PR links (including angle-bracket autolinks) get a readable Discord label.
+var githubLinks = regexp.MustCompile(`\[[^\]\n]*\]\(<?https://github\.com/[^\s)>]+>?\)|<?https://github\.com/[^\s<>()]+>?`)
+var githubPRNumber = regexp.MustCompile(`^https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/pull/([0-9]+)(?:[/#?]|$)`)
+
+func formatPRLinks(text string) string {
+	return githubLinks.ReplaceAllStringFunc(text, func(link string) string {
+		if strings.HasPrefix(link, "[") {
+			return link
+		}
+		target := strings.Trim(link, "<>")
+		clean := strings.TrimRight(target, ".,;:!?")
+		match := githubPRNumber.FindStringSubmatch(clean)
+		if match == nil {
+			return link
+		}
+		return fmt.Sprintf("[PR #%s](<%s>)%s", match[1], clean, target[len(clean):])
+	})
+}
+
 // relayText shortens a harness comment for Discord: collapsed logs become a link.
 func relayText(body, url string) string {
 	body = strings.ReplaceAll(body, "\r", "")
@@ -877,7 +915,7 @@ func relayText(body, url string) string {
 	if stripped != body {
 		link = fmt.Sprintf("\n[Logs on GitHub](<%s>)", url)
 	}
-	stripped = strings.TrimSpace(stripped)
+	stripped = formatPRLinks(strings.TrimSpace(stripped))
 	if r := []rune(stripped); len(r) > 1500 {
 		stripped = string(r[:1500]) + "…"
 		link = fmt.Sprintf("\n[More on GitHub](<%s>)", url)

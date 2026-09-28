@@ -70,10 +70,19 @@ var (
 			Name:        "feature",
 			Description: "Ask the agent to build a feature for the game",
 			Contexts:    []discord.InteractionContextType{discord.InteractionContextTypeGuild},
-			Options: []discord.ApplicationCommandOption{discord.ApplicationCommandOptionString{
-				Name: "request", Description: "What should it do?", Required: true,
-				MinLength: &minLen, MaxLength: &maxLen,
-			}},
+			Options: []discord.ApplicationCommandOption{
+				discord.ApplicationCommandOptionString{
+					Name: "request", Description: "What should it do?", Required: true,
+					MinLength: &minLen, MaxLength: &maxLen,
+				},
+				discord.ApplicationCommandOptionString{
+					Name: "harness", Description: "Which coding harness should build and revise this feature?", Required: true,
+					Choices: []discord.ApplicationCommandOptionChoiceString{
+						{Name: "claude", Value: "claude"},
+						{Name: "codex", Value: "codex"},
+					},
+				},
+			},
 		},
 		discord.SlashCommandCreate{
 			Name:        "revise",
@@ -187,7 +196,7 @@ func (b *Bot) onCommand(e *events.ApplicationCommandInteractionCreate) {
 		default:
 			err = b.Service.Feature(ctx, core.FeatureRequest{
 				UserID: member.User.ID.String(), UserName: name, HasRole: hasRole,
-				ChannelID: ch.ID().String(), Text: data.String("request"),
+				ChannelID: ch.ID().String(), Text: data.String("request"), Harness: data.String("harness"),
 			}, r)
 		}
 	case "revise":

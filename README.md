@@ -130,7 +130,8 @@ to join the local server.
 
 ## Contributing
 
-The usual way in is Discord: `/feature <request>` starts an agent, and `/revise <changes>`
+The usual way in is Discord: `/feature request:<text> harness:<claude|codex>` starts
+an agent using the required harness choice, and `/revise <changes>`
 in the thread adjusts its PR. To work on the repo directly:
 
 - Put features in `game/features/<name>/` with a `feature.tscn`, and tests in

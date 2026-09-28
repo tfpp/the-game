@@ -17,7 +17,8 @@ repo="$GITHUB_REPOSITORY"
 base="${BASE:-main}"
 label="${AGENT_LABEL:-agent}"
 run_link="[run](${RUN_URL:-})"
-usage_note="" # " · 1.2M tokens (34k output) · ~$3.45", from result.json
+usage_models="unavailable" usage_total="unavailable" usage_cost="unavailable"
+usage_note=" · Model(s): unavailable · Tokens used: unavailable · Estimated cost (USD API-equivalent): unavailable"
 tmp="$(mktemp -d)"
 cd "$REPO_ROOT"
 
@@ -58,22 +59,35 @@ status="$(jq -r '.status // empty' "$result")"
 attempts="$(jq -r '.attempts // 0 | tonumber? // 0' "$result")"
 title="$(jq -r '.title // empty' "$result" | head -n 1)"
 
-# Token usage (and cost, when the adapter knows it). result.json is untrusted: only
-# non-negative numbers are read, and the text is built here.
-usage_fields="$(jq -r '.usage | select(type == "object") |
-  def n: if type == "number" and . >= 0 and . < 1e15 then . else 0 end;
-  def h: if . >= 999500 then "\((. / 1e5 | round) / 10)M" elif . >= 1000 then "\(. / 1e3 | round)k"
-    else "\(round)" end;
-  ([.input_tokens, .output_tokens, .cache_read_tokens, .cache_write_tokens] | map(n) | add) as $total |
-  select($total > 0) |
-  [($total | h), (.output_tokens | n | h),
-   (if (.cost_usd | type) == "number" and .cost_usd >= 0 and .cost_usd < 1e6 then .cost_usd else "-" end)] |
-  @tsv' "$result" 2>/dev/null || true)"
+# All metadata describes this run only. Never interpolate arbitrary telemetry text.
+usage_fields="$(jq -r '
+  def token: type == "number" and . >= 0 and . < 1e15 and floor == .;
+  if .attempts == 0 then ["none (no agent run)", "0", "0"]
+  else
+    (if (.models | type) == "array" then
+      [.models[:8][] | select(type == "string") |
+       select(length > 0 and length <= 120) |
+       select(test("[^A-Za-z0-9._:/-]") | not)] | unique | join(", ")
+     else "" end) as $models |
+    (if (.usage | type) == "object" then .usage else {} end) as $usage |
+    [$usage.input_tokens, $usage.output_tokens, $usage.cache_read_tokens,
+     $usage.cache_write_tokens] as $tokens |
+    [(if $models == "" then "unavailable" else $models end),
+     (if all($tokens[]; token) then ($tokens | add | tostring) else "unavailable" end),
+     (if ($usage.cost_usd | type) == "number" and $usage.cost_usd >= 0 and
+         $usage.cost_usd < 1e6 then ($usage.cost_usd | tostring) else "unavailable" end)]
+  end | @tsv' "$result" 2>/dev/null || true)"
 if [[ -n "$usage_fields" ]]; then
-  IFS=$'\t' read -r usage_total usage_output usage_cost <<<"$usage_fields"
-  usage_note=" · $usage_total tokens ($usage_output output)"
-  [[ "$usage_cost" == - ]] || usage_note+="$(LC_NUMERIC=C printf ' · ~$%.2f' "$usage_cost")"
+  IFS=$'\t' read -r usage_models usage_total usage_cost <<<"$usage_fields"
+  [[ "$usage_cost" == unavailable ]] || usage_cost="$(LC_NUMERIC=C printf '$%.2f' "$usage_cost")"
 fi
+usage_note=" · Model(s): $usage_models · Tokens used: $usage_total · Estimated cost (USD API-equivalent): $usage_cost"
+
+agent_usage() {
+  printf '\n## Agent Usage (this run)\n\n- Model(s): %s\n- Tokens used: %s\n- Estimated cost (USD API-equivalent): %s\n' \
+    "$usage_models" "$usage_total" "$usage_cost"
+  printf '\nEstimates, including adapter-reported costs, are API-equivalent, not subscription billing. They may use standard short-context token rates and exclude separate tool fees and long-context premiums.\n'
+}
 
 case "$status" in
   success) ;;
@@ -164,6 +178,7 @@ if [[ "$MODE" == implement ]]; then
     jq -r "$ISSUE_JQ"'"**\(.title)**" + (request_body | if test("\\S") then "\n\n" + . else "" end)' <<<"$issue_json" | sed 's/^/> /'
     printf '\n– requested by %s\n' "$(jq -r "$ISSUE_JQ requester" <<<"$issue_json")"
     warning
+    agent_usage
     footer
   } >"$tmp/pr.md"
   url="$(gh pr create --repo "$repo" --base "$base" --head "$BRANCH" --title "$title" --body-file "$tmp/pr.md")"
@@ -172,7 +187,7 @@ if [[ "$MODE" == implement ]]; then
   log "opened $url"
 else
   {
-    printf '🤖 Pushed %s: **%s**%s\n\n' "$head_sha" "${title:-update}" "$usage_note"
+    printf '🤖 Pushed %s https://github.com/%s/pull/%s%s\n\n**%s**\n\n' "$head_sha" "$repo" "$PR" "$usage_note" "${title:-update}"
     summary_body
     warning
     footer

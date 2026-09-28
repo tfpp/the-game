@@ -113,10 +113,10 @@ func (d *fakeDeployer) Deploy(_ context.Context, sha string) error {
 func (d *fakeDeployer) Deployed(context.Context) (string, error) { return d.deployed, nil }
 
 // withPR makes a feature whose agent run finished with PR pr at head, CI green.
-func (e *env) withPR(t *testing.T, user string, pr int, head string) store.Job {
+func (e *env) withPR(t *testing.T, user string, pr int, head string, harness ...string) store.Job {
 	t.Helper()
 	ctx := context.Background()
-	e.feature(t, user, fmt.Sprintf("feature for PR %d please", pr))
+	e.feature(t, user, fmt.Sprintf("feature for PR %d please", pr), harness...)
 	runs, err := e.st.ActiveRuns(ctx)
 	must(t, err)
 	for _, r := range runs {
@@ -347,7 +347,7 @@ func TestNewCommitsDropTheApproval(t *testing.T) {
 func TestConflictStartsAResolveRun(t *testing.T) {
 	e := newEnv(t)
 	ctx := context.Background()
-	job := e.withPR(t, "42", 12, "aaa")
+	job := e.withPR(t, "42", 12, "aaa", "codex")
 	e.approve(t, job, true, "")
 	no := false
 	e.gh.prs[12].Mergeable = &no
@@ -358,7 +358,7 @@ func TestConflictStartsAResolveRun(t *testing.T) {
 		t.Fatalf("dispatches %v", e.gh.dispatches)
 	}
 	d := e.gh.dispatches[n]
-	if d["number"] != "12" || d["mode"] != "resolve-conflicts" {
+	if d["number"] != "12" || d["mode"] != "resolve-conflicts" || d["agent"] != "codex" {
 		t.Errorf("dispatch %v", d)
 	}
 	run, err := e.st.ActiveRunForJob(ctx, job.ID)
@@ -380,7 +380,7 @@ func TestConflictStartsAResolveRun(t *testing.T) {
 func TestConflictWaitsForAFreeAgentSlot(t *testing.T) {
 	e := newEnv(t)
 	ctx := context.Background()
-	job := e.withPR(t, "42", 12, "aaa")
+	job := e.withPR(t, "42", 12, "aaa", "codex")
 	e.feature(t, "1", "busy feature one")
 	e.feature(t, "2", "busy feature two") // the agent is at its limit of 2 active runs
 	no := false
@@ -394,7 +394,7 @@ func TestConflictWaitsForAFreeAgentSlot(t *testing.T) {
 	runs, _ := e.st.ActiveRuns(ctx)
 	must(t, e.st.SetRunStatus(ctx, runs[0].ID, store.RunCompleted, "success", 0, "", e.now))
 	must(t, e.svc.MergeStep(ctx))
-	if len(e.gh.dispatches) != n+1 || e.gh.dispatches[n]["mode"] != "resolve-conflicts" {
+	if len(e.gh.dispatches) != n+1 || e.gh.dispatches[n]["mode"] != "resolve-conflicts" || e.gh.dispatches[n]["agent"] != "codex" {
 		t.Errorf("dispatches %v", e.gh.dispatches[n:])
 	}
 	if job, _ = e.st.JobByID(ctx, job.ID); job.ResolveSHA != "aaa" {
