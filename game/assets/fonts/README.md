@@ -7,7 +7,7 @@ and Orbitron are static weights instanced from the variable fonts with overlaps 
 
 | Font | Role | File |
 |---|---|---|
-| [Inter](https://rsms.me/inter/) | Body text: the project's default font (labels, chat, signs) | `inter/Inter-Regular.ttf` |
+| [Inter](https://rsms.me/inter/) | Body text: the default font (labels, chat, signs), set as `ThemeDB.fallback_font` by `core/game/game.gd` | `inter/Inter-Regular.ttf` |
 | [Exo 2](https://fonts.google.com/specimen/Exo+2) | Headings (`HeadingLabel`, release notes, inventory) | `exo2/Exo2-Bold.ttf` |
 | [Barlow](https://fonts.google.com/specimen/Barlow) | Buttons, and small HUD details | `barlow/Barlow-SemiBold.ttf`, `barlow/Barlow-Medium.ttf` |
 | [Orbitron](https://fonts.google.com/specimen/Orbitron) | HUD readouts (version, players, money, HP) | `orbitron/Orbitron-Bold.ttf` |

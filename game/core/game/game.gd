@@ -8,11 +8,20 @@ extends Node3D
 
 const PLAYER_SCENE := preload("res://core/player/player.tscn")
 const KILL_Y := -50.0
+## The default font for every Control and Label3D without one of its own (see
+## assets/fonts/README.md). Set here rather than as the project's custom font, which
+## Godot loads at startup, before a fresh checkout's first import has created it.
+const DEFAULT_FONT_PATH := "res://assets/fonts/inter/Inter-Regular.ttf"
 
 @onready var _features: Node3D = $Features
 @onready var _players: Node3D = $Players
 @onready var _spawner: MultiplayerSpawner = $PlayerSpawner
 @onready var _spawn_point: Marker3D = $Room/Spawn
+
+
+func _enter_tree() -> void:
+	# Before any child (HUD, world signs, features) draws text.
+	ThemeDB.fallback_font = load(DEFAULT_FONT_PATH)
 
 
 func _ready() -> void:
