@@ -8,6 +8,10 @@
 
 config_version=5
 
+[audio]
+
+driver/enable_input=true
+
 [application]
 
 config/name="The Game"
