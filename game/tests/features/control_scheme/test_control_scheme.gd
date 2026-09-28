@@ -112,12 +112,14 @@ func test_opening_the_panel_pauses_and_joins_the_modal_group() -> void:
 	assert_true(Controls.gameplay_active())
 
 
-func test_open_button_hides_while_another_modal_is_up() -> void:
-	var modal := Node.new()
-	add_child_autofree(modal)
-	modal.add_to_group(&"modal_ui")
-	_node._process(0.0)
-	assert_false(_node._open_button.visible)
+func test_registers_a_controls_link_in_the_esc_menu() -> void:
+	assert_true(_node.is_in_group(&"esc_menu_links"))
+	assert_eq(_node.esc_menu_label(), "Controls")
+
+
+func test_esc_menu_open_opens_the_panel() -> void:
+	_node.esc_menu_open()
+	assert_true(_node._panel.visible)
 
 
 func _physical_keys(action: String) -> Array[int]:

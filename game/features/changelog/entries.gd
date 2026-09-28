@@ -8,6 +8,7 @@ class_name ChangelogEntries
 ## `title`: the feature's display name. `summary`: a one-line, player-facing
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
+	{"title": "Esc menu", "summary": "Controls and Release notes moved into the Esc menu."},
 	{"title": "Suicide", "summary": "Type /suicide in chat to respawn."},
 	{"title": "Penguin", "summary": "A penguin waddles around the map."},
 	{"title": "AWP", "summary": "A prop AWP sniper rifle sits in the middle of the map."},
