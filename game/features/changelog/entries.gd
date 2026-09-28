@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "The Gilded Lily casino",
+		"summary":
+		"Explore a faded 1964 casino with sunken gaming, eight slots, a petting zoo and an indoor ferry."
+	},
+	{
 		"title": "AWP one-shots",
 		"summary":
 		"The AWP sniper rifle now deals damage like every other gun: a slow, lethal shot."
