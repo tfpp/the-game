@@ -16,6 +16,11 @@ const ENTRIES: Array[Dictionary] = [
 		"Esc > Character Model > Penguin: a short costume and view. The NPC waves and hops at you."
 	},
 	{
+		"title": "Wandering gnomes",
+		"summary":
+		"Gnome burrows hug the outer walls, dash to far-off holes along real routed paths, and dodge you."
+	},
+	{
 		"title": "Steadier gun viewmodels",
 		"summary":
 		(
