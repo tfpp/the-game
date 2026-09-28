@@ -9,9 +9,29 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
-		"title": "Sky and UI refresh",
+		"title": "UI refresh",
 		"summary":
-		"A cloudy sky, key and button icons on the Controls page, menu icons and click sounds."
+		"Key and button icons on the Controls page, menu icons, restyled sliders and click sounds."
+	},
+	{
+		"title": "The Gilded Lily casino",
+		"summary":
+		"Explore a faded 1964 casino with sunken gaming, eight slots, a petting zoo and an indoor ferry."
+	},
+	{
+		"title": "AWP one-shots",
+		"summary":
+		"The AWP sniper rifle now deals damage like every other gun: a slow, lethal shot."
+	},
+	{
+		"title": "Girl model option",
+		"summary":
+		"Pick a girl body model from the Esc menu's Character Model screen. Everyone sees your choice."
+	},
+	{
+		"title": "Ferry helm",
+		"summary":
+		"Taking the ferry's wheel now plants you at its old-timey helm instead of wandering off."
 	},
 	{
 		"title": "Settings menu",

@@ -154,6 +154,62 @@ func test_skin_changes_update_exposed_body_without_changing_clothes_or_underwear
 	assert_eq((underwear.material_override as StandardMaterial3D).albedo_color, Color("f8f8f1"))
 
 
+func test_girl_body_type_narrows_shoulders_widens_hips_and_grows_hair() -> void:
+	var default_shoulder := (_model.get_node("Rig/Torso/RightArm") as Node3D).position.x
+	var default_hip := (_model.get_node("Rig/RightLeg") as Node3D).position.x
+	var default_hair := _model.get_node("Rig/Torso/Head/HairBack") as MeshInstance3D
+	var default_hair_height: float = (default_hair.mesh as BoxMesh).size.y
+	_model.set_body_type("girl")
+	assert_eq(_model.body_type, &"girl")
+	var shoulder := (_model.get_node("Rig/Torso/RightArm") as Node3D).position.x
+	var hip := (_model.get_node("Rig/RightLeg") as Node3D).position.x
+	assert_lt(shoulder, default_shoulder, "Girl model has narrower shoulders")
+	assert_gt(hip, default_hip, "Girl model has wider hips")
+	var hair := _model.get_node("Rig/Torso/Head/HairBack") as MeshInstance3D
+	var hair_height: float = (hair.mesh as BoxMesh).size.y
+	assert_gt(hair_height, default_hair_height, "Girl model has longer hair")
+
+
+func test_body_type_switch_preserves_clothing_and_skin() -> void:
+	_model.set_clothing("shirt:4", "pants:3")
+	_model.set_skin_index(7)
+	_model.set_body_type("girl")
+	assert_eq(_model.shirt_color, ClothingCatalog.COLORS[4])
+	assert_eq(_model.pants_color, ClothingCatalog.COLORS[3])
+	assert_eq(_model.skin_color, PlayerSkin.TONES[7])
+	var underwear := _model.get_node("Rig/LeftLeg/Underwear") as MeshInstance3D
+	assert_false(underwear.visible, "Pants stay equipped across a body type switch")
+
+
+func test_unrecognized_body_type_falls_back_to_default() -> void:
+	_model.set_body_type("girl")
+	_model.set_body_type("not-a-real-type")
+	assert_eq(_model.body_type, &"default")
+
+
+func test_request_body_type_validates_value_and_replicates() -> void:
+	var models := _feature as PlayerModels
+	models.request_body_type("girl")
+	assert_eq(models.type_for(1), "girl")
+	models.request_body_type("nonsense")
+	assert_eq(models.type_for(1), "girl", "Invalid values are ignored")
+	models.request_body_type("default")
+	assert_eq(models.type_for(1), "default")
+
+
+func test_new_players_spawn_with_their_already_requested_body_type() -> void:
+	var models := _feature as PlayerModels
+	var remote := PLAYER_SCENE.instantiate() as Player
+	remote.name = "9"
+	remote.set_multiplayer_authority(9)
+	add_child_autofree(remote)
+	models.body_types = {9: "girl"}
+	_feature._process(0.0)
+	var other := remote.get_node("Body/Avatar") as BlockPlayerModel
+	assert_eq(other.body_type, &"girl")
+	assert_eq(_model.body_type, &"default", "Peer 1's own choice is unaffected")
+
+
 func test_shoulders_match_rendered_avatar_between_physics_ticks() -> void:
 	var marker := _model.get_node("Rig/Torso/RightShoulder") as Node3D
 	marker.get_global_transform_interpolated()

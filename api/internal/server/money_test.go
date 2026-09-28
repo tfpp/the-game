@@ -56,6 +56,50 @@ func TestGameMoneyRequiresServerAndRetriesSafely(t *testing.T) {
 	}
 }
 
+func TestGameMoneyChargeIsIdempotentAndRejectsInsufficientFunds(t *testing.T) {
+	h := newHarness(t)
+	account, err := h.srv.store.CreateEmailAccount(context.Background(), "charge@example.com", "hash", "Alice", h.now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := func(payload []byte) *httptest.ResponseRecorder {
+		req := httptest.NewRequest("POST", "/api/game/money", bytes.NewReader(payload))
+		mac := hmac.New(sha256.New, testKey)
+		mac.Write([]byte("game-money-v1\n"))
+		mac.Write(payload)
+		req.Header.Set("X-Game-Signature", hex.EncodeToString(mac.Sum(nil)))
+		res := httptest.NewRecorder()
+		h.h.ServeHTTP(res, req)
+		return res
+	}
+	body := []byte(fmt.Sprintf(`{"account_id":%d,"action":"charge","id":"%s","timestamp":%d,"amount_cents":1500}`, account.ID, strings.Repeat("c", 64), h.now.Unix()))
+	first := request(body)
+	if first.Code != 200 {
+		t.Fatal(first.Body.String())
+	}
+	var charge struct {
+		Balance int64 `json:"balance"`
+	}
+	if err := json.Unmarshal(first.Body.Bytes(), &charge); err != nil {
+		t.Fatal(err)
+	}
+	if charge.Balance != 500 {
+		t.Fatal(charge.Balance)
+	}
+	second := request(body)
+	if second.Body.String() != first.Body.String() {
+		t.Fatalf("retry charged again: %s %s", first.Body, second.Body)
+	}
+	tooMuch := []byte(fmt.Sprintf(`{"account_id":%d,"action":"charge","id":"%s","timestamp":%d,"amount_cents":600}`, account.ID, strings.Repeat("d", 64), h.now.Unix()))
+	if res := request(tooMuch); res.Code != 409 {
+		t.Fatal(res.Code)
+	}
+	invalid := []byte(fmt.Sprintf(`{"account_id":%d,"action":"charge","id":"%s","timestamp":%d,"amount_cents":0}`, account.ID, strings.Repeat("e", 64), h.now.Unix()))
+	if res := request(invalid); res.Code != 400 {
+		t.Fatal(res.Code)
+	}
+}
+
 func TestGameMoneyCreditIsIdempotent(t *testing.T) {
 	h := newHarness(t)
 	account, err := h.srv.store.CreateEmailAccount(context.Background(), "coin@example.com", "hash", "Alice", h.now)

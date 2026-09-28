@@ -11,3 +11,5 @@ category = 0
 view_scene = ExtResource("2_view")
 ground_clearance = 0.12
 first_person_offset = Vector3(0.20, -0.25, -0.62)
+damage = 100.0
+fire_cooldown_s = 1.5

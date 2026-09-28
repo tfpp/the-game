@@ -124,6 +124,12 @@ var migrations = []string{
 		account_id INTEGER NOT NULL REFERENCES accounts(id),
 		balance INTEGER NOT NULL
 	);`,
+	`CREATE TABLE charges (
+		id TEXT PRIMARY KEY,
+		account_id INTEGER NOT NULL REFERENCES accounts(id),
+		amount INTEGER NOT NULL,
+		balance INTEGER NOT NULL
+	);`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {

@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://features/gun_machine/gun_machine_kiosk.gd" id="1_script"]
+
+[sub_resource type="BoxShape3D" id="Hull"]
+size = Vector3(1.0, 2.0, 0.8)
+
+[sub_resource type="BoxMesh" id="CabinetMesh"]
+size = Vector3(1.0, 2.0, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="CabinetMaterial"]
+albedo_color = Color(0.2, 0.28, 0.4, 1)
+
+[node name="GunMachineKiosk" type="StaticBody3D"]
+script = ExtResource("1_script")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+position = Vector3(0, 1.0, 0)
+shape = SubResource("Hull")
+
+[node name="Cabinet" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.0, 0)
+mesh = SubResource("CabinetMesh")
+material_override = SubResource("CabinetMaterial")
+
+[node name="Sign" type="Label3D" parent="."]
+position = Vector3(0, 2.2, 0)
+billboard = 1
+fixed_size = true
+pixel_size = 0.003
+outline_size = 10
+text = "GUN-O-MATIC"

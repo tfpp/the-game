@@ -157,7 +157,40 @@ func credit_coin(peer: int, id: String) -> Dictionary:
 	return result
 
 
-func _request(account: int, action: String, id: String) -> Dictionary:
+## Server-only: deducts a flat, feature-chosen price from `peer`'s wallet — the same
+## persisted, idempotent-retry path `credit_coin()` uses in the other direction.
+## Rejects (without spending anything) if the wallet can't cover `amount_cents`.
+## Used by paid one-off purchases like features/gun_machine's machine.
+func charge(peer: int, id: String, amount_cents: int) -> Dictionary:
+	if not multiplayer.is_server() or _busy.has(peer):
+		return {"error": "Wallet loading — try again"}
+	_busy[peer] = true
+	var generation := _generation
+	var account := _account(peer)
+	var result: Dictionary
+	if _temporary() and account <= 0:
+		var balance := int(balances.get(peer, 2000))
+		if balance < amount_cents:
+			result = {"error": "You can't afford that"}
+		else:
+			result = {"balance": balance - amount_cents}
+	else:
+		if not _unresolved.has(account):
+			_unresolved[account] = id
+		result = await _request(
+			account, "charge", str(_unresolved[account]), {"amount_cents": amount_cents}
+		)
+		if generation == _generation and (result.has("balance") or result.has("rejected")):
+			_unresolved.erase(account)
+	if generation != _generation:
+		return {"error": "Session changed"}
+	if _account(peer) == account and result.has("balance"):
+		_set_balance(peer, int(result["balance"]))
+	_busy.erase(peer)
+	return result
+
+
+func _request(account: int, action: String, id: String, extra: Dictionary = {}) -> Dictionary:
 	if account <= 0 or Network.ticket_key.is_empty():
 		return {"error": "Wallet unavailable"}
 	var generation := _generation
@@ -165,14 +198,15 @@ func _request(account: int, action: String, id: String) -> Dictionary:
 	for attempt: int in 3:
 		if generation != _generation:
 			return {"error": "Session changed"}
-		var body := JSON.stringify(
-			{
-				"account_id": account,
-				"action": action,
-				"id": id,
-				"timestamp": int(Time.get_unix_time_from_system())
-			}
-		)
+		var payload := {
+			"account_id": account,
+			"action": action,
+			"id": id,
+			"timestamp": int(Time.get_unix_time_from_system())
+		}
+		for key: String in extra:
+			payload[key] = extra[key]
+		var body := JSON.stringify(payload)
 		var signature := (
 			Crypto
 			. new()

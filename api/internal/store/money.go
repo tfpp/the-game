@@ -10,6 +10,7 @@ import (
 var ErrInsufficientMoney = errors.New("insufficient money")
 var ErrSpinConflict = errors.New("spin belongs to another account")
 var ErrCreditConflict = errors.New("credit belongs to another account")
+var ErrChargeConflict = errors.New("charge belongs to another account")
 
 // CoinCreditCents is the flat reward for collecting a map coin pickup.
 const CoinCreditCents = 1000
@@ -97,6 +98,40 @@ func (s *Store) CreditCoin(ctx context.Context, accountID int64, id string) (int
 		return 0, err
 	}
 	if _, err = tx.ExecContext(ctx, "INSERT INTO coin_credits VALUES (?, ?, ?)", id, accountID, balance); err != nil {
+		return 0, err
+	}
+	return balance, tx.Commit()
+}
+
+// ChargeAccount atomically deducts amountCents (rejecting if that would go
+// negative) and records the result for safe retries, the same idempotency
+// pattern CreditCoin uses in the other direction. Used by paid features like
+// features/gun_machine that spend the persisted wallet on a one-off purchase.
+func (s *Store) ChargeAccount(ctx context.Context, accountID int64, id string, amountCents int64) (int64, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
+	var owner, balance int64
+	err = tx.QueryRowContext(ctx, "SELECT account_id, balance FROM charges WHERE id = ?", id).Scan(&owner, &balance)
+	if err == nil {
+		if owner != accountID {
+			return 0, ErrChargeConflict
+		}
+		return balance, nil
+	}
+	if !errors.Is(err, sql.ErrNoRows) {
+		return 0, err
+	}
+	err = tx.QueryRowContext(ctx, "UPDATE accounts SET money = money - ? WHERE id = ? AND money >= ? RETURNING money", amountCents, accountID, amountCents).Scan(&balance)
+	if errors.Is(err, sql.ErrNoRows) {
+		return 0, ErrInsufficientMoney
+	}
+	if err != nil {
+		return 0, err
+	}
+	if _, err = tx.ExecContext(ctx, "INSERT INTO charges VALUES (?, ?, ?, ?)", id, accountID, amountCents, balance); err != nil {
 		return 0, err
 	}
 	return balance, tx.Commit()

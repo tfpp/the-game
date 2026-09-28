@@ -18,6 +18,12 @@ set balances or submit payouts. The slot interaction prompt also shows your own
 balance. Offline and dev-auth play use temporary $20 wallets and the same income
 and payout rules; these never transfer to a real account.
 
+`PlayerMoney.charge(peer, id, amount_cents)` deducts a flat, feature-chosen price the
+same idempotent way `credit_coin()` pays one out, rejecting (without spending anything)
+if the wallet can't cover it. It's the `charge` action on `POST /api/game/money`
+(`amount_cents`, capped server-side well above any planned price) — added for
+`features/gun_machine`'s machine; see that feature's README for how it's spent.
+
 ## Server connection
 
 Deploy the updated **API first**, then the matching game server and web client.
