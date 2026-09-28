@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Shooting gallery",
+		"summary":
+		"A Doom-style arena of killable, gory humanoid dummies. Every weapon can now hurt animals too."
+	},
+	{
 		"title": "Game settings",
 		"summary":
 		"Esc > Settings > Game: tune jump height and frog hop rate for everyone in the world."
