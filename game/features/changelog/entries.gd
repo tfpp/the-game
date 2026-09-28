@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Become the penguin",
+		"summary":
+		"Esc > Character Model > Penguin: a short costume and view. The NPC waves and hops at you."
+	},
+	{
 		"title": "Game settings",
 		"summary":
 		"Esc > Settings > Game: tune jump height and frog hop rate for everyone in the world."

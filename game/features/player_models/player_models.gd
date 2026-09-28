@@ -6,7 +6,7 @@ extends Node
 ## Also holds each player's chosen body model (see `model_picker.gd`), replicated
 ## from the server like clothing so everyone sees the same silhouette.
 
-const VALID_BODY_TYPES: Array[String] = ["default", "girl"]
+const VALID_BODY_TYPES: Array[String] = ["default", "girl", "penguin"]
 
 ## Replicated (server -> everyone). peer_id -> "girl"; peers without an entry use
 ## the default body type. See the synchronizer config in feature.tscn.

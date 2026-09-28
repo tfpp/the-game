@@ -259,6 +259,7 @@ func _mount_transform(player: Player) -> Transform3D:
 		var camera := player.get_node("Camera") as Node3D
 		var def := ItemCatalog.find(net_item_id)
 		var offset := def.first_person_offset if def != null else HeldItemPose.FIRST_PERSON_OFFSET
+		offset.y *= _avatar_height_scale(body)
 		return camera.global_transform * Transform3D(Basis.IDENTITY, offset)
 	var yaw := player.yaw if player.is_local() else body.global_rotation.y
 	var pitch := player.pitch if player.is_local() else player.net_pitch
@@ -268,6 +269,17 @@ func _mount_transform(player: Player) -> Transform3D:
 		else player.global_position
 	)
 	return HeldItemPose.world_grip(origin, yaw, pitch)
+
+
+## The local avatar's `height_scale()` (see features/player_models/block_player_model.gd),
+## or 1.0 while it's missing or doesn't report one (e.g. before the avatar attaches).
+## Shortens the first-person view model to match a penguin's height without this
+## feature needing to know about player_models' body types.
+func _avatar_height_scale(body: Node3D) -> float:
+	var avatar := body.get_node_or_null("Avatar")
+	if avatar != null and avatar.has_method("height_scale"):
+		return avatar.call("height_scale")
+	return 1.0
 
 
 func _aim_origin(player: Player) -> Vector3:
@@ -309,7 +321,8 @@ func _pose_arms(player: Player) -> void:
 	var shoulders: Transform3D
 	if first_person:
 		shoulders = (player.get_node("Camera") as Node3D).global_transform
-		shoulders.origin += shoulders.basis * Vector3(0, -0.36, 0.10)
+		var drop := -0.36 * _avatar_height_scale(body)
+		shoulders.origin += shoulders.basis * Vector3(0, drop, 0.10)
 	else:
 		var yaw := player.yaw if player.is_local() else body.global_rotation.y
 		shoulders = Transform3D(Basis(Vector3.UP, yaw), body.global_position)

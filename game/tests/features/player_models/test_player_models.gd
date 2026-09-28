@@ -197,6 +197,52 @@ func test_request_body_type_validates_value_and_replicates() -> void:
 	assert_eq(models.type_for(1), "default")
 
 
+func test_request_body_type_accepts_penguin() -> void:
+	var models := _feature as PlayerModels
+	models.request_body_type("penguin")
+	assert_eq(models.type_for(1), "penguin")
+
+
+func test_penguin_body_type_shrinks_the_rig_and_builds_a_costume() -> void:
+	assert_almost_eq(_model.height_scale(), 1.0, 0.0001)
+	_model.set_body_type("penguin")
+	assert_eq(_model.body_type, &"penguin")
+	assert_almost_eq(_model.height_scale(), BlockPlayerModel.PENGUIN_HEIGHT_SCALE, 0.0001)
+	assert_not_null(_model.get_node_or_null("Rig/Torso/RightArm/Flipper"))
+	assert_not_null(_model.get_node_or_null("Rig/RightLeg/Foot"))
+	assert_null(_model.get_node_or_null("Rig/Torso/Hem"), "Penguin costume has no clothing boxes")
+	_model.animate(0.016, Vector3.ZERO, true, 8.0)
+	assert_almost_eq(_model.get_node("Rig").scale.x, BlockPlayerModel.PENGUIN_HEIGHT_SCALE, 0.001)
+	assert_eq(_model.sleeve_color(), Color("1c1c1c"))
+
+
+func test_penguin_body_type_ignores_clothing_but_remembers_it() -> void:
+	_model.set_clothing("shirt:4", "pants:3")
+	_model.set_body_type("penguin")
+	assert_not_null(_model.get_node_or_null("Rig/LeftLeg/Foot"))
+	assert_null(_model.get_node_or_null("Rig/LeftLeg/Underwear"))
+	_model.set_body_type("default")
+	assert_eq(
+		_model.shirt_color, ClothingCatalog.COLORS[4], "Clothing choice survives being a penguin"
+	)
+	assert_eq(_model.pants_color, ClothingCatalog.COLORS[3])
+
+
+func test_first_person_view_model_sits_closer_to_the_camera_for_penguin() -> void:
+	(_player.get_node("Body") as Node3D).visible = false
+	var hand := HAND_SCENE.instantiate() as Hand
+	hand.peer_id = 1
+	add_child_autofree(hand)
+	hand.set_process(false)
+	var camera_y: float = (_player.get_node("Camera") as Node3D).global_position.y
+	var default_drop: float = camera_y - hand._mount_transform(_player).origin.y
+	assert_gt(default_drop, 0.0)
+	_model.set_body_type("penguin")
+	var penguin_drop: float = camera_y - hand._mount_transform(_player).origin.y
+	assert_lt(penguin_drop, default_drop, "Penguin view model sits higher, closer to the camera")
+	assert_almost_eq(penguin_drop, default_drop * BlockPlayerModel.PENGUIN_HEIGHT_SCALE, 0.001)
+
+
 func test_new_players_spawn_with_their_already_requested_body_type() -> void:
 	var models := _feature as PlayerModels
 	var remote := PLAYER_SCENE.instantiate() as Player
