@@ -10,23 +10,20 @@ properties/1/path = NodePath(".:net_yaw")
 properties/1/spawn = true
 properties/1/replication_mode = 1
 
-[sub_resource type="SphereMesh" id="BodyMesh"]
-radius = 0.22
-height = 0.3
+[sub_resource type="BoxMesh" id="BodyMesh"]
+size = Vector3(0.42, 0.24, 0.52)
 
 [sub_resource type="StandardMaterial3D" id="BodyMat"]
-albedo_color = Color(0.3, 0.8, 0.35, 1)
+albedo_color = Color(0.25, 0.75, 0.3, 1)
 
-[sub_resource type="SphereMesh" id="EyeMesh"]
-radius = 0.055
-height = 0.09
+[sub_resource type="BoxMesh" id="EyeMesh"]
+size = Vector3(0.12, 0.12, 0.12)
 
 [sub_resource type="StandardMaterial3D" id="EyeMat"]
 albedo_color = Color(0.95, 0.95, 0.9, 1)
 
-[sub_resource type="SphereMesh" id="PupilMesh"]
-radius = 0.022
-height = 0.03
+[sub_resource type="BoxMesh" id="PupilMesh"]
+size = Vector3(0.06, 0.06, 0.02)
 
 [sub_resource type="StandardMaterial3D" id="PupilMat"]
 albedo_color = Color(0.05, 0.05, 0.05, 1)
@@ -35,27 +32,27 @@ albedo_color = Color(0.05, 0.05, 0.05, 1)
 script = ExtResource("1_script")
 
 [node name="Body" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.7, 0, 0, 0, 1.15, 0, 0.12, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0)
 mesh = SubResource("BodyMesh")
 surface_material_override/0 = SubResource("BodyMat")
 
 [node name="EyeLeft" type="MeshInstance3D" parent="Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11, 0.22, -0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13, 0.14, -0.18)
 mesh = SubResource("EyeMesh")
 surface_material_override/0 = SubResource("EyeMat")
 
 [node name="PupilLeft" type="MeshInstance3D" parent="Body/EyeLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -0.045)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -0.065)
 mesh = SubResource("PupilMesh")
 surface_material_override/0 = SubResource("PupilMat")
 
 [node name="EyeRight" type="MeshInstance3D" parent="Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11, 0.22, -0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.13, 0.14, -0.18)
 mesh = SubResource("EyeMesh")
 surface_material_override/0 = SubResource("EyeMat")
 
 [node name="PupilRight" type="MeshInstance3D" parent="Body/EyeRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -0.045)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -0.065)
 mesh = SubResource("PupilMesh")
 surface_material_override/0 = SubResource("PupilMat")
 

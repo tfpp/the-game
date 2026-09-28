@@ -17,6 +17,11 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Frog makeover",
+		"summary":
+		"Frogs are now small blocky voxel frogs in proper frog-green tones, not blue blobs."
+	},
+	{
 		"title": "Noclip for everyone",
 		"summary":
 		"Press V to toggle noclip. Switching control schemes no longer needs play time first."
