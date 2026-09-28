@@ -11,6 +11,6 @@ size = Vector3(0.6, 0.6, 0.6)
 material = ExtResource("2_material")
 
 [node name="Glow" type="OmniLight3D" parent="."]
-light_color = Color(0.2, 0.85, 1, 1)
+light_color = Color(0.15, 0.35, 1, 1)
 light_energy = 1.5
 omni_range = 4.0
