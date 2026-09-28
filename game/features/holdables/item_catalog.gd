@@ -11,6 +11,12 @@ const DEFINITIONS: Array[ItemDefinition] = [
 	preload("res://features/holdables/items/banana.tres"),
 	preload("res://features/holdables/items/ball.tres"),
 	preload("res://features/holdables/items/awp.tres"),
+	preload("res://features/holdables/items/stolen_wallet.tres"),
+	preload("res://features/holdables/items/watch.tres"),
+	preload("res://features/holdables/items/jewelry.tres"),
+	preload("res://features/holdables/items/electronics.tres"),
+	preload("res://features/holdables/items/scrap.tres"),
+	preload("res://features/holdables/items/cash_bundle.tres"),
 ]
 
 
