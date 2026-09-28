@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Sky and UI refresh",
+		"summary":
+		"A cloudy sky, key and button icons on the Controls page, menu icons and click sounds."
+	},
+	{
 		"title": "Settings menu",
 		"summary":
 		"Esc > Settings: rebind keys and controller buttons, tune look sensitivity and set volume."
