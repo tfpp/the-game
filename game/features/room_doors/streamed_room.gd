@@ -1,0 +1,64 @@
+class_name StreamedRoom
+extends Node3D
+## A room whose contents live in their own scene (`room_scene`) and are only
+## instantiated on a peer while that peer's local player is inside `bounds`.
+## A dedicated server has no local player, so it never builds any room; each
+## client only builds the room it is standing in. Movement is client-authoritative,
+## so nobody else needs the geometry.
+##
+## Only put static or client-side cosmetic nodes in a room scene: it doesn't exist on
+## every peer, so spawners, synchronizers and RPCs inside it would break. Keep doors
+## (RoomDoor) and arrival markers as children of this node, outside the room scene,
+## so their paths match everywhere.
+
+const CONTENT_NAME := &"Content"
+
+@export_file("*.tscn") var room_scene: String
+## The room's extent, in this node's local space.
+@export var bounds := AABB(Vector3(-5, -1, -5), Vector3(10, 5, 10))
+## Extra distance a loaded room keeps its contents for, so walking along the edge
+## doesn't rebuild it every frame.
+@export var unload_margin := 2.0
+
+var _content: Node3D
+var _hold_until_msec := 0
+
+
+func _physics_process(_delta: float) -> void:
+	var player := get_tree().get_first_node_in_group(&"local_player") as Node3D
+	if player != null and contains(player.global_position, unload_margin if is_loaded() else 0.0):
+		load_room()
+	elif Time.get_ticks_msec() >= _hold_until_msec:
+		unload_room()
+
+
+func contains(global_point: Vector3, margin: float = 0.0) -> bool:
+	return bounds.grow(margin).has_point(to_local(global_point))
+
+
+func is_loaded() -> bool:
+	return _content != null
+
+
+## Builds the room's contents now. Doors call this just before asking the server to
+## teleport, with `hold_msec` keeping it built until the teleport arrives, so the
+## floor is already there on arrival.
+func load_room(hold_msec: int = 0) -> void:
+	_hold_until_msec = maxi(_hold_until_msec, Time.get_ticks_msec() + hold_msec)
+	if _content != null:
+		return
+	var scene := load(room_scene) as PackedScene
+	if scene == null:
+		push_error("StreamedRoom %s: can't load %s" % [name, room_scene])
+		return
+	_content = scene.instantiate() as Node3D
+	_content.name = CONTENT_NAME
+	add_child(_content)
+
+
+func unload_room() -> void:
+	if _content == null:
+		return
+	remove_child(_content)
+	_content.queue_free()
+	_content = null

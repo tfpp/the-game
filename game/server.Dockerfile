@@ -2,7 +2,7 @@
 # Designed to run with a read-only root filesystem: Godot's user:// data and logs go to /tmp.
 FROM debian:trixie-slim
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates libfontconfig1 \
+  && apt-get install -y --no-install-recommends ca-certificates libfontconfig1 nodejs \
   && rm -rf /var/lib/apt/lists/* \
   && useradd --system --uid 10010 --home /srv/game game
 WORKDIR /srv/game
