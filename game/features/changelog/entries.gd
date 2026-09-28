@@ -16,6 +16,11 @@ const ENTRIES: Array[Dictionary] = [
 		"The Gun-O-Matic builds each gun; guns get stocks, grips, sights, rails, triggers."
 	},
 	{
+		"title": "Gnome express tunnels",
+		"summary":
+		"Use any gnome hole to enter the tunnels, run at 4x speed and exit at any other hole."
+	},
+	{
 		"title": "Flashlights",
 		"summary":
 		"Press F to toggle a flashlight that follows your aim and lights the way for everyone."
