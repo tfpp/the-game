@@ -18,13 +18,15 @@ Remote-player movement and gameplay replication stay with their original owners.
 
 On Android, iOS and touch browsers (including iPad desktop user agents):
 
-- 3D rendering is capped at 540 pixels high, at most 85% of native resolution.
+- 3D rendering is capped at 432 pixels high, at most 70% of native resolution.
 - HUD and touch controls keep native resolution, with orientation-aware UI scaling
   (480×720 portrait, 960×540 landscape virtual layout sizes).
 - The 3D budget uses physical window dimensions, not stretched UI coordinates.
 - Shadow maps, MSAA, screen-space AA and TAA are disabled.
-- At most four nearby local lights are active, selected four times per second.
-- Small props stop drawing beyond 60 metres; room architecture remains visible.
+- At most two nearby local lights are active, selected four times per second.
+- Small props stop drawing beyond 40 metres; room architecture remains visible.
+- Physics catches up at most two steps per frame, so a slow frame doesn't
+  snowball into slower ones.
 - Decorative sphere/cylinder meshes are capped at 12 radial segments.
 - The existing desktop-only radar remains hidden.
 

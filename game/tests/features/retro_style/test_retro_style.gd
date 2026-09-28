@@ -29,8 +29,8 @@ func test_imported_world_textures_fit_budget_and_keep_mipmaps() -> void:
 func test_mobile_render_budget_handles_portrait_landscape_and_retina() -> void:
 	for size: Vector2 in [Vector2(844, 390), Vector2(390, 844), Vector2(2532, 1170)]:
 		var scale := RetroStyle.mobile_scale(size)
-		assert_lte(size.y * scale, 540.0)
-		assert_lte(scale, 0.85)
+		assert_lte(size.y * scale, RetroStyle.MOBILE_HEIGHT)
+		assert_lte(scale, RetroStyle.MOBILE_MAX_SCALE)
 		assert_gt(scale, 0.1)
 
 
@@ -131,7 +131,11 @@ func test_mobile_light_budget_covers_streaming_and_unloading() -> void:
 	lights[0].free()
 	style._update_light_budget()
 	assert_eq(style._lights.size(), 6, "Unloaded room lights leave the budget")
-	assert_ne(lights[4].light_cull_mask, 0, "Next nearest light replaces an unloaded light")
+	assert_ne(
+		lights[RetroStyle.MOBILE_LOCAL_LIGHTS].light_cull_mask,
+		0,
+		"Next nearest light replaces an unloaded light"
+	)
 
 
 func test_room_unloading_before_style_batch_is_safe() -> void:
