@@ -1,8 +1,10 @@
 extends GutTest
-## `features/control_scheme/control_scheme.gd`: left-handed-by-default input, the
-## play-time unlock for the right-handed layout, and the menu that switches between them.
+## `features/control_scheme/control_scheme.gd`: right-handed-by-default input (except for
+## DoctorDalek, who gets left-handed), the play-time unlock for switching layouts, and
+## the menu that switches between them.
 
 const ControlScheme := preload("res://features/control_scheme/control_scheme.gd")
+const PLAYER := preload("res://core/player/player.tscn")
 const STORE_PATH := "user://controls.cfg"
 
 var _saved_device: int
@@ -27,22 +29,22 @@ func after_each() -> void:
 	_clear_store()
 
 
-func test_defaults_to_left_handed_arrow_keys_and_shift_jump() -> void:
-	assert_eq(Controls.scheme, Controls.Scheme.LEFT_HANDED)
-	assert_eq(_physical_keys("move_forward"), [KEY_UP])
-	assert_eq(_physical_keys("move_back"), [KEY_DOWN])
-	assert_eq(_physical_keys("move_left"), [KEY_LEFT])
-	assert_eq(_physical_keys("move_right"), [KEY_RIGHT])
-	assert_eq(_physical_keys("jump"), [KEY_SHIFT])
-
-
-func test_apply_scheme_switches_to_classic_wasd_and_space() -> void:
-	Controls.apply_scheme(Controls.Scheme.RIGHT_HANDED)
+func test_defaults_to_right_handed_wasd_and_space_jump() -> void:
+	assert_eq(Controls.scheme, Controls.Scheme.RIGHT_HANDED)
 	assert_eq(_physical_keys("move_forward"), [KEY_W])
 	assert_eq(_physical_keys("move_back"), [KEY_S])
 	assert_eq(_physical_keys("move_left"), [KEY_A])
 	assert_eq(_physical_keys("move_right"), [KEY_D])
 	assert_eq(_physical_keys("jump"), [KEY_SPACE])
+
+
+func test_apply_scheme_switches_to_left_handed_arrows_and_shift() -> void:
+	Controls.apply_scheme(Controls.Scheme.LEFT_HANDED)
+	assert_eq(_physical_keys("move_forward"), [KEY_UP])
+	assert_eq(_physical_keys("move_back"), [KEY_DOWN])
+	assert_eq(_physical_keys("move_left"), [KEY_LEFT])
+	assert_eq(_physical_keys("move_right"), [KEY_RIGHT])
+	assert_eq(_physical_keys("jump"), [KEY_SHIFT])
 
 
 func test_scroll_wheel_still_bhops_in_either_scheme() -> void:
@@ -51,6 +53,50 @@ func test_scroll_wheel_still_bhops_in_either_scheme() -> void:
 		var jump := InputMap.action_get_events("jump")
 		assert_eq((jump[1] as InputEventMouseButton).button_index, MOUSE_BUTTON_WHEEL_DOWN)
 		assert_eq((jump[2] as InputEventMouseButton).button_index, MOUSE_BUTTON_WHEEL_UP)
+
+
+func test_default_resolves_to_left_handed_for_doctor_dalek() -> void:
+	assert_eq(
+		Controls.scheme,
+		Controls.Scheme.RIGHT_HANDED,
+		"Guessed right-handed before we know who's playing"
+	)
+	var player := PLAYER.instantiate() as Player
+	player.display_name = "DoctorDalek"
+	add_child_autofree(player)
+	_node._process(0.0)
+	assert_eq(Controls.scheme, Controls.Scheme.LEFT_HANDED)
+
+
+func test_default_stays_right_handed_for_other_accounts() -> void:
+	var player := PLAYER.instantiate() as Player
+	player.display_name = "jos"
+	add_child_autofree(player)
+	_node._process(0.0)
+	assert_eq(Controls.scheme, Controls.Scheme.RIGHT_HANDED)
+
+
+func test_default_resolution_waits_for_the_local_players_account_name() -> void:
+	var player := PLAYER.instantiate() as Player
+	add_child_autofree(player)
+	_node._process(0.0)
+	assert_eq(Controls.scheme, Controls.Scheme.RIGHT_HANDED, "No name yet, so still just the guess")
+	player.display_name = "DoctorDalek"
+	_node._process(0.0)
+	assert_eq(Controls.scheme, Controls.Scheme.LEFT_HANDED)
+
+
+func test_default_resolution_does_not_override_a_manual_choice() -> void:
+	_node.played_s = ControlScheme.UNLOCK_SECONDS
+	_node._toggle_scheme()  # right -> left
+	_node._toggle_scheme()  # left -> right, an explicit choice
+	var player := PLAYER.instantiate() as Player
+	player.display_name = "DoctorDalek"
+	add_child_autofree(player)
+	_node._process(0.0)
+	assert_eq(
+		Controls.scheme, Controls.Scheme.RIGHT_HANDED, "Manual choice wins over the account default"
+	)
 
 
 func test_switch_button_stays_locked_before_five_minutes_of_play() -> void:
@@ -78,12 +124,12 @@ func test_played_time_only_accumulates_while_gameplay_is_active() -> void:
 
 func test_switch_button_toggles_scheme_and_is_a_no_op_while_locked() -> void:
 	_node._toggle_scheme()
-	assert_eq(Controls.scheme, Controls.Scheme.LEFT_HANDED, "Locked: pressing it does nothing")
+	assert_eq(Controls.scheme, Controls.Scheme.RIGHT_HANDED, "Locked: pressing it does nothing")
 	_node.played_s = ControlScheme.UNLOCK_SECONDS
 	_node._toggle_scheme()
-	assert_eq(Controls.scheme, Controls.Scheme.RIGHT_HANDED)
+	assert_eq(Controls.scheme, Controls.Scheme.LEFT_HANDED)
 	_node._toggle_scheme()
-	assert_eq(Controls.scheme, Controls.Scheme.LEFT_HANDED, "Unlocked switches both ways")
+	assert_eq(Controls.scheme, Controls.Scheme.RIGHT_HANDED, "Unlocked switches both ways")
 
 
 func test_choice_and_progress_persist_across_a_restart() -> void:
@@ -92,7 +138,7 @@ func test_choice_and_progress_persist_across_a_restart() -> void:
 	var reloaded := ControlScheme.new()
 	add_child_autofree(reloaded)
 	assert_eq(reloaded.played_s, ControlScheme.UNLOCK_SECONDS)
-	assert_eq(Controls.scheme, Controls.Scheme.RIGHT_HANDED)
+	assert_eq(Controls.scheme, Controls.Scheme.LEFT_HANDED)
 
 
 func test_remaining_text_formats_minutes_and_seconds() -> void:

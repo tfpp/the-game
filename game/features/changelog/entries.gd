@@ -8,6 +8,10 @@ class_name ChangelogEntries
 ## `title`: the feature's display name. `summary`: a one-line, player-facing
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
+	{
+		"title": "Right-handed controls by default",
+		"summary": "New controls default to WASD + Space (DoctorDalek still starts left-handed).",
+	},
 	{"title": "Suicide", "summary": "Type /suicide in chat to respawn."},
 	{"title": "Penguin", "summary": "A penguin waddles around the map."},
 	{"title": "AWP", "summary": "A prop AWP sniper rifle sits in the middle of the map."},

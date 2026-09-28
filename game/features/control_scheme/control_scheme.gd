@@ -1,8 +1,12 @@
 extends CanvasLayer
-## Defaults input to a left-handed layout (movement on the arrow keys, jump on Shift) so
-## mouse-in-left-hand players don't have to remap anything first. Real play time (not
-## wall-clock time since launch) unlocks the classic right-handed WASD + Space layout
-## after UNLOCK_SECONDS; a small corner button then lets a player switch between the two.
+## Defaults input to the classic right-handed layout (WASD to move, Space to jump),
+## except for the account "DoctorDalek", who defaults to left-handed (arrow keys, Shift)
+## instead. That account name isn't known yet when this feature loads (features load
+## before networking starts), so a fresh install applies the right-handed guess right
+## away and corrects it once the local player's account name arrives from the server,
+## unless the player has already picked a scheme by hand in the meantime. Real play time
+## (not wall-clock time since launch) unlocks switching to the other layout after
+## UNLOCK_SECONDS; a small corner button then lets a player switch between the two.
 ## The unlocked progress and chosen scheme persist locally per install, the same way the
 ## account session does (`core/net/account_api.gd`): localStorage on the web, a
 ## ConfigFile natively.
@@ -14,6 +18,7 @@ const UNLOCK_SECONDS := 300.0
 ## Local saves are a nice-to-have, not shared state, so writes are worth throttling.
 const SAVE_INTERVAL_S := 5.0
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
+const DOCTOR_DALEK_NAME := "DoctorDalek"
 
 var played_s := 0.0
 
@@ -22,6 +27,9 @@ var _status: Label
 var _switch_button: Button
 var _open_button: Button
 var _save_in := SAVE_INTERVAL_S
+## True on a fresh install until the local player's account name is known, so the
+## guessed default can still be corrected for DoctorDalek before anyone notices.
+var _default_pending := false
 
 
 func _ready() -> void:
@@ -32,6 +40,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if _default_pending:
+		_resolve_default()
 	if Controls.gameplay_active():
 		played_s += delta
 		_save_in -= delta
@@ -53,7 +63,7 @@ func unlocked() -> bool:
 	return played_s >= UNLOCK_SECONDS
 
 
-## "m:ss" remaining before the right-handed layout unlocks, floored at zero.
+## "m:ss" remaining before the other layout unlocks, floored at zero.
 static func remaining_text(remaining_seconds: float) -> String:
 	var whole := int(maxf(remaining_seconds, 0.0))
 	return "%d:%02d" % [whole / 60, whole % 60]
@@ -82,6 +92,7 @@ func _close() -> void:
 func _toggle_scheme() -> void:
 	if not unlocked():
 		return
+	_default_pending = false
 	var next := (
 		Controls.Scheme.LEFT_HANDED
 		if Controls.scheme == Controls.Scheme.RIGHT_HANDED
@@ -109,17 +120,23 @@ func _refresh() -> void:
 	else:
 		_switch_button.disabled = true
 		_switch_button.text = (
-			"Right-handed controls unlock after %s of play"
-			% remaining_text(UNLOCK_SECONDS - played_s)
+			"%s controls unlock after %s of play"
+			% [
+				"Right-handed" if left_handed else "Left-handed",
+				remaining_text(UNLOCK_SECONDS - played_s),
+			]
 		)
 
 
-## Reads saved progress and returns the scheme to start with (defaulting to left-handed).
+## Reads saved progress and returns the scheme to start with. A fresh install has
+## nothing saved yet, so this guesses right-handed and flags the default as pending
+## until `_resolve_default` can check the local player's account name.
 func _load() -> Controls.Scheme:
 	var text := _load_value()
 	var parsed: Variant = JSON.parse_string(text) if not text.is_empty() else null
 	if not parsed is Dictionary:
-		return Controls.Scheme.LEFT_HANDED
+		_default_pending = true
+		return Controls.Scheme.RIGHT_HANDED
 	var data := parsed as Dictionary
 	played_s = maxf(float(data.get("played_s", 0.0)), 0.0)
 	return (
@@ -127,6 +144,21 @@ func _load() -> Controls.Scheme:
 		if str(data.get("scheme", "")) == "right"
 		else Controls.Scheme.LEFT_HANDED
 	)
+
+
+## Corrects a still-pending default to left-handed once the local player's account name
+## turns out to be DoctorDalek. A no-op until the local player exists and has a name
+## (set by the server on spawn), and permanently skipped once the player has picked a
+## scheme by hand (see `_toggle_scheme`).
+func _resolve_default() -> void:
+	var player := get_tree().get_first_node_in_group(&"local_player") as Player
+	if player == null or player.display_name.is_empty():
+		return
+	_default_pending = false
+	if player.display_name == DOCTOR_DALEK_NAME:
+		Controls.apply_scheme(Controls.Scheme.LEFT_HANDED)
+		_refresh()
+	_save()
 
 
 func _save() -> void:
