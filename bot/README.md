@@ -115,8 +115,9 @@ for a minute.
   endpoint, so the bot sends a one-token Haiku request and reads the
   `anthropic-ratelimit-unified-*` response headers.
 - **Codex:** the bot reads the ChatGPT subscription usage endpoint using a mounted Codex
-  `auth.json`. It does not run a model or spend inference tokens. This reports account
-  quota, not the per-run token/cost estimates in PR notifications.
+  `auth.json` and shows only the account's weekly limit (no 5-hour window or per-model
+  limits). It does not run a model or spend inference tokens. This reports account quota,
+  not the per-run token/cost estimates in PR notifications.
 
 To enable Codex usage, mount a file-backed ChatGPT Codex login at
 `/run/secrets/bot/codex-auth.json` (or set `BOT_CODEX_AUTH_FILE`). It must be readable by

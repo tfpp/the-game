@@ -14,12 +14,11 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
-	"unicode/utf8"
 )
 
 const testToken = "secret-access-token"
 const testAccount = "secret-account-id"
-const zeroUsage = `{"rate_limit":{"primary_window":{"used_percent":0}}}`
+const zeroUsage = `{"rate_limit":{"secondary_window":{"used_percent":0,"limit_window_seconds":604800}}}`
 
 var testNow = time.Unix(1700000000, 0)
 
@@ -65,7 +64,7 @@ func TestRequestAndFormatting(t *testing.T) {
 				if _, ok := r.Header[http.CanonicalHeaderKey("x-openai-codex-luna-reserve")]; ok {
 					t.Error("reserve header must never be sent")
 				}
-				fmt.Fprint(w, `{"rate_limit":{"primary_window":{"used_percent":12.6,"limit_window_seconds":18000,"reset_at":1700000300},"secondary_window":{"used_percent":80,"limit_window_seconds":604800}},"additional_rate_limits":[{"limit_name":"Review","rate_limit":{"primary_window":{"used_percent":100,"limit_window_seconds":900},"limit_reached":true}},{"metered_feature":"Fallback","rate_limit":{"secondary_window":{"used_percent":3,"limit_window_seconds":17}}}]}`)
+				fmt.Fprint(w, `{"rate_limit":{"primary_window":{"used_percent":12.6,"limit_window_seconds":18000,"reset_at":1700000300},"secondary_window":{"used_percent":80,"limit_window_seconds":604800,"reset_at":1700600000}},"additional_rate_limits":[{"limit_name":"gpt-reserve","rate_limit":{"secondary_window":{"used_percent":0,"limit_window_seconds":604800},"limit_reached":true}}]}`)
 			})
 			c.AuthFile = authFile(t, login(testToken, account))
 			c.URL += "/usage"
@@ -73,7 +72,7 @@ func TestRequestAndFormatting(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			want := "**Codex usage limits**\n🟢 5-hour: 13% used · resets <t:1700000300:F> (<t:1700000300:R>)\n🟡 Weekly: 80% used\n🔴 Review · 15-minute: 100% used\n⛔ Review · Limit reached.\n🟢 Fallback · Secondary: 3% used\n-# As of <t:1700000000:T>"
+			want := "**Codex usage limits**\n🟡 Weekly: 80% used · resets <t:1700600000:F> (<t:1700600000:R>)\n-# As of <t:1700000000:T>"
 			if got != want {
 				t.Errorf("report:\n%s\nwant:\n%s", got, want)
 			}
@@ -183,6 +182,8 @@ func TestResponseFailuresAreNotCached(t *testing.T) {
 		{"empty", 200, `{}`, nil},
 		{"null", 200, `null`, nil},
 		{"empty limits", 200, `{"rate_limit":{}}`, nil},
+		{"no weekly window", 200, `{"rate_limit":{"primary_window":{"used_percent":5,"limit_window_seconds":18000}}}`, nil},
+		{"additional only", 200, `{"additional_rate_limits":[{"limit_name":"gpt-reserve","rate_limit":{"secondary_window":{"used_percent":0,"limit_window_seconds":604800}}}]}`, nil},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -249,12 +250,13 @@ func TestMissingWindowsAndZeroUsage(t *testing.T) {
 		name, body, want string
 		reject           string
 	}{
-		{"zero", zeroUsage, "🟢 Primary: 0% used", "unavailable"},
-		{"missing windows", `{"rate_limit":{"allowed":true}}`, "Usage windows unavailable.", "0%"},
-		{"missing percent", `{"rate_limit":{"allowed":false,"primary_window":{"reset_at":1700000300}}}`, "Requests currently unavailable.", "0%"},
+		{"zero", zeroUsage, "🟢 Weekly: 0% used", "unavailable"},
+		{"five-hour hidden", `{"rate_limit":{"primary_window":{"used_percent":40,"limit_window_seconds":18000},"secondary_window":{"used_percent":1,"limit_window_seconds":604800}}}`, "Weekly: 1% used", "hour"},
+		{"missing windows", `{"rate_limit":{"allowed":true}}`, "Weekly usage unavailable.", "0%"},
+		{"missing percent", `{"rate_limit":{"allowed":false,"secondary_window":{"limit_window_seconds":604800,"reset_at":1700000300}}}`, "Requests currently unavailable.", "0%"},
 		{"limit reached", `{"rate_limit":{"limit_reached":true}}`, "Limit reached.", "0%"},
-		{"invalid percent", `{"rate_limit":{"allowed":true,"primary_window":{"used_percent":-1},"secondary_window":{"used_percent":10001}}}`, "Usage windows unavailable.", "% used"},
-		{"invalid resets", `{"rate_limit":{"primary_window":{"used_percent":0,"reset_at":-1},"secondary_window":{"used_percent":0,"reset_at":253402300800}}}`, "Secondary: 0% used", "resets"},
+		{"invalid percent", `{"rate_limit":{"allowed":true,"primary_window":{"used_percent":-1,"limit_window_seconds":604800},"secondary_window":{"used_percent":10001,"limit_window_seconds":604800}}}`, "Weekly usage unavailable.", "% used"},
+		{"invalid reset", `{"rate_limit":{"secondary_window":{"used_percent":0,"limit_window_seconds":604800,"reset_at":253402300800}}}`, "Weekly: 0% used", "resets"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -267,36 +269,6 @@ func TestMissingWindowsAndZeroUsage(t *testing.T) {
 				t.Errorf("unexpected report: %s", got)
 			}
 		})
-	}
-}
-
-func TestAdditionalLabelsAndReportAreBounded(t *testing.T) {
-	malicious := "@everyone <@123> **`\n" + strings.Repeat("界", 100)
-	if got := safeLabel(malicious); utf8.RuneCountInString(got) > 40 || strings.ContainsAny(got, "@<>*`\n") {
-		t.Fatalf("unsafe label: %q", got)
-	}
-	extra := map[string]any{"limit_name": malicious, "rate_limit": map[string]any{"primary_window": map[string]any{"used_percent": 0}}}
-	additions := []any{map[string]any{"limit_name": "@<>*`", "rate_limit": map[string]any{"primary_window": map[string]any{"used_percent": 0}}}}
-	for i := 0; i < 100; i++ {
-		additions = append(additions, extra)
-	}
-	body, err := json.Marshal(map[string]any{"additional_rate_limits": additions})
-	if err != nil {
-		t.Fatal(err)
-	}
-	c := testClient(t, func(w http.ResponseWriter, r *http.Request) { w.Write(body) })
-	got, err := c.Report(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if strings.Contains(got, "@") || strings.Contains(got, "`") || strings.Contains(got, "<@") {
-		t.Errorf("unsafe report: %s", got)
-	}
-	if !strings.Contains(got, "Additional limit · Primary: 0% used") || !strings.Contains(got, "additional limit line(s) not shown.") {
-		t.Errorf("missing fallback/truncation: %s", got)
-	}
-	if utf8.RuneCountInString(got) > 1150 {
-		t.Errorf("report too long: %d runes", utf8.RuneCountInString(got))
 	}
 }
 
