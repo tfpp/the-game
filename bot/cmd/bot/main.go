@@ -115,7 +115,7 @@ func run(log *slog.Logger) error {
 	if err != nil {
 		return err
 	}
-	maxActive, err := envInt("BOT_MAX_ACTIVE_RUNS", 2)
+	maxActive, err := envInt("BOT_MAX_ACTIVE_RUNS", 5)
 	if err != nil {
 		return err
 	}

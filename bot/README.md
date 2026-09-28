@@ -105,7 +105,7 @@ Environment variables; secrets are files.
 | `BOT_APPROVER_ROLE_ID` | none | Role allowed to approve merges; without it nobody can |
 | `BOT_FEATURE_CHANNEL_ID` | any channel | Only channel `/feature` works in |
 | `BOT_RUNS_PER_USER` | `5` | Runs per user per 24 hours; `0` for no limit |
-| `BOT_MAX_ACTIVE_RUNS` | `2` | Concurrent runs; `0` for no limit |
+| `BOT_MAX_ACTIVE_RUNS` | `5` | Concurrent runs; `0` for no limit |
 | `BOT_DEPLOY_DIR` | off | Directory shared with the host's deploy service |
 | `BOT_REF`, `BOT_WORKFLOW`, `BOT_CI_WORKFLOW`, `BOT_AGENT` | `main`, `agent.yml`, `game-ci.yml`, `claude` | |
 | `BOT_SERVER_WORKFLOW`, `BOT_PAGES_WORKFLOW` | `server-image.yml`, `pages.yml` | Builds that gate a deploy |
