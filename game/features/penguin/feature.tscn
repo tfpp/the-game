@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://features/penguin/penguin.gd" id="1_script"]
 
@@ -9,6 +9,13 @@ properties/0/replication_mode = 1
 properties/1/path = NodePath(".:net_yaw")
 properties/1/spawn = true
 properties/1/replication_mode = 1
+properties/2/path = NodePath(".:net_alive")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
+[sub_resource type="CapsuleShape3D" id="ColliderShape"]
+radius = 0.3
+height = 0.9
 
 [sub_resource type="CapsuleMesh" id="TorsoMesh"]
 radius = 0.28
@@ -50,9 +57,12 @@ size = Vector3(0.12, 0.05, 0.22)
 [sub_resource type="StandardMaterial3D" id="FootMat"]
 albedo_color = Color(0.95, 0.55, 0.1, 1)
 
-[node name="Penguin" type="Node3D"]
+[node name="Penguin" type="AnimatableBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.4, 8)
 script = ExtResource("1_script")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+shape = SubResource("ColliderShape")
 
 [node name="Body" type="Node3D" parent="."]
 

@@ -9,6 +9,10 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Killable penguin",
+		"summary": "The penguin can now be shot with any weapon — she explodes and waddles back."
+	},
+	{
 		"title": "Update screen",
 		"summary":
 		"Web client shows an Updating… screen during a deploy instead of flashing reloads."

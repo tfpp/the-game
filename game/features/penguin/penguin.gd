@@ -1,35 +1,56 @@
-extends Node3D
-## A decorative penguin that waddles in a slow circle around its spawn point forever.
+class_name Penguin
+extends AnimatableBody3D
+## A decorative penguin that waddles in a slow circle around its spawn point forever
+## — until she's shot, at which point she explodes and waddles back a few seconds
+## later.
 ##
 ## Server-authoritative like the rest of shared state (see game/AGENTS.md): the server
 ## (or the offline peer, which is its own server) advances the patrol angle in
-## `_physics_process` and publishes `net_position`/`net_yaw`, which Sync
+## `_physics_process` and publishes `net_position`/`net_yaw`/`net_alive`, which Sync
 ## (MultiplayerSynchronizer) replicates to every client. Non-authoritative peers only
-## smooth toward the replicated values. The cosmetic side-to-side rock runs locally on
-## every peer since it doesn't need to match exactly. The patrol math itself lives in
-## penguin_waddle.gd so it's unit-testable on its own.
+## smooth toward the replicated values. The cosmetic side-to-side rock and the
+## explosion debris run locally on every peer since they don't need to match exactly.
+## The patrol math itself lives in penguin_waddle.gd so it's unit-testable on its own.
+##
+## Killable by any weapon: a physics body (not just a visual Node3D) so
+## features/holdables/hand.gd's hitscan can hit her, in the `killable` group so
+## `_fire` knows to call `take_hit` instead of features/combat's `apply_damage`,
+## which is keyed by player peer id and doesn't apply here.
 
 const REMOTE_SMOOTHING := 12.0
+const RESPAWN_DELAY_S := 4.0
+const DEBRIS_DURATION_S := 1.1
+const FLASH_DURATION_S := 0.3
+const SHOCKWAVE_DURATION_S := 0.5
 
 ## Replicated state (server -> everyone). See the synchronizer config in feature.tscn.
 @export var net_position := Vector3.ZERO
 @export var net_yaw := 0.0
+@export var net_alive := true
 
 var _home := Vector3.ZERO
 var _angle := 0.0
 var _elapsed := 0.0
+var _respawn_timer := 0.0
 
 @onready var _body: Node3D = $Body
+@onready var _collider: CollisionShape3D = $Collider
 
 
 func _ready() -> void:
 	_home = position
 	net_position = position
+	add_to_group(&"killable")
 	if not multiplayer.is_server():
 		set_physics_process(false)
 
 
 func _physics_process(delta: float) -> void:
+	if not net_alive:
+		_respawn_timer -= delta
+		if _respawn_timer <= 0.0:
+			_respawn()
+		return
 	_angle += (
 		PenguinWaddle.angular_speed(PenguinWaddle.PATROL_RADIUS, PenguinWaddle.WALK_SPEED) * delta
 	)
@@ -43,7 +64,121 @@ func _process(delta: float) -> void:
 	if not multiplayer.is_server():
 		var t := 1.0 - exp(-REMOTE_SMOOTHING * delta)
 		position = position.lerp(net_position, t)
+	_body.visible = net_alive
+	_collider.disabled = not net_alive
+	if not net_alive:
+		return
 	_body.rotation.y = net_yaw
 	_body.rotation.z = PenguinWaddle.waddle_rock(
 		_elapsed, PenguinWaddle.WADDLE_FREQUENCY, PenguinWaddle.WADDLE_AMPLITUDE
 	)
+
+
+## Server-only: any weapon's hitscan calls this on a hit (see hand.gd's `_fire`,
+## which routes to this instead of features/combat's `apply_damage` because she has
+## no player peer id). One hit is always fatal, regardless of the weapon's damage
+## value, so "killable with any weapon" holds even for the weakest gun.
+func take_hit(_attacker_peer: int) -> void:
+	if not multiplayer.is_server() or not net_alive:
+		return
+	net_alive = false
+	_respawn_timer = RESPAWN_DELAY_S
+	_explode.rpc()
+
+
+func _respawn() -> void:
+	net_alive = true
+	_angle = 0.0
+	position = _home
+	net_position = _home
+	net_yaw = 0.0
+
+
+## Cosmetic only — every peer plays its own explosion locally, same as the waddle
+## rock, so it doesn't need to be pixel-synced.
+@rpc("authority", "call_local", "reliable")
+func _explode() -> void:
+	_spawn_flash()
+	_spawn_shockwave()
+	_spawn_debris()
+
+
+func _spawn_flash() -> void:
+	var light := OmniLight3D.new()
+	light.light_color = Color(1.0, 0.65, 0.2)
+	light.light_energy = 6.0
+	light.omni_range = 4.0
+	light.position = Vector3(0.0, 0.2, 0.0)
+	add_child(light)
+	var tween := create_tween()
+	tween.tween_property(light, "light_energy", 0.0, FLASH_DURATION_S)
+	tween.tween_callback(light.queue_free)
+
+
+func _spawn_shockwave() -> void:
+	var sphere := MeshInstance3D.new()
+	var mesh := SphereMesh.new()
+	mesh.radius = 0.3
+	mesh.height = 0.6
+	sphere.mesh = mesh
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(1.0, 0.7, 0.2, 0.85)
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	sphere.set_surface_override_material(0, mat)
+	sphere.position = Vector3(0.0, 0.2, 0.0)
+	add_child(sphere)
+	var tween := create_tween()
+	tween.set_parallel(true)
+	(
+		tween
+		. tween_property(sphere, "scale", Vector3.ONE * 6.0, SHOCKWAVE_DURATION_S)
+		. set_trans(Tween.TRANS_QUAD)
+		. set_ease(Tween.EASE_OUT)
+	)
+	tween.tween_property(mat, "albedo_color:a", 0.0, SHOCKWAVE_DURATION_S)
+	tween.chain().tween_callback(sphere.queue_free)
+
+
+## Blows her component meshes apart into flying, tumbling debris, then frees them —
+## a fantastic send-off that reuses her own body parts instead of new art.
+func _spawn_debris() -> void:
+	for mesh: MeshInstance3D in _mesh_pieces(_body):
+		var piece := MeshInstance3D.new()
+		piece.mesh = mesh.mesh
+		var mat := mesh.get_surface_override_material(0)
+		if mat != null:
+			piece.set_surface_override_material(0, mat)
+		add_child(piece)
+		piece.global_transform = mesh.global_transform
+		_launch_piece(piece)
+
+
+func _mesh_pieces(node: Node) -> Array[MeshInstance3D]:
+	var pieces: Array[MeshInstance3D] = []
+	for child: Node in node.get_children():
+		var mesh := child as MeshInstance3D
+		if mesh != null:
+			pieces.append(mesh)
+		pieces.append_array(_mesh_pieces(child))
+	return pieces
+
+
+func _launch_piece(piece: MeshInstance3D) -> void:
+	var direction := (
+		Vector3(randf_range(-1.0, 1.0), randf_range(0.5, 1.4), randf_range(-1.0, 1.0)).normalized()
+	)
+	var target := piece.position + direction * randf_range(1.2, 3.2)
+	var spin := Vector3(
+		randf_range(-720.0, 720.0), randf_range(-720.0, 720.0), randf_range(-720.0, 720.0)
+	)
+	var tween := create_tween()
+	tween.set_parallel(true)
+	(
+		tween
+		. tween_property(piece, "position", target, DEBRIS_DURATION_S)
+		. set_trans(Tween.TRANS_CUBIC)
+		. set_ease(Tween.EASE_OUT)
+	)
+	tween.tween_property(piece, "rotation_degrees", spin, DEBRIS_DURATION_S)
+	tween.chain().tween_callback(piece.queue_free)
