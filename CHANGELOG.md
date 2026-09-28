@@ -53,6 +53,17 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Make the penguin-facing regression test independent of frame timing by checking its forward offset at fixed waddle phases.
 - Show Claude and Codex subscription limits together in Discord `/usage`, with independent error handling and a read-only Codex login file.
 
+- Add a Monkey Island demo arcade with a brass-trimmed cabinet and synchronized local emulation for every player.
+- Autosave shared arcade progress, restore it after server restarts, and pause the demo when everyone disconnects.
+- Play arcade audio from the cabinet, fading to silence at five metres.
+- Add Sam & Max, Fate of Atlantis, Passport to Adventure and Day of the Tentacle demo cabinets, each with independent shared progress and sound.
+
+- Play adventure cabinets directly on their 3D screens, look around while playing, and simplify the control deck by removing the joystick.
+
+- Bring the arcade play view closer to the screen, keeping the cabinet edges visible and restoring the normal view on exit.
+
+- Simplify arcade play to one leave button, automatically taking controls when a cabinet is free.
+
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
 Versioning starts here, matching milestones v0.1 to v0.6. Highlights so far:

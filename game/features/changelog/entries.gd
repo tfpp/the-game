@@ -11,6 +11,16 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Adventure arcade",
+		"summary":
+		(
+			"Five adventure demo cabinets: Monkey Island, Sam & Max, Fate of Atlantis,"
+			+ " Passport to Adventure and a Day of the Tentacle display. Share play and"
+			+ " autosaved progress, with sound fading to silence at 5 m. Play on the 3D"
+			+ " screens and look around without leaving your turn. Enter to play; one button leaves."
+		)
+	},
+	{
 		"title": "Codex subscription usage",
 		"summary":
 		(
