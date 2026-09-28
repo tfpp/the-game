@@ -70,8 +70,12 @@ def run():
             processes['driver'].terminate()
             processes['driver'].wait(timeout=5)
             wait('observer', 'HANDOFF_DONE')
+            wait('observer', 'ROOM_RETURNED')
+            driver_log = (logs / 'driver.log').read_text()
+            print(next(line for line in driver_log.splitlines() if line.startswith('NETWORK_FRAME_MS ')))
             print('PASS: server + 2 clients agree at ticks 250/500/750; late replay, '
-                  'all 5 cabinets agree; range rejection, competing input rejection, disconnect handoff.')
+                  'all 5 cabinets agree; range rejection, competing input rejection, disconnect handoff, '
+                  'room unload, empty-room pause and re-entry replay.')
         except BaseException:
             for log in logs.glob('*.log'):
                 print(f'\n{log.name}:\n{log.read_text()}')

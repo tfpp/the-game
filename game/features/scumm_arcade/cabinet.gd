@@ -10,6 +10,8 @@ const SAVE_SECONDS := 5.0
 
 @export_enum("monkey", "samnmax", "atlantis", "pass", "tentacle") var game_id := "monkey"
 
+@export var room_only := false
+
 @export var state: Dictionary = {
 	"epoch": 1, "tick": 0, "owner": 0, "operator": "", "running": false, "finished": false
 }
@@ -20,7 +22,12 @@ var local_error := ""
 var _runtime_id := ""
 var _epoch := 0
 var _elapsed := 0.0
-var _poll_in := 0.0
+var _broadcast_in := 0.0
+var _activation_in := 0.0
+var _active := false
+var _subscribed := false
+var _inbox := ScummArcadeInbox.new()
+var _delivery_ticks: Dictionary = {}
 var _lease_until := 0
 var _requested_at := -1000
 var _waiting := false
@@ -43,15 +50,17 @@ func _ready() -> void:
 	add_to_group(&"interactables")
 	Network.mode_changed.connect(_mode_changed)
 	multiplayer.peer_disconnected.connect(_peer_left)
-	_runtime_id = ScummArcadeEmulator.fingerprint(game_id)
+	if not room_only:
+		_runtime_id = ScummArcadeEmulator.fingerprint(game_id)
 	_emulator = ScummArcadeEmulator.new()
 	add_child(_emulator)
 	_emulator.frame_ready.connect(_frame_ready)
-	_view = ScummArcadeView.new()
-	add_child(_view)
-	_view.build(self)
+	if not room_only:
+		_ensure_view()
 	_audio = AudioStreamPlayer3D.new()
 	_audio.position = Vector3(0, 1.6, 0.6)
+	_audio.bus = GameAudio.BUS
+	_audio.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	# max_distance provides a linear fade to silence; no additional inverse falloff.
 	_audio.attenuation_model = AudioStreamPlayer3D.ATTENUATION_DISABLED
 	_audio.max_distance = 5.0
@@ -64,14 +73,18 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_activation_in -= delta
+	if _activation_in <= 0:
+		_activation_in = 0.2
+		_set_active(_wants_runtime())
+	if not _active:
+		return
 	if multiplayer.is_server():
 		_server_advance(delta)
-	if (
-		DisplayServer.get_name() == "headless"
-		and Network.mode != Network.Mode.SERVER
-		and not Network.has_flag("scumm-runtime")
-	):
-		return
+		_broadcast_in -= delta
+		if _broadcast_in <= 0:
+			_broadcast_in = 0.02
+			_broadcast_batches()
 	if _epoch != int(state["epoch"]):
 		_restart_local()
 	if _emulator.status == "failed" and local_error.is_empty():
@@ -83,13 +96,96 @@ func _process(delta: float) -> void:
 			state["error"] = "Arcade runtime unavailable on the server"
 	if _emulator.status != "ready" or _emulator.busy or not local_error.is_empty():
 		return
-	_poll_in -= delta
-	var now := Time.get_ticks_msec()
-	if _poll_in <= 0 and (not _waiting or now - _requested_at > 1500):
-		_poll_in = 0.1
-		_waiting = true
-		_requested_at = now
-		request_batch.rpc_id(1, _epoch, local_tick, _emulator.runtime_id)
+	if multiplayer.is_server():
+		_ready_peers[1] = local_tick
+		var frames := session.batch(local_tick)
+		frames.resize(mini(frames.size(), CHECKPOINT_INTERVAL - local_tick % CHECKPOINT_INTERVAL))
+		_emulator.advance(frames)
+	else:
+		var now := Time.get_ticks_msec()
+		if not _subscribed and (not _waiting or now - _requested_at > 1500):
+			_waiting = true
+			_requested_at = now
+			request_batch.rpc_id(1, _epoch, _inbox.next_tick, _emulator.runtime_id)
+		_emulator.advance(_inbox.take(local_tick))
+
+
+func _wants_runtime() -> bool:
+	if (
+		DisplayServer.get_name() == "headless"
+		and Network.mode != Network.Mode.SERVER
+		and not Network.has_flag("scumm-runtime")
+	):
+		return false
+	if not room_only:
+		return true
+	if multiplayer.is_server():
+		return _has_audience()
+	var player := get_tree().get_first_node_in_group(&"local_player") as Player
+	return player != null and ScummArcadeRoom.contains(player.global_position)
+
+
+func _set_active(enabled: bool) -> void:
+	if _active == enabled:
+		return
+	_active = enabled
+	if enabled:
+		_runtime_id = ScummArcadeEmulator.fingerprint(game_id)
+		if multiplayer.is_server():
+			_ensure_progress()
+			state = state.duplicate()
+			state["running"] = true
+		if DisplayServer.get_name() != "headless":
+			_ensure_view()
+		_restart_local()
+	else:
+		if multiplayer.is_server():
+			if int(state["owner"]) != 0:
+				_release_control()
+			_save_progress()
+			_delivery_ticks.clear()
+			_ready_peers.clear()
+		else:
+			leave_room.rpc_id(1)
+		if _view != null:
+			_view.close(false)
+			_view.queue_free()
+			_view = null
+		_texture = null
+		_audio.stop()
+		_playback = null
+		_emulator.stop()
+		local_tick = 0
+		_inbox = ScummArcadeInbox.new()
+		_subscribed = false
+		_waiting = false
+
+
+func _ensure_view() -> void:
+	if _view == null:
+		_view = ScummArcadeView.new()
+		add_child(_view)
+		_view.build(self)
+
+
+func _broadcast_batches() -> void:
+	for peer: int in _delivery_ticks.keys():
+		var player := _player_for_peer(peer)
+		if player == null or (room_only and not ScummArcadeRoom.contains(player.net_position)):
+			_peer_left(peer)
+			continue
+		# Bound unacknowledged delivery to ten seconds, including late-join replay.
+		if int(_delivery_ticks[peer]) < int(_ready_peers.get(peer, 0)) + 500:
+			_send_batch(peer)
+
+
+func _send_batch(peer: int, allow_empty: bool = false) -> void:
+	var from_tick := int(_delivery_ticks[peer])
+	var frames := session.batch(from_tick)
+	if frames.is_empty() and not allow_empty:
+		return
+	receive_batch.rpc_id(peer, int(state["epoch"]), from_tick, frames)
+	_delivery_ticks[peer] = from_tick + frames.size()
 
 
 func _server_advance(delta: float) -> void:
@@ -148,7 +244,8 @@ func can_use(player: Player) -> bool:
 
 
 func use() -> void:
-	_view.open()
+	if _view != null:
+		_view.open()
 
 
 func controls_local() -> bool:
@@ -214,6 +311,7 @@ func request_restart() -> void:
 	state["running"] = false
 	_elapsed = 0.0
 	_ready_peers.clear()
+	_delivery_ticks.clear()
 	_checksums.clear()
 	_pending_checksums.clear()
 	_save_progress(true)
@@ -221,10 +319,11 @@ func request_restart() -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func request_batch(epoch: int, from_tick: int, signature: String) -> void:
-	if not multiplayer.is_server():
+	if not multiplayer.is_server() or not _active:
 		return
 	var peer := _sender()
-	if _player_for_peer(peer) == null and peer != 1:
+	var player := _player_for_peer(peer)
+	if player == null or (room_only and not ScummArcadeRoom.contains(player.net_position)):
 		return
 	var now := Time.get_ticks_msec()
 	if now - int(_last_request.get(peer, -1000)) < 40:
@@ -236,23 +335,22 @@ func request_batch(epoch: int, from_tick: int, signature: String) -> void:
 	if epoch != int(state["epoch"]) or from_tick < 0 or from_tick > session.tick:
 		return
 	_ready_peers[peer] = from_tick
-	if not state["running"]:
-		state = state.duplicate()
-		state["running"] = true
-	receive_batch.rpc_id(peer, epoch, from_tick, session.batch(from_tick))
+	_delivery_ticks[peer] = from_tick
+	_send_batch(peer, true)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func leave_room() -> void:
+	if multiplayer.is_server():
+		_peer_left(_sender())
 
 
 @rpc("authority", "call_local", "reliable")
 func receive_batch(epoch: int, from_tick: int, frames: Array) -> void:
-	if epoch != _epoch or from_tick != local_tick or _emulator.busy:
+	if not _active or epoch != _epoch or frames.size() > ScummArcadeSession.BATCH_TICKS:
 		return
 	_waiting = false
-	# Stop exactly at checksum boundaries, so differently sized replay batches
-	# compare the same point. The remainder is requested again on the next pull.
-	var until_check := CHECKPOINT_INTERVAL - local_tick % CHECKPOINT_INTERVAL
-	if frames.size() > until_check:
-		frames.resize(until_check)
-	_emulator.advance(frames)
+	_subscribed = _inbox.append(from_tick, frames)
 
 
 @rpc("authority", "call_local", "reliable")
@@ -270,6 +368,7 @@ func report_checksum(epoch: int, tick: int, checksum: int) -> void:
 		return
 	if tick % CHECKPOINT_INTERVAL != 0:
 		return
+	_ready_peers[peer] = maxi(int(_ready_peers[peer]), tick)
 	# Only the server's locally emulated result is a trusted baseline. A malicious
 	# checksum can only reject its sender; it cannot poison other peers' state.
 	if peer == 1:
@@ -296,23 +395,27 @@ func _compare_checksum(peer: int, expected: int, actual: int) -> void:
 
 func _frame_ready(tick: int, checksum: int, pixels: PackedByteArray, pcm: PackedByteArray) -> void:
 	local_tick = tick
+	if tick % CHECKPOINT_INTERVAL == 0:
+		report_checksum.rpc_id(1, _epoch, tick, checksum)
+	if DisplayServer.get_name() == "headless":
+		return
 	var frame := Image.create_from_data(320, 200, false, Image.FORMAT_RGBA8, pixels)
 	if _texture == null:
 		_texture = ImageTexture.create_from_image(frame)
-		_view.set_screen(_texture)
+		if _view != null:
+			_view.set_screen(_texture)
 	else:
 		_texture.update(frame)
-	if tick % CHECKPOINT_INTERVAL == 0:
-		report_checksum.rpc_id(1, _epoch, tick, checksum)
-	if int(state["tick"]) - tick > 10:
+	if int(state["tick"]) - tick > 10 or pcm.is_empty():
 		return
 	if not _audio.playing:
 		_audio.play()
 		_playback = _audio.get_stream_playback() as AudioStreamGeneratorPlayback
-	var audio_frames := PackedVector2Array()
-	for index: int in range(0, pcm.size() - 3, 4):
-		audio_frames.append(Vector2(pcm.decode_s16(index), pcm.decode_s16(index + 2)) / 32768.0)
-	if _playback != null and _playback.get_frames_available() >= audio_frames.size():
+	# Workers convert PCM once; avoid thousands of interpreted sample conversions.
+	var audio_frames := pcm.to_vector2_array()
+	if _playback != null:
+		if _playback.get_frames_available() < audio_frames.size():
+			_playback.clear_buffer()
 		_playback.push_buffer(audio_frames)
 
 
@@ -321,6 +424,8 @@ func _restart_local() -> void:
 	local_tick = 0
 	local_error = ""
 	_waiting = false
+	_subscribed = false
+	_inbox = ScummArcadeInbox.new()
 	_audio.stop()
 	_emulator.start(game_id)
 	if multiplayer.is_server():
@@ -329,7 +434,8 @@ func _restart_local() -> void:
 
 
 func retry_local() -> void:
-	_restart_local()
+	if _active:
+		_restart_local()
 
 
 func _release_control() -> void:
@@ -352,6 +458,7 @@ func _player_for_peer(peer: int) -> Player:
 
 
 func _peer_left(peer: int) -> void:
+	_delivery_ticks.erase(peer)
 	_ready_peers.erase(peer)
 	_last_request.erase(peer)
 	for waiting: Dictionary in _pending_checksums.values():
@@ -370,7 +477,18 @@ func _mode_changed(_mode: Network.Mode) -> void:
 	_saved_tick = -1
 	_save_blocked = false
 	_save_in = SAVE_SECONDS
-	_view.close(false)
+	if _view != null:
+		_view.close(false)
+	if room_only and _view != null:
+		_view.queue_free()
+		_view = null
+		_texture = null
+	_playback = null
+	_inbox = ScummArcadeInbox.new()
+	_active = false
+	_activation_in = 0
+	_delivery_ticks.clear()
+	_subscribed = false
 	_emulator.stop()
 	_audio.stop()
 	_epoch = 0
@@ -384,6 +502,11 @@ func _mode_changed(_mode: Network.Mode) -> void:
 
 
 func _has_audience() -> bool:
+	if room_only:
+		for player: Player in get_tree().get_nodes_in_group(&"players"):
+			if ScummArcadeRoom.contains(player.net_position):
+				return true
+		return false
 	if Network.mode != Network.Mode.SERVER:
 		return true
 	for peer: int in _ready_peers:

@@ -12,6 +12,10 @@ var _elapsed := 0.0
 func _ready() -> void:
 	_pcm = FileAccess.get_file_as_bytes(str(Network.args["arcade-pcm"]))
 	assert(_pcm.size() == 441 * 4)
+	var stereo := PackedVector2Array()
+	for index: int in range(0, _pcm.size(), 4):
+		stereo.append(Vector2(_pcm.decode_s16(index), _pcm.decode_s16(index + 2)) / 32768.0)
+	_pcm = stereo.to_byte_array()
 	_pixels.resize(320 * 200 * 4)
 	_cabinet = preload("res://features/scumm_arcade/cabinet.tscn").instantiate()
 	add_child(_cabinet)

@@ -19,6 +19,14 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Adventure arcade room",
+		"summary":
+		(
+			"A dedicated arcade room loads games only while you are inside,"
+			+ " with smoother play and reliable positional sound."
+		)
+	},
+	{
 		"title": "Room doors",
 		"summary":
 		(

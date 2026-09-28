@@ -53,7 +53,7 @@ class ArcadeDriver {
         }
         if (offset !== bytes.length) throw new Error('Unexpected demo data');
     }
-    async advance(frames) {
+    async advance(frames, floatAudio = false) {
         await this.ready;
         if (this.stopped) throw new Error('Runtime stopped');
         if (!Array.isArray(frames) || frames.length > 250) throw new Error('Invalid batch');
@@ -70,19 +70,31 @@ class ArcadeDriver {
             const pixels = this.module.arcadePixels;
             // A rolling presentation checksum spots visible/audio divergence and is
             // compared at the SAME tick, independent of transport batching.
-            for (const b of pixels) this.hash = Math.imul(this.hash ^ b, 16777619) >>> 0;
-            for (const b of this.module.arcadePCM) this.hash = Math.imul(this.hash ^ b, 16777619) >>> 0;
-            if (frames.length <= 10) sound.push(this.module.arcadePCM);
+            let hash = this.hash;
+            for (let i = 0; i < pixels.length; i++) hash = Math.imul(hash ^ pixels[i], 16777619);
+            const pcm = this.module.arcadePCM;
+            for (let i = 0; i < pcm.length; i++) hash = Math.imul(hash ^ pcm[i], 16777619);
+            this.hash = hash >>> 0;
+            // Keep the newest audio even after a delayed/catch-up batch.
+            sound.push(pcm);
+            if (sound.length > 10) sound.shift();
         }
         const pixels = this.module.arcadePixels || new Uint8Array(320 * 200 * 4);
-        const pcmSize = sound.reduce((n, a) => n + a.length, 0);
+        const audio = sound.map(pcm => {
+            if (!floatAudio) return pcm;
+            const samples = new Int16Array(pcm.buffer, pcm.byteOffset, pcm.byteLength / 2);
+            const floats = new Float32Array(samples.length);
+            for (let i = 0; i < samples.length; i++) floats[i] = samples[i] / 32768;
+            return new Uint8Array(floats.buffer);
+        });
+        const pcmSize = audio.reduce((n, a) => n + a.length, 0);
         const result = new Uint8Array(8 + pixels.length + pcmSize);
         const header = new DataView(result.buffer);
         header.setUint32(0, this.tick, true);
         header.setUint32(4, this.hash, true);
         result.set(pixels, 8);
         let offset = 8 + pixels.length;
-        for (const pcm of sound) { result.set(pcm, offset); offset += pcm.length; }
+        for (const pcm of audio) { result.set(pcm, offset); offset += pcm.length; }
         return result;
     }
     stop() { this.stopped = true; }

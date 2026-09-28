@@ -62,11 +62,12 @@ def run():
             assert save.read_bytes() == saved, 'Empty arcade continued advancing'
             kill('original')
             start('restarted', 'server', True)
+            wait('restarted', 'Server listening')
+            start('returning', 'restored')
             restored = wait('restarted', 'ARCADE_RESTORED ')
             tick = int(next(line.split()[1] for line in restored.splitlines()
                             if line.startswith('ARCADE_RESTORED ')))
             assert tick >= 750, tick
-            start('returning', 'restored')
             client = wait('returning', 'RESTORED_PROGRESS')
             server = wait('restarted', 'CHECK 750 ')
             assert baseline in client and baseline in server, (baseline, client, server)
