@@ -151,20 +151,6 @@ func (b *Bot) Post(ctx context.Context, threadID, content string, ping ...string
 	return err
 }
 
-// PostButton implements core.Chat.
-func (b *Bot) PostButton(ctx context.Context, threadID, content, label, id string, ping ...string) error {
-	ch, err := snowflake.Parse(threadID)
-	if err != nil {
-		return err
-	}
-	_, err = b.client.Rest.CreateMessage(ch, discord.MessageCreate{
-		Content:         content,
-		AllowedMentions: mentions(ping),
-		Components:      []discord.LayoutComponent{discord.NewActionRow(discord.NewSuccessButton(label, id))},
-	}, rest.WithCtx(ctx))
-	return err
-}
-
 // PostEmbed implements core.Chat.
 func (b *Bot) PostEmbed(ctx context.Context, threadID, content string, embed core.Embed, button *core.Button, ping ...string) error {
 	ch, err := snowflake.Parse(threadID)
@@ -175,7 +161,7 @@ func (b *Bot) PostEmbed(ctx context.Context, threadID, content string, embed cor
 		Content: content, AllowedMentions: mentions(ping), Embeds: []discord.Embed{toEmbed(embed)},
 	}
 	if button != nil {
-		msg.Components = []discord.LayoutComponent{discord.NewActionRow(discord.NewPrimaryButton(button.Label, button.ID))}
+		msg.Components = []discord.LayoutComponent{discord.NewActionRow(discord.NewSuccessButton(button.Label, button.ID))}
 	}
 	_, err = b.client.Rest.CreateMessage(ch, msg, rest.WithCtx(ctx))
 	return err

@@ -103,11 +103,6 @@ type post struct {
 
 type fakeChat struct{ posts []post }
 
-func (c *fakeChat) PostButton(_ context.Context, thread, content, _, id string, ping ...string) error {
-	c.posts = append(c.posts, post{thread: thread, content: content, button: id, ping: strings.Join(ping, ",")})
-	return nil
-}
-
 // PostEmbed records the embed, and renders it into content so tests can search it.
 func (c *fakeChat) PostEmbed(_ context.Context, thread, content string, e Embed, b *Button, ping ...string) error {
 	text := content + "\n" + e.Title + "\n" + e.Description
@@ -380,7 +375,7 @@ func TestWorkflowRunAndCommentsReachTheThread(t *testing.T) {
 	}
 	metadata := " · Model(s): claude-opus-5-5 · Tokens used: 1235200 · Estimated cost (USD API-equivalent): $3.46"
 	must(t, e.svc.Comment(ctx, 11, github.Comment{ID: 3, User: bot, Body: "🤖 Opened https://github.com/o/r/pull/12" + metadata + "\n"}))
-	if p := e.chat.last(); p.embed == nil || p.embed.Title != "PR #12 opened" || p.embed.URL != "https://github.com/o/r/pull/12" ||
+	if p := e.chat.last(); p.embed == nil || p.embed.Title != "📬 PR #12 opened" || p.embed.URL != "https://github.com/o/r/pull/12" ||
 		!strings.HasPrefix(p.content, "<@42>\n") || p.ping != "42" {
 		t.Errorf("opened post %+v", p)
 	}
@@ -394,7 +389,7 @@ func TestWorkflowRunAndCommentsReachTheThread(t *testing.T) {
 	// Comments on the PR reach the same thread.
 	must(t, e.svc.Comment(ctx, 12, github.Comment{ID: 4, User: bot,
 		Body: "🤖 Pushed abc https://github.com/o/r/pull/12" + metadata + "\n\n**update**\n<details>log</details>", HTMLURL: "https://c"}))
-	if p := e.chat.last(); p.embed == nil || p.embed.Title != "Pushed to PR #12" || !strings.Contains(p.content, "Tokens: 1.2M") || p.ping != "42" {
+	if p := e.chat.last(); p.embed == nil || p.embed.Title != "⬆️ Pushed to PR #12" || !strings.Contains(p.content, "Tokens: 1.2M") || p.ping != "42" {
 		t.Errorf("pushed notification lost title, usage or ping: %+v", p)
 	}
 	if p := e.chat.last(); !strings.Contains(p.content, "[Logs on GitHub]") || strings.Contains(p.content, "details") {
@@ -451,7 +446,8 @@ func TestPreviewDeployReachesTheThread(t *testing.T) {
 		t.Fatalf("posts %+v", e.chat.posts[n:])
 	}
 	if p := e.chat.last(); p.thread != "thread1" || p.ping != "" ||
-		p.content != "🔍 Preview of `abcdef1` (offline, single player): <https://pr-12.example.dev/>" {
+		p.embed == nil || p.embed.Title != "🔍 Preview ready" || p.embed.URL != "https://pr-12.example.dev/" ||
+		p.embed.Description != "[Play `abcdef1` in the browser](https://pr-12.example.dev/) (offline, single player)." {
 		t.Errorf("post %+v", p)
 	}
 }

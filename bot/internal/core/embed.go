@@ -7,6 +7,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/tfpp/the-game/bot/internal/store"
 )
 
 // Embed is a Discord embed: a coloured card under a message's content.
@@ -57,6 +59,27 @@ func (s *Service) postEmbed(ctx context.Context, jobThread string, issue int, em
 	}
 }
 
+// reviseHint tells the requester how to ask for changes once the PR exists.
+const reviseHint = "Once the PR is open, use `/revise` in this thread to ask for changes."
+
+// card posts an embed to a job's thread, if it has one, pinging ping.
+func (s *Service) card(ctx context.Context, job store.Job, e Embed, ping ...string) {
+	s.postEmbed(ctx, job.ThreadID, job.Issue, e, nil, ping...)
+}
+
+// resolvingCard says the agent has started resolving a PR's conflicts.
+func (s *Service) resolvingCard(ctx context.Context, job store.Job) {
+	s.card(ctx, job, Embed{Title: "🔧 Resolving conflicts", URL: s.pullURL(job.PR), Color: colorInfo, Description: fmt.Sprintf(
+		"The agent is merging `%s` into %s and resolving the conflicts.", s.cfg.Ref, s.prLabel(job.PR))})
+}
+
+func (s *Service) pullURL(n int) string {
+	return fmt.Sprintf("https://github.com/%s/pull/%d", s.cfg.Repo, n)
+}
+
+// prLabel names PR n in an embed's description; the embed's title links to it.
+func (s *Service) prLabel(n int) string { return fmt.Sprintf("PR #%d", n) }
+
 var (
 	// harness/publish.sh's per-run usage note.
 	usageNote = regexp.MustCompile(` · Model\(s\): ([^·\n]+?) · Tokens used: ([^·\s)]+) · Estimated cost \(USD API-equivalent\): ([^\s)]+)`)
@@ -85,12 +108,12 @@ func relayEmbed(body, url string) Embed {
 		}
 	}
 
-	e := Embed{Title: "Agent update", Color: colorNeutral}
+	e := Embed{Title: "🤖 Agent update", Color: colorNeutral}
 	first, rest, _ := strings.Cut(text, "\n")
 	switch {
 	case startedRe.MatchString(text):
 		m := startedRe.FindStringSubmatch(text)
-		e = Embed{Title: "Agent started", URL: m[4], Color: colorInfo, Description: "[Follow the run](" + m[4] + ")",
+		e = Embed{Title: "🤖 Agent started", URL: m[4], Color: colorInfo, Description: "[Follow the run](" + m[4] + ")",
 			Fields: []EmbedField{
 				{Name: "Harness", Value: fieldValue("`" + m[1] + "`"), Inline: true},
 				{Name: "Mode", Value: fieldValue("`" + m[2] + "`"), Inline: true},
@@ -99,19 +122,19 @@ func relayEmbed(body, url string) Embed {
 		text = ""
 	case openedRe.MatchString(first) && strings.TrimSpace(rest) == "":
 		m := openedRe.FindStringSubmatch(first)
-		e = Embed{Title: "PR #" + m[2] + " opened", URL: m[1], Color: colorSuccess}
+		e = Embed{Title: "📬 PR #" + m[2] + " opened", URL: m[1], Color: colorSuccess}
 		text = ""
 	case pushedRe.MatchString(first):
 		m := pushedRe.FindStringSubmatch(first)
-		e = Embed{Title: "Pushed to PR #" + m[3], URL: m[2], Color: colorSuccess,
+		e = Embed{Title: "⬆️ Pushed to PR #" + m[3], URL: m[2], Color: colorSuccess,
 			Fields: []EmbedField{{Name: "Commit", Value: "`" + short(m[1]) + "`", Inline: true}}}
 		text = strings.TrimSpace(rest)
 	case strings.Contains(first, "did not produce a change"):
-		e = Embed{Title: "The agent run failed", Color: colorFailure}
+		e = Embed{Title: "❌ The agent run failed", Color: colorFailure}
 	case strings.Contains(first, "made no changes"):
-		e = Embed{Title: "The agent made no changes", Color: colorWarning}
+		e = Embed{Title: "🤷 The agent made no changes", Color: colorWarning}
 	case strings.HasPrefix(first, "Not starting the agent"):
-		e = Embed{Title: "The agent didn't start", Color: colorFailure}
+		e = Embed{Title: "⛔ The agent didn't start", Color: colorFailure}
 	}
 	e.Fields = append(e.Fields, usage...)
 

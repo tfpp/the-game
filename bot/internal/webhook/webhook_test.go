@@ -25,11 +25,6 @@ func (c chat) Post(_ context.Context, _, content string, _ ...string) error {
 	return nil
 }
 
-func (c chat) PostButton(_ context.Context, _, content, _, _ string, _ ...string) error {
-	c.posts <- content
-	return nil
-}
-
 func (c chat) PostEmbed(_ context.Context, _, content string, e core.Embed, _ *core.Button, _ ...string) error {
 	c.posts <- content + " " + e.Title + " " + e.Description
 	return nil

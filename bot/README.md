@@ -26,7 +26,10 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    opens an issue whose body ends in `Requested-by: <name> <discord:<id>>` (the harness
    credits that person in the PR), answers publicly, opens a thread on the answer, and
    dispatches `agent.yml` (`mode=implement`, `request_id=bot-<run>`).
-2. **Progress** reaches the thread from the App's webhooks:
+2. **Progress** reaches the thread from the App's webhooks. Every bot message in a
+   feature thread is a colour-coded embed titled with what happened (🤖 agent, ✅/❌ CI,
+   🔍 preview, 👍 approval, ⚠️ conflict or queue drop, 🎉 merged, 🚀 live), linked to the
+   PR or run; pings go in the message text, since embeds can't ping.
    - `issue_comment`: the harness's 🤖 comments on the issue or PR ("Starting…",
      "Opened <PR>", failures with a link to the logs). They're posted as colour-coded
      embeds (started, opened or pushed, no changes, failed), with the requester's ping in
