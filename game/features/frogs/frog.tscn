@@ -1,0 +1,65 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://features/frogs/frog.gd" id="1_script"]
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:net_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:net_yaw")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[sub_resource type="SphereMesh" id="BodyMesh"]
+radius = 0.22
+height = 0.3
+
+[sub_resource type="StandardMaterial3D" id="BodyMat"]
+albedo_color = Color(0.3, 0.8, 0.35, 1)
+
+[sub_resource type="SphereMesh" id="EyeMesh"]
+radius = 0.055
+height = 0.09
+
+[sub_resource type="StandardMaterial3D" id="EyeMat"]
+albedo_color = Color(0.95, 0.95, 0.9, 1)
+
+[sub_resource type="SphereMesh" id="PupilMesh"]
+radius = 0.022
+height = 0.03
+
+[sub_resource type="StandardMaterial3D" id="PupilMat"]
+albedo_color = Color(0.05, 0.05, 0.05, 1)
+
+[node name="Frog" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.7, 0, 0, 0, 1.15, 0, 0.12, 0)
+mesh = SubResource("BodyMesh")
+surface_material_override/0 = SubResource("BodyMat")
+
+[node name="EyeLeft" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11, 0.22, -0.12)
+mesh = SubResource("EyeMesh")
+surface_material_override/0 = SubResource("EyeMat")
+
+[node name="PupilLeft" type="MeshInstance3D" parent="Body/EyeLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -0.045)
+mesh = SubResource("PupilMesh")
+surface_material_override/0 = SubResource("PupilMat")
+
+[node name="EyeRight" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11, 0.22, -0.12)
+mesh = SubResource("EyeMesh")
+surface_material_override/0 = SubResource("EyeMat")
+
+[node name="PupilRight" type="MeshInstance3D" parent="Body/EyeRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -0.045)
+mesh = SubResource("PupilMesh")
+surface_material_override/0 = SubResource("PupilMat")
+
+[node name="Sync" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath("..")
+replication_interval = 0.04
+replication_config = SubResource("Replication")
