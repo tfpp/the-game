@@ -26,10 +26,12 @@ const DOCK_WAIT_S := 3.0
 const USE_RANGE_M := 4.0
 
 ## Local-space spot the driver stands: on the open deck just forward of the wheel
-## (there's no room between the wheel and the cabin behind it), facing aft at the wheel.
+## (there's no room between the wheel and the cabin behind it). Faces +Z, the bow
+## direction `_distance` increases toward, so pressing move_forward drives the ferry
+## the way the driver is looking instead of behind them.
 const HELM_STAND_LOCAL := Vector3(0.0, 0.0, 0.8)
 const HELM_STAND_DECK_Y := 0.15
-const HELM_YAW := 0.0
+const HELM_YAW := PI
 
 ## Replicated state (server -> everyone). See the synchronizer config in feature.tscn.
 @export var net_position := Vector3.ZERO
