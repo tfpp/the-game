@@ -14,6 +14,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 - Add an F-toggle flashlight with shared beams and a rebindable Controls entry.
 - Connect all gnome holes through enterable tunnels with four-times running speed and labeled exits.
+- Hang a BREAKING NEWS screen over the casino floor that scrolls top headlines from
+  TheNewsAPI; servers set `THENEWSAPI_TOKEN` to enable it.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
