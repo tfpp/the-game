@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://features/combat/combat.gd" id="1"]
 [ext_resource type="Script" path="res://features/combat/combat_hud.gd" id="2"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui-space/PNG/Extra/Default/bar_shadow_round_outline_large.png" id="3_bar_under"]
+[ext_resource type="Texture2D" path="res://assets/kenney/ui-space/PNG/Red/Default/bar_round_gloss_large.png" id="4_bar_fill"]
 
 [sub_resource type="SceneReplicationConfig" id="Replication"]
 properties/0/path = NodePath(".:health")
@@ -17,3 +19,56 @@ replication_config = SubResource("Replication")
 
 [node name="Hud" type="CanvasLayer" parent="."]
 script = ExtResource("2")
+
+[node name="Health" type="TextureProgressBar" parent="Hud"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -236.0
+offset_top = -44.0
+offset_right = -16.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+value = 100.0
+nine_patch_stretch = true
+stretch_margin_left = 12
+stretch_margin_top = 12
+stretch_margin_right = 12
+stretch_margin_bottom = 12
+texture_under = ExtResource("3_bar_under")
+texture_progress = ExtResource("4_bar_fill")
+
+[node name="Value" type="Label" parent="Hud/Health"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.25, 0.05, 0.08, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
+text = "100 HP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Died" type="Label" parent="Hud"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 90.0
+offset_right = 150.0
+offset_bottom = 130.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+vertical_alignment = 1

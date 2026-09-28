@@ -17,8 +17,8 @@ respawns) at 100 HP.
   near the room's spawn (`player.server_teleport`, the same RPC `core/game/game.gd`
   uses for the world's kill-plane respawn) and broadcasts `_announce_death` so every
   peer's `combat_hud.gd` can react — the victim sees a "You died" flash.
-- `combat_hud.gd` also shows the local player's own HP in the bottom-right corner,
-  the one corner `game/ui/hud.gd`'s corner layout leaves free.
+- `combat_hud.gd` also shows the local player's own HP as a UI Pack - Space
+  Expansion bar in the bottom-right corner, the one corner `game/ui/hud.gd`'s corner layout leaves free.
 
 ## Adding a new source of damage
 

@@ -6,6 +6,7 @@ extends GutTest
 
 const CombatScene := preload("res://features/combat/feature.tscn")
 const PlayerScene := preload("res://core/player/player.tscn")
+const CombatHud := preload("res://features/combat/combat_hud.gd")
 
 var _combat: Combat
 
@@ -61,3 +62,17 @@ func test_lethal_damage_teleports_the_victim_near_the_respawn_point() -> void:
 func test_keeps_separate_health_per_peer() -> void:
 	_combat.apply_damage(1, 40.0, 2)
 	assert_eq(_combat.health_for(2), Combat.MAX_HEALTH)
+
+
+func test_hud_bar_tracks_local_health() -> void:
+	_combat.apply_damage(1, 30.0, 2)
+	await wait_process_frames(1)
+	var bar := _combat.get_node("Hud/Health") as TextureProgressBar
+	assert_eq(bar.max_value, Combat.MAX_HEALTH)
+	assert_eq(bar.value, Combat.MAX_HEALTH - 30.0)
+	assert_eq((bar.get_node("Value") as Label).text, "70 HP")
+
+
+func test_hud_health_text_rounds_up_and_clamps() -> void:
+	assert_eq(CombatHud.health_text(0.4), "1 HP")
+	assert_eq(CombatHud.health_text(-5.0), "0 HP")
