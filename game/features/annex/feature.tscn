@@ -14,17 +14,19 @@
 [node name="LoopCorridors" type="CSGCombiner3D" parent="Loop"]
 use_collision = true
 
+[node name="Walls" type="CSGCombiner3D" parent="Loop/LoopCorridors"]
+
 [node name="NaApproachFloor" type="CSGBox3D" parent="Loop/LoopCorridors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, -0.5, -40.0)
 size = Vector3(4, 1, 15.0)
 material = ExtResource("1_dark")
 
-[node name="NaApproachWallA" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="NaApproachWallA" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 3.0, -40.0)
 size = Vector3(1, 6, 15.0)
 material = ExtResource("2_wall")
 
-[node name="NaApproachWallB" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="NaApproachWallB" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.5, 3.0, -40.0)
 size = Vector3(1, 6, 15.0)
 material = ExtResource("2_wall")
@@ -34,12 +36,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.0, -0.5, -45)
 size = Vector3(21.0, 1, 4)
 material = ExtResource("1_dark")
 
-[node name="NaBendWallA" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="NaBendWallA" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.0, 3.0, -47.5)
 size = Vector3(21.0, 6, 1)
 material = ExtResource("2_wall")
 
-[node name="NaBendWallB" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="NaBendWallB" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.0, 3.0, -42.5)
 size = Vector3(21.0, 6, 1)
 material = ExtResource("2_wall")
@@ -48,48 +50,55 @@ material = ExtResource("2_wall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33, -0.5, -45)
 size = Vector3(10, 1, 10)
 material = ExtResource("1_dark")
+use_collision = true
 
 [node name="Room1WallN0" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.0, 3.0, -50.0)
 size = Vector3(10.0, 6, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room1WallS0" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.0, 3.0, -40.0)
 size = Vector3(10.0, 6, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room1WallW0" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.0, 3.0, -48.5)
 size = Vector3(1, 6, 3.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room1WallW1" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.0, 3.0, -41.5)
 size = Vector3(1, 6, 3.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room1WallE0" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.0, 3.0, -48.5)
 size = Vector3(1, 6, 3.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room1WallE1" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.0, 3.0, -41.5)
 size = Vector3(1, 6, 3.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room1ExitFloor" type="CSGBox3D" parent="Loop/LoopCorridors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.0, -0.5, -45)
 size = Vector3(11.0, 1, 4)
 material = ExtResource("1_dark")
 
-[node name="Room1ExitWallA" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="Room1ExitWallA" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.0, 3.0, -47.5)
 size = Vector3(11.0, 6, 1)
 material = ExtResource("2_wall")
 
-[node name="Room1ExitWallB" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="Room1ExitWallB" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.0, 3.0, -42.5)
 size = Vector3(11.0, 6, 1)
 material = ExtResource("2_wall")
@@ -100,6 +109,7 @@ radius = 6
 height = 1
 sides = 20
 material = ExtResource("1_dark")
+use_collision = true
 
 [node name="Room2Wall" type="CSGCombiner3D" parent="Loop"]
 use_collision = true
@@ -114,7 +124,7 @@ material = ExtResource("2_wall")
 [node name="Room2WallInner" type="CSGCylinder3D" parent="Loop/Room2Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 3.02, -58)
 radius = 5
-height = 5.96
+height = 6.2
 sides = 20
 operation = 2
 material = ExtResource("2_wall")
@@ -136,12 +146,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44, -0.5, -51.5)
 size = Vector3(4, 1, 18.0)
 material = ExtResource("1_dark")
 
-[node name="Room1ToRoom2WallA" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="Room1ToRoom2WallA" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.5, 3.0, -51.5)
 size = Vector3(1, 6, 18.0)
 material = ExtResource("2_wall")
 
-[node name="Room1ToRoom2WallB" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="Room1ToRoom2WallB" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.5, 3.0, -51.5)
 size = Vector3(1, 6, 18.0)
 material = ExtResource("2_wall")
@@ -151,12 +161,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -0.5, -13.5)
 size = Vector3(4, 1, 82.0)
 material = ExtResource("1_dark")
 
-[node name="LoopSpineWallA" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="LoopSpineWallA" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.5, 3.0, -13.5)
 size = Vector3(1, 6, 82.0)
 material = ExtResource("2_wall")
 
-[node name="LoopSpineWallB" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="LoopSpineWallB" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.5, 3.0, -13.5)
 size = Vector3(1, 6, 82.0)
 material = ExtResource("2_wall")
@@ -166,12 +176,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.5, -0.5, 8)
 size = Vector3(21.0, 1, 5)
 material = ExtResource("1_dark")
 
-[node name="WeBranchWallA" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="WeBranchWallA" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.5, 3.0, 5.0)
 size = Vector3(21.0, 6, 1)
 material = ExtResource("2_wall")
 
-[node name="WeBranchWallB" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="WeBranchWallB" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.5, 3.0, 11.0)
 size = Vector3(21.0, 6, 1)
 material = ExtResource("2_wall")
@@ -180,53 +190,61 @@ material = ExtResource("2_wall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -0.5, 32.5)
 size = Vector3(20, 1, 15)
 material = ExtResource("1_dark")
+use_collision = true
 
 [node name="Room9WallN0" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.0, 3.0, 25.0)
 size = Vector3(8.0, 6, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room9WallN1" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.0, 3.0, 25.0)
 size = Vector3(8.0, 6, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room9WallS0" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.0, 3.0, 40.0)
 size = Vector3(8.0, 6, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room9WallS1" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.0, 3.0, 40.0)
 size = Vector3(8.0, 6, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room9WallW0" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.0, 3.0, 32.5)
 size = Vector3(1, 6, 15.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room9WallE0" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.0, 3.0, 32.5)
 size = Vector3(1, 6, 15.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room9Ledge" type="CSGBox3D" parent="Loop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 1.4, 32.5)
 size = Vector3(8, 0.4, 6)
 material = ExtResource("6_purple")
+use_collision = true
 
 [node name="Room9ToRoom10Floor" type="CSGBox3D" parent="Loop/LoopCorridors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -0.5, 45.0)
 size = Vector3(4, 1, 15.0)
 material = ExtResource("1_dark")
 
-[node name="Room9ToRoom10WallA" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="Room9ToRoom10WallA" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.5, 3.0, 45.0)
 size = Vector3(1, 6, 15.0)
 material = ExtResource("2_wall")
 
-[node name="Room9ToRoom10WallB" type="CSGBox3D" parent="Loop/LoopCorridors"]
+[node name="Room9ToRoom10WallB" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.5, 3.0, 45.0)
 size = Vector3(1, 6, 15.0)
 material = ExtResource("2_wall")
@@ -237,6 +255,7 @@ radius = 5
 height = 1
 sides = 20
 material = ExtResource("1_dark")
+use_collision = true
 
 [node name="Room10Wall" type="CSGCombiner3D" parent="Loop"]
 use_collision = true
@@ -251,7 +270,7 @@ material = ExtResource("3_orange")
 [node name="Room10WallInner" type="CSGCylinder3D" parent="Loop/Room10Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 2.52, 55)
 radius = 4
-height = 4.96
+height = 5.2
 sides = 20
 operation = 2
 material = ExtResource("3_orange")
@@ -279,17 +298,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 1.2, 55)
 [node name="WingNBCorridors" type="CSGCombiner3D" parent="WingNB"]
 use_collision = true
 
+[node name="Walls" type="CSGCombiner3D" parent="WingNB/WingNBCorridors"]
+
 [node name="NbApproachFloor" type="CSGBox3D" parent="WingNB/WingNBCorridors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, -0.5, -45.0)
 size = Vector3(4, 1, 25.0)
 material = ExtResource("1_dark")
 
-[node name="NbApproachWallA" type="CSGBox3D" parent="WingNB/WingNBCorridors"]
+[node name="NbApproachWallA" type="CSGBox3D" parent="WingNB/WingNBCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 3.0, -45.0)
 size = Vector3(1, 6, 25.0)
 material = ExtResource("2_wall")
 
-[node name="NbApproachWallB" type="CSGBox3D" parent="WingNB/WingNBCorridors"]
+[node name="NbApproachWallB" type="CSGBox3D" parent="WingNB/WingNBCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 3.0, -45.0)
 size = Vector3(1, 6, 25.0)
 material = ExtResource("2_wall")
@@ -298,43 +319,49 @@ material = ExtResource("2_wall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, -0.5, -62.5)
 size = Vector3(10, 1, 15)
 material = ExtResource("1_dark")
+use_collision = true
 
 [node name="Room3WallN0" type="CSGBox3D" parent="WingNB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 3.0, -70.0)
 size = Vector3(10.0, 6, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room3WallS0" type="CSGBox3D" parent="WingNB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 3.0, -55.0)
 size = Vector3(3.0, 6, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room3WallS1" type="CSGBox3D" parent="WingNB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 3.0, -55.0)
 size = Vector3(3.0, 6, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room3WallW0" type="CSGBox3D" parent="WingNB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0, 3.0, -62.5)
 size = Vector3(1, 6, 15.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room3WallE0" type="CSGBox3D" parent="WingNB"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.0, 3.0, -62.5)
 size = Vector3(1, 6, 15.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="NbBranchFloor" type="CSGBox3D" parent="WingNB/WingNBCorridors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, -0.5, -45)
 size = Vector3(20.0, 1, 4)
 material = ExtResource("1_dark")
 
-[node name="NbBranchWallA" type="CSGBox3D" parent="WingNB/WingNBCorridors"]
+[node name="NbBranchWallA" type="CSGBox3D" parent="WingNB/WingNBCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, 3.0, -47.5)
 size = Vector3(20.0, 6, 1)
 material = ExtResource("2_wall")
 
-[node name="NbBranchWallB" type="CSGBox3D" parent="WingNB/WingNBCorridors"]
+[node name="NbBranchWallB" type="CSGBox3D" parent="WingNB/WingNBCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, 3.0, -42.5)
 size = Vector3(20.0, 6, 1)
 material = ExtResource("2_wall")
@@ -345,6 +372,7 @@ radius = 5
 height = 1
 sides = 20
 material = ExtResource("1_dark")
+use_collision = true
 
 [node name="Room4Wall" type="CSGCombiner3D" parent="WingNB"]
 use_collision = true
@@ -359,7 +387,7 @@ material = ExtResource("4_green")
 [node name="Room4WallInner" type="CSGCylinder3D" parent="WingNB/Room4Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 2.52, -45)
 radius = 4
-height = 4.96
+height = 5.2
 sides = 20
 operation = 2
 material = ExtResource("4_green")
@@ -381,17 +409,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1.2, -45)
 [node name="WingEDCorridors" type="CSGCombiner3D" parent="WingED"]
 use_collision = true
 
+[node name="Walls" type="CSGCombiner3D" parent="WingED/WingEDCorridors"]
+
 [node name="EdApproachFloor" type="CSGBox3D" parent="WingED/WingEDCorridors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.0, -0.5, -10)
 size = Vector3(26.0, 1, 5)
 material = ExtResource("1_dark")
 
-[node name="EdApproachWallA" type="CSGBox3D" parent="WingED/WingEDCorridors"]
+[node name="EdApproachWallA" type="CSGBox3D" parent="WingED/WingEDCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.0, 3.5, -13.0)
 size = Vector3(26.0, 7, 1)
 material = ExtResource("2_wall")
 
-[node name="EdApproachWallB" type="CSGBox3D" parent="WingED/WingEDCorridors"]
+[node name="EdApproachWallB" type="CSGBox3D" parent="WingED/WingEDCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.0, 3.5, -7.0)
 size = Vector3(26.0, 7, 1)
 material = ExtResource("2_wall")
@@ -400,48 +430,55 @@ material = ExtResource("2_wall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65, -0.5, -10)
 size = Vector3(20, 1, 20)
 material = ExtResource("1_dark")
+use_collision = true
 
 [node name="Room5WallN0" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56.5, 3.5, -20.0)
 size = Vector3(3.0, 7, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room5WallN1" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68.5, 3.5, -20.0)
 size = Vector3(13.0, 7, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room5WallS0" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65.0, 3.5, 0.0)
 size = Vector3(20.0, 7, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room5WallW0" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.0, 3.5, -16.25)
 size = Vector3(1, 7, 7.5)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room5WallW1" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.0, 3.5, -3.75)
 size = Vector3(1, 7, 7.5)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room5WallE0" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75.0, 3.5, -10.0)
 size = Vector3(1, 7, 20.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="EdBendFloor" type="CSGBox3D" parent="WingED/WingEDCorridors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, -0.5, -27.0)
 size = Vector3(4, 1, 19.0)
 material = ExtResource("1_dark")
 
-[node name="EdBendWallA" type="CSGBox3D" parent="WingED/WingEDCorridors"]
+[node name="EdBendWallA" type="CSGBox3D" parent="WingED/WingEDCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 57.5, 2.5, -27.0)
 size = Vector3(1, 5, 19.0)
 material = ExtResource("2_wall")
 
-[node name="EdBendWallB" type="CSGBox3D" parent="WingED/WingEDCorridors"]
+[node name="EdBendWallB" type="CSGBox3D" parent="WingED/WingEDCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62.5, 2.5, -27.0)
 size = Vector3(1, 5, 19.0)
 material = ExtResource("2_wall")
@@ -450,31 +487,37 @@ material = ExtResource("2_wall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, -0.5, -40)
 size = Vector3(10, 1, 12)
 material = ExtResource("1_dark")
+use_collision = true
 
 [node name="Room6WallN0" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60.0, 2.5, -46.0)
 size = Vector3(10.0, 5, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room6WallS0" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56.5, 2.5, -34.0)
 size = Vector3(3.0, 5, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room6WallS1" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63.5, 2.5, -34.0)
 size = Vector3(3.0, 5, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room6WallW0" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.0, 2.5, -40.0)
 size = Vector3(1, 5, 12.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room6WallE0" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65.0, 2.5, -40.0)
 size = Vector3(1, 5, 12.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room5Pillar0" type="CSGCylinder3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 3.5, -15)
@@ -482,6 +525,7 @@ radius = 0.5
 height = 7
 sides = 20
 material = ExtResource("3_orange")
+use_collision = true
 
 [node name="Room5Pillar1" type="CSGCylinder3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 3.5, -5)
@@ -489,6 +533,7 @@ radius = 0.5
 height = 7
 sides = 20
 material = ExtResource("3_orange")
+use_collision = true
 
 [node name="Room5Pillar2" type="CSGCylinder3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 3.5, -15)
@@ -496,6 +541,7 @@ radius = 0.5
 height = 7
 sides = 20
 material = ExtResource("3_orange")
+use_collision = true
 
 [node name="Room5Pillar3" type="CSGCylinder3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 3.5, -5)
@@ -503,21 +549,25 @@ radius = 0.5
 height = 7
 sides = 20
 material = ExtResource("3_orange")
+use_collision = true
 
 [node name="Room6Crate1" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 57, 0.5, -43)
 size = Vector3(1.5, 1, 1.5)
 material = ExtResource("3_orange")
+use_collision = true
 
 [node name="Room6Crate2" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63, 1, -41)
 size = Vector3(2, 2, 2)
 material = ExtResource("3_orange")
+use_collision = true
 
 [node name="Room6Crate3" type="CSGBox3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 58, 0.5, -37)
 size = Vector3(1.5, 1, 1.5)
 material = ExtResource("3_orange")
+use_collision = true
 
 [node name="Room5Marker" type="Marker3D" parent="WingED"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65, 1.2, -10)
@@ -530,17 +580,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 1.2, -40)
 [node name="WingSCCorridors" type="CSGCombiner3D" parent="WingSC"]
 use_collision = true
 
+[node name="Walls" type="CSGCombiner3D" parent="WingSC/WingSCCorridors"]
+
 [node name="ScApproachFloor" type="CSGBox3D" parent="WingSC/WingSCCorridors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 41.5)
 size = Vector3(5, 1, 19.0)
 material = ExtResource("1_dark")
 
-[node name="ScApproachWallA" type="CSGBox3D" parent="WingSC/WingSCCorridors"]
+[node name="ScApproachWallA" type="CSGBox3D" parent="WingSC/WingSCCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0, 3.0, 41.5)
 size = Vector3(1, 6, 19.0)
 material = ExtResource("2_wall")
 
-[node name="ScApproachWallB" type="CSGBox3D" parent="WingSC/WingSCCorridors"]
+[node name="ScApproachWallB" type="CSGBox3D" parent="WingSC/WingSCCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0, 3.0, 41.5)
 size = Vector3(1, 6, 19.0)
 material = ExtResource("2_wall")
@@ -550,12 +602,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, -0.5, 48)
 size = Vector3(21.0, 1, 5)
 material = ExtResource("1_dark")
 
-[node name="ScBendWallA" type="CSGBox3D" parent="WingSC/WingSCCorridors"]
+[node name="ScBendWallA" type="CSGBox3D" parent="WingSC/WingSCCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 3.0, 45.0)
 size = Vector3(21.0, 6, 1)
 material = ExtResource("2_wall")
 
-[node name="ScBendWallB" type="CSGBox3D" parent="WingSC/WingSCCorridors"]
+[node name="ScBendWallB" type="CSGBox3D" parent="WingSC/WingSCCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 3.0, 51.0)
 size = Vector3(21.0, 6, 1)
 material = ExtResource("2_wall")
@@ -564,58 +616,67 @@ material = ExtResource("2_wall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5, -0.5, 48)
 size = Vector3(15, 1, 14)
 material = ExtResource("1_dark")
+use_collision = true
 
 [node name="Room7WallN0" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5, 3.5, 41.0)
 size = Vector3(15.0, 7, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room7WallS0" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.25, 3.5, 55.0)
 size = Vector3(5.5, 7, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room7WallS1" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.75, 3.5, 55.0)
 size = Vector3(5.5, 7, 1)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room7WallW0" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.0, 3.5, 48.0)
 size = Vector3(1, 7, 14.0)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room7WallE0" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.0, 3.5, 43.25)
 size = Vector3(1, 7, 4.5)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room7WallE1" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.0, 3.5, 52.75)
 size = Vector3(1, 7, 4.5)
 material = ExtResource("2_wall")
+use_collision = true
 
 [node name="Room7Step" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.5, 0.5, 44)
 size = Vector3(3, 1, 3)
 material = ExtResource("3_orange")
+use_collision = true
 
 [node name="Room7Platform" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 1.5, 44)
 size = Vector3(6, 3, 6)
 material = ExtResource("3_orange")
+use_collision = true
 
 [node name="Room7ToRoom8Floor" type="CSGBox3D" parent="WingSC/WingSCCorridors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5, -0.5, 61.0)
 size = Vector3(4, 1, 17.0)
 material = ExtResource("1_dark")
 
-[node name="Room7ToRoom8WallA" type="CSGBox3D" parent="WingSC/WingSCCorridors"]
+[node name="Room7ToRoom8WallA" type="CSGBox3D" parent="WingSC/WingSCCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.0, 3.0, 61.0)
 size = Vector3(1, 6, 17.0)
 material = ExtResource("2_wall")
 
-[node name="Room7ToRoom8WallB" type="CSGBox3D" parent="WingSC/WingSCCorridors"]
+[node name="Room7ToRoom8WallB" type="CSGBox3D" parent="WingSC/WingSCCorridors/Walls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.0, 3.0, 61.0)
 size = Vector3(1, 6, 17.0)
 material = ExtResource("2_wall")
@@ -624,36 +685,43 @@ material = ExtResource("2_wall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5, -0.5, 74)
 size = Vector3(16, 1, 14)
 material = ExtResource("5_blue")
+use_collision = true
 
 [node name="Room8WallN0" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.5, 4.0, 67.0)
 size = Vector3(6.0, 8, 1)
 material = ExtResource("5_blue")
+use_collision = true
 
 [node name="Room8WallN1" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5, 4.0, 67.0)
 size = Vector3(6.0, 8, 1)
 material = ExtResource("5_blue")
+use_collision = true
 
 [node name="Room8WallS0" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5, 4.0, 81.0)
 size = Vector3(16.0, 8, 1)
 material = ExtResource("5_blue")
+use_collision = true
 
 [node name="Room8WallW0" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.5, 4.0, 74.0)
 size = Vector3(1, 8, 14.0)
 material = ExtResource("5_blue")
+use_collision = true
 
 [node name="Room8WallE0" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 4.0, 74.0)
 size = Vector3(1, 8, 14.0)
 material = ExtResource("5_blue")
+use_collision = true
 
 [node name="Room8Dais" type="CSGBox3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5, 0.75, 74)
 size = Vector3(5, 0.5, 5)
 material = ExtResource("5_blue")
+use_collision = true
 
 [node name="Room7Marker" type="Marker3D" parent="WingSC"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5, 1.2, 48)
@@ -678,7 +746,7 @@ material = ExtResource("2_wall")
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -33.0, 6.0, -45.0)
 size = Vector3(10, 1, 10)
 material = ExtResource("2_wall")
-
+use_collision = true
 
 [node name="Room1ExitCeiling" type="CSGBox3D" parent="Loop/LoopCorridors"]
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -41.0, 6.0, -45.0)
@@ -692,7 +760,7 @@ radius = 6
 height = 1
 sides = 20
 material = ExtResource("2_wall")
-
+use_collision = true
 
 [node name="Room1ToRoom2Ceiling" type="CSGBox3D" parent="Loop/LoopCorridors"]
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -44.0, 6.0, -51.5)
@@ -716,7 +784,7 @@ material = ExtResource("2_wall")
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -50.0, 6.0, 32.5)
 size = Vector3(20, 1, 15)
 material = ExtResource("2_wall")
-
+use_collision = true
 
 [node name="Room9ToRoom10Ceiling" type="CSGBox3D" parent="Loop/LoopCorridors"]
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -50.0, 6.0, 45.0)
@@ -730,7 +798,7 @@ radius = 5
 height = 1
 sides = 20
 material = ExtResource("2_wall")
-
+use_collision = true
 
 [node name="NbApproachCeiling" type="CSGBox3D" parent="WingNB/WingNBCorridors"]
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 10.0, 6.0, -45.0)
@@ -742,7 +810,7 @@ material = ExtResource("2_wall")
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 10.0, 6.0, -62.5)
 size = Vector3(10, 1, 15)
 material = ExtResource("2_wall")
-
+use_collision = true
 
 [node name="NbBranchCeiling" type="CSGBox3D" parent="WingNB/WingNBCorridors"]
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 17.5, 6.0, -45.0)
@@ -756,7 +824,7 @@ radius = 5
 height = 1
 sides = 20
 material = ExtResource("2_wall")
-
+use_collision = true
 
 [node name="EdApproachCeiling" type="CSGBox3D" parent="WingED/WingEDCorridors"]
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 45.0, 6.0, -10.0)
@@ -768,7 +836,7 @@ material = ExtResource("2_wall")
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 65.0, 6.0, -10.0)
 size = Vector3(20, 1, 20)
 material = ExtResource("2_wall")
-
+use_collision = true
 
 [node name="EdBendCeiling" type="CSGBox3D" parent="WingED/WingEDCorridors"]
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 60.0, 6.0, -27.0)
@@ -780,7 +848,7 @@ material = ExtResource("2_wall")
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 60.0, 6.0, -40.0)
 size = Vector3(10, 1, 12)
 material = ExtResource("2_wall")
-
+use_collision = true
 
 [node name="ScApproachCeiling" type="CSGBox3D" parent="WingSC/WingSCCorridors"]
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 6.0, 41.5)
@@ -798,7 +866,7 @@ material = ExtResource("2_wall")
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -22.5, 6.0, 48.0)
 size = Vector3(15, 1, 14)
 material = ExtResource("2_wall")
-
+use_collision = true
 
 [node name="Room7ToRoom8Ceiling" type="CSGBox3D" parent="WingSC/WingSCCorridors"]
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -22.5, 6.0, 61.0)
@@ -810,4 +878,101 @@ material = ExtResource("2_wall")
 transform = Transform3D(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, -22.5, 6.0, 74.0)
 size = Vector3(16, 1, 14)
 material = ExtResource("5_blue")
+use_collision = true
 
+
+[node name="NaApproachPassage" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
+position = Vector3(-12.0, 2.25, -40.0)
+size = Vector3(4.0, 4.5, 15.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="NaBendPassage" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
+position = Vector3(-20.0, 2.25, -45.0)
+size = Vector3(21.0, 4.5, 4.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="Room1ExitPassage" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
+position = Vector3(-41.0, 2.25, -45.0)
+size = Vector3(11.0, 4.5, 4.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="Room1ToRoom2Passage" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
+position = Vector3(-44.0, 2.25, -51.5)
+size = Vector3(4.0, 4.5, 18.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="LoopSpinePassage" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
+position = Vector3(-50.0, 2.25, -13.5)
+size = Vector3(4.0, 4.5, 82.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="WeBranchPassage" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
+position = Vector3(-42.5, 2.25, 8.0)
+size = Vector3(21.0, 4.5, 5.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="Room9ToRoom10Passage" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
+position = Vector3(-50.0, 2.25, 45.0)
+size = Vector3(4.0, 4.5, 15.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="NbApproachPassage" type="CSGBox3D" parent="WingNB/WingNBCorridors/Walls"]
+position = Vector3(10.0, 2.25, -45.0)
+size = Vector3(4.0, 4.5, 25.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="NbBranchPassage" type="CSGBox3D" parent="WingNB/WingNBCorridors/Walls"]
+position = Vector3(17.5, 2.25, -45.0)
+size = Vector3(20.0, 4.5, 4.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="EdApproachPassage" type="CSGBox3D" parent="WingED/WingEDCorridors/Walls"]
+position = Vector3(45.0, 2.25, -10.0)
+size = Vector3(26.0, 4.5, 5.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="EdBendPassage" type="CSGBox3D" parent="WingED/WingEDCorridors/Walls"]
+position = Vector3(60.0, 2.25, -27.0)
+size = Vector3(4.0, 4.5, 19.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="ScApproachPassage" type="CSGBox3D" parent="WingSC/WingSCCorridors/Walls"]
+position = Vector3(0.0, 2.25, 41.5)
+size = Vector3(5.0, 4.5, 19.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="ScBendPassage" type="CSGBox3D" parent="WingSC/WingSCCorridors/Walls"]
+position = Vector3(-7.5, 2.25, 48.0)
+size = Vector3(21.0, 4.5, 5.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="Room7ToRoom8Passage" type="CSGBox3D" parent="WingSC/WingSCCorridors/Walls"]
+position = Vector3(-22.5, 2.25, 61.0)
+size = Vector3(4.0, 4.5, 17.0)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="Room2EastPassage" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
+position = Vector3(-45, 2.25, -58)
+size = Vector3(6, 4.5, 4)
+operation = 2
+material = ExtResource("2_wall")
+
+[node name="Room2CorridorClearance" type="CSGBox3D" parent="Loop/Room2Wall"]
+position = Vector3(-44, 3, -51.5)
+size = Vector3(4, 7, 18)
+operation = 2
+material = ExtResource("2_wall")

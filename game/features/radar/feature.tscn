@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/radar/radar.gd" id="1"]
+
+[node name="Radar" type="CanvasLayer"]
+layer = 1
+
+[node name="Map" type="Control" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -240.0
+offset_top = 92.0
+offset_right = -12.0
+offset_bottom = 320.0
+grow_horizontal = 0
+mouse_filter = 2
+clip_contents = true
+script = ExtResource("1")

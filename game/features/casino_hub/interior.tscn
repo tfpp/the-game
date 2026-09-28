@@ -2098,8 +2098,14 @@ sides = 12
 material = ExtResource("wood")
 
 [node name="ZooFence-31_8" type="CSGBox3D" parent="."]
-position = Vector3(-31, 0.5, 8)
-size = Vector3(0.09, 0.13, 9)
+position = Vector3(-31, 0.5, 4.5)
+size = Vector3(0.09, 0.13, 2)
+material = ExtResource("cream")
+use_collision = true
+
+[node name="ZooFenceWestExitSouth" type="CSGBox3D" parent="."]
+position = Vector3(-31, 0.5, 11.5)
+size = Vector3(0.09, 0.13, 2)
 material = ExtResource("cream")
 use_collision = true
 
@@ -2111,7 +2117,14 @@ sides = 12
 material = ExtResource("wood")
 
 [node name="ZooFencePost-31_8_0" type="CSGCylinder3D" parent="."]
-position = Vector3(-31, 0.35, 8)
+position = Vector3(-31, 0.35, 5)
+radius = 0.055
+height = 0.7
+sides = 12
+material = ExtResource("wood")
+
+[node name="ZooFencePostWestExitSouth" type="CSGCylinder3D" parent="."]
+position = Vector3(-31, 0.35, 11)
 radius = 0.055
 height = 0.7
 sides = 12

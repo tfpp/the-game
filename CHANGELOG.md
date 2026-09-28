@@ -73,6 +73,9 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Move the adventure cabinets into a dedicated room reached from the casino, unload emulators outside it, and pause shared progress while the room is empty.
 - Reduce arcade frame delivery delay and fix sound dropping out after delayed updates while preserving positional audio and the five-metre cutoff.
 
+- Open blocked annex junctions, restore solid room floors and walls, and clear the west petting-parlor exit.
+- Add a desktop-only top-right radar with a roof-free floor plan, facing arrow and nearby player markers.
+
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
 Versioning starts here, matching milestones v0.1 to v0.6. Highlights so far:
