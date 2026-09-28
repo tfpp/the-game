@@ -9,6 +9,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 ## [edge]
 
+- Add a Leaderboard entry to the Esc menu with tabs ranking every connected player by
+  money, times jumped and other players killed, highest first.
 - Rank connected players by wallet balance and show a swarm of flies over the poorest
   80% of them, rounded down; nobody is flagged with fewer than two connected wallets.
 - Frogs jump twice as high by default now, with a new "Frog jump height" slider in

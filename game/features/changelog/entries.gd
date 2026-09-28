@@ -11,6 +11,14 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Leaderboard",
+		"summary":
+		(
+			"Esc > Leaderboard ranks every connected player by money, jumps and kills, in"
+			+ " three tabs."
+		)
+	},
+	{
 		"title": "Eight slot machines, eight stakes",
 		"summary":
 		(
