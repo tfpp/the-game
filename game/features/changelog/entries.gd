@@ -23,9 +23,8 @@ const ENTRIES: Array[Dictionary] = [
 		"title": "Day/night cycle",
 		"summary":
 		(
-			"A full day/night cycle now repeats every 48 real-time minutes: the sun swings"
-			+ " across the sky, the sky itself fades between day and night skyboxes, and"
-			+ " lighting dims at night. It's the same for everyone in the world."
+			"Esc > Leaderboard ranks every connected player by money, jumps and kills, in"
+			+ " three tabs."
 		)
 	},
 	{

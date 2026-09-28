@@ -5,9 +5,13 @@ respawns) at 100 HP.
 
 ## How it works
 
-- `combat.gd` is the server-authoritative source of truth: a peer-keyed `health`
-  dictionary, replicated to every peer like `features/smeckles`' balances. Nothing
-  else in this feature spawns per player — it just tracks a number per connected peer.
+- `combat.gd` is the server-authoritative source of truth: peer-keyed `health` and
+  `kills` dictionaries, replicated to every peer like `features/smeckles`' balances.
+  Nothing else in this feature spawns per player — it just tracks numbers per
+  connected peer.
+- A kill (`kills_for(peer_id)`) is awarded to whoever's damage brought a *different*
+  peer's health to zero; self-damage (e.g. rocket splash) never counts. `features/
+  leaderboard` reads `kills_for` for its Esc-menu "Kills" tab.
 - Weapons deal damage by calling `apply_damage(target_peer, amount, attacker_peer)`
   on whichever node is in the `combat` group, the same cross-feature pattern
   `features/slot_machine` uses to reach `features/money`'s wallet. See

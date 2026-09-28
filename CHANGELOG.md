@@ -43,6 +43,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Give the girl model a smaller collision hitbox and 15% less passive income.
 - Add `/usage` to the Discord bot: it shows how much of Claude's 5-hour and weekly usage
   limits the agent has used, and when they reset.
+- Add sprays: press T to spray a decal on the surface you're looking at, visible to
+  everyone (placeholder image for now).
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
