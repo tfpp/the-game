@@ -59,6 +59,8 @@ jobs:
         env:
           BUILD_VERSION: ${{ github.event.pull_request.head.sha }}
         run: |
+          apt-get update
+          apt-get install -y --no-install-recommends curl build-essential python3 xz-utils ca-certificates git
           game/scripts/setup_rust.sh web
           GODOT=godot game/scripts/export.sh web
       - uses: actions/upload-artifact@v7

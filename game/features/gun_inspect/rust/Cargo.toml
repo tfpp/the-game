@@ -17,4 +17,3 @@ web = ["godot/experimental-wasm", "godot/experimental-wasm-nothreads"]
 [profile.release]
 lto = "thin"
 strip = "debuginfo"
-
