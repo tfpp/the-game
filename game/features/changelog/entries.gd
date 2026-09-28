@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Wall sconces",
+		"summary": "Brass 1960s wall sconces light the annex, glowing brightest at night."
+	},
+	{
 		"title": "Sprays",
 		"summary":
 		(

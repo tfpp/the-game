@@ -41,6 +41,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   limits the agent has used, and when they reset.
 - Add sprays: press T to spray a decal on the surface you're looking at, visible to
   everyone (placeholder image for now).
+- Add 1960s brass wall sconces to the annex corridors and rooms, dim by day and
+  glowing at night, so they no longer go pitch black after dark.
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
