@@ -116,3 +116,67 @@ func test_reload_moves_ammo_from_reserve_into_the_magazine() -> void:
 func test_for_peer_finds_the_matching_rig() -> void:
 	assert_eq(GunRig.for_peer(get_tree(), 1), _rig)
 	assert_null(GunRig.for_peer(get_tree(), 99))
+
+
+func test_should_auto_fire_requires_automatic_held_and_off_cooldown() -> void:
+	assert_true(GunRig.should_auto_fire(true, true, 0.0))
+	assert_true(GunRig.should_auto_fire(true, true, -0.1))
+	assert_false(GunRig.should_auto_fire(false, true, 0.0), "semi-automatic never auto-fires")
+	assert_false(GunRig.should_auto_fire(true, false, 0.0), "trigger must be held")
+	assert_false(GunRig.should_auto_fire(true, true, 0.05), "still on cooldown")
+
+
+## A hand-built magazine (rather than a rolled one from `_sample_stats`) so the
+## multi-shot polling below never runs out of ammo mid-test regardless of seed.
+func _auto_fire_test_stats(is_automatic: bool) -> Dictionary:
+	var stats := _sample_stats()
+	stats["is_automatic"] = is_automatic
+	stats["barrel_count"] = 1
+	stats["magazine_size"] = 10
+	stats["total_ammo"] = 10
+	stats["fire_rate"] = 1000.0  # Effectively no cooldown, so every poll fires.
+	return stats
+
+
+func test_automatic_gun_keeps_firing_while_held_and_semi_auto_does_not() -> void:
+	var stub := _MachineStub.new()
+	stub.add_to_group(&"gun_machine_root")
+	add_child_autofree(stub)
+	_rig.equip(_auto_fire_test_stats(true))
+	_rig.peer_id = multiplayer.get_unique_id()
+	# Headless CI can't actually capture the mouse, so `gameplay_active()`'s
+	# keyboard-device branch (mouse-captured check) is untestable here; switch to the
+	# gamepad branch instead, the same way test_controls.gd exercises it via touch.
+	var previous_device := Controls.device
+	var previous_playing := Controls.playing
+	Controls.device = Controls.Device.GAMEPAD
+	Controls.playing = true
+	Input.action_press(&"gun_fire")
+	_rig._maybe_auto_fire()
+	# _process (disabled in before_each) would normally count these cooldowns down
+	# between frames; clear them by hand to simulate the fire-rate interval elapsing.
+	_rig._auto_fire_cooldown = 0.0
+	_rig._fire_cooldown = 0.0
+	_rig._maybe_auto_fire()
+	Input.action_release(&"gun_fire")
+	Controls.device = previous_device
+	Controls.playing = previous_playing
+	assert_eq(stub.spawned.size(), 2, "an automatic gun should fire again on the next poll")
+
+
+func test_semi_automatic_gun_does_not_auto_fire_while_held() -> void:
+	var stub := _MachineStub.new()
+	stub.add_to_group(&"gun_machine_root")
+	add_child_autofree(stub)
+	_rig.equip(_auto_fire_test_stats(false))
+	_rig.peer_id = multiplayer.get_unique_id()
+	var previous_device := Controls.device
+	var previous_playing := Controls.playing
+	Controls.device = Controls.Device.GAMEPAD
+	Controls.playing = true
+	Input.action_press(&"gun_fire")
+	_rig._maybe_auto_fire()
+	Input.action_release(&"gun_fire")
+	Controls.device = previous_device
+	Controls.playing = previous_playing
+	assert_true(stub.spawned.is_empty(), "semi-automatic guns only fire on a fresh press")

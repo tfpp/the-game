@@ -26,7 +26,10 @@ const BARREL_NAMES := {1: "", 2: "Double-Barrel ", 3: "Triple-Barrel ", 4: "Quad
 ## `bounces`: times a projectile that hits the world (not a player) bounces before
 ## it's removed, for grenades that skitter across the floor. `fuse_s`: seconds
 ## before an unexploded projectile detonates anyway (0 = only on impact).
-## `explosion_radius`: 0 for a direct-hit-only projectile.
+## `explosion_radius`: 0 for a direct-hit-only projectile. `splash_force`: how far
+## (in meters, at point-blank, falling off to 0 at `explosion_radius` the same way
+## splash damage does) an explosion shoves everyone caught in it; 0 alongside a 0
+## `explosion_radius`, since there's nothing to shove them with.
 const AMMO_PROFILES := {
 	AmmoType.BUCKSHOT:
 	{
@@ -35,6 +38,7 @@ const AMMO_PROFILES := {
 		"bounces": 0,
 		"fuse_s": 0.0,
 		"explosion_radius": 0.0,
+		"splash_force": 0.0,
 		"fire_rate": [0.7, 1.4],
 		"damage": [4.0, 7.0],
 		"magazine_size": [4, 8],
@@ -50,6 +54,7 @@ const AMMO_PROFILES := {
 		"bounces": 0,
 		"fuse_s": 0.0,
 		"explosion_radius": 0.0,
+		"splash_force": 0.0,
 		"fire_rate": [4.0, 9.0],
 		"damage": [10.0, 18.0],
 		"magazine_size": [15, 30],
@@ -65,6 +70,7 @@ const AMMO_PROFILES := {
 		"bounces": 0,
 		"fuse_s": 0.0,
 		"explosion_radius": 0.0,
+		"splash_force": 0.0,
 		"fire_rate": [3.0, 7.0],
 		"damage": [5.0, 9.0],
 		"magazine_size": [8, 17],
@@ -80,6 +86,7 @@ const AMMO_PROFILES := {
 		"bounces": 0,
 		"fuse_s": 0.0,
 		"explosion_radius": 4.0,
+		"splash_force": 5.0,
 		"fire_rate": [0.3, 0.8],
 		"damage": [55.0, 90.0],
 		"magazine_size": [1, 2],
@@ -95,6 +102,7 @@ const AMMO_PROFILES := {
 		"bounces": 3,
 		"fuse_s": 2.2,
 		"explosion_radius": 3.5,
+		"splash_force": 3.5,
 		"fire_rate": [0.5, 1.0],
 		"damage": [35.0, 65.0],
 		"magazine_size": [1, 4],
@@ -110,6 +118,7 @@ const AMMO_PROFILES := {
 		"bounces": 0,
 		"fuse_s": 0.0,
 		"explosion_radius": 0.0,
+		"splash_force": 0.0,
 		"fire_rate": [3.0, 10.0],
 		"damage": [8.0, 14.0],
 		"magazine_size": [20, 50],
@@ -125,6 +134,12 @@ const MAX_BARRELS := 4
 ## Weighting so extra barrels stay a rare treat, not the norm: index 0 is the
 ## chance of rolling exactly 1 barrel, index 1 of 2, and so on.
 const BARREL_WEIGHTS := [0.55, 0.28, 0.12, 0.05]
+
+## Odds a freshly rolled gun holds the trigger down (fires every tick of its
+## `fire_rate` while `gun_fire` stays held) instead of needing a fresh press per
+## shot. Independent of ammo type — a grenade launcher can go full-auto just as
+## easily as a rifle, for better or worse.
+const AUTOMATIC_CHANCE := 0.5
 
 
 ## The stat profile every gun of `ammo_type` shares, regardless of its rolled stats.
@@ -145,9 +160,11 @@ static func generate(rng: RandomNumberGenerator) -> Dictionary:
 	var total_ammo := (
 		magazine_size * rng.randi_range(stats["ammo_multiplier"][0], stats["ammo_multiplier"][1])
 	)
+	var is_automatic := rng.randf() < AUTOMATIC_CHANCE
 	return {
 		"ammo_type": ammo_type,
 		"barrel_count": barrel_count,
+		"is_automatic": is_automatic,
 		"fire_rate": rng.randf_range(stats["fire_rate"][0], stats["fire_rate"][1]),
 		"magazine_size": magazine_size,
 		"damage": rng.randf_range(stats["damage"][0], stats["damage"][1]),
@@ -155,13 +172,16 @@ static func generate(rng: RandomNumberGenerator) -> Dictionary:
 		"projectile_speed":
 		rng.randf_range(stats["projectile_speed"][0], stats["projectile_speed"][1]),
 		"spread_degrees": rng.randf_range(stats["spread_degrees"][0], stats["spread_degrees"][1]),
-		"display_name": display_name(ammo_type, barrel_count),
+		"display_name": display_name(ammo_type, barrel_count, is_automatic),
 	}
 
 
-static func display_name(ammo_type: AmmoType, barrel_count: int) -> String:
+static func display_name(
+	ammo_type: AmmoType, barrel_count: int, is_automatic: bool = false
+) -> String:
 	var barrels: String = BARREL_NAMES.get(barrel_count, "%d-Barrel " % barrel_count)
-	return "%s%s Gun" % [barrels, AMMO_NAMES[ammo_type]]
+	var mode := "Auto " if is_automatic else ""
+	return "%s%s%s Gun" % [barrels, mode, AMMO_NAMES[ammo_type]]
 
 
 static func ammo_name(ammo_type: AmmoType) -> String:
