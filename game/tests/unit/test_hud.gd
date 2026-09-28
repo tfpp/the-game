@@ -15,4 +15,4 @@ func test_player_count_text_pluralizes() -> void:
 
 
 func test_release_version_is_set() -> void:
-	assert_eq(Network.game_version(), "0.6.0")
+	assert_eq(Network.game_version(), "0.7.0")
