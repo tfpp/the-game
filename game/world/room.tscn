@@ -1,13 +1,12 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Material" path="res://world/materials/proto_dark.tres" id="1_dark"]
 [ext_resource type="Material" path="res://world/materials/proto_wall.tres" id="2_wall"]
 [ext_resource type="Material" path="res://world/materials/proto_orange.tres" id="3_orange"]
+[ext_resource type="Texture2D" path="res://assets/kenney/skyboxes/skybox-day.png" id="4_sky"]
 
-[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
-sky_top_color = Color(0.35, 0.5, 0.75, 1)
-sky_horizon_color = Color(0.7, 0.75, 0.82, 1)
-ground_horizon_color = Color(0.7, 0.75, 0.82, 1)
+[sub_resource type="PanoramaSkyMaterial" id="Sky_mat"]
+panorama = ExtResource("4_sky")
 
 [sub_resource type="Sky" id="Sky"]
 sky_material = SubResource("Sky_mat")
@@ -15,7 +14,9 @@ sky_material = SubResource("Sky_mat")
 [sub_resource type="Environment" id="Env"]
 background_mode = 2
 sky = SubResource("Sky")
-ambient_light_source = 3
+sky_rotation = Vector3(0, 3.14159, 0)
+ambient_light_source = 2
+ambient_light_color = Color(0.6, 0.7, 0.85, 1)
 ambient_light_energy = 0.6
 tonemap_mode = 2
 
