@@ -1,0 +1,93 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/tile.tres" id="tile"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/plaster.tres" id="plaster"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
+
+[node name="Cellar" type="Node3D"]
+
+[node name="Floor" type="CSGBox3D" parent="."]
+position = Vector3(0, -0.1, 0)
+size = Vector3(8.4, 0.2, 8.4)
+material = ExtResource("tile")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="."]
+position = Vector3(0, 2.7, 0)
+size = Vector3(8.4, 0.2, 8.4)
+material = ExtResource("plaster")
+use_collision = true
+
+[node name="NorthWall" type="CSGBox3D" parent="."]
+position = Vector3(0, 1.3, -4.1)
+size = Vector3(8.4, 2.6, 0.2)
+material = ExtResource("plaster")
+use_collision = true
+
+[node name="SouthWall" type="CSGBox3D" parent="."]
+position = Vector3(0, 1.3, 4.1)
+size = Vector3(8.4, 2.6, 0.2)
+material = ExtResource("plaster")
+use_collision = true
+
+[node name="WestWall" type="CSGBox3D" parent="."]
+position = Vector3(-4.1, 1.3, 0)
+size = Vector3(0.2, 2.6, 8)
+material = ExtResource("plaster")
+use_collision = true
+
+[node name="EastWall" type="CSGBox3D" parent="."]
+position = Vector3(4.1, 1.3, 0)
+size = Vector3(0.2, 2.6, 8)
+material = ExtResource("plaster")
+use_collision = true
+
+[node name="Rack0" type="CSGBox3D" parent="."]
+position = Vector3(-2.5, 1.0, -3.5)
+size = Vector3(1.8, 2.0, 0.8)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="Rack1" type="CSGBox3D" parent="."]
+position = Vector3(0, 1.0, -3.5)
+size = Vector3(1.8, 2.0, 0.8)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="Rack2" type="CSGBox3D" parent="."]
+position = Vector3(2.5, 1.0, -3.5)
+size = Vector3(1.8, 2.0, 0.8)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="WestRack" type="CSGBox3D" parent="."]
+position = Vector3(-3.5, 1.0, 0)
+size = Vector3(0.8, 2.0, 3)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="EastRack" type="CSGBox3D" parent="."]
+position = Vector3(3.5, 1.0, 0)
+size = Vector3(0.8, 2.0, 3)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="Barrel" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.45, -0.5)
+size = Vector3(1.2, 0.9, 1.2)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="Bulb" type="OmniLight3D" parent="."]
+position = Vector3(0, 2.3, 0)
+light_color = Color(1, 0.7, 0.45, 1)
+light_energy = 0.9
+omni_range = 7
+
+[node name="LoungeSign" type="Label3D" parent="."]
+position = Vector3(0, 2.2, 3.9)
+rotation = Vector3(0, 3.1415927, 0)
+text = "LOUNGE"
+font_size = 20
+outline_size = 6

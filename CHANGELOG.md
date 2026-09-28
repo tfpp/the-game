@@ -64,6 +64,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 - Simplify arcade play to one leave button, automatically taking controls when a cabinet is free.
 
+- Add doors that link rooms, starting with a lounge and a wine cellar behind a booth in the south lobby. Each room is its own scene, which clients load only while they're inside and dedicated servers never load.
+
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
 Versioning starts here, matching milestones v0.1 to v0.6. Highlights so far:
