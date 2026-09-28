@@ -75,6 +75,32 @@ jobs:
         with:
           name: web
           path: web
+      # Pages rejects files over 25 MiB and Godot's engine (index.wasm) is ~38 MiB. Ship
+      # it gzipped (~10 MiB) and have the page inflate it with DecompressionStream before
+      # Godot's loader sees it. Only previews do this; production is unchanged.
+      - name: Fit the Pages file size limit
+        run: |
+          gzip -9 -n web/index.wasm
+          cat > web/wasm-gz.js <<'EOF'
+          // Added by preview.yml: serve index.wasm from index.wasm.gz.
+          (() => {
+            const fetch = window.fetch.bind(window);
+            window.fetch = (input, init) => {
+              const url = new URL(input instanceof Request ? input.url : String(input), location.href);
+              if (url.origin !== location.origin || !url.pathname.endsWith('/index.wasm')) {
+                return fetch(input, init);
+              }
+              url.pathname += '.gz';
+              return fetch(url, init).then((r) => !r.ok ? r : new Response(
+                r.body.pipeThrough(new DecompressionStream('gzip')),
+                { headers: { 'Content-Type': 'application/wasm' } },
+              ));
+            };
+          })();
+          EOF
+          sed -i 's|<script src="index.js"></script>|<script src="wasm-gz.js"></script>&|' web/index.html
+          grep -q 'wasm-gz.js' web/index.html
+          find web -type f -size +25M | grep . && exit 1 || true
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
