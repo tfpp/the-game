@@ -9,22 +9,31 @@ var _machine: SlotMachine
 
 
 func before_each() -> void:
+	var wallet := PlayerMoney.new()
+	add_child_autofree(wallet)
+	wallet.set_process(false)
 	_machine = MachineScene.instantiate() as SlotMachine
 	add_child_autofree(_machine)
 	_machine.set_process(false)
 
 
-func test_every_block_of_five_contains_exactly_four_wins() -> void:
+func test_independent_reels_and_exact_return() -> void:
 	var cycle := SlotSpinCycle.new()
-	for block: int in 100:
-		var wins := 0
-		for spin: int in 5:
-			var result := cycle.next_result()
-			assert_eq(result.size(), 3)
-			for symbol: int in result:
-				assert_between(symbol, 0, SlotSpinCycle.SYMBOL_COUNT - 1)
-			wins += int(SlotSpinCycle.is_win(result))
-		assert_eq(wins, 4)
+	for spin: int in 100:
+		var result := cycle.next_result()
+		assert_eq(result.size(), 3)
+		for symbol: int in result:
+			assert_between(symbol, 0, SlotSpinCycle.SYMBOL_COUNT - 1)
+	var total := 0
+	var wins := 0
+	for a: int in 5:
+		for b: int in 5:
+			for c: int in 5:
+				var reels: Array[int] = [a, b, c]
+				total += SlotSpinCycle.payout(reels)
+				wins += int(SlotSpinCycle.is_win(reels))
+	assert_eq(total, 10000, "125 $1 spins pay $100: 80% return")
+	assert_eq(wins, 5)
 
 
 func test_reels_stop_left_to_right_and_finish_once() -> void:
@@ -178,3 +187,33 @@ func test_mobile_use_starts_spin_without_moving_looking_or_jumping() -> void:
 	Controls.device = saved_device
 	Controls.touch_available = saved_touch
 	Controls.joypad = saved_joypad
+
+
+func test_wallet_charges_and_rejects_empty_balance() -> void:
+	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
+	wallet.balances[1] = 100
+	var result: Dictionary = await wallet.spin(1, "test")
+	assert_eq(int(wallet.balances[1]), int(result["payout"]))
+	wallet.balances[1] = 99
+	result = await wallet.spin(1, "test2")
+	assert_true(result.has("error"))
+	assert_eq(int(wallet.balances[1]), 99)
+
+
+func test_temporary_income_and_remote_nameplate() -> void:
+	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
+	var player := PlayerScene.instantiate() as Player
+	player.set_multiplayer_authority(2)
+	player.display_name = "Alice"
+	add_child_autofree(player)
+	Network.peer_accounts[2] = {"account_id": 0, "name": "Alice"}
+	wallet._process(59.0)
+	assert_eq(float(wallet._temporary_seconds[2]), 59.0)
+	wallet._process(1.0)
+	assert_eq(int(wallet.balances[2]), 2500)
+	var label := player.get_node("MoneyLabel") as Label3D
+	assert_eq(label.text, "$25.00")
+	Network.peer_accounts.erase(2)
+	wallet._reset(Network.Mode.OFFLINE)
+	assert_true(wallet.balances.is_empty())
+	assert_true(wallet._temporary_seconds.is_empty())

@@ -3,6 +3,7 @@ extends Node
 
 var _last_snapshot := ""
 var _last_audio := 0
+var _last_money := ""
 var _sent_competing_request := false
 
 @onready var _machine: SlotMachine = $Game/Features/slot_machine/Machine
@@ -19,6 +20,11 @@ func _process(_delta: float) -> void:
 	if _machine._last_sound_spin != _last_audio:
 		_last_audio = _machine._last_sound_spin
 		print("SLOT_AUDIO ", _last_audio)
+	var wallet := $Game/Features/money as PlayerMoney
+	var money := JSON.stringify(wallet.balances)
+	if money != _last_money:
+		_last_money = money
+		print("SLOT_MONEY ", money)
 	var state := _machine.state
 	var key := "%s/%s" % [state["spin"], state["stopped"]]
 	if key != _last_snapshot:
