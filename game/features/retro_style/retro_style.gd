@@ -5,11 +5,13 @@ extends Node
 
 const PROP_GRAIN := preload("res://features/casino_hub/textures/prop_grain.png")
 
-const MOBILE_HEIGHT := 540.0
-const MOBILE_MAX_SCALE := 0.85
+const MOBILE_HEIGHT := 432.0
+const MOBILE_MAX_SCALE := 0.7
 const BATCH_SIZE := 64
-const MOBILE_LOCAL_LIGHTS := 4
-const MOBILE_PROP_DISTANCE := 60.0
+const MOBILE_LOCAL_LIGHTS := 2
+const MOBILE_PROP_DISTANCE := 40.0
+## Slow phones skip physics catch-up instead of spiralling into longer frames.
+const MOBILE_MAX_PHYSICS_STEPS := 2
 
 var mobile := false
 var _pending: Array[WeakRef] = []
@@ -29,6 +31,7 @@ func _ready() -> void:
 	get_tree().node_added.connect(_queue_node)
 	_queue_tree(get_tree().root)
 	if mobile:
+		Engine.max_physics_steps_per_frame = MOBILE_MAX_PHYSICS_STEPS
 		var budget_timer := Timer.new()
 		budget_timer.wait_time = 0.25
 		budget_timer.timeout.connect(_update_light_budget)

@@ -24,6 +24,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Remodel the card tables, chairs and salon patrons with curved upholstery, shaped supports and fitted anatomy; use a shared 128px surface atlas and texture previously plain model materials.
 - Fetch news headlines only on the server, every 15 minutes, and cache them there so
   clients never call TheNewsAPI and restarts reuse recent headlines.
+- Make phones and tablets run faster: render fewer 3D pixels, keep two nearby lights, hide
+  small props past 40 metres and cap physics catch-up on slow frames.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
