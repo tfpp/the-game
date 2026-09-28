@@ -56,12 +56,20 @@ func _process(delta: float) -> void:
 		return
 	# Browsers exit pointer lock on Esc without passing the key on, so watch the mouse
 	# mode rather than the key. The grace period covers a lock request still in flight.
-	if Controls.gameplay_active():
+	# Another modal (e.g. the chat box) also reads as "not playing" via gameplay_active,
+	# but it isn't a lost pointer lock, so don't pop the menu open on top of it.
+	if Controls.gameplay_active() or _other_modal_ui_open():
 		_idle_s = 0.0
 		return
 	_idle_s += delta
 	if _idle_s >= IDLE_MENU_DELAY_S:
 		open_menu()
+
+
+## True while a different feature owns the modal_ui group (this screen removes itself
+## from it whenever it's closed, so any node left is someone else's modal).
+func _other_modal_ui_open() -> bool:
+	return get_tree().get_first_node_in_group(MODAL_GROUP) != null
 
 
 func _input(event: InputEvent) -> void:

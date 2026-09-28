@@ -209,11 +209,44 @@ func TestFeatureChecks(t *testing.T) {
 	if r := e.feature(t, "1", "third feature request"); !strings.Contains(r.rejected, "your 2 agent runs") {
 		t.Errorf("per-user limit: %q", r.rejected)
 	}
-	if r := e.feature(t, "2", "other user's request"); !strings.Contains(r.rejected, "busy with 2 runs") {
-		t.Errorf("active limit: %q", r.rejected)
-	}
 	if len(e.gh.issues) != 2 {
 		t.Errorf("issues opened: %d", len(e.gh.issues))
+	}
+}
+
+func TestFeaturesWaitForAFreeSlot(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.feature(t, "1", "first feature request")
+	e.feature(t, "2", "second feature request")
+	for _, u := range []string{"3", "4", "5"} {
+		if r := e.feature(t, u, "a feature while the agent is busy"); r.rejected != "" {
+			t.Fatalf("rejected: %q", r.rejected)
+		}
+	}
+	if len(e.gh.issues) != 5 || len(e.gh.dispatches) != 2 {
+		t.Fatalf("issues %d dispatches %d", len(e.gh.issues), len(e.gh.dispatches))
+	}
+	if e.postsContaining("next in line") != 1 || e.postsContaining("number 3 in line") != 1 {
+		t.Errorf("posts %+v", e.chat.posts)
+	}
+	if q, _ := e.svc.Queue(ctx, "agent"); !strings.Contains(q, "2 active, at most 2 at once, 3 waiting") {
+		t.Errorf("queue %q", q)
+	}
+	// A finished run frees a slot for the oldest waiting feature.
+	must(t, e.svc.WorkflowRun(ctx, github.WorkflowRun{Path: ".github/workflows/agent.yml",
+		DisplayTitle: "agent #11 implement [bot-1]", Status: "completed", Conclusion: "success"}))
+	if len(e.gh.dispatches) != 3 || e.gh.dispatches[2]["number"] != "13" || e.gh.dispatches[2]["request_id"] != "bot-3" {
+		t.Fatalf("dispatches %v", e.gh.dispatches)
+	}
+	if p := e.chat.last(); p.thread != "thread3" || !strings.Contains(p.content, "A slot freed up") || p.ping != "3" {
+		t.Errorf("post %+v", p)
+	}
+	// A run that never starts frees its slot too, on the next reconcile.
+	e.now = e.now.Add(20 * time.Minute)
+	must(t, e.svc.Reconcile(ctx))
+	if len(e.gh.dispatches) != 5 {
+		t.Errorf("dispatches %v", e.gh.dispatches)
 	}
 }
 
@@ -406,5 +439,36 @@ func must(t *testing.T, err error) {
 	t.Helper()
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestReviseWaitsForAFreeSlot(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.feature(t, "42", "add jump pads please")
+	job, _ := e.st.JobByIssue(ctx, 11)
+	must(t, e.st.SetPR(ctx, job.ID, 12, e.now))
+	must(t, e.svc.WorkflowRun(ctx, github.WorkflowRun{Path: ".github/workflows/agent.yml",
+		DisplayTitle: "agent #11 implement [bot-1]", Status: "completed", Conclusion: "success"}))
+	e.feature(t, "1", "busy feature one")
+	e.feature(t, "2", "busy feature two")
+	r := &fakeResponder{}
+	must(t, e.svc.Revise(ctx, ReviseRequest{UserID: "42", UserName: "Bob", HasRole: true, ThreadID: "thread1", Text: "make them red"}, r))
+	if r.rejected != "" || !strings.Contains(r.response, "next in line") {
+		t.Fatalf("revise %+v", r)
+	}
+	r = &fakeResponder{}
+	must(t, e.svc.Revise(ctx, ReviseRequest{UserID: "42", UserName: "Bob", HasRole: true, ThreadID: "thread1", Text: "and blue"}, r))
+	if !strings.Contains(r.rejected, "waiting") {
+		t.Errorf("second revise: %q", r.rejected)
+	}
+	n := len(e.gh.dispatches)
+	must(t, e.svc.WorkflowRun(ctx, github.WorkflowRun{Path: ".github/workflows/agent.yml",
+		DisplayTitle: "agent #13 implement [bot-2]", Status: "completed", Conclusion: "success"}))
+	if len(e.gh.dispatches) != n+1 {
+		t.Fatalf("dispatches %v", e.gh.dispatches)
+	}
+	if d := e.gh.dispatches[n]; d["number"] != "12" || d["mode"] != "revise" || d["instructions"] != "From Bob on Discord:\n\nmake them red" {
+		t.Errorf("dispatch %v", d)
 	}
 }

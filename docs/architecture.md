@@ -183,8 +183,9 @@ client with a server configured (the web default) shows the login screen
 ## Agent pipeline
 
 1. `/feature <text>` in Discord. The bot (`bot/`, details in `bot/README.md`) checks the
-   requester role, the per-user limit and the concurrency cap. It then creates a GitHub
-   issue through its GitHub App, ending in a `Requested-by:` trailer, and opens a thread.
+   requester role and the per-user limit. It then creates a GitHub issue through its GitHub
+   App, ending in a `Requested-by:` trailer, and opens a thread. If the concurrency cap is
+   reached, the request waits in line and starts when a run finishes.
 2. The bot dispatches `agent.yml` with a `request_id`, which the run name echoes. On
    GitHub, a maintainer can also add the `agent` label or comment `/agent` (details in
    `harness/README.md`). `agent.yml` runs three jobs:
