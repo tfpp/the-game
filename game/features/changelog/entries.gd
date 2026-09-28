@@ -11,7 +11,10 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Steadier gun viewmodels",
 		"summary":
-		"Generated guns no longer jitter in first person, and shots now fire from where you aim."
+		(
+			"Generated guns no longer jitter in first person, shots fire from where you aim and"
+			+ " stay visible, and each gunshot now plays from the gun that fired it."
+		)
 	},
 	{
 		"title": "Soccer ball physics",

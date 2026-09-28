@@ -14,6 +14,18 @@ const LOCAL_OFFSET := Transform3D(Basis(), Vector3(0.28, -0.22, -0.55))
 const REMOTE_SHOULDER_OFFSET := Vector3(0.32, 1.15, 0.2)
 const FLASH_DURATION_S := 0.05
 
+## Generated guns don't map onto features/holdables' fixed pistol/smg/shotgun/awp
+## items, but their fire sounds are close enough stand-ins for each ammo type's
+## rate of fire and punch, and reusing them avoids shipping duplicate audio assets.
+const AMMO_SOUND_CUES := {
+	GunGenerator.AmmoType.BUCKSHOT: &"shotgun",
+	GunGenerator.AmmoType.RIFLE: &"smg",
+	GunGenerator.AmmoType.LOW_CALIBER: &"pistol",
+	GunGenerator.AmmoType.ROCKET: &"awp",
+	GunGenerator.AmmoType.GRENADE: &"awp",
+	GunGenerator.AmmoType.PLASMA: &"smg",
+}
+
 ## Replicated (server -> everyone). See the synchronizer config in gun_rig.tscn.
 @export var net_stats: Dictionary = {}
 @export var net_ammo_in_mag := 0
@@ -109,17 +121,17 @@ func request_fire() -> void:
 		return
 	if not has_ammo_to_fire():
 		return
-	var barrel_count := int(net_stats["barrel_count"])
-	_fire_cooldown = 1.0 / maxf(float(net_stats["fire_rate"]), 0.01)
-	net_ammo_in_mag -= barrel_count
-	_play_fire.rpc()
 	var player := _player()
 	var gun_machine := get_tree().get_first_node_in_group(&"gun_machine_root")
 	if player == null or gun_machine == null:
 		return
+	var barrel_count := int(net_stats["barrel_count"])
+	_fire_cooldown = 1.0 / maxf(float(net_stats["fire_rate"]), 0.01)
+	net_ammo_in_mag -= barrel_count
 	var ammo_type: GunGenerator.AmmoType = net_stats["ammo_type"]
 	var profile := GunGenerator.profile(ammo_type)
 	var origin := _aim_origin(player)
+	_play_fire.rpc(ammo_type, origin)
 	var jitter := deg_to_rad(float(net_stats["spread_degrees"]))
 	for _barrel: int in barrel_count:
 		for _pellet: int in int(profile["pellets"]):
@@ -143,10 +155,14 @@ func request_fire() -> void:
 			)
 
 
+## `origin` is the authoritative eye position `request_fire` fired from (see
+## `_aim_origin`), broadcast so the sound comes from the shot itself rather than
+## wherever this listening peer's own copy of the shooter happens to be.
 @rpc("authority", "call_local", "reliable")
-func _play_fire() -> void:
+func _play_fire(ammo_type: GunGenerator.AmmoType, origin: Vector3) -> void:
 	_flash_timer = FLASH_DURATION_S
 	_set_flash(true)
+	GameAudio.play_at(self, AMMO_SOUND_CUES.get(ammo_type, &"pistol"), origin)
 
 
 @rpc("any_peer", "call_local", "reliable")
@@ -198,6 +214,19 @@ func _mount_transform(player: Player) -> Transform3D:
 		body.global_transform.origin + body.global_transform.basis * REMOTE_SHOULDER_OFFSET
 	)
 	return Transform3D(aim, shoulder)
+
+
+## Where this rig's barrel tip is for whoever's watching it right now — the FPS
+## viewmodel muzzle for the local shooter, the third-person model's muzzle for
+## everyone else. Purely cosmetic (see `Projectile._visual_offset`): a shot fired
+## straight down the local camera's own forward axis barely moves in screen space
+## and is easy to miss, so the projectile's visual starts here and eases onto the
+## real, `_aim_origin`-based trajectory instead of popping in already on-axis.
+func muzzle_position() -> Vector3:
+	if _view == null:
+		return global_position
+	var muzzle := _view.get_node_or_null("Muzzle") as Node3D
+	return muzzle.global_position if muzzle != null else global_position
 
 
 func _aim_direction(yaw: float, pitch: float) -> Vector3:
