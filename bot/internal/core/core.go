@@ -26,11 +26,33 @@ type GitHub interface {
 	Dispatch(ctx context.Context, workflow, ref string, inputs map[string]string) error
 	WorkflowRuns(ctx context.Context, workflow string, since time.Time) ([]github.WorkflowRun, error)
 	Comments(ctx context.Context, n int, since time.Time) ([]github.Comment, error)
+
+	// Merging.
+	PullRequest(ctx context.Context, n int) (github.PullRequest, error)
+	PullRequestFiles(ctx context.Context, n int) ([]string, error)
+	FileContent(ctx context.Context, path, ref string) ([]byte, error)
+	Compare(ctx context.Context, base, head string) (github.Comparison, error)
+	CommitParents(ctx context.Context, sha string) ([]string, error)
+	WorkflowRunsForSHA(ctx context.Context, workflow, sha string) ([]github.WorkflowRun, error)
+	UpdateBranch(ctx context.Context, n int, expectedHead string) error
+	SquashMerge(ctx context.Context, n int, sha, title, message string) (string, error)
+	DeleteBranch(ctx context.Context, branch string) error
 }
 
 // Chat posts to Discord threads. content may mention only the users in ping.
 type Chat interface {
 	Post(ctx context.Context, threadID, content string, ping ...string) error
+	// PostButton posts content with one button; pressing it reaches the Discord adapter
+	// with id as its custom ID. It pings nobody.
+	PostButton(ctx context.Context, threadID, content, label, id string) error
+}
+
+// Deployer asks the host to deploy a game server build. Nil turns deploys off.
+type Deployer interface {
+	// Deploy requests a deploy of the server image built from commit sha.
+	Deploy(ctx context.Context, sha string) error
+	// Deployed returns the commit of the last successful deploy, or "".
+	Deployed(ctx context.Context) (string, error)
 }
 
 // Responder answers one slash command.
@@ -52,9 +74,14 @@ type Config struct {
 	Workflow   string // agent workflow file (agent.yml)
 	CIWorkflow string // CI workflow file (game-ci.yml)
 	Agent      string // agent input (claude)
-	Limits     store.Limits
-	Logger     *slog.Logger
-	Now        func() time.Time
+	// Workflows whose successful runs on Ref mean a build is ready to deploy: the server
+	// is deployed once both have finished for the same commit.
+	ServerWorkflow string // server-image.yml
+	PagesWorkflow  string // pages.yml
+	Limits         store.Limits
+	Deployer       Deployer
+	Logger         *slog.Logger
+	Now            func() time.Time
 }
 
 // Service implements the bot's commands and event handling.
@@ -66,6 +93,9 @@ type Service struct {
 	log   *slog.Logger
 	mu    sync.Mutex // serializes limit checks with reservations
 	prURL *regexp.Regexp
+
+	mergeMu sync.Mutex    // one coordinator step at a time
+	kick    chan struct{} // wakes the coordinator
 }
 
 func New(cfg Config, st *store.Store, gh GitHub, chat Chat) *Service {
@@ -76,7 +106,7 @@ func New(cfg Config, st *store.Store, gh GitHub, chat Chat) *Service {
 		cfg.Logger = slog.Default()
 	}
 	return &Service{
-		cfg: cfg, st: st, gh: gh, chat: chat, log: cfg.Logger,
+		cfg: cfg, st: st, gh: gh, chat: chat, log: cfg.Logger, kick: make(chan struct{}, 1),
 		prURL: regexp.MustCompile(`^🤖 Opened https://github\.com/` + regexp.QuoteMeta(cfg.Repo) + `/pull/(\d+)`),
 	}
 }
@@ -287,8 +317,21 @@ func (s *Service) WorkflowRun(ctx context.Context, wr github.WorkflowRun) error 
 	switch {
 	case strings.HasSuffix(wr.Path, "/"+s.cfg.Workflow):
 		return s.agentRun(ctx, wr)
-	case strings.HasSuffix(wr.Path, "/"+s.cfg.CIWorkflow) && wr.Event == "pull_request" && wr.Status == "completed":
+	case wr.Status != "completed":
+		return nil
+	case strings.HasSuffix(wr.Path, "/"+s.cfg.CIWorkflow) && wr.Event == "pull_request":
+		defer s.Kick()
 		return s.ciRun(ctx, wr)
+	case wr.Event == "push" && wr.HeadBranch == s.cfg.Ref && wr.Conclusion == "success":
+		switch {
+		case strings.HasSuffix(wr.Path, "/"+s.cfg.CIWorkflow):
+			// The base branch moved: open PRs may conflict with it now.
+			return s.scheduleConflictCheck(ctx)
+		case strings.HasSuffix(wr.Path, "/"+s.cfg.ServerWorkflow):
+			return s.built(ctx, "server", wr.HeadSHA)
+		case strings.HasSuffix(wr.Path, "/"+s.cfg.PagesWorkflow):
+			return s.built(ctx, "pages", wr.HeadSHA)
+		}
 	}
 	return nil
 }
@@ -318,16 +361,22 @@ func (s *Service) agentRun(ctx context.Context, wr github.WorkflowRun) error {
 	if err := s.setRun(ctx, run.ID, status, wr.Conclusion, wr.ID, wr.HTMLURL); err != nil {
 		return err
 	}
-	if status != store.RunCompleted || wr.Conclusion == "success" || (wr.Conclusion == "failure" && run.Relayed > 0) {
+	// Every run that gets past the gate ends with a harness comment. Say something if none
+	// arrived: the gate refused the dispatch (the run still succeeds), or it was cancelled.
+	if status != store.RunCompleted || run.Relayed > 0 {
 		return nil
 	}
-	// Failures normally explain themselves in a comment; say something if nothing did.
 	job, err := s.st.JobByID(ctx, run.JobID)
 	if err != nil {
 		return err
 	}
-	s.post(ctx, job, fmt.Sprintf("⚠️ <@%s> The agent run ended without a result (`%s`). [Run](<%s>)",
-		job.RequesterID, wr.Conclusion, wr.HTMLURL), job.RequesterID)
+	msg := fmt.Sprintf("⚠️ <@%s> The agent run ended without a result (`%s`). [Run](<%s>)",
+		job.RequesterID, wr.Conclusion, wr.HTMLURL)
+	if wr.Conclusion == "success" {
+		msg = fmt.Sprintf("⚠️ <@%s> The workflow refused to start the agent; its gate log says why. [Run](<%s>)",
+			job.RequesterID, wr.HTMLURL)
+	}
+	s.post(ctx, job, msg, job.RequesterID)
 	return nil
 }
 
@@ -346,12 +395,9 @@ func (s *Service) ciRun(ctx context.Context, wr github.WorkflowRun) error {
 	if fresh, err := s.st.MarkSeen(ctx, fmt.Sprintf("ci:%d:%s", wr.ID, wr.Conclusion), s.cfg.Now()); err != nil || !fresh {
 		return err
 	}
-	sha := wr.HeadSHA
-	if len(sha) > 7 {
-		sha = sha[:7]
-	}
+	sha := short(wr.HeadSHA)
 	if wr.Conclusion == "success" {
-		s.post(ctx, job, fmt.Sprintf("✅ CI passed on `%s`.", sha))
+		s.ciPassed(ctx, job, wr.HeadSHA)
 	} else {
 		s.post(ctx, job, fmt.Sprintf("❌ CI `%s` on `%s`. [Details](<%s>)", wr.Conclusion, sha, wr.HTMLURL))
 	}
@@ -407,6 +453,8 @@ func (s *Service) PullRequest(ctx context.Context, ev github.PullRequestEvent) e
 	}
 	now := s.cfg.Now()
 	switch ev.Action {
+	case "synchronize":
+		return s.pushed(ctx, job, ev.PullRequest.Head.SHA)
 	case "opened", "reopened":
 		if job.PR == 0 {
 			if err := s.st.SetPR(ctx, job.ID, ev.Number, now); err != nil {
@@ -418,7 +466,11 @@ func (s *Service) PullRequest(ctx context.Context, ev github.PullRequestEvent) e
 			return s.st.SetJobState(ctx, job.ID, store.JobOpen, now)
 		}
 	case "closed":
+		defer s.Kick()
 		if ev.PullRequest.Merged {
+			if job.State == store.JobMerged {
+				return nil // the merge coordinator merged it and said so
+			}
 			s.post(ctx, job, fmt.Sprintf("🎉 <@%s> PR #%d was merged. It ships with the next deploy.",
 				job.RequesterID, ev.Number), job.RequesterID)
 			return s.st.SetJobState(ctx, job.ID, store.JobMerged, now)

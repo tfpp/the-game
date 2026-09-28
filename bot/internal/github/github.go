@@ -260,3 +260,134 @@ func (a *App) Comments(ctx context.Context, n int, since time.Time) ([]Comment, 
 	err := a.call(ctx, http.MethodGet, fmt.Sprintf("/issues/%d/comments?%s", n, q.Encode()), nil, &out)
 	return out, err
 }
+
+// PullRequest is the subset of a pull request the bot reads.
+type PullRequest struct {
+	Number         int    `json:"number"`
+	Title          string `json:"title"`
+	HTMLURL        string `json:"html_url"`
+	State          string `json:"state"` // open, closed
+	Merged         bool   `json:"merged"`
+	MergeCommitSHA string `json:"merge_commit_sha"`
+	Mergeable      *bool  `json:"mergeable"` // nil while GitHub computes it
+	MergeableState string `json:"mergeable_state"`
+	Head           struct {
+		Ref string `json:"ref"`
+		SHA string `json:"sha"`
+	} `json:"head"`
+	Base struct {
+		Ref string `json:"ref"`
+	} `json:"base"`
+}
+
+// PullRequest fetches PR n. Fetching also asks GitHub to compute its mergeability.
+func (a *App) PullRequest(ctx context.Context, n int) (PullRequest, error) {
+	var pr PullRequest
+	err := a.call(ctx, http.MethodGet, fmt.Sprintf("/pulls/%d", n), nil, &pr)
+	return pr, err
+}
+
+// PullRequestFiles lists the paths PR n changes, including the old paths of renames.
+func (a *App) PullRequestFiles(ctx context.Context, n int) ([]string, error) {
+	var out []string
+	for page := 1; ; page++ {
+		var files []struct {
+			Filename         string `json:"filename"`
+			PreviousFilename string `json:"previous_filename"`
+		}
+		path := fmt.Sprintf("/pulls/%d/files?per_page=100&page=%d", n, page)
+		if err := a.call(ctx, http.MethodGet, path, nil, &files); err != nil {
+			return nil, err
+		}
+		for _, f := range files {
+			out = append(out, f.Filename)
+			if f.PreviousFilename != "" {
+				out = append(out, f.PreviousFilename)
+			}
+		}
+		if len(files) < 100 || page >= 30 { // GitHub lists at most 3000 files
+			return out, nil
+		}
+	}
+}
+
+// FileContent returns a file's content at ref.
+func (a *App) FileContent(ctx context.Context, path, ref string) ([]byte, error) {
+	var f struct {
+		Content  string `json:"content"`
+		Encoding string `json:"encoding"`
+	}
+	q := url.Values{"ref": {ref}}
+	if err := a.call(ctx, http.MethodGet, "/contents/"+path+"?"+q.Encode(), nil, &f); err != nil {
+		return nil, err
+	}
+	if f.Encoding != "base64" {
+		return nil, fmt.Errorf("contents %s: unexpected encoding %q", path, f.Encoding)
+	}
+	return base64.StdEncoding.DecodeString(strings.ReplaceAll(f.Content, "\n", ""))
+}
+
+// Comparison is how head relates to base.
+type Comparison struct {
+	Status   string `json:"status"` // identical, ahead, behind, diverged
+	AheadBy  int    `json:"ahead_by"`
+	BehindBy int    `json:"behind_by"`
+}
+
+// Compare compares two commits (or branches).
+func (a *App) Compare(ctx context.Context, base, head string) (Comparison, error) {
+	var c Comparison
+	path := "/compare/" + url.PathEscape(base) + "..." + url.PathEscape(head) + "?per_page=1"
+	err := a.call(ctx, http.MethodGet, path, nil, &c)
+	return c, err
+}
+
+// CommitParents returns the parent SHAs of a commit.
+func (a *App) CommitParents(ctx context.Context, sha string) ([]string, error) {
+	var c struct {
+		Parents []struct {
+			SHA string `json:"sha"`
+		} `json:"parents"`
+	}
+	if err := a.call(ctx, http.MethodGet, "/commits/"+url.PathEscape(sha), nil, &c); err != nil {
+		return nil, err
+	}
+	out := make([]string, len(c.Parents))
+	for i, p := range c.Parents {
+		out[i] = p.SHA
+	}
+	return out, nil
+}
+
+// WorkflowRunsForSHA lists runs of workflow for a head commit, newest first.
+func (a *App) WorkflowRunsForSHA(ctx context.Context, workflow, sha string) ([]WorkflowRun, error) {
+	q := url.Values{"per_page": {"20"}, "head_sha": {sha}}
+	var out struct {
+		Runs []WorkflowRun `json:"workflow_runs"`
+	}
+	err := a.call(ctx, http.MethodGet, "/actions/workflows/"+url.PathEscape(workflow)+"/runs?"+q.Encode(), nil, &out)
+	return out.Runs, err
+}
+
+// UpdateBranch merges the base branch into PR n's branch on GitHub's side, if its head is
+// still expectedHead. GitHub answers before the merge happens.
+func (a *App) UpdateBranch(ctx context.Context, n int, expectedHead string) error {
+	return a.call(ctx, http.MethodPut, fmt.Sprintf("/pulls/%d/update-branch", n),
+		map[string]any{"expected_head_sha": expectedHead}, nil)
+}
+
+// SquashMerge squash-merges PR n if its head is still sha, and returns the new commit.
+func (a *App) SquashMerge(ctx context.Context, n int, sha, title, message string) (string, error) {
+	var out struct {
+		SHA string `json:"sha"`
+	}
+	err := a.call(ctx, http.MethodPut, fmt.Sprintf("/pulls/%d/merge", n), map[string]any{
+		"merge_method": "squash", "sha": sha, "commit_title": title, "commit_message": message,
+	}, &out)
+	return out.SHA, err
+}
+
+// DeleteBranch deletes a branch.
+func (a *App) DeleteBranch(ctx context.Context, branch string) error {
+	return a.call(ctx, http.MethodDelete, "/git/refs/heads/"+branch, nil, nil)
+}

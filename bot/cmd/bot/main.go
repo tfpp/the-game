@@ -17,6 +17,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"syscall"
@@ -101,6 +103,10 @@ func run(log *slog.Logger) error {
 	if err != nil {
 		return err
 	}
+	approverID, err := envID("BOT_APPROVER_ROLE_ID", false)
+	if err != nil {
+		return err
+	}
 	channelID, err := envID("BOT_FEATURE_CHANNEL_ID", false)
 	if err != nil {
 		return err
@@ -147,23 +153,30 @@ func run(log *slog.Logger) error {
 	}
 
 	dc, err := discordbot.New(discordbot.Config{
-		Token: discordToken, GuildID: guildID, RequesterRoleID: roleID,
+		Token: discordToken, GuildID: guildID, RequesterRoleID: roleID, ApproverRoleID: approverID,
 		FeatureChannelID: channelID, Logger: log,
 	})
 	if err != nil {
 		return fmt.Errorf("discord: %w", err)
 	}
+	var deployer core.Deployer
+	if dir := os.Getenv("BOT_DEPLOY_DIR"); dir != "" {
+		deployer = fileDeployer(dir)
+	}
 	svc := core.New(core.Config{
-		Repo:       repo,
-		Ref:        env("BOT_REF", "main"),
-		Workflow:   env("BOT_WORKFLOW", "agent.yml"),
-		CIWorkflow: env("BOT_CI_WORKFLOW", "game-ci.yml"),
-		Agent:      env("BOT_AGENT", "claude"),
+		Repo:           repo,
+		Ref:            env("BOT_REF", "main"),
+		Workflow:       env("BOT_WORKFLOW", "agent.yml"),
+		CIWorkflow:     env("BOT_CI_WORKFLOW", "game-ci.yml"),
+		ServerWorkflow: env("BOT_SERVER_WORKFLOW", "server-image.yml"),
+		PagesWorkflow:  env("BOT_PAGES_WORKFLOW", "pages.yml"),
+		Agent:          env("BOT_AGENT", "claude"),
 		Limits: store.Limits{
 			PerUser: perUser, Window: 24 * time.Hour,
 			MaxActive: maxActive, StaleAfter: 3 * time.Hour,
 		},
-		Logger: log,
+		Deployer: deployer,
+		Logger:   log,
 	}, st, gh, dc)
 	dc.Service = svc
 
@@ -196,6 +209,7 @@ func run(log *slog.Logger) error {
 	}
 	defer dc.Close(context.Background())
 	go loop(ctx, log, "reconcile", 2*time.Minute, svc.Reconcile)
+	go svc.RunCoordinator(ctx, time.Minute)
 	go loop(ctx, log, "purge", 24*time.Hour, func(ctx context.Context) error {
 		return st.Purge(ctx, time.Now(), 30*24*time.Hour)
 	})
@@ -228,6 +242,38 @@ func loop(ctx context.Context, log *slog.Logger, name string, every time.Duratio
 		case <-t.C:
 		}
 	}
+}
+
+// fileDeployer asks the host to deploy the game server through files in a directory it
+// shares with the bot: the bot writes the commit to deploy to "request", and the host's
+// deploy script writes the commit it deployed to "deployed".
+type fileDeployer string
+
+var shaRE = regexp.MustCompile(`^[0-9a-f]{40}$`)
+
+func (d fileDeployer) Deploy(_ context.Context, sha string) error {
+	if !shaRE.MatchString(sha) {
+		return fmt.Errorf("not a commit SHA: %q", sha)
+	}
+	tmp := filepath.Join(string(d), ".request.tmp")
+	if err := os.WriteFile(tmp, []byte(sha+"\n"), 0o644); err != nil {
+		return err
+	}
+	return os.Rename(tmp, filepath.Join(string(d), "request"))
+}
+
+func (d fileDeployer) Deployed(context.Context) (string, error) {
+	b, err := os.ReadFile(filepath.Join(string(d), "deployed"))
+	if errors.Is(err, os.ErrNotExist) {
+		return "", nil
+	} else if err != nil {
+		return "", err
+	}
+	sha := strings.TrimSpace(string(b))
+	if !shaRE.MatchString(sha) {
+		return "", nil
+	}
+	return sha, nil
 }
 
 func healthcheck() int {

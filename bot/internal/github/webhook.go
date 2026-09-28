@@ -46,6 +46,7 @@ type PullRequestEvent struct {
 		Merged  bool   `json:"merged"`
 		Head    struct {
 			Ref string `json:"ref"`
+			SHA string `json:"sha"`
 		} `json:"head"`
 	} `json:"pull_request"`
 	Repository Repository `json:"repository"`

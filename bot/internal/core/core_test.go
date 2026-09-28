@@ -20,6 +20,20 @@ type fakeGitHub struct {
 	comments    map[int][]github.Comment
 	failIssue   bool
 	failDispach bool
+
+	// Merging (merge_test.go).
+	prs       map[int]*github.PullRequest
+	files     map[int][]string
+	owners    string
+	ci        map[string]string   // head SHA -> success, failure, pending
+	behind    map[string]int      // head SHA -> commits behind the base
+	compare   map[string]string   // "base...head" -> status
+	parents   map[string][]string // commit -> parents
+	updateErr error
+	updates   []string // "pr:expected head"
+	merges    []string // "pr:sha:title"
+	mergeErr  error
+	deleted   []string
 }
 
 func (f *fakeGitHub) CreateIssue(_ context.Context, title, body string) (github.Issue, error) {
@@ -47,12 +61,17 @@ func (f *fakeGitHub) Comments(_ context.Context, n int, _ time.Time) ([]github.C
 	return f.comments[n], nil
 }
 
-type post struct{ thread, content, ping string }
+type post struct{ thread, content, ping, button string }
 
 type fakeChat struct{ posts []post }
 
+func (c *fakeChat) PostButton(_ context.Context, thread, content, _, id string) error {
+	c.posts = append(c.posts, post{thread: thread, content: content, button: id})
+	return nil
+}
+
 func (c *fakeChat) Post(_ context.Context, thread, content string, ping ...string) error {
-	c.posts = append(c.posts, post{thread, content, strings.Join(ping, ",")})
+	c.posts = append(c.posts, post{thread: thread, content: content, ping: strings.Join(ping, ",")})
 	return nil
 }
 
@@ -92,12 +111,13 @@ func (r *fakeResponder) Thread(context.Context, string) (string, error) {
 }
 
 type env struct {
-	svc  *Service
-	st   *store.Store
-	gh   *fakeGitHub
-	chat *fakeChat
-	now  time.Time
-	nth  int
+	deploy *fakeDeployer
+	svc    *Service
+	st     *store.Store
+	gh     *fakeGitHub
+	chat   *fakeChat
+	now    time.Time
+	nth    int
 }
 
 func newEnv(t *testing.T) *env {
@@ -107,10 +127,13 @@ func newEnv(t *testing.T) *env {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { st.Close() })
-	e := &env{st: st, gh: &fakeGitHub{comments: map[int][]github.Comment{}}, chat: &fakeChat{},
+	e := &env{deploy: &fakeDeployer{}, st: st, gh: &fakeGitHub{comments: map[int][]github.Comment{}, prs: map[int]*github.PullRequest{},
+		files: map[int][]string{}, ci: map[string]string{}, behind: map[string]int{}, compare: map[string]string{},
+		parents: map[string][]string{}, owners: "/.github/ @x\n/bot/ @x\n/game/project.godot @x\n"}, chat: &fakeChat{},
 		now: time.Unix(1_800_000_000, 0)}
 	e.svc = New(Config{
 		Repo: "o/r", Ref: "main", Workflow: "agent.yml", CIWorkflow: "game-ci.yml", Agent: "claude",
+		ServerWorkflow: "server-image.yml", PagesWorkflow: "pages.yml", Deployer: e.deploy,
 		Limits: store.Limits{PerUser: 2, Window: 24 * time.Hour, MaxActive: 2, StaleAfter: 3 * time.Hour},
 		Now:    func() time.Time { return e.now },
 		Logger: slog.New(slog.DiscardHandler),
@@ -271,6 +294,17 @@ func TestCancelledRunWithoutCommentsIsReported(t *testing.T) {
 	must(t, e.svc.WorkflowRun(context.Background(), github.WorkflowRun{ID: 1, Path: ".github/workflows/agent.yml",
 		DisplayTitle: "agent #11 implement [bot-1]", Status: "completed", Conclusion: "cancelled", HTMLURL: "https://run"}))
 	if p := e.chat.last(); !strings.Contains(p.content, "`cancelled`") || p.ping != "42" {
+		t.Errorf("post %+v", p)
+	}
+}
+
+func TestRunRefusedByTheGateIsReported(t *testing.T) {
+	e := newEnv(t)
+	e.feature(t, "42", "add jump pads please")
+	// The gate refused it: the workflow succeeds, but no harness comment arrives.
+	must(t, e.svc.WorkflowRun(context.Background(), github.WorkflowRun{ID: 1, Path: ".github/workflows/agent.yml",
+		DisplayTitle: "agent #11 implement [bot-1]", Status: "completed", Conclusion: "success", HTMLURL: "https://run"}))
+	if p := e.chat.last(); !strings.Contains(p.content, "refused to start") || p.ping != "42" {
 		t.Errorf("post %+v", p)
 	}
 }

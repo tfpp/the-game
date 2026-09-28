@@ -4,6 +4,8 @@
 /harness/                     @christophersarmiento
 /bot/                         @christophersarmiento
 /api/                         @christophersarmiento
+/game/core/features/          @christophersarmiento
 /game/core/movement/          @christophersarmiento
 /game/core/net/               @christophersarmiento
+/game/main.tscn               @christophersarmiento
 /game/project.godot           @christophersarmiento

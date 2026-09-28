@@ -15,13 +15,25 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 
 ## Layout
 
-- `core/`: engine-level systems (movement, player, networking, input, game root).
-  Avoid editing this for features. Changes here need human review (CODEOWNERS).
-- `features/<name>/`: one directory per feature, containing its scenes, scripts and tests.
+- `core/`: engine-level systems (movement, player, networking, input, game root,
+  feature loader). Avoid editing this for features. Changes here need human review.
+- `features/<name>/`: one directory per feature, containing its scenes and scripts.
 - `world/`: level geometry (CSG for now).
 - `ui/`: HUD and menus.
 - `tests/`: GUT tests (`test_*.gd`, `extends GutTest`). Put feature tests in
   `tests/features/<name>/`.
+
+## Adding a feature
+
+- Create `features/<name>/feature.tscn`. The game loads every one at startup, sorted by
+  directory name, as `/root/Game/Features/<name>`. Directories without a `feature.tscn`
+  (shared scripts, libraries) are not loaded.
+- Don't edit `main.tscn`, `world/` or other features to wire yours in. Position it with
+  its root node's transform; the `Features` node sits at the origin.
+- Features load on every peer before networking starts, so spawners, synchronizers and
+  RPCs inside the scene have matching paths everywhere. The multiplayer rules below apply.
+- A scene that fails to load is logged and skipped, which fails the smoke tests.
+- Put tests in `tests/features/<name>/`.
 
 ## Multiplayer rules (important)
 
@@ -49,8 +61,7 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 - Movement math lives in `core/movement/source_movement.gd` as pure static functions.
   Keep it deterministic and unit-tested.
 - Units: Source "hammer units" in config, meters at runtime (`MovementConfig.UNIT_TO_METERS`).
-- Keep scenes (`.tscn`) small and text-diffable. Prefer building a feature in its own
-  scene over editing `main.tscn`.
+- Keep scenes (`.tscn`) small and text-diffable.
 
 ## Commands
 

@@ -214,22 +214,28 @@ a self-hosted, ephemeral runner on the homelab.
 
 ## Merging
 
-Approvals come from Discord, and a single coordinator applies them in order.
-- A trusted Discord role clicks **Approve & merge**. The approval is pinned to the PR's
-  head SHA.
+Approvals come from Discord, and a single coordinator in the bot applies them in order
+(details in `bot/README.md`). `main` has no branch protection; the coordinator is the
+gate.
+- When CI passes, the thread offers **Approve & merge** (or `/approve`) to a trusted
+  Discord role. The approval is pinned to the PR's head SHA; any other push voids it.
 - The coordinator takes one PR at a time:
   1. Re-check the head SHA.
-  2. If the branch is behind main, update it and wait for checks.
+  2. If the branch is behind main, update it on GitHub's side and wait for CI.
   3. Squash-merge with an expected `sha`.
-- **Conflicts:** the agent runs in `resolve-conflicts` mode, and the new SHA needs
-  re-approval.
-- **After every merge:** the coordinator re-checks the other open PRs and warns their
-  threads early about new conflicts.
+- **Conflicts:** the bot starts the agent in `resolve-conflicts` mode, and the new SHA
+  needs re-approval.
+- **After every change to main:** the bot re-checks the other open PRs, warns their
+  threads about new conflicts and has the agent resolve them.
+- `/queue` shows the agent runs or the merge queue.
 - **Human-only paths:** PRs touching paths listed in `CODEOWNERS` (`.github/`, `harness/`,
-  `bot/`, `api/`, core movement/net, `project.godot`) cannot be approved from Discord.
+  `bot/`, `api/`, the core feature loader, movement and net, `main.tscn`, `project.godot`)
+  cannot be approved from Discord.
 
-**Conflict avoidance:** each feature lives in `game/features/<name>/` and self-registers
-(see `game/AGENTS.md`), so parallel PRs rarely touch the same files.
+**Conflict avoidance:** each feature lives in `game/features/<name>/` and self-registers:
+the game instances every `features/<name>/feature.tscn` under `Game/Features` at startup
+(`core/features/feature_loader.gd`, see `game/AGENTS.md`). Parallel PRs therefore don't
+touch shared scenes and rarely touch the same files.
 
 ## Deploy
 
@@ -241,8 +247,10 @@ Approvals come from Discord, and a single coordinator applies them in order.
 | bot | `bot-image.yml` → `ghcr.io/tfpp/the-game-bot` | Homelab VM, same compose project; webhooks at `game.chrisbox.dev/bot/github` |
 
 The client and server must run the same code, and the join handshake enforces it (see
-"Version check"). Deploys are still manual; the plan is a server deploy triggered by the
-same merge that updates Pages.
+"Version check"). Once `pages.yml` and `server-image.yml` have both succeeded for the same
+`main` commit, the bot asks the homelab to deploy that server image (a request file that
+a host service acts on; see `bot/README.md`), then tells the merged PRs' threads they're
+live. The API and the bot are still deployed by hand.
 
 ## Milestones
 
@@ -253,5 +261,5 @@ same merge that updates Pages.
 3. **v0.3:** `api/` accounts (Discord plus email/password) and join tickets.
 4. **v0.4:** `harness/` plus `agent.yml` (Claude), triggered by label/comment/dispatch.
 5. **v0.5:** `bot/` MVP (`/feature`, threads, status), then revise loops.
-6. **v0.6:** Discord approvals plus the merge coordinator; later, a homelab runner with
-   Codex/pi.
+6. **v0.6:** Discord approvals, the merge coordinator, `/queue`, self-registering
+   features and automatic server deploys; later, a homelab runner with Codex/pi.

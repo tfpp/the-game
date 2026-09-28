@@ -47,6 +47,8 @@ type Job struct {
 	RequesterID   string
 	RequesterName string
 	State         string
+	ConflictSHA   string // head SHA last found to conflict with the base branch
+	ResolveSHA    string // head SHA a resolve-conflicts run was started for
 	CreatedAt     time.Time
 }
 
@@ -131,6 +133,30 @@ var migrations = []string{
 	CREATE TABLE seen (
 		key TEXT PRIMARY KEY,
 		at  INTEGER NOT NULL
+	);`,
+	// 2: Discord approvals and the merge queue, conflict tracking, and small settings.
+	`CREATE TABLE merges (
+		id            INTEGER PRIMARY KEY,
+		job_id        INTEGER NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+		pr            INTEGER NOT NULL,
+		approved_sha  TEXT NOT NULL,
+		head_sha      TEXT NOT NULL,
+		approver_id   TEXT NOT NULL,
+		approver_name TEXT NOT NULL,
+		status        TEXT NOT NULL,
+		detail        TEXT NOT NULL DEFAULT '',
+		merged_sha    TEXT NOT NULL DEFAULT '',
+		announced     INTEGER NOT NULL DEFAULT 0,
+		created_at    INTEGER NOT NULL,
+		updated_at    INTEGER NOT NULL
+	);
+	CREATE UNIQUE INDEX merges_active ON merges(pr) WHERE status IN ('queued', 'updating', 'testing');
+	CREATE INDEX merges_status ON merges(status);
+	ALTER TABLE jobs ADD COLUMN conflict_sha TEXT NOT NULL DEFAULT '';
+	ALTER TABLE jobs ADD COLUMN resolve_sha TEXT NOT NULL DEFAULT '';
+	CREATE TABLE kv (
+		key   TEXT PRIMARY KEY,
+		value TEXT NOT NULL
 	);`,
 }
 
@@ -256,13 +282,13 @@ func (s *Store) CreateJob(ctx context.Context, j Job, runID int64, now time.Time
 }
 
 const jobCols = `id, issue, COALESCE(pr, 0), title, channel_id, COALESCE(thread_id, ''), requester_id,
-	requester_name, state, created_at`
+	requester_name, state, conflict_sha, resolve_sha, created_at`
 
 func scanJob(row interface{ Scan(...any) error }) (Job, error) {
 	var j Job
 	var created int64
 	err := row.Scan(&j.ID, &j.Issue, &j.PR, &j.Title, &j.ChannelID, &j.ThreadID, &j.RequesterID,
-		&j.RequesterName, &j.State, &created)
+		&j.RequesterName, &j.State, &j.ConflictSHA, &j.ResolveSHA, &created)
 	if errors.Is(err, sql.ErrNoRows) {
 		return Job{}, ErrNotFound
 	}
@@ -297,6 +323,35 @@ func (s *Store) SetPR(ctx context.Context, jobID int64, pr int, now time.Time) e
 
 func (s *Store) SetJobState(ctx context.Context, jobID int64, state string, now time.Time) error {
 	return s.exec(ctx, `UPDATE jobs SET state = ?, updated_at = ? WHERE id = ?`, state, now.Unix(), jobID)
+}
+
+// SetConflict records the head SHA found to conflict with the base branch ("" clears it).
+func (s *Store) SetConflict(ctx context.Context, jobID int64, sha string, now time.Time) error {
+	return s.exec(ctx, `UPDATE jobs SET conflict_sha = ?, updated_at = ? WHERE id = ?`, sha, now.Unix(), jobID)
+}
+
+// SetResolve records the head SHA a resolve-conflicts run was started for.
+func (s *Store) SetResolve(ctx context.Context, jobID int64, sha string, now time.Time) error {
+	return s.exec(ctx, `UPDATE jobs SET resolve_sha = ?, updated_at = ? WHERE id = ?`, sha, now.Unix(), jobID)
+}
+
+// OpenJobsWithPR lists open jobs whose PR is known, oldest first.
+func (s *Store) OpenJobsWithPR(ctx context.Context) ([]Job, error) {
+	rows, err := s.db.QueryContext(ctx,
+		"SELECT "+jobCols+" FROM jobs WHERE state = ? AND pr IS NOT NULL ORDER BY id", JobOpen)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []Job
+	for rows.Next() {
+		j, err := scanJob(rows)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, j)
+	}
+	return out, rows.Err()
 }
 
 // --- runs ----------------------------------------------------------------------------------
@@ -358,6 +413,147 @@ func (s *Store) SetRunStatus(ctx context.Context, id int64, status, conclusion s
 // CountRelayed notes that a comment was relayed while this run was active.
 func (s *Store) CountRelayed(ctx context.Context, id int64) error {
 	return s.exec(ctx, `UPDATE runs SET relayed = relayed + 1 WHERE id = ?`, id)
+}
+
+// --- merges -------------------------------------------------------------------------------
+
+// Merge queue statuses. An approval enters the queue as queued; the coordinator takes the
+// oldest active one and moves it through updating (the branch is being brought up to date
+// with the base) and testing (waiting for CI on the new head) to merged, or drops it.
+const (
+	MergeQueued   = "queued"
+	MergeUpdating = "updating"
+	MergeTesting  = "testing"
+	MergeMerged   = "merged"
+	MergeDropped  = "dropped" // see Detail
+)
+
+// ActiveMergeStatuses are the statuses of approvals still in the queue.
+var ActiveMergeStatuses = []string{MergeQueued, MergeUpdating, MergeTesting}
+
+// Merge is one Discord approval of a PR at a head SHA, and its way through the queue.
+type Merge struct {
+	ID           int64
+	JobID        int64
+	PR           int
+	ApprovedSHA  string // the head SHA the approver saw
+	HeadSHA      string // the current head: ApprovedSHA plus any updates from the base
+	ApproverID   string
+	ApproverName string
+	Status       string
+	Detail       string
+	MergedSHA    string
+	Announced    bool // the deploy that contains MergedSHA was announced
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
+
+// ErrQueued means the PR already has an approval in the queue.
+var ErrQueued = errors.New("already queued")
+
+// Enqueue adds an approval to the merge queue.
+func (s *Store) Enqueue(ctx context.Context, m Merge, now time.Time) (Merge, error) {
+	res, err := s.db.ExecContext(ctx,
+		`INSERT INTO merges (job_id, pr, approved_sha, head_sha, approver_id, approver_name, status, created_at, updated_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		m.JobID, m.PR, m.ApprovedSHA, m.ApprovedSHA, m.ApproverID, m.ApproverName, MergeQueued, now.Unix(), now.Unix())
+	if err != nil {
+		if strings.Contains(err.Error(), "UNIQUE") {
+			return Merge{}, ErrQueued
+		}
+		return Merge{}, err
+	}
+	if m.ID, err = res.LastInsertId(); err != nil {
+		return Merge{}, err
+	}
+	m.HeadSHA, m.Status, m.CreatedAt, m.UpdatedAt = m.ApprovedSHA, MergeQueued, now, now
+	return m, nil
+}
+
+const mergeCols = `id, job_id, pr, approved_sha, head_sha, approver_id, approver_name, status, detail,
+	merged_sha, announced, created_at, updated_at`
+
+func scanMerge(row interface{ Scan(...any) error }) (Merge, error) {
+	var m Merge
+	var created, updated int64
+	err := row.Scan(&m.ID, &m.JobID, &m.PR, &m.ApprovedSHA, &m.HeadSHA, &m.ApproverID, &m.ApproverName,
+		&m.Status, &m.Detail, &m.MergedSHA, &m.Announced, &created, &updated)
+	if errors.Is(err, sql.ErrNoRows) {
+		return Merge{}, ErrNotFound
+	}
+	m.CreatedAt, m.UpdatedAt = time.Unix(created, 0), time.Unix(updated, 0)
+	return m, err
+}
+
+func (s *Store) merges(ctx context.Context, where string, args ...any) ([]Merge, error) {
+	rows, err := s.db.QueryContext(ctx, "SELECT "+mergeCols+" FROM merges WHERE "+where, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []Merge
+	for rows.Next() {
+		m, err := scanMerge(rows)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, m)
+	}
+	return out, rows.Err()
+}
+
+// MergeQueue lists the approvals still in the queue, in merge order (oldest first).
+func (s *Store) MergeQueue(ctx context.Context) ([]Merge, error) {
+	return s.merges(ctx, "status IN ("+placeholders(len(ActiveMergeStatuses))+") ORDER BY id",
+		anys(ActiveMergeStatuses)...)
+}
+
+// ActiveMergeForJob returns the job's approval still in the queue, or ErrNotFound.
+func (s *Store) ActiveMergeForJob(ctx context.Context, jobID int64) (Merge, error) {
+	return scanMerge(s.db.QueryRowContext(ctx,
+		"SELECT "+mergeCols+" FROM merges WHERE job_id = ? AND status IN ("+
+			placeholders(len(ActiveMergeStatuses))+") ORDER BY id DESC LIMIT 1",
+		append([]any{jobID}, anys(ActiveMergeStatuses)...)...))
+}
+
+// UnannouncedMerges lists merged approvals whose deploy hasn't been announced, oldest first.
+func (s *Store) UnannouncedMerges(ctx context.Context) ([]Merge, error) {
+	return s.merges(ctx, "status = ? AND announced = 0 ORDER BY id", MergeMerged)
+}
+
+// UpdateMerge moves an approval to status, with the current head and a detail message.
+func (s *Store) UpdateMerge(ctx context.Context, id int64, status, headSHA, detail string, now time.Time) error {
+	return s.exec(ctx, `UPDATE merges SET status = ?, head_sha = COALESCE(NULLIF(?, ''), head_sha), detail = ?,
+		updated_at = ? WHERE id = ?`, status, headSHA, detail, now.Unix(), id)
+}
+
+// SetMerged records that the approval was merged as sha.
+func (s *Store) SetMerged(ctx context.Context, id int64, sha string, now time.Time) error {
+	return s.exec(ctx, `UPDATE merges SET status = ?, merged_sha = ?, detail = '', updated_at = ? WHERE id = ?`,
+		MergeMerged, sha, now.Unix(), id)
+}
+
+// SetAnnounced records that the deploy containing the merge was announced.
+func (s *Store) SetAnnounced(ctx context.Context, id int64) error {
+	return s.exec(ctx, `UPDATE merges SET announced = 1 WHERE id = ?`, id)
+}
+
+// --- kv ------------------------------------------------------------------------------------
+
+// Get returns a small setting, or "" if unset.
+func (s *Store) Get(ctx context.Context, key string) (string, error) {
+	var v string
+	err := s.db.QueryRowContext(ctx, `SELECT value FROM kv WHERE key = ?`, key).Scan(&v)
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", nil
+	}
+	return v, err
+}
+
+// Set stores a small setting.
+func (s *Store) Set(ctx context.Context, key, value string) error {
+	return s.exec(ctx, `INSERT INTO kv (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
+		key, value)
 }
 
 // --- seen ----------------------------------------------------------------------------------

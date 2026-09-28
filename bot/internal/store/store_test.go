@@ -110,3 +110,42 @@ func TestSeen(t *testing.T) {
 		t.Error("purged key still seen")
 	}
 }
+
+func TestMergeQueue(t *testing.T) {
+	s := open(t)
+	ctx := context.Background()
+	now := time.Unix(1_800_000_000, 0)
+	r, _ := s.Reserve(ctx, "1", 0, "implement", Limits{Window: time.Hour}, now)
+	j, err := s.CreateJob(ctx, Job{Issue: 3, Title: "t", ChannelID: "c", RequesterID: "1", RequesterName: "A"}, r.ID, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	m, err := s.Enqueue(ctx, Merge{JobID: j.ID, PR: 4, ApprovedSHA: "aaa", ApproverID: "2", ApproverName: "B"}, now)
+	if err != nil || m.HeadSHA != "aaa" || m.Status != MergeQueued {
+		t.Fatalf("enqueue %+v %v", m, err)
+	}
+	if _, err := s.Enqueue(ctx, Merge{JobID: j.ID, PR: 4, ApprovedSHA: "bbb"}, now); !errors.Is(err, ErrQueued) {
+		t.Errorf("second approval: %v", err)
+	}
+	s.UpdateMerge(ctx, m.ID, MergeTesting, "ccc", "", now)
+	got, err := s.ActiveMergeForJob(ctx, j.ID)
+	if err != nil || got.HeadSHA != "ccc" || got.ApprovedSHA != "aaa" || got.Status != MergeTesting {
+		t.Errorf("active %+v %v", got, err)
+	}
+	s.SetMerged(ctx, m.ID, "ddd", now)
+	if q, _ := s.MergeQueue(ctx); len(q) != 0 {
+		t.Errorf("queue %+v", q)
+	}
+	// Once merged, the PR may be approved again (a reopened PR, say).
+	if _, err := s.Enqueue(ctx, Merge{JobID: j.ID, PR: 4, ApprovedSHA: "eee"}, now); err != nil {
+		t.Errorf("new approval: %v", err)
+	}
+	if v, _ := s.Get(ctx, "k"); v != "" {
+		t.Errorf("unset key %q", v)
+	}
+	s.Set(ctx, "k", "1")
+	s.Set(ctx, "k", "2")
+	if v, _ := s.Get(ctx, "k"); v != "2" {
+		t.Errorf("key %q", v)
+	}
+}

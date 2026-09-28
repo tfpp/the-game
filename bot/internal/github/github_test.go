@@ -157,3 +157,63 @@ func TestValidSignature(t *testing.T) {
 		t.Error("accepted with an empty secret")
 	}
 }
+
+func TestMergeCalls(t *testing.T) {
+	now := time.Unix(1_800_000_000, 0)
+	var merged, updated map[string]any
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch p := r.URL.Path; {
+		case p == "/repos/o/r/installation":
+			io.WriteString(w, `{"id": 77}`)
+		case p == "/app/installations/77/access_tokens":
+			io.WriteString(w, `{"token":"ghs_1","expires_at":"`+now.Add(time.Hour).UTC().Format(time.RFC3339)+`"}`)
+		case p == "/repos/o/r/contents/.github/CODEOWNERS" && r.URL.Query().Get("ref") == "main":
+			io.WriteString(w, `{"encoding":"base64","content":"L2JvdC8g\nQHg=\n"}`)
+		case p == "/repos/o/r/pulls/4/files":
+			if r.URL.Query().Get("page") == "1" {
+				io.WriteString(w, `[{"filename":"a"},{"filename":"b","previous_filename":"c"}]`)
+			} else {
+				io.WriteString(w, `[]`)
+			}
+		case p == "/repos/o/r/pulls/4/update-branch" && r.Method == http.MethodPut:
+			json.NewDecoder(r.Body).Decode(&updated)
+			w.WriteHeader(http.StatusAccepted)
+			io.WriteString(w, `{"message":"Updating pull request branch."}`)
+		case p == "/repos/o/r/pulls/4/merge" && r.Method == http.MethodPut:
+			json.NewDecoder(r.Body).Decode(&merged)
+			io.WriteString(w, `{"sha":"m1","merged":true}`)
+		case p == "/repos/o/r/pulls/5/merge":
+			w.WriteHeader(http.StatusConflict)
+			io.WriteString(w, `{"message":"Head branch was modified. Review and try the merge again."}`)
+		case p == "/repos/o/r/compare/main...agent/4-x":
+			io.WriteString(w, `{"status":"diverged","ahead_by":1,"behind_by":2}`)
+		default:
+			w.WriteHeader(http.StatusNotFound)
+			io.WriteString(w, `{"message":"Not Found"}`)
+		}
+	}))
+	defer srv.Close()
+	a := &App{ClientID: "c", Key: testKey(t), Repo: "o/r", BaseURL: srv.URL, Now: func() time.Time { return now }}
+	ctx := context.Background()
+
+	if b, err := a.FileContent(ctx, ".github/CODEOWNERS", "main"); err != nil || string(b) != "/bot/ @x" {
+		t.Errorf("content %q %v", b, err)
+	}
+	if fs, err := a.PullRequestFiles(ctx, 4); err != nil || strings.Join(fs, ",") != "a,b,c" {
+		t.Errorf("files %v %v", fs, err)
+	}
+	if err := a.UpdateBranch(ctx, 4, "h1"); err != nil || updated["expected_head_sha"] != "h1" {
+		t.Errorf("update %v %v", updated, err)
+	}
+	sha, err := a.SquashMerge(ctx, 4, "h1", "feat: x (#4)", "body")
+	if err != nil || sha != "m1" || merged["sha"] != "h1" || merged["merge_method"] != "squash" || merged["commit_title"] != "feat: x (#4)" {
+		t.Errorf("merge %v %v %v", sha, merged, err)
+	}
+	var apiErr *APIError
+	if _, err := a.SquashMerge(ctx, 5, "h1", "t", ""); !errors.As(err, &apiErr) || apiErr.Status != http.StatusConflict {
+		t.Errorf("want 409, got %v", err)
+	}
+	if c, err := a.Compare(ctx, "main", "agent/4-x"); err != nil || c.BehindBy != 2 {
+		t.Errorf("compare %+v %v", c, err)
+	}
+}

@@ -8,11 +8,13 @@ questions, so make reasonable decisions and explain them in your summary.
   rules (server-authoritative state, validated request RPCs).
 - You are on branch `{{BRANCH}}` (base `{{BASE}}`). Don't switch branches, push, rebase,
   amend or rewrite commits, or change git config. The harness pushes for you.
-- Put feature work in `game/features/<name>/` and its tests in `game/tests/features/<name>/`.
-  Keep the change focused on the request.
+- Put feature work in `game/features/<name>/` with a root scene `feature.tscn`, which the
+  game loads automatically, and its tests in `game/tests/features/<name>/`. Don't edit
+  `main.tscn` or `game/world/` to wire it in. Keep the change focused on the request.
 - Avoid the human-review paths listed in `.github/CODEOWNERS` (`.github/`, `harness/`,
-  `bot/`, `api/`, `game/core/movement/`, `game/core/net/`, `game/project.godot`). Touch them
-  only when the request can't be done otherwise, and say why in the summary.
+  `bot/`, `api/`, `game/core/features/`, `game/core/movement/`, `game/core/net/`,
+  `game/main.tscn`, `game/project.godot`). Touch them only when the request can't be done
+  otherwise, and say why in the summary.
 - Don't bump the release version.
 - `harness/verify.sh` is the definition of done. Run it and make it pass before you
   finish. The harness runs it again after you, and a failure sends you back to fix it.

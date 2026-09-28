@@ -9,12 +9,16 @@ extends Node3D
 const PLAYER_SCENE := preload("res://core/player/player.tscn")
 const KILL_Y := -50.0
 
+@onready var _features: Node3D = $Features
 @onready var _players: Node3D = $Players
 @onready var _spawner: MultiplayerSpawner = $PlayerSpawner
 @onready var _spawn_point: Marker3D = $Room/Spawn
 
 
 func _ready() -> void:
+	# Before networking starts, so every peer has the same feature nodes (and their
+	# spawners, synchronizers and RPC targets) before any replication arrives.
+	FeatureLoader.load_features(_features)
 	_spawner.spawn_function = _spawn_player
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)

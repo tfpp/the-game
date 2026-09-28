@@ -10,6 +10,8 @@ script = ExtResource("1_game")
 
 [node name="Room" parent="." instance=ExtResource("2_room")]
 
+[node name="Features" type="Node3D" parent="."]
+
 [node name="Players" type="Node3D" parent="."]
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]

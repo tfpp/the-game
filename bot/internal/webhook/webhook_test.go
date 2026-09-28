@@ -25,6 +25,11 @@ func (c chat) Post(_ context.Context, _, content string, _ ...string) error {
 	return nil
 }
 
+func (c chat) PostButton(_ context.Context, _, content, _, _ string) error {
+	c.posts <- content
+	return nil
+}
+
 func sign(secret, body string) string {
 	m := hmac.New(sha256.New, []byte(secret))
 	m.Write([]byte(body))
