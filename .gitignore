@@ -17,3 +17,4 @@ game/build_info.gd.uid
 .playwright-mcp/
 .env
 *.local
+.wrangler/
