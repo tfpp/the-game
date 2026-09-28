@@ -116,3 +116,25 @@ func test_reload_moves_ammo_from_reserve_into_the_magazine() -> void:
 func test_for_peer_finds_the_matching_rig() -> void:
 	assert_eq(GunRig.for_peer(get_tree(), 1), _rig)
 	assert_null(GunRig.for_peer(get_tree(), 99))
+
+
+func test_process_priority_runs_after_player_and_third_person_camera_updates() -> void:
+	assert_gt(_rig.process_priority, 10, "Mount after player and third-person camera updates")
+
+
+func test_physics_interpolation_is_disabled_so_the_viewmodel_does_not_jitter() -> void:
+	assert_eq(_rig.physics_interpolation_mode, Node.PHYSICS_INTERPOLATION_MODE_OFF)
+
+
+func test_fire_origin_is_the_players_eye_and_does_not_depend_on_the_view_camera() -> void:
+	var stub := _MachineStub.new()
+	stub.add_to_group(&"gun_machine_root")
+	add_child_autofree(stub)
+	_rig.equip(_sample_stats())
+	_player.net_position = Vector3(4, 2, -3)
+	(_player.get_node("Camera") as Camera3D).global_position = Vector3(40, 50, 60)
+	var expected_origin := _rig._aim_origin(_player)
+	_rig.request_fire()
+	assert_false(stub.spawned.is_empty())
+	for data: Dictionary in stub.spawned:
+		assert_true((data["position"] as Vector3).is_equal_approx(expected_origin))

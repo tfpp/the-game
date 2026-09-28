@@ -33,6 +33,12 @@ var _fire_cooldown := 0.0
 
 func _ready() -> void:
 	add_to_group(&"gun_rigs")
+	# Player updates at priority 0; third-person camera updates at 10. Mount after
+	# both so this frame's camera transform is current, not one frame stale (the
+	# stale read plus the engine's own physics-interpolation smoothing on top of an
+	# already-interpolated camera transform is what made the viewmodel jitter).
+	process_priority = 20
+	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	var fire_mouse := InputEventMouseButton.new()
 	fire_mouse.button_index = MOUSE_BUTTON_LEFT
 	var fire_pad := InputEventJoypadButton.new()
@@ -113,7 +119,7 @@ func request_fire() -> void:
 		return
 	var ammo_type: GunGenerator.AmmoType = net_stats["ammo_type"]
 	var profile := GunGenerator.profile(ammo_type)
-	var origin := _mount_transform(player).origin
+	var origin := _aim_origin(player)
 	var jitter := deg_to_rad(float(net_stats["spread_degrees"]))
 	for _barrel: int in barrel_count:
 		for _pellet: int in int(profile["pellets"]):
@@ -196,6 +202,18 @@ func _mount_transform(player: Player) -> Transform3D:
 
 func _aim_direction(yaw: float, pitch: float) -> Vector3:
 	return Basis.from_euler(Vector3(pitch, yaw, 0.0)) * Vector3(0.0, 0.0, -1.0)
+
+
+## The authoritative shot origin: the player's eye position, independent of camera
+## mode or the cosmetic viewmodel mount (see `_mount_transform`). `request_fire` runs
+## on the server, where the shooter is never `is_local()`, so using the mount
+## transform here spawned every projectile from the third-person shoulder pose even
+## for a shooter in first-person view — this is what made spawns look off in FPS.
+func _aim_origin(player: Player) -> Vector3:
+	return (
+		player.net_position
+		+ Vector3.UP * (player.movement.eye_height_m() - player.movement.hull_height_m() * 0.5)
+	)
 
 
 func _rebuild_view() -> void:

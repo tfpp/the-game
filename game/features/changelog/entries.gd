@@ -9,6 +9,11 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Steadier gun viewmodels",
+		"summary":
+		"Generated guns no longer jitter in first person, and shots now fire from where you aim."
+	},
+	{
 		"title": "Soccer ball physics",
 		"summary":
 		"The map's soccer ball rolls and bounces now — bump it with your body or shoot it."
