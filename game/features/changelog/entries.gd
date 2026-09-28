@@ -9,9 +9,9 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
-		"title": "Quieter alt-tabbing",
+		"title": "Ferry helm",
 		"summary":
-		"Unfocusing the window (e.g. for a screenshot) no longer pops the menu; it resumes on its own."
+		"Taking the ferry's wheel now plants you at its old-timey helm instead of wandering off."
 	},
 	{
 		"title": "Gameplay sound effects",
