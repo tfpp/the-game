@@ -16,7 +16,8 @@
 # ({input_tokens, output_tokens, cache_read_tokens, cache_write_tokens, cost_usd}, cost
 # null when unknown); result.json's usage is the sum over calls, or null.
 # Adapters may also report models (actual IDs) and cost_basis; these are collected
-# across calls. Without reported models, the configured model is recorded.
+# across calls. Without reported models, the configured model is recorded, and
+# reasoning_effort is the effort given to the adapter (null if it takes none).
 # Env: HARNESS_MODEL, HARNESS_REASONING_EFFORT, HARNESS_MAX_TURNS (passed to adapters),
 #      HARNESS_REMOTE (origin),
 #      HARNESS_VERIFY and HARNESS_ADAPTERS (overrides, for tests).
@@ -156,6 +157,11 @@ case "$agent" in
   codex) model="${model:-gpt-6-astra}" ;;
 esac
 export HARNESS_MODEL="$model"
+# Record the reasoning effort the adapter is given; the pi adapter doesn't take one.
+effort="${HARNESS_REASONING_EFFORT:-}"
+case "$agent" in
+  claude | codex) effort="${effort:-low}" ;;
+esac
 # add_usage: adds the last adapter call's usage.json to $usage. A missing cost makes the
 # total's cost unknown.
 add_usage() {
@@ -272,8 +278,10 @@ jq -n \
   --arg branch "$branch" --arg base "$base" --arg title "$title" \
   --arg start_sha "$start_sha" --arg head_sha "$head_sha" --arg base_sha "$base_sha" --argjson attempts "$attempt" \
   --argjson usage "$usage" --argjson models "$models" --argjson cost_basis "$cost_basis" \
+  --arg effort "$effort" \
   '{status: $status, mode: $mode, agent: $agent, branch: $branch, base: $base,
-    title: $title, start_sha: $start_sha, head_sha: $head_sha, base_sha: $base_sha, attempts: $attempts, models: $models, cost_basis: $cost_basis, usage: $usage}' \
+    title: $title, start_sha: $start_sha, head_sha: $head_sha, base_sha: $base_sha, attempts: $attempts, models: $models, cost_basis: $cost_basis, usage: $usage,
+    reasoning_effort: ($effort | select(length > 0) // null)}' \
   >"$out/result.json"
 
 log "status=$status attempts=$attempt head=${head_sha:0:12} usage=$usage out=$out"
