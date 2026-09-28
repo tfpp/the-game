@@ -352,7 +352,10 @@ func (s *Service) MergeStep(ctx context.Context) error {
 		return err
 	}
 	s.drain(ctx)
-	return s.announceDeploys(ctx)
+	if err := s.announceDeploys(ctx); err != nil {
+		return err
+	}
+	return s.announceReleases(ctx)
 }
 
 // advance moves the approval at the front of the queue on, and reports whether it left

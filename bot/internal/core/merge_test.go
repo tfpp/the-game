@@ -40,6 +40,11 @@ func (f *fakeGitHub) Compare(_ context.Context, base, head string) (github.Compa
 	return github.Comparison{Status: "diverged"}, nil
 }
 
+func (f *fakeGitHub) Releases(context.Context) ([]github.Release, error) {
+	f.releaseCalls++
+	return f.releases, nil
+}
+
 func (f *fakeGitHub) CommitParents(_ context.Context, sha string) ([]string, error) {
 	return f.parents[sha], nil
 }
