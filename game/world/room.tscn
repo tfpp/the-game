@@ -1,14 +1,22 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://features/casino_hub/interior.tscn" id="interior"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="wallpaper"]
+[ext_resource type="Texture2D" path="res://assets/kenney/skyboxes/skybox-day.png" id="sky"]
+
+[sub_resource type="PanoramaSkyMaterial" id="SkyMat"]
+panorama = ExtResource("sky")
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
 
 [sub_resource type="Environment" id="Env"]
-background_mode = 1
-background_color = Color(0.035, 0.025, 0.02, 1)
-ambient_light_source = 3
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
 ambient_light_color = Color(0.68, 0.57, 0.44, 1)
 ambient_light_energy = 0.65
+reflected_light_source = 1
 tonemap_mode = 2
 
 [node name="Room" type="Node3D"]

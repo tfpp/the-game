@@ -29,6 +29,10 @@ var jump_queued := false
 
 ## Source-style sensitivity (same number as the `sensitivity` cvar).
 var sensitivity := 2.0
+## Right-stick look speed (radians per second at full tilt) and touch-drag look speed
+## (radians per screen pixel). Adjustable from the Controls settings page.
+var stick_sensitivity := STICK_SENSITIVITY
+var touch_sensitivity := TOUCH_SENSITIVITY
 
 
 func _enter_tree() -> void:
@@ -51,13 +55,14 @@ func apply_scheme(new_scheme: Scheme) -> void:
 	_rebind("move_left", [_key(KEY_LEFT if left_handed else KEY_A)])
 	_rebind("move_right", [_key(KEY_RIGHT if left_handed else KEY_D)])
 	# Scroll-wheel jump is the classic b-hop bind: each notch is one press, regardless
-	# of handedness.
+	# of handedness. The controller's A button is bound here too so it can be rebound.
 	_rebind(
 		"jump",
 		[
 			_key(KEY_SHIFT if left_handed else KEY_SPACE),
 			_mouse(MOUSE_BUTTON_WHEEL_DOWN),
 			_mouse(MOUSE_BUTTON_WHEEL_UP),
+			_pad(JOY_BUTTON_A),
 		]
 	)
 
@@ -95,6 +100,13 @@ func _mouse(button: MouseButton) -> InputEventMouseButton:
 	return event
 
 
+func _pad(button: JoyButton) -> InputEventJoypadButton:
+	var event := InputEventJoypadButton.new()
+	event.button_index = button
+	event.device = -1  # All devices: any connected controller.
+	return event
+
+
 func _ready() -> void:
 	touch_available = DisplayServer.is_touchscreen_available()
 	if OS.has_feature("web"):
@@ -106,6 +118,7 @@ func _ready() -> void:
 		device = Device.GAMEPAD
 	Input.joy_connection_changed.connect(_joy_connection_changed)
 	get_window().focus_exited.connect(_focus_lost)
+	get_window().focus_entered.connect(_focus_regained)
 
 
 func touch_visible() -> bool:
@@ -182,7 +195,7 @@ func _input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventJoypadButton and gameplay_active():
 		var button := event as InputEventJoypadButton
-		if button.pressed and button.button_index == JOY_BUTTON_A:
+		if button.pressed and button.is_action_pressed(&"jump"):
 			jump_queued = true
 
 
@@ -209,7 +222,7 @@ func consume_look(delta: float) -> Vector2:
 	if not gameplay_active():
 		return Vector2.ZERO
 	if device == Device.GAMEPAD and joypad >= 0:
-		result += stick(JOY_AXIS_RIGHT_X, JOY_AXIS_RIGHT_Y) * STICK_SENSITIVITY * delta
+		result += stick(JOY_AXIS_RIGHT_X, JOY_AXIS_RIGHT_Y) * stick_sensitivity * delta
 	return result
 
 
@@ -241,8 +254,14 @@ func _joy_connection_changed(id: int, connected: bool) -> void:
 		_focus_lost()
 
 
+## Losing OS focus (alt-tab, a screenshot tool, a disconnected gamepad) pauses input
+## quietly rather than popping a menu open on the player's behalf. `_focus_regained`
+## resumes just as quietly, so only an explicit action (Esc, a menu button, ...) ever
+## opens a menu.
 func _focus_lost() -> void:
-	var active := gameplay_active()
 	pause()
-	if active:
-		menu_requested.emit()
+
+
+func _focus_regained() -> void:
+	if not playing and not get_tree().get_first_node_in_group(&"modal_ui"):
+		start()

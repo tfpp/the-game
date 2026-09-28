@@ -14,6 +14,20 @@ const ENTRIES: Array[Dictionary] = [
 		"The map's soccer ball rolls and bounces now — bump it with your body or shoot it."
 	},
 	{
+		"title": "Wallet and health HUD",
+		"summary": "Your money now shows in the bottom-right corner, above a proper health bar."
+	},
+	{
+		"title": "Casino skylights",
+		"summary":
+		"Two skylights over the gaming floor let you see the daytime sky from the casino."
+	},
+	{
+		"title": "UI refresh",
+		"summary":
+		"Key and button icons on the Controls page, menu icons, restyled sliders and click sounds."
+	},
+	{
 		"title": "Elevator",
 		"summary": "Call the lobby elevator to ding open onto a new back room, with friends in tow."
 	},
@@ -36,6 +50,11 @@ const ENTRIES: Array[Dictionary] = [
 		"title": "Ferry helm",
 		"summary":
 		"Taking the ferry's wheel now plants you at its old-timey helm instead of wandering off."
+	},
+	{
+		"title": "Settings menu",
+		"summary":
+		"Esc > Settings: rebind keys and controller buttons, tune look sensitivity and set volume."
 	},
 	{
 		"title": "Gameplay sound effects",

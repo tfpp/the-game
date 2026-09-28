@@ -44,10 +44,11 @@ func test_default_bindings_are_left_handed_and_sensitivity_unchanged() -> void:
 			keys.append((event as InputEventKey).physical_keycode)
 		assert_eq(keys, expected[action])
 	var jump := InputMap.action_get_events("jump")
-	assert_eq(jump.size(), 3)
+	assert_eq(jump.size(), 4)
 	assert_eq((jump[0] as InputEventKey).physical_keycode, KEY_SHIFT)
 	assert_eq((jump[1] as InputEventMouseButton).button_index, MOUSE_BUTTON_WHEEL_DOWN)
 	assert_eq((jump[2] as InputEventMouseButton).button_index, MOUSE_BUTTON_WHEEL_UP)
+	assert_eq((jump[3] as InputEventJoypadButton).button_index, JOY_BUTTON_A)
 	assert_almost_eq(Controls.look_radians_per_count(), deg_to_rad(0.044), 0.000001)
 	Controls.apply_scheme(saved_scheme)
 
@@ -115,6 +116,30 @@ func test_menu_and_focus_loss_clear_pending_input() -> void:
 	Controls.start()
 	assert_false(Controls.consume_jump())
 	assert_eq(Controls.consume_look(0.016), Vector2.ZERO)
+
+
+func test_window_focus_loss_pauses_without_requesting_a_menu() -> void:
+	watch_signals(Controls)
+	Controls._focus_lost()
+	assert_false(Controls.gameplay_active())
+	assert_signal_not_emitted(Controls, "menu_requested")
+
+
+func test_window_focus_regained_resumes_quietly_with_no_modal_open() -> void:
+	Controls._focus_lost()
+	watch_signals(Controls)
+	Controls._focus_regained()
+	assert_true(Controls.gameplay_active())
+	assert_signal_not_emitted(Controls, "menu_requested")
+
+
+func test_window_focus_regained_does_not_resume_while_a_menu_is_open() -> void:
+	Controls._focus_lost()
+	var modal := Node.new()
+	add_child_autofree(modal)
+	modal.add_to_group(&"modal_ui")
+	Controls._focus_regained()
+	assert_false(Controls.playing)
 
 
 func test_modal_blocks_movement_look_and_jump() -> void:

@@ -9,8 +9,11 @@ Monorepo for a Discord-driven, agent-built multiplayer game. Architecture:
 
 ## Rules
 
+- Never commit to or push `main` directly. Before starting work, run
+  `git switch main && git pull --ff-only`, then create a new branch from it
+  (`git switch -c <type>/<short-description>`).
 - `harness/verify.sh` must pass before any commit or PR.
-- Feature work goes in `game/features/<name>/`. Don't modify `.github/`, `harness/`,
+- Feature work goes in `<type>/<short-description>`. Don't modify `.github/`, `harness/`,
   `bot/`, `api/`, `game/core/` or `game/project.godot` unless the task explicitly asks
   for it. Those paths need human review.
 - Every new feature must add one entry to the in-game changelog: `ENTRIES` in

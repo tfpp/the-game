@@ -1,8 +1,11 @@
 extends CanvasLayer
 ## Sign-in screen shown before joining an online server (`Network.login_required`), and
 ## the in-game menu. Desktop play uses mouse capture; touch and gamepads use an explicit
-## playing state. Losing desktop pointer lock or pausing opens the menu. Resume only
-## requests mouse capture for keyboard/mouse input.
+## playing state. Losing desktop pointer lock while the window still has focus opens the
+## menu (e.g. a browser dropping pointer lock on Esc). Losing focus on the window itself
+## (alt-tab, a screenshot tool) just pauses quietly and resumes on its own once focus
+## returns (see Controls._focus_regained), so a menu only shows up when explicitly asked
+## for. Resume only requests mouse capture for keyboard/mouse input.
 ##
 ## Email/password or Discord sign-in, display-name picker, then "Play" fetches a join
 ## ticket and connects. The offline room keeps running behind it, and "Play offline"
@@ -14,7 +17,8 @@ extends CanvasLayer
 
 const MODAL_GROUP := &"modal_ui"
 ## Feature panels that want an entry here (e.g. Controls, Release notes) join this group
-## and implement `esc_menu_label() -> String` and `esc_menu_open() -> void`.
+## and implement `esc_menu_label() -> String` and `esc_menu_open() -> void`, and
+## optionally `esc_menu_icon() -> Texture2D` (a white icon, tinted by the theme).
 const ESC_MENU_LINKS_GROUP := &"esc_menu_links"
 const PANEL_WIDTH := 400.0
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
@@ -63,6 +67,12 @@ func _process(delta: float) -> void:
 	if visible and Controls.device == Controls.Device.GAMEPAD:
 		_focus_default_button()
 	if visible or DisplayServer.get_name() == "headless":
+		_idle_s = 0.0
+		return
+	# The window losing OS focus (alt-tab, a screenshot tool) also reads as "not playing"
+	# and can sit that way for a long time; Controls resumes it quietly on its own once
+	# focus returns, so don't race it into opening a menu while it's away.
+	if not get_window().has_focus():
 		_idle_s = 0.0
 		return
 	# Browsers exit pointer lock on Esc without passing the key on, so watch the mouse
@@ -405,7 +415,9 @@ func _add_esc_menu_links() -> void:
 	var entries := get_tree().get_nodes_in_group(ESC_MENU_LINKS_GROUP)
 	entries.sort_custom(_esc_menu_label_is_before)
 	for entry: Node in entries:
-		_link(entry.esc_menu_label(), _open_esc_menu_link.bind(entry))
+		var link := _link(entry.esc_menu_label(), _open_esc_menu_link.bind(entry))
+		if entry.has_method(&"esc_menu_icon"):
+			link.icon = entry.esc_menu_icon()
 
 
 ## Closes this menu and hands off to the feature panel's own open/close handling.
