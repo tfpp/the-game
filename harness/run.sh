@@ -12,6 +12,9 @@
 #
 # Outputs in --out: result.json, summary.md, changes.bundle (on success), protected.txt,
 # prompt-N.md, agent-N.log and verify-N.log per attempt.
+# Adapters may write the token usage of each call to $HARNESS_OUT/usage.json
+# ({input_tokens, output_tokens, cache_read_tokens, cache_write_tokens, cost_usd}, cost
+# null when unknown); result.json's usage is the sum over calls, or null.
 # Env: HARNESS_MODEL, HARNESS_MAX_TURNS (passed to adapters), HARNESS_REMOTE (origin),
 #      HARNESS_VERIFY and HARNESS_ADAPTERS (overrides, for tests).
 # Exit: 0 for success or no_changes, 2 when the agent failed, 1 on harness errors.
@@ -55,7 +58,7 @@ mkdir -p "$out"
 out="$(cd "$out" && pwd)"
 case "$out/" in "$REPO_ROOT"/*) die "--out must be outside the repo" ;; esac
 export HARNESS_OUT="$out"
-rm -f "$out"/{result.json,summary.md,last-message.md,changes.bundle,protected.txt}
+rm -f "$out"/{result.json,summary.md,last-message.md,changes.bundle,protected.txt,usage.json}
 
 cd "$REPO_ROOT"
 [[ -z "$(git status --porcelain)" ]] || die "working tree is not clean"
@@ -130,6 +133,25 @@ check_work() {
 }
 
 # --- agent loop ------------------------------------------------------------------------
+usage=null
+# add_usage: adds the last adapter call's usage.json to $usage. A missing cost makes the
+# total's cost unknown.
+add_usage() {
+  local call
+  call="$(jq -c 'select(type == "object") | with_entries(select(.value | type == "number" or . == null))' \
+    "$out/usage.json" 2>/dev/null)" || return 0
+  rm -f "$out/usage.json"
+  [[ -n "$call" && "$call" != "{}" ]] || return 0
+  usage="$(jq -cn --argjson a "$usage" --argjson b "$call" '
+    def n: if type == "number" then . else 0 end;
+    ($a // {}) as $a | {
+      input_tokens: (($a.input_tokens | n) + ($b.input_tokens | n)),
+      output_tokens: (($a.output_tokens | n) + ($b.output_tokens | n)),
+      cache_read_tokens: (($a.cache_read_tokens | n) + ($b.cache_read_tokens | n)),
+      cache_write_tokens: (($a.cache_write_tokens | n) + ($b.cache_write_tokens | n)),
+      cost_usd: (if ($a == {} or ($a.cost_usd | type) == "number") and ($b.cost_usd | type) == "number"
+        then ($a.cost_usd | n) + $b.cost_usd else null end)}')"
+}
 status="failed"
 attempt=0
 problem=""
@@ -163,7 +185,11 @@ while [[ "$status" != success && "$attempt" -lt "$attempts" ]]; do
   fi
 
   log "agent attempt $attempt/$attempts"
-  if ! "$adapters/$agent.sh" "$prompt" "$out/agent-$attempt.log" "$cont"; then
+  rm -f "$out/usage.json"
+  agent_ok=1
+  "$adapters/$agent.sh" "$prompt" "$out/agent-$attempt.log" "$cont" || agent_ok=0
+  add_usage
+  if [[ "$agent_ok" == 0 ]]; then
     log "agent exited with an error"
     status="agent_error"
     break
@@ -210,10 +236,11 @@ jq -n \
   --arg status "$status" --arg mode "$mode" --arg agent "$agent" \
   --arg branch "$branch" --arg base "$base" --arg title "$title" \
   --arg start_sha "$start_sha" --arg head_sha "$head_sha" --argjson attempts "$attempt" \
+  --argjson usage "$usage" \
   '{status: $status, mode: $mode, agent: $agent, branch: $branch, base: $base,
-    title: $title, start_sha: $start_sha, head_sha: $head_sha, attempts: $attempts}' \
+    title: $title, start_sha: $start_sha, head_sha: $head_sha, attempts: $attempts, usage: $usage}' \
   >"$out/result.json"
 
-log "status=$status attempts=$attempt head=${head_sha:0:12} out=$out"
+log "status=$status attempts=$attempt head=${head_sha:0:12} usage=$usage out=$out"
 [[ -s "$out/protected.txt" ]] && log "touched human-review paths: $(tr '\n' ' ' <"$out/protected.txt")"
 case "$status" in success | no_changes) exit 0 ;; *) exit 2 ;; esac

@@ -7,7 +7,7 @@ definition of done for agents and humans alike.
 |---|---|
 | `verify.sh` | Harness tests, then `game/scripts/check.sh`, then Go checks |
 | `run.sh` | Sets up the branch, runs the agent, re-runs `verify.sh` and sends failures back (up to `--attempts`), commits, and bundles the new commits. Never pushes |
-| `adapters/<agent>.sh` | One per CLI (`claude`, `codex`, `pi`): `PROMPT_FILE LOG_FILE CONTINUE` |
+| `adapters/<agent>.sh` | One per CLI (`claude`, `codex`, `pi`): `PROMPT_FILE LOG_FILE CONTINUE`. Each writes its call's token usage to `usage.json` |
 | `prompts/` | `rules.md` (every run), one file per mode, `fix.md` (retries) |
 | `gate.sh` | Turns a GitHub event into run inputs, or refuses it |
 | `context.sh` | Writes the task (issue, discussion, PR feedback) from GitHub |
@@ -45,6 +45,16 @@ person instead of the bot, and only when the issue's author is a bot account.
   revise can only add commits. The token has no Workflows permission, so pushes that edit
   `.github/workflows/` are refused and reported. Changes under `CODEOWNERS` paths are
   flagged in the PR.
+
+## Token usage
+
+`run.sh` sums the adapters' per-call `usage.json` over all attempts into `result.json`
+(`usage`: input, output, cache read and cache write tokens, and `cost_usd`). `publish.sh`
+adds it to the PR footer and to the first line of every 🤖 comment, which the Discord bot
+relays: `1.2M tokens (34k output) · ~$3.45`. Claude's and pi's costs are at API prices,
+even on a subscription; Codex reports no cost, so none is shown. The numbers come from the
+untrusted agent job, so they're informational: `publish.sh` only reads non-negative
+numbers from them.
 
 ## Setup
 
