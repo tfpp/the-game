@@ -42,12 +42,36 @@ static func build(stats: Dictionary) -> Node3D:
 		barrel.material_override = _material(color)
 		root.add_child(barrel)
 
+	if GunGenerator.is_ray_gun(stats):
+		_add_ray_gun_details(root, body, length, color)
+
 	var muzzle := Marker3D.new()
 	muzzle.name = "Muzzle"
 	muzzle.position = Vector3(0, 0, -length)
 	root.add_child(muzzle)
 
 	return root
+
+
+## The Ray Gun's retro look: a red body and glowing green rings around the barrel.
+static func _add_ray_gun_details(
+	root: Node3D, body: MeshInstance3D, length: float, glow: Color
+) -> void:
+	body.material_override = _material(Color(0.6, 0.08, 0.06))
+	for index: int in 3:
+		var ring := MeshInstance3D.new()
+		ring.name = "RayRing%d" % index
+		var mesh := TorusMesh.new()
+		mesh.inner_radius = 0.035
+		mesh.outer_radius = 0.055 - index * 0.006
+		ring.mesh = mesh
+		ring.rotation.x = deg_to_rad(90.0)
+		ring.position = Vector3(0, 0, -length * (0.25 + index * 0.25))
+		var material := _material(glow)
+		material.emission_enabled = true
+		material.emission = glow
+		ring.material_override = material
+		root.add_child(ring)
 
 
 static func _barrel_offsets(barrel_count: int) -> Array[Vector2]:

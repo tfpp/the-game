@@ -83,6 +83,13 @@ ever in hand. See `gun_rig.gd`'s `holster`/`net_equipped` and
   stat sheet (including fire mode), the extra UI a randomly generated weapon needs
   since its specs aren't printed on a fixed item.
 
+## Ray Gun
+
+`GunGenerator.RAY_GUN_CHANCE` (1 in 30, about the Call of Duty Zombies mystery box
+odds) makes a purchase hand out the fixed `GunGenerator.ray_gun()` instead of a random
+roll: `AmmoType.RAY`, semi-auto green bolts with a small splash, 20-round magazine and
+160 rounds total. `GunView` gives it a red body and glowing green rings.
+
 ## Adding to the price or ranges
 
 `GunMachine.PRICE_CENTS` and `GunGenerator.AMMO_PROFILES`' ranges are the only
