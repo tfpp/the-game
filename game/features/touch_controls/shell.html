@@ -120,6 +120,17 @@ window.getGameSafeArea = function () {
 		height: document.documentElement.clientHeight,
 	});
 };
+
+// Godot's canvas keydown listener calls preventDefault() on every key, which blocks browser
+// reload shortcuts. Stop those from reaching Godot so the browser handles them: Cmd+R,
+// Cmd+Shift+R (macOS), Ctrl+R, Ctrl+Shift+R and F5 (with any modifiers).
+window.addEventListener('keydown', function (evt) {
+	const isR = evt.code === 'KeyR' || (evt.key || '').toLowerCase() === 'r';
+	const reload = evt.key === 'F5' || (isR && (evt.metaKey || evt.ctrlKey) && !evt.altKey);
+	if (reload) {
+		evt.stopImmediatePropagation();
+	}
+}, true);
 		</script>
 		$GODOT_HEAD_INCLUDE
 	</head>

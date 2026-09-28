@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://features/slot_machine/machine.tscn" id="1"]
+
+[node name="SlotMachines" type="Node3D"]
+
+[node name="Machine" parent="." instance=ExtResource("1")]
+position = Vector3(0, 0, 6)
