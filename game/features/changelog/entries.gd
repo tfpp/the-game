@@ -20,6 +20,11 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Bouncier frogs",
+		"summary":
+		"Frogs jump twice as high, bounce off walls, ribbit when hit, and there are twice as many."
+	},
+	{
 		"title": "Dev elevator",
 		"summary":
 		(
@@ -39,6 +44,11 @@ const ENTRIES: Array[Dictionary] = [
 		"title": "Wandering gnomes",
 		"summary":
 		"Gnome burrows hug the outer walls, dash to far-off holes along real routed paths, and dodge you."
+	},
+	{
+		"title": "Shooting gallery",
+		"summary":
+		"A Doom-style arena of killable, gory humanoid dummies. Every weapon can now hurt animals too."
 	},
 	{
 		"title": "Steadier gun viewmodels",

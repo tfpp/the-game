@@ -27,6 +27,7 @@ func test_registers_as_a_settings_page() -> void:
 func test_defaults_to_unscaled() -> void:
 	assert_eq(_config.jump_height_scale, 1.0)
 	assert_eq(_config.frog_hop_rate, 1.0)
+	assert_eq(_config.frog_jump_height_scale, 2.0)
 
 
 func test_request_jump_height_scale_is_clamped_to_range() -> void:
@@ -43,6 +44,13 @@ func test_request_frog_hop_rate_is_clamped_to_range() -> void:
 	assert_eq(_config.frog_hop_rate, GameConfig.FROG_HOP_RATE_RANGE.x)
 
 
+func test_request_frog_jump_height_scale_is_clamped_to_range() -> void:
+	_config.request_frog_jump_height_scale(999.0)
+	assert_eq(_config.frog_jump_height_scale, GameConfig.FROG_JUMP_HEIGHT_RANGE.y)
+	_config.request_frog_jump_height_scale(-5.0)
+	assert_eq(_config.frog_jump_height_scale, GameConfig.FROG_JUMP_HEIGHT_RANGE.x)
+
+
 func test_applies_jump_height_to_the_local_player_only() -> void:
 	var base := MovementConfig.new().jump_speed
 	var local_player := PLAYER.instantiate() as Player
@@ -52,10 +60,12 @@ func test_applies_jump_height_to_the_local_player_only() -> void:
 	assert_almost_eq(local_player.movement.jump_speed, base * 1.5, 0.001)
 
 
-func test_applies_frog_hop_rate_to_every_frog() -> void:
+func test_applies_frog_hop_rate_and_jump_height_to_every_frog() -> void:
 	var frog := FROG.instantiate() as Frog
 	add_child_autofree(frog)
 	frog.set_physics_process(false)
 	_config.request_frog_hop_rate(2.0)
-	_config._apply_frog_hop_rate()
+	_config.request_frog_jump_height_scale(3.0)
+	_config._apply_frog_scales()
 	assert_eq(frog.hop_rate_scale, 2.0)
+	assert_eq(frog.jump_height_scale, 3.0)

@@ -27,6 +27,11 @@ script = ExtResource("1_script")
 [node name="Body" type="Node3D" parent="."]
 script = ExtResource("2_model")
 
+[node name="Ribbit" type="AudioStreamPlayer3D" parent="."]
+volume_db = -8.0
+unit_size = 6.0
+max_distance = 30.0
+
 [node name="Sync" type="MultiplayerSynchronizer" parent="."]
 root_path = NodePath("..")
 replication_interval = 0.04

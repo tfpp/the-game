@@ -3,7 +3,7 @@ extends Node3D
 ## profile, while each frog chooses its own safe route through the level.
 
 const FROG_SCENE := preload("res://features/frogs/frog.tscn")
-const FROG_COUNT := 6
+const FROG_COUNT := 12
 
 @onready var _pond: Node3D = $Pond
 @onready var _spawner: MultiplayerSpawner = $FrogSpawner

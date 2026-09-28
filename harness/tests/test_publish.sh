@@ -86,6 +86,7 @@ publish() {
 
 echo "- success: pushes the branch and opens a PR with the request quoted"
 scenario <<'EOF'
+echo '{"input_tokens":1200,"output_tokens":34000,"cache_read_tokens":1200000,"cache_write_tokens":0,"cost_usd":3.456}' >"$HARNESS_OUT/usage.json"
 mkdir -p game/core/net && echo x >game/core/net/n.gd && echo pad >game/pad.txt
 printf 'feat(game): add jump pads\n\n## Summary\nBoing.\n\n## Changes\n- **Pads**: new\n' >"$HARNESS_OUT/summary.md"
 EOF
@@ -96,11 +97,12 @@ publish
 [[ "$(cat "$work/pr-title" 2>/dev/null)" == "feat(game): add jump pads" ]] || fail "PR title"
 body="$(cat "$work/pr-body" 2>/dev/null)"
 for want in "## Summary" "Boing." "Closes #5" "## Discord Request" "> **Jump pads**" "> pads" \
-  "requested by @alice" "game/core/net/n.gd" "verify passed after 1 attempt" \
+  "requested by @alice" "game/core/net/n.gd" "verify passed after 1 attempt(s) · 1.2M tokens (34k output) · ~\$3.46" \
   "Verified with base commit" "$(jq -r .base_sha "$out/result.json")"; do
   [[ "$body" == *"$want"* ]] || fail "PR body lacks '$want'"
 done
-grep -q "pull/99" "$work/comments" || fail "no PR link comment on the issue"
+grep -qF "🤖 Opened https://github.com/o/r/pull/99 · 1.2M tokens (34k output) · ~\$3.46" "$work/comments" ||
+  fail "no PR link comment with usage on the issue: $(cat "$work/comments")"
 grep -q unlabeled "$work/labels" || fail "label not removed"
 
 echo "- a moving base is disclosed instead of claiming validation against latest main"
@@ -150,6 +152,16 @@ scenario <<<'echo pad >game/pad.txt'
 publish
 [[ "$code" == 1 ]] || fail "expected exit 1, got $code"
 grep -q "Someone pushed to the branch" "$work/comments" || fail "no rejection reason: $(cat "$work/comments")"
+
+echo "- no changes: the comment shows usage without a cost when it's unknown, and ignores junk"
+scenario <<'EOF'
+echo '{"input_tokens":"lots","output_tokens":999,"cache_read_tokens":-5,"cost_usd":null}' >"$HARNESS_OUT/usage.json"
+printf 'no changes\n\nToo vague.\n' >"$HARNESS_OUT/summary.md"
+EOF
+publish
+[[ "$code" == 0 ]] || fail "exit $code: $(cat "$work/publish.log")"
+grep -qF '🤖 `fake` (`implement`) made no changes ([run](https://run) · 999 tokens (999 output)).' "$work/comments" ||
+  fail "no-changes comment: $(cat "$work/comments")"
 
 echo "- a missing artifact is reported"
 scenario <<<'true'

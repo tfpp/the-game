@@ -1,0 +1,77 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://features/shooting_gallery/shooting_gallery.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://features/shooting_gallery/portal.tscn" id="2_portal"]
+[ext_resource type="Material" path="res://world/materials/proto_dark.tres" id="3_dark"]
+[ext_resource type="Material" path="res://world/materials/proto_orange.tres" id="4_orange"]
+
+[node name="ShootingGallery" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Entrance" parent="." instance=ExtResource("2_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -29)
+label = "Enter the Shooting Gallery"
+destination = Vector3(80, 1.2, 6)
+destination_yaw = 0.0
+
+[node name="Sign" parent="Entrance"]
+text = "SHOOTING GALLERY"
+
+[node name="Arena" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0, 0)
+
+[node name="Floor" type="CSGBox3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+size = Vector3(28, 1, 28)
+material = ExtResource("3_dark")
+use_collision = true
+
+[node name="WallNorth" type="CSGBox3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -13.5)
+size = Vector3(28, 6, 1)
+material = ExtResource("4_orange")
+use_collision = true
+
+[node name="WallSouth" type="CSGBox3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 13.5)
+size = Vector3(28, 6, 1)
+material = ExtResource("4_orange")
+use_collision = true
+
+[node name="WallEast" type="CSGBox3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 3, 0)
+size = Vector3(1, 6, 28)
+material = ExtResource("4_orange")
+use_collision = true
+
+[node name="WallWest" type="CSGBox3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 3, 0)
+size = Vector3(1, 6, 28)
+material = ExtResource("4_orange")
+use_collision = true
+
+[node name="CoverLeft" type="CSGBox3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.6, -3)
+size = Vector3(2, 1.2, 1.2)
+material = ExtResource("3_dark")
+use_collision = true
+
+[node name="CoverRight" type="CSGBox3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.6, -3)
+size = Vector3(2, 1.2, 1.2)
+material = ExtResource("3_dark")
+use_collision = true
+
+[node name="Exit" parent="Arena" instance=ExtResource("2_portal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11)
+label = "Exit to the casino"
+destination = Vector3(16, 1.2, -25)
+destination_yaw = 3.14159
+
+[node name="Sign" parent="Arena/Exit"]
+text = "EXIT"
+
+[node name="Targets" type="Node3D" parent="Arena"]
+
+[node name="TargetSpawner" type="MultiplayerSpawner" parent="Arena"]
+spawn_path = NodePath("../Targets")

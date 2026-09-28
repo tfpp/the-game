@@ -54,16 +54,21 @@ ever in hand. See `gun_rig.gd`'s `holster`/`net_equipped` and
 - `projectile.gd` / `projectile.tscn`: a fired round in flight. Server-authoritative
   like `features/holdables/thrown_item.gd` — the server integrates position each
   physics tick (gravity scale from the ammo profile) and publishes `net_position`;
-  other peers only smooth toward it. A ray query each tick checks for a hit: a
-  direct hit on a `Player` deals damage through `features/combat` (the same
-  cross-feature `apply_damage` pattern `features/holdables/hand.gd` uses) and, for
-  rockets and grenades, splashes everyone within `explosion_radius` — falloff damage
-  (`ProjectileMath.splash_damage`) for everyone but the direct-hit target, and a
-  falloff splash force (`ProjectileMath.splash_force`) that shoves *everyone*,
-  direct-hit target included, away from and slightly above the blast. Since movement
-  is client-authoritative and `core/player` isn't ours to edit, that push goes
-  through `Player.server_teleport` — the documented way (game/AGENTS.md) to move a
-  player from the server — to an offset destination rather than a velocity impulse.
+  other peers only smooth toward it. A ray query each tick (mask `1 | 2`, the same
+  mask `features/holdables/hand.gd`'s hitscan uses so rounds also reach small
+  wildlife and gallery targets on layer 2) checks for a hit: a direct hit on a
+  `Player` deals damage through `features/combat` (the same cross-feature
+  `apply_damage` pattern `features/holdables/hand.gd` uses); a hit on anything else
+  in the `killable` group (frogs, the penguin, `features/shooting_gallery`'s
+  targets) calls its `take_hit` instead, since those have no player peer id for
+  `apply_damage` to key on. For rockets and grenades, a direct hit also splashes
+  everyone within `explosion_radius` — falloff damage (`ProjectileMath.splash_damage`)
+  for everyone but the direct-hit target, and a falloff splash force
+  (`ProjectileMath.splash_force`) that shoves *everyone*, direct-hit target
+  included, away from and slightly above the blast. Since movement is
+  client-authoritative and `core/player` isn't ours to edit, that push goes through
+  `Player.server_teleport` — the documented way (game/AGENTS.md) to move a player
+  from the server — to an offset destination rather than a velocity impulse.
   A world hit either bounces (grenades, losing energy each time —
   `ProjectileMath.bounce`/`should_settle` — until they settle and explode) or ends
   the shot outright (everything else). Grenades also detonate on a fuse regardless
