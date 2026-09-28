@@ -16,6 +16,11 @@ const ENTRIES: Array[Dictionary] = [
 		"Gun machine guns roll automatic or semi-auto, and explosive rounds get a real blast and shove."
 	},
 	{
+		"title": "Wandering gnomes",
+		"summary":
+		"Gnome burrows hug the outer walls, dash to far-off holes along real routed paths, and dodge you."
+	},
+	{
 		"title": "Steadier gun viewmodels",
 		"summary":
 		(
