@@ -109,6 +109,16 @@ var migrations = []string{
 		code_challenge TEXT NOT NULL,
 		expires_at     INTEGER NOT NULL
 	);`,
+	`ALTER TABLE accounts ADD COLUMN money INTEGER NOT NULL DEFAULT 2000 CHECK(money >= 0);
+	ALTER TABLE accounts ADD COLUMN income_seconds INTEGER NOT NULL DEFAULT 0;
+	ALTER TABLE accounts ADD COLUMN income_seen INTEGER NOT NULL DEFAULT 0;
+	CREATE TABLE slot_spins (
+		id TEXT PRIMARY KEY,
+		account_id INTEGER NOT NULL REFERENCES accounts(id),
+		reels TEXT NOT NULL,
+		payout INTEGER NOT NULL,
+		balance INTEGER NOT NULL
+	);`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {
