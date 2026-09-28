@@ -1,10 +1,13 @@
 # Gun machine
 
 A machine that sells a randomly generated gun for $20, and a trash can next to it
-that gets rid of your current one. Deliberately independent of `features/holdables`
-(which has its own fixed pistol/SMG/shotgun/AWP): a generated gun's stats vary per
-instance, so it needs its own holding, firing and projectile system rather than
-`holdables`' static `ItemDefinition` catalog.
+that gets rid of your current one. Its holding, firing and projectile system is
+independent of `features/holdables` (which has its own fixed pistol/SMG/shotgun/AWP):
+a generated gun's stats vary per instance, so it can't reuse `holdables`' static
+`ItemDefinition` catalog. The two are still mutually exclusive, though — equipping a
+gun from either system holsters whatever the other was holding, so only one weapon is
+ever in hand. See `gun_rig.gd`'s `holster`/`net_equipped` and
+`features/inventory/player_inventory.gd`'s `holster_weapon`.
 
 ## How it works
 
@@ -27,7 +30,7 @@ instance, so it needs its own holding, firing and projectile system rather than
   `interactables`, same `can_use`/`interaction_text`/`use()` contract as
   `features/interaction`), range-checked the simple way `features/coins/coin_pickup.gd`
   is rather than `features/slot_machine`'s full facing/obstruction check.
-- `gun_rig.gd` (group `gun_rigs`): one player's currently held generated gun —
+- `gun_rig.gd` (group `gun_rigs`): one player's currently rolled generated gun —
   what it is, how much ammo is loaded (magazine + reserve, both spent and refilled
   server-side by `request_fire`/`request_reload`) — and where its visual sits, the
   same "not parented to the Player" tracking `features/holdables/hand.gd` uses since
@@ -35,7 +38,12 @@ instance, so it needs its own holding, firing and projectile system rather than
   follows the player's *full* aim direction (yaw and pitch, from `net_yaw`/`net_pitch`),
   not just a fixed offset, so it visibly points where they're looking; the local
   first-person viewmodel uses the same bottom-right, aimed-at-the-reticle camera
-  offset `Hand` does.
+  offset `Hand` does. `net_equipped` tracks whether the rolled gun is actually in
+  hand (`is_active()`) or holstered in reserve: `holster()` clears it without
+  touching `net_stats`, so the gun survives being set aside for a holdable weapon,
+  and `request_equip_rig` (bound to 9 and the scroll cycle by
+  `features/weapon_hotbar`) brings it back. Firing, reloading and the visual mount
+  all check `is_active()`.
 - `gun_view.gd`: builds a gun's mesh straight from its rolled stats (barrel count,
   thickness from damage, length from projectile speed, color from ammo type) — there's
   no fixed asset, since every gun is a one-off.

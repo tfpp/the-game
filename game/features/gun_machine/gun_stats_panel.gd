@@ -30,7 +30,7 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	var rig := _local_rig()
-	if rig == null or rig.net_stats.is_empty():
+	if rig == null or not rig.is_active():
 		_ammo_label.text = ""
 		if _is_open():
 			_close()
@@ -53,7 +53,7 @@ func _input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed(TOGGLE_ACTION):
 		var rig := _local_rig()
-		if rig == null or rig.net_stats.is_empty():
+		if rig == null or not rig.is_active():
 			return
 		get_viewport().set_input_as_handled()
 		_open()

@@ -59,6 +59,31 @@ func test_full_hand_collects_into_bag_and_equip_swaps_without_losing_items() -> 
 	assert_eq(_inventory.backpack[0], "pistol", "Eating consumes only the held item")
 
 
+func test_holster_weapon_stows_the_held_weapon_and_leaves_the_hand_empty() -> void:
+	_inventory.collect("pistol")
+	_inventory.holster_weapon()
+	assert_eq(_hand.net_item_id, "")
+	assert_eq(_inventory.backpack[0], "pistol")
+
+
+func test_holster_weapon_ignores_a_held_non_weapon() -> void:
+	_inventory.collect("banana")
+	_inventory.holster_weapon()
+	assert_eq(_hand.net_item_id, "banana")
+
+
+func test_holster_weapon_drops_the_weapon_when_the_backpack_is_full() -> void:
+	var sink := DropSink.new()
+	sink.add_to_group(&"holdables_root")
+	add_child_autofree(sink)
+	_inventory.collect("pistol")
+	for index: int in 8:
+		assert_true(_inventory.collect("banana"))
+	_inventory.holster_weapon()
+	assert_eq(_hand.net_item_id, "")
+	assert_eq(sink.items, ["pistol"])
+
+
 func test_clothing_swaps_preserve_colors_and_stow_removes_equipment() -> void:
 	_inventory.collect("shirt:2")
 	_inventory.collect("shirt:4")

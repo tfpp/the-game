@@ -27,7 +27,10 @@ action all key off the category.
 
 - `item_pickup.gd`: a world pickup. It's an `interactables` entry (see
   `features/interaction`), so E/controller-B equips it in an empty matching slot or adds it to
-  the backpack. Once taken it's gone for good (`net_taken`, replicated).
+  the backpack. Once taken it's gone for good (`net_taken`, replicated). Picking up or
+  equipping a `WEAPON` holsters `features/gun_machine`'s rig if it's out
+  (`PlayerInventory.holster_weapon`/`_holster_gun_rig_if_weapon`), so a holdable
+  weapon and a generated gun can never both be equipped at once.
 - `hand.gd`: one player's held item. The holdables feature spawns one `Hand` per
   connected peer (like `core/game/game.gd` spawns one `Player` per peer), since
   `core/player` isn't ours to edit — a `Hand` isn't parented to its `Player`; each
