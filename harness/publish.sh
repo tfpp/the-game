@@ -71,7 +71,7 @@ case "$status" in
     comment "$TARGET" "$tmp/body.md"
     exit 0
     ;;
-  failed) report_failure "\`harness/verify.sh\` still failed after $attempts attempt(s)" && exit 1 ;;
+  failed) report_failure "the work did not pass harness checks after $attempts attempt(s)" && exit 1 ;;
   agent_error) report_failure "the agent exited with an error" && exit 1 ;;
   *) report_failure "unknown status \`$status\`" && exit 1 ;;
 esac
@@ -127,6 +127,14 @@ warning() {
 }
 footer() {
   printf '\n---\n🤖 `%s` · %s · verify passed after %s attempt(s)\n' "$AGENT" "$run_link" "$attempts"
+  local checked_base
+  checked_base="$(jq -r '.base_sha // empty' "$result")"
+  if [[ "$checked_base" =~ ^[0-9a-f]{40}$ ]]; then
+    printf '\nVerified with base commit `%s`.\n' "$checked_base"
+    if [[ "$checked_base" != "$(git rev-parse "$base_ref")" ]]; then
+      printf '\nThe base has moved since this run. The merge coordinator must update this branch and wait for CI before merging.\n'
+    fi
+  fi
 }
 
 if [[ "$MODE" == implement ]]; then

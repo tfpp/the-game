@@ -7,6 +7,7 @@ extends GutTest
 const FeatureScene := preload("res://features/gun_machine/feature.tscn")
 const GunRigScene := preload("res://features/gun_machine/gun_rig.tscn")
 const PlayerScene := preload("res://core/player/player.tscn")
+const ProjectileScene := preload("res://features/gun_machine/projectile.tscn")
 
 const RIFLE_STATS := {
 	"ammo_type": 1,  # GunGenerator.AmmoType.RIFLE
@@ -167,3 +168,54 @@ func test_a_fired_rifle_round_kills_a_killable_npc_on_layer_2() -> void:
 			break
 	assert_true(hit, "the round should have crossed the 10m gap and hit the killable target")
 	assert_eq(target.hits, [1])
+
+
+func test_splash_force_pushes_a_nearby_player_away_from_and_above_the_blast() -> void:
+	var player := PlayerScene.instantiate() as Player
+	player.name = "1"
+	player.set_multiplayer_authority(1)
+	player.position = Vector3(2, 0, 0)
+	player.net_position = player.position
+	add_child_autofree(player)
+	var projectile := ProjectileScene.instantiate() as Projectile
+	add_child_autofree(projectile)
+	await get_tree().physics_frame
+	var before := player.global_position
+	# Blast centered at the projectile's default net_position (the world origin), a
+	# radius of 4m and a max push of 6m; the player stands 2m away, so it should be
+	# shoved further from the origin and launched upward.
+	projectile._apply_splash_force(player, 2.0, 4.0, 6.0)
+	assert_gt(player.global_position.length(), before.length())
+	assert_gt(player.global_position.y, before.y)
+
+
+func test_splash_force_is_a_no_op_outside_the_blast_radius() -> void:
+	var player := PlayerScene.instantiate() as Player
+	player.name = "1"
+	player.set_multiplayer_authority(1)
+	player.position = Vector3(10, 0, 0)
+	player.net_position = player.position
+	add_child_autofree(player)
+	var projectile := ProjectileScene.instantiate() as Projectile
+	add_child_autofree(projectile)
+	await get_tree().physics_frame
+	var before := player.global_position
+	projectile._apply_splash_force(player, 10.0, 4.0, 6.0)
+	assert_eq(player.global_position, before)
+
+
+func test_an_explosive_impact_spawns_the_explosion_effect_instead_of_a_plain_flash() -> void:
+	var container := Node3D.new()
+	add_child_autofree(container)
+	var projectile := ProjectileScene.instantiate() as Projectile
+	container.add_child(projectile)
+	await get_tree().physics_frame
+	var before := container.get_child_count()
+	projectile._finish(4.0)
+	# The projectile itself is still here (queue_free is deferred), plus a new
+	# sibling node for the explosion effect.
+	assert_eq(
+		container.get_child_count(),
+		before + 1,
+		"an explosive impact should spawn the explosion effect as a sibling"
+	)

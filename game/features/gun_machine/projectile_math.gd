@@ -37,3 +37,12 @@ static func splash_damage(distance: float, radius: float, max_damage: float) -> 
 	if radius <= 0.0 or distance >= radius:
 		return 0.0
 	return max_damage * (1.0 - distance / radius)
+
+
+## How far (in meters) an explosion of `radius` and `max_force` shoves someone
+## standing `distance` meters away, falling off linearly to 0 at the edge — the same
+## shape as `splash_damage`, so a blast that barely grazes you barely moves you.
+static func splash_force(distance: float, radius: float, max_force: float) -> float:
+	if radius <= 0.0 or distance >= radius:
+		return 0.0
+	return max_force * (1.0 - distance / radius)

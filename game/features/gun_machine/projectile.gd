@@ -131,7 +131,7 @@ func _apply_direct_hit(player: Player, profile: Dictionary) -> void:
 	if combat != null:
 		combat.call("apply_damage", player.get_multiplayer_authority(), damage, shooter_peer)
 	_splash(profile, player.get_multiplayer_authority())
-	_finish()
+	_finish(float(profile["explosion_radius"]))
 
 
 ## Non-player killables (features/frogs, features/penguin, features/shooting_gallery)
@@ -145,38 +145,64 @@ func _apply_killable_hit(target: Node, profile: Dictionary) -> void:
 
 func _explode(profile: Dictionary) -> void:
 	_splash(profile, 0)
-	_finish()
+	_finish(float(profile["explosion_radius"]))
 
 
-## Everyone within the ammo type's explosion radius except `already_hit_peer` (the
-## direct-hit target, if any — splash tapers to 0 at the radius, so a direct hit
-## already covers that case) takes falloff damage, for the rockets and grenades that
-## have one; a radius of 0 (every other ammo type) makes this a no-op.
+## Everyone within the ammo type's explosion radius, for the rockets and grenades
+## that have one (a radius of 0, every other ammo type, makes this a no-op): falloff
+## damage (skipping `already_hit_peer`, the direct-hit target if any, whose full-
+## damage direct hit already covers that case) and a falloff splash force that
+## shoves them away from the blast, direct-hit target included — a rocket that hits
+## you should still fling you back, not just the bystanders around you.
 func _splash(profile: Dictionary, already_hit_peer: int) -> void:
 	var radius := float(profile["explosion_radius"])
 	if radius <= 0.0:
 		return
 	var combat := get_tree().get_first_node_in_group(&"combat")
-	if combat == null:
-		return
+	var max_force := float(profile.get("splash_force", 0.0))
 	for node: Node in get_tree().get_nodes_in_group(&"players"):
 		var player := node as Player
 		if player == null:
 			continue
 		var peer := player.get_multiplayer_authority()
-		if peer == already_hit_peer:
-			continue
 		var distance := player.net_position.distance_to(net_position)
-		var splash_damage := ProjectileMath.splash_damage(distance, radius, damage)
-		if splash_damage > 0.0:
-			combat.call("apply_damage", peer, splash_damage, shooter_peer)
+		if distance >= radius:
+			continue
+		if peer != already_hit_peer and combat != null:
+			var splash_damage := ProjectileMath.splash_damage(distance, radius, damage)
+			if splash_damage > 0.0:
+				combat.call("apply_damage", peer, splash_damage, shooter_peer)
+		_apply_splash_force(player, distance, radius, max_force)
 
 
-func _finish() -> void:
+## Shoves `player` away from the blast (and slightly upward, so a close call
+## launches instead of just sliding them), the sanctioned way to move a player from
+## the server (game/AGENTS.md) since movement is otherwise client-authoritative and
+## `core/player` isn't ours to edit.
+func _apply_splash_force(player: Player, distance: float, radius: float, max_force: float) -> void:
+	var push := ProjectileMath.splash_force(distance, radius, max_force)
+	if push <= 0.0:
+		return
+	var away := player.net_position - net_position
+	var direction := away.normalized() if away.length() > 0.001 else Vector3.UP
+	direction.y = maxf(direction.y, 0.35)
+	direction = direction.normalized()
+	var destination := player.net_position + direction * push
+	# Broadcast rather than `rpc_id(player.get_multiplayer_authority(), ...)`: a splash
+	# can reach several players' worth of targeted calls per explosion, and
+	# `server_teleport`'s own `is_local()` guard already makes sure only the owning
+	# peer ever applies it, so there's no need to address each one individually.
+	player.server_teleport.rpc(destination)
+
+
+func _finish(explosion_radius: float = 0.0) -> void:
 	if _finished:
 		return
 	_finished = true
-	_play_impact.rpc(net_position)
+	if explosion_radius > 0.0:
+		_play_explosion.rpc(net_position, explosion_radius)
+	else:
+		_play_impact.rpc(net_position)
 	queue_free()
 
 
@@ -195,6 +221,17 @@ func _play_impact(at: Vector3) -> void:
 	var timer := get_tree().create_timer(0.12)
 	await timer.timeout
 	flash.queue_free()
+
+
+## An event, not saved state, like `_play_impact` — the bigger, louder version for
+## an explosive round (nonzero `explosion_radius`) going off, whether that's a
+## direct hit or a fuse/world-impact detonation.
+@rpc("authority", "call_local", "reliable")
+func _play_explosion(at: Vector3, radius: float) -> void:
+	var parent := get_parent()
+	if parent == null:
+		return
+	GunExplosionEffect.spawn(parent, at, radius)
 
 
 func _process(delta: float) -> void:

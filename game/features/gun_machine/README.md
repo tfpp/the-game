@@ -13,10 +13,11 @@ instance, so it needs its own holding, firing and projectile system rather than
   from the node that uses it. Every gun rolls an ammo type (`AmmoType`: buckshot,
   rifle, low-caliber, rocket, grenade, plasma) and, within that type's ranges,
   barrel count, fire rate, magazine size, damage, total ammo capacity, projectile
-  speed and spread. Barrel count is capped at the rolled magazine size, so a gun can
-  always at least be fired once fully loaded. `AMMO_PROFILES` holds each ammo type's
-  fixed behavior: pellets per barrel (buckshot sprays several), gravity scale,
-  bounces, fuse time and explosion radius.
+  speed and spread, plus a fire mode (`is_automatic`, `AUTOMATIC_CHANCE` odds,
+  independent of ammo type). Barrel count is capped at the rolled magazine size, so a
+  gun can always at least be fired once fully loaded. `AMMO_PROFILES` holds each ammo
+  type's fixed behavior: pellets per barrel (buckshot sprays several), gravity scale,
+  bounces, fuse time, explosion radius and splash force.
 - `gun_machine.gd` (root, group `gun_machine_root`): server-authoritative, like
   `features/holdables/holdables.gd`. Spawns a `GunRig` per connected peer through a
   `MultiplayerSpawner`, and a `Projectile` through another whenever one fires.
@@ -35,7 +36,10 @@ instance, so it needs its own holding, firing and projectile system rather than
   follows the player's *full* aim direction (yaw and pitch, from `net_yaw`/`net_pitch`),
   not just a fixed offset, so it visibly points where they're looking; the local
   first-person viewmodel uses the same bottom-right, aimed-at-the-reticle camera
-  offset `Hand` does.
+  offset `Hand` does. A semi-automatic gun (`net_stats["is_automatic"]` false) fires
+  once per `gun_fire` press, same as before; an automatic one also polls every frame
+  (`_maybe_auto_fire`, gated by the pure `should_auto_fire`) and keeps firing at its
+  own fire rate for as long as the button stays held.
 - `gun_view.gd`: builds a gun's mesh straight from its rolled stats (barrel count,
   thickness from damage, length from projectile speed, color from ammo type) — there's
   no fixed asset, since every gun is a one-off.
@@ -50,14 +54,26 @@ instance, so it needs its own holding, firing and projectile system rather than
   in the `killable` group (frogs, the penguin, `features/shooting_gallery`'s
   targets) calls its `take_hit` instead, since those have no player peer id for
   `apply_damage` to key on. For rockets and grenades, a direct hit also splashes
-  everyone else within `explosion_radius` (`ProjectileMath.splash_damage`, falling
-  off linearly to 0 at the edge). A world hit either bounces (grenades, losing energy each time —
+  everyone within `explosion_radius` — falloff damage (`ProjectileMath.splash_damage`)
+  for everyone but the direct-hit target, and a falloff splash force
+  (`ProjectileMath.splash_force`) that shoves *everyone*, direct-hit target
+  included, away from and slightly above the blast. Since movement is
+  client-authoritative and `core/player` isn't ours to edit, that push goes through
+  `Player.server_teleport` — the documented way (game/AGENTS.md) to move a player
+  from the server — to an offset destination rather than a velocity impulse.
+  A world hit either bounces (grenades, losing energy each time —
   `ProjectileMath.bounce`/`should_settle` — until they settle and explode) or ends
   the shot outright (everything else). Grenades also detonate on a fuse regardless
-  of what they've hit. Every ammo type is a real projectile, not a hitscan.
+  of what they've hit. An explosive impact plays `explosion_effect.gd`'s bigger
+  flash-and-shockwave burst instead of the plain impact flash non-explosive rounds
+  get. Every ammo type is a real projectile, not a hitscan.
+- `explosion_effect.gd`: the cosmetic flash + growing shockwave sphere + sound cue
+  for an explosive projectile going off, sized to its `explosion_radius` — purely
+  visual/audio and unnetworked, like `features/animal_effects/mesh_explosion.gd`'s
+  death burst; every peer spawns and animates its own copy from the server's event.
 - `gun_stats_panel.gd`: a small always-on ammo readout, and — Tab — the full rolled
-  stat sheet, the extra UI a randomly generated weapon needs since its specs aren't
-  printed on a fixed item.
+  stat sheet (including fire mode), the extra UI a randomly generated weapon needs
+  since its specs aren't printed on a fixed item.
 
 ## Adding to the price or ranges
 
