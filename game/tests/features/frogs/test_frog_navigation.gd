@@ -94,7 +94,7 @@ func test_player_above_frog_does_not_trigger_escape() -> void:
 	assert_false(frog._fleeing, "Return to wandering once the player leaves")
 
 
-func test_obstacle_entering_active_hop_stops_frog() -> void:
+func test_obstacle_entering_active_hop_bounces_the_frog_off_it() -> void:
 	var frog := FROG_SCENE.instantiate() as Frog
 	_world.add_child(frog)
 	frog.set_physics_process(false)
@@ -111,7 +111,33 @@ func test_obstacle_entering_active_hop_stops_frog() -> void:
 		frog._physics_process(1.0 / 64.0)
 		await wait_physics_frames(1)
 	assert_gt(frog.position.z, -1.0, "The live collision body stops before the wall")
-	assert_false(frog._hopping)
+	assert_true(frog._hopping, "An open escape route makes the frog bounce off, not stop dead")
+	assert_eq(frog._bounce_count, 1)
+
+
+func test_obstacle_entering_active_hop_settles_when_no_bounce_route_exists() -> void:
+	# Godot has one shared physics space regardless of node parenting, so this is
+	# placed far from _world's shared floor above: a wall but genuinely no ground
+	# anywhere nearby for FrogNavigation.supported_ground to land a bounce on.
+	var world := Node3D.new()
+	world.position = Vector3(500, 0, 500)
+	add_child_autofree(world)
+	_box(Vector3(0, 1.5, -1.5), Vector3(8, 3, 0.2), world)
+	var frog := FROG_SCENE.instantiate() as Frog
+	world.add_child(frog)
+	frog.set_physics_process(false)
+	frog._settling = false
+	frog._hopping = true
+	frog._hop_from = frog.global_position
+	frog._hop_to = frog.global_position + Vector3(0, 0, -3)
+	frog._hop_duration = 0.5
+	frog._hop_height = 0.6
+	await wait_physics_frames(2)
+	for frame: int in 32:
+		frog._physics_process(1.0 / 64.0)
+		await wait_physics_frames(1)
+	assert_false(frog._hopping, "No ground to bounce onto anywhere, so the frog settles instead")
+	assert_eq(frog._bounce_count, 0)
 
 
 func test_spawn_profiles_and_materials_are_independent() -> void:
@@ -149,7 +175,7 @@ func _space() -> PhysicsDirectSpaceState3D:
 	return _world.get_world_3d().direct_space_state
 
 
-func _box(at: Vector3, dimensions: Vector3) -> void:
+func _box(at: Vector3, dimensions: Vector3, parent: Node3D = null) -> void:
 	var body := StaticBody3D.new()
 	var collider := CollisionShape3D.new()
 	var shape := BoxShape3D.new()
@@ -157,7 +183,7 @@ func _box(at: Vector3, dimensions: Vector3) -> void:
 	collider.shape = shape
 	body.add_child(collider)
 	body.position = at
-	_world.add_child(body)
+	(parent if parent != null else _world).add_child(body)
 
 
 func test_moving_platform_is_not_a_supported_landing() -> void:

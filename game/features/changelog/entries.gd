@@ -11,6 +11,11 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Bouncier frogs",
+		"summary":
+		"Frogs jump twice as high, bounce off walls, ribbit when hit, and there are twice as many."
+	},
+	{
 		"title": "New fonts",
 		"summary": "Cleaner text everywhere, with bolder headings and a sharper HUD."
 	},

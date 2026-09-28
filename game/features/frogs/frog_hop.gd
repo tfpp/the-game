@@ -7,6 +7,12 @@ extends RefCounted
 
 const HOP_RADIUS := 2.5
 
+## Trampoline-style rebound off a hop that struck a surface: shorter and springier
+## than a normal hop, mirroring features/trampoline/trampoline_bounce.gd's "give a
+## boost even off a glancing hit" feel.
+const BOUNCE_DISTANCE_SCALE := 0.7
+const BOUNCE_HEIGHT_GAIN := 1.15
+
 const PALETTE: Array[Color] = [
 	Color(0.25, 0.75, 0.3),
 	Color(0.45, 0.55, 0.15),
@@ -72,3 +78,21 @@ static func escape_direction(from: Vector3, threat: Vector3, fallback: Vector3) 
 	if away.is_zero_approx():
 		return fallback.normalized()
 	return away.normalized()
+
+
+## Horizontal direction a hop rebounds in after striking a surface with the given
+## normal, like a ball off a trampoline: mirrored across the surface, so a
+## head-on hit bounces straight back and a glancing one deflects at an oblique
+## angle. Both vectors are flattened to the XZ plane; near-vertical normals (e.g.
+## landing flat on a floor) fall back to reversing the incoming direction.
+static func bounce_direction(incoming: Vector3, normal: Vector3) -> Vector3:
+	var flat_incoming := incoming * Vector3(1, 0, 1)
+	if flat_incoming.is_zero_approx():
+		flat_incoming = Vector3.FORWARD
+	flat_incoming = flat_incoming.normalized()
+	var flat_normal := normal * Vector3(1, 0, 1)
+	if flat_normal.is_zero_approx():
+		return -flat_incoming
+	flat_normal = flat_normal.normalized()
+	var reflected := flat_incoming - 2.0 * flat_incoming.dot(flat_normal) * flat_normal
+	return reflected.normalized() if not reflected.is_zero_approx() else -flat_incoming

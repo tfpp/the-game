@@ -75,3 +75,20 @@ func test_escape_is_horizontal_and_away_from_player() -> void:
 	var direction := FrogHop.escape_direction(Vector3.ZERO, Vector3(1, 2, 0), Vector3.FORWARD)
 	assert_eq(direction, Vector3.LEFT)
 	assert_eq(FrogHop.escape_direction(Vector3.ZERO, Vector3.UP, Vector3.FORWARD), Vector3.FORWARD)
+
+
+func test_bounce_direction_reflects_straight_back_off_a_head_on_wall() -> void:
+	var bounced := FrogHop.bounce_direction(Vector3.FORWARD, Vector3.BACK)
+	assert_true(bounced.is_equal_approx(Vector3.BACK))
+
+
+func test_bounce_direction_deflects_obliquely_off_an_angled_wall() -> void:
+	var bounced := FrogHop.bounce_direction(Vector3(0, 0, -1), Vector3(1, 0, 1).normalized())
+	assert_true(bounced.is_equal_approx(Vector3(1, 0, 0)))
+	assert_almost_eq(bounced.length(), 1.0, 0.001)
+
+
+func test_bounce_direction_is_flattened_to_the_horizontal_plane() -> void:
+	var bounced := FrogHop.bounce_direction(Vector3(0, -1, -1), Vector3.UP)
+	assert_almost_eq(bounced.y, 0.0, 0.0001)
+	assert_almost_eq(bounced.length(), 1.0, 0.001)
