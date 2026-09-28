@@ -72,6 +72,10 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 
 ## Style
 
+- Use small textures by default for visible 3D model surfaces, typically 64×64 or
+  128×128 with nearest mipmap filtering. Vertex colours can tint the artwork.
+  Keep cards, chips, text and interaction targets readable.
+
 - Use static typing everywhere. Untyped declarations are errors (see `project.godot`
   `[debug]`).
 - Movement math lives in `core/movement/source_movement.gd` as pure static functions.

@@ -7,7 +7,7 @@ const SYMBOL_TEXTURE := preload("res://features/slot_machine/textures/reel_symbo
 const CHROME := preload("res://features/casino_hub/materials/chrome.tres")
 const SYMBOLS: Array[String] = ["7", "BAR", "STAR", "BELL", "GEM"]
 const GOLD := Color("f6c85f")
-const INK := Color("173330")
+const INK := Color("f9cc66")
 
 var _reels: Array[ShaderMaterial] = []
 var _positions: Array[float] = [0.0, 1.0, 2.0]
@@ -54,11 +54,13 @@ func _process(delta: float) -> void:
 		_update_snapshot(snapshot)
 	var spinning: bool = snapshot["spinning"]
 	for index: int in 3:
+		var previous := _positions[index]
 		if spinning and index >= int(snapshot["stopped"]):
 			_positions[index] = fposmod(_positions[index] + delta * (13.0 + index), 5.0)
 		else:
 			_positions[index] = move_toward(_positions[index], _targets[index], delta * 36.0)
-		_reels[index].set_shader_parameter("reel_position", _positions[index])
+		if not is_equal_approx(previous, _positions[index]):
+			_reels[index].set_shader_parameter("reel_position", _positions[index])
 	_lever.rotation.x = lerpf(_lever.rotation.x, 0.8 if spinning else 0.0, 1.0 - exp(-delta * 14.0))
 
 
@@ -72,6 +74,8 @@ func _update_snapshot(snapshot: Dictionary) -> void:
 			var newly_stopped := index >= int(_last_state.get("stopped", 3))
 			if newly_stopped or not bool(snapshot["spinning"]):
 				_targets[index] = SlotReelMesh.next_stop(_positions[index], int(reels[index]))
+	for index: int in 3:
+		_reels[index].set_shader_parameter("reel_position", _positions[index])
 	_last_state = snapshot.duplicate(true)
 	if not str(snapshot.get("message", "")).is_empty():
 		_status.text = str(snapshot["message"])
@@ -104,20 +108,25 @@ func _build_lever() -> void:
 	cylinder.top_radius = 0.038
 	cylinder.bottom_radius = 0.055
 	cylinder.height = 0.65
-	cylinder.radial_segments = 24
+	cylinder.radial_segments = 8
+	cylinder.rings = 1
 	stem.mesh = cylinder
 	stem.position.y = 0.3
 	stem.material_override = CHROME
 	_lever.add_child(stem)
 	var knob := MeshInstance3D.new()
 	var sphere := SphereMesh.new()
+	sphere.radial_segments = 8
+	sphere.rings = 4
 	sphere.radius = 0.115
 	sphere.height = 0.23
 	knob.mesh = sphere
 	knob.position.y = 0.67
 	var bakelite := StandardMaterial3D.new()
 	bakelite.albedo_color = Color("8d172c")
-	bakelite.roughness = 0.23
+	bakelite.roughness = 1.0
+	bakelite.metallic_specular = 0.0
+	bakelite.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
 	knob.material_override = bakelite
 	_lever.add_child(knob)
 

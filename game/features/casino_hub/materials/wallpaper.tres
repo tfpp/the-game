@@ -1,21 +1,11 @@
-[gd_resource type="StandardMaterial3D" load_steps=4 format=3]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
 
-[ext_resource type="Texture2D" path="res://features/casino_hub/materials/micro_normal.tres" id="normal"]
-[ext_resource type="Texture2D" path="res://features/casino_hub/materials/surface_roughness.tres" id="rough"]
+[ext_resource type="Shader" path="res://features/casino_hub/materials/retro_surface.gdshader" id="shader"]
 [ext_resource type="Texture2D" path="res://features/casino_hub/textures/wallpaper_albedo.png" id="albedo"]
 
 [resource]
-resource_name = "Wallpaper PBR"
-albedo_color = Color(0.92, 0.92, 0.92, 1)
-albedo_texture = ExtResource("albedo")
-metallic = 0
-roughness = 0.93
-roughness_texture = ExtResource("rough")
-roughness_texture_channel = 0
-normal_enabled = true
-normal_scale = 0.1
-normal_texture = ExtResource("normal")
-uv1_triplanar = true
-uv1_world_triplanar = true
-uv1_scale = Vector3(0.32, 0.32, 0.32)
-texture_filter = 5
+resource_name = "Wallpaper PS1"
+shader = ExtResource("shader")
+shader_parameter/albedo_texture = ExtResource("albedo")
+shader_parameter/tint = Color(0.28, 0.21, 0.17, 1)
+shader_parameter/texture_scale = 0.32

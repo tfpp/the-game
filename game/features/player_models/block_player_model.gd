@@ -1,7 +1,7 @@
 class_name BlockPlayerModel
 extends Node3D
-## Original voxel-style avatar. Its parent is Player/Body, so the existing camera
-## feature controls first/third-person visibility and player replication owns yaw.
+## Angular low-polygon avatar with adult human proportions. Parent: Player/Body.
+## The camera feature controls first/third-person visibility; replication owns yaw.
 
 ## Uniform rig scale for the "penguin" body type, so the third-person model (and,
 ## via `height_scale()`, the first-person view model in features/holdables/hand.gd)
@@ -206,6 +206,7 @@ func _decorate_humanoid() -> void:
 ## body can wear any head. Not called for the "penguin" body: that costume keeps
 ## its own fixed head, the same way it ignores clothing (see `_decorate_penguin`).
 func _decorate_head(feminine: bool) -> void:
+	_head.scale = Vector3.ONE
 	match head_type:
 		&"frog":
 			_decorate_frog_head()
@@ -216,6 +217,7 @@ func _decorate_head(feminine: bool) -> void:
 
 
 func _decorate_human_head(feminine: bool) -> void:
+	_head.scale = Vector3(0.76, 0.82, 0.76)
 	var skin := _skin_material
 	var hair := _material(Color(0.12, 0.075, 0.05))
 	var whites := _material(Color(0.92, 0.94, 0.88))
@@ -228,8 +230,8 @@ func _decorate_human_head(feminine: bool) -> void:
 	_box(_head, "Fringe", Vector3(-0.075, 0.342, -0.22), Vector3(0.29, 0.07, 0.025), hair)
 	_box(_head, "FringeLock", Vector3(-0.15, 0.295, -0.22), Vector3(0.085, 0.07, 0.025), hair)
 	for side: float in [-1.0, 1.0]:
-		_box(_head, "Eye", Vector3(side * 0.105, 0.23, -0.22), Vector3(0.085, 0.048, 0.014), whites)
-		_box(_head, "Pupil", Vector3(side * 0.09, 0.23, -0.23), Vector3(0.035, 0.048, 0.01), eyes)
+		_box(_head, "Eye", Vector3(side * 0.105, 0.23, -0.22), Vector3(0.060, 0.035, 0.014), whites)
+		_box(_head, "Pupil", Vector3(side * 0.09, 0.23, -0.23), Vector3(0.025, 0.035, 0.01), eyes)
 	_box(_head, "Nose", Vector3(0, 0.16, -0.23), Vector3(0.065, 0.055, 0.045), skin)
 	_box(_head, "Mouth", Vector3(0, 0.09, -0.22), Vector3(0.095, 0.02, 0.014), hair)
 
@@ -311,6 +313,7 @@ func _decorate_fluffy_tail() -> void:
 ## and feet, and stubby flipper arms. Ignores clothing entirely (see the early
 ## return in `_apply_clothing`) since it's a full-body costume, not an outfit.
 func _decorate_penguin() -> void:
+	_head.scale = Vector3.ONE
 	var feathers := _material(Color("1c1c1c"))
 	var belly := _material(Color("f5f5f0"))
 	var beak := _material(Color("e8891c"))
@@ -354,15 +357,35 @@ func _box(
 	var mesh := BoxMesh.new()
 	mesh.size = dimensions
 	part.mesh = mesh
+	if label in ["Shirt", "Trousers", "Face"] and body_type != &"penguin":
+		part.mesh = _tapered_mesh(mesh, 0.82 if label == "Shirt" else 0.9)
 	part.material_override = material
 	part.position = at
 	parent.add_child(part)
 
 
+func _tapered_mesh(box: BoxMesh, lower_width: float) -> ArrayMesh:
+	var arrays := box.surface_get_arrays(0)
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	for index: int in vertices.size():
+		if vertices[index].y < 0.0:
+			vertices[index].x *= lower_width
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var builder := SurfaceTool.new()
+	builder.create_from(mesh, 0)
+	builder.deindex()
+	builder.generate_normals()
+	return builder.commit()
+
+
 func _material(color: Color) -> StandardMaterial3D:
 	var material := StandardMaterial3D.new()
 	material.albedo_color = color
-	material.roughness = 0.95
+	material.roughness = 1.0
+	material.metallic_specular = 0.0
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
 	return material
 
 

@@ -1,0 +1,808 @@
+[gd_scene load_steps=80 format=3]
+
+[ext_resource type="Script" path="res://features/casino_hub/model_materials.gd" id="finishes"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_card_table.glb" id="card_table"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_dealer.glb" id="dealer"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_guest.glb" id="guest"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_seated.glb" id="seated"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_lady.glb" id="lady"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_bar.glb" id="bar"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_architecture.glb" id="architecture"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_sconce.glb" id="sconce"]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="carpet"]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/painting.tres" id="painting"]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/ceiling.tres" id="ceiling"]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/ceramic_planter.tscn" id="plant"]
+
+[sub_resource type="BoxMesh" id="mesh0"]
+size = Vector3(28.8, 0.16, 24)
+material = ExtResource("ceiling")
+
+[sub_resource type="BoxShape3D" id="shape1"]
+size = Vector3(28.8, 0.16, 24)
+
+[sub_resource type="BoxMesh" id="mesh2"]
+size = Vector3(28.8, 0.12, 0.16)
+material = ExtResource("wood")
+
+[sub_resource type="BoxMesh" id="mesh3"]
+size = Vector3(28.8, 0.12, 0.16)
+material = ExtResource("wood")
+
+[sub_resource type="BoxMesh" id="mesh4"]
+size = Vector3(28.8, 0.12, 0.16)
+material = ExtResource("wood")
+
+[sub_resource type="BoxMesh" id="mesh5"]
+size = Vector3(28.8, 0.12, 0.16)
+material = ExtResource("wood")
+
+[sub_resource type="BoxMesh" id="mesh6"]
+size = Vector3(28.8, 0.12, 0.16)
+material = ExtResource("wood")
+
+[sub_resource type="BoxMesh" id="mesh7"]
+size = Vector3(28.8, 0.2, 4)
+material = ExtResource("carpet")
+
+[sub_resource type="BoxShape3D" id="shape8"]
+size = Vector3(28.8, 0.2, 4)
+
+[sub_resource type="BoxShape3D" id="shape9"]
+size = Vector3(26.4, 1, 0.13)
+
+[sub_resource type="BoxShape3D" id="shape10"]
+size = Vector3(1.8, 0.2, 12.887591)
+
+[sub_resource type="BoxShape3D" id="shape11"]
+size = Vector3(0.08, 1.2, 12.887591)
+
+[sub_resource type="BoxShape3D" id="shape12"]
+size = Vector3(0.08, 1.2, 12.887591)
+
+[sub_resource type="BoxShape3D" id="shape13"]
+size = Vector3(0.18, 7.2, 24)
+
+[sub_resource type="BoxShape3D" id="shape14"]
+size = Vector3(0.18, 7.2, 24)
+
+[sub_resource type="BoxShape3D" id="shape15"]
+size = Vector3(0.55, 7.2, 0.55)
+
+[sub_resource type="BoxShape3D" id="shape16"]
+size = Vector3(0.55, 7.2, 0.55)
+
+[sub_resource type="BoxShape3D" id="shape17"]
+size = Vector3(0.55, 7.2, 0.55)
+
+[sub_resource type="BoxShape3D" id="shape18"]
+size = Vector3(0.55, 7.2, 0.55)
+
+[sub_resource type="BoxShape3D" id="shape19"]
+size = Vector3(0.72, 7.2, 0.72)
+
+[sub_resource type="BoxShape3D" id="shape20"]
+size = Vector3(0.72, 7.2, 0.72)
+
+[sub_resource type="BoxShape3D" id="shape21"]
+size = Vector3(4.12, 0.94, 1.15)
+
+[sub_resource type="BoxShape3D" id="shape22"]
+size = Vector3(0.68, 1.2, 0.68)
+
+[sub_resource type="BoxShape3D" id="shape23"]
+size = Vector3(0.68, 1.2, 0.68)
+
+[sub_resource type="BoxShape3D" id="shape24"]
+size = Vector3(0.68, 1.2, 0.68)
+
+[sub_resource type="BoxShape3D" id="shape25"]
+size = Vector3(4.12, 0.94, 1.15)
+
+[sub_resource type="BoxShape3D" id="shape26"]
+size = Vector3(0.68, 1.2, 0.68)
+
+[sub_resource type="BoxShape3D" id="shape27"]
+size = Vector3(0.68, 1.2, 0.68)
+
+[sub_resource type="BoxShape3D" id="shape28"]
+size = Vector3(0.68, 1.2, 0.68)
+
+[sub_resource type="BoxShape3D" id="shape29"]
+size = Vector3(4.12, 0.94, 1.15)
+
+[sub_resource type="BoxShape3D" id="shape30"]
+size = Vector3(0.68, 1.2, 0.68)
+
+[sub_resource type="BoxShape3D" id="shape31"]
+size = Vector3(0.68, 1.2, 0.68)
+
+[sub_resource type="BoxShape3D" id="shape32"]
+size = Vector3(0.68, 1.2, 0.68)
+
+[sub_resource type="BoxShape3D" id="shape33"]
+size = Vector3(7, 0.98, 0.4)
+
+[sub_resource type="QuadMesh" id="canvas0_1"]
+size = Vector2(1.8, 2.0)
+material = ExtResource("painting")
+
+[sub_resource type="BoxMesh" id="mesh35"]
+size = Vector3(0.12, 2.22, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh36"]
+size = Vector3(0.12, 2.22, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh37"]
+size = Vector3(0.12, 0.1, 2.06)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh38"]
+size = Vector3(0.12, 0.1, 2.06)
+material = ExtResource("brass")
+
+[sub_resource type="QuadMesh" id="canvas0_3"]
+size = Vector2(1.8, 2.0)
+material = ExtResource("painting")
+
+[sub_resource type="BoxMesh" id="mesh40"]
+size = Vector3(0.12, 2.22, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh41"]
+size = Vector3(0.12, 2.22, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh42"]
+size = Vector3(0.12, 0.1, 2.06)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh43"]
+size = Vector3(0.12, 0.1, 2.06)
+material = ExtResource("brass")
+
+[sub_resource type="QuadMesh" id="canvas2_1"]
+size = Vector2(1.8, 2.0)
+material = ExtResource("painting")
+
+[sub_resource type="BoxMesh" id="mesh45"]
+size = Vector3(0.12, 2.22, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh46"]
+size = Vector3(0.12, 2.22, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh47"]
+size = Vector3(0.12, 0.1, 2.06)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh48"]
+size = Vector3(0.12, 0.1, 2.06)
+material = ExtResource("brass")
+
+[sub_resource type="QuadMesh" id="canvas2_3"]
+size = Vector2(1.8, 2.0)
+material = ExtResource("painting")
+
+[sub_resource type="BoxMesh" id="mesh50"]
+size = Vector3(0.12, 2.22, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh51"]
+size = Vector3(0.12, 2.22, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh52"]
+size = Vector3(0.12, 0.1, 2.06)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh53"]
+size = Vector3(0.12, 0.1, 2.06)
+material = ExtResource("brass")
+
+[sub_resource type="QuadMesh" id="gallerypainting0"]
+size = Vector2(2.5, 1.65)
+material = ExtResource("painting")
+
+[sub_resource type="BoxMesh" id="mesh55"]
+size = Vector3(0.1, 1.85, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh56"]
+size = Vector3(0.1, 1.85, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh57"]
+size = Vector3(2.7, 0.1, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh58"]
+size = Vector3(2.7, 0.1, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="QuadMesh" id="gallerypainting1"]
+size = Vector2(2.5, 1.65)
+material = ExtResource("painting")
+
+[sub_resource type="BoxMesh" id="mesh60"]
+size = Vector3(0.1, 1.85, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh61"]
+size = Vector3(0.1, 1.85, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh62"]
+size = Vector3(2.7, 0.1, 0.1)
+material = ExtResource("brass")
+
+[sub_resource type="BoxMesh" id="mesh63"]
+size = Vector3(2.7, 0.1, 0.1)
+material = ExtResource("brass")
+
+[node name="Salon" type="Node3D"]
+script = ExtResource("finishes")
+
+[node name="Architecture" parent="." instance=ExtResource("architecture")]
+position = Vector3(0, 0, 0)
+rotation = Vector3(0, 0, 0)
+
+[node name="CofferedCeiling" type="MeshInstance3D" parent="."]
+position = Vector3(0, 5.8, 0)
+mesh = SubResource("mesh0")
+
+[node name="CofferedCeilingBody" type="StaticBody3D" parent="."]
+position = Vector3(0, 5.8, 0)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="CofferedCeilingBody" groups=["radar_geometry"]]
+shape = SubResource("shape1")
+
+[node name="CeilingBeam-10" type="MeshInstance3D" parent="."]
+position = Vector3(0, 5.66, -10)
+mesh = SubResource("mesh2")
+
+[node name="CeilingBeam-5" type="MeshInstance3D" parent="."]
+position = Vector3(0, 5.66, -5)
+mesh = SubResource("mesh3")
+
+[node name="CeilingBeam0" type="MeshInstance3D" parent="."]
+position = Vector3(0, 5.66, 0)
+mesh = SubResource("mesh4")
+
+[node name="CeilingBeam5" type="MeshInstance3D" parent="."]
+position = Vector3(0, 5.66, 5)
+mesh = SubResource("mesh5")
+
+[node name="CeilingBeam10" type="MeshInstance3D" parent="."]
+position = Vector3(0, 5.66, 10)
+mesh = SubResource("mesh6")
+
+[node name="GalleryFloor" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.1, -10)
+mesh = SubResource("mesh7")
+
+[node name="GalleryFloorBody" type="StaticBody3D" parent="."]
+position = Vector3(0, 3.1, -10)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="GalleryFloorBody" groups=["radar_geometry"]]
+shape = SubResource("shape8")
+
+[node name="GalleryRail" type="StaticBody3D" parent="."]
+position = Vector3(1, 3.7, -8)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="GalleryRail" groups=["radar_geometry"]]
+shape = SubResource("shape9")
+
+[node name="StairRamp" type="StaticBody3D" parent="."]
+position = Vector3(-12.8, 0.7426, -2)
+rotation = Vector3(0.373302, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="StairRamp" groups=["radar_geometry"]]
+shape = SubResource("shape10")
+
+[node name="StairRail-13.76" type="StaticBody3D" parent="."]
+position = Vector3(-13.76, 1.35, -2)
+rotation = Vector3(0.373302, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="StairRail-13.76" groups=["radar_geometry"]]
+shape = SubResource("shape11")
+
+[node name="StairRail-11.84" type="StaticBody3D" parent="."]
+position = Vector3(-11.84, 1.35, -2)
+rotation = Vector3(0.373302, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="StairRail-11.84" groups=["radar_geometry"]]
+shape = SubResource("shape12")
+
+[node name="SideWall-1" type="StaticBody3D" parent="."]
+position = Vector3(-14.4, 2.1, 0)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="SideWall-1" groups=["radar_geometry"]]
+shape = SubResource("shape13")
+
+[node name="SideWall1" type="StaticBody3D" parent="."]
+position = Vector3(14.4, 2.1, 0)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="SideWall1" groups=["radar_geometry"]]
+shape = SubResource("shape14")
+
+[node name="Column0" type="StaticBody3D" parent="."]
+position = Vector3(-10, 2.1, -8.1)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="Column0" groups=["radar_geometry"]]
+shape = SubResource("shape15")
+
+[node name="Column1" type="StaticBody3D" parent="."]
+position = Vector3(-3.8, 2.1, -8.1)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="Column1" groups=["radar_geometry"]]
+shape = SubResource("shape16")
+
+[node name="Column2" type="StaticBody3D" parent="."]
+position = Vector3(3.8, 2.1, -8.1)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="Column2" groups=["radar_geometry"]]
+shape = SubResource("shape17")
+
+[node name="Column3" type="StaticBody3D" parent="."]
+position = Vector3(10, 2.1, -8.1)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="Column3" groups=["radar_geometry"]]
+shape = SubResource("shape18")
+
+[node name="SalonColumn0" type="StaticBody3D" parent="."]
+position = Vector3(-8.8, 2.1, -3)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="SalonColumn0" groups=["radar_geometry"]]
+shape = SubResource("shape19")
+
+[node name="ColumnSconce0" parent="." instance=ExtResource("sconce")]
+position = Vector3(-8.8, 1.4, -2.62)
+rotation = Vector3(0, 0, 0)
+
+[node name="SalonColumn1" type="StaticBody3D" parent="."]
+position = Vector3(-8.8, 2.1, 4)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="SalonColumn1" groups=["radar_geometry"]]
+shape = SubResource("shape20")
+
+[node name="ColumnSconce1" parent="." instance=ExtResource("sconce")]
+position = Vector3(-8.8, 1.4, 4.38)
+rotation = Vector3(0, 0, 0)
+
+[node name="CardTable0" parent="." instance=ExtResource("card_table")]
+position = Vector3(-4.0, -1.5, -6.2)
+rotation = Vector3(0, 0, 0)
+
+[node name="TableBody0" type="StaticBody3D" parent="."]
+position = Vector3(-4.0, -1.03, -5.66)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="TableBody0" groups=["radar_geometry"]]
+shape = SubResource("shape21")
+
+[node name="Dealer0" parent="." instance=ExtResource("dealer")]
+position = Vector3(-4.0, -1.5, -6.65)
+rotation = Vector3(0, 0, 0)
+
+[node name="ChairBody0_0" type="StaticBody3D" parent="."]
+position = Vector3(-2.338299, -0.9, -5.103984)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="ChairBody0_0" groups=["radar_geometry"]]
+shape = SubResource("shape22")
+
+[node name="Patron0_0" parent="." instance=ExtResource("lady")]
+position = Vector3(-2.338299, -1.5, -5.103984)
+rotation = Vector3(0, 2.356194, 0)
+
+[node name="ChairBody0_1" type="StaticBody3D" parent="."]
+position = Vector3(-4.0, -0.9, -4.65)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="ChairBody0_1" groups=["radar_geometry"]]
+shape = SubResource("shape23")
+
+[node name="Patron0_1" parent="." instance=ExtResource("seated")]
+position = Vector3(-4.0, -1.5, -4.65)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="ChairBody0_2" type="StaticBody3D" parent="."]
+position = Vector3(-5.661701, -0.9, -5.103984)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="ChairBody0_2" groups=["radar_geometry"]]
+shape = SubResource("shape24")
+
+[node name="Patron0_2" parent="." instance=ExtResource("seated")]
+position = Vector3(-5.661701, -1.5, -5.103984)
+rotation = Vector3(0, 3.926991, 0)
+
+[node name="CardTable1" parent="." instance=ExtResource("card_table")]
+position = Vector3(-4.0, -1.5, -1.2)
+rotation = Vector3(0, 0, 0)
+
+[node name="TableBody1" type="StaticBody3D" parent="."]
+position = Vector3(-4.0, -1.03, -0.66)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="TableBody1" groups=["radar_geometry"]]
+shape = SubResource("shape25")
+
+[node name="Dealer1" parent="." instance=ExtResource("dealer")]
+position = Vector3(-4.0, -1.5, -1.65)
+rotation = Vector3(0, 0, 0)
+
+[node name="ChairBody1_0" type="StaticBody3D" parent="."]
+position = Vector3(-2.338299, -0.9, -0.103984)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="ChairBody1_0" groups=["radar_geometry"]]
+shape = SubResource("shape26")
+
+[node name="Patron1_0" parent="." instance=ExtResource("seated")]
+position = Vector3(-2.338299, -1.5, -0.103984)
+rotation = Vector3(0, 2.356194, 0)
+
+[node name="ChairBody1_1" type="StaticBody3D" parent="."]
+position = Vector3(-4.0, -0.9, 0.35)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="ChairBody1_1" groups=["radar_geometry"]]
+shape = SubResource("shape27")
+
+[node name="Patron1_1" parent="." instance=ExtResource("seated")]
+position = Vector3(-4.0, -1.5, 0.35)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="ChairBody1_2" type="StaticBody3D" parent="."]
+position = Vector3(-5.661701, -0.9, -0.103984)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="ChairBody1_2" groups=["radar_geometry"]]
+shape = SubResource("shape28")
+
+[node name="Patron1_2" parent="." instance=ExtResource("lady")]
+position = Vector3(-5.661701, -1.5, -0.103984)
+rotation = Vector3(0, 3.926991, 0)
+
+[node name="CardTable2" parent="." instance=ExtResource("card_table")]
+position = Vector3(-4.0, -1.5, 3.4)
+rotation = Vector3(0, 0, 0)
+
+[node name="TableBody2" type="StaticBody3D" parent="."]
+position = Vector3(-4.0, -1.03, 3.94)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="TableBody2" groups=["radar_geometry"]]
+shape = SubResource("shape29")
+
+[node name="Dealer2" parent="." instance=ExtResource("dealer")]
+position = Vector3(-4.0, -1.5, 2.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="ChairBody2_0" type="StaticBody3D" parent="."]
+position = Vector3(-2.338299, -0.9, 4.496016)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="ChairBody2_0" groups=["radar_geometry"]]
+shape = SubResource("shape30")
+
+[node name="Patron2_0" parent="." instance=ExtResource("seated")]
+position = Vector3(-2.338299, -1.5, 4.496016)
+rotation = Vector3(0, 2.356194, 0)
+
+[node name="ChairBody2_1" type="StaticBody3D" parent="."]
+position = Vector3(-4.0, -0.9, 4.95)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="ChairBody2_1" groups=["radar_geometry"]]
+shape = SubResource("shape31")
+
+[node name="Patron2_1" parent="." instance=ExtResource("lady")]
+position = Vector3(-4.0, -1.5, 4.95)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="ChairBody2_2" type="StaticBody3D" parent="."]
+position = Vector3(-5.661701, -0.9, 4.496016)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="ChairBody2_2" groups=["radar_geometry"]]
+shape = SubResource("shape32")
+
+[node name="Patron2_2" parent="." instance=ExtResource("seated")]
+position = Vector3(-5.661701, -1.5, 4.496016)
+rotation = Vector3(0, 3.926991, 0)
+
+[node name="Bar" parent="." instance=ExtResource("bar")]
+position = Vector3(-7.4, -1.5, -10.7)
+rotation = Vector3(0, 0, 0)
+
+[node name="BarCounter" type="StaticBody3D" parent="."]
+position = Vector3(-7.4, -1.01, -9.6)
+rotation = Vector3(0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="BarCounter" groups=["radar_geometry"]]
+shape = SubResource("shape33")
+
+[node name="Bartender" parent="." instance=ExtResource("dealer")]
+position = Vector3(-6.5, -1.5, -10.3)
+rotation = Vector3(0, 0, 0)
+
+[node name="GuestAtBar" parent="." instance=ExtResource("guest")]
+position = Vector3(-8.2, -1.5, -8.25)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="GuestTalking" parent="." instance=ExtResource("guest")]
+position = Vector3(3.0, -1.5, 1)
+rotation = Vector3(0, -0.6, 0)
+
+[node name="GuestGallery" parent="." instance=ExtResource("guest")]
+position = Vector3(2.5, 3.2, -8.6)
+rotation = Vector3(0, 0.4, 0)
+
+[node name="GuestGallery2" parent="." instance=ExtResource("guest")]
+position = Vector3(-4.8, 3.2, -9.2)
+rotation = Vector3(0, -0.5, 0)
+
+[node name="Palm0" parent="." instance=ExtResource("plant")]
+position = Vector3(-10, -1.5, 7)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.4, 1.6, 1.4)
+
+[node name="Palm1" parent="." instance=ExtResource("plant")]
+position = Vector3(-11, -1.5, -6)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.4, 1.6, 1.4)
+
+[node name="Palm2" parent="." instance=ExtResource("plant")]
+position = Vector3(4, -1.5, -10)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.4, 1.6, 1.4)
+
+[node name="Palm3" parent="." instance=ExtResource("plant")]
+position = Vector3(12, -1.5, 10)
+rotation = Vector3(0, 0, 0)
+scale = Vector3(1.4, 1.6, 1.4)
+
+[node name="Sconce-1_0" parent="." instance=ExtResource("sconce")]
+position = Vector3(-13.93, 1.45, -10)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="Sconce-1_1" parent="." instance=ExtResource("sconce")]
+position = Vector3(-13.93, 1.45, -5)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="Painting-1_1" type="MeshInstance3D" parent="."]
+position = Vector3(-14.27, 1.4, -2.7)
+rotation = Vector3(0, 1.570796, 0)
+mesh = SubResource("canvas0_1")
+
+[node name="FrameVertical-1_1_-0.98" type="MeshInstance3D" parent="."]
+position = Vector3(-14.2, 1.4, -3.68)
+mesh = SubResource("mesh35")
+
+[node name="FrameVertical-1_1_0.98" type="MeshInstance3D" parent="."]
+position = Vector3(-14.2, 1.4, -1.72)
+mesh = SubResource("mesh36")
+
+[node name="FrameHorizontal-1_1_0.34" type="MeshInstance3D" parent="."]
+position = Vector3(-14.2, 0.34, -2.7)
+mesh = SubResource("mesh37")
+
+[node name="FrameHorizontal-1_1_2.46" type="MeshInstance3D" parent="."]
+position = Vector3(-14.2, 2.46, -2.7)
+mesh = SubResource("mesh38")
+
+[node name="Sconce-1_2" parent="." instance=ExtResource("sconce")]
+position = Vector3(-13.93, 1.45, 0)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="Sconce-1_3" parent="." instance=ExtResource("sconce")]
+position = Vector3(-13.93, 1.45, 5)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="Painting-1_3" type="MeshInstance3D" parent="."]
+position = Vector3(-14.27, 1.4, 7.3)
+rotation = Vector3(0, 1.570796, 0)
+mesh = SubResource("canvas0_3")
+
+[node name="FrameVertical-1_3_-0.98" type="MeshInstance3D" parent="."]
+position = Vector3(-14.2, 1.4, 6.32)
+mesh = SubResource("mesh40")
+
+[node name="FrameVertical-1_3_0.98" type="MeshInstance3D" parent="."]
+position = Vector3(-14.2, 1.4, 8.28)
+mesh = SubResource("mesh41")
+
+[node name="FrameHorizontal-1_3_0.34" type="MeshInstance3D" parent="."]
+position = Vector3(-14.2, 0.34, 7.3)
+mesh = SubResource("mesh42")
+
+[node name="FrameHorizontal-1_3_2.46" type="MeshInstance3D" parent="."]
+position = Vector3(-14.2, 2.46, 7.3)
+mesh = SubResource("mesh43")
+
+[node name="Sconce-1_4" parent="." instance=ExtResource("sconce")]
+position = Vector3(-13.93, 1.45, 10)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="Sconce1_0" parent="." instance=ExtResource("sconce")]
+position = Vector3(13.93, 1.45, -10)
+rotation = Vector3(0, -1.570796, 0)
+
+[node name="Sconce1_1" parent="." instance=ExtResource("sconce")]
+position = Vector3(13.93, 1.45, -5)
+rotation = Vector3(0, -1.570796, 0)
+
+[node name="Painting1_1" type="MeshInstance3D" parent="."]
+position = Vector3(14.27, 1.4, -2.7)
+rotation = Vector3(0, -1.570796, 0)
+mesh = SubResource("canvas2_1")
+
+[node name="FrameVertical1_1_-0.98" type="MeshInstance3D" parent="."]
+position = Vector3(14.2, 1.4, -3.68)
+mesh = SubResource("mesh45")
+
+[node name="FrameVertical1_1_0.98" type="MeshInstance3D" parent="."]
+position = Vector3(14.2, 1.4, -1.72)
+mesh = SubResource("mesh46")
+
+[node name="FrameHorizontal1_1_0.34" type="MeshInstance3D" parent="."]
+position = Vector3(14.2, 0.34, -2.7)
+mesh = SubResource("mesh47")
+
+[node name="FrameHorizontal1_1_2.46" type="MeshInstance3D" parent="."]
+position = Vector3(14.2, 2.46, -2.7)
+mesh = SubResource("mesh48")
+
+[node name="Sconce1_2" parent="." instance=ExtResource("sconce")]
+position = Vector3(13.93, 1.45, 0)
+rotation = Vector3(0, -1.570796, 0)
+
+[node name="Sconce1_3" parent="." instance=ExtResource("sconce")]
+position = Vector3(13.93, 1.45, 5)
+rotation = Vector3(0, -1.570796, 0)
+
+[node name="Painting1_3" type="MeshInstance3D" parent="."]
+position = Vector3(14.27, 1.4, 7.3)
+rotation = Vector3(0, -1.570796, 0)
+mesh = SubResource("canvas2_3")
+
+[node name="FrameVertical1_3_-0.98" type="MeshInstance3D" parent="."]
+position = Vector3(14.2, 1.4, 6.32)
+mesh = SubResource("mesh50")
+
+[node name="FrameVertical1_3_0.98" type="MeshInstance3D" parent="."]
+position = Vector3(14.2, 1.4, 8.28)
+mesh = SubResource("mesh51")
+
+[node name="FrameHorizontal1_3_0.34" type="MeshInstance3D" parent="."]
+position = Vector3(14.2, 0.34, 7.3)
+mesh = SubResource("mesh52")
+
+[node name="FrameHorizontal1_3_2.46" type="MeshInstance3D" parent="."]
+position = Vector3(14.2, 2.46, 7.3)
+mesh = SubResource("mesh53")
+
+[node name="Sconce1_4" parent="." instance=ExtResource("sconce")]
+position = Vector3(13.93, 1.45, 10)
+rotation = Vector3(0, -1.570796, 0)
+
+[node name="GalleryPainting0" type="MeshInstance3D" parent="."]
+position = Vector3(-7, 4.55, -11.73)
+mesh = SubResource("gallerypainting0")
+
+[node name="GalleryFrameSide0_-1.3" type="MeshInstance3D" parent="."]
+position = Vector3(-8.3, 4.55, -11.68)
+mesh = SubResource("mesh55")
+
+[node name="GalleryFrameSide0_1.3" type="MeshInstance3D" parent="."]
+position = Vector3(-5.7, 4.55, -11.68)
+mesh = SubResource("mesh56")
+
+[node name="GalleryFrameTop0_3.68" type="MeshInstance3D" parent="."]
+position = Vector3(-7, 3.68, -11.68)
+mesh = SubResource("mesh57")
+
+[node name="GalleryFrameTop0_5.42" type="MeshInstance3D" parent="."]
+position = Vector3(-7, 5.42, -11.68)
+mesh = SubResource("mesh58")
+
+[node name="GalleryPainting1" type="MeshInstance3D" parent="."]
+position = Vector3(7, 4.55, -11.73)
+mesh = SubResource("gallerypainting1")
+
+[node name="GalleryFrameSide1_-1.3" type="MeshInstance3D" parent="."]
+position = Vector3(5.7, 4.55, -11.68)
+mesh = SubResource("mesh60")
+
+[node name="GalleryFrameSide1_1.3" type="MeshInstance3D" parent="."]
+position = Vector3(8.3, 4.55, -11.68)
+mesh = SubResource("mesh61")
+
+[node name="GalleryFrameTop1_3.68" type="MeshInstance3D" parent="."]
+position = Vector3(7, 3.68, -11.68)
+mesh = SubResource("mesh62")
+
+[node name="GalleryFrameTop1_5.42" type="MeshInstance3D" parent="."]
+position = Vector3(7, 5.42, -11.68)
+mesh = SubResource("mesh63")
+
+[node name="WarmPool0" type="OmniLight3D" parent="."]
+position = Vector3(-6, 1.2, -5)
+light_color = Color(1, 0.62, 0.28, 1)
+light_energy = 0.8
+light_specular = 0.0
+omni_range = 5.5
+shadow_enabled = false
+
+[node name="WarmPool1" type="OmniLight3D" parent="."]
+position = Vector3(-6, 1.2, 0.5)
+light_color = Color(1, 0.62, 0.28, 1)
+light_energy = 0.8
+light_specular = 0.0
+omni_range = 5.5
+shadow_enabled = false
+
+[node name="WarmPool2" type="OmniLight3D" parent="."]
+position = Vector3(-6, 1.2, 6)
+light_color = Color(1, 0.62, 0.28, 1)
+light_energy = 0.8
+light_specular = 0.0
+omni_range = 5.5
+shadow_enabled = false
+
+[node name="WarmPool3" type="OmniLight3D" parent="."]
+position = Vector3(-7, 1.2, -10)
+light_color = Color(1, 0.62, 0.28, 1)
+light_energy = 0.8
+light_specular = 0.0
+omni_range = 5.5
+shadow_enabled = false
+
+[node name="WarmPool4" type="OmniLight3D" parent="."]
+position = Vector3(11, 1.2, -6)
+light_color = Color(1, 0.62, 0.28, 1)
+light_energy = 0.8
+light_specular = 0.0
+omni_range = 5.5
+shadow_enabled = false
+
+[node name="WarmPool5" type="OmniLight3D" parent="."]
+position = Vector3(11, 1.2, 2)
+light_color = Color(1, 0.62, 0.28, 1)
+light_energy = 0.8
+light_specular = 0.0
+omni_range = 5.5
+shadow_enabled = false

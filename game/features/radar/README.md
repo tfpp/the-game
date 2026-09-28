@@ -5,7 +5,10 @@ Mint marks the local player and facing; gold dots mark other players on the same
 storey. Phones, tablets, touch controls and dedicated servers do not show it.
 Desktop browsers and native desktop clients, including gamepad play, do.
 
-The HUD builds a horizontal slice from nearby collidable CSG meshes. Upward floor
+The HUD builds a horizontal slice from nearby collidable CSG meshes and static
+box colliders explicitly marked with the `radar_geometry` group. The salon marks
+its existing walls, tables, stairs and gallery this way, without extra render meshes.
+Upward floor
 triangles and wall intersections are drawn in 2D, excluding roofs and distant
 storeys. It reads existing player replication and adds no camera or network state.
 Geometry work is spread over frames and cached until the player moves, changes

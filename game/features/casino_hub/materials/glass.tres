@@ -1,8 +1,11 @@
 [gd_resource type="StandardMaterial3D" format=3]
 
 [resource]
+shading_mode = 2
+texture_filter = 2
+metallic = 0.0
+metallic_specular = 0.0
+roughness = 1.0
 transparency = 1
 cull_mode = 2
 albedo_color = Color(0.78, 0.9, 1, 0.12)
-roughness = 0.05
-metallic_specular = 0.9

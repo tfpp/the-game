@@ -11,6 +11,30 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Modelled casino furniture and textured surfaces",
+		"summary":
+		(
+			"Curved padded tables, contoured chairs and shaped patrons replace blocky salon props."
+			+ " Clothing, leather, skin and trim now use small shared textures."
+		)
+	},
+	{
+		"title": "The old casino salon",
+		"summary":
+		(
+			"Burgundy carpet, green card tables, formal patrons and an amber-lit bar."
+			+ " Explore the upstairs gallery and the new slot-machine bank."
+		)
+	},
+	{
+		"title": "PS1 casino and lighter mobile rendering",
+		"summary":
+		(
+			"Chunky props, crisp 128-pixel textures and warm matte finishes."
+			+ " Mobile renders a lighter 3D scene with a sharp HUD."
+		)
+	},
+	{
 		"title": "Breaking news screen",
 		"summary": "A screen over the casino floor scrolls the latest top headlines."
 	},

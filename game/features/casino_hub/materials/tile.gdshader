@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode diffuse_burley;
+render_mode vertex_lighting, diffuse_lambert, specular_disabled;
 
 varying vec3 world_position;
 
@@ -17,6 +17,6 @@ void fragment() {
 	vec3 color = mix(vec3(0.24, 0.33, 0.29), vec3(0.62, 0.61, 0.49), checker);
 	color *= 0.94 + stone * 0.06;
 	ALBEDO = mix(color, vec3(0.09, 0.10, 0.08), grout);
-	ROUGHNESS = mix(0.38 + stone * 0.06, 0.94, grout);
-	SPECULAR = 0.4;
+	ROUGHNESS = 1.0;
+	SPECULAR = 0.0;
 }

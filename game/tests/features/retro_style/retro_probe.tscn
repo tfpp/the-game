@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://main.tscn" id="game"]
+[ext_resource type="Script" path="res://tests/features/retro_style/retro_probe.gd" id="script"]
+
+[node name="RetroProbe" type="Node"]
+script = ExtResource("script")
+
+[node name="Game" parent="." instance=ExtResource("game")]

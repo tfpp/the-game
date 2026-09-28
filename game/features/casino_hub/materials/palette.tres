@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://features/casino_hub/materials/palette.gdshader" id="1"]
+
+[ext_resource type="Texture2D" path="res://features/casino_hub/textures/surface_atlas.png" id="atlas"]
+
+[resource]
+shader = ExtResource("1")
+shader_parameter/surface_atlas = ExtResource("atlas")
