@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://features/trampoline/trampoline_pad.gd" id="1_script"]
+
+[sub_resource type="BoxShape3D" id="PadShape"]
+size = Vector3(2.4, 0.3, 2.4)
+
+[sub_resource type="BoxMesh" id="PadMesh"]
+size = Vector3(2.4, 0.3, 2.4)
+
+[sub_resource type="StandardMaterial3D" id="PadMat"]
+albedo_color = Color(0.9, 0.15, 0.35, 1)
+metallic = 0.1
+roughness = 0.6
+
+[sub_resource type="BoxShape3D" id="LaunchShape"]
+size = Vector3(2.4, 1.2, 2.4)
+
+[node name="TrampolinePad" type="StaticBody3D"]
+script = ExtResource("1_script")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+shape = SubResource("PadShape")
+
+[node name="Surface" type="MeshInstance3D" parent="."]
+mesh = SubResource("PadMesh")
+surface_material_override/0 = SubResource("PadMat")
+
+[node name="LaunchArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+
+[node name="LaunchCollider" type="CollisionShape3D" parent="LaunchArea"]
+shape = SubResource("LaunchShape")
