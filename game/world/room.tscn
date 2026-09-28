@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Material" path="res://world/materials/proto_dark.tres" id="1_dark"]
 [ext_resource type="Material" path="res://world/materials/proto_wall.tres" id="2_wall"]
 [ext_resource type="Material" path="res://world/materials/proto_orange.tres" id="3_orange"]
+[ext_resource type="PackedScene" path="res://features/hello_sign/hello_sign.tscn" id="4_hello_sign"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
 sky_top_color = Color(0.35, 0.5, 0.75, 1)
@@ -31,6 +32,9 @@ shadow_enabled = true
 
 [node name="Spawn" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 12)
+
+[node name="HelloSign" parent="." instance=ExtResource("4_hello_sign")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9)
 
 [node name="Structure" type="CSGCombiner3D" parent="."]
 use_collision = true
