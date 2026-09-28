@@ -11,6 +11,9 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 - Add an F-toggle flashlight with shared beams and a rebindable Controls entry.
 - Connect all gnome holes through enterable tunnels with four-times running speed and labeled exits.
+- Give coding agents a step-by-step implement workflow, playbooks for common kinds of
+  features, a checklist of problems `verify.sh` can't catch, exact changelog placement,
+  and clearer revise and merge-conflict instructions.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
