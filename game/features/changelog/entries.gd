@@ -11,6 +11,11 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Poverty flies",
+		"summary":
+		"Players ranked in the poorest 80% by wallet balance now have a swarm of flies buzzing overhead."
+	},
+	{
 		"title": "Bouncier frogs",
 		"summary":
 		"Frogs jump twice as high, bounce off walls, ribbit when hit, and there are twice as many."

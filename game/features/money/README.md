@@ -12,6 +12,13 @@ The fractional minute and last heartbeat persist in SQLite. Gaps over 15 seconds
 pause accrual rather than granting offline income; short gaps between heartbeats
 are counted. API downtime pauses income and blocks paid spins.
 
+Every peer also ranks connected wallets from poorest to richest (`PlayerMoney.poorest_peers`,
+ties broken by peer ID) and shows a small buzzing swarm of flies (`poverty_flies.gd`) over
+the poorest 80% of players, rounded down. A lone connected player is never flagged, since
+there is no one to be poorer than. The ranking and swarm are purely cosmetic and computed
+identically on every client from the same replicated balances, so they need no extra
+networking; like the balance label, they only render over other players, not your own.
+
 Other players see the current balance below the character name. A server-owned
 synchronizer sends balances to every peer, including late joiners. Clients cannot
 set balances or submit payouts. Your own balance shows in the bottom-right corner
