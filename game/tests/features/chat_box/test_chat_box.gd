@@ -27,3 +27,16 @@ func test_format_line_colors_the_sender_and_keeps_the_text() -> void:
 func test_format_line_escapes_a_sender_name_trying_to_close_the_color_tag() -> void:
 	var line := ChatBox.format_line("[/color]Evil", "hi")
 	assert_false(line.contains("[/color]Evil"))
+
+
+func test_is_command_detects_a_leading_slash() -> void:
+	assert_true(ChatBox.is_command("/suicide"))
+	assert_false(ChatBox.is_command("hello"))
+
+
+func test_parse_command_lowercases_the_first_word() -> void:
+	assert_eq(ChatBox.parse_command("/SUICIDE"), "suicide")
+
+
+func test_parse_command_drops_anything_after_the_first_word() -> void:
+	assert_eq(ChatBox.parse_command("/suicide please"), "suicide")
