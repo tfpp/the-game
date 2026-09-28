@@ -21,6 +21,12 @@ type fakeGitHub struct {
 	failIssue   bool
 	failDispach bool
 
+	// Closing.
+	newComments  []string // "n:body"
+	closedIssues []int
+	closedPRs    []int
+	closeErr     error
+
 	// Merging (merge_test.go).
 	prs       map[int]*github.PullRequest
 	files     map[int][]string
@@ -64,6 +70,30 @@ func (f *fakeGitHub) WorkflowRuns(context.Context, string, time.Time) ([]github.
 
 func (f *fakeGitHub) Comments(_ context.Context, n int, _ time.Time) ([]github.Comment, error) {
 	return f.comments[n], nil
+}
+
+func (f *fakeGitHub) CreateComment(_ context.Context, n int, body string) error {
+	f.newComments = append(f.newComments, fmt.Sprintf("%d:%s", n, body))
+	return nil
+}
+
+func (f *fakeGitHub) CloseIssue(_ context.Context, n int) error {
+	if f.closeErr != nil {
+		return f.closeErr
+	}
+	f.closedIssues = append(f.closedIssues, n)
+	return nil
+}
+
+func (f *fakeGitHub) ClosePullRequest(_ context.Context, n int) error {
+	if f.closeErr != nil {
+		return f.closeErr
+	}
+	f.closedPRs = append(f.closedPRs, n)
+	if pr := f.prs[n]; pr != nil {
+		pr.State = "closed"
+	}
+	return nil
 }
 
 type post struct{ thread, content, ping, button string }

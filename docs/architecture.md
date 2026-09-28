@@ -217,6 +217,7 @@ protocol, income timing, offline behavior and deployment order.
    A reconcile loop polls while runs are active, in case a webhook is missed.
 5. `/revise <changes>` in the thread (or `/agent <feedback>` on the PR) starts a `revise`
    run. `/agent resolve-conflicts` merges `main` in and resolves any conflicts.
+   `/close` in the thread closes the PR and the issue without merging.
 
 **Agents:** Claude Code runs on GitHub-hosted runners using `CLAUDE_CODE_OAUTH_TOKEN`
 (from `claude setup-token`). Codex and pi need persisted `auth.json` logins, so they run on

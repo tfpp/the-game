@@ -27,6 +27,11 @@ type GitHub interface {
 	WorkflowRuns(ctx context.Context, workflow string, since time.Time) ([]github.WorkflowRun, error)
 	Comments(ctx context.Context, n int, since time.Time) ([]github.Comment, error)
 
+	// Closing (/close).
+	CreateComment(ctx context.Context, n int, body string) error
+	CloseIssue(ctx context.Context, n int) error
+	ClosePullRequest(ctx context.Context, n int) error
+
 	// Merging.
 	PullRequest(ctx context.Context, n int) (github.PullRequest, error)
 	PullRequestFiles(ctx context.Context, n int) ([]string, error)
@@ -338,6 +343,102 @@ func (s *Service) Revise(ctx context.Context, req ReviseRequest, r Responder) er
 		req.UserID, job.PR, quote(text, 1500)))
 }
 
+// CloseRequest is a /close command, sent inside a feature thread.
+type CloseRequest struct {
+	UserID   string
+	UserName string
+	HasRole  bool // the requester or approver role
+	ThreadID string
+}
+
+// Close handles /close: closes the thread's PR (if any) without merging, and its issue as
+// not planned. It takes the PR out of the merge queue and drops a run waiting for a slot,
+// but refuses while the agent is working on it.
+func (s *Service) Close(ctx context.Context, req CloseRequest, r Responder) error {
+	// Hold off the merge coordinator, so the PR can't be merged while it's being closed.
+	s.mergeMu.Lock()
+	defer s.mergeMu.Unlock()
+	job, err := s.st.JobByThread(ctx, req.ThreadID)
+	if errors.Is(err, store.ErrNotFound) {
+		return r.Reject(ctx, "Use `/close` inside a feature's thread.")
+	} else if err != nil {
+		return err
+	}
+	switch {
+	case !req.HasRole && req.UserID != job.RequesterID:
+		return r.Reject(ctx, "Only the requester or someone with the requester or approver role can close this.")
+	case job.State != store.JobOpen:
+		return r.Reject(ctx, "This feature is already "+job.State+".")
+	}
+	var waiting int64 // a run waiting for a slot, dropped on close
+	if run, err := s.st.ActiveRunForJob(ctx, job.ID); err == nil {
+		if run.Status != store.RunWaiting {
+			return r.Reject(ctx, "The agent is working on this. Wait for it to finish, then close it.")
+		}
+		waiting = run.ID
+	} else if !errors.Is(err, store.ErrNotFound) {
+		return err
+	}
+	if err := r.Defer(ctx); err != nil {
+		return err
+	}
+	if job.PR != 0 {
+		pr, err := s.gh.PullRequest(ctx, job.PR)
+		if err != nil {
+			s.log.Error("get PR to close", "err", err, "pr", job.PR)
+			return r.Respond(ctx, "❌ I couldn't check the PR on GitHub. Try again later.")
+		}
+		if pr.Merged {
+			return r.Respond(ctx, fmt.Sprintf("PR #%d is already merged, so it can't be closed.", job.PR))
+		}
+	}
+
+	now := s.cfg.Now()
+	note := fmt.Sprintf("Closed from Discord by %s.", cleanName(req.UserName))
+	var closed []string
+	if job.PR != 0 {
+		if err := s.gh.CreateComment(ctx, job.PR, note); err != nil {
+			s.log.Warn("comment on closed PR", "err", err, "pr", job.PR)
+		}
+		if err := s.gh.ClosePullRequest(ctx, job.PR); err != nil {
+			s.log.Error("close PR", "err", err, "pr", job.PR)
+			return r.Respond(ctx, fmt.Sprintf("❌ I couldn't close PR #%d. Try again later.", job.PR))
+		}
+		closed = append(closed, fmt.Sprintf("PR #%d", job.PR))
+	}
+	// The PR is closed: from here on the job is, whatever happens to the issue.
+	if err := s.st.SetJobState(ctx, job.ID, store.JobClosed, now); err != nil {
+		return err
+	}
+	if waiting != 0 {
+		s.failRun(ctx, waiting)
+	}
+	if m, err := s.st.ActiveMergeForJob(ctx, job.ID); err == nil {
+		if err := s.st.UpdateMerge(ctx, m.ID, store.MergeDropped, "", "closed", now); err != nil {
+			return err
+		}
+	} else if !errors.Is(err, store.ErrNotFound) {
+		return err
+	}
+	issueErr := s.gh.CreateComment(ctx, job.Issue, note)
+	if issueErr != nil {
+		s.log.Warn("comment on closed issue", "err", issueErr, "issue", job.Issue)
+	}
+	if issueErr = s.gh.CloseIssue(ctx, job.Issue); issueErr != nil {
+		s.log.Error("close issue", "err", issueErr, "issue", job.Issue)
+	} else {
+		closed = append(closed, fmt.Sprintf("issue #%d", job.Issue))
+	}
+	msg := fmt.Sprintf("🔒 <@%s> closed %s.", req.UserID, strings.Join(closed, " and "))
+	if issueErr != nil {
+		if len(closed) == 0 {
+			msg = fmt.Sprintf("🔒 <@%s> closed this feature.", req.UserID)
+		}
+		msg += fmt.Sprintf(" I couldn't close issue #%d on GitHub; a maintainer can close it there.", job.Issue)
+	}
+	return r.Respond(ctx, msg)
+}
+
 func (s *Service) reserve(ctx context.Context, userID string, jobID int64, mode, instructions string) (store.Run, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -599,6 +700,9 @@ func (s *Service) PullRequest(ctx context.Context, ev github.PullRequestEvent) e
 			s.post(ctx, job, fmt.Sprintf("🎉 <@%s> PR #%d was merged. It ships with the next deploy.",
 				job.RequesterID, ev.Number), job.RequesterID)
 			return s.st.SetJobState(ctx, job.ID, store.JobMerged, now)
+		}
+		if job.State == store.JobClosed {
+			return nil // closed with /close, which said so
 		}
 		s.post(ctx, job, fmt.Sprintf("PR #%d was closed without merging.", ev.Number))
 		return s.st.SetJobState(ctx, job.ID, store.JobClosed, now)

@@ -549,3 +549,105 @@ func TestProtectedPaths(t *testing.T) {
 		t.Errorf("got %q", got)
 	}
 }
+
+func (e *env) close(t *testing.T, job store.Job, user string, role bool) *fakeResponder {
+	t.Helper()
+	r := &fakeResponder{}
+	must(t, e.svc.Close(context.Background(), CloseRequest{
+		UserID: user, UserName: "Dan", HasRole: role, ThreadID: job.ThreadID,
+	}, r))
+	return r
+}
+
+func TestClose(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	job := e.withPR(t, "42", 12, "aaa")
+	must(t, e.svc.Approve(ctx, ApproveRequest{UserID: "99", UserName: "Carol", HasRole: true, ThreadID: job.ThreadID}, &fakeResponder{}))
+
+	if r := e.close(t, job, "7", false); !strings.Contains(r.rejected, "Only the requester") {
+		t.Errorf("stranger: %q", r.rejected)
+	}
+	r := e.close(t, job, "42", false)
+	if r.rejected != "" || r.response != "🔒 <@42> closed PR #12 and issue #11." {
+		t.Fatalf("close: %+v", r)
+	}
+	if fmt.Sprint(e.gh.closedPRs, e.gh.closedIssues) != "[12] [11]" {
+		t.Errorf("closed PRs %v issues %v", e.gh.closedPRs, e.gh.closedIssues)
+	}
+	if len(e.gh.newComments) != 2 || e.gh.newComments[0] != "12:Closed from Discord by Dan." {
+		t.Errorf("comments %q", e.gh.newComments)
+	}
+	got, _ := e.st.JobByIssue(ctx, 11)
+	if got.State != store.JobClosed {
+		t.Errorf("job state %q", got.State)
+	}
+	if q, _ := e.st.MergeQueue(ctx); len(q) != 0 {
+		t.Errorf("merge queue %+v", q)
+	}
+
+	// The PR's closed webhook doesn't repeat it.
+	posts := len(e.chat.posts)
+	ev := github.PullRequestEvent{Action: "closed", Number: 12}
+	ev.PullRequest.Head.Ref = "agent/11-thing"
+	must(t, e.svc.PullRequest(ctx, ev))
+	if len(e.chat.posts) != posts {
+		t.Errorf("webhook posted %+v", e.chat.last())
+	}
+	if r := e.close(t, job, "42", true); !strings.Contains(r.rejected, "already closed") {
+		t.Errorf("again: %q", r.rejected)
+	}
+}
+
+func TestCloseRefusedWhileAgentWorks(t *testing.T) {
+	e := newEnv(t)
+	e.feature(t, "42", "add jump pads please")
+	job, _ := e.st.JobByIssue(context.Background(), 11)
+	if r := e.close(t, job, "42", true); !strings.Contains(r.rejected, "agent is working") {
+		t.Errorf("active run: %q", r.rejected)
+	}
+	if len(e.gh.closedIssues) != 0 {
+		t.Errorf("closed %v", e.gh.closedIssues)
+	}
+}
+
+func TestCloseWithoutPRDropsWaitingRun(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.feature(t, "1", "first feature please")
+	e.feature(t, "2", "second feature please")
+	e.feature(t, "3", "third feature waits") // MaxActive is 2
+	job, _ := e.st.JobByIssue(ctx, 13)
+	r := e.close(t, job, "3", false)
+	if r.response != "🔒 <@3> closed issue #13." || len(e.gh.closedPRs) != 0 {
+		t.Fatalf("close: %+v, PRs %v", r, e.gh.closedPRs)
+	}
+	if w, _ := e.st.WaitingRuns(ctx); len(w) != 0 {
+		t.Errorf("waiting %+v", w)
+	}
+}
+
+func TestCloseMergedPR(t *testing.T) {
+	e := newEnv(t)
+	job := e.withPR(t, "42", 12, "aaa")
+	e.gh.prs[12].Merged = true
+	if r := e.close(t, job, "42", false); !strings.Contains(r.response, "already merged") {
+		t.Errorf("merged: %+v", r)
+	}
+	if len(e.gh.closedPRs)+len(e.gh.closedIssues) != 0 {
+		t.Errorf("closed %v %v", e.gh.closedPRs, e.gh.closedIssues)
+	}
+}
+
+func TestCloseIssueFails(t *testing.T) {
+	e := newEnv(t)
+	job := e.withPR(t, "42", 12, "aaa")
+	e.gh.closeErr = errors.New("boom")
+	if r := e.close(t, job, "42", false); !strings.Contains(r.response, "couldn't close PR #12") {
+		t.Errorf("close: %+v", r)
+	}
+	got, _ := e.st.JobByIssue(context.Background(), 11)
+	if got.State != store.JobOpen {
+		t.Errorf("state %q", got.State)
+	}
+}
