@@ -36,6 +36,14 @@ func test_independent_reels_and_exact_return() -> void:
 	assert_eq(wins, 5)
 
 
+func test_payout_scales_with_wager() -> void:
+	var triple_star: Array[int] = [2, 2, 2]
+	assert_eq(SlotSpinCycle.payout(triple_star), 1000, "$1 wager: unaffected default")
+	assert_eq(SlotSpinCycle.payout(triple_star, 100000), 1000000, "$1,000 wager: 1000x prize")
+	var no_win: Array[int] = [0, 1, 2]
+	assert_eq(SlotSpinCycle.payout(no_win, 100000), 0)
+
+
 func test_reels_stop_left_to_right_and_finish_once() -> void:
 	_machine._begin_spin(1, "Alice")
 	assert_true(_machine.state["spinning"])
@@ -198,6 +206,33 @@ func test_wallet_charges_and_rejects_empty_balance() -> void:
 	result = await wallet.spin(1, "test2")
 	assert_true(result.has("error"))
 	assert_eq(int(wallet.balances[1]), 99)
+
+
+func test_interaction_text_and_wallet_use_the_machines_own_buy_in() -> void:
+	_machine.buy_in_cents = 250000
+	assert_true(_machine.interaction_text().contains("$2500.00"))
+	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
+	wallet.balances[1] = 250000
+	var result: Dictionary = await wallet.spin(1, "high-roller", _machine.buy_in_cents)
+	assert_eq(int(wallet.balances[1]), int(result["payout"]))
+	assert_true(int(result["payout"]) == 0 or int(result["payout"]) % 25000 == 0)
+	wallet.balances[1] = 249999
+	result = await wallet.spin(1, "high-roller-2", _machine.buy_in_cents)
+	assert_true(result.has("error"))
+	assert_true(str(result["error"]).contains("$2500.00"))
+	assert_eq(int(wallet.balances[1]), 249999)
+
+
+func test_different_machines_can_have_different_buy_ins() -> void:
+	var cheap := MachineScene.instantiate() as SlotMachine
+	add_child_autofree(cheap)
+	cheap.set_process(false)
+	var expensive := MachineScene.instantiate() as SlotMachine
+	expensive.buy_in_cents = 100_000_000_000
+	add_child_autofree(expensive)
+	expensive.set_process(false)
+	assert_ne(cheap.interaction_text(), expensive.interaction_text())
+	assert_true(expensive.interaction_text().contains("$1000000000.00"))
 
 
 func test_temporary_income_and_remote_nameplate() -> void:

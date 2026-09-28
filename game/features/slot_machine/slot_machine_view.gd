@@ -24,9 +24,34 @@ func _ready() -> void:
 		_box(Vector3(0.59, 0.68, 0.09), Vector3(x, 1.65, 0.69), Color("fff5da"))
 		_reels.append(_label(SYMBOLS[index], Vector3(x, 1.65, 0.75), 58, INK))
 	_status = _label("TRY YOUR LUCK", Vector3(0, 1.02, 0.66), 34, GOLD)
-	_caption = _label("$1 PER SPIN", Vector3(0, 0.78, 0.66), 26, Color.WHITE)
-	_label("TRIPLES: 7 $30 | BAR $20 | STAR $10", Vector3(0, 0.60, 0.72), 15, Color.WHITE)
-	_label("BELL $15 | GEM $25 — PAIRS $0", Vector3(0, 0.51, 0.72), 15, Color.WHITE)
+	_caption = _label(_price_caption(), Vector3(0, 0.78, 0.66), 26, Color.WHITE)
+	var prizes := SlotSpinCycle.PRIZES
+	var buy_in := _machine.buy_in_cents
+	_label(
+		(
+			"TRIPLES: 7 %s | BAR %s | STAR %s"
+			% [
+				PlayerMoney.format_money(prizes[0] * buy_in / 100),
+				PlayerMoney.format_money(prizes[1] * buy_in / 100),
+				PlayerMoney.format_money(prizes[2] * buy_in / 100)
+			]
+		),
+		Vector3(0, 0.60, 0.72),
+		15,
+		Color.WHITE
+	)
+	_label(
+		(
+			"BELL %s | GEM %s — PAIRS $0"
+			% [
+				PlayerMoney.format_money(prizes[3] * buy_in / 100),
+				PlayerMoney.format_money(prizes[4] * buy_in / 100)
+			]
+		),
+		Vector3(0, 0.51, 0.72),
+		15,
+		Color.WHITE
+	)
 	_box(Vector3(0.95, 0.16, 0.12), Vector3(0, 0.42, 0.64), Color("070d14"))
 	_lever = Node3D.new()
 	_lever.position = Vector3(1.25, 1.3, 0)
@@ -62,7 +87,7 @@ func _process(_delta: float) -> void:
 	_lever.rotation.x = 0.8 if snapshot["spinning"] else 0.0
 	if not str(snapshot.get("message", "")).is_empty():
 		_status.text = str(snapshot["message"])
-		_caption.text = "$1 PER SPIN"
+		_caption.text = _price_caption()
 	elif snapshot["spinning"]:
 		_status.text = "SPINNING…"
 		_caption.text = str(snapshot["operator"]).left(20)
@@ -75,7 +100,11 @@ func _process(_delta: float) -> void:
 		_caption.text = str(snapshot["operator"]).left(20)
 	else:
 		_status.text = "TRY YOUR LUCK"
-		_caption.text = "$1 PER SPIN"
+		_caption.text = _price_caption()
+
+
+func _price_caption() -> String:
+	return "%s PER SPIN" % PlayerMoney.format_money(_machine.buy_in_cents)
 
 
 func _material(color: Color) -> StandardMaterial3D:

@@ -20,6 +20,15 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Eight slot machines, eight stakes",
+		"summary":
+		(
+			"Each of the eight slot machines now has its own buy-in, from $1 up to"
+			+ " $1,000,000,000, shown on its cabinet and in the interaction prompt. Prizes"
+			+ " scale with the buy-in, so every machine keeps the same 80% return."
+		)
+	},
+	{
 		"title": "One weapon at a time",
 		"summary":
 		(
@@ -27,6 +36,11 @@ const ENTRIES: Array[Dictionary] = [
 			+ " the screen shows every weapon slot (1-8, 9 for the gun machine) and which one's"
 			+ " active. Scroll now cycles weapon slots instead of also jumping."
 		)
+	},
+	{
+		"title": "Poverty flies",
+		"summary":
+		"Players ranked in the poorest 80% by wallet balance now have a swarm of flies buzzing overhead."
 	},
 	{
 		"title": "Bouncier frogs",

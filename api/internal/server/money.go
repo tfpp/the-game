@@ -20,6 +20,14 @@ import (
 // the HMAC signature this handler requires.
 const maxChargeCents = 100_00
 
+// maxWagerCents bounds a slot machine's buy-in at $1,000,000,000, the same
+// sanity-check role maxChargeCents plays for "charge".
+const maxWagerCents = 100_000_000_000
+
+// defaultWagerCents is the wager assumed when a request omits it, so older
+// game servers keep charging the original $1-per-spin price.
+const defaultWagerCents = 100
+
 // Only the dedicated server possesses the ticket key. Domain separation prevents
 // join-ticket signatures from being used to authorize wallet operations.
 func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
@@ -43,6 +51,7 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		Timestamp   int64  `json:"timestamp"`
 		AmountCents int64  `json:"amount_cents"`
 		IncomeCents int64  `json:"income_cents"`
+		WagerCents  int64  `json:"wager_cents"`
 	}
 	if json.Unmarshal(raw, &req) != nil || req.AccountID <= 0 || req.Timestamp < s.cfg.Now().Unix()-60 || req.Timestamp > s.cfg.Now().Unix()+60 {
 		writeError(w, 400, "bad_request", "invalid request")
@@ -107,6 +116,15 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		writeError(w, 400, "bad_request", "invalid spin")
 		return
 	}
+	// Older game servers omit the wager; assume the original $1 machine.
+	wagerCents := req.WagerCents
+	if wagerCents == 0 {
+		wagerCents = defaultWagerCents
+	}
+	if wagerCents < defaultWagerCents || wagerCents > maxWagerCents {
+		writeError(w, 400, "bad_request", "invalid wager")
+		return
+	}
 	var reels [3]int
 	for i := range reels {
 		n, err := rand.Int(rand.Reader, big.NewInt(5))
@@ -116,9 +134,9 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		}
 		reels[i] = int(n.Int64())
 	}
-	result, err := s.store.PlaySlot(r.Context(), req.AccountID, req.ID, reels)
+	result, err := s.store.PlaySlot(r.Context(), req.AccountID, req.ID, reels, wagerCents)
 	if errors.Is(err, store.ErrInsufficientMoney) {
-		writeError(w, 409, "insufficient_money", "You need $1 to spin.")
+		writeError(w, 409, "insufficient_money", "You can't afford that spin.")
 		return
 	}
 	if errors.Is(err, store.ErrSpinConflict) {

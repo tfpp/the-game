@@ -14,6 +14,13 @@ The fractional minute and last heartbeat persist in SQLite. Gaps over 15 seconds
 pause accrual rather than granting offline income; short gaps between heartbeats
 are counted. API downtime pauses income and blocks paid spins.
 
+Every peer also ranks connected wallets from poorest to richest (`PlayerMoney.poorest_peers`,
+ties broken by peer ID) and shows a small buzzing swarm of flies (`poverty_flies.gd`) over
+the poorest 80% of players, rounded down. A lone connected player is never flagged, since
+there is no one to be poorer than. The ranking and swarm are purely cosmetic and computed
+identically on every client from the same replicated balances, so they need no extra
+networking; like the balance label, they only render over other players, not your own.
+
 Other players see the current balance below the character name. A server-owned
 synchronizer sends balances to every peer, including late joiners. Clients cannot
 set balances or submit payouts. Your own balance shows in the bottom-right corner
@@ -44,11 +51,15 @@ for spins and credits), and `timestamp` (Unix seconds, within 60 seconds of the 
 clock).
 
 For spins, the API generates independent random reels and transactionally records
-the result, deducts $1, and pays the prize. A unique operation ID makes retries
-idempotent. Insufficient funds reject the entire spin, including a would-be win.
-The game remembers unresolved operation IDs so retrying after a lost response
-recovers the result without charging again. A spin's recorded balance reflects its
-settlement; the next heartbeat refreshes any income awarded since then.
+the result, deducts the request's `wager_cents` (each machine sets its own; omitted
+or zero defaults to $1 for older game servers), and pays a prize scaled to that
+wager so every machine keeps the same 80% return. `wager_cents` is capped server-side
+at $1,000,000,000 — see `features/slot_machine/README.md` for the buy-in per machine.
+A unique operation ID makes retries idempotent. Insufficient funds reject the entire
+spin, including a would-be win. The game remembers unresolved operation IDs so
+retrying after a lost response recovers the result without charging again. A spin's
+recorded balance reflects its settlement; the next heartbeat refreshes any income
+awarded since then.
 
 Coins scattered around the map (`features/coins/`) pay a flat $10 the same way: the
 server calls the `credit` action with a fresh operation ID, the API adds the reward

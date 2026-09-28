@@ -24,7 +24,7 @@ func TestWalletPersistenceAndIdempotency(t *testing.T) {
 	if err != nil || balance != 2000 {
 		t.Fatalf("starter: %d %v", balance, err)
 	}
-	got, err := s.PlaySlot(ctx, a.ID, "one", [3]int{0, 0, 0})
+	got, err := s.PlaySlot(ctx, a.ID, "one", [3]int{0, 0, 0}, 100)
 	if err != nil || got.Balance != 4900 || got.Payout != 3000 {
 		t.Fatalf("win: %+v %v", got, err)
 	}
@@ -34,7 +34,7 @@ func TestWalletPersistenceAndIdempotency(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer s.Close()
-	replay, err := s.PlaySlot(ctx, a.ID, "one", [3]int{1, 2, 3})
+	replay, err := s.PlaySlot(ctx, a.ID, "one", [3]int{1, 2, 3}, 100)
 	if err != nil || replay != got {
 		t.Fatalf("retry: %+v %v", replay, err)
 	}
@@ -43,7 +43,7 @@ func TestWalletPersistenceAndIdempotency(t *testing.T) {
 		t.Fatal(balance)
 	}
 	b, _ := s.CreateEmailAccount(ctx, "b@example.com", "hash", "Bob", time.Now())
-	if _, err = s.PlaySlot(ctx, b.ID, "one", [3]int{}); !errors.Is(err, ErrSpinConflict) {
+	if _, err = s.PlaySlot(ctx, b.ID, "one", [3]int{}, 100); !errors.Is(err, ErrSpinConflict) {
 		t.Fatal(err)
 	}
 	if err = s.SetDisplayName(ctx, a.ID, "Renamed", time.Now()); err != nil {
@@ -145,7 +145,7 @@ func TestConcurrentSpinsCannotOverdraw(t *testing.T) {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			_, err := s.PlaySlot(ctx, a.ID, string(rune('a'+i)), [3]int{0, 1, 2})
+			_, err := s.PlaySlot(ctx, a.ID, string(rune('a'+i)), [3]int{0, 1, 2}, 100)
 			if err != nil && !errors.Is(err, ErrInsufficientMoney) {
 				t.Error(err)
 			}
@@ -156,7 +156,7 @@ func TestConcurrentSpinsCannotOverdraw(t *testing.T) {
 	if balance != 0 {
 		t.Fatal(balance)
 	}
-	_, err = s.PlaySlot(ctx, a.ID, "unfunded jackpot", [3]int{0, 0, 0})
+	_, err = s.PlaySlot(ctx, a.ID, "unfunded jackpot", [3]int{0, 0, 0}, 100)
 	if !errors.Is(err, ErrInsufficientMoney) {
 		t.Fatal(err)
 	}
@@ -167,12 +167,42 @@ func TestSlotExpectedReturn(t *testing.T) {
 	for a := 0; a < 5; a++ {
 		for b := 0; b < 5; b++ {
 			for c := 0; c < 5; c++ {
-				total += SlotPayout([3]int{a, b, c})
+				total += SlotPayout([3]int{a, b, c}, 100)
 			}
 		}
 	}
 	if total != 10000 {
 		t.Fatalf("125 spins should return $100, got %d cents", total)
+	}
+}
+
+func TestSlotPayoutScalesWithWager(t *testing.T) {
+	if got := SlotPayout([3]int{0, 0, 0}, 100_000); got != 3_000_000 {
+		t.Fatalf("$1,000 buy-in triple 7 should pay $30,000, got %d cents", got)
+	}
+	if got := SlotPayout([3]int{1, 2, 3}, 100_000); got != 0 {
+		t.Fatalf("a non-match should never pay out, got %d cents", got)
+	}
+}
+
+func TestPlaySlotChargesAndPaysTheGivenWager(t *testing.T) {
+	s, err := Open(":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	ctx := context.Background()
+	a, _ := s.CreateEmailAccount(ctx, "wager@example.com", "hash", "Alice", time.Now())
+	got, err := s.PlaySlot(ctx, a.ID, "one", [3]int{2, 2, 2}, 1500)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// STAR triple pays 10x the wager; starter balance 2000 - 1500 + 15000.
+	if got.Payout != 15000 || got.Balance != 15500 {
+		t.Fatalf("wager: %+v", got)
+	}
+	if _, err = s.PlaySlot(ctx, a.ID, "two", [3]int{0, 0, 0}, 20000); !errors.Is(err, ErrInsufficientMoney) {
+		t.Fatalf("wager above balance should be rejected: %v", err)
 	}
 }
 

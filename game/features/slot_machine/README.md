@@ -1,13 +1,27 @@
 # Slot machine
 
-One machine stands at `(0, 0, 6)`, facing the initial spawn area. Approach its front,
-look at it within 3.5 metres, then press **E**, **Circle / B**, or mobile **USE**.
-The on-screen prompt identifies the machine. Menus and chat suppress interaction.
+Eight machines stand in two rows outside the initial spawn area, each with its own
+buy-in. Approach a machine's front, look at it within 3.5 metres, then press **E**,
+**Circle / B**, or mobile **USE**. The on-screen prompt and cabinet show that
+machine's price. Menus and chat suppress interaction.
 
-Each spin costs **$1**. Each of the three reels independently selects one of five
-symbols with equal probability. Three equal symbols pay the following gross prizes:
+| Machine | Buy-in |
+|---|---:|
+| Machine | $1 |
+| Machine2 | $5 |
+| Machine3 | $25 |
+| Machine4 | $100 |
+| Machine5 | $1,000 |
+| Machine6 | $100,000 |
+| Machine7 | $10,000,000 |
+| Machine8 | $1,000,000,000 |
 
-| Triple | Prize |
+Each of the three reels independently selects one of five symbols with equal
+probability. Three equal symbols pay the following gross prizes, scaled to the
+machine's buy-in (the table below is per $1 of buy-in; a $1,000 machine's BAR
+triple pays $1,000 × 20 = $20,000):
+
+| Triple | Prize per $1 wagered |
 |---|---:|
 | 7 | $30 |
 | BAR | $20 |
@@ -16,9 +30,13 @@ symbols with equal probability. Three equal symbols pay the following gross priz
 | GEM | $25 |
 
 Pairs and nonmatches pay $0. There are five winning combinations out of 125 (4%).
-The prizes sum to $100 across those 125 equally likely outcomes, so the expected
-return is **80 cents per $1 spin** (20% house edge). Wins can grow a wallet, but
-repeated spinning is a challenge, not a guaranteed money generator.
+The prizes sum to 100x the buy-in across those 125 equally likely outcomes, so the
+expected return is **80% of every spin's buy-in** (20% house edge) on every machine.
+Wins can grow a wallet, but repeated spinning is a challenge, not a guaranteed money
+generator. `SlotMachine.buy_in_cents` (and the matching `wager_cents` sent to the
+accounts API, capped server-side at $1,000,000,000 — see
+[player money](../money/README.md)) is the only difference between machines; the rest
+of the mechanic, replication and validation is shared.
 
 The left reel stops after 1.2 seconds, the middle after 2.1 seconds, and the right
 after 3 seconds. The cabinet shows the prices and the winning prize; the interaction
@@ -48,16 +66,21 @@ optional, so the feature works before assets are supplied. No code edits are nee
 
 ## Layout
 
-- `feature.tscn` places the machine in the world.
+- `feature.tscn` places the machines in the world, each with its own `buy_in_cents`
+  override.
 - `machine.tscn` is the reusable entity: collision, replication, view and sound.
-- `slot_machine.gd` owns validation, spin progression and replicated state.
-- `spin_cycle.gd` generates independent reels for offline/dev play.
-- `slot_machine_view.gd` builds the placeholder cabinet and text symbols.
+- `slot_machine.gd` owns validation, spin progression, replicated state and the
+  `buy_in_cents` export.
+- `spin_cycle.gd` generates independent reels and the scaled payout for offline/dev
+  play.
+- `slot_machine_view.gd` builds the placeholder cabinet and text symbols, including
+  the machine's price and scaled prize table.
 - `../interaction/` supplies the shared Use binding and proximity prompt.
 
 To add another machine, instance `machine.tscn` under `feature.tscn` with a unique
-node name and position. All peers must load the same scene; each instance has its
-own busy state. All machines share player wallets.
+node name, position, and (optionally) a `buy_in_cents` override — it defaults to 100
+($1). All peers must load the same scene, so every peer computes the same price;
+each instance has its own busy state. All machines share player wallets.
 
 ## Verification
 
