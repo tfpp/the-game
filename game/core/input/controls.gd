@@ -54,14 +54,13 @@ func apply_scheme(new_scheme: Scheme) -> void:
 	_rebind("move_back", [_key(KEY_DOWN if left_handed else KEY_S)])
 	_rebind("move_left", [_key(KEY_LEFT if left_handed else KEY_A)])
 	_rebind("move_right", [_key(KEY_RIGHT if left_handed else KEY_D)])
-	# Scroll-wheel jump is the classic b-hop bind: each notch is one press, regardless
-	# of handedness. The controller's A button is bound here too so it can be rebound.
+	# The controller's A button is bound here too so it can be rebound. The mouse
+	# wheel used to double as a b-hop bind, but features/weapon_hotbar now claims
+	# wheel notches for cycling weapon slots, so jump no longer listens to it.
 	_rebind(
 		"jump",
 		[
 			_key(KEY_SHIFT if left_handed else KEY_SPACE),
-			_mouse(MOUSE_BUTTON_WHEEL_DOWN),
-			_mouse(MOUSE_BUTTON_WHEEL_UP),
 			_pad(JOY_BUTTON_A),
 		]
 	)

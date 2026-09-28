@@ -52,7 +52,7 @@ func test_rebinding_a_key_replaces_only_the_primary_binding() -> void:
 	assert_true(_node.settings_page_input(_key(KEY_J)))
 	assert_eq(_physical_keys("jump"), [KEY_J])
 	var jump := InputMap.action_get_events("jump")
-	assert_eq(jump.size(), 4, "Wheel and controller jump are kept")
+	assert_eq(jump.size(), 2, "Controller jump is kept")
 	assert_true(_node.capture.is_empty(), "Capture ends after one press")
 
 

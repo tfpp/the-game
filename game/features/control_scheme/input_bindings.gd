@@ -3,7 +3,7 @@ extends RefCounted
 ##
 ## Every action has two binding slots: keyboard & mouse, and controller. Rebinding a
 ## slot replaces the first binding of that kind (the "primary" one) and leaves any
-## extras alone, so jump keeps its scroll-wheel b-hop binds when Space is rebound.
+## extras alone, so jump keeps its controller bind when Space is rebound.
 ## Bindings are saved as small dictionaries: {"key": physical_keycode},
 ## {"mouse": button_index} or {"pad": button_index}.
 
@@ -20,7 +20,7 @@ const SECTIONS: Array[Dictionary] = [
 			[&"move_back", "Move back"],
 			[&"move_left", "Strafe left"],
 			[&"move_right", "Strafe right"],
-			[&"jump", "Jump / b-hop"],
+			[&"jump", "Jump"],
 		],
 	},
 	{
