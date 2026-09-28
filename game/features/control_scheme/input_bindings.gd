@@ -47,7 +47,8 @@ const SECTIONS: Array[Dictionary] = [
 		[
 			[&"toggle_third_person", "Third-person camera"],
 			[&"toggle_flashlight", "Flashlight"],
-			[&"toggle_noclip", "Noclip"],
+			[&"toggle_noclip", "Noclip (requires sv_cheats)"],
+			[&"toggle_console", "Developer console"],
 			[&"spray", "Spray"],
 			[&"toggle_changelog", "Release notes"],
 		],

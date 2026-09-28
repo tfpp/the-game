@@ -1,6 +1,15 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://features/noclip/noclip.gd" id="1_script"]
 
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:cheats_enabled")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
 [node name="Noclip" type="Node"]
 script = ExtResource("1_script")
+
+[node name="Sync" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath("..")
+replication_config = SubResource("Replication")

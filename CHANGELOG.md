@@ -28,6 +28,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   small props past 40 metres and cap physics catch-up on slow frames.
 - Keep offline players on the leaderboard and remember signed-in scores across reconnects
   and server restarts.
+- Press ~ for a Source-style settings console with autocomplete and command history;
+  use sv_cheats 1 to unlock noclip and sv_cheats 0 to disable it for everyone.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

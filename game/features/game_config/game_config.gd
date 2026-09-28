@@ -77,7 +77,7 @@ func settings_page_build() -> Control:
 ## Client -> server: ask for a new jump height multiplier.
 @rpc("any_peer", "call_local", "reliable")
 func request_jump_height_scale(value: float) -> void:
-	if not multiplayer.is_server():
+	if not _valid_request(value):
 		return
 	jump_height_scale = clampf(value, JUMP_HEIGHT_RANGE.x, JUMP_HEIGHT_RANGE.y)
 
@@ -85,7 +85,7 @@ func request_jump_height_scale(value: float) -> void:
 ## Client -> server: ask for a new frog hop rate multiplier.
 @rpc("any_peer", "call_local", "reliable")
 func request_frog_hop_rate(value: float) -> void:
-	if not multiplayer.is_server():
+	if not _valid_request(value):
 		return
 	frog_hop_rate = clampf(value, FROG_HOP_RATE_RANGE.x, FROG_HOP_RATE_RANGE.y)
 
@@ -93,7 +93,7 @@ func request_frog_hop_rate(value: float) -> void:
 ## Client -> server: ask for a new frog jump height multiplier.
 @rpc("any_peer", "call_local", "reliable")
 func request_frog_jump_height_scale(value: float) -> void:
-	if not multiplayer.is_server():
+	if not _valid_request(value):
 		return
 	frog_jump_height_scale = clampf(value, FROG_JUMP_HEIGHT_RANGE.x, FROG_JUMP_HEIGHT_RANGE.y)
 
@@ -139,3 +139,15 @@ func _slider(
 			readout.text = "%.1fx" % next
 			request.rpc_id(1, next)
 	)
+
+
+func _valid_request(value: float) -> bool:
+	if not multiplayer.is_server() or not is_finite(value):
+		return false
+	var sender := multiplayer.get_remote_sender_id()
+	if sender == 0 or sender == 1:
+		return true
+	for node: Node in get_tree().get_nodes_in_group(&"players"):
+		if node is Player and node.name == str(sender) and not node.is_queued_for_deletion():
+			return true
+	return false

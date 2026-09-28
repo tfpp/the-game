@@ -4,7 +4,7 @@ A debug-only warp pad for testing slum maps, not part of the game world proper. 
 lives in its own sealed, hazard-striped room far from everything else
 (`DevElevator` sits at world `(0, 0, 900)`, the same "isolated pocket" trick
 `features/elevator/` and `features/parking_garage/` use for their own backrooms), so
-reach it with noclip (`V`) rather than on foot. Bright warning signage ("DEVELOPMENT
+reach it with noclip (`sv_cheats 1` in the `~` console, then `V`) rather than on foot. Bright warning signage ("DEVELOPMENT
 ELEVATOR — INTERNAL TESTING ONLY — NOT PART OF THE GAME") makes it unmistakable if
 anyone stumbles onto it anyway.
 

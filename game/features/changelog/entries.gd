@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Developer console",
+		"summary": "Press ~ for settings commands, autocomplete and sv_cheats to unlock noclip.",
+	},
+	{
 		"title": "Remembered leaderboard",
 		"summary":
 		"Offline players stay ranked; signed-in scores survive reconnects and server restarts.",
