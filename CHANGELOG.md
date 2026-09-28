@@ -16,6 +16,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   new since the latest one.
 - Announce each release in Discord once it is live, with its changelog notes, and each
   deploy's new edge changes as "New on edge".
+- Switch the UI to Inter (body), Exo 2 (headings), Barlow (buttons) and Orbitron (HUD
+  readouts), and put the release notes on a light sheet with palette-matched headings.
 - Deploy the accounts API automatically when its image is built, so API changes (like the
   wallet endpoint) no longer wait for a manual deploy.
 

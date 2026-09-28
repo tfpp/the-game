@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "New fonts",
+		"summary": "Cleaner text everywhere, with bolder headings and a sharper HUD."
+	},
+	{
 		"title": "Versioned release notes",
 		"summary": "Release notes group what's new by version, starting from v0.6.0."
 	},

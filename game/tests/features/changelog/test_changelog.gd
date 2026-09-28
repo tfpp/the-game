@@ -11,9 +11,9 @@ func test_entry_line_is_a_bulleted_row_with_the_summary_under_the_title() -> voi
 	assert_eq(
 		line,
 		(
-			"[cell padding=0,1,10,0][color=#1d56bd]•[/color][/cell]"
+			"[cell padding=0,1,10,0][color=#1677ab]•[/color][/cell]"
 			+ "[cell padding=0,0,0,10][color=#232838][font_size=19]Frogs[/font_size][/color]\n"
-			+ "[color=#3f4759][font_size=16]Frogs hop around.[/font_size][/color][/cell]"
+			+ "[color=#566074][font_size=16]Frogs hop around.[/font_size][/color][/cell]"
 		)
 	)
 
@@ -22,7 +22,7 @@ func test_entry_line_tolerates_missing_keys() -> void:
 	assert_eq(
 		Changelog.entry_line({}),
 		(
-			"[cell padding=0,1,10,0][color=#1d56bd]•[/color][/cell]"
+			"[cell padding=0,1,10,0][color=#1677ab]•[/color][/cell]"
 			+ "[cell padding=0,0,0,10][color=#232838][font_size=19][/font_size][/color][/cell]"
 		)
 	)
@@ -53,10 +53,10 @@ func test_body_text_of_an_empty_list_is_empty() -> void:
 
 func test_heading_text_uses_the_heading_font_and_a_muted_detail() -> void:
 	assert_eq(
-		Changelog.heading_text("v0.6.0", "#1d56bd", "Sep 28, 2026"),
+		Changelog.heading_text("v0.6.0", "#1677ab", "Sep 28, 2026"),
 		(
-			"[b][font_size=24][color=#1d56bd]v0.6.0[/color][/font_size][/b]"
-			+ "   [color=#3f4759][font_size=15]Sep 28, 2026[/font_size][/color]"
+			"[b][font_size=24][color=#1677ab]v0.6.0[/color][/font_size][/b]"
+			+ "   [color=#566074][font_size=15]Sep 28, 2026[/font_size][/color]"
 		)
 	)
 	assert_eq(

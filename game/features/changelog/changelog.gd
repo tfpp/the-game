@@ -23,16 +23,21 @@ const PANEL_WIDTH := 640.0
 const PANEL_MAX_HEIGHT := 520.0
 ## Room the panel keeps from the screen edges on narrow screens.
 const SCREEN_MARGIN := 32.0
-## Colors on ui_theme.tres's light panel: the theme's slate text, a muted slate for
-## summaries and dates, and accents for release and edge headings.
+## The light sheet the notes sit on, inside ui_theme.tres's panel.
+const SHEET_COLOR := Color("#f6f7fb")
+const SHEET_BORDER := Color("#c3c9d6")
+const SHEET_PADDING := 16.0
+## Colors on the sheet: slate text, a lighter slate for summaries and dates, and accents
+## from ui_theme.tres darkened for text: the blue buttons (#1c9fd7) for releases, the
+## yellow focus border (#ffd94d) for edge.
 const TEXT_COLOR := "#232838"
-const MUTED_COLOR := "#3f4759"
-const RELEASE_COLOR := "#1d56bd"
-const EDGE_COLOR := "#a8540a"
+const MUTED_COLOR := "#566074"
+const RELEASE_COLOR := "#1677ab"
+const EDGE_COLOR := "#a97c10"
 ## A short blank line between releases.
 const RELEASE_GAP := "\n[font_size=8]\n[/font_size]"
 ## The body's bold font, so `[b]` means a heading (and nothing gets a faux bold).
-const HEADING_FONT := preload("res://assets/kenney/ui/Font/Kenney Future.ttf")
+const HEADING_FONT := preload("res://assets/fonts/exo2/Exo2-Bold.ttf")
 const RELEASES_PATH := "res://features/changelog/releases.gd"
 ## The `version` of the pseudo-release for entries added since the latest release.
 const EDGE := "edge"
@@ -246,10 +251,14 @@ func _build() -> void:
 	heading.theme_type_variation = &"HeadingLabel"
 	box.add_child(heading)
 
+	var sheet := PanelContainer.new()
+	sheet.add_theme_stylebox_override("panel", _sheet_style())
+	box.add_child(sheet)
+
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(width, PANEL_MAX_HEIGHT)
+	scroll.custom_minimum_size = Vector2(width - 2.0 * SHEET_PADDING, PANEL_MAX_HEIGHT)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	box.add_child(scroll)
+	sheet.add_child(scroll)
 
 	_body = RichTextLabel.new()
 	_body.bbcode_enabled = true
@@ -257,15 +266,28 @@ func _build() -> void:
 	_body.scroll_active = false
 	_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	# Leaves room for the scrollbar.
-	_body.custom_minimum_size = Vector2(width - 24.0, 0.0)
+	_body.custom_minimum_size = Vector2(width - 2.0 * SHEET_PADDING - 24.0, 0.0)
 	_body.add_theme_color_override("default_color", Color(TEXT_COLOR))
 	_body.add_theme_font_override("bold_font", HEADING_FONT)
 	scroll.add_child(_body)
 
 	var footer := Label.new()
 	footer.text = "Esc or L to close"
-	footer.add_theme_color_override("font_color", Color(MUTED_COLOR))
+	footer.add_theme_color_override("font_color", Color(0.22, 0.25, 0.33, 0.8))
 	box.add_child(footer)
+
+
+func _sheet_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = SHEET_COLOR
+	style.border_color = SHEET_BORDER
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(8)
+	style.content_margin_left = SHEET_PADDING
+	style.content_margin_right = SHEET_PADDING - 6.0  # the scrollbar has its own inset
+	style.content_margin_top = 14.0
+	style.content_margin_bottom = 14.0
+	return style
 
 
 func _key_event(keycode: Key) -> InputEventKey:
