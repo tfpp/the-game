@@ -121,7 +121,8 @@ func _refresh(peer: int) -> void:
 	_busy.erase(peer)
 
 
-func spin(peer: int, id: String) -> Dictionary:
+## wager_cents lets each slot machine set its own buy-in (default $1).
+func spin(peer: int, id: String, wager_cents: int = 100) -> Dictionary:
 	if not multiplayer.is_server() or _busy.has(peer):
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
@@ -130,16 +131,18 @@ func spin(peer: int, id: String) -> Dictionary:
 	var result: Dictionary
 	if _temporary() and account <= 0:
 		var balance := int(balances.get(peer, 2000))
-		if balance < 100:
-			result = {"error": "You need $1 to spin"}
+		if balance < wager_cents:
+			result = {"error": "You need %s to spin" % format_money(wager_cents)}
 		else:
 			var reels := SlotSpinCycle.new().next_result()
-			var payout := SlotSpinCycle.payout(reels)
-			result = {"reels": reels, "payout": payout, "balance": balance - 100 + payout}
+			var payout := SlotSpinCycle.payout(reels, wager_cents)
+			result = {"reels": reels, "payout": payout, "balance": balance - wager_cents + payout}
 	else:
 		if not _unresolved.has(account):
 			_unresolved[account] = id
-		result = await _request(account, "spin", str(_unresolved[account]))
+		result = await _request(
+			account, "spin", str(_unresolved[account]), {"wager_cents": wager_cents}
+		)
 		if generation == _generation and (result.has("balance") or result.has("rejected")):
 			_unresolved.erase(account)
 	if generation != _generation:
