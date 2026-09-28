@@ -1,6 +1,6 @@
 # Flashlight
 
-Press **F** to toggle an always-available flashlight, initially off. Rebind
+Press **H** to toggle an always-available flashlight, initially off. Rebind
 **Flashlight** under Settings → Controls → View. Chat, menus and other modal UI
 suppress the toggle. It works alongside held items without consuming an item slot.
 

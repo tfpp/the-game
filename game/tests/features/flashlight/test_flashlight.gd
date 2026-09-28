@@ -29,7 +29,7 @@ func after_each() -> void:
 	Controls.playing = _playing
 
 
-func _press(echo: bool = false, pressed: bool = true, code: Key = KEY_F) -> void:
+func _press(echo: bool = false, pressed: bool = true, code: Key = KEY_H) -> void:
 	var key := InputEventKey.new()
 	key.physical_keycode = code
 	key.pressed = pressed
@@ -37,7 +37,7 @@ func _press(echo: bool = false, pressed: bool = true, code: Key = KEY_F) -> void
 	_feature._unhandled_input(key)
 
 
-func test_f_toggles_and_creates_a_shadow_casting_beam() -> void:
+func test_h_toggles_and_creates_a_shadow_casting_beam() -> void:
 	assert_true(_feature.enabled_peers.is_empty())
 	_press()
 	_feature._process(0.0)

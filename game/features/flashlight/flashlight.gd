@@ -11,7 +11,7 @@ func _ready() -> void:
 	process_priority = 20
 	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	var key := InputEventKey.new()
-	key.physical_keycode = KEY_F
+	key.physical_keycode = KEY_H
 	Controls.ensure_action(ACTION, [key])
 	Network.mode_changed.connect(_reset)
 	multiplayer.peer_disconnected.connect(_remove_peer)

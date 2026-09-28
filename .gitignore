@@ -5,6 +5,8 @@
 
 # Build output
 /build/
+game/features/gun_inspect/rust/target/
+game/features/gun_inspect/bin/
 
 # Godot
 game/.godot/

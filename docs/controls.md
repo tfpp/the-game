@@ -9,6 +9,12 @@ controllers such as Backbone). Online and offline play use the same inputs.
 | Controller | Left stick | Right stick | A / Cross (bottom face button) | B / Circle | Start |
 | Touch | Drag left side | Drag right side | JUMP button | USE button | II button |
 
+Press **F** to inspect the equipped gun in first person. Fire, reload, drop, weapon
+switches, and opening a menu cancel the animation. Rebind Inspect weapon under Items
+in the Controls settings. Both fixed guns and generated gun-machine guns support it.
+
+Press **H** to toggle the flashlight (also rebindable in Controls).
+
 Use works while looking at a nearby interactable. A prompt identifies the target;
 menus and chat suppress interaction. The slot machine is near the initial spawn area.
 

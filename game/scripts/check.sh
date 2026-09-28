@@ -10,6 +10,10 @@ SRC=(core ui world tests)
 
 step() { printf '\n==> %s\n' "$*"; }
 
+step "Rust checks and native GDExtension"
+scripts/build_rust.sh check
+scripts/build_rust.sh native
+
 step "gdformat --check"
 ${GDTOOLKIT}gdformat --check "${SRC[@]}"
 

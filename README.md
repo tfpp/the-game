@@ -78,10 +78,12 @@ resume, display name, link Discord, leave and sign out. More in
 - [Godot 4.7.2](https://godotengine.org/) on `PATH` as `godot` (`brew install --cask godot`)
 - [uv](https://docs.astral.sh/uv/), for the GDScript formatter and linter
 - Go, for `api/` and `bot/`
+- Rust, for gun inspect animations: `game/scripts/setup_rust.sh` installs the pinned toolchain.
 
 ### Run the game
 
 ```bash
+game/scripts/build_rust.sh native  # build the Rust extension before opening Godot
 godot --path game --editor   # open in the editor
 godot --path game            # play offline (the process is its own server)
 ```

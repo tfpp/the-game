@@ -8,6 +8,9 @@ runs:
   using: composite
   steps:
     - uses: astral-sh/setup-uv@v10.2.0
+    - name: Set up Rust inspect module
+      shell: bash
+      run: game/scripts/setup_rust.sh
     - uses: actions/setup-go@v7
       with:
         go-version-file: go.work

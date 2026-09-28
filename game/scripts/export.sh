@@ -10,6 +10,16 @@ cleanup() {
   if [[ -f export_presets.cfg.orig ]]; then mv export_presets.cfg.orig export_presets.cfg; fi
 }
 trap cleanup EXIT
+scripts/build_rust.sh native
+if [[ "$target" == web || "$target" == all ]]; then
+  scripts/build_rust.sh web
+fi
+if [[ "$target" == server || "$target" == all ]]; then
+  [[ -f features/gun_inspect/bin/libgun_inspect.so ]] || {
+    echo 'Build the Linux server export on Linux (it needs the Linux Rust extension).' >&2
+    exit 1
+  }
+fi
 # CI sets BUILD_VERSION to the commit SHA. Clients and servers only play together when
 # their versions match (see core/net/network.gd); without it the build reports "dev".
 if [[ -n "${BUILD_VERSION:-}" ]]; then

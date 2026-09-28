@@ -39,6 +39,8 @@ const AMMO_SOUND_CUES := {
 ## Set from spawn data (see gun_machine.gd), identically on every peer, before this
 ## node enters the tree, so it doesn't need its own synchronizer property.
 var peer_id := 0
+## Local cosmetic offset, driven by features/gun_inspect's Rust controller.
+var inspect_transform := Transform3D.IDENTITY
 
 var _mounted_signature := ""
 var _view: Node3D
@@ -79,7 +81,7 @@ func _process(delta: float) -> void:
 	var player := _player()
 	visible = player != null and is_active()
 	if player != null:
-		global_transform = _mount_transform(player)
+		global_transform = _mount_transform(player) * inspect_transform
 	if _flash_timer > 0.0:
 		_flash_timer -= delta
 		if _flash_timer <= 0.0:
@@ -167,6 +169,10 @@ func discard() -> void:
 ## holstered in reserve (see `holster`) or never rolled at all.
 func is_active() -> bool:
 	return net_equipped and not net_stats.is_empty()
+
+
+func can_inspect() -> bool:
+	return is_active() and _fire_cooldown <= 0.0
 
 
 func has_ammo_to_fire() -> bool:

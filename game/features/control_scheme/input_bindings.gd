@@ -30,6 +30,7 @@ const SECTIONS: Array[Dictionary] = [
 			[&"primary_action", "Use held item"],
 			[&"use", "Interact"],
 			[&"drop_item", "Drop item"],
+			[&"inspect_weapon", "Inspect weapon"],
 			[&"inventory", "Inventory"],
 		],
 	},

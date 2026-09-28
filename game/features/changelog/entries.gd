@@ -11,9 +11,14 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Inspect your guns",
+		"summary":
+		"Press F to inspect your gun. Firing or switching cancels inspection. Flashlights now use H."
+	},
+	{
 		"title": "Flashlights",
 		"summary":
-		"Press F to toggle a flashlight that follows your aim and lights the way for everyone."
+		"Press H to toggle a flashlight that follows your aim and lights the way for everyone."
 	},
 	{
 		"title": "Scavenging",

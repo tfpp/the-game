@@ -28,6 +28,8 @@ const FLASH_DURATION_S := 0.06
 var peer_id := 0
 ## Derived by the server from the account ID (or peer ID in offline/dev play).
 var skin_index := -1
+## Local cosmetic offset, driven by features/gun_inspect's Rust controller.
+var inspect_transform := Transform3D.IDENTITY
 
 var _mounted_item_id := ""
 var _view: Node3D
@@ -64,7 +66,7 @@ func _process(delta: float) -> void:
 	var player := _player()
 	visible = player != null and not net_item_id.is_empty()
 	if player != null:
-		global_transform = _mount_transform(player)
+		global_transform = _mount_transform(player) * inspect_transform
 		_pose_arms(player)
 	if _flash_timer > 0.0:
 		_flash_timer -= delta
@@ -298,6 +300,15 @@ func support_grip() -> Node3D:
 ## without hand.gd needing to know about them.
 func held_view() -> Node3D:
 	return _view
+
+
+func can_inspect() -> bool:
+	var definition := ItemCatalog.find(net_item_id)
+	return (
+		definition != null
+		and definition.category == ItemDefinition.Category.WEAPON
+		and _fire_cooldown <= 0.0
+	)
 
 
 func _pose_arms(player: Player) -> void:

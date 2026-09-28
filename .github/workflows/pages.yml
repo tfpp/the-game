@@ -35,6 +35,7 @@ jobs:
           RELEASE_NOTES: "1"
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          game/scripts/setup_rust.sh web
           GODOT=godot game/scripts/export.sh web
       - uses: actions/upload-pages-artifact@v5
         with:

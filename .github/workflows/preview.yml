@@ -58,7 +58,9 @@ jobs:
       - name: Export web
         env:
           BUILD_VERSION: ${{ github.event.pull_request.head.sha }}
-        run: GODOT=godot game/scripts/export.sh web
+        run: |
+          game/scripts/setup_rust.sh web
+          GODOT=godot game/scripts/export.sh web
       - uses: actions/upload-artifact@v7
         with:
           name: web
@@ -80,19 +82,19 @@ jobs:
         with:
           name: web
           path: web
-      # Pages rejects files over 25 MiB and Godot's engine (index.wasm) is ~38 MiB. Ship
-      # it gzipped (~10 MiB) and have the page inflate it with DecompressionStream before
+      # Pages rejects files over 25 MiB. Extension-enabled Godot puts its engine in
+      # index.side.wasm; gzip both engine modules and inflate with DecompressionStream before
       # Godot's loader sees it. Only previews do this; production is unchanged.
       - name: Fit the Pages file size limit
         run: |
-          gzip -9 -n web/index.wasm
+          gzip -9 -n web/index.wasm web/index.side.wasm
           cat > web/wasm-gz.js <<'EOF'
-          // Added by preview.yml: serve index.wasm from index.wasm.gz.
+          // Added by preview.yml: serve engine WASM modules from their gzip files.
           (() => {
             const fetch = window.fetch.bind(window);
             window.fetch = (input, init) => {
               const url = new URL(input instanceof Request ? input.url : String(input), location.href);
-              if (url.origin !== location.origin || !url.pathname.endsWith('/index.wasm')) {
+              if (url.origin !== location.origin || !/\/index(?:\.side)?\.wasm$/.test(url.pathname)) {
                 return fetch(input, init);
               }
               url.pathname += '.gz';

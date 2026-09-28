@@ -33,7 +33,8 @@ Browser ─────────┘  wss://game.chrisbox.dev (Cloudflare Tunn
 ## Game (`game/`)
 
 - **Engine:** Godot 4.7, GDScript, Jolt physics, and the Compatibility renderer (WebGL2).
-  There is no compile step, so each agent iteration takes seconds rather than minutes.
+  Gun inspect animations run in a Rust GDExtension (`features/gun_inspect/rust`).
+  Verification and export scripts build it before Godot imports the project.
 - **Tick:** 64 Hz fixed physics (`physics/common/physics_ticks_per_second`) with physics
   interpolation turned on for rendering.
 - **Movement:** Source `CGameMovement` math is a pure function
