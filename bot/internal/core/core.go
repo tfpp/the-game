@@ -37,6 +37,9 @@ type GitHub interface {
 	UpdateBranch(ctx context.Context, n int, expectedHead string) error
 	SquashMerge(ctx context.Context, n int, sha, title, message string) (string, error)
 	DeleteBranch(ctx context.Context, branch string) error
+
+	// Release announcements (release.go).
+	Releases(ctx context.Context) ([]github.Release, error)
 }
 
 // Chat posts to Discord threads. content may mention only the users in ping.
@@ -87,10 +90,12 @@ type Config struct {
 	// branches post PreviewURL, with {pr} replaced by N, to the thread. Empty turns it off.
 	PreviewWorkflow string // preview.yml
 	PreviewURL      string // https://pr-{pr}.tfpp-game.pages.dev/
-	Limits          store.Limits
-	Deployer        Deployer
-	Logger          *slog.Logger
-	Now             func() time.Time
+	// Discord channel for release announcements (release.go). Empty turns them off.
+	ReleaseChannelID string
+	Limits           store.Limits
+	Deployer         Deployer
+	Logger           *slog.Logger
+	Now              func() time.Time
 }
 
 // Service implements the bot's commands and event handling.

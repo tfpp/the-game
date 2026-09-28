@@ -78,6 +78,14 @@ func envID(key string, required bool) (snowflake.ID, error) {
 	return id, nil
 }
 
+// idString is id as a string, or "" for an unset (zero) ID.
+func idString(id snowflake.ID) string {
+	if id == 0 {
+		return ""
+	}
+	return id.String()
+}
+
 // secret reads a required, trimmed secret file.
 func secret(path string) (string, error) {
 	b, err := os.ReadFile(path)
@@ -108,6 +116,10 @@ func run(log *slog.Logger) error {
 		return err
 	}
 	channelID, err := envID("BOT_FEATURE_CHANNEL_ID", false)
+	if err != nil {
+		return err
+	}
+	releaseChannelID, err := envID("BOT_RELEASE_CHANNEL_ID", false)
 	if err != nil {
 		return err
 	}
@@ -164,16 +176,17 @@ func run(log *slog.Logger) error {
 		deployer = fileDeployer(dir)
 	}
 	svc := core.New(core.Config{
-		Repo:            repo,
-		Ref:             env("BOT_REF", "main"),
-		Workflow:        env("BOT_WORKFLOW", "agent.yml"),
-		CIWorkflow:      env("BOT_CI_WORKFLOW", "game-ci.yml"),
-		ServerWorkflow:  env("BOT_SERVER_WORKFLOW", "server-image.yml"),
-		PagesWorkflow:   env("BOT_PAGES_WORKFLOW", "pages.yml"),
-		APIWorkflow:     env("BOT_API_WORKFLOW", "api-image.yml"),
-		PreviewWorkflow: env("BOT_PREVIEW_WORKFLOW", "preview.yml"),
-		PreviewURL:      env("BOT_PREVIEW_URL", "https://pr-{pr}.tfpp-game.pages.dev/"),
-		Agent:           env("BOT_AGENT", "claude"),
+		Repo:             repo,
+		Ref:              env("BOT_REF", "main"),
+		Workflow:         env("BOT_WORKFLOW", "agent.yml"),
+		CIWorkflow:       env("BOT_CI_WORKFLOW", "game-ci.yml"),
+		ServerWorkflow:   env("BOT_SERVER_WORKFLOW", "server-image.yml"),
+		PagesWorkflow:    env("BOT_PAGES_WORKFLOW", "pages.yml"),
+		APIWorkflow:      env("BOT_API_WORKFLOW", "api-image.yml"),
+		PreviewWorkflow:  env("BOT_PREVIEW_WORKFLOW", "preview.yml"),
+		PreviewURL:       env("BOT_PREVIEW_URL", "https://pr-{pr}.tfpp-game.pages.dev/"),
+		ReleaseChannelID: idString(releaseChannelID),
+		Agent:            env("BOT_AGENT", "claude"),
 		Limits: store.Limits{
 			PerUser: perUser, Window: 24 * time.Hour,
 			MaxActive: maxActive, StaleAfter: 3 * time.Hour,

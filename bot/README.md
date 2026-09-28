@@ -76,6 +76,12 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    commit (it only runs when `api/` changes), the bot writes that commit to
    `$BOT_DEPLOY_DIR/api-request`, and the host deploys it (`the-game-deploy api`). The API
    builds faster than the server and web client, so a merge touching both deploys it first.
+8. **Release announcements.** The `release` workflow (run by hand) publishes a GitHub
+   Release with the `CHANGELOG.md` notes, and its release commit bumps the game's version,
+   so it deploys like any merge. Once the deployed server contains a release, the bot posts
+   "🎉 vX.Y.Z is out!" with those notes to `BOT_RELEASE_CHANNEL_ID`, oldest first, each
+   once. It checks after each new deploy. The first check announces only the newest live
+   release.
 
 **`/queue`** answers privately, to anyone: `/queue which:agent runs` lists the active runs, then
 the waiting ones in the order they'll start (issue or PR, mode, status, who started it, age,
@@ -113,6 +119,7 @@ Environment variables; secrets are files.
 | `BOT_RUNS_PER_USER` | `5` | Runs per user per 24 hours; `0` for no limit |
 | `BOT_MAX_ACTIVE_RUNS` | `5` | Concurrent runs; `0` for no limit |
 | `BOT_DEPLOY_DIR` | off | Directory shared with the host's deploy service |
+| `BOT_RELEASE_CHANNEL_ID` | off | Channel for release announcements (needs `BOT_DEPLOY_DIR`) |
 | `BOT_REF`, `BOT_WORKFLOW`, `BOT_CI_WORKFLOW`, `BOT_AGENT` | `main`, `agent.yml`, `game-ci.yml`, `claude` | |
 | `BOT_SERVER_WORKFLOW`, `BOT_PAGES_WORKFLOW` | `server-image.yml`, `pages.yml` | Builds that gate a deploy |
 | `BOT_API_WORKFLOW` | `api-image.yml` | Build that deploys the accounts API |
