@@ -9,6 +9,7 @@ var shirt_color := skin_color
 var pants_color := skin_color
 var shirt_id := ""
 var pants_id := ""
+var body_type: StringName = &"default"
 var locomotion: StringName = &"idle"
 var _skin_material: StandardMaterial3D
 var _shirt_material: StandardMaterial3D
@@ -45,6 +46,9 @@ func _process(delta: float) -> void:
 	if hand != null:
 		set_skin_index(hand.skin_tone_index())
 		set_clothing(hand.inventory().shirt, hand.inventory().pants)
+	var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
+	if models != null:
+		set_body_type(models.type_for(player.get_multiplayer_authority()))
 	var holding := hand != null and ItemCatalog.find(hand.net_item_id) != null
 	var support := holding and hand.support_grip() != null
 	var pitch := player.pitch if player.is_local() else player.net_pitch
@@ -107,10 +111,27 @@ func _remote_grounded() -> bool:
 
 func _build() -> void:
 	_skin_material = _material(skin_color)
-	var skin := _skin_material
 	_shirt_material = _material(shirt_color)
 	_trim_material = _material(shirt_color.lightened(0.22))
 	_pants_material = _material(pants_color)
+	_pivot(_rig, self, "Rig", Vector3.ZERO)
+	_pivot(_torso, _rig, "Torso", Vector3(0, -0.17, 0))
+	_pivot(_head, _torso, "Head", Vector3(0, 0.65, 0))
+	_pivot(_left_arm, _torso, "LeftArm", Vector3.ZERO)
+	_pivot(_right_arm, _torso, "RightArm", Vector3.ZERO)
+	_pivot(_left_shoulder, _torso, "LeftShoulder", Vector3.ZERO)
+	_pivot(_right_shoulder, _torso, "RightShoulder", Vector3.ZERO)
+	_pivot(_left_leg, _rig, "LeftLeg", Vector3.ZERO)
+	_pivot(_right_leg, _rig, "RightLeg", Vector3.ZERO)
+	_decorate()
+
+
+## (Re)builds every cosmetic box from the current materials and `body_type`, so a
+## body type change can reshape the rig without disturbing the pivots animation
+## drives (`animate()`) or the paths other features hang onto (`Hand._pose_arms`,
+## the GUT tests).
+func _decorate() -> void:
+	var skin := _skin_material
 	var shirt := _shirt_material
 	var trim := _trim_material
 	var pants := _pants_material
@@ -118,16 +139,22 @@ func _build() -> void:
 	var hair := _material(Color(0.12, 0.075, 0.05))
 	var whites := _material(Color(0.92, 0.94, 0.88))
 	var eyes := _material(Color(0.12, 0.20, 0.22))
-	_pivot(_rig, self, "Rig", Vector3.ZERO)
-	_pivot(_torso, _rig, "Torso", Vector3(0, -0.17, 0))
-	_box(_torso, "Shirt", Vector3(0, 0.31, 0), Vector3(0.46, 0.62, 0.25), shirt)
-	_box(_torso, "Hem", Vector3(0, 0.028, 0), Vector3(0.468, 0.055, 0.26), trim)
+	var feminine := body_type == &"girl"
+	var shoulder_width := 0.295 if feminine else 0.335
+	var hip_width := 0.145 if feminine else 0.12
+	var shirt_size := Vector3(0.40, 0.62, 0.25) if feminine else Vector3(0.46, 0.62, 0.25)
+	var trouser_width := 0.25 if feminine else 0.22
+	var hair_back_size := Vector3(0.44, 0.62, 0.025) if feminine else Vector3(0.44, 0.27, 0.025)
+	var hair_back_y := 0.06 if feminine else 0.24
+	for node: Node3D in [_torso, _head, _left_arm, _right_arm, _left_leg, _right_leg]:
+		_clear_boxes(node)
+	_box(_torso, "Shirt", Vector3(0, 0.31, 0), shirt_size, shirt)
+	_box(_torso, "Hem", Vector3(0, 0.028, 0), Vector3(shirt_size.x + 0.008, 0.055, 0.26), trim)
 	_box(_torso, "Collar", Vector3(0, 0.59, -0.131), Vector3(0.15, 0.06, 0.012), skin)
 	_box(_torso, "Pocket", Vector3(-0.115, 0.41, -0.134), Vector3(0.11, 0.10, 0.014), trim)
-	_pivot(_head, _torso, "Head", Vector3(0, 0.65, 0))
 	_box(_head, "Face", Vector3(0, 0.19, 0), Vector3(0.43, 0.42, 0.43), skin)
 	_box(_head, "HairTop", Vector3(0, 0.405, 0), Vector3(0.45, 0.075, 0.45), hair)
-	_box(_head, "HairBack", Vector3(0, 0.24, 0.211), Vector3(0.44, 0.27, 0.025), hair)
+	_box(_head, "HairBack", Vector3(0, hair_back_y, 0.211), hair_back_size, hair)
 	_box(_head, "Fringe", Vector3(-0.075, 0.342, -0.22), Vector3(0.29, 0.07, 0.025), hair)
 	_box(_head, "FringeLock", Vector3(-0.15, 0.295, -0.22), Vector3(0.085, 0.07, 0.025), hair)
 	for side: float in [-1.0, 1.0]:
@@ -139,16 +166,31 @@ func _build() -> void:
 		var arm := _left_arm if side < 0 else _right_arm
 		var leg := _left_leg if side < 0 else _right_leg
 		var shoulder := _left_shoulder if side < 0 else _right_shoulder
-		_pivot(arm, _torso, "LeftArm" if side < 0 else "RightArm", Vector3(side * 0.335, 0.56, 0))
-		_pivot(shoulder, _torso, "LeftShoulder" if side < 0 else "RightShoulder", arm.position)
+		arm.position = Vector3(side * shoulder_width, 0.56, 0)
+		shoulder.position = arm.position
 		_box(arm, "Sleeve", Vector3(0, -0.20, 0), Vector3(0.19, 0.40, 0.24), shirt)
 		_box(arm, "Cuff", Vector3(0, -0.39, 0), Vector3(0.195, 0.05, 0.245), trim)
 		_box(arm, "Hand", Vector3(0, -0.52, 0), Vector3(0.18, 0.22, 0.23), skin)
-		_pivot(leg, _rig, "LeftLeg" if side < 0 else "RightLeg", Vector3(side * 0.12, -0.17, 0))
-		_box(leg, "Trousers", Vector3(0, -0.30, 0), Vector3(0.22, 0.60, 0.25), pants)
-		_box(leg, "Boot", Vector3(0, -0.66, -0.025), Vector3(0.225, 0.12, 0.30), skin)
-		_box(leg, "Underwear", Vector3(0, -0.09, 0), Vector3(0.229, 0.19, 0.26), underwear)
+		leg.position = Vector3(side * hip_width, -0.17, 0)
+		_box(leg, "Trousers", Vector3(0, -0.30, 0), Vector3(trouser_width, 0.60, 0.25), pants)
+		_box(
+			leg, "Boot", Vector3(0, -0.66, -0.025), Vector3(trouser_width + 0.005, 0.12, 0.30), skin
+		)
+		_box(
+			leg,
+			"Underwear",
+			Vector3(0, -0.09, 0),
+			Vector3(trouser_width + 0.009, 0.19, 0.26),
+			underwear
+		)
 	_apply_clothing()
+
+
+func _clear_boxes(node: Node3D) -> void:
+	for child: Node in node.get_children():
+		if child is MeshInstance3D:
+			node.remove_child(child)
+			child.queue_free()
 
 
 func _pivot(node: Node3D, parent: Node3D, label: String, at: Vector3) -> void:
@@ -198,6 +240,17 @@ func _apply_clothing() -> void:
 		(arm.get_node("Cuff") as Node3D).visible = not shirt_id.is_empty()
 	for leg: Node3D in [_left_leg, _right_leg]:
 		(leg.get_node("Underwear") as Node3D).visible = pants_id.is_empty()
+
+
+## "girl" narrows the shoulders and waist, widens the hips and grows the hair out;
+## anything else (including an unrecognized value) is the original "default" build.
+func set_body_type(new_type: String) -> void:
+	var next: StringName = &"girl" if new_type == "girl" else &"default"
+	if next == body_type:
+		return
+	body_type = next
+	if _skin_material != null:
+		_decorate()
 
 
 func set_skin_index(index: int) -> void:

@@ -7,6 +7,15 @@ shirts and pants with fixed colors, replicated for everyone to see. Player colli
 are unchanged. The existing F3 camera displays your own model in third person;
 your body remains hidden in first person.
 
+## Body model
+
+Open the Esc menu and pick **Character Model** to switch between the default build
+and a girl variant: narrower shoulders and waist, wider hips, and longer hair. The
+picker shows a live preview in your current skin tone and clothing. Your choice is
+just a request; the server validates it and replicates it to everyone (like
+clothing), so other players always see the same model you picked. It defaults to
+the original build and is not saved between sessions.
+
 ## Skin tones
 
 A player's ID selects one of eight skin tones. The server uses the authenticated
@@ -46,4 +55,5 @@ camera mount.
 
 Run `harness/verify.sh`. Tests under `tests/features/player_models` cover locomotion,
 backwards and sideways movement, airborne detection, landing, model attachment,
-visibility, and the item-grip integration.
+visibility, the item-grip integration, and the body model choice (validation,
+replication and rebuilding without losing clothing or skin tone).

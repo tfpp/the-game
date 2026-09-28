@@ -9,12 +9,9 @@ class_name ChangelogEntries
 ## description of what it does.
 const ENTRIES: Array[Dictionary] = [
 	{
-		"title": "Gun machine",
+		"title": "Girl model option",
 		"summary":
-		(
-			"Buy a randomly rolled gun for $20 — fires real projectiles, not hitscans. Tab shows "
-			+ "its specs, R reloads, and the trash can next to the machine gets rid of it."
-		)
+		"Pick a girl body model from the Esc menu's Character Model screen. Everyone sees your choice."
 	},
 	{
 		"title": "Ferry helm",
