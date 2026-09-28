@@ -4,6 +4,7 @@
 [ext_resource type="Material" path="res://features/glowing_cube/glow_material.tres" id="2_material"]
 
 [node name="GlowingCube" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 script = ExtResource("1_script")
 
 [node name="Cube" type="CSGBox3D" parent="."]
