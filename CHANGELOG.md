@@ -16,6 +16,12 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Give coding agents a step-by-step implement workflow, playbooks for common kinds of
   features, a checklist of problems `verify.sh` can't catch, exact changelog placement,
   and clearer revise and merge-conflict instructions.
+- Restyle the casino with 128-pixel world textures, nearest mipmap filtering, matte vertex lighting, subtle surface dithering and texture distortion, and angular adult avatars.
+- Reduce casino prop geometry and batch static decoration; mobile uses a 540-pixel 3D height budget without shadows or MSAA while keeping the HUD sharp.
+
+- Build a furnished casino salon with generated burgundy carpet and felt, low-poly adult patrons, a bottle-lined bar, framed paintings, warm lighting and a walkable upstairs gallery; keep all eight slots accessible in one bank and include the new geometry on the desktop radar.
+
+- Remodel the card tables, chairs and salon patrons with curved upholstery, shaped supports and fitted anatomy; use a shared 128px surface atlas and texture previously plain model materials.
 - Keep offline players on the leaderboard and remember signed-in scores across reconnects
   and server restarts.
 

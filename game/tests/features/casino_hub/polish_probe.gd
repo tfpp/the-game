@@ -20,7 +20,7 @@ func _run() -> void:
 	Controls.start()
 	var machine := $Game/Features/slot_machine/Machine as SlotMachine
 	machine.set_process(false)
-	_view(Vector3(-9.0, 0.55, -3.8), Vector3(-10, 0.05, -7))
+	_view(machine.to_global(Vector3(0.4, 1.9, 3.2)), machine.interaction_point())
 	await _capture("/tmp/casino-slot-detail.png")
 	machine.state = {
 		"spin": 1,
@@ -52,12 +52,18 @@ func _run() -> void:
 	await _capture("/tmp/casino-slot-win.png")
 	_view(Vector3(-27, 2.2, -8), Vector3(-31, 0.9, -13))
 	await _capture("/tmp/casino-furniture.png")
-	_view(Vector3(3, 1.3, 16), Vector3(0, 5.6, 0))
+	_view(Vector3(-1, 0.15, 5), Vector3(-1, 1.8, -5))
 	await _capture("/tmp/casino-chandeliers.png")
-	_view(Vector3(0, 1.65, 23), Vector3(0, 1.65, -8))
+	_view(Vector3(-0.7, 0.15, 5), Vector3(-0.7, 0.15, -8))
 	await _capture("/tmp/casino-polished-wide.png")
 	cycle._apply(0.0)
 	await _capture("/tmp/casino-night.png")
+	for layer: Node in get_tree().root.find_children("*", "CanvasLayer", true, false):
+		(layer as CanvasLayer).visible = false
+	_view(Vector3(-1.4, 0.25, 4.6), Vector3(-4, -0.65, 4))
+	await _capture("/tmp/casino-salon-table.png")
+	_view(Vector3(-11, 4.85, -9), Vector3(-1, -0.1, 3))
+	await _capture("/tmp/casino-salon-gallery.png")
 	print("POLISH_PROBE PASS: real level, models, authoritative reel stops and win display")
 	get_tree().quit()
 

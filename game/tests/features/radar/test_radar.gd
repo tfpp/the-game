@@ -36,3 +36,26 @@ func test_world_projection_is_north_up_and_player_centered() -> void:
 	assert_eq(radar.map_point(Vector3(10, 1, 10)), Vector2(114, 84))
 	assert_eq(radar.map_point(Vector3(20, 1, 20)), Vector2(144, 114))
 	radar.free()
+
+
+func test_salon_boxes_include_gallery_and_furniture_but_exclude_ceiling() -> void:
+	var salon := preload("res://features/casino_hub/salon.tscn").instantiate()
+	add_child_autofree(salon)
+	var radar := Radar.new()
+	radar._height = 4.0
+	var roots: Array[Node3D] = []
+	radar._collect(salon, roots)
+	assert_has(roots, salon.get_node("GalleryFloorBody/Shape"))
+	assert_does_not_have(roots, salon.get_node("CofferedCeilingBody/Shape"))
+	radar._pending = roots.duplicate()
+	radar._build_height = 4.0
+	radar._building = Geometry.new()
+	while not radar._pending.is_empty():
+		radar._build_step()
+	assert_gt(radar._geometry.floors.size(), 0, "Gallery floor appears at its own storey")
+	radar._height = -0.5
+	roots.clear()
+	radar._collect(salon, roots)
+	assert_has(roots, salon.get_node("TableBody0/Shape"))
+	assert_does_not_have(roots, salon.get_node("GalleryFloorBody/Shape"))
+	radar.free()

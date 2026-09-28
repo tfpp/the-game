@@ -15,8 +15,8 @@ def material(name, color, metal=0, rough=.5):
     mat.use_nodes = True
     bsdf = mat.node_tree.nodes.get('Principled BSDF')
     bsdf.inputs['Base Color'].default_value = (*color, 1)
-    bsdf.inputs['Metallic'].default_value = metal
-    bsdf.inputs['Roughness'].default_value = rough
+    bsdf.inputs['Metallic'].default_value = 0
+    bsdf.inputs['Roughness'].default_value = 1
     return mat
 
 MATS = {
@@ -28,9 +28,15 @@ MATS = {
     'Ivory': material('Ivory', (.87, .77, .54), 0, .42),
     'Dark': material('Dark', (.009, .013, .014), .1, .45),
     'Leaf': material('Leaf', (.035, .14, .055), 0, .7),
+    'Blue': material('Blue', (.012, .025, .30)),
     'Soil': material('Soil', (.025, .013, .006), 0, 1),
     'Glow': material('Glow', (1, .72, .34), 0, .3),
 }
+MATS['Palette'] = material('Palette', (1, 1, 1))
+palette_nodes = MATS['Palette'].node_tree.nodes
+vertex_color = palette_nodes.new('ShaderNodeVertexColor')
+vertex_color.layer_name = 'Color'
+MATS['Palette'].node_tree.links.new(vertex_color.outputs['Color'], palette_nodes.get('Principled BSDF').inputs['Base Color'])
 bsdf = MATS['Glow'].node_tree.nodes.get('Principled BSDF')
 bsdf.inputs['Emission Color'].default_value = (1, .66, .24, 1)
 bsdf.inputs['Emission Strength'].default_value = .7
@@ -41,18 +47,9 @@ def xyz(p):
 def finish(obj, name, mat, bevel=0):
     obj.name = name
     obj.data.materials.append(MATS[mat])
-    if bevel:
-        mod = obj.modifiers.new('Soft manufactured edges', 'BEVEL')
-        mod.width = bevel
-        mod.segments = 3
-        bpy.context.view_layer.objects.active = obj
-        bpy.ops.object.modifier_apply(modifier=mod.name)
+    # Deliberately flat faces: no bevel subdivisions or weighted smoothing.
     for poly in obj.data.polygons:
-        poly.use_smooth = True
-    mod = obj.modifiers.new('Weighted corner normals', 'WEIGHTED_NORMAL')
-    mod.keep_sharp = True
-    bpy.context.view_layer.objects.active = obj
-    bpy.ops.object.modifier_apply(modifier=mod.name)
+        poly.use_smooth = False
     return obj
 
 def box(name, p, size, mat, bevel=.02):
@@ -63,23 +60,23 @@ def box(name, p, size, mat, bevel=.02):
     return finish(obj, name, mat, bevel)
 
 def cylinder(name, p, radius, depth, mat, top=None, bevel=.008):
-    bpy.ops.mesh.primitive_cone_add(vertices=24, radius1=radius, radius2=radius if top is None else top, depth=depth, location=xyz(p))
+    bpy.ops.mesh.primitive_cone_add(vertices=8, radius1=radius, radius2=radius if top is None else top, depth=depth, location=xyz(p))
     return finish(bpy.context.object, name, mat, bevel)
 
 def ball(name, p, size, mat):
-    bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, radius=1, location=xyz(p))
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=8, ring_count=4, radius=1, location=xyz(p))
     obj = bpy.context.object
     obj.scale = (size[0], size[2], size[1])
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
     return finish(obj, name, mat)
 
 def ring(name, p, radius, tube, mat):
-    bpy.ops.mesh.primitive_torus_add(major_radius=radius, minor_radius=tube, major_segments=36, minor_segments=8, location=xyz(p))
+    bpy.ops.mesh.primitive_torus_add(major_radius=radius, minor_radius=tube, major_segments=12, minor_segments=3, location=xyz(p))
     return finish(bpy.context.object, name, mat)
 
 def rod(name, a, b, radius, mat):
     va, vb = Vector(xyz(a)), Vector(xyz(b))
-    bpy.ops.mesh.primitive_cylinder_add(vertices=12, radius=radius, depth=(vb-va).length, location=(va+vb)/2)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=6, radius=radius, depth=(vb-va).length, location=(va+vb)/2)
     obj = bpy.context.object
     obj.rotation_euler = (vb-va).to_track_quat('Z','Y').to_euler()
     return finish(obj, name, mat)
@@ -89,7 +86,34 @@ def clear():
     bpy.ops.object.delete(use_global=False)
 
 def export(name):
-    # Join by material: a reusable mesh per finish keeps all eight cabinets cheap.
+    # Bake tints, a detail-atlas quadrant, and physical-scale UVs before joining.
+    # Alpha stores the quadrant only; the shared shader always renders opaque.
+    for obj in list(bpy.context.scene.objects):
+        if obj.type != 'MESH' or not obj.data.materials:
+            continue
+        original = obj.data.materials[0]
+        if original.name in ('Walnut', 'Felt'):
+            continue
+        colors = obj.data.color_attributes.new(name='Color', type='FLOAT_COLOR', domain='CORNER')
+        tile = 0 if original.name in ('Skin', 'Lip', 'Eye') else 1 if original.name in ('Suit', 'Shirt', 'Lapel', 'Hair', 'Velvet', 'Red') else 2 if original.name in ('Leather', 'Dark', 'Enamel', 'Leaf', 'Soil') else 3
+        density = [3.0, 2.5, 2.0, 2.0][tile]
+        for corner in colors.data:
+            corner.color = (*original.diffuse_color[:3], tile / 3.0)
+        for layer in list(obj.data.uv_layers):
+            obj.data.uv_layers.remove(layer)
+        uv = obj.data.uv_layers.new(name='SurfaceUV')
+        # Project from physical coordinates so the grain follows the model when moved.
+        for face in obj.data.polygons:
+            normal = obj.matrix_world.to_3x3() @ face.normal
+            axis = max(range(3), key=lambda i: abs(normal[i]))
+            for loop_index in face.loop_indices:
+                point = obj.matrix_world @ obj.data.vertices[obj.data.loops[loop_index].vertex_index].co
+                coords = (point.x, point.y) if axis == 2 else (point.y, point.z) if axis == 0 else (point.x, point.z)
+                uv.data[loop_index].uv = (coords[0] * density, coords[1] * density)
+        obj.data.color_attributes.active_color = colors
+        obj.data.materials.clear()
+        obj.data.materials.append(MATS['Palette'])
+    # Join by material, retaining the palette's corner colours.
     for mat_name in MATS:
         bpy.ops.object.select_all(action='DESELECT')
         objects = [o for o in bpy.context.scene.objects if o.type == 'MESH' and o.data.materials and o.data.materials[0] == MATS[mat_name]]
@@ -124,7 +148,7 @@ def cabinet():
         box('Reel separator', (x,1.73,.61), (.055,.8,.08), 'Chrome', .015)
     box('Reel recess', (0,1.73,.29), (1.72,.82,.08), 'Dark')
     box('Crown chrome frame', (0,2.46,.38), (1.94,.50,.36), 'Chrome', .08)
-    box('Backlit crown', (0,2.46,.569), (1.72,.32,.018), 'Ivory', .035)
+    box('Backlit crown', (0,2.46,.569), (1.72,.32,.018), 'Blue', .035)
     box('Crown cap', (0,2.74,.02), (2.10,.10,1.08), 'Brass', .045)
     for x in [-.84,.84]:
         for y in [2.35,2.46,2.57]:
@@ -146,12 +170,6 @@ def cabinet():
         cylinder('Bakelite button', (x,1.278,.55), .081,.025,'Velvet')
     cylinder('Spin surround', (.63,1.256,.55), .14,.03,'Chrome')
     cylinder('Spin button', (.63,1.277,.55), .112,.03,'Glow')
-    # Machined case screws, with dark slots cut visually into the heads.
-    for x in [-.91,.91]:
-        for y in [.55,1.25,2.2]:
-            screw = cylinder('Fastener', (x,y,.604), .016,.009,'Chrome',bevel=.002)
-            screw.rotation_euler.x=math.pi/2
-            box('Screw slot',(x,y,.611),(.020,.004,.002),'Dark',.001)
     export('slot_cabinet')
 
 def stool():
@@ -190,7 +208,7 @@ def planter():
     ring('Lip',(0,.67,0),.475,.025,'Brass')
     cylinder('Soil',(0,.64,0),.443,.02,'Soil',bevel=0)
     cylinder('Pot foot',(0,.035,0),.31,.07,'Brass')
-    for i in range(13):
+    for i in range(7):
         angle=i*2.39996
         height=1.35+(i%4)*.19
         reach=.45+(i%3)*.10
@@ -198,15 +216,15 @@ def planter():
         rod('Stem',(0,.65,0),end,.012,'Leaf')
         # A folded, curved lanceolate leaf, double sided geometry, visible veins.
         verts=[]
-        for row in range(9):
-            t=row/8
+        for row in range(4):
+            t=row/3
             r=reach*t
             y=.83+(height-.83)*math.sin(t*math.pi/2)-.18*t*t
             width=.13*math.sin(math.pi*t)
             for side in [-1,0,1]:
                 verts.append(xyz((math.cos(angle)*r-math.sin(angle)*width*side, y+(.045*math.sin(math.pi*t) if side==0 else 0),math.sin(angle)*r+math.cos(angle)*width*side)))
         faces=[]
-        for row in range(8):
+        for row in range(3):
             for col in range(2):
                 a=row*3+col
                 faces.extend([(a,a+1,a+4,a+3),(a+3,a+4,a+1,a)])
@@ -230,10 +248,8 @@ def chandelier():
         cylinder('Opal diffuser',(x,.48,z),.115,.36,'Ivory',top=.15,bevel=.025)
         ring('Shade rim',(x,.66,z),.148,.014,'Brass')
         ball('Lit core',(x,.47,z),(.08,.16,.08),'Glow')
-        for j in [-1,0,1]:
-            offset=j*.055
-            ball('Crystal drop',(x+offset,-.12-abs(j)*.04,z),(.02,.10,.02),'Chrome')
     export('brass_chandelier')
 
-for build in [cabinet,stool,bench,planter,chandelier]:
-    build()
+if __name__ == '__main__':
+    for build in [cabinet,stool,bench,planter,chandelier]:
+        build()

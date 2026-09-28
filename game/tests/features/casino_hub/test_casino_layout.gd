@@ -41,14 +41,14 @@ func test_hub_and_attraction_rooms_have_solid_ceilings() -> void:
 		assert_false(hit.is_empty(), "Interior must be covered")
 
 
-func test_skylights_open_the_ceiling_but_glass_keeps_players_in() -> void:
+func test_salon_ceiling_is_solid_above_the_gaming_floor() -> void:
 	for x: float in [-9.5, 5.5]:
 		var hit := _ray(Vector3(x, 4, 2), Vector3(x, 10, 2))
-		assert_false(hit.is_empty(), "Skylight glass must be solid")
+		assert_false(hit.is_empty(), "Warm salon ceiling must be solid")
 		if not hit.is_empty():
 			var point: Vector3 = hit["position"]
-			# The ceiling slab's underside is y 8; the glass sits above it, in the opening.
-			assert_gt(point.y, 8.2, "The ceiling is cut open under the skylight")
+			# The lowered salon ceiling sits below the original atrium skylights.
+			assert_almost_eq(point.y, 5.72, 0.03)
 
 
 func _assert_floor(from: Vector3, expected_y: float) -> void:

@@ -24,6 +24,16 @@ var _labels: Array[Label] = []
 func _ready() -> void:
 	for slot: int in SLOT_COUNT:
 		_row.add_child(_build_slot(slot))
+	get_viewport().size_changed.connect(_resize_row)
+	_resize_row()
+
+
+func _resize_row() -> void:
+	var width := minf(540.0, get_viewport().get_visible_rect().size.x - 24.0)
+	_row.offset_left = -width * 0.5
+	_row.offset_right = width * 0.5
+	for column: Control in _row.get_children():
+		column.custom_minimum_size.x = (width - 4.0 * (SLOT_COUNT - 1)) / SLOT_COUNT
 
 
 func _process(_delta: float) -> void:
@@ -44,8 +54,12 @@ func _process(_delta: float) -> void:
 
 func _set_slot(slot: int, text: String, active: bool) -> void:
 	var label := _labels[slot]
-	label.text = text if not text.is_empty() else "—"
-	label.add_theme_color_override("font_color", ACTIVE_COLOR if active else IDLE_COLOR)
+	var display := text if not text.is_empty() else "—"
+	if label.text != display:
+		label.text = display
+	var color := ACTIVE_COLOR if active else IDLE_COLOR
+	if label.get_theme_color("font_color") != color:
+		label.add_theme_color_override("font_color", color)
 
 
 func _display_name(id: String) -> String:

@@ -15,13 +15,13 @@ var _refresh := 0.0
 var _player: Node3D
 var _center := Vector2.ZERO
 var _height := 0.0
-var _pending: Array[CSGShape3D] = []
+var _pending: Array[Node3D] = []
 var _building: RadarGeometry
 var _geometry: RadarGeometry
 var _floor_mesh: ArrayMesh
 var _build_center := Vector2(INF, INF)
 var _build_height := INF
-var _roots: Array[CSGShape3D] = []
+var _roots: Array[Node3D] = []
 
 
 func _ready() -> void:
@@ -58,7 +58,7 @@ func _process(delta: float) -> void:
 	_refresh -= delta
 	if _refresh <= 0.0 and _pending.is_empty():
 		_refresh = 1.0
-		var nearby: Array[CSGShape3D] = []
+		var nearby: Array[Node3D] = []
 		_collect(get_tree().current_scene, nearby)
 		if (
 			nearby != _roots
@@ -78,22 +78,33 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
-func _collect(node: Node, result: Array[CSGShape3D]) -> void:
+func _collect(node: Node, result: Array[Node3D]) -> void:
 	if node == null:
 		return
+	var bounds := AABB()
+	var candidate := false
 	if node is CSGShape3D:
 		var shape := node as CSGShape3D
-		if shape.is_root_shape() and shape.use_collision:
-			var bounds := shape.global_transform * shape.get_aabb()
-			var area := Rect2(
-				Vector2(bounds.position.x, bounds.position.z), Vector2(bounds.size.x, bounds.size.z)
-			)
-			if (
-				area.grow(RANGE + 16.0).has_point(_center)
-				and bounds.position.y < _height
-				and bounds.end.y > _height - 4.0
-			):
-				result.append(shape)
+		if not shape.is_root_shape() or not shape.use_collision:
+			return
+		bounds = shape.global_transform * shape.get_aabb()
+		candidate = true
+	elif node is CollisionShape3D and node.is_in_group(&"radar_geometry"):
+		var collider := node as CollisionShape3D
+		var box := collider.shape as BoxShape3D
+		if box != null and not collider.disabled:
+			bounds = collider.global_transform * AABB(-box.size * 0.5, box.size)
+			candidate = true
+	if candidate:
+		var area := Rect2(
+			Vector2(bounds.position.x, bounds.position.z), Vector2(bounds.size.x, bounds.size.z)
+		)
+		if (
+			area.grow(RANGE + 16.0).has_point(_center)
+			and bounds.position.y < _height
+			and bounds.end.y > _height - 4.0
+		):
+			result.append(node as Node3D)
 		return
 	for child: Node in node.get_children():
 		_collect(child, result)
@@ -103,16 +114,23 @@ func _build_step() -> void:
 	if _building == null:
 		return
 	for index: int in mini(ROOTS_PER_FRAME, _pending.size()):
-		var shape: CSGShape3D = _pending.pop_back()
+		var shape: Node3D = _pending.pop_back()
 		if not is_instance_valid(shape):
 			continue
-		var meshes := shape.get_meshes()
-		if meshes.size() == 2:
-			_building.append_mesh(
-				meshes[1] as Mesh,
-				shape.global_transform * (meshes[0] as Transform3D),
-				_build_height
-			)
+		if shape is CollisionShape3D:
+			# Only explicitly marked static boxes are collected. This runs on desktop
+			# during a map rebuild, reusing the authored collision instead of drawing it.
+			var box := BoxMesh.new()
+			box.size = (shape.shape as BoxShape3D).size
+			_building.append_mesh(box, shape.global_transform, _build_height)
+		else:
+			var meshes := (shape as CSGShape3D).get_meshes()
+			if meshes.size() == 2:
+				_building.append_mesh(
+					meshes[1] as Mesh,
+					shape.global_transform * (meshes[0] as Transform3D),
+					_build_height
+				)
 	if _pending.is_empty():
 		_geometry = _building
 		_floor_mesh = _geometry.floor_mesh()

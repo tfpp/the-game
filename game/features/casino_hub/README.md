@@ -3,7 +3,7 @@
 A faded 1964 casino. `world/room.tscn` instances `interior.tscn` and
 retains the stable `Room/Spawn` path and all five original annex entrances. This
 folder intentionally has no `feature.tscn`: the architecture is part of the room,
-not a second copy loaded by the feature loader. Architecture and collision are editable CSG; detailed props are reusable glTF meshes.
+not a second copy loaded by the feature loader. Collision-bearing architecture remains CSG; static decoration is baked into sector meshes and props are reusable low-polygon glTF meshes.
 
 - Gaming floor: x -15…15, z -12…12, surface y -1.5. Eight independently networked
   slots and the original roulette table. Two 6m-wide, 1:4 ramps connect the floor
@@ -13,39 +13,99 @@ not a second copy loaded by the feature loader. Architecture and collision are e
 - East harbor room: x 18…34, z -21…21. The original ferry travels its full 30m
   route along x 26, from z -15 to 15. Both end landings clear its 9m hull.
   Solid shallow flooring prevents players from falling into the basin.
-- Skylights: two glazed openings in the gaming floor's coffered ceiling (x -12…-7 and
-  3…8, z -9…9), either side of the chandeliers, show the day skybox set in
-  `world/room.tscn`. The glass has collision. The room's lighting ignores the sky
-  (fixed ambient color, no sky reflections) so the interior keeps its warm look.
-- South lobby: spawn at (0, 1.2, 23); weapons, banana and ball at security,
-  all six clothing pickups at coat check. The gun vending machine and its trash
-  can stand beside security. Trampolines in the southeast lounge;
-  crates, ramp/platform and a shorter surf ramp in southwest recreation.
+- Salon: green card tables and decorative adult patrons on the west side, eight
+  functional slots in an east-side bank, and a bottle-lined bar at the back.
+  A ceiling at y 5.72 covers the former atrium skylights. Original side-room
+  ceilings and all existing exit paths remain in place.
+- Gallery: floor y 3.2, z -12…-8. A 1.8m-wide staircase at x -12.8 climbs from
+  the gaming floor; a smooth 21-degree collision ramp follows its visual treads.
+  Railings protect the landing and leave the stair entrance open.
+- Spawn: (2, 0.2, 5), in the clear central gaming aisle. The stable `Room/Spawn`
+  path is unchanged. Weapons, clothing, recreation areas and the south lobby
+  remain reachable via the original south ramp.
 - North promenade: both gnome trains; the Kaaba remains in its northwest gallery.
   All three coin pickups remain available. Original annex rooms and routes are
   retained, with covered ceilings and matching finishes.
 
-Generated carpet, wallpaper and walnut base-color textures use world-space
-triplanar mapping so patterns keep a consistent scale across the architecture.
-Physical materials combine micro-normal and roughness textures with separate
-metal, enamel and fabric finishes. A local reflection probe gives metal props
-indoor reflections and a constant warm ambient fill so night-time startup does
-not capture a nearly black room. The outdoor day/night cycle still changes. Textures use mipmaps and lossy import compression for export.
+Generated burgundy carpet, green wallpaper and walnut artwork is imported at
+128×128 with nearest mipmap sampling. Shared matte finishes use authored warm vertex illumination and fixed indoor
+texture shading, without reflections, normal maps or roughness maps. The salon
+remains readable at night without mobile shadow maps. Outdoor day/night lighting still runs.
+Texture surfaces use dominant-axis world mapping, restrained dithering and subtle
+affine interpolation. See `../retro_style/README.md` for the mobile rendering budget.
 
-Five original glTF models replace the basic cabinet, stools, benches, planters
-and chandeliers. Each model merges parts by material to limit draw calls and
-shares the level's finishes through `model_materials.gd`. Existing bench
-colliders, passages and machine collision/interaction stay in place. Rebuild:
+Five original flat-shaded glTF models replace the cabinet, stools, benches,
+planters and chandeliers. Each model uses at most two materials: textured walnut
+and a textured palette with vertex tints. Geometry budgets (triangles per model):
+
+| Model | Before | PS1 |
+| --- | ---: | ---: |
+| Slot cabinet | 13,052 | 844 |
+| Stool | 3,328 | 336 |
+| Bench | 4,760 | 488 |
+| Planter | 2,832 | 464 |
+| Chandelier | 20,344 | 1,816 |
+
+`tools/interior_source.tscn` is the editable source. The offline bake combines
+171 non-colliding decorative CSG nodes into 63 material/sector meshes in
+`models/decor_batches.scn`. Sectors retain spatial culling. Colliders, lights,
+labels, model instances, and all gameplay nodes retain their names and transforms
+in the generated `interior.tscn`. No runtime mesh baking is required.
+
+Rebuild after editing models or decoration:
 
 ```sh
 blender --background --python game/features/casino_hub/tools/build_models.py
+blender --background --python game/features/casino_hub/tools/build_salon.py
+python3 game/features/casino_hub/tools/layout_salon.py
+godot --headless --path game --import
+godot --headless --path game --script res://features/casino_hub/tools/bake_decor.gd
 ```
 
-Artwork prompts and provenance: `textures/GENERATED_ASSETS.md`. The PNGs are
-base-color artwork; micro-normal/roughness detail is procedural, not measured
-from real surfaces. `tests/features/casino_hub/polish_probe.tscn` captures the
-actual room and verifies reel settling during a win.
+Artwork prompts and provenance: `textures/GENERATED_ASSETS.md`. Original generated
+sources are retained; imported textures are tiny and the old PBR maps are removed.
+`tests/features/casino_hub/polish_probe.tscn` captures the actual room and verifies
+reel settling during a win.
 
 `tests/features/casino_hub/test_casino_layout.gd` checks the baked CSG collision:
 ramps join both elevations, side doors stay open, the entire ferry hull route has
 clearance, landings have floors, and the main rooms have solid ceilings.
+
+## Reference salon assets
+
+`salon.tscn` is generated by `tools/layout_salon.py`; edit the generator for layout
+changes. `tools/build_salon.py` builds original meshes with adult proportions,
+formal clothing, posed hands, readable cards and chip stacks. Patrons and card
+tables are scenery: they do not advertise blackjack, add players, award money,
+or create network state. Existing slots and roulette retain their authoritative
+interactions and payouts.
+
+The modelled table and its three chairs total 6,230 triangles across three shared
+materials (felt, walnut, textured palette). Each shaped patron is 1,250–1,306
+triangles and one material. The entire bar,
+including 68 bottles, is 5,012 triangles/two materials; gallery architecture is
+3,576 triangles/two materials. Decorative patrons need no frame callbacks or RPCs.
+
+`test_salon_access.gd` sweeps a standing player capsule through the central aisle,
+the front of all eight machines, and up/across the gallery in both directions.
+It also checks all 49 sampled positions in the six-metre random spawn area.
+Marked collision boxes supply the desktop radar with the new layout, while
+roof/storey filtering keeps the gallery ceiling off the map.
+Texture and model budgets are covered by the retro-style tests. The visual probe
+also captures the furnished tables and a view down from the gallery.
+
+### Model and texture authoring
+
+The table uses continuous curved edge loops for its leather rail, dealer cut-out,
+undercut walnut apron and pedestal supports. Chairs have bowed upholstered backs,
+rounded cushions and shaped legs. Patrons use fitted torso, cheek/jaw/brow, sleeve,
+hand and leg loops, with cloth overlays for collars and lapels. Smooth normals are
+limited to these curved pieces; geometry stays sparse and imported LODs remain on.
+
+Visible model surfaces should use textures by default. The palette shader now
+samples a shared 128px atlas: skin, woven fabric, leather and worn metal in four
+64px tiles. UVs are baked at physical scale before material joining; vertex colour
+RGB retains the tint and alpha encodes the atlas tile (the shader stays opaque).
+Existing wood and felt maps remain separate. Untextured legacy StandardMaterial3D
+surfaces receive a shared 128px grain texture through RetroStyle; existing artwork
+and its UV mapping are preserved. This adds no materials to the model draw budget.

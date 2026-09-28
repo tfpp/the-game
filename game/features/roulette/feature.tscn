@@ -5,4 +5,4 @@
 [node name="RouletteTables" type="Node3D"]
 
 [node name="Table" parent="." instance=ExtResource("1")]
-position = Vector3(6, -1.5, 0)
+position = Vector3(-8.5, -1.5, -5.5)
