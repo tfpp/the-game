@@ -1,5 +1,6 @@
 // Command bot is the Discord bot: /feature and /revise start agent runs through the
 // GitHub App, and GitHub webhooks report their progress back to Discord threads.
+// /usage shows the agent's Claude usage limits.
 //
 // Configuration comes from the environment (see bot/README.md). Secrets are read from
 // files, never from variables.
@@ -26,6 +27,7 @@ import (
 
 	"github.com/disgoorg/snowflake/v2"
 
+	"github.com/tfpp/the-game/bot/internal/claude"
 	"github.com/tfpp/the-game/bot/internal/core"
 	"github.com/tfpp/the-game/bot/internal/discordbot"
 	"github.com/tfpp/the-game/bot/internal/github"
@@ -153,6 +155,15 @@ func run(log *slog.Logger) error {
 		return fmt.Errorf("github webhook secret: %w", err)
 	}
 
+	// Optional: without the token, /usage says it isn't set up.
+	var claudeClient *claude.Client
+	claudeTokenFile := env("BOT_CLAUDE_TOKEN_FILE", "/run/secrets/bot/claude-token")
+	if tok, err := secret(claudeTokenFile); err == nil {
+		claudeClient = &claude.Client{Token: tok, HTTP: &http.Client{Timeout: 30 * time.Second}}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("claude token: %w", err)
+	}
+
 	st, err := store.Open(env("BOT_DB", "/data/bot.db"))
 	if err != nil {
 		return fmt.Errorf("database: %w", err)
@@ -195,6 +206,7 @@ func run(log *slog.Logger) error {
 		Logger:   log,
 	}, st, gh, dc)
 	dc.Service = svc
+	dc.Claude = claudeClient
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
