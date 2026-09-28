@@ -36,6 +36,25 @@ func test_apply_offset_preserves_relative_arrangement_across_rotated_cabs() -> v
 	assert_true(arrival_b.is_equal_approx(destination_cab * Vector3(-0.3, 0, 0.2)))
 
 
+func test_relative_yaw_and_apply_yaw_round_trip() -> void:
+	var cab := Transform3D(Basis(Vector3.UP, deg_to_rad(35.0)), Vector3(-4, 1, 8))
+	var yaw := deg_to_rad(12.0)
+	var local_yaw := ElevatorMath.relative_yaw(yaw, cab)
+	assert_almost_eq(ElevatorMath.apply_yaw(local_yaw, cab), yaw, 0.0001)
+
+
+func test_apply_yaw_preserves_facing_relative_to_rotated_cabs() -> void:
+	var origin_cab := Transform3D(Basis(Vector3.UP, deg_to_rad(90.0)), Vector3(30, 0, 29))
+	var destination_cab := Transform3D(Basis.IDENTITY, Vector3(0, 0, 300))
+	# Facing exactly the same way as the origin cab itself faces.
+	var yaw := origin_cab.basis.get_euler().y
+	var local_yaw := ElevatorMath.relative_yaw(yaw, origin_cab)
+	var arrival_yaw := ElevatorMath.apply_yaw(local_yaw, destination_cab)
+	# Lands facing exactly the way the destination cab faces, despite the 90 degree
+	# difference in how the two cabs are rotated in the world.
+	assert_almost_eq(arrival_yaw, destination_cab.basis.get_euler().y, 0.0001)
+
+
 func test_is_inside_accepts_the_footprint_and_rejects_outside_it() -> void:
 	assert_true(ElevatorMath.is_inside(Vector3(0.5, 0.9, -0.5), 1.0, 1.0, 2.3))
 	assert_false(ElevatorMath.is_inside(Vector3(1.5, 0.9, 0.0), 1.0, 1.0, 2.3))

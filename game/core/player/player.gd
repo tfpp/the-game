@@ -109,11 +109,14 @@ func _process(delta: float) -> void:
 	_body.rotation.y = lerp_angle(_body.rotation.y, net_yaw, t)
 
 
-## Server -> owner: force a position (respawn, teleport). Movement is otherwise
-## client-owned, so the server asks the owner to move. Call with
+## Server -> owner: force a position (respawn, teleport) and, optionally, a view yaw
+## (radians). Movement is otherwise client-owned, so the server asks the owner to move.
+## `new_yaw` defaults to NAN, meaning "leave the player's facing alone"; pass an actual
+## value when the teleport itself implies a new facing (e.g. the elevator preserving
+## relative orientation between differently-rotated cabs). Call with
 ## `player.server_teleport.rpc_id(player.get_multiplayer_authority(), pos)`.
 @rpc("any_peer", "call_local", "reliable")
-func server_teleport(to: Vector3) -> void:
+func server_teleport(to: Vector3, new_yaw: float = NAN) -> void:
 	if multiplayer.get_remote_sender_id() != MultiplayerPeer.TARGET_PEER_SERVER:
 		return
 	if not is_local():
@@ -121,6 +124,9 @@ func server_teleport(to: Vector3) -> void:
 	global_position = to
 	velocity = Vector3.ZERO
 	net_position = to
+	if not is_nan(new_yaw):
+		yaw = new_yaw
+		net_yaw = new_yaw
 	reset_physics_interpolation()
 
 

@@ -4,8 +4,9 @@ extends Node3D
 ## — a lobby cab and a room cab — each pointing at the other through `destination`.
 ## Calling either one is symmetric: press the call button, its doors open, board within
 ## the boarding window, the doors close and a ding sounds, and everyone who was inside
-## reappears inside the other cab in the same relative arrangement (see
-## `ElevatorMath.relative_offset`/`apply_offset`), whose doors then open to reveal them.
+## reappears inside the other cab in the same relative arrangement, facing the same way
+## relative to the cab (see `ElevatorMath.relative_offset`/`apply_offset` and
+## `relative_yaw`/`apply_yaw`), whose doors then open to reveal them.
 ##
 ## Server-authoritative: `net_state` is the only replicated property (see the
 ## synchronizer in elevator_cab.tscn). The server alone drives `_state_elapsed` and
@@ -127,10 +128,13 @@ func _depart() -> void:
 	if occupants.is_empty():
 		return
 	var origin_transform := global_transform
+	var destination_transform := _destination_cab.global_transform
 	for player in occupants:
 		var offset := ElevatorMath.relative_offset(player.net_position, origin_transform)
-		var arrival := ElevatorMath.apply_offset(offset, _destination_cab.global_transform)
-		player.server_teleport.rpc_id(player.get_multiplayer_authority(), arrival)
+		var arrival := ElevatorMath.apply_offset(offset, destination_transform)
+		var yaw_offset := ElevatorMath.relative_yaw(player.net_yaw, origin_transform)
+		var arrival_yaw := ElevatorMath.apply_yaw(yaw_offset, destination_transform)
+		player.server_teleport.rpc_id(player.get_multiplayer_authority(), arrival, arrival_yaw)
 	_destination_cab.call(&"server_arrive")
 
 

@@ -79,6 +79,19 @@ func test_the_trip_reverses_from_the_room_back_to_the_lobby() -> void:
 	assert_true(player.global_position.is_equal_approx(expected))
 
 
+func test_full_cycle_preserves_the_occupants_facing_relative_to_the_cab() -> void:
+	var player := _player_at(_lobby_cab.global_position + Vector3(0, 0.9, 0))
+	# Facing exactly the way the lobby cab itself faces.
+	player.yaw = _lobby_cab.global_transform.basis.get_euler().y
+	player.net_yaw = player.yaw
+	_board_and_depart(_lobby_cab)
+
+	# Lands facing exactly the way the room cab faces, even though the lobby cab is
+	# rotated 90 degrees relative to it.
+	assert_almost_eq(player.yaw, _room_cab.global_transform.basis.get_euler().y, 0.0001)
+	assert_almost_eq(player.net_yaw, _room_cab.global_transform.basis.get_euler().y, 0.0001)
+
+
 func test_a_player_left_outside_the_cab_does_not_depart() -> void:
 	var bystander := _player_at(_lobby_cab.global_position + Vector3(4, 0.9, 0))
 	var start := bystander.global_position

@@ -21,6 +21,19 @@ static func apply_offset(local_offset: Vector3, cab_transform: Transform3D) -> V
 	return cab_transform * local_offset
 
 
+## `yaw` (radians, world frame) expressed relative to `cab_transform`'s own facing, the
+## same trick as `relative_offset` but for the player's view direction instead of their
+## position, so a teleport can preserve facing relative to the cab as well as placement.
+static func relative_yaw(yaw: float, cab_transform: Transform3D) -> float:
+	return yaw - cab_transform.basis.get_euler().y
+
+
+## The world yaw `local_yaw` (as produced by `relative_yaw`) maps to once re-anchored on
+## `cab_transform`, mirroring `apply_offset`.
+static func apply_yaw(local_yaw: float, cab_transform: Transform3D) -> float:
+	return cab_transform.basis.get_euler().y + local_yaw
+
+
 ## Whether a cab-local position sits inside the boarding footprint: within
 ## `half_width`/`half_depth` horizontally and between the floor and `height` vertically.
 ## The floor sits at local y 0, so a small negative allowance covers standing jitter.
