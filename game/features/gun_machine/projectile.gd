@@ -12,6 +12,9 @@ extends Node3D
 const REMOTE_SMOOTHING := 24.0
 const MAX_LIFETIME_S := 6.0
 const COLLISION_MASK := 1
+## How long the visual takes to ease from the shooter's muzzle onto the real
+## trajectory. See `_visual_offset`.
+const MUZZLE_VISUAL_EASE_S := 0.08
 
 ## Replicated (server -> everyone). See the synchronizer config in projectile.tscn.
 @export var net_position := Vector3.ZERO
@@ -28,12 +31,27 @@ var _bounces_left := 0
 var _elapsed := 0.0
 var _finished := false
 
+## A purely cosmetic, per-viewer local-space offset on `_visual` (never networked;
+## `position`/`net_position` stay exactly on the real, authoritative trajectory).
+## The true shot origin is the shooter's eye (`GunRig._aim_origin`) so aiming is
+## accurate, but a shot fired straight down the shooter's own view axis barely
+## moves in screen space and is nearly invisible at this small a size. Starting the
+## visual at the shooter's muzzle (offscreen-center, `GunRig.muzzle_position`) and
+## easing it onto the real path over `MUZZLE_VISUAL_EASE_S` gives it visible
+## motion for both the shooter and any third-person viewer, without changing where
+## the shot actually is.
+var _visual_offset := Vector3.ZERO
+var _visual_offset_elapsed := 0.0
+
 @onready var _visual: MeshInstance3D = $Visual
 
 
 func _ready() -> void:
 	position = net_position
 	net_position = position
+	var rig := GunRig.for_peer(get_tree(), shooter_peer)
+	if rig != null:
+		_visual_offset = rig.muzzle_position() - position
 	var profile := GunGenerator.profile(ammo_type)
 	_bounces_left = int(profile["bounces"])
 	var color: Color = profile["color"]
@@ -163,6 +181,12 @@ func _play_impact(at: Vector3) -> void:
 
 
 func _process(delta: float) -> void:
+	if _visual_offset != Vector3.ZERO:
+		_visual_offset_elapsed += delta
+		var ease := clampf(_visual_offset_elapsed / MUZZLE_VISUAL_EASE_S, 0.0, 1.0)
+		_visual.position = _visual_offset.lerp(Vector3.ZERO, ease)
+		if ease >= 1.0:
+			_visual_offset = Vector3.ZERO
 	if multiplayer.is_server() or _finished:
 		return
 	var t := 1.0 - exp(-REMOTE_SMOOTHING * delta)
