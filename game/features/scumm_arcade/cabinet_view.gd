@@ -23,7 +23,9 @@ var _sign: Label3D
 
 func build(cabinet: ScummArcadeCabinet) -> void:
 	_cabinet = cabinet
-	var model := preload("res://features/scumm_arcade/model/cabinet.glb").instantiate()
+	var model := (
+		(load("res://features/scumm_arcade/model/cabinet.glb") as PackedScene).instantiate()
+	)
 	add_child(model)
 	_style_model(model)
 	_label(str(_cabinet.details()["kicker"]), Vector3(0, 2.475, 0.603), 18, GOLD)

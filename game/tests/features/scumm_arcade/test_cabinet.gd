@@ -56,11 +56,20 @@ func test_floor_has_independent_games_and_display_rejects_input() -> void:
 	var FloorScene := preload("res://features/scumm_arcade/feature.tscn")
 	var floor_node := FloorScene.instantiate()
 	add_child_autofree(floor_node)
-	assert_eq(floor_node.get_child_count(), 5)
+	var interior := floor_node.get_node("Interior") as StreamedRoom
+	var entrance := floor_node.get_node("Entrance") as RoomDoor
+	assert_eq(entrance.destination_room(), interior)
+	assert_false(interior.is_loaded())
 	var signatures: Dictionary = {}
-	for machine: ScummArcadeCabinet in floor_node.get_children():
+	for node: Node in floor_node.get_children():
+		if not node is ScummArcadeCabinet:
+			continue
+		var machine := node as ScummArcadeCabinet
 		machine.set_process(false)
-		signatures[machine._runtime_id] = true
+		signatures[ScummArcadeEmulator.fingerprint(machine.game_id)] = true
+		assert_null(machine._view, "No cabinet visuals before entering the room")
+		assert_eq(machine._emulator.status, "stopped")
+		assert_eq(machine._runtime_id, "", "No runtime asset reads before entering")
 		assert_eq(machine.session.tick, 0)
 		assert_ne(machine.session, cabinet.session)
 	assert_eq(signatures.size(), 5, "Demo data is part of each runtime identity")

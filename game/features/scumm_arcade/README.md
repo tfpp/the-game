@@ -1,7 +1,9 @@
 # Shared adventure arcades
 
-Five cabinets stand on the west side of the sunken gaming floor, at Y = -1.5,
-Z = 8.5 and X = -13, -10.8, -8.6, -6.4, -4.2. Each runs an independent game:
+The **Adventure Arcade** entrance stands on the west side of the sunken casino
+floor at (-8.6, -1.5, 8.5). Press **E** at the door to enter the dedicated room;
+the **Casino** door returns you. The room is centred at (-80, 0, 0), with five
+cabinets along its north wall. Each runs an independent game:
 
 | Cabinet | Demo | Interaction |
 | --- | --- | --- |
@@ -30,8 +32,10 @@ There is no video/audio transport between players. The dedicated server and ever
 client run the **same WASM program**, including native desktop clients. Each cabinet has its own instance; the browser
 keeps a registry of separate Workers, and native runtimes use separate process/instance
 directories. Restarting a cabinet cannot stop or overwrite another instance. The server
-assigns validated input to immutable 20 ms ticks. Clients fetch bounded batches
-of those ticks and simulate locally. Empty ticks cost no replay-log entries.
+assigns validated input to immutable 20 ms ticks and pushes new batches to subscribed
+room occupants every 20 ms. A bounded client inbox accepts those batches while the
+worker is busy, so each frame no longer waits for a client/server round trip.
+Empty ticks cost no replay-log entries.
 
 The custom backend replaces wall time with server ticks, fixes the random seed
 and calendar, and advances the AdLib mixer at exactly 441 stereo samples per tick.
@@ -54,6 +58,27 @@ range, event shape and limits. Leaving, disconnecting, moving away or losing the
 six-second lease releases controls and held buttons. The view renews its lease
 while open. Restart increments the generation, clearing replay and checksums.
 
+## Room loading and audio
+
+The room uses the shared `StreamedRoom` and `RoomDoor` systems. Floors, walls and
+lights are built before the entry teleport and freed on exit; dedicated servers
+never build that cosmetic interior. The lightweight cabinet RPC nodes keep stable
+paths on every peer. Their model,
+texture and local WASM worker/process are created only when the local player is
+inside the room, and freed on exit. The dedicated server runs its authoritative
+interpreters only while at least one player is in the room. Empty rooms save and
+pause progress, including when people are still playing elsewhere in the casino.
+Returning players replay the preserved input history. Game binaries remain bundled
+in the web export; this defers runtime initialization rather than the initial PCK download.
+
+Native local TCP disables Nagle buffering. Presentation checksum loops use indexed
+byte reads without changing their result. Workers convert signed PCM to float stereo;
+Godot feeds it into AudioStreamGenerator in one packed conversion, through the existing
+GameSFX bus. Delayed batches retain their newest 200 ms of audio instead of dropping
+sound for every batch over ten ticks. Catch-up remains silent until near the live tick.
+The initial Monkey Island text sequence and Passport selection screen are silent in
+the original demos; Sam & Max, Atlantis and Tentacle produce sound early on.
+
 ## Runtime and shipping
 
 - Browser: a dedicated Worker, loaded from the exported game assets; no additional
@@ -66,7 +91,7 @@ while open. Restart increments the generation, clearing replay and checksums.
   checked-in build is ready to use; compilation is only needed to change the backend.
 - Progress autosaves every five seconds, on peer disconnect and clean shutdown.
   The server restores the shared run after restarting; reconnecting players receive
-  its replay automatically. The empty dedicated server pauses the arcade. The replay
+  its replay automatically. The arcade pauses whenever its room is empty. The replay
   remains capped at one hour or 32,768 inputs. Restart clears the current saved run.
   Long sessions still take longer to replay: these are durable input-history
   checkpoints, not ScummVM savegames or instant WASM memory snapshots.
@@ -154,6 +179,8 @@ node game/tests/features/scumm_arcade/floor_runtime_test.cjs
 node game/tests/features/scumm_arcade/floor_browser_test.cjs # run after floor_runtime_test
 python3 game/tests/features/scumm_arcade/network_test.py
 python3 game/tests/features/scumm_arcade/persistence_test.py
+# Real room entry/exit, mixer audio and frame timing (requires a working audio device):
+godot --path game res://tests/features/scumm_arcade/room_probe.tscn -- --offline --scumm-runtime --scumm-no-save
 node game/tests/features/scumm_arcade/audio_test.cjs # requires a working audio device
 ```
 
@@ -173,4 +200,4 @@ buttons, speakers and coin door are an original mesh. Regenerate it with
 The GLB is checked in; Blender is only needed to edit the model. The live screen
 and illuminated lettering are attached by `cabinet_view.gd`, which also applies
 each game’s enamel colour and side badge. Each base sits on
-the casino’s sunken gaming floor at Y = -1.5.
+the arcade room’s floor at Y = 0.

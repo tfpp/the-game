@@ -8,7 +8,7 @@ signal frame_ready(tick: int, checksum: int, pixels: PackedByteArray, pcm: Packe
 const ROOT := "res://features/scumm_arcade/runtime/"
 const DIST := ROOT + "dist/"
 const PIXEL_BYTES := 320 * 200 * 4
-const MAX_PACKET := PIXEL_BYTES + 8 + 441 * 4 * 10
+const MAX_PACKET := PIXEL_BYTES + 8 + 441 * 8 * 10
 
 static var _fingerprints: Dictionary = {}
 
@@ -119,6 +119,7 @@ func _process(_delta: float) -> void:
 		return
 	if _stream == null and _listener != null and _listener.is_connection_available():
 		_stream = _listener.take_connection()
+		_stream.set_no_delay(true)
 		_packets = PacketPeerStream.new()
 		_packets.input_buffer_max_size = 1048576
 		_packets.output_buffer_max_size = 262144

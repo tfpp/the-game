@@ -11,6 +11,14 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Adventure arcade room",
+		"summary":
+		(
+			"A dedicated arcade room loads games only while you are inside,"
+			+ " with smoother play and reliable positional sound."
+		)
+	},
+	{
 		"title": "Room doors",
 		"summary":
 		(

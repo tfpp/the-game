@@ -37,6 +37,7 @@ async function run(driver, game, batch) {
         const a = new Driver(factory,wasm,game,data), b = new Driver(factory,wasm,game,data);
         const first = await run(a,game,5), replay = await run(b,game,37);
         assert.equal(a.hash,b.hash,game+' diverged');
+        assert.equal(replay.audio, first.audio, game+' catch-up batches must retain recent audio');
         assert.deepEqual(first.packet.subarray(8,256008),replay.packet.subarray(8,256008));
         results[game] = {hash:a.hash,audio:first.audio};
         fs.writeFileSync('/tmp/scumm-'+game+'.rgba',first.packet.subarray(8,256008));

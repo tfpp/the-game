@@ -17,7 +17,7 @@ globalThis.createScummArcade = function(id) {
                         await runtime.ready;
                         postMessage('ready');
                     } else {
-                        const packet = await runtime.advance(JSON.parse(event.data));
+                        const packet = await runtime.advance(JSON.parse(event.data), true);
                         postMessage(packet.buffer, [packet.buffer]);
                     }
                 } catch (error) { postMessage({error: String(error)}); }

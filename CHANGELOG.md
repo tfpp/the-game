@@ -66,6 +66,9 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 - Add doors that link rooms, starting with a lounge and a wine cellar behind a booth in the south lobby. Each room is its own scene, which clients load only while they're inside and dedicated servers never load.
 
+- Move the adventure cabinets into a dedicated room reached from the casino, unload emulators outside it, and pause shared progress while the room is empty.
+- Reduce arcade frame delivery delay and fix sound dropping out after delayed updates while preserving positional audio and the five-metre cutoff.
+
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28
 
 Versioning starts here, matching milestones v0.1 to v0.6. Highlights so far:

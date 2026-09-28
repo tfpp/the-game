@@ -10,6 +10,7 @@ const game = process.argv[4] || 'monkey';
 const data = game === 'monkey' ? null : fs.readFileSync(path.join(__dirname, 'demo.pak'));
 const driver = new ArcadeDriver(factory, fs.readFileSync(path.join(__dirname, 'scummvm.wasm')), game, data);
 const socket = net.connect(Number(process.argv[2]), '127.0.0.1');
+socket.setNoDelay(true);
 let buffer = Buffer.alloc(0);
 let busy = false;
 function send(data) {
@@ -31,7 +32,7 @@ socket.on('data', async data => {
             const length = buffer.readUInt32LE(0);
             const request = JSON.parse(buffer.subarray(4, 4 + length).toString());
             buffer = buffer.subarray(4 + length);
-            send(await driver.advance(request));
+            send(await driver.advance(request, true));
         }
     } catch (error) { console.error(error); process.exit(1); }
     finally { busy = false; }
