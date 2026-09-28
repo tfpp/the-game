@@ -9,6 +9,12 @@ extends Node3D
 ## unlike Player's client-authoritative movement this keeps the default multiplayer
 ## authority (1, the server). Clients only ever request an action; the server decides.
 
+## Emitted whenever this hand's weapon fires. `_play_fire` broadcasts to every peer
+## (see its `@rpc` annotation), so this fires identically for everyone watching, not
+## just the shooter — features/weapon_hotbar's recoil animation listens for it
+## without hand.gd needing to know that feature exists.
+signal fired(item_id: String)
+
 const THROW_DISTANCE := 5.0
 const DROP_DISTANCE := 1.2
 const HITSCAN_RANGE_M := 50.0
@@ -184,6 +190,7 @@ func _hitscan(shooter: Player, origin: Vector3, direction: Vector3) -> Dictionar
 func _play_fire(item_id: String, origin: Vector3) -> void:
 	_flash_timer = FLASH_DURATION_S
 	_set_flash(true)
+	fired.emit(item_id)
 	# Use the event's weapon ID; replicated equipment may already have changed.
 	GameAudio.play_at(self, StringName(item_id), origin)
 
@@ -272,6 +279,13 @@ func _aim_origin(player: Player) -> Vector3:
 
 func support_grip() -> Node3D:
 	return _view.get_node_or_null("SupportGrip") as Node3D if _view != null else null
+
+
+## The currently mounted item's visual node, or null while unarmed. Exposed so
+## purely cosmetic features (e.g. weapon_hotbar's fire recoil) can animate it
+## without hand.gd needing to know about them.
+func held_view() -> Node3D:
+	return _view
 
 
 func _pose_arms(player: Player) -> void:

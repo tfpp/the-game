@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://features/frogs/frogs.gd" id="1_script"]
 
 [node name="Frogs" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0, -8)
 script = ExtResource("1_script")
 
 [node name="Pond" type="Node3D" parent="."]

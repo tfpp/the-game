@@ -1,0 +1,83 @@
+class_name GunView
+extends RefCounted
+## Builds a weapon's visual model straight from its rolled stats, since every
+## generated gun is a one-off: barrel count, thickness, length and color all come
+## from the stats a GunRig (or the machine's preview) is showing, not a fixed asset.
+
+const BARREL_SPACING := 0.055
+const BODY_COLOR := Color(0.15, 0.15, 0.17)
+
+
+## A `Node3D`, forward-facing down -Z, with a `Muzzle` marker at the end of the
+## barrels — the same muzzle-flash convention features/holdables/hand.gd uses.
+static func build(stats: Dictionary) -> Node3D:
+	var root := Node3D.new()
+	var ammo_type: GunGenerator.AmmoType = stats["ammo_type"]
+	var profile := GunGenerator.profile(ammo_type)
+	var barrel_count: int = stats["barrel_count"]
+	var color: Color = profile["color"]
+
+	# Barrel length/thickness reflect the rolled stats: a harder-hitting round gets a
+	# thicker barrel, a faster one a longer one.
+	var length := clampf(0.35 + float(stats["projectile_speed"]) / 220.0, 0.35, 1.0)
+	var radius := clampf(0.02 + float(stats["damage"]) / 400.0, 0.02, 0.05)
+
+	var body := MeshInstance3D.new()
+	var body_mesh := BoxMesh.new()
+	body_mesh.size = Vector3(0.09, 0.11, 0.22)
+	body.mesh = body_mesh
+	body.position = Vector3(0, 0, 0.06)
+	body.material_override = _material(BODY_COLOR)
+	root.add_child(body)
+
+	for offset: Vector2 in _barrel_offsets(barrel_count):
+		var barrel := MeshInstance3D.new()
+		var mesh := CylinderMesh.new()
+		mesh.top_radius = radius
+		mesh.bottom_radius = radius
+		mesh.height = length
+		barrel.mesh = mesh
+		barrel.rotation.x = deg_to_rad(90.0)
+		barrel.position = Vector3(offset.x, offset.y, -length * 0.5)
+		barrel.material_override = _material(color)
+		root.add_child(barrel)
+
+	var muzzle := Marker3D.new()
+	muzzle.name = "Muzzle"
+	muzzle.position = Vector3(0, 0, -length)
+	root.add_child(muzzle)
+
+	return root
+
+
+static func _barrel_offsets(barrel_count: int) -> Array[Vector2]:
+	match barrel_count:
+		1:
+			return [Vector2(0, 0)] as Array[Vector2]
+		2:
+			return [Vector2(-BARREL_SPACING, 0), Vector2(BARREL_SPACING, 0)] as Array[Vector2]
+		3:
+			return (
+				[
+					Vector2(-BARREL_SPACING, 0),
+					Vector2(BARREL_SPACING, 0),
+					Vector2(0, BARREL_SPACING),
+				]
+				as Array[Vector2]
+			)
+		_:
+			return (
+				[
+					Vector2(-BARREL_SPACING, -BARREL_SPACING),
+					Vector2(BARREL_SPACING, -BARREL_SPACING),
+					Vector2(-BARREL_SPACING, BARREL_SPACING),
+					Vector2(BARREL_SPACING, BARREL_SPACING),
+				]
+				as Array[Vector2]
+			)
+
+
+static func _material(color: Color) -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.albedo_color = color
+	return material

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/weapon_hotbar/weapon_hotbar.gd" id="1_script"]
+
+[node name="WeaponHotbar" type="Node"]
+script = ExtResource("1_script")

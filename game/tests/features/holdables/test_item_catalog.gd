@@ -52,6 +52,12 @@ func test_awp_is_a_weapon() -> void:
 	assert_eq(item.category, ItemDefinition.Category.WEAPON)
 
 
+func test_every_weapon_deals_damage() -> void:
+	for item: ItemDefinition in ItemCatalog.DEFINITIONS:
+		if item.category == ItemDefinition.Category.WEAPON:
+			assert_gt(item.damage, 0.0, "%s should be able to kill" % item.id)
+
+
 func test_every_definition_has_an_id_matching_its_lookup_and_a_view() -> void:
 	for item: ItemDefinition in ItemCatalog.DEFINITIONS:
 		assert_false(item.id.is_empty())

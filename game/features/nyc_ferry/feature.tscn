@@ -49,7 +49,7 @@ properties/1/spawn = true
 properties/1/replication_mode = 2
 
 [node name="NycFerry" type="AnimatableBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0.15, -15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0.22, -15)
 script = ExtResource("1_script")
 
 [node name="Collider" type="CollisionShape3D" parent="."]

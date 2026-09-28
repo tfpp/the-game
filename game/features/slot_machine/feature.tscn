@@ -5,4 +5,25 @@
 [node name="SlotMachines" type="Node3D"]
 
 [node name="Machine" parent="." instance=ExtResource("1")]
-position = Vector3(0, 0, 6)
+position = Vector3(-10, -1.5, -7)
+
+[node name="Machine2" parent="." instance=ExtResource("1")]
+position = Vector3(-6, -1.5, -7)
+
+[node name="Machine3" parent="." instance=ExtResource("1")]
+position = Vector3(6, -1.5, -7)
+
+[node name="Machine4" parent="." instance=ExtResource("1")]
+position = Vector3(10, -1.5, -7)
+
+[node name="Machine5" parent="." instance=ExtResource("1")]
+position = Vector3(-10, -1.5, 4)
+
+[node name="Machine6" parent="." instance=ExtResource("1")]
+position = Vector3(-6, -1.5, 4)
+
+[node name="Machine7" parent="." instance=ExtResource("1")]
+position = Vector3(6, -1.5, 4)
+
+[node name="Machine8" parent="." instance=ExtResource("1")]
+position = Vector3(10, -1.5, 4)

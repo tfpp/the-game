@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://features/gun_machine/gun_machine_trash_can.gd" id="1_script"]
+
+[sub_resource type="CylinderShape3D" id="Hull"]
+radius = 0.35
+height = 0.9
+
+[sub_resource type="CylinderMesh" id="CanMesh"]
+top_radius = 0.32
+bottom_radius = 0.38
+height = 0.9
+
+[sub_resource type="StandardMaterial3D" id="CanMaterial"]
+albedo_color = Color(0.15, 0.45, 0.2, 1)
+
+[node name="GunMachineTrashCan" type="StaticBody3D"]
+script = ExtResource("1_script")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.45, 0)
+shape = SubResource("Hull")
+
+[node name="Can" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.45, 0)
+mesh = SubResource("CanMesh")
+material_override = SubResource("CanMaterial")
