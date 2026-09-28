@@ -11,7 +11,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Wandering gnomes",
 		"summary":
-		"Gnome burrows hug the outer walls now, run slower and more randomly, and dodge you."
+		"Gnome burrows hug the outer walls, dash to far-off holes along real routed paths, and dodge you."
 	},
 	{
 		"title": "Soccer ball physics",
