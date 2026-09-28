@@ -60,8 +60,8 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    update gets 10 minutes and CI gets 45.
 6. **Conflicts.** A PR that conflicts with `main` leaves the queue, and the bot starts a
    `resolve-conflicts` run on it (at most once per head commit). These runs count toward
-   `BOT_MAX_ACTIVE_RUNS` but not toward anyone's per-user limit; if no slot is free, the bot
-   retries on later steps. The result needs a new approval. After every change to `main`
+   `BOT_MAX_ACTIVE_RUNS` but not toward anyone's per-user limit; if no slot is free, the run
+   waits in line like any other. The result needs a new approval. After every change to `main`
    (a `game-ci` push run, or a merge by the bot), the bot checks every open feature PR
    and warns its thread about new conflicts the same way.
 7. **Deploying.** When `server-image.yml` and `pages.yml` have both succeeded for the same
@@ -71,13 +71,18 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    then posts "🚀 PR #n is live" in the threads of the merged PRs it contains. Waiting for
    both builds keeps the server from getting ahead of the web client.
 
-**`/queue`** answers privately, to anyone: `/queue which:agent runs` lists the active runs
-(issue or PR, mode, status, who started it, age, run link), and `/queue which:merge queue`
+**`/queue`** answers privately, to anyone: `/queue which:agent runs` lists the active runs, then
+the waiting ones in the order they'll start (issue or PR, mode, status, who started it, age,
+run link), and `/queue which:merge queue`
 lists approved PRs in merge order with their state.
 
 **Limits** count every run (features and revisions) except ones that never started:
 `BOT_RUNS_PER_USER` per rolling 24 hours (default 5), and at most `BOT_MAX_ACTIVE_RUNS`
-at once (default 2). Active runs older than 3 hours stop counting.
+at once (default 2). Active runs older than 3 hours stop counting. The per-user limit
+refuses a request; the concurrency cap doesn't: `/feature`, `/revise` and conflict
+resolutions past it wait in line (oldest first, with no length limit), and the bot starts
+the next one whenever a run finishes or never starts. A feature's issue and thread are
+opened right away; its thread says where it is in line, and again when it starts.
 
 Messages never ping anyone except the requester, and only on their own job's results.
 Requests are copied into issues with `@` defused, so they can't ping GitHub users.

@@ -45,7 +45,7 @@ func TestHandler(t *testing.T) {
 	}
 	defer st.Close()
 	now := time.Now()
-	run, _ := st.Reserve(ctx, "42", 0, "implement", store.Limits{Window: time.Hour}, now)
+	run, _ := st.Reserve(ctx, "42", 0, "implement", "", store.Limits{Window: time.Hour}, now)
 	job, _ := st.CreateJob(ctx, store.Job{Issue: 7, Title: "t", ChannelID: "c", RequesterID: "42", RequesterName: "A"}, run.ID, now)
 	st.SetThread(ctx, job.ID, "th", now)
 

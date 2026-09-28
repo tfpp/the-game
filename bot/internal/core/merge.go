@@ -351,6 +351,7 @@ func (s *Service) MergeStep(ctx context.Context) error {
 	if err := s.resolvePending(ctx); err != nil {
 		return err
 	}
+	s.drain(ctx)
 	return s.announceDeploys(ctx)
 }
 
@@ -536,7 +537,7 @@ func (s *Service) markConflict(ctx context.Context, job store.Job, head string) 
 }
 
 // resolve starts a resolve-conflicts run for a job whose head conflicts, unless one ran
-// for that head already or the agent is busy (then a later step retries).
+// for that head already. If the agent is busy, the run waits for a free slot.
 func (s *Service) resolve(ctx context.Context, job store.Job) error {
 	if job.ConflictSHA == "" || job.ConflictSHA == job.ResolveSHA || job.State != store.JobOpen {
 		return nil
@@ -549,16 +550,18 @@ func (s *Service) resolve(ctx context.Context, job store.Job) error {
 	lim := s.cfg.Limits
 	lim.PerUser = 0 // the bot's own runs count only toward the concurrency cap
 	s.mu.Lock()
-	run, err := s.st.Reserve(ctx, autoUser, job.ID, "resolve-conflicts", lim, s.cfg.Now())
+	run, err := s.st.Reserve(ctx, autoUser, job.ID, "resolve-conflicts", "", lim, s.cfg.Now())
 	s.mu.Unlock()
-	var le *store.LimitError
-	if errors.As(err, &le) {
-		return nil
-	} else if err != nil {
+	if err != nil {
 		return err
 	}
 	if err := s.st.SetResolve(ctx, job.ID, job.ConflictSHA, s.cfg.Now()); err != nil {
 		return err
+	}
+	if run.Status == store.RunWaiting {
+		s.post(ctx, job, fmt.Sprintf("🔧 The agent is busy; it will resolve PR #%d's conflicts when a slot frees up (%s).",
+			job.PR, s.linePosition(ctx, run.ID)))
+		return nil
 	}
 	if err := s.dispatch(ctx, run, job.PR, ""); err != nil {
 		return s.st.SetResolve(ctx, job.ID, "", s.cfg.Now()) // retry later
@@ -739,19 +742,26 @@ func (s *Service) Queue(ctx context.Context, kind string) (string, error) {
 	var b strings.Builder
 	switch kind {
 	case "agent":
-		runs, err := s.st.ActiveRuns(ctx)
+		active, err := s.st.ActiveRuns(ctx)
 		if err != nil {
 			return "", err
 		}
-		if len(runs) == 0 {
+		waiting, err := s.st.WaitingRuns(ctx)
+		if err != nil {
+			return "", err
+		}
+		if len(active)+len(waiting) == 0 {
 			return "No agent runs are active.", nil
 		}
-		fmt.Fprintf(&b, "**Agent runs** (%d active", len(runs))
+		fmt.Fprintf(&b, "**Agent runs** (%d active", len(active))
 		if s.cfg.Limits.MaxActive > 0 {
 			fmt.Fprintf(&b, ", at most %d at once", s.cfg.Limits.MaxActive)
 		}
+		if len(waiting) > 0 {
+			fmt.Fprintf(&b, ", %d waiting", len(waiting))
+		}
 		b.WriteString(")\n")
-		for i, r := range runs {
+		for i, r := range append(active, waiting...) {
 			line := fmt.Sprintf("%d. ", i+1)
 			if job, err := s.st.JobByID(ctx, r.JobID); err == nil {
 				n, what := job.Issue, "issue"

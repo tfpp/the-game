@@ -140,7 +140,7 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	if n := utf8.RuneCountInString(text); n < minRequest || n > maxRequest {
 		return r.Reject(ctx, fmt.Sprintf("Describe the feature in %d to %d characters.", minRequest, maxRequest))
 	}
-	run, err := s.reserve(ctx, req.UserID, 0, "implement")
+	run, err := s.reserve(ctx, req.UserID, 0, "implement", "")
 	if err != nil {
 		return s.rejectLimit(ctx, r, err)
 	}
@@ -181,6 +181,13 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	}
 	job.ThreadID = threadID
 
+	if run.Status == store.RunWaiting {
+		s.post(ctx, job, fmt.Sprintf("<@%s> The agent is busy, so this is %s. I'll start it when a slot "+
+			"frees up and post progress here. Once the PR is open, use `/revise` in this thread to ask for changes.",
+			req.UserID, s.linePosition(ctx, run.ID)), req.UserID)
+		s.drain(ctx) // a slot may have freed up meanwhile
+		return nil
+	}
 	if err := s.dispatch(ctx, run, issue.Number, ""); err != nil {
 		s.post(ctx, job, "❌ I couldn't start the agent. Try `/feature` again later.")
 		return nil
@@ -188,6 +195,76 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	s.post(ctx, job, fmt.Sprintf("<@%s> The agent is queued; I'll post progress here. "+
 		"Once the PR is open, use `/revise` in this thread to ask for changes.", req.UserID), req.UserID)
 	return nil
+}
+
+// linePosition describes a waiting run's place in line.
+func (s *Service) linePosition(ctx context.Context, runID int64) string {
+	n, err := s.st.WaitingPosition(ctx, runID)
+	switch {
+	case err != nil || n < 1:
+		return "waiting in line"
+	case n == 1:
+		return "next in line"
+	}
+	return fmt.Sprintf("number %d in line", n)
+}
+
+// drain dispatches waiting runs while agent slots are free. Errors are logged: the next
+// call retries.
+func (s *Service) drain(ctx context.Context) {
+	for {
+		s.mu.Lock()
+		run, err := s.st.StartWaiting(ctx, s.cfg.Limits, s.cfg.Now())
+		s.mu.Unlock()
+		if errors.Is(err, store.ErrNotFound) {
+			return
+		} else if err != nil {
+			s.log.Error("start waiting run", "err", err)
+			return
+		}
+		s.startWaiting(ctx, run)
+	}
+}
+
+// startWaiting dispatches a run that waited for a slot, or drops it if its job moved on.
+func (s *Service) startWaiting(ctx context.Context, run store.Run) {
+	job, err := s.st.JobByID(ctx, run.JobID)
+	if err != nil {
+		s.log.Error("job of waiting run", "err", err, "run", run.ID)
+		s.failRun(ctx, run.ID)
+		return
+	}
+	number := job.PR
+	switch {
+	case job.State != store.JobOpen:
+		s.failRun(ctx, run.ID)
+		return
+	case run.Mode == "implement":
+		number = job.Issue
+	case run.Mode == "resolve-conflicts" && (job.ConflictSHA == "" || job.ConflictSHA != job.ResolveSHA):
+		s.failRun(ctx, run.ID) // the head moved on; the next conflict check decides again
+		return
+	}
+	if err := s.dispatch(ctx, run, number, run.Instructions); err != nil {
+		if run.Mode == "resolve-conflicts" {
+			if err := s.st.SetResolve(ctx, job.ID, "", s.cfg.Now()); err != nil { // retry later
+				s.log.Error("reset resolve", "err", err, "job", job.ID)
+			}
+			return
+		}
+		s.post(ctx, job, fmt.Sprintf("❌ <@%s> I couldn't start the agent. Try again later.", run.UserID), run.UserID)
+		return
+	}
+	switch run.Mode {
+	case "implement":
+		s.post(ctx, job, fmt.Sprintf("<@%s> A slot freed up: the agent is queued; I'll post progress here.",
+			job.RequesterID), job.RequesterID)
+	case "resolve-conflicts":
+		s.post(ctx, job, fmt.Sprintf("🔧 The agent is merging %s into PR #%d and resolving the conflicts.", s.cfg.Ref, job.PR))
+	default:
+		s.post(ctx, job, fmt.Sprintf("<@%s> A slot freed up: the agent is queued to make your changes to PR #%d.",
+			run.UserID, job.PR), run.UserID)
+	}
 }
 
 // ReviseRequest is a /revise command, sent inside a feature thread.
@@ -221,11 +298,12 @@ func (s *Service) Revise(ctx context.Context, req ReviseRequest, r Responder) er
 		return r.Reject(ctx, fmt.Sprintf("Describe the changes in 3 to %d characters.", maxRequest))
 	}
 	if _, err := s.st.ActiveRunForJob(ctx, job.ID); err == nil {
-		return r.Reject(ctx, "The agent is already working on this. Wait for it to finish.")
+		return r.Reject(ctx, "The agent is already working on this or waiting to. Wait for it to finish.")
 	} else if !errors.Is(err, store.ErrNotFound) {
 		return err
 	}
-	run, err := s.reserve(ctx, req.UserID, job.ID, "revise")
+	instructions := fmt.Sprintf("From %s on Discord:\n\n%s", cleanName(req.UserName), text)
+	run, err := s.reserve(ctx, req.UserID, job.ID, "revise", instructions)
 	if err != nil {
 		return s.rejectLimit(ctx, r, err)
 	}
@@ -233,7 +311,12 @@ func (s *Service) Revise(ctx context.Context, req ReviseRequest, r Responder) er
 		s.failRun(ctx, run.ID)
 		return err
 	}
-	instructions := fmt.Sprintf("From %s on Discord:\n\n%s", cleanName(req.UserName), text)
+	if run.Status == store.RunWaiting {
+		err := r.Respond(ctx, fmt.Sprintf("🔁 <@%s> asked for changes to PR #%d:\n%s\nThe agent is busy, so this is %s.",
+			req.UserID, job.PR, quote(text, 1500), s.linePosition(ctx, run.ID)))
+		s.drain(ctx)
+		return err
+	}
 	if err := s.dispatch(ctx, run, job.PR, instructions); err != nil {
 		return r.Respond(ctx, "❌ I couldn't start the agent. Try again later.")
 	}
@@ -241,19 +324,16 @@ func (s *Service) Revise(ctx context.Context, req ReviseRequest, r Responder) er
 		req.UserID, job.PR, quote(text, 1500)))
 }
 
-func (s *Service) reserve(ctx context.Context, userID string, jobID int64, mode string) (store.Run, error) {
+func (s *Service) reserve(ctx context.Context, userID string, jobID int64, mode, instructions string) (store.Run, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return s.st.Reserve(ctx, userID, jobID, mode, s.cfg.Limits, s.cfg.Now())
+	return s.st.Reserve(ctx, userID, jobID, mode, instructions, s.cfg.Limits, s.cfg.Now())
 }
 
 func (s *Service) rejectLimit(ctx context.Context, r Responder, err error) error {
 	var le *store.LimitError
 	if !errors.As(err, &le) {
 		return err
-	}
-	if le.Active {
-		return r.Reject(ctx, fmt.Sprintf("The agent is busy with %d runs already. Try again once one finishes.", le.Limit))
 	}
 	return r.Reject(ctx, fmt.Sprintf("You've used your %d agent runs for now. The next one frees up <t:%d:R>.",
 		le.Limit, le.Retry.Unix()))
@@ -360,6 +440,9 @@ func (s *Service) agentRun(ctx context.Context, wr github.WorkflowRun) error {
 	}
 	if err := s.setRun(ctx, run.ID, status, wr.Conclusion, wr.ID, wr.HTMLURL); err != nil {
 		return err
+	}
+	if status == store.RunCompleted {
+		defer s.drain(ctx) // a slot freed up
 	}
 	// Every run that gets past the gate ends with a harness comment. Say something if none
 	// arrived: the gate refused the dispatch (the run still succeeds), or it was cancelled.
@@ -484,11 +567,16 @@ func (s *Service) PullRequest(ctx context.Context, ev github.PullRequestEvent) e
 // --- reconcile -----------------------------------------------------------------------------
 
 // Reconcile catches up on anything the webhooks missed: it polls the agent workflow's runs
-// and the comments on jobs with active runs, and expires runs that never started.
+// and the comments on jobs with active runs, expires runs that never started, and starts
+// waiting runs when slots are free.
 func (s *Service) Reconcile(ctx context.Context) error {
 	runs, err := s.st.ActiveRuns(ctx)
-	if err != nil || len(runs) == 0 {
+	if err != nil {
 		return err
+	}
+	defer s.drain(ctx)
+	if len(runs) == 0 {
+		return nil
 	}
 	now := s.cfg.Now()
 	oldest := runs[0].CreatedAt
