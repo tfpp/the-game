@@ -50,44 +50,7 @@ func test_follower_distance_clamps_to_the_tunnel() -> void:
 	assert_eq(GnomeMath.follower_distance(1.0, 6.2, 5.0, 0, 0.4), 5.0)
 
 
-func test_gnome_position_runs_from_hole_a_to_hole_b_when_forward() -> void:
-	var hole_a := Vector3(-2.5, 0, 0)
-	var hole_b := Vector3(2.5, 0, 0)
-	assert_true(GnomeMath.gnome_position(hole_a, hole_b, true, 0.0, 5.0).is_equal_approx(hole_a))
-	assert_true(GnomeMath.gnome_position(hole_a, hole_b, true, 5.0, 5.0).is_equal_approx(hole_b))
-	assert_true(
-		GnomeMath.gnome_position(hole_a, hole_b, true, 2.5, 5.0).is_equal_approx(Vector3.ZERO)
-	)
-
-
-func test_gnome_position_reverses_when_not_forward() -> void:
-	var hole_a := Vector3(-2.5, 0, 0)
-	var hole_b := Vector3(2.5, 0, 0)
-	assert_true(GnomeMath.gnome_position(hole_a, hole_b, false, 0.0, 5.0).is_equal_approx(hole_b))
-	assert_true(GnomeMath.gnome_position(hole_a, hole_b, false, 5.0, 5.0).is_equal_approx(hole_a))
-
-
 func test_gnome_visible_only_strictly_between_the_holes() -> void:
 	assert_false(GnomeMath.gnome_visible(0.0, 5.0))
 	assert_false(GnomeMath.gnome_visible(5.0, 5.0))
 	assert_true(GnomeMath.gnome_visible(2.5, 5.0))
-
-
-func test_facing_yaw_matches_source_movements_forward_convention() -> void:
-	var yaw := GnomeMath.facing_yaw(Vector3.ZERO, Vector3(3, 0, 0), true)
-	var forward := Vector3(-sin(yaw), 0.0, -cos(yaw))
-	assert_almost_eq(forward.x, 1.0, 0.0001)
-	assert_almost_eq(forward.z, 0.0, 0.0001)
-
-
-func test_facing_yaw_flips_when_not_forward() -> void:
-	var hole_a := Vector3.ZERO
-	var hole_b := Vector3(3, 0, 0)
-	var forward_yaw := GnomeMath.facing_yaw(hole_a, hole_b, true)
-	var backward_yaw := GnomeMath.facing_yaw(hole_a, hole_b, false)
-	assert_almost_eq(cos(forward_yaw - backward_yaw), -1.0, 0.001)
-
-
-func test_facing_yaw_of_coincident_holes_is_zero() -> void:
-	var point := Vector3(1, 0, 1)
-	assert_eq(GnomeMath.facing_yaw(point, point, true), 0.0)

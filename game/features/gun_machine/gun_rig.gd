@@ -44,6 +44,10 @@ var _mounted_signature := ""
 var _view: Node3D
 var _flash_timer := 0.0
 var _fire_cooldown := 0.0
+## Throttles how often an automatic gun's held-trigger poll (`_maybe_auto_fire`)
+## sends a fresh `request_fire` request, separately from `_fire_cooldown` (which is
+## only ever set on the server — see that var's uses in `request_fire`).
+var _auto_fire_cooldown := 0.0
 
 @onready var _mount: Node3D = $Mount
 
@@ -82,6 +86,9 @@ func _process(delta: float) -> void:
 			_set_flash(false)
 	if _fire_cooldown > 0.0:
 		_fire_cooldown -= delta
+	if _auto_fire_cooldown > 0.0:
+		_auto_fire_cooldown -= delta
+	_maybe_auto_fire()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -90,11 +97,37 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not is_active():
 		return
 	if event.is_action_pressed(&"gun_fire"):
-		request_fire.rpc_id(1)
 		get_viewport().set_input_as_handled()
+		# Automatic guns fire from the held-trigger poll below instead, so every tick
+		# it's held gets a shot rather than just the initial press.
+		if not bool(net_stats.get("is_automatic", false)):
+			request_fire.rpc_id(1)
 	elif event.is_action_pressed(&"gun_reload"):
 		request_reload.rpc_id(1)
 		get_viewport().set_input_as_handled()
+
+
+## Automatic guns keep firing, at their own fire rate, for as long as `gun_fire`
+## stays held — "still held" isn't an event Godot's input system emits, so this
+## polls every frame instead of reacting in `_unhandled_input` the way a
+## semi-automatic gun's single-shot-per-press does.
+func _maybe_auto_fire() -> void:
+	if peer_id != multiplayer.get_unique_id() or not Controls.gameplay_active():
+		return
+	if net_stats.is_empty():
+		return
+	var held := Input.is_action_pressed(&"gun_fire")
+	if not should_auto_fire(bool(net_stats.get("is_automatic", false)), held, _auto_fire_cooldown):
+		return
+	_auto_fire_cooldown = 1.0 / maxf(float(net_stats["fire_rate"]), 0.01)
+	request_fire.rpc_id(1)
+
+
+## Pure decision of whether the held-trigger poll should send another fire request
+## this frame, kept static and side-effect-free so it's unit-testable without a real
+## `Input` or `Controls` singleton.
+static func should_auto_fire(is_automatic: bool, held: bool, cooldown_remaining: float) -> bool:
+	return is_automatic and held and cooldown_remaining <= 0.0
 
 
 ## Server-only: equips `stats` (see GunGenerator.generate), fully loaded. Replaces

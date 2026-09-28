@@ -28,11 +28,20 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 
 ## Adding a feature
 
-- Create `features/<name>/feature.tscn`. The game loads every one at startup, sorted by
+- First search for an existing system that owns the requested behavior. Read its code,
+  interfaces, callers and tests. Reuse or extend it when it fits; keep shared state and
+  authority in that system rather than duplicating them in a new feature.
+- If no suitable system exists, create a new one and explain why the nearest existing
+  systems do not fit. Do not force unrelated features together. A new feature should
+  still use existing wallet, combat, interaction or other services where applicable.
+- Extend an existing feature in its own directory. For a distinct new feature needing
+  its own loaded scene, create `features/<name>/feature.tscn`. The game loads every one at startup, sorted by
   directory name, as `/root/Game/Features/<name>`. Directories without a `feature.tscn`
   (shared scripts, libraries) are not loaded.
-- Don't edit `main.tscn`, `world/` or other features to wire yours in. Position it with
-  its root node's transform; the `Features` node sits at the origin.
+- Don't edit `main.tscn`, `world/` or another feature merely to load a new scene. Position
+  it with its root node's transform; the `Features` node sits at the origin. Extending an
+  existing feature's API for the requested behavior is allowed; preserve its existing
+  callers and test both its original behavior and the new integration.
 - Features load on every peer before networking starts, so spawners, synchronizers and
   RPCs inside the scene have matching paths everywhere. The multiplayer rules below apply.
 - A scene that fails to load is logged and skipped, which fails the smoke tests.

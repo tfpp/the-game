@@ -9,12 +9,21 @@ your body remains hidden in first person.
 
 ## Body model
 
-Open the Esc menu and pick **Character Model** to switch between the default build
-and a girl variant: narrower shoulders and waist, wider hips, and longer hair. The
-picker shows a live preview in your current skin tone and clothing. Your choice is
-just a request; the server validates it and replicates it to everyone (like
-clothing), so other players always see the same model you picked. It defaults to
-the original build and is not saved between sessions.
+Open the Esc menu and pick **Character Model** to switch between the default build,
+a girl variant (narrower shoulders and waist, wider hips, and longer hair), and a
+penguin costume. The picker shows a live preview in your current skin tone and
+clothing. Your choice is just a request; the server validates it and replicates it
+to everyone (like clothing), so other players always see the same model you
+picked. It defaults to the original build and is not saved between sessions.
+
+The penguin costume replaces clothing entirely (it's a full costume, not an
+outfit) and scales the whole rig down to `BlockPlayerModel.PENGUIN_HEIGHT_SCALE`
+(see `block_player_model.gd`) so it reads as short as the penguin NPC
+(`features/penguin`). `BlockPlayerModel.height_scale()` exposes that scale so
+`features/holdables/hand.gd` can shorten your first-person view model — the held
+item and hands — to match, without holdables needing to know about body types.
+The penguin NPC itself notices a nearby player wearing this costume and waves a
+flipper and hops in place at them; see `features/penguin/penguin.gd`.
 
 ## Skin tones
 
