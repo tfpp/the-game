@@ -1,7 +1,8 @@
 class_name NewsTicker
 extends Node3D
 ## Hanging flat screen over the casino's gaming floor with a scrolling BREAKING NEWS
-## ticker. Only the server fetches TheNewsAPI top stories, using the
+## ticker. Only the dedicated server fetches (every 15 minutes, cached in memory and in
+## `user://news_cache.json` across restarts) TheNewsAPI top stories, using the
 ## `THENEWSAPI_TOKEN` environment variable, and replicates the headlines to every peer
 ## through `Sync`. The token never ships in the repository or to clients.
 
@@ -15,15 +16,19 @@ const SEPARATOR := "   ✦   "
 const FALLBACK := "Welcome to the Gilded Lily — stay tuned for the latest headlines"
 const SCREEN_SIZE := Vector2(4.8, 1.2)
 const VIEWPORT_SIZE := Vector2i(1280, 320)
+const CACHE_PATH := "user://news_cache.json"
 
 ## Server-owned, replicated headline list.
 @export var headlines: PackedStringArray = PackedStringArray()
+## Server-side cache file; tests point it elsewhere.
+var cache_path := CACHE_PATH
 
 var _ticker: Label
 var _viewport: SubViewport
 var _shown_text := ""
 var _next_fetch := 0.0
 var _fetching := false
+var _cache_loaded := false
 
 
 func _ready() -> void:
@@ -40,10 +45,51 @@ func _process(delta: float) -> void:
 	_ticker.position.x -= SCROLL_SPEED * delta
 	if _ticker.position.x < -_ticker.size.x:
 		_ticker.position.x = VIEWPORT_SIZE.x
-	if multiplayer.is_server() and multiplayer.has_multiplayer_peer():
+	if is_news_server():
+		if not _cache_loaded:
+			_load_cache()
 		_next_fetch -= delta
 		if _next_fetch <= 0.0 and not _fetching:
 			_fetch()
+
+
+## Only a dedicated server fetches; clients, offline play and the login screen never
+## call TheNewsAPI themselves and just show the replicated headlines.
+static func is_news_server() -> bool:
+	return Network.mode == Network.Mode.SERVER
+
+
+## Seconds until the next fetch for a cache written at `fetched_at` (unix seconds).
+static func seconds_until_refresh(fetched_at: float, now: float) -> float:
+	return clampf(fetched_at + REFRESH_SECONDS - now, 0.0, REFRESH_SECONDS)
+
+
+## Loads cached headlines so a restart within 15 minutes doesn't call the API again.
+func _load_cache() -> void:
+	_cache_loaded = true
+	var file := FileAccess.open(cache_path, FileAccess.READ)
+	if file == null:
+		return
+	var data: Variant = JSON.parse_string(file.get_as_text())
+	if not data is Dictionary:
+		return
+	var lines: Variant = (data as Dictionary).get("headlines")
+	if not lines is Array or (lines as Array).is_empty():
+		return
+	var cached := PackedStringArray()
+	for line: Variant in lines:
+		cached.append(str(line).left(200))
+	headlines = cached
+	var fetched_at := float((data as Dictionary).get("fetched_at", 0.0))
+	_next_fetch = seconds_until_refresh(fetched_at, Time.get_unix_time_from_system())
+
+
+func _save_cache() -> void:
+	var file := FileAccess.open(cache_path, FileAccess.WRITE)
+	if file == null:
+		return
+	var data := {"fetched_at": Time.get_unix_time_from_system(), "headlines": Array(headlines)}
+	file.store_string(JSON.stringify(data))
 
 
 ## Joins headlines into one ticker line, or returns the fallback when empty.
@@ -103,6 +149,7 @@ func _fetch() -> void:
 	if not lines.is_empty():
 		headlines = lines
 		_next_fetch = REFRESH_SECONDS
+		_save_cache()
 
 
 func _build_screen() -> void:

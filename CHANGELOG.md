@@ -16,6 +16,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Give coding agents a step-by-step implement workflow, playbooks for common kinds of
   features, a checklist of problems `verify.sh` can't catch, exact changelog placement,
   and clearer revise and merge-conflict instructions.
+- Fetch news headlines only on the server, every 15 minutes, and cache them there so
+  clients never call TheNewsAPI and restarts reuse recent headlines.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
