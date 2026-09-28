@@ -17,8 +17,8 @@ repo="$GITHUB_REPOSITORY"
 base="${BASE:-main}"
 label="${AGENT_LABEL:-agent}"
 run_link="[run](${RUN_URL:-})"
-usage_models="unavailable" usage_total="unavailable" usage_cost="unavailable"
-usage_note=" · Model(s): unavailable · Tokens used: unavailable · Estimated cost (USD API-equivalent): unavailable"
+usage_models="unavailable" usage_effort="unavailable" usage_total="unavailable" usage_cost="unavailable"
+usage_note=" · Model(s): unavailable · Reasoning: unavailable · Tokens used: unavailable · Estimated cost (USD API-equivalent): unavailable"
 tmp="$(mktemp -d)"
 cd "$REPO_ROOT"
 
@@ -51,7 +51,16 @@ report_failure() { # report_failure MESSAGE [nologs]
 
 result="${OUT:-/nonexistent}/result.json"
 if [[ ! -s "$result" ]]; then
-  report_failure "the agent job ended without a result (job status: ${AGENT_JOB_RESULT:-unknown})"
+  # No result means no telemetry either: say nothing about usage rather than list
+  # three "unavailable" fields.
+  usage_note=""
+  case "${AGENT_JOB_RESULT:-}" in
+    cancelled) reason="the agent job was cancelled before it finished (stopped by hand or it hit its time limit)" ;;
+    failure) reason="the agent job failed before it produced a result" ;;
+    skipped) reason="the agent job was skipped" ;;
+    *) reason="the agent job ended without a result" ;;
+  esac
+  report_failure "$reason"
   exit 1
 fi
 
@@ -62,7 +71,7 @@ title="$(jq -r '.title // empty' "$result" | head -n 1)"
 # All metadata describes this run only. Never interpolate arbitrary telemetry text.
 usage_fields="$(jq -r '
   def token: type == "number" and . >= 0 and . < 1e15 and floor == .;
-  if .attempts == 0 then ["none (no agent run)", "0", "0"]
+  if .attempts == 0 then ["none (no agent run)", "none", "0", "0"]
   else
     (if (.models | type) == "array" then
       [.models[:8][] | select(type == "string") |
@@ -73,19 +82,20 @@ usage_fields="$(jq -r '
     [$usage.input_tokens, $usage.output_tokens, $usage.cache_read_tokens,
      $usage.cache_write_tokens] as $tokens |
     [(if $models == "" then "unavailable" else $models end),
+     (.reasoning_effort | if type == "string" and test("^[a-z]{1,16}$") then . else "unavailable" end),
      (if all($tokens[]; token) then ($tokens | add | tostring) else "unavailable" end),
      (if ($usage.cost_usd | type) == "number" and $usage.cost_usd >= 0 and
          $usage.cost_usd < 1e6 then ($usage.cost_usd | tostring) else "unavailable" end)]
   end | @tsv' "$result" 2>/dev/null || true)"
 if [[ -n "$usage_fields" ]]; then
-  IFS=$'\t' read -r usage_models usage_total usage_cost <<<"$usage_fields"
+  IFS=$'\t' read -r usage_models usage_effort usage_total usage_cost <<<"$usage_fields"
   [[ "$usage_cost" == unavailable ]] || usage_cost="$(LC_NUMERIC=C printf '$%.2f' "$usage_cost")"
 fi
-usage_note=" · Model(s): $usage_models · Tokens used: $usage_total · Estimated cost (USD API-equivalent): $usage_cost"
+usage_note=" · Model(s): $usage_models · Reasoning: $usage_effort · Tokens used: $usage_total · Estimated cost (USD API-equivalent): $usage_cost"
 
 agent_usage() {
-  printf '\n## Agent Usage (this run)\n\n- Model(s): %s\n- Tokens used: %s\n- Estimated cost (USD API-equivalent): %s\n' \
-    "$usage_models" "$usage_total" "$usage_cost"
+  printf '\n## Agent Usage (this run)\n\n- Model(s): %s\n- Reasoning effort: %s\n- Tokens used: %s\n- Estimated cost (USD API-equivalent): %s\n' \
+    "$usage_models" "$usage_effort" "$usage_total" "$usage_cost"
   printf '\nEstimates, including adapter-reported costs, are API-equivalent, not subscription billing. They may use standard short-context token rates and exclude separate tool fees and long-context premiums.\n'
 }
 

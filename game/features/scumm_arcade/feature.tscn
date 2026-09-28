@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://features/scumm_arcade/cabinet.tscn" id="1"]
+
+[ext_resource type="Script" path="res://features/scumm_arcade/room.gd" id="2"]
+
+[node name="ScummArcade" type="Node3D"]
+script = ExtResource("2")
+
+[node name="MonkeyIsland" parent="." instance=ExtResource("1")]
+position = Vector3(-85.4, 0, -3.4)
+room_only = true
+game_id = "monkey"
+
+[node name="SamAndMax" parent="." instance=ExtResource("1")]
+position = Vector3(-82.7, 0, -3.4)
+room_only = true
+game_id = "samnmax"
+
+[node name="FateOfAtlantis" parent="." instance=ExtResource("1")]
+position = Vector3(-80, 0, -3.4)
+room_only = true
+game_id = "atlantis"
+
+[node name="Passport" parent="." instance=ExtResource("1")]
+position = Vector3(-77.3, 0, -3.4)
+room_only = true
+game_id = "pass"
+
+[node name="DayOfTheTentacle" parent="." instance=ExtResource("1")]
+position = Vector3(-74.6, 0, -3.4)
+room_only = true
+game_id = "tentacle"

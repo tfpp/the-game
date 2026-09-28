@@ -52,6 +52,26 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Include model, token usage and estimated API-equivalent cost in PR templates and Opened/Pushed Discord notifications, with readable PR-number links.
 - Make the penguin-facing regression test independent of frame timing by checking its forward offset at fixed waddle phases.
 - Show Claude and Codex subscription limits together in Discord `/usage`, with independent error handling and a read-only Codex login file.
+- Add a Retry button to Discord messages about failed, cancelled or never-started `implement` and `revise` runs, so the requester can start the run again.
+- Name cancelled, failed and skipped agent jobs in the "did not produce a change" comment, without listing unavailable model, token and cost fields.
+- Post every bot message in Discord feature threads as a colour-coded embed (agent progress, CI, previews, approvals, merge queue, conflicts, merges and deploys), with model, shortened token count (such as 1.4M) and estimated cost as fields on agent notifications.
+- Show the agent's reasoning effort next to its model in PR descriptions, 🤖 comments and Discord notifications.
+
+- Add a Monkey Island demo arcade with a brass-trimmed cabinet and synchronized local emulation for every player.
+- Autosave shared arcade progress, restore it after server restarts, and pause the demo when everyone disconnects.
+- Play arcade audio from the cabinet, fading to silence at five metres.
+- Add Sam & Max, Fate of Atlantis, Passport to Adventure and Day of the Tentacle demo cabinets, each with independent shared progress and sound.
+
+- Play adventure cabinets directly on their 3D screens, look around while playing, and simplify the control deck by removing the joystick.
+
+- Bring the arcade play view closer to the screen, keeping the cabinet edges visible and restoring the normal view on exit.
+
+- Simplify arcade play to one leave button, automatically taking controls when a cabinet is free.
+
+- Add doors that link rooms, starting with a lounge and a wine cellar behind a booth in the south lobby. Each room is its own scene, which clients load only while they're inside and dedicated servers never load.
+
+- Move the adventure cabinets into a dedicated room reached from the casino, unload emulators outside it, and pause shared progress while the room is empty.
+- Reduce arcade frame delivery delay and fix sound dropping out after delayed updates while preserving positional audio and the five-metre cutoff.
 - Show only the weekly Codex limit in Discord `/usage`, hiding the 5-hour window and per-model limits such as `gpt-reserve`.
 
 ## [0.6.0](https://github.com/tfpp/the-game/releases/tag/v0.6.0) - 2026-09-28

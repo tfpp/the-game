@@ -193,6 +193,8 @@ harness/run.sh --agent claude --mode implement --branch agent/0-jump-pad --task 
 
 The Claude and Codex adapters use the same model/low-reasoning defaults locally and
 on retries/resumes. Override with `HARNESS_MODEL` and `HARNESS_REASONING_EFFORT`.
+`result.json` records the effort as `reasoning_effort` (null for pi), and publish shows it
+in the PR's Agent Usage section and the 🤖 comments.
 
 This needs a clean tree. It leaves you on the new branch, and `/tmp/run` holds the logs
 and `summary.md`. Nothing is pushed.

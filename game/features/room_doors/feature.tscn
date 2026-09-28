@@ -1,0 +1,115 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/room_doors/room_door.gd" id="1_door"]
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="2_room"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="3_wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="4_carpet"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="5_wallpaper"]
+
+[node name="RoomDoors" type="Node3D"]
+
+[node name="Lobby" type="Node3D" parent="."]
+position = Vector3(-6, 0, 31)
+
+[node name="Floor" type="CSGBox3D" parent="Lobby"]
+position = Vector3(0, -0.1, 0)
+size = Vector3(2.4, 0.2, 2.4)
+material = ExtResource("4_carpet")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="Lobby"]
+position = Vector3(0, 2.6, 0)
+size = Vector3(2.4, 0.2, 2.4)
+material = ExtResource("5_wallpaper")
+use_collision = true
+
+[node name="BackWall" type="CSGBox3D" parent="Lobby"]
+position = Vector3(0, 1.3, 1.3)
+size = Vector3(2.4, 2.6, 0.2)
+material = ExtResource("5_wallpaper")
+use_collision = true
+
+[node name="LeftWall" type="CSGBox3D" parent="Lobby"]
+position = Vector3(-1.3, 1.3, 0)
+size = Vector3(0.2, 2.6, 2.4)
+material = ExtResource("5_wallpaper")
+use_collision = true
+
+[node name="RightWall" type="CSGBox3D" parent="Lobby"]
+position = Vector3(1.3, 1.3, 0)
+size = Vector3(0.2, 2.6, 2.4)
+material = ExtResource("5_wallpaper")
+use_collision = true
+
+[node name="Door" type="CSGBox3D" parent="Lobby"]
+position = Vector3(0, 1.1, 1.15)
+size = Vector3(1.1, 2.1, 0.08)
+material = ExtResource("3_wood")
+use_collision = true
+script = ExtResource("1_door")
+destination = NodePath("../../Lounge/FromLobby")
+door_label = "Enter the lounge"
+
+[node name="LobbyArrival" type="Marker3D" parent="Lobby"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -1)
+
+[node name="Sign" type="Label3D" parent="Lobby"]
+position = Vector3(0, 2.3, 1.1)
+billboard = 1
+text = "LOUNGE"
+font_size = 20
+outline_size = 6
+
+[node name="Light" type="OmniLight3D" parent="Lobby"]
+position = Vector3(0, 2.2, 0)
+light_color = Color(1, 0.8, 0.6, 1)
+light_energy = 0.8
+omni_range = 4.0
+
+[node name="Lounge" type="Node3D" parent="."]
+position = Vector3(0, 0, -600)
+script = ExtResource("2_room")
+room_scene = "res://features/room_doors/rooms/lounge.tscn"
+bounds = AABB(-5, -1, -4, 10, 5, 8)
+
+[node name="FromLobby" type="Marker3D" parent="Lounge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1.2, 3)
+
+[node name="LobbyDoor" type="CSGBox3D" parent="Lounge"]
+position = Vector3(-2, 1.1, 3.94)
+size = Vector3(1.1, 2.1, 0.08)
+material = ExtResource("3_wood")
+use_collision = true
+script = ExtResource("1_door")
+destination = NodePath("../../Lobby/LobbyArrival")
+door_label = "Back to the casino"
+
+[node name="FromCellar" type="Marker3D" parent="Lounge"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2, 1.2, -3)
+
+[node name="CellarDoor" type="CSGBox3D" parent="Lounge"]
+position = Vector3(2, 1.1, -3.94)
+size = Vector3(1.1, 2.1, 0.08)
+material = ExtResource("3_wood")
+use_collision = true
+script = ExtResource("1_door")
+destination = NodePath("../../Cellar/FromLounge")
+door_label = "Enter the wine cellar"
+
+[node name="Cellar" type="Node3D" parent="."]
+position = Vector3(40, 0, -600)
+script = ExtResource("2_room")
+room_scene = "res://features/room_doors/rooms/cellar.tscn"
+bounds = AABB(-4, -1, -4, 8, 4.6, 8)
+
+[node name="FromLounge" type="Marker3D" parent="Cellar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 3)
+
+[node name="LoungeDoor" type="CSGBox3D" parent="Cellar"]
+position = Vector3(0, 1.1, 3.94)
+size = Vector3(1.1, 2.1, 0.08)
+material = ExtResource("3_wood")
+use_collision = true
+script = ExtResource("1_door")
+destination = NodePath("../../Lounge/FromCellar")
+door_label = "Back to the lounge"
