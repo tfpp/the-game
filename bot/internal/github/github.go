@@ -342,6 +342,23 @@ func (a *App) Compare(ctx context.Context, base, head string) (Comparison, error
 	return c, err
 }
 
+// Release is a published GitHub Release.
+type Release struct {
+	TagName    string `json:"tag_name"`
+	Target     string `json:"target_commitish"` // the commit SHA release.yml tagged
+	Body       string `json:"body"`
+	URL        string `json:"html_url"`
+	Draft      bool   `json:"draft"`
+	Prerelease bool   `json:"prerelease"`
+}
+
+// Releases returns the newest releases, newest first.
+func (a *App) Releases(ctx context.Context) ([]Release, error) {
+	var out []Release
+	err := a.call(ctx, http.MethodGet, "/releases?per_page=30", nil, &out)
+	return out, err
+}
+
 // CommitParents returns the parent SHAs of a commit.
 func (a *App) CommitParents(ctx context.Context, sha string) ([]string, error) {
 	var c struct {

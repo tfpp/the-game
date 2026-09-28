@@ -17,7 +17,9 @@
 [ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Blue/Default/check_square_color_checkmark.png" id="check_on"]
 [ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Grey/Default/check_square_grey.png" id="check_off"]
 [ext_resource type="Texture2D" path="res://assets/kenney/ui/PNG/Extra/Default/divider.png" id="divider"]
-[ext_resource type="FontFile" path="res://assets/kenney/ui/Font/Kenney Future.ttf" id="font_heading"]
+[ext_resource type="FontFile" path="res://assets/fonts/exo2/Exo2-Bold.ttf" id="font_heading"]
+[ext_resource type="FontFile" path="res://assets/fonts/barlow/Barlow-SemiBold.ttf" id="font_button"]
+[ext_resource type="FontFile" path="res://assets/fonts/inter/Inter-Regular.ttf" id="font_body"]
 
 [sub_resource type="StyleBoxTexture" id="panel"]
 content_margin_left = 28.0
@@ -193,6 +195,7 @@ texture_margin_left = 2.0
 texture_margin_right = 2.0
 
 [resource]
+default_font = ExtResource("font_body")
 default_font_size = 19
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/constants/icon_max_width = 24
@@ -200,7 +203,7 @@ Button/colors/font_hover_color = Color(1, 1, 1, 1)
 Button/colors/font_pressed_color = Color(0.9, 0.95, 1, 1)
 Button/colors/font_focus_color = Color(1, 1, 1, 1)
 Button/colors/font_disabled_color = Color(0.35, 0.38, 0.45, 1)
-Button/fonts/font = ExtResource("font_heading")
+Button/fonts/font = ExtResource("font_button")
 Button/font_sizes/font_size = 18
 Button/styles/normal = SubResource("blue")
 Button/styles/hover = SubResource("blue_hover")

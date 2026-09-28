@@ -9,7 +9,7 @@ const DROP_ICON := preload("res://assets/kenney/game-icons/PNG/White/1x/down.png
 const ACTION_ICONS_MIN_WIDTH := 500.0
 
 var _body_font: Font = ThemeDB.fallback_font.duplicate()
-var _heading_font: Font = preload("res://assets/kenney/ui/Font/Kenney Future.ttf").duplicate()
+var _heading_font: Font = preload("res://assets/fonts/exo2/Exo2-Bold.ttf").duplicate()
 var _panel: Control
 var _preview: InventoryPreview
 var _slots: Array[Button] = []

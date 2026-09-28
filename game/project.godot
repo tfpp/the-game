@@ -16,7 +16,7 @@ driver/enable_input=true
 
 config/name="The Game"
 config/description="Open multiplayer sandbox with Source-style movement."
-config/version="0.3.0"
+config/version="0.6.0"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 run/flush_stdout_on_print=true

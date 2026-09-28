@@ -5,13 +5,23 @@ class_name ChangelogEntries
 ## Whenever a new feature ships under `game/features/<name>/`, add one entry here in
 ## the same change (see AGENTS.md). Newest entries go at the top of the array.
 
-## `title`: the feature's display name. `summary`: a one-line, player-facing
-## description of what it does.
+## `title`: the feature's display name, unique across the list: released builds use it to
+## find the release that added the entry (scripts/release_notes.sh), so don't rename one
+## once it ships. `summary`: a one-line, player-facing description of what it does.
+## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Become the penguin",
 		"summary":
 		"Esc > Character Model > Penguin: a short costume and view. The NPC waves and hops at you."
+	},
+	{
+		"title": "New fonts",
+		"summary": "Cleaner text everywhere, with bolder headings and a sharper HUD."
+	},
+	{
+		"title": "Versioned release notes",
+		"summary": "Release notes group what's new by version, starting from v0.6.0."
 	},
 	{
 		"title": "Game settings",

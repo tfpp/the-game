@@ -19,5 +19,9 @@ Monorepo for a Discord-driven, agent-built multiplayer game. Architecture:
 - Every new feature must add one entry to the in-game changelog: `ENTRIES` in
   `game/features/changelog/entries.gd` (players open it in-game with `L`). Add the
   entry in the same change that ships the feature.
+- Keep `CHANGELOG.md` up to date: every change that players, operators or contributors
+  would notice adds a bullet to the end of its `## [edge]` section, in the same change.
+  Don't add version sections or change `config/version`: releases are cut by hand with the
+  `release` workflow, which rolls `edge` into the new version.
 - Commits follow Conventional Commits (`docs/conventional-commits.md`).
 - Pull requests follow (`docs/pull-requests.md`).
