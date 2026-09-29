@@ -115,6 +115,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Move feature textures, models and audio into `game/assets/<feature>/`.
 - Add pixel-art roulette table textures (wheel, betting layout, felt, rail, apron) under
   `game/assets/roulette/textures/`.
+- Stop the game stuttering when you buy a gun or fire: gun flashes are glow effects instead
+  of lights, and their shaders load with the game.
 - Show a line in your chat log whenever you receive money (income, coins, fares, loot sales
   and slot wins), with the reason.
 

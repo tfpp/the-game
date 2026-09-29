@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "The chat log tells you whenever you get money, and why.",
 	},
 	{
+		"title": "Smoother guns",
+		"summary": "Buying and firing guns no longer makes the game stutter.",
+	},
+	{
 		"title": "Trump follows the mayor",
 		"summary": "Meet Donald Trump behind Mamdani by the slots and use E to pay $100.",
 	},

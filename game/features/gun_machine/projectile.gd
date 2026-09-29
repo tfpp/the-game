@@ -60,12 +60,7 @@ func _ready() -> void:
 	var mesh := _visual.mesh as SphereMesh
 	mesh.radius = 0.08 if float(profile["explosion_radius"]) > 0.0 else 0.035
 	mesh.height = mesh.radius * 2.0
-	var material := StandardMaterial3D.new()
-	material.albedo_color = color
-	material.emission_enabled = true
-	material.emission = color
-	material.emission_energy_multiplier = 1.5
-	_visual.material_override = material
+	_visual.material_override = GunFx.material(color, true)
 	if not multiplayer.is_server():
 		set_physics_process(false)
 
@@ -212,10 +207,7 @@ func _play_impact(at: Vector3) -> void:
 	var parent := get_parent()
 	if parent == null:
 		return
-	var flash := OmniLight3D.new()
-	flash.light_energy = 4.0
-	flash.omni_range = 3.0
-	flash.light_color = Color(1.0, 0.7, 0.3)
+	var flash := GunFx.flash(Color(1.0, 0.7, 0.3, 0.8), 0.35)
 	parent.add_child(flash)
 	flash.global_position = at
 	var timer := get_tree().create_timer(0.12)
