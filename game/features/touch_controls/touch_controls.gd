@@ -1,5 +1,7 @@
 extends Control
-## Floating left joystick, independent right look pointer, jump and menu targets.
+## Floating left joystick, independent right look pointer, jump, use, fire and menu targets.
+
+const AttackInput := preload("res://features/touch_controls/attack_input.gd")
 
 const INK := Color(0.9, 0.96, 1.0)
 const ACCENT := Color(0.34, 0.94, 0.76)
@@ -10,6 +12,7 @@ var move_finger := -1
 var look_finger := -1
 var jump_finger := -1
 var use_finger := -1
+var fire_finger := -1
 var move_origin := Vector2.ZERO
 var look_position := Vector2.ZERO
 var _browser: JavaScriptObject
@@ -63,6 +66,9 @@ func _clear_fingers() -> void:
 	look_finger = -1
 	jump_finger = -1
 	use_finger = -1
+	if fire_finger != -1:
+		fire_finger = -1
+		AttackInput.send_attack(false)
 	Controls.touch_move = Vector2.ZERO
 	Controls.look_delta = Vector2.ZERO
 	Controls.jump_queued = false
@@ -80,6 +86,11 @@ func use_center() -> Vector2:
 	return jump_center() - Vector2(145, 0)
 
 
+## Above USE, clear of JUMP and the pause button even on a short landscape phone.
+func fire_center() -> Vector2:
+	return use_center() - Vector2(0, 140)
+
+
 func _input(event: InputEvent) -> void:
 	if not Controls.touch_visible() or not Controls.gameplay_active():
 		return
@@ -93,6 +104,9 @@ func _input(event: InputEvent) -> void:
 		elif point.distance_to(use_center()) <= 54 and use_finger == -1:
 			use_finger = touch.index
 			get_tree().call_group(&"interaction", "use")
+		elif point.distance_to(fire_center()) <= 56 and fire_finger == -1:
+			fire_finger = touch.index
+			AttackInput.send_attack(true)
 		elif point.distance_to(jump_center()) <= 62 and jump_finger == -1:
 			jump_finger = touch.index
 			Controls.jump_queued = true
@@ -126,6 +140,9 @@ func _release_finger(index: int) -> void:
 		jump_finger = -1
 	if index == use_finger:
 		use_finger = -1
+	if index == fire_finger:
+		fire_finger = -1
+		AttackInput.send_attack(false)
 
 
 func _draw() -> void:
@@ -137,6 +154,17 @@ func _draw() -> void:
 		ThemeDB.fallback_font,
 		use_center() + Vector2(-20, 7),
 		"USE",
+		HORIZONTAL_ALIGNMENT_LEFT,
+		-1,
+		20,
+		INK
+	)
+	draw_circle(fire_center(), 56, Color(0.2, 0.06, 0.06, 0.6))
+	draw_arc(fire_center(), 56, 0, TAU, 48, Color(1.0, 0.45, 0.4), 2, true)
+	draw_string(
+		ThemeDB.fallback_font,
+		fire_center() + Vector2(-22, 7),
+		"FIRE",
 		HORIZONTAL_ALIGNMENT_LEFT,
 		-1,
 		20,

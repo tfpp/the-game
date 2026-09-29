@@ -108,6 +108,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   near him for $10 of subway fare, once an hour.
 - Log detailed reasons (URL, HTTP status, timeout, DNS, TLS or connection error) to the
   console when the game can't reach the accounts server.
+- Add a FIRE button to the touch controls and let the controller's right trigger attack
+  and shoot, alongside the existing right bumper.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
