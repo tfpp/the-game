@@ -33,10 +33,13 @@ func test_unrecognized_head_and_tail_types_fall_back_to_defaults() -> void:
 
 
 func test_frog_head_replaces_human_face_and_hair() -> void:
-	assert_not_null(_model.get_node_or_null("Rig/Torso/Head/HairBack"))
+	assert_false(bool(_model.human.material.get_shader_parameter("hide_head")))
 	_model.set_head_type("frog")
 	assert_eq(_model.head_type, &"frog")
-	assert_null(_model.get_node_or_null("Rig/Torso/Head/HairBack"), "Frog head has no hair")
+	assert_true(
+		bool(_model.human.material.get_shader_parameter("hide_head")),
+		"Frog head hides the human head vertices"
+	)
 	assert_not_null(_model.get_node_or_null("Rig/Torso/Head/Snout"))
 
 

@@ -39,6 +39,12 @@ func test_support_hand_tracks_each_items_support_marker() -> void:
 		var glove := _hand.get_node("Arms/LeftGlove") as Node3D
 		assert_true(glove.visible)
 		assert_true(glove.global_transform.is_equal_approx(support.global_transform), id)
+		var human := _hand._arms.human
+		var wrist := human.skeleton.find_bone("HandL")
+		var position := human.skeleton.to_global(human.skeleton.get_bone_global_pose(wrist).origin)
+		assert_almost_eq(
+			position, support.to_global(Vector3(-0.055, -0.04, 0.055)), Vector3.ONE * 0.002, id
+		)
 	_equip("banana")
 	assert_false((_hand.get_node("Arms/LeftGlove") as Node3D).visible)
 

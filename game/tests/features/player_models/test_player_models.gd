@@ -67,7 +67,7 @@ func test_jump_landing_blends_back_into_idle() -> void:
 	assert_almost_eq(_model.get_node("Rig/LeftLeg").rotation.x, 0.0, 0.002)
 
 
-func test_held_arms_replace_only_occupied_limbs_and_follow_shoulders() -> void:
+func test_held_items_use_skinned_third_person_arms_and_first_person_hand_rig() -> void:
 	(_player.get_node("Body") as Node3D).visible = true
 	var hand := HAND_SCENE.instantiate() as Hand
 	hand.peer_id = 1
@@ -81,13 +81,20 @@ func test_held_arms_replace_only_occupied_limbs_and_follow_shoulders() -> void:
 	assert_true(_model.get_node("Rig/Torso/LeftArm").visible)
 	assert_eq(hand._arms._sleeve.albedo_color, _model.shirt_color)
 	assert_eq(hand._arms._glove.albedo_color, _model.skin_color)
-	var sleeve := hand._arms._segments[0]
-	var shoulder := sleeve.to_global(Vector3(0, -0.5, 0))
-	assert_true(shoulder.is_equal_approx(_model.shoulder_position(true)))
+	assert_false(hand._arms.visible)
+	assert_false(bool(_model.human.material.get_shader_parameter("hide_right_arm")))
 	hand.net_item_id = "shotgun"
 	hand._process(0.0)
 	_model._process(0.1)
 	assert_false(_model.get_node("Rig/Torso/LeftArm").visible)
+	hand._process(0.0)
+	assert_false(bool(_model.human.material.get_shader_parameter("hide_left_arm")))
+	(_player.get_node("Body") as Node3D).visible = false
+	hand._process(0.0)
+	assert_true(hand._arms.visible)
+	assert_eq(hand._arms.human.surface.mesh, _model.human.surface.mesh)
+	assert_true(bool(hand._arms.human.material.get_shader_parameter("arms_only")))
+	assert_eq(hand._arms.human.skeleton.get_bone_count(), 45)
 	hand.net_item_id = ""
 	hand._process(0.0)
 	_model._process(0.1)
@@ -144,30 +151,25 @@ func test_skin_changes_update_exposed_body_without_changing_clothes_or_underwear
 	assert_eq(_model.skin_color, PlayerSkin.TONES[7])
 	assert_eq(_model.shirt_color, ClothingCatalog.COLORS[4])
 	assert_eq(_model.pants_color, ClothingCatalog.COLORS[3])
-	var face := _model.get_node("Rig/Torso/Head/Face") as MeshInstance3D
-	assert_eq((face.material_override as StandardMaterial3D).albedo_color, PlayerSkin.TONES[7])
+	assert_eq(_model.human.material.get_shader_parameter("skin_tint"), PlayerSkin.TONES[7])
 	_model.set_clothing("", "")
 	assert_eq(_model.sleeve_color(), PlayerSkin.TONES[7])
 	assert_eq(_model.pants_color, PlayerSkin.TONES[7])
-	var underwear := _model.get_node("Rig/LeftLeg/Underwear") as MeshInstance3D
-	assert_true(underwear.visible)
-	assert_eq((underwear.material_override as StandardMaterial3D).albedo_color, Color("f8f8f1"))
+	assert_false(bool(_model.human.material.get_shader_parameter("pants_equipped")))
 
 
 func test_girl_body_type_narrows_shoulders_widens_hips_and_grows_hair() -> void:
 	var default_shoulder := (_model.get_node("Rig/Torso/RightArm") as Node3D).position.x
 	var default_hip := (_model.get_node("Rig/RightLeg") as Node3D).position.x
-	var default_hair := _model.get_node("Rig/Torso/Head/HairBack") as MeshInstance3D
-	var default_hair_height: float = (default_hair.mesh as BoxMesh).size.y
+	var default_hair := _model.human.shape_weight("LongHair")
 	_model.set_body_type("girl")
 	assert_eq(_model.body_type, &"girl")
 	var shoulder := (_model.get_node("Rig/Torso/RightArm") as Node3D).position.x
 	var hip := (_model.get_node("Rig/RightLeg") as Node3D).position.x
 	assert_lt(shoulder, default_shoulder, "Girl model has narrower shoulders")
 	assert_gt(hip, default_hip, "Girl model has wider hips")
-	var hair := _model.get_node("Rig/Torso/Head/HairBack") as MeshInstance3D
-	var hair_height: float = (hair.mesh as BoxMesh).size.y
-	assert_gt(hair_height, default_hair_height, "Girl model has longer hair")
+	assert_gt(_model.human.shape_weight("LongHair"), default_hair, "Girl model sculpts longer hair")
+	assert_eq(_model.human.shape_weight("Feminine"), 1.0)
 
 
 func test_body_type_switch_preserves_clothing_and_skin() -> void:
@@ -177,8 +179,10 @@ func test_body_type_switch_preserves_clothing_and_skin() -> void:
 	assert_eq(_model.shirt_color, ClothingCatalog.COLORS[4])
 	assert_eq(_model.pants_color, ClothingCatalog.COLORS[3])
 	assert_eq(_model.skin_color, PlayerSkin.TONES[7])
-	var underwear := _model.get_node("Rig/LeftLeg/Underwear") as MeshInstance3D
-	assert_false(underwear.visible, "Pants stay equipped across a body type switch")
+	assert_true(
+		bool(_model.human.material.get_shader_parameter("pants_equipped")),
+		"Pants stay equipped across a body type switch"
+	)
 
 
 func test_unrecognized_body_type_falls_back_to_default() -> void:

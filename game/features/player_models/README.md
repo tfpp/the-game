@@ -1,19 +1,20 @@
-# Block player models
+# Custom player models
 
-Adds an original voxel-style avatar under each existing `Player/Body`. Cuboid
-heads, torsos, separate arms and legs, and pixel face details replace the capsule
-visual. Players start barefoot in white underwear. The inventory supplies equipped
+Adds an original textured low-polygon human avatar under each existing `Player/Body`,
+with the natural proportions and small painted textures of late-1990s PC shooters.
+A single connected, skinned GLB mesh replaces the box construction. Bones deform
+its vertices at shoulders, elbows, hips and knees; blend shapes modify build,
+hair and tactical clothing on the same topology. Players start barefoot in white underwear. The inventory supplies equipped
 shirts and pants with fixed colors, replicated for everyone to see. The existing F3 camera displays your own model in third person;
 your body remains hidden in first person.
 
 ## Body, head and tail
 
-Open the Esc menu and pick **Character Model** to mix and match a body, a head and
+Open **Esc → Settings → Character Model** to mix and match a body, a head and
 a tail, independently, like an impossible creature: a girl body with a frog head
 and a fish fin, a default body with a bird head and a fluffy tail, and so on. The
 picker shows a live preview in your current skin tone and clothing. Each choice is
-just a request; the server validates it and replicates it to everyone (like
-clothing), so other players always see the same combination you picked. Every
+just a request; the server validates it and replicates it to everyone (through `NetworkedEntity`), so other players always see the same combination you picked. Every
 axis defaults to the original build and none are saved between sessions.
 
 **Body** is the original default build, a girl variant (narrower shoulders and
@@ -40,7 +41,16 @@ collision capsule or income.
 
 ## Skin tones
 
-A player's ID selects one of eight skin tones. The server uses the authenticated
+Pick one of eight skin tones, five hairstyles, five hair colors and four eye colors,
+plus **Casual** or **Tactical** outfits
+on the Character Model settings page. Drag the preview with a mouse or touch to
+inspect the back and sides. Skin, hair, eye and outfit choices persist locally with
+`SettingsStore` and are requested again after reconnects; the server validates
+the complete appearance payload, and late joiners receive the same appearance.
+Hair and eye options are retained when using a creature head or costume and
+reappear when switching back to human. Clothing stays inventory-owned.
+
+With **Automatic** skin tone, a player's ID selects one of eight skin tones. The server uses the authenticated
 account ID, so a reconnect with a new network peer ID keeps the same tone. Offline
 and dev-auth players use their peer ID. Hand spawn data carries only the resulting
 palette index; account IDs remain on the server. Avatars, bare arms and legs,
@@ -55,6 +65,8 @@ and white underwear keep their own colors.
 - Walking below 55% of the player's configured maximum speed.
 - Running above that threshold, with longer strides, stronger arm swing and lean.
 - Jump takeoff and falling poses, followed by a brief landing compression.
+- Seated (legs forward, hands towards the table) while the `seating` group's
+  `is_seated(peer)` says so (food court booths).
 
 Stride phase advances with horizontal speed, with reversed steps when backing up
 and side lean when strafing. The model blends pose transitions and turns its head
@@ -68,14 +80,90 @@ rigs are children of players and disappear with them.
 
 ## Held items
 
-`Hand.support_grip()` exposes the existing item support marker. Occupied avatar
-arms are hidden while Holdables draws its gripping hands and blocky arms;
-free arms keep swinging. `Hand` follows the animated shoulder markers and shirt
+`Hand.support_grip()` exposes the existing item support marker. The human skeleton bends its arms to the item grips, keeping the same connected
+mesh visible; free arms keep swinging. The penguin costume and first-person view
+reuse the same skinned human asset with non-arm surfaces masked out. `Hand` follows the animated shoulder markers and shirt
 color. One-handed items leave the other arm free; two-handed weapons keep both
-grips while the legs continue animating. First-person gloves keep their existing
-camera mount.
+grips while the legs continue animating. First-person hands keep their existing
+camera mount. Each hand has a thumb and four separate fingers with three weighted
+joints each. Fingers relax when unarmed and curl around item grips; palm bones
+follow grip orientation. Existing items with distant support markers extend the
+arm joint translations to reach them without scaling the hands or fingers.
 
 Run `harness/verify.sh`. Tests under `tests/features/player_models` cover locomotion,
 backwards and sideways movement, airborne detection, landing, model attachment,
 visibility, the item-grip integration, and the body model choice (validation,
 replication and rebuilding without losing clothing or skin tone).
+
+
+## Integration and verification
+
+`PlayerModels` owns appearance, body/head/tail choices and their session lifecycle.
+Its legacy RPC adapters now delegate to `NetworkedEntity`; the picker uses the
+component directly. No player movement or core scene changes are needed.
+`Hand.skin_tone_index()` resolves the same server-owned skin override, keeping
+first-person hands and the backpack preview consistent with the world model.
+The joint pivots and shoulder markers keep their original paths and clothing
+materials so held items, camera visibility and creature combinations still work.
+Disconnects clear all choices for that peer; local saved appearance is requested
+again in a new session. These preferences are per device, not account storage.
+
+Run `python3 game/tests/features/player_models/network_check.py --godot /path/to/godot`
+for real server/client appearance, sender identity, invalid payload and late-join
+checks. Run `game/tests/features/player_models/visual_probe.tscn` in Godot for a
+four-avatar contact sheet, optionally passing `-- --avatar-capture=/tmp/avatars.png`.
+
+
+## Art and outfits
+
+All human geometry and seven 128×128 textures are original. The editable model
+is `assets/player_models/source/human.blend`, with reproducible authoring scripts
+beside it. Runtime uses one connected mesh, one shader surface, forty-five bones and
+five blend shapes. Geometry is shared across avatars; vertex morph weights and
+material tints are per instance. See `assets/player_models/README.md` for source
+commands and mesh budgets. The legacy `BlockPlayerModel` class name remains for
+compatibility with existing callers.
+
+Casual uses inventory shirts and pants. Tactical morphs the same chest and boots,
+with painted vest and gear detail. With empty clothing slots it supplies olive
+fatigues; equipped clothing colors still apply underneath the gear. Changing
+outfit does not equip, spend, remove or duplicate inventory items. Previous saved
+preferences without an outfit remain valid and default to casual. Creature
+heads, tails and the penguin costume retain their existing appearance.
+
+
+## Networked emotes
+
+Press **B** (controller left-stick click) to **Flip off**. Rebind it under
+**Esc → Settings → Controls → View → Emote: flip off**. The three-second gesture
+raises the left hand, curls the thumb/index/ring/little fingers, holds the middle
+finger straight, then lowers the arm. It overlays walking and running without
+changing movement. The first-person hand follows the camera; third-person
+observers see the avatar's weighted arm and finger bones perform the same emote.
+
+`PlayerModels` owns a validated `emote` action through `NetworkedEntity`. Clients
+send only the supported name; identity comes from the authenticated sender. The
+server checks the player exists, enforces a separate 3.5-second cooldown per
+player, and stores the start time against a continuously replicated server clock.
+Clients interpolate that clock locally. Late joiners wait for its snapshot and
+resume the current animation phase. The server removes finished/despawned emotes;
+disconnect and session-reset paths clear state and cooldowns.
+
+`emote_view.gd` applies the pose after normal locomotion and item-grip updates.
+An equipped item stays in the right hand while the left support hand gestures,
+then resumes its support pose. First-person emote geometry reuses the same
+connected human mesh. The penguin costume masks the human body and substitutes
+its left flipper with the rigged gesture hand for the animation.
+
+Run the real server/client/late-join regression:
+
+```sh
+python3 game/tests/features/player_models/network_check.py --emotes --godot /path/to/godot
+```
+
+`tests/features/player_models/emote_probe.tscn` renders third person; add
+`-- --first-person-emote` for the camera hand with a held weapon. The optional
+`--emote-elapsed=0.15` selects an animation phase and `--avatar-capture=/tmp/emote.png`
+saves a screenshot. GUT coverage includes invalid/forged requests, ownership,
+independent cooldowns, clock-snapshot ordering, expiry/disconnect/despawn/reset,
+finger articulation, camera switching, and weapon/costume restoration.
