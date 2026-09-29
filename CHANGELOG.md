@@ -6,6 +6,8 @@ Every notable change, newest first. `edge` is what's on `main` but not released 
 a bullet to the end of `## [edge]`:** imperative, one line per change where possible, no
 version. Releases are cut by hand (the `release` workflow): it moves `edge` into a section
 for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
+- Play Super Turbo Turkey Puncher 3 on two mouse-operated computers in the Adventure
+  Arcade, with shared screens, timed rounds and cabinet high scores.
 
 ## [edge]
 
