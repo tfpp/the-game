@@ -30,6 +30,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   and server restarts.
 - Press ~ for a Source-style settings console with autocomplete and command history;
   use sv_cheats 1 to unlock noclip and sv_cheats 0 to disable it for everyone.
+- Play Super Turbo Turkey Puncher 3 on two mouse-operated computers in the Adventure
+  Arcade, with shared screens, timed rounds and cabinet high scores.
 - Add four walking casino patrons to the gaming floor: punch them to stagger them, knock
   them out into a limp ragdoll, and watch them get back up and carry on.
 

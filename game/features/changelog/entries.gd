@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Gamblers stroll the casino floor; punch them silly and they ragdoll.",
 	},
 	{
+		"title": "Turkey Puncher computers",
+		"summary": "Click arcade computer screens to play Super Turbo Turkey Puncher 3.",
+	},
+	{
 		"title": "Developer console",
 		"summary": "Press ~ for settings commands, autocomplete and sv_cheats to unlock noclip.",
 	},
