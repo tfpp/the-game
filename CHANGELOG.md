@@ -139,6 +139,9 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   run their own gnome outings from before they connected, and gnomes and two east-wall gnome
   doors now sit on the floor. Gnomes get boots and a contact shadow, door frames meet the
   floor, and distant door labels no longer float on their own on phones and touch screens.
+- Remove mobile-only resolution, shadow, anti-aliasing, light and prop-distance limits
+  while keeping touch-friendly layouts.
+
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
