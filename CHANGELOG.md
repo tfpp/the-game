@@ -152,6 +152,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Add connected palms and five individually rigged digits per hand, with three joints each, relaxed and gripping poses, and shared first- and third-person hand geometry.
 - Add a rebindable B / left-stick-click middle-finger emote with first- and third-person raise/hold/lower animations, server-owned timing, per-player cooldowns, late-join phase synchronization, and weapon support-hand restoration.
 - Fix the gnome reconnect regression test's loop typing so strict GUT collection runs the entire test file.
+- Remove mobile-only resolution, shadow, anti-aliasing, light and prop-distance limits
+  while keeping touch-friendly layouts.
 - Synchronize Kaaba prayers for everyone and grant +200% base slot win chance per
   blessing, including signed-in wallets.
 

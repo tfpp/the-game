@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Pray together for +200% base slot win chance per blessing, online or offline.",
 	},
 	{
+		"title": "Full mobile rendering",
+		"summary": "Phones now use desktop rendering settings without extra graphics limits.",
+	},
+	{
 		"title": "Food court",
 		"summary": "Walk to the new south-wing food court for kebabs and booths you can sit in.",
 	},

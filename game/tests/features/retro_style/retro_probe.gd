@@ -1,5 +1,5 @@
 extends Node
-## Render the real scene with an optional forced mobile budget and record GPU work.
+## Render the real scene with an optional forced mobile layout and record GPU work.
 
 
 func _ready() -> void:
@@ -38,15 +38,7 @@ func _run() -> void:
 	await _capture("salon-day")
 	cycle._apply(0.0)
 	await _capture("salon-night")
-	if style.mobile:
-		assert(
-			is_equal_approx(
-				get_viewport().scaling_3d_scale, RetroStyle.mobile_scale(Vector2(get_window().size))
-			)
-		)
-		assert(get_viewport().msaa_3d == Viewport.MSAA_DISABLED)
-		for node: Node in get_tree().root.find_children("*", "Light3D", true, false):
-			assert(not (node as Light3D).shadow_enabled)
+	assert(is_equal_approx(get_viewport().scaling_3d_scale, 1.0))
 	print("RETRO_PROBE PASS mobile=", style.mobile, " scale=", get_viewport().scaling_3d_scale)
 	cycle._apply(0.5)
 	player.global_position = Vector3(0, 1.65 - eye_offset, 23)
