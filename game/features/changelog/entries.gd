@@ -15,6 +15,14 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Phones now use desktop rendering settings without extra graphics limits.",
 	},
 	{
+		"title": "NPC subtitles",
+		"summary": "NPC dialogue now shows as movie subtitles at the bottom of the screen.",
+	},
+	{
+		"title": "Money log",
+		"summary": "The chat log tells you whenever you get money, and why.",
+	},
+	{
 		"title": "Pawn shop",
 		"summary": "Sell slum loot at the pawn shop counter beside the Crown's slum gate.",
 	},

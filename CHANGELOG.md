@@ -117,6 +117,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   `game/assets/roulette/textures/`.
 - Stop the game stuttering when you buy a gun or fire: gun flashes are glow effects instead
   of lights, and their shaders load with the game.
+- Show a line in your chat log whenever you receive money (income, coins, fares, loot sales
+  and slot wins), with the reason.
 - Celebrate winning slot machine spins with fireworks over the cabinet and gold coins
   spilling from the tray; both grow with the size of the prize.
 - Visit İstanbul Kebab directly ahead of casino spawn for animated staff, a rotating döner
@@ -139,6 +141,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   run their own gnome outings from before they connected, and gnomes and two east-wall gnome
   doors now sit on the floor. Gnomes get boots and a contact shadow, door frames meet the
   floor, and distant door labels no longer float on their own on phones and touch screens.
+- Show what NPCs say to you as movie-style subtitles at the bottom of the screen instead of
+  a floating speech bubble.
 - Remove mobile-only resolution, shadow, anti-aliasing, light and prop-distance limits
   while keeping touch-friendly layouts.
 

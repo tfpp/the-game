@@ -10,7 +10,7 @@ an aisle beside the slot machines. He is essential: a gunshot knocks him out for
 5 s (`PatronMath.KNOCKOUT_S`) instead of gibbing him, and he gets up where he fell.
 Press Use (E) near him to talk: he pays $10 of subway fare through
 `PlayerMoney.credit_coin()` once an hour per account (per peer for guests). His
-reply shows in a speech bubble only to the player who talked; the cooldown lives in
+reply shows as a movie-style subtitle (`features/subtitles`) only to the player who talked; the cooldown lives in
 server memory and resets on restart. Any weapon gibs ordinary patrons; they
 walk back in from the start of their route 6 s later.
 
@@ -68,7 +68,7 @@ Each accepted interaction charges the interacting player's existing wallet exact
 There is no reward or debt. The usual wallet persistence rules apply.
 
 `trump.gd` specializes CasinoPatron's walking and talk callback, reusing its body,
-combat, six-second respawn, speech bubble and the feature's MultiplayerSpawner.
+combat, six-second respawn, subtitles and the feature's MultiplayerSpawner.
 The server follows the mayor's current position, waits briefly for players and
 collides with world geometry. If the mayor is absent he waits; after a knockdown
 or respawn he resumes following. No player is used as a movement authority.
