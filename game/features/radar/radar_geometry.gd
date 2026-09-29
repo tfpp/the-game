@@ -1,13 +1,16 @@
 class_name RadarGeometry
 extends RefCounted
-## A horizontal slice of the baked CSG, so roofs never obscure indoor passages.
+## A horizontal slice of structural geometry, so roofs never obscure indoor passages.
 
 var walls := PackedVector2Array()
 var floors := PackedVector2Array()
 
 
 func append_mesh(mesh: Mesh, transform: Transform3D, height: float) -> void:
-	var faces := mesh.get_faces()
+	append_faces(mesh.get_faces(), transform, height)
+
+
+func append_faces(faces: PackedVector3Array, transform: Transform3D, height: float) -> void:
 	for index: int in range(0, faces.size(), 3):
 		var a := transform * faces[index]
 		var b := transform * faces[index + 1]

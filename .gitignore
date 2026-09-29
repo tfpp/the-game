@@ -20,3 +20,6 @@ game/features/changelog/releases.gd.uid
 .env
 *.local
 .wrangler/
+
+game/features/console/repo_snapshot.gd
+game/features/console/repo_snapshot.gd.uid

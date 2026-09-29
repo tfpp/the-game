@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
+[ext_resource type="Script" path="res://features/room_doors/room_door.gd" id="door"]
+[ext_resource type="PackedScene" path="res://features/hotel_annex/entrance.scn" id="model"]
+
+[node name="HotelAnnex" type="Node3D"]
+
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(5, 1, 27)
+
+[node name="Hotel" type="Node3D" parent="."]
+position = Vector3(0, 0, -1400)
+script = ExtResource("room")
+room_scene = "res://features/hotel_annex/interior.tscn"
+bounds = AABB(-21, -1, -1, 56, 10, 36)
+
+[node name="Arrival" type="Marker3D" parent="Hotel"]
+position = Vector3(8.75, 1, 2.2)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="Return" type="CSGBox3D" parent="Hotel"]
+visible = false
+position = Vector3(8.75, 1.35, 0.15)
+script = ExtResource("door")
+destination = NodePath("../../CasinoArrival")
+door_label = "Return to the casino"
+
+[node name="EntranceModel" parent="." instance=ExtResource("model")]
+position = Vector3(5, 0, 29)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="Sign" type="Label3D" parent="EntranceModel"]
+position = Vector3(0, 3.12, 0.23)
+text = "HOTEL WING"
+font_size = 48
+pixel_size = 0.0035
+modulate = Color(1, 0.83, 0.52, 1)
+outline_size = 4
+
+[node name="Entrance" type="CSGBox3D" parent="."]
+visible = false
+position = Vector3(5, 1.35, 29)
+script = ExtResource("door")
+destination = NodePath("../Hotel/Arrival")
+door_label = "Visit the hotel wing"

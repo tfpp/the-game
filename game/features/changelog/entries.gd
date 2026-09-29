@@ -16,6 +16,35 @@ const ENTRIES: Array[Dictionary] = [
 		"Claim a free room at the front desk and ride the elevator to expanding ten-unit floors.",
 	},
 	{
+		"title": "Read-only Git console",
+		"summary": "Use git help in the console to inspect the build's repository snapshot.",
+	},
+	{
+		"title": "Baked hotel lighting and branching wings",
+		"summary":
+		"Explore six generated rooms with branching halls, soft lamp shadows and baked bounced light.",
+	},
+	{
+		"title": "Procedural floor plans on radar",
+		"summary": "Generated rooms and hallways now appear on the radar as you explore.",
+	},
+	{
+		"title": "The hotel wing",
+		"summary": "Visit the hotel wing from the south lobby; use its casino door to return.",
+	},
+	{
+		"title": "Sky through procedural windows",
+		"summary": "Clear glazing and a clouded sky give generated rooms a view outside.",
+	},
+	{
+		"title": "Procedural room authoring",
+		"summary":
+		(
+			"Build textured rooms with mouldings, eight-sided pillars, "
+			+ "framed doors and windows from blueprints."
+		),
+	},
+	{
 		"title": "Doggy-door gnomes",
 		"summary": "Gnomes pop out of wall doggy doors, roam, dodge you and can be shot.",
 	},

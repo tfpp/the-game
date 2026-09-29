@@ -59,3 +59,82 @@ func test_salon_boxes_include_gallery_and_furniture_but_exclude_ceiling() -> voi
 	assert_has(roots, salon.get_node("TableBody0/Shape"))
 	assert_does_not_have(roots, salon.get_node("GalleryFloorBody/Shape"))
 	radar.free()
+
+
+func test_saved_generated_scene_maps_rooms_halls_and_rotated_placement() -> void:
+	var Layout := preload("res://features/world_builder/layout.gd")
+	var Builder := preload("res://features/world_builder/mesh_builder.gd")
+	var spec: Dictionary = JSON.parse_string(
+		FileAccess.get_file_as_string("res://features/world_builder/examples/annex.json")
+	)
+	var layout: Dictionary = Layout.compile(spec)
+	var world: Node3D = Builder.build(layout)
+	var packed := PackedScene.new()
+	assert_eq(packed.pack(world), OK)
+	world.free()
+	var restored := packed.instantiate() as Node3D
+	restored.position = Vector3(80, 5, -1400)
+	restored.rotation.y = PI / 2.0
+	add_child_autofree(restored)
+	var radar := Radar.new()
+	radar._height = 6.0
+	radar._center = Vector2(80, -1400)
+	var roots: Array[Node3D] = []
+	radar._collect(restored, roots)
+	assert_gt(roots.size(), 0, "Persistent collision group survives packing")
+	for root: Node3D in roots:
+		assert_true(root is CollisionShape3D, "No decorative render meshes")
+	radar._pending = roots.duplicate()
+	radar._build_height = 6.0
+	radar._building = Geometry.new()
+	while not radar._pending.is_empty():
+		radar._build_step()
+	assert_gt(radar._geometry.walls.size(), 0)
+	var floors := radar._geometry.floors
+	var area := 0.0
+	for index: int in range(0, floors.size(), 3):
+		area += (
+			absf((floors[index + 1] - floors[index]).cross(floors[index + 2] - floors[index])) / 2
+		)
+	var cell_size: float = layout["cell_size"]
+	assert_almost_eq(area, layout["cells"].size() * cell_size * cell_size, 0.02)
+	for cell: Vector2i in layout["cells"]:
+		var point := restored.to_global(Vector3(cell.x + 0.43, 0, cell.y + 0.61) * cell_size)
+		assert_true(_floor_contains(floors, Vector2(point.x, point.z)), "Room/hall cell %s" % cell)
+	radar._height = 20.0
+	roots.clear()
+	radar._collect(restored, roots)
+	assert_true(roots.is_empty(), "A different storey does not map this floor")
+	radar.free()
+
+
+func test_unmarked_or_disabled_mesh_collision_is_not_mapped() -> void:
+	var body := StaticBody3D.new()
+	var collider := CollisionShape3D.new()
+	var shape := ConcavePolygonShape3D.new()
+	shape.set_faces(BoxMesh.new().get_faces())
+	collider.shape = shape
+	body.add_child(collider)
+	add_child_autofree(body)
+	var radar := Radar.new()
+	radar._height = 0.25
+	var roots: Array[Node3D] = []
+	radar._collect(body, roots)
+	assert_true(roots.is_empty())
+	collider.add_to_group(&"radar_geometry")
+	radar._collect(body, roots)
+	assert_eq(roots.size(), 1)
+	roots.clear()
+	collider.disabled = true
+	radar._collect(body, roots)
+	assert_true(roots.is_empty())
+	radar.free()
+
+
+func _floor_contains(floors: PackedVector2Array, point: Vector2) -> bool:
+	for index: int in range(0, floors.size(), 3):
+		if Geometry2D.point_is_inside_triangle(
+			point, floors[index], floors[index + 1], floors[index + 2]
+		):
+			return true
+	return false

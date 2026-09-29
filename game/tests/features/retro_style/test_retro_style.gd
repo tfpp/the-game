@@ -227,3 +227,16 @@ func test_authored_textures_keep_their_uv_mapping() -> void:
 	assert_eq(finish.uv1_scale, Vector3(3, 4, 1))
 	assert_false(finish.uv1_triplanar)
 	style.free()
+
+
+func test_architectural_pixel_lighting_and_baked_shaders_survive_styling() -> void:
+	var style := RetroStyle.new()
+	var surface := StandardMaterial3D.new()
+	surface.set_meta(&"per_pixel_lighting", true)
+	style._style_material(surface)
+	assert_eq(surface.shading_mode, BaseMaterial3D.SHADING_MODE_PER_PIXEL)
+	var baked := ShaderMaterial.new()
+	baked.shader = preload("res://features/world_builder/baked_lighting.gdshader")
+	style._style_material(baked)
+	assert_eq(baked.shader.resource_path, "res://features/world_builder/baked_lighting.gdshader")
+	style.free()

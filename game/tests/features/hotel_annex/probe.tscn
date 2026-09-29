@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tests/features/hotel_annex/probe.gd" id="script"]
+[ext_resource type="PackedScene" path="res://main.tscn" id="game"]
+
+[node name="HotelProbe" type="Node"]
+script = ExtResource("script")
+
+[node name="Game" parent="." instance=ExtResource("game")]

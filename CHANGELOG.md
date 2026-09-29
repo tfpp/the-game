@@ -43,6 +43,28 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Find gnome holes as doggy doors on the outer walls: gnomes now come out one by one,
   wander their own routes around players, NPCs and frogs, and can be killed like frogs
   until their burrow next comes out.
+
+- Add a JSON world-authoring tool that places rooms, connects hallways, and bakes chunked meshes, collision and room markers into saved Godot scenes.
+
+- Add textured hotel architecture to the world builder: profiled mouldings, fluted columns, recessed panel doors, framed windows and independently adjustable room/hallway heights.
+
+- Show a clouded daylight sky through procedural windows in the world-builder preview, with adjustable sky texture and heading.
+
+- Connect a separate, streamed hotel wing to the casino south lobby with labelled two-way teleport doors.
+
+- Map world-builder rooms and hallways on the radar using baked structural collision, including streamed and transformed scenes.
+
+- Expand the generated hotel to six rooms and five corridors; add an offline UV2 lightmap bake with soft lamp shadows, diffuse bounces and additive flashlights.
+
+- Compile lighting with the world-builder command and fix pillar joins, curved normals, lightmap detail and striped flashlight shadows.
+
+- Replace the world-builder Blender pipeline with native Godot LightmapGI compilation, saved lightmaps and dynamic-object probes; keep normal exports independent of the baker.
+
+- Reuse unchanged world-builder bakes using input and output content hashes; add `--rebake` and reduce pillars and light fittings to at most eight radial sides.
+
+- Keep the hotel baked lighting below 1 MB in both saved and exported assets, and enforce the budget before publishing new bakes.
+- Inspect the build's repository snapshot with read-only Git commands in the console;
+  type git help to see the supported commands.
 - Claim a free apartment at the Lily Apartments front desk in the south lobby, and
   take the express elevator to new ten-unit floors as more residents move in.
 
