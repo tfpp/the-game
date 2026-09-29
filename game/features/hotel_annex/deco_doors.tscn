@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/room_doors/swing_door.tscn" id="1_i55qu"]
+[ext_resource type="Script" path="res://features/room_doors/swing_door.gd" id="2_fr6xg"]
+
+[node name="RoomDoors" type="Node3D" unique_id=1274129560]
+
+[node name="LobbyDoor" type="Node3D" parent="." unique_id=899315653 instance=ExtResource("1_i55qu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 0, 10)
+script = ExtResource("2_fr6xg")
+door_label = "Lobby"
+kit_id = "deco"
+
+[node name="GuestRoomsDoor" type="Node3D" parent="." unique_id=15044153 instance=ExtResource("1_i55qu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 0, 34)
+script = ExtResource("2_fr6xg")
+door_label = "GuestRooms"
+kit_id = "deco"
+
+[node name="LoungeDoor" type="Node3D" parent="." unique_id=396265727 instance=ExtResource("1_i55qu")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2, 0, 39.5)
+script = ExtResource("2_fr6xg")
+door_label = "Lounge"
+kit_id = "deco"

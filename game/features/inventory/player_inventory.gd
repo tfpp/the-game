@@ -8,6 +8,7 @@ const CAPACITY := 8
 @export var backpack := PackedStringArray(["", "", "", "", "", "", "", ""])
 @export var shirt := ""
 @export var pants := ""
+@export var keys := PackedStringArray()
 
 
 func hand() -> Hand:
@@ -26,6 +27,9 @@ func item_at(slot: int) -> String:
 
 
 func can_collect(id: String) -> bool:
+	var definition := ItemCatalog.find(id)
+	if definition != null and definition.category == ItemDefinition.Category.KEY:
+		return not has_key(id)
 	return (
 		ItemCatalog.find(id) != null
 		and (item_at(_equipment_slot(id)).is_empty() or backpack.has(""))
@@ -35,6 +39,12 @@ func can_collect(id: String) -> bool:
 func collect(id: String) -> bool:
 	if not multiplayer.is_server() or not can_collect(id):
 		return false
+	if ItemCatalog.find(id).category == ItemDefinition.Category.KEY:
+		var next := keys.duplicate()
+		next.append(id)
+		keys = next
+		hand()._play_inventory.rpc_id(hand().peer_id, &"key_pickup")
+		return true
 	var target := _equipment_slot(id)
 	if not item_at(target).is_empty():
 		target = backpack.find("")
@@ -43,6 +53,10 @@ func collect(id: String) -> bool:
 		_holster_gun_rig_if_weapon(id)
 	hand()._play_inventory.rpc_id(hand().peer_id, &"pickup")
 	return true
+
+
+func has_key(id: String) -> bool:
+	return not id.is_empty() and keys.has(id)
 
 
 @rpc("any_peer", "call_local", "reliable")

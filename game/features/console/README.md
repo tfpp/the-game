@@ -54,9 +54,9 @@ the commit, and `git ls-files` tracked paths. All other arguments are rejected,
 including revision/path arguments, Git options, writes and shell syntax.
 
 This is an explicitly labelled **build-time snapshot**, not a live server checkout.
-`game/scripts/export.sh` runs `scripts/git_snapshot.py` to bundle a generated
-GDScript resource, then cleans it up. Git and Python are build tools only; exports
-need neither and work offline. Native editor runs lazily run that same generator
+`game/scripts/export.sh` runs `scripts/git_snapshot.gd` in Godot to bundle a generated
+GDScript resource, then cleans it up. Git is a build tool only; exports
+do not need it and work offline. Native editor runs lazily run that same collector
 once per console instance. Direct exports bypassing the script show an unavailable
 message. Queries are fixed, use no shell, suppress optional locks and filesystem
 monitor hooks, and only collect metadata (no source contents, config or remotes).

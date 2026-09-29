@@ -54,8 +54,18 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 
 ## Multiplayer rules (important)
 
+- Use [`NetworkedEntity` / `NetworkedInteraction`](core/net/README.md) for new shared
+  entities and when changing an existing entity's networking. Declare replicated
+  fields on the component and register validation/apply callbacks in the feature.
+  Keep gameplay rules in those callbacks; reuse the component for sender identity,
+  server requests, cooldowns, replication and session lifecycle. Prefer this to
+  copying RPC and synchronizer boilerplate into each feature. Explain any exception.
+- For player interactions, use `NetworkedInteraction.register_use` and `request_use`.
+  Never accept a player ID from a client payload as proof of identity. Add automated
+  authority and late-join coverage when introducing shared state. Existing specialized
+  systems can migrate incrementally; player movement retains its client authority.
 - **Server-authoritative by default.** Change shared state only inside
-  `if multiplayer.is_server():`.
+  a registered server apply callback or `if multiplayer.is_server():`.
   - Clients request changes via `@rpc("any_peer", "call_local", "reliable")` functions.
   - The server validates `multiplayer.get_remote_sender_id()`.
 - **Replication:**

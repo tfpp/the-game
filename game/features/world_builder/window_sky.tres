@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3]
+
+[ext_resource type="Shader" path="res://features/world_builder/window_sky.gdshader" id="shader"]
+[ext_resource type="Texture2D" path="res://assets/kenney/skyboxes/skybox-day.png" id="day"]
+[ext_resource type="Texture2D" path="res://assets/kenney/skyboxes/skybox-night.png" id="night"]
+
+[resource]
+shader = ExtResource("shader")
+shader_parameter/day_texture = ExtResource("day")
+shader_parameter/night_texture = ExtResource("night")
+shader_parameter/day_factor = 1.0

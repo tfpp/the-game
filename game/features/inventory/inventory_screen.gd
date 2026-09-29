@@ -18,6 +18,7 @@ var _selected := -2
 var _title: Label
 var _description: Label
 var _count: Label
+var _keys: Label
 var _equip: Button
 var _stow: Button
 var _drop: Button
@@ -54,7 +55,9 @@ func _process(_delta: float) -> void:
 	if _inventory == null:
 		_close(false)
 		return
-	var state := str([_inventory.backpack, _inventory.shirt, _inventory.pants, hand.net_item_id])
+	var state := str(
+		[_inventory.backpack, _inventory.shirt, _inventory.pants, _inventory.keys, hand.net_item_id]
+	)
 	if state != _last_state:
 		_last_state = state
 		_refresh()
@@ -132,6 +135,11 @@ func _refresh() -> void:
 		_slots[index].tooltip_text = "Slot %d: %s" % [index + 1, _item_name(id)]
 		_slots[index].button_pressed = _selected == index
 	_count.text = "BACKPACK   %d / %d" % [filled, PlayerInventory.CAPACITY]
+	var key_names := PackedStringArray()
+	for id: String in _inventory.keys:
+		key_names.append(_item_name(id))
+	_keys.text = "KEY RING: " + ", ".join(key_names)
+	_keys.visible = not key_names.is_empty()
 	var item := _inventory.item_at(_selected)
 	var clothing := not ClothingCatalog.slot(item).is_empty()
 	_title.text = _item_name(item)
@@ -249,6 +257,8 @@ func _build() -> void:
 		icon.size = Vector2(64, 34)
 		button.add_child(icon)
 		_slots.append(button)
+	_keys = _label(bag, "")
+	_keys.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_title = _label(bag, "", true)
 	_title.add_theme_font_size_override("font_size", 20)
 	_description = _label(bag, "")

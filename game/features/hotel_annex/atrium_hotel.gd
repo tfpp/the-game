@@ -4,7 +4,7 @@ extends Node3D
 ## peer. Everything here is static; doors and arrival markers live in `feature.tscn`.
 ##
 ## Coordinates are in the hotel room's local space, metres. X runs west to east and
-## Z north to south. The casino door sits in the north wall at x = 8.75.
+## Z north to south. The classic hotel door sits in the north wall at x = 8.75.
 
 const Materials := preload("res://features/world_builder/materials.gd")
 
@@ -16,7 +16,8 @@ const OUTER := Rect2(-20, 0, 54, 34)
 const ATRIUM := Rect2(-3, 7, 20, 20)
 ## Switchback ramps along the south wall. Even storeys climb east in lane A, odd
 ## storeys climb west in lane B.
-const RAMP_X := Vector2(-4, 4)
+## A 24 m run for each 4 m rise keeps ramps at 9.46 degrees.
+const RAMP_X := Vector2(-5, 19)
 const LANE_A := Vector2(31.5, 34)
 const LANE_B := Vector2(29, 31.5)
 const WING_WALLS: Array[float] = [-7.0, 21.0]
@@ -120,7 +121,7 @@ func _build_storey(level: int) -> void:
 		var gaps: Array[Vector2] = []
 		for door_z: float in ROOM_DOORS:
 			gaps.append(Vector2(door_z - door_width * 0.5, door_z + door_width * 0.5))
-		_wall_along_z(wall_x, OUTER.position.y, OUTER.end.y, y, height, gaps, 2.7)
+		_wall_along_z(wall_x, OUTER.position.y, OUTER.end.y, y, height, gaps, 2.6)
 		var x0 := OUTER.position.x if side == 0 else wall_x
 		var x1 := wall_x if side == 0 else OUTER.end.x
 		for split: float in ROOM_SPLITS:
@@ -162,7 +163,7 @@ func _build_shell() -> void:
 	for level: int in LEVELS - 1:
 		var ends := ramp_ends(level)
 		_ramp(ends[0], ends[1], LANE_A if level % 2 == 0 else LANE_B)
-	# The casino door's visible leaf and frame on the inside of the north wall.
+	# The classic hotel door's visible leaf and frame on the inside of the north wall.
 	_visual(Vector3(8.75, 1.35, 0.04), Vector3(1.5, 2.7, 0.08), "wood")
 	_visual(Vector3(8.75, 2.8, 0.06), Vector3(1.9, 0.2, 0.12), "gold")
 	for x: float in [7.9, 9.6]:

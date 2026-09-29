@@ -1,8 +1,11 @@
 extends RefCounted
 ## Pure, deterministic blueprint compiler. Coordinates are integer floor cells (x, z).
 
+const FloorFinishes := preload("res://features/world_builder/floor_finishes.gd")
 const Style := preload("res://features/world_builder/style.gd")
 const Details := preload("res://features/world_builder/layout_details.gd")
+const Elevation := preload("res://features/world_builder/elevation.gd")
+const Doorways := preload("res://features/world_builder/doorways.gd")
 
 const MAX_CELLS := 65536
 const DIRECTIONS: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
@@ -37,9 +40,10 @@ static func compile(spec: Dictionary) -> Dictionary:
 			connections.append([definitions[i - 1]["id"], definitions[i]["id"]])
 	var paths: Array[Array] = []
 	var width := int(spec.get("hall_width", 3))
-	for connection: Array in connections:
-		var start := rooms[connection[0]].get_center()
-		var end := rooms[connection[1]].get_center()
+	for value: Variant in connections:
+		var connection := Elevation.connection(value)
+		var start := rooms[connection["from"]].get_center()
+		var end := rooms[connection["to"]].get_center()
 		var bend := Vector2i(end.x, start.y) if rng.randi() % 2 else Vector2i(start.x, end.y)
 		_carve(cells, start, bend, width)
 		_carve(cells, bend, end, width)
@@ -60,7 +64,12 @@ static func compile(spec: Dictionary) -> Dictionary:
 		"seed": rng.seed,
 	}
 
+	Elevation.apply(result, spec, connections)
+	preload("res://features/room_kits/catalog.gd").apply(result, spec)
 	Details.apply(result, spec)
+	FloorFinishes.apply(result, definitions)
+	preload("res://features/world_builder/skylights.gd").apply(result, definitions)
+	Doorways.apply(result, connections)
 	return result
 
 
@@ -110,10 +119,8 @@ static func _validate(spec: Dictionary) -> Array[String]:
 		for definition: Dictionary in definitions:
 			ids.append(definition["id"])
 		for pair: Variant in connections:
-			if not pair is Array or pair.size() != 2:
-				errors.append("Each connection must contain two room IDs.")
-			elif pair[0] not in ids or pair[1] not in ids or pair[0] == pair[1]:
-				errors.append("Connection must reference two distinct existing rooms: %s" % [pair])
+			Elevation.validate(pair, ids, errors)
+			Doorways.validate(pair, errors)
 	return errors
 
 
@@ -126,7 +133,22 @@ static func _validate_rooms(definitions: Array, errors: Array[String]) -> void:
 			errors.append("Each room must be an object.")
 			continue
 		for key: String in definition:
-			if key not in ["id", "size", "at", "height", "openings", "pillars"]:
+			if (
+				key
+				not in [
+					"id",
+					"size",
+					"at",
+					"height",
+					"elevation",
+					"openings",
+					"pillars",
+					"floor_material",
+					"floor_holes",
+					"kit",
+					"skylight"
+				]
+			):
 				errors.append("Unknown room field: %s" % key)
 		Style.validate_room(definition, errors)
 		var room_id: Variant = definition.get("id")
@@ -136,6 +158,8 @@ static func _validate_rooms(definitions: Array, errors: Array[String]) -> void:
 			ids.append(room_id)
 		if not _pair(definition.get("size"), 7, 32):
 			errors.append("Room size must be two integers between 7 and 32 cells.")
+		else:
+			FloorFinishes.validate(definition, errors)
 		if definition.has("at"):
 			positioned += 1
 			if not _pair(definition["at"], -256, 256):

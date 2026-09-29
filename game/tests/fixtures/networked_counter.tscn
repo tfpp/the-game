@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tests/fixtures/networked_counter.gd" id="counter"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="entity"]
+
+[node name="Counter" type="Node"]
+script = ExtResource("counter")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")
+replicated_properties = Array[NodePath]([NodePath(".:value"), NodePath(".:last_peer")])

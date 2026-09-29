@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/room_doors/ladder.gd" id="ladder"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="entity"]
+
+[node name="Ladder" type="Node3D"]
+script = ExtResource("ladder")
+
+[node name="TopUse" type="Node" parent="."]
+script = ExtResource("entity")
+interaction_range = 1.8
+
+[node name="BottomUse" type="Node" parent="."]
+script = ExtResource("entity")
+interaction_range = 1.8

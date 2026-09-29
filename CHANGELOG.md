@@ -76,8 +76,25 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   purple route on the radar and the direction banner, including through doors.
 - Rebuild the hotel wing as a four-floor hotel around a skylit central atrium, with
   switchback ramps, gallery railings and guest rooms on every upper floor.
+
+- Join procedural wall corners with mitred trim and one shared pillar; connect raised rooms with level landings, ramps capped at 10 degrees and walkable stairs.
+- Connect the four-floor atrium as a separate classic-hotel wing, with gentle ramps, shared guest-room doors and GPS routing between wings.
+- Add synchronized swinging room doors and a Reading Room key for the locked study two stair flights up.
+- Keep stairs between 30 and 37 degrees, with level landings and ramps capped at 10 degrees.
+- Use live hotel lighting and fast geometry builds during development, with no required lightmap bake.
+- Add reusable networked entity and player interaction components; migrate doors and pickups and document the shared workflow for contributors.
+- Add three reusable hotel kits and a plain concrete service kit, with nearby hotels connected by a branching sewer network, junctions, an alternate loop and three climbable ladders.
+- Space corridor lights, seal window views with day/night sky backdrops, and replace door lock labels with Kenney door and key sounds.
+- Add thirteen hotel skylights, reusable ceiling pieces for every room kit, and broad live daylight with readable night lighting.
+- Add the atrium wing to GPS, keep bird simulation server-authoritative after joining, and clean up Windows multiplayer test processes reliably.
+- Use Godot for repository snapshots and multiplayer test runners; remove Python installation from export jobs.
+- Handle container checkout ownership and empty Git output when generating export snapshots, and report the underlying Git error on failure.
+- Compress the preview's game pack alongside the WebAssembly engine to fit the host's per-file size limit.
+- Keep hotel rooms, stairs, sewers and the atrium readable at night and on phones
+  with steady indoor ambient lighting.
 - Enter VR from the Quest / WebXR menu in Quest Browser with headset look, stick
   movement, snap turning, jump and nearby object interaction.
+
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
@@ -131,7 +148,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Add a Retry button to Discord messages about failed, cancelled or never-started `implement` and `revise` runs, so the requester can start the run again.
 - Name cancelled, failed and skipped agent jobs in the "did not produce a change" comment, without listing unavailable model, token and cost fields.
 - Post every bot message in Discord feature threads as a colour-coded embed (agent progress, CI, previews, approvals, merge queue, conflicts, merges and deploys), with model, shortened token count (such as 1.4M) and estimated cost as fields on agent notifications.
-- Show the agent's reasoning effort next to its model in PR descriptions, 🤖 comments and Discord notifications.
+- Show the agent's reasoning effort next to its model in PR descriptions, ðŸ¤– comments and Discord notifications.
 
 - Add a Monkey Island demo arcade with a brass-trimmed cabinet and synchronized local emulation for every player.
 - Autosave shared arcade progress, restore it after server restarts, and pause the demo when everyone disconnects.

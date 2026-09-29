@@ -15,13 +15,46 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Enter VR from Quest / WebXR in the menu to explore with Touch controllers.",
 	},
 	{
+		"title": "Brighter hotel interiors",
+		"summary": "Explore the hotels, sewers and atrium with reliable lighting, even at night.",
+	},
+	{
 		"title": "Atrium hotel",
 		"summary":
-		"The hotel wing is now a four-floor hotel around a skylit atrium, with ramps to guest rooms.",
+		"Visit the four-floor atrium wing from the classic hotel, with gentle ramps to guest rooms.",
 	},
 	{
 		"title": "GPS phone",
 		"summary": "Press P to pick a place on your phone and follow the route on the radar.",
+	},
+	{
+		"title": "Hotel skylights",
+		"summary":
+		"Thirteen framed skylights brighten hotel rooms with daylight and soft night lighting.",
+	},
+	{
+		"title": "Three hotels and the sewer network",
+		"summary":
+		"Explore classic, modern and Art Deco hotels linked by sewer junctions and climbable ladders.",
+	},
+	{
+		"title": "Concrete service rooms and clearer interactions",
+		"summary":
+		"Plain concrete storage rooms, spaced hallway lamps, sky-filled windows and door/key sounds.",
+	},
+	{
+		"title": "Shared networked entities",
+		"summary":
+		"Doors and pickups share one server-validated networking system for future world objects.",
+	},
+	{
+		"title": "Hotel doors and the Upper Study key",
+		"summary":
+		"Open shared room doors with Use; find the Reading Room key for the study two stairs up.",
+	},
+	{
+		"title": "Connected rooms and raised floors",
+		"summary": "Room corners share one pillar; gentle ramps and stairs connect raised rooms.",
 	},
 	{
 		"title": "Wandering bird",
@@ -35,6 +68,15 @@ const ENTRIES: Array[Dictionary] = [
 		"title": "Lily Apartments",
 		"summary":
 		"Claim a free room at the front desk and ride the elevator to expanding ten-unit floors.",
+	},
+	{
+		"title": "Desktop app installer",
+		"summary":
+		"Install the desktop app with one curl command on macOS, Linux or Windows Git Bash.",
+	},
+	{
+		"title": "Desktop app",
+		"summary": "Run the website in an Electron app for Linux, macOS and Windows.",
 	},
 	{
 		"title": "Read-only Git console",
@@ -229,7 +271,7 @@ const ENTRIES: Array[Dictionary] = [
 		"title": "Mix-and-match creatures",
 		"summary":
 		(
-			"Character Model (Esc menu) now picks a body, head and tail independently — a"
+			"Character Model (Esc menu) now picks a body, head and tail independently â€” a"
 			+ " frog head or bird head, a lizard, fin or fluffy tail, on any body. Mix them"
 			+ " into your own impossible creature."
 		)
@@ -275,14 +317,14 @@ const ENTRIES: Array[Dictionary] = [
 		"summary":
 		(
 			"A hazard-striped debug warp pad (noclip to find it) instantly sends you to the"
-			+ " parking garage for testing — internal, not part of the game proper."
+			+ " parking garage for testing â€” internal, not part of the game proper."
 		)
 	},
 	{
 		"title": "Parking garage",
 		"summary":
 		(
-			"A dark three-story parking structure outside the casino — take the staff door"
+			"A dark three-story parking structure outside the casino â€” take the staff door"
 			+ " near the trampolines. Ramps and a stairwell connect all three levels."
 		)
 	},
@@ -320,7 +362,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Soccer ball physics",
 		"summary":
-		"The map's soccer ball rolls and bounces now — bump it with your body or shoot it."
+		"The map's soccer ball rolls and bounces now â€” bump it with your body or shoot it."
 	},
 	{
 		"title": "Wallet and health HUD",
@@ -419,16 +461,16 @@ const ENTRIES: Array[Dictionary] = [
 	},
 	{
 		"title": "Killable penguin",
-		"summary": "The penguin can now be shot with any weapon — she explodes and waddles back."
+		"summary": "The penguin can now be shot with any weapon â€” she explodes and waddles back."
 	},
 	{
 		"title": "Update screen",
 		"summary":
-		"Web client shows an Updating… screen during a deploy instead of flashing reloads."
+		"Web client shows an Updatingâ€¦ screen during a deploy instead of flashing reloads."
 	},
 	{
 		"title": "Combat",
-		"summary": "Weapons can now kill — take damage and respawn once your health runs out."
+		"summary": "Weapons can now kill â€” take damage and respawn once your health runs out."
 	},
 	{
 		"title": "Item drops & new guns",

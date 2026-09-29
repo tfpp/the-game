@@ -30,8 +30,14 @@ Files copied unmodified from the downloaded Kenney All-in-1 pack:
 - Impact Sounds: impactGeneric_light_000 (surfaces), impactPunch_medium_000 (hits).
 - Interface Sounds: open_001, close_001, select_001, confirmation_001, drop_001.
 
-Each source directory includes its supplied CC0 License.txt. Only ten selected
-Ogg files are included, rather than the complete asset collection.
+Each source directory includes its supplied CC0 License.txt. Only the selected Ogg clips are included.
+
+Door and key clips come from RPG Audio in the supplied Kenney All-in-1 3.7.0 ZIP:
+`doorOpen_1`, `doorClose_2`, `metalLatch`, `metalClick` and `handleCoins2`.
+The supplied CC0 license is alongside them. Door movement/unlock sounds use
+NetworkedEntity transient server events. A denied lock attempt is heard only by its
+requesting player, limited to once per 400 ms; key collection is owner-only too.
+There are no floating door labels or lock-status prompts. Late joins replay no sounds.
 
 ## Checks
 
