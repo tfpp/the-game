@@ -15,7 +15,7 @@
 [ext_resource type="PackedScene" path="res://features/casino_hub/models/ceramic_planter.tscn" id="13_quvcb"]
 [ext_resource type="PackedScene" path="res://features/casino_hub/models/brass_chandelier.tscn" id="14_5ubmw"]
 [ext_resource type="PackedScene" path="res://features/casino_hub/salon.tscn" id="15_0e7fu"]
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/decor_batches.scn" id="16_y7jil"]
+[ext_resource type="PackedScene" path="res://assets/casino_hub/models/decor_batches.scn" id="16_y7jil"]
 
 [node name="CasinoInterior" type="Node3D" unique_id=512010880]
 

@@ -3,7 +3,7 @@ extends Node3D
 
 const CABINET := preload("res://features/casino_hub/models/slot_cabinet.tscn")
 const REEL_SHADER := preload("res://features/slot_machine/reel.gdshader")
-const SYMBOL_TEXTURE := preload("res://features/slot_machine/textures/reel_symbols.png")
+const SYMBOL_TEXTURE := preload("res://assets/slot_machine/textures/reel_symbols.png")
 const CHROME := preload("res://features/casino_hub/materials/chrome.tres")
 const SYMBOLS: Array[String] = ["7", "BAR", "STAR", "BELL", "GEM"]
 const GOLD := Color("f6c85f")
