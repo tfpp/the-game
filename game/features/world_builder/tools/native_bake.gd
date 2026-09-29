@@ -6,6 +6,7 @@ const Builder := preload("res://features/world_builder/mesh_builder.gd")
 const Files := preload("res://features/world_builder/tools/bake_files.gd")
 const WORKER := "res://features/world_builder/tools/bake_editor.gd"
 const SHADER := "res://features/world_builder/baked_lighting.gdshader"
+const MAX_LIGHTMAP_BYTES := 1000000
 const TIMEOUT_MSEC := 1800000
 
 
@@ -110,6 +111,7 @@ static func _prepare(
 		lightmap.bounces = 3
 		lightmap.interior = true
 		lightmap.max_texture_size = 2048
+		lightmap.texel_scale = 0.4
 		lightmap.supersampling = true
 		lightmap.supersampling_factor = 2.0
 		lightmap.environment_mode = LightmapGI.ENVIRONMENT_MODE_CUSTOM_COLOR
@@ -136,7 +138,11 @@ static func _prepare(
 	for pair: Array in [
 		[WORKER, "res://addons/world_bake/plugin.gd"],
 		[SHADER, SHADER],
-		[SHADER + ".uid", SHADER + ".uid"]
+		[SHADER + ".uid", SHADER + ".uid"],
+		[
+			"res://features/world_builder/tools/bake_files.gd",
+			"res://features/world_builder/tools/bake_files.gd"
+		]
 	]:
 		error = Files.copy_file(pair[0], Files.staged(stage, pair[1]))
 		if error != OK:
@@ -161,7 +167,8 @@ static func _prepare(
 	if error != OK:
 		return error
 	return Files.write_text(
-		stage.path_join("job.json"), JSON.stringify({"scene": output, "data": data_path})
+		stage.path_join("job.json"),
+		JSON.stringify({"scene": output, "data": data_path, "max_bytes": MAX_LIGHTMAP_BYTES})
 	)
 
 
@@ -173,7 +180,7 @@ static func prepare_geometry(world: Node3D) -> Error:
 			mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 			continue
 		mesh.gi_mode = GeometryInstance3D.GI_MODE_STATIC
-		var texel := 0.025 if mesh.name.to_lower().ends_with("_detail") else 0.16
+		var texel := 0.15 if mesh.name.to_lower().ends_with("_detail") else 0.5
 		var error := (mesh.mesh as ArrayMesh).lightmap_unwrap(mesh.transform, texel)
 		if error != OK:
 			return error

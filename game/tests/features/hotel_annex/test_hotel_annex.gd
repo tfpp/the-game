@@ -157,3 +157,15 @@ func test_saved_wing_uses_uv2_lightmaps_without_runtime_lamp_lights() -> void:
 					lightmap.get_node(lightmap.light_data.get_user_path(index)), MeshInstance3D
 				)
 	scene.free()
+
+
+func test_saved_lighting_fits_one_megabyte_in_git_and_export() -> void:
+	var files: Array[String] = []
+	var folder := "res://features/hotel_annex/hotel_lightmaps"
+	for name: String in DirAccess.get_files_at(folder):
+		files.append(folder.path_join(name))
+	var sizes := preload("res://features/world_builder/tools/bake_files.gd").lighting_sizes(files)
+	assert_gt(sizes.x, 0, "Source lighting files exist")
+	assert_gt(sizes.y, 0, "Imported runtime lighting files exist")
+	assert_lt(sizes.x, 1000000, "Saved source lightmaps and probe data fit the budget")
+	assert_lt(sizes.y, 1000000, "Imported texture arrays and probe data fit the budget")

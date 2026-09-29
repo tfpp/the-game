@@ -1,9 +1,9 @@
 {
 	"files": {
-		"res://features/hotel_annex/hotel.scn": "c8e96eda8f82ff7594dac3763bec56c8882ec96d208335c3ae37780101ed77f3",
-		"res://features/hotel_annex/hotel_lightmaps/native-70318-141549.exr": "60883baedf924cefb9fb6494a2def6f34b7835a0d0b8d9cc99763095dcc1e87d",
-		"res://features/hotel_annex/hotel_lightmaps/native-70318-141549.exr.import": "34430c34b994e9619289564c534524acb45577d4c2e0619fe94ef519ec3b3337",
-		"res://features/hotel_annex/hotel_lightmaps/native-70318-141549.lmbake": "a9f7741874940010a82f73a80be866732c08e542474cab0987fd588b59788c88"
+		"res://features/hotel_annex/hotel.scn": "d6b865e1cf0209ed92e0ecae5a4eb77c8937ebb17be5976967fc7e8c4a14ae9a",
+		"res://features/hotel_annex/hotel_lightmaps/native-90013-143276.exr": "8e2f1077119633e43747dc435182e3ffabc2c655cd1a58881fd79bd2e3746279",
+		"res://features/hotel_annex/hotel_lightmaps/native-90013-143276.exr.import": "fc6520db47ca334f93b9ecf1914716f7e870896cc7b9722a2d209200b2d0e472",
+		"res://features/hotel_annex/hotel_lightmaps/native-90013-143276.lmbake": "19a0602a12abeecbfbd86ca480341fb178ac40efd6c3ebebbb3e76b13e67292b"
 	},
-	"signature": "91f701afa54bf95b49b44f06f76c8c986097bce7b8bad5dfde8b9cf24ce29d71"
+	"signature": "baf0e75e3c84cbbb8b23a1cd0ee4987eee7c88bd5bbbb04f1b2f519d5d3c4dc9"
 }

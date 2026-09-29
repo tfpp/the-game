@@ -96,3 +96,23 @@ static func remove_tree(path: String) -> void:
 	for name: String in DirAccess.get_files_at(path):
 		DirAccess.remove_absolute(path.path_join(name))
 	DirAccess.remove_absolute(path)
+
+
+static func lighting_sizes(files: Array) -> Vector2i:
+	var sizes := Vector2i.ZERO
+	for path: String in files:
+		var file := FileAccess.open(path, FileAccess.READ)
+		if file == null:
+			return Vector2i(-1, -1)
+		sizes.x += file.get_length()
+		if path.ends_with(".exr"):
+			var config := ConfigFile.new()
+			if config.load(path + ".import") != OK:
+				return Vector2i(-1, -1)
+			var imported := FileAccess.open(config.get_value("remap", "path", ""), FileAccess.READ)
+			if imported == null:
+				return Vector2i(-1, -1)
+			sizes.y += imported.get_length()
+		else:
+			sizes.y += file.get_length()
+	return sizes

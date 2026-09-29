@@ -81,8 +81,12 @@ the temporary project/log location. Successful builds remove temporary files and
 replace obsolete generated lightmaps.
 
 The pass uses high quality, three bounces, 2× supersampling and soft lamp sources.
-Walls use 16 cm lighting texels; columns use 2.5 cm texels. Native HDR lightmap arrays
-are stored uncompressed for Compatibility/WebGL use. Surface textures retain their
+UV2 unwraps use 50 cm texels on walls and 15 cm on columns, with a native bake
+texel scale of 0.4. This keeps lighting broad while surface textures provide detail.
+The compiler rejects bakes above 1,000,000 bytes in either source or imported
+runtime lighting assets (with 4 KiB reserved for metadata/cache), retaining the
+previous scene. The six-room hotel uses two 256×256 HDR atlas layers. Native HDR
+arrays remain uncompressed for Compatibility/WebGL use. Surface textures retain their
 128×128 nearest-filtered appearance. Godot also saves light probes for dynamic objects.
 
 Static lamps are removed from the runtime scene. Its shader uses Godot's UV2 lighting,

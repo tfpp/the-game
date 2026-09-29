@@ -2,16 +2,16 @@
 
 importer="2d_array_texture"
 type="CompressedTexture2DArray"
-uid="uid://degi5d64y42qw"
-path="res://.godot/imported/native-70318-141549.exr-59e0c343c2f5cd14ff6d539de36e9e18.ctexarray"
+uid="uid://dh6cnhu5ju1o8"
+path="res://.godot/imported/native-90013-143276.exr-70c5067a3f68d7af933c4160f582e567.ctexarray"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://features/hotel_annex/hotel_lightmaps/native-70318-141549.exr"
-dest_files=["res://.godot/imported/native-70318-141549.exr-59e0c343c2f5cd14ff6d539de36e9e18.ctexarray"]
+source_file="res://features/hotel_annex/hotel_lightmaps/native-90013-143276.exr"
+dest_files=["res://.godot/imported/native-90013-143276.exr-70c5067a3f68d7af933c4160f582e567.ctexarray"]
 
 [params]
 
@@ -25,4 +25,4 @@ compress/channel_pack=1
 mipmaps/generate=false
 mipmaps/limit=-1
 slices/horizontal=1
-slices/vertical=6
+slices/vertical=4

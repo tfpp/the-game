@@ -3,6 +3,7 @@ extends EditorPlugin
 ## Version-checked adapter around Godot's editor-only Bake Lightmaps action.
 ## Installed only in the temporary worker project, never the user's project.
 
+const Files := preload("res://features/world_builder/tools/bake_files.gd")
 const BakedShader := preload("res://features/world_builder/baked_lighting.gdshader")
 var _job: Dictionary
 var _scene: Node3D
@@ -77,17 +78,23 @@ func _bake() -> void:
 	_finish(false, "Bake Lightmaps action not found; check the Godot editor version")
 
 
-func _finalize() -> void:
+func _validate_bake() -> bool:
 	var data := _lightmap.light_data
 	if data == null or data.get_user_count() != int(_scene.get_meta("lightmap_chunks", 0)):
 		_finish(false, "Bake did not cover every structural mesh")
-		return
+		return false
 	for index: int in data.get_user_count():
 		if not _lightmap.get_node_or_null(data.get_user_path(index)) is MeshInstance3D:
 			_finish(false, "Lightmap references a missing mesh")
-			return
+			return false
 	if data.get_lightmap_textures().is_empty():
 		_finish(false, "Bake returned no lightmap textures")
+		return false
+	return true
+
+
+func _finalize() -> void:
+	if not _validate_bake():
 		return
 	var imports := PackedStringArray()
 	var files: Array[String] = []
@@ -110,6 +117,15 @@ func _finalize() -> void:
 		_finish(false, "No lightmap images were saved")
 		return
 	EditorInterface.get_resource_filesystem().reimport_files(imports)
+	var sizes := Files.lighting_sizes(files)
+	var budget := int(_job["max_bytes"])
+	# Leave space for the cache receipt and resource metadata in the export pack.
+	if sizes.x < 0 or maxi(sizes.x, sizes.y) + 4096 > budget:
+		_finish(
+			false, "Lightmaps exceed %d bytes: source %d, runtime %d" % [budget, sizes.x, sizes.y]
+		)
+		return
+	print("WORLD_BAKE: lightmap bytes: source=", sizes.x, " runtime=", sizes.y)
 	for node: Node in _scene.find_children("*", "MeshInstance3D", true, false):
 		var mesh := node as MeshInstance3D
 		if mesh.gi_mode != GeometryInstance3D.GI_MODE_STATIC:
