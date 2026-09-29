@@ -17,6 +17,7 @@ const FRAME_S := 0.1
 var _pending := false
 var _generation := 0
 var _prize := 0
+var _prize_peer := 0
 var _result: Array[int] = []
 var _elapsed := 0.0
 var _frame_elapsed := 0.0
@@ -136,6 +137,7 @@ func _begin_spin(
 ) -> void:
 	_result = reels
 	_prize = prize
+	_prize_peer = peer_id
 	_elapsed = 0.0
 	_frame_elapsed = 0.0
 	state = {
@@ -183,6 +185,15 @@ func _advance(delta: float) -> void:
 	state = next
 	if stopped == 3:
 		play_result.rpc(int(state["spin"]), bool(state["won"]), _prize)
+		_announce_prize()
+
+
+## The wallet already holds the prize; the chat log hears about it once the reels stop.
+func _announce_prize() -> void:
+	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
+	if wallet != null and _prize > 0:
+		wallet.announce_gain(_prize_peer, _prize, "Slot machine win")
+	_prize = 0
 
 
 ## An event, not saved state: late joiners see the result without replaying old audio.

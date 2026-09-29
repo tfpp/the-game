@@ -6,6 +6,7 @@ extends Node
 const COIN_CREDIT_CENTS := 1000
 const DEFAULT_INCOME_CENTS := 500
 const GIRL_INCOME_CENTS := 425
+const INCOME_REASON := "Income for time connected"
 
 @export var balances: Dictionary = {}
 var _busy: Dictionary = {}
@@ -41,6 +42,7 @@ func _process(delta: float) -> void:
 			var units := float(_temporary_income_units.get(peer, 0.0)) + delta * _income_cents(peer)
 			if seconds >= 60.0:
 				_set_balance(peer, int(balances.get(peer, 2000)) + int(units / 60.0))
+				announce_gain(peer, int(units / 60.0), INCOME_REASON)
 				seconds = fmod(seconds, 60.0)
 				units = fmod(units, 60.0)
 			_temporary_seconds[peer] = seconds
@@ -89,6 +91,20 @@ func _process(delta: float) -> void:
 func _set_balance(peer: int, cents: int) -> void:
 	balances = balances.duplicate()
 	balances[peer] = cents
+
+
+## Server-only: tells `peer` in their chat log that they received `cents` and why.
+## Every payout path calls this; features paying out another way should too.
+func announce_gain(peer: int, cents: int, reason: String) -> void:
+	if not multiplayer.is_server() or cents <= 0:
+		return
+	var chat := get_tree().get_first_node_in_group(&"chat_box")
+	if chat != null:
+		chat.send_notice(peer, gain_text(cents, reason))
+
+
+static func gain_text(cents: int, reason: String) -> String:
+	return "+%s: %s" % [format_money(cents), reason]
 
 
 static func format_money(cents: int) -> String:
@@ -146,7 +162,12 @@ func _refresh(peer: int) -> void:
 		if generation != _generation:
 			return
 		if _account(peer) == account and result.has("balance"):
+			var previous := int(balances.get(peer, -1))
 			_set_balance(peer, int(result["balance"]))
+			# Every other change settles through its own call, so a heartbeat
+			# that raises a known balance is minute income.
+			if previous >= 0 and int(result["balance"]) > previous:
+				announce_gain(peer, int(result["balance"]) - previous, INCOME_REASON)
 	_busy.erase(peer)
 
 
@@ -188,7 +209,8 @@ func spin(peer: int, id: String, wager_cents: int = 100, rerolls: int = 0) -> Di
 
 ## Server-only: pays a fixed $10 reward for a map coin pickup into `peer`'s wallet,
 ## the same persisted, idempotent-retry path `spin()` uses for paid spins.
-func credit_coin(peer: int, id: String) -> Dictionary:
+## `reason` is shown to the player in the chat log ("+$10.00 — reason").
+func credit_coin(peer: int, id: String, reason: String) -> Dictionary:
 	if not multiplayer.is_server() or _busy.has(peer):
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
@@ -208,6 +230,7 @@ func credit_coin(peer: int, id: String) -> Dictionary:
 		return {"error": "Session changed"}
 	if _account(peer) == account and result.has("balance"):
 		_set_balance(peer, int(result["balance"]))
+		announce_gain(peer, COIN_CREDIT_CENTS, reason)
 	_busy.erase(peer)
 	return result
 
@@ -215,7 +238,7 @@ func credit_coin(peer: int, id: String) -> Dictionary:
 ## Server-only: settles one valuable at its catalog price. The caller holds the
 ## item while awaiting the result and retries the same operation ID if the API
 ## response is lost. The API records the amount and rejects altered retries.
-func sell_loot(peer: int, id: String, amount_cents: int) -> Dictionary:
+func sell_loot(peer: int, id: String, amount_cents: int, reason: String) -> Dictionary:
 	if not multiplayer.is_server() or _busy.has(peer) or amount_cents <= 0:
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
@@ -230,6 +253,7 @@ func sell_loot(peer: int, id: String, amount_cents: int) -> Dictionary:
 		return {"error": "Session changed"}
 	if _account(peer) == account and result.has("balance"):
 		_set_balance(peer, int(result["balance"]))
+		announce_gain(peer, amount_cents, reason)
 	_busy.erase(peer)
 	return result
 
