@@ -1,7 +1,7 @@
 # Casino patrons
 
-Five patrons in suits who stroll the gaming floor, each on their own loop, pausing
-now and then to look around. Punch them with `features/boxing` and
+Six patrons in suits stroll the gaming floor: five walk their own loops, pausing
+now and then to look around, while Trump follows Mamdani. Punch them with `features/boxing` and
 they flinch, stagger back and turn to face you; enough punches (or one full power
 punch) knock them out into a limp ragdoll. They get back up 4 s after the last
 punch, walk back to where they were hit and carry on. The fifth (`PatronModel.MAMDANI_LOOK`) is Zohran Mamdani, New York
@@ -11,13 +11,13 @@ an aisle beside the slot machines. He is essential: a gunshot knocks him out for
 Press Use (E) near him to talk: he pays $10 of subway fare through
 `PlayerMoney.credit_coin()` once an hour per account (per peer for guests). His
 reply shows in a speech bubble only to the player who talked; the cooldown lives in
-server memory and resets on restart. Any weapon gibs them; they
+server memory and resets on restart. Any weapon gibs ordinary patrons; they
 walk back in from the start of their route 6 s later.
 
 ## How it works
 
-- `casino_patrons.gd` (feature root) spawns one `patron.tscn` per route through a
-  `MultiplayerSpawner` on the server. Spawn data is just the index, so every peer
+- `casino_patrons.gd` (feature root) spawns one `patron.tscn` per route plus the
+  inherited `trump.tscn` through a `MultiplayerSpawner` on the server. Spawn data is just the index, so every peer
   builds the same look and route.
 - `patron.gd` (`CasinoPatron`, server-simulated): walks the route from
   `patron_math.gd`, waits up to 2 s for a player standing right in front of it,
@@ -56,3 +56,27 @@ does not affect the respawn. The apartment clerk lives outside streamed Content,
 so unloading the lobby cannot reset its state or remove its server hitbox. The desk
 still allocates apartments during the respawn delay. Existing gun controls apply
 (left click or controller right shoulder); no new touch firing control is added.
+
+## Donald Trump
+
+Trump (look 5) follows Mamdani along the slot aisle, staying about 1.5 metres
+away and stopping when he catches up. He has blond swept hair, a navy suit, a
+red tie and a name tag. Find him initially at (8.5, -1.5, -11.7).
+Use E, controller B/Circle or touch USE near him: the prompt shows **-$100**.
+Each accepted interaction charges the interacting player's existing wallet exactly
+10,000 cents; insufficient funds leave it unchanged and show a private reply.
+There is no reward or debt. The usual wallet persistence rules apply.
+
+`trump.gd` specializes CasinoPatron's walking and talk callback, reusing its body,
+combat, six-second respawn, speech bubble and the feature's MultiplayerSpawner.
+The server follows the mayor's current position, waits briefly for players and
+collides with world geometry. If the mayor is absent he waits; after a knockdown
+or respawn he resumes following. No player is used as a movement authority.
+`NetworkedEntity` now declares roaming patrons' existing position, yaw, life and
+ragdoll fields, including spawn snapshots. No new per-client simulation is added.
+`NetworkedInteraction` validates the sender, range and standing/alive state;
+requests have a half-second cooldown and each player can have only one pending
+charge. Its synchronous callback launches `PlayerMoney.charge` asynchronously;
+wallet idempotency and balance replication remain owned by PlayerMoney. Delayed
+replies are discarded if the requester disconnects. Session changes rebuild all
+patrons through the existing spawner. NPC state is not persisted.

@@ -106,6 +106,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   movement, snap turning, jump and nearby object interaction.
 - Knock out Mamdani instead of killing him; he wakes up a few seconds later. Press Use
   near him for $10 of subway fare, once an hour.
+- Meet Donald Trump following the mayor by the slots; use E to pay him $100.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

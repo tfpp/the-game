@@ -3,6 +3,8 @@ extends Node3D
 ## same pattern features/shooting_gallery/shooting_gallery.gd uses. Spawn data
 ## carries each patron's index, so every peer builds the same look and route.
 
+const TRUMP_SCENE := preload("res://features/casino_patrons/trump.tscn")
+
 const PATRON_SCENE := preload("res://features/casino_patrons/patron.tscn")
 
 @onready var _patrons: Node3D = $Patrons
@@ -21,15 +23,22 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 	if Network.is_authoritative():
 		for index: int in PatronMath.ROUTES.size():
 			_spawner.spawn({"index": index})
+		_spawner.spawn({"index": PatronModel.TRUMP_LOOK})
 
 
 ## Runs on every peer (spawn_function).
 func _spawn_patron(data: Variant) -> Node:
 	var index := int((data as Dictionary)["index"])
-	var patron := PATRON_SCENE.instantiate() as CasinoPatron
+	var scene := TRUMP_SCENE if index == PatronModel.TRUMP_LOOK else PATRON_SCENE
+	var patron := scene.instantiate() as CasinoPatron
 	patron.name = "Patron%d" % index
 	patron.look = index
-	patron.route = PatronMath.route(index)
+	patron.route = PatronMath.route(
+		PatronModel.MAMDANI_LOOK if index == PatronModel.TRUMP_LOOK else index
+	)
 	patron.position = patron.route[0]
+	if index == PatronModel.TRUMP_LOOK:
+		patron.position += Vector3(0, 0, -0.7)
+		patron.route = [patron.position]
 	patron.net_position = patron.position
 	return patron

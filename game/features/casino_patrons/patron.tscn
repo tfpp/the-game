@@ -3,26 +3,11 @@
 [ext_resource type="Script" path="res://features/casino_patrons/patron.gd" id="1_script"]
 [ext_resource type="Script" path="res://features/casino_patrons/patron_model.gd" id="2_model"]
 
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="3_entity"]
+
 [sub_resource type="CapsuleShape3D" id="ColliderShape"]
 radius = 0.28
 height = 1.75
-
-[sub_resource type="SceneReplicationConfig" id="Replication"]
-properties/0/path = NodePath(".:net_position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:net_yaw")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:net_alive")
-properties/2/spawn = true
-properties/2/replication_mode = 2
-properties/3/path = NodePath(".:net_ragdoll")
-properties/3/spawn = true
-properties/3/replication_mode = 2
-properties/4/path = NodePath(".:net_fall_dir")
-properties/4/spawn = true
-properties/4/replication_mode = 2
 
 [node name="Patron" type="AnimatableBody3D"]
 collision_layer = 2
@@ -36,7 +21,7 @@ shape = SubResource("ColliderShape")
 [node name="Body" type="Node3D" parent="."]
 script = ExtResource("2_model")
 
-[node name="Sync" type="MultiplayerSynchronizer" parent="."]
-root_path = NodePath("..")
-replication_interval = 0.05
-replication_config = SubResource("Replication")
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("3_entity")
+replicated_properties = Array[NodePath]([NodePath(".:net_alive"), NodePath(".:net_ragdoll"), NodePath(".:net_fall_dir")])
+continuous_properties = Array[NodePath]([NodePath(".:net_position"), NodePath(".:net_yaw")])

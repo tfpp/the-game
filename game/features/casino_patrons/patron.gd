@@ -82,6 +82,8 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
 	if not net_alive:
 		_respawn_timer -= delta
 		if _respawn_timer <= 0.0:
@@ -236,7 +238,7 @@ func _setup_talk() -> void:
 	_talk.name = "Talk"
 	_talk.interaction_range = TALK_RANGE
 	add_child(_talk)
-	_talk.register_use(can_use, _give_fare)
+	_talk.register_use(can_use, _apply_talk, 0.5)
 	_talk.event_received.connect(_on_talk_event)
 	_speech = Label3D.new()
 	_speech.name = "Speech"
@@ -260,6 +262,10 @@ func interaction_text() -> String:
 
 func use() -> void:
 	_talk.request_use()
+
+
+func _apply_talk(player: Player) -> bool:
+	return _give_fare(player)
 
 
 ## Server-only, called by the Talk entity after range and state checks. Pays
