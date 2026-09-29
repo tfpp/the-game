@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Desktop app",
+		"summary": "Run the website in an Electron app for Linux, macOS and Windows.",
+	},
+	{
 		"title": "Baked hotel lighting and branching wings",
 		"summary":
 		"Explore six generated rooms with branching halls, soft lamp shadows and baked bounced light."
