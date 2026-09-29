@@ -89,6 +89,8 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 
 ## Style
 
+- Never introduce Python scripts, tooling or dependencies. Use GDScript and the
+  existing native toolchain for game features, asset work and build utilities.
 - Use small textures by default for visible 3D model surfaces, typically 64×64 or
   128×128 with nearest mipmap filtering. Vertex colours can tint the artwork.
   Keep cards, chips, text and interaction targets readable.

@@ -1,0 +1,7 @@
+{
+  "title": "Native release-note collection",
+  "summary": "Release-note collection uses the game's existing Godot runtime.",
+  "notes": [
+    "Collect feature-owned release notes with Godot's JSON parser so web exports require no Python installation."
+  ]
+}
