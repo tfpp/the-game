@@ -20,9 +20,13 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 - `features/<name>/`: one directory per feature, containing its scenes and scripts.
 - `world/`: level geometry (CSG for now).
 - `ui/`: HUD and menus.
-- `assets/kenney/`: whole Kenney packs (CC0; see its README). Exports ship only the
-  files the game references (`scripts/unused_assets.gd`), so write asset paths as
-  full literal `res://` strings, not built at runtime.
+- `assets/`: all media (textures, models, audio, fonts). Put a feature's files in
+  `assets/<feature>/` (e.g. `assets/roulette/textures/`), never inside `features/`;
+  keep scenes, materials and scripts in the feature. `assets/kenney/` holds whole
+  Kenney packs (CC0; see its README). Exports ship only the files the game
+  references (`scripts/unused_assets.gd`), so write asset paths as full literal
+  `res://` strings, not built at runtime. Exception: `features/world_builder/textures/`
+  stays put because baked `.scn` files reference it by path; moving it needs a re-bake.
 - `tests/`: GUT tests (`test_*.gd`, `extends GutTest`). Put feature tests in
   `tests/features/<name>/`.
 

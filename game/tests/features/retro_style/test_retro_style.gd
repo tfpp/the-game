@@ -1,16 +1,16 @@
 extends GutTest
 
-const FELT := preload("res://features/casino_hub/textures/felt_albedo.png")
+const FELT := preload("res://assets/casino_hub/textures/felt_albedo.png")
 const WORLD_TEXTURES: Array[Texture2D] = [
-	preload("res://features/casino_hub/textures/surface_atlas.png"),
-	preload("res://features/casino_hub/textures/prop_grain.png"),
-	preload("res://features/casino_hub/textures/ceiling_albedo.png"),
+	preload("res://assets/casino_hub/textures/surface_atlas.png"),
+	preload("res://assets/casino_hub/textures/prop_grain.png"),
+	preload("res://assets/casino_hub/textures/ceiling_albedo.png"),
 	FELT,
-	preload("res://features/casino_hub/textures/landscape_painting.png"),
-	preload("res://features/casino_hub/textures/carpet_albedo.png"),
-	preload("res://features/casino_hub/textures/wallpaper_albedo.png"),
-	preload("res://features/casino_hub/textures/walnut_albedo.png"),
-	preload("res://features/slot_machine/textures/reel_symbols.png"),
+	preload("res://assets/casino_hub/textures/landscape_painting.png"),
+	preload("res://assets/casino_hub/textures/carpet_albedo.png"),
+	preload("res://assets/casino_hub/textures/wallpaper_albedo.png"),
+	preload("res://assets/casino_hub/textures/walnut_albedo.png"),
+	preload("res://assets/slot_machine/textures/reel_symbols.png"),
 	preload("res://assets/kenney/prototype-textures/PNG/Dark/texture_01.png"),
 	preload("res://assets/kenney/prototype-textures/PNG/Dark/texture_08.png"),
 	preload("res://assets/kenney/prototype-textures/PNG/Orange/texture_09.png"),
@@ -158,14 +158,14 @@ func test_casino_models_stay_within_geometry_and_material_budgets() -> void:
 		preload("res://features/casino_hub/models/lounge_bench.tscn"),
 		preload("res://features/casino_hub/models/ceramic_planter.tscn"),
 		preload("res://features/casino_hub/models/brass_chandelier.tscn"),
-		preload("res://features/casino_hub/models/salon_card_table.glb"),
-		preload("res://features/casino_hub/models/salon_dealer.glb"),
-		preload("res://features/casino_hub/models/salon_guest.glb"),
-		preload("res://features/casino_hub/models/salon_seated.glb"),
-		preload("res://features/casino_hub/models/salon_lady.glb"),
-		preload("res://features/casino_hub/models/salon_bar.glb"),
-		preload("res://features/casino_hub/models/salon_architecture.glb"),
-		preload("res://features/casino_hub/models/salon_sconce.glb"),
+		preload("res://assets/casino_hub/models/salon_card_table.glb"),
+		preload("res://assets/casino_hub/models/salon_dealer.glb"),
+		preload("res://assets/casino_hub/models/salon_guest.glb"),
+		preload("res://assets/casino_hub/models/salon_seated.glb"),
+		preload("res://assets/casino_hub/models/salon_lady.glb"),
+		preload("res://assets/casino_hub/models/salon_bar.glb"),
+		preload("res://assets/casino_hub/models/salon_architecture.glb"),
+		preload("res://assets/casino_hub/models/salon_sconce.glb"),
 	]
 	for scene: PackedScene in models:
 		var instance := scene.instantiate()

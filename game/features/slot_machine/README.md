@@ -55,7 +55,7 @@ while payment is pending as well as during animation.
 
 ## Sound assets
 
-Place these two **Ogg Vorbis** files in `audio/`:
+Place these two **Ogg Vorbis** files in `res://assets/slot_machine/audio/`:
 
 - `win.ogg` — the winning “cha-ching!” sound.
 - `lose.ogg` — the negative/losing sound.
@@ -92,9 +92,9 @@ Godot executable if it is not on `PATH`.
 
 ## Visual assets
 
-The original cabinet model lives in `../casino_hub/models/`. `textures/reel_symbols.png`
+The original cabinet model lives in `res://assets/casino_hub/models/`. `res://assets/slot_machine/textures/reel_symbols.png`
 contains five generated icons in the exact gameplay order: 7, BAR, STAR, BELL,
-GEM. Prompts and provenance are in `../casino_hub/textures/GENERATED_ASSETS.md`.
+GEM. Prompts and provenance are in `res://assets/casino_hub/textures/GENERATED_ASSETS.md`.
 The cabinet keeps its existing collision hull and interaction point. Materials
 are shared; each reel only owns its small animation shader state.
 
