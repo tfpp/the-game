@@ -28,7 +28,7 @@ fi
   { echo "$changelog needs exactly one '## [edge]' heading" >&2; exit 1; }
 
 # The edge's lines, without leading or trailing blank lines.
-python3 "$(dirname "$0")/feature_notes.py" edge WORKTREE > "$notes_file"
+"$(dirname "$0")/feature_notes.sh" edge WORKTREE > "$notes_file"
 if [[ ! -s "$notes_file" ]]; then
   echo "- No notable changes." > "$notes_file"
 fi

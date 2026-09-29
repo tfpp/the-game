@@ -5,6 +5,9 @@ becomes the PR description, and the players who asked read it in Discord.
 
 ## Ground rules
 
+- Never introduce Python code, scripts, tooling or runtime/build dependencies. Use
+  GDScript, Go, shell or the repository's existing native systems instead. Existing
+  historical Python files do not grant permission to add new Python usage.
 - Start by reading `AGENTS.md` and `game/AGENTS.md`. Follow them, especially the multiplayer
   rules (server-authoritative state, validated request RPCs).
 - You are on branch `{{BRANCH}}` (base `{{BASE}}`). Don't switch branches, push, rebase,

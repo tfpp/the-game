@@ -11,6 +11,8 @@ edge bullets into the next version section. See [Release notes](docs/release-not
 
 ## [edge]
 
+## [0.8.0](https://github.com/tfpp/the-game/releases/tag/v0.8.0) - 2026-09-29
+
 - Brand the game Casino Royale and dress the Rain Alleys with original vertex-authored OBJ dumpsters, boarded facades, fire escapes, lamps and fence wire.
 - Replace the garage's box-shaped wrecks with original low polygon OBJ sedans, preserving varied paint, missing hoods, collision and searchable loot.
 - Brighten the slums and garage at night, correct car mesh faces, open wrecked car boots when searched, and let players drag shared stash items into backpack slots.
@@ -158,6 +160,7 @@ edge bullets into the next version section. See [Release notes](docs/release-not
 - Fix the gnome reconnect regression test's loop typing so strict GUT collection runs the entire test file.
 - Remove mobile-only resolution, shadow, anti-aliasing, light and prop-distance limits
   while keeping touch-friendly layouts.
+- Collect release notes from one file per feature change for the in-game changelog, releases and Discord edge announcements; stop editing shared note lists in feature PRs.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

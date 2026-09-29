@@ -26,16 +26,18 @@ include the JSON files. Release grouping still comes from reachable `vX.Y.Z` tag
 belongs to the first release containing its title. With no tags, all notes are on edge.
 File paths are sorted for deterministic collection; historical entries keep their order.
 
-`scripts/feature_notes.py` uses Python 3's standard library and Git to validate notes and
-collate titles or edge bullets. `harness/verify.sh` invokes it and the release regression
-scripts via the game checks. `scripts/release.sh` collects files absent from the latest
+`scripts/feature_notes.sh` uses Godot's JSON parser and Git to validate notes and
+collate titles or edge bullets. It runs a standalone GDScript project without game
+autoloads or asset imports, using the same Godot runtime as exports. `harness/verify.sh`
+invokes it and the release regression scripts via the game checks.
+`scripts/release.sh` collects files absent from the latest
 reachable release tag and rolls their bullets, plus legacy edge, into `CHANGELOG.md`.
 It does not delete, rename or edit feature notes. The release tag marks them as released,
 so the following release does not repeat them. Only release automation edits the shared
 markdown history and version. Preview edge bullets with:
 
 ```bash
-python3 scripts/feature_notes.py edge WORKTREE
+scripts/feature_notes.sh edge WORKTREE
 ```
 
 The Discord bot reads files at the deployed commit and compares their paths with the

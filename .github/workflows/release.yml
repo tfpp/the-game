@@ -33,6 +33,17 @@ jobs:
           ref: main
           fetch-depth: 0
           persist-credentials: false
+      - name: Install Godot for native release-note collection
+        env:
+          GODOT_VERSION: 4.7.2
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -fsSL -o "$RUNNER_TEMP/godot.zip" \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          mv "$RUNNER_TEMP/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$HOME/.local/bin/godot"
+          chmod +x "$HOME/.local/bin/godot"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Test the release scripts
         run: scripts/release_test.sh && scripts/release_notes_test.sh
       # The release commit goes straight to main: this App bypasses the "protect main"
