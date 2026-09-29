@@ -82,8 +82,17 @@ func test_killed_gnome_is_hidden_not_freed_and_respawns_next_outing() -> void:
 func test_gnomes_return_to_a_hole_and_rest() -> void:
 	var train := _train("West")
 	train.start_outing()
-	_run(train, 120.0)
-	assert_true(train.is_resting() or train._elapsed < 1.0)
+	var target: int = train._to_hole
+	var step := 1.0 / 30.0
+	var t := 0.0
+	while not train.is_resting() and t < 120.0:
+		train._physics_process(step)
+		train._process(step)
+		t += step
+	assert_true(train.is_resting(), "every gnome went into the target hole")
+	assert_eq(train._from_hole, target, "next outing starts from that hole")
+	for gnome: Gnome in train._gnomes:
+		assert_false(gnome.is_shown())
 
 
 func test_gnomes_sidestep_a_player_in_their_way() -> void:
