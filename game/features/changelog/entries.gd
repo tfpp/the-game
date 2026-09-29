@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Press End to interact, handy with the arrow-key layout.",
 	},
 	{
+		"title": "Pawn shop",
+		"summary": "Sell slum loot at the pawn shop counter beside the Crown's slum gate.",
+	},
+	{
 		"title": "İstanbul Kebab",
 		"summary": "Order a free kebab from animated staff directly ahead of casino spawn.",
 	},
