@@ -5,11 +5,10 @@ its local player is inside. A booth in the casino's south lobby at `(-6, 0, 31)`
 to the Lounge, and a door in the Lounge leads to the Wine Cellar. Every door goes
 both ways. Press **E** (or Use) at a door.
 
-- `streamed_room.gd` (`StreamedRoom`): an always-present anchor node. Its contents,
-  `room_scene`, are instantiated as `Content` while the local player is inside
-  `bounds`, and freed once they leave (with `unload_margin` of slack). A dedicated
-  server has no local player, so it never builds any room, and each client only builds
-  the room it's in.
+- `streamed_room.gd` (`StreamedRoom`): an always-present anchor node. The server's
+  `room_visibility` feature checks its `bounds` and tells the owning client when
+  to instantiate `room_scene` as `Content` or free it. A dedicated server never
+  builds the client-only contents.
 - `room_door.gd` (`RoomDoor`): extends the parking garage's `GarageDoor`, so the
   server validates range and teleports the same way. On `use()` the client builds
   the destination room first and holds it for `ARRIVAL_HOLD_MSEC` while the teleport

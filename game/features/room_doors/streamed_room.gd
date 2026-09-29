@@ -1,10 +1,8 @@
 class_name StreamedRoom
 extends Node3D
-## A room whose contents live in their own scene (`room_scene`) and are only
-## instantiated on a peer while that peer's local player is inside `bounds`.
-## A dedicated server has no local player, so it never builds any room; each
-## client only builds the room it is standing in. Movement is client-authoritative,
-## so nobody else needs the geometry.
+## A room whose contents live in their own scene (`room_scene`). In the game,
+## RoomVisibility checks `bounds` on the server and tells only the owning peer
+## to build the interior. A dedicated server never builds client-only geometry.
 ##
 ## Only put static or client-side cosmetic nodes in a room scene: it doesn't exist on
 ## every peer, so spawners, synchronizers and RPCs inside it would break. Keep doors
@@ -35,6 +33,11 @@ func global_bounds() -> AABB:
 
 
 func _physics_process(_delta: float) -> void:
+	# In the game, the server sends the current room through RoomVisibility.
+	# Standalone room previews keep the local fallback for editor/tests.
+	if get_tree().get_first_node_in_group(&"room_visibility") != null:
+		set_physics_process(false)
+		return
 	var player := get_tree().get_first_node_in_group(&"local_player") as Node3D
 	if player != null and contains(player.global_position, unload_margin if is_loaded() else 0.0):
 		load_room()

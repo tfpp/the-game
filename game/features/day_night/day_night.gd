@@ -47,7 +47,9 @@ var _base_background_energy := 1.0
 
 
 func _ready() -> void:
-	_sun.shadow_enabled = true
+	# The casino and most playable rooms use authored lighting. Rendering a
+	# whole-world directional shadow map redraws thousands of surfaces each frame.
+	_sun.shadow_enabled = false
 	var world_env := _find_world_environment()
 	if world_env:
 		_environment = world_env.environment

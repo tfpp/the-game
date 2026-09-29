@@ -26,6 +26,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   clients never call TheNewsAPI and restarts reuse recent headlines.
 - Make phones and tablets run faster: render fewer 3D pixels, keep two nearby lights, hide
   small props past 40 metres and cap physics catch-up on slow frames.
+- Reduce rendering work by culling distant rooms, batching frog detail meshes, disabling
+  whole-world sun shadows and playing garage ambience only when a player is nearby.
 - Keep offline players on the leaderboard and remember signed-in scores across reconnects
   and server restarts.
 - Press ~ for a Source-style settings console with autocomplete and command history;
