@@ -1,0 +1,79 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/apartments/apartments.gd" id="apartments"]
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
+[ext_resource type="Script" path="res://features/room_doors/room_door.gd" id="door"]
+[ext_resource type="Script" path="res://features/apartments/desk.gd" id="desk"]
+[ext_resource type="Script" path="res://features/apartments/resident_elevator.gd" id="lift"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="metal"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
+
+[sub_resource type="SceneReplicationConfig" id="replication"]
+properties/0/path = NodePath(".:assignments")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="Apartments" type="Node3D"]
+script = ExtResource("apartments")
+
+[node name="Entrance" type="CSGBox3D" parent="."]
+position = Vector3(-10, 1.2, 31)
+size = Vector3(2, 2.4, 0.3)
+material = ExtResource("wood")
+use_collision = true
+script = ExtResource("door")
+destination = NodePath("../Lobby/EntranceArrival")
+door_label = "Enter Lily Apartments — front desk"
+
+[node name="Sign" type="Label3D" parent="Entrance"]
+position = Vector3(0, 1.5, 0)
+text = "LILY APARTMENTS\nFREE ROOMS · ELEVATOR"
+font_size = 28
+pixel_size = 0.006
+billboard = 1
+
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(-10, 1.2, 29)
+
+[node name="Lobby" type="Node3D" parent="."]
+position = Vector3(200, 0, 1200)
+script = ExtResource("room")
+room_scene = "res://features/apartments/lobby_content.tscn"
+bounds = AABB(-8.5, -1, -7.5, 17, 5, 15)
+
+[node name="EntranceArrival" type="Marker3D" parent="Lobby"]
+position = Vector3(-5, 1.2, 4)
+
+[node name="Arrival" type="Marker3D" parent="Lobby"]
+position = Vector3(5, 1.2, -4)
+rotation = Vector3(0, 3.1415927, 0)
+
+[node name="Exit" type="CSGBox3D" parent="Lobby"]
+position = Vector3(-5, 1.2, 6)
+size = Vector3(2, 2.4, 0.15)
+material = ExtResource("wood")
+use_collision = true
+script = ExtResource("door")
+destination = NodePath("../../CasinoArrival")
+door_label = "Return to the casino"
+
+[node name="Desk" type="Node3D" parent="Lobby"]
+position = Vector3(0, 1, -2.5)
+script = ExtResource("desk")
+
+[node name="Elevator" type="CSGBox3D" parent="Lobby"]
+position = Vector3(5, 1.2, -6)
+size = Vector3(2, 2.4, 0.15)
+material = ExtResource("metal")
+use_collision = true
+script = ExtResource("lift")
+destination = NodePath("../Arrival")
+
+[node name="Floors" type="Node3D" parent="."]
+
+[node name="Spawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Floors")
+
+[node name="Sync" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath("..")
+replication_config = SubResource("replication")

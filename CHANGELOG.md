@@ -6,10 +6,6 @@ Every notable change, newest first. `edge` is what's on `main` but not released 
 a bullet to the end of `## [edge]`:** imperative, one line per change where possible, no
 version. Releases are cut by hand (the `release` workflow): it moves `edge` into a section
 for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
-- Add an Electron desktop app for the live website on Linux, macOS and Windows,
-  with portable app packaging commands.
-- Add a curl installer for the Electron desktop app on macOS, Linux and Windows Git Bash, with locked dependencies and safe rebuilds.
-
 
 ## [edge]
 
@@ -70,6 +66,12 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Inspect the build's repository snapshot with read-only Git commands in the console;
   type git help to see the supported commands.
 - Add a wandering bird that flies continuously between players and casino patrons.
+- Add an Electron desktop app for the live website on Linux, macOS and Windows,
+  with portable app packaging commands.
+- Add a curl installer for the Electron desktop app on macOS, Linux and Windows Git Bash,
+  with locked dependencies and safe rebuilds.
+- Claim a free apartment at the Lily Apartments front desk in the south lobby, and
+  take the express elevator to new ten-unit floors as more residents move in.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
