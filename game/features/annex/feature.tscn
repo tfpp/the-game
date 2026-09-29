@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="1_dark"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="2_wall"]
@@ -6,6 +6,8 @@
 [ext_resource type="Material" path="res://features/annex/materials/tint_green.tres" id="4_green"]
 [ext_resource type="Material" path="res://features/annex/materials/tint_blue.tres" id="5_blue"]
 [ext_resource type="Material" path="res://features/annex/materials/tint_purple.tres" id="6_purple"]
+
+[ext_resource type="PackedScene" path="res://features/annex/easter_eggs.tscn" id="7_secrets"]
 
 [node name="Annex" type="Node3D"]
 
@@ -976,3 +978,5 @@ position = Vector3(-44, 3, -51.5)
 size = Vector3(4, 7, 18)
 operation = 2
 material = ExtResource("2_wall")
+
+[node name="EasterEggs" parent="." instance=ExtResource("7_secrets")]

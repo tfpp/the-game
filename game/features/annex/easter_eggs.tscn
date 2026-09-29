@@ -1,0 +1,147 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="1_wood"]
+
+[sub_resource type="BoxMesh" id="Plaque"]
+material = ExtResource("1_wood")
+size = Vector3(1.8, 0.65, 0.04)
+
+[node name="EasterEggs" type="Node3D"]
+
+[node name="EmployeeOfTheMonth" type="Node3D" parent="."]
+position = Vector3(-33, 1.55, -49.5)
+rotation = Vector3(0, 0, 0)
+
+[node name="Plaque" type="MeshInstance3D" parent="EmployeeOfTheMonth"]
+position = Vector3(0, 0, 0.025)
+mesh = SubResource("Plaque")
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="Joke" type="Label3D" parent="EmployeeOfTheMonth"]
+position = Vector3(0, 0, 0.05)
+text = "SECRET 1 / 6\nEMPLOYEE OF THE MONTH\nThe wall. Always here."
+font_size = 32
+pixel_size = 0.002
+modulate = Color(1, 0.92, 0.65, 1)
+outline_size = 4
+no_depth_test = false
+shaded = false
+double_sided = false
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="MissingTexture" type="Node3D" parent="."]
+position = Vector3(10, 1.55, -69.5)
+rotation = Vector3(0, 0, 0)
+
+[node name="Plaque" type="MeshInstance3D" parent="MissingTexture"]
+position = Vector3(0, 0, 0.025)
+mesh = SubResource("Plaque")
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="Joke" type="Label3D" parent="MissingTexture"]
+position = Vector3(0, 0, 0.05)
+text = "SECRET 2 / 6\nMISSING TEXTURE\nImagine something expensive."
+font_size = 32
+pixel_size = 0.002
+modulate = Color(1, 0.92, 0.65, 1)
+outline_size = 4
+no_depth_test = false
+shaded = false
+double_sided = false
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="FerryReview" type="Node3D" parent="."]
+position = Vector3(74.5, 1.55, -10)
+rotation = Vector3(0, -1.570796327, 0)
+
+[node name="Plaque" type="MeshInstance3D" parent="FerryReview"]
+position = Vector3(0, 0, 0.025)
+mesh = SubResource("Plaque")
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="Joke" type="Label3D" parent="FerryReview"]
+position = Vector3(0, 0, 0.05)
+text = "SECRET 3 / 6\nFERRY REVIEW: 5 STARS\nReally moved me. Then back."
+font_size = 32
+pixel_size = 0.002
+modulate = Color(1, 0.92, 0.65, 1)
+outline_size = 4
+no_depth_test = false
+shaded = false
+double_sided = false
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="EmergencyFrog" type="Node3D" parent="."]
+position = Vector3(60, 1.55, -45.5)
+rotation = Vector3(0, 0, 0)
+
+[node name="Plaque" type="MeshInstance3D" parent="EmergencyFrog"]
+position = Vector3(0, 0, 0.025)
+mesh = SubResource("Plaque")
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="Joke" type="Label3D" parent="EmergencyFrog"]
+position = Vector3(0, 0, 0.05)
+text = "SECRET 4 / 6\nEMERGENCY FROG\nIn case of boredom: ribbit."
+font_size = 32
+pixel_size = 0.002
+modulate = Color(1, 0.92, 0.65, 1)
+outline_size = 4
+no_depth_test = false
+shaded = false
+double_sided = false
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="GnomeUnion" type="Node3D" parent="."]
+position = Vector3(-59.5, 1.55, 32.5)
+rotation = Vector3(0, 1.570796327, 0)
+
+[node name="Plaque" type="MeshInstance3D" parent="GnomeUnion"]
+position = Vector3(0, 0, 0.025)
+mesh = SubResource("Plaque")
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="Joke" type="Label3D" parent="GnomeUnion"]
+position = Vector3(0, 0, 0.05)
+text = "SECRET 5 / 6\nGNOME UNION LOCAL 404\nWe demand shorter hours."
+font_size = 32
+pixel_size = 0.002
+modulate = Color(1, 0.92, 0.65, 1)
+outline_size = 4
+no_depth_test = false
+shaded = false
+double_sided = false
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="EncodedMessage" type="Node3D" parent="."]
+position = Vector3(-22.5, 1.55, 80.5)
+rotation = Vector3(0, 3.141592654, 0)
+
+[node name="Plaque" type="MeshInstance3D" parent="EncodedMessage"]
+position = Vector3(0, 0, 0.025)
+mesh = SubResource("Plaque")
+cast_shadow = 0
+visibility_range_end = 18.0
+
+[node name="Joke" type="Label3D" parent="EncodedMessage"]
+position = Vector3(0, 0, 0.05)
+text = "SECRET 6 / 6\n!siht daer ot em dedoced uoY\nThe wall knows your tricks."
+font_size = 32
+pixel_size = 0.002
+modulate = Color(1, 0.92, 0.65, 1)
+outline_size = 4
+no_depth_test = false
+shaded = false
+double_sided = false
+cast_shadow = 0
+visibility_range_end = 18.0

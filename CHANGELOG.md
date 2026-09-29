@@ -106,6 +106,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   movement, snap turning, jump and nearby object interaction.
 - Knock out Mamdani instead of killing him; he wakes up a few seconds later. Press Use
   near him for $10 of subway fare, once an hour.
+- Explore the annex wings to find six hidden joke plaques with no extra controls.
+
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
