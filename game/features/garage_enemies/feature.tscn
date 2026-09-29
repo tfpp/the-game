@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://features/garage_enemies/garage_enemy.tscn" id="1_enemy"]
+
+[node name="GarageEnemies" type="Node3D"]
+position = Vector3(0, 0, 600)
+
+[node name="P1Lurker1" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(8, 0, -1)
+
+[node name="P1Lurker2" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(14, 0, 1)
+
+[node name="P1Lurker3" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(-4, 0, 9)
+
+[node name="P2Lurker1" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(-3, 3.3, -4)
+
+[node name="P2Lurker2" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(13, 3.3, 1)
+
+[node name="P2Gunman1" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(6, 3.3, 3)
+tier = 1
+
+[node name="P2Gunman2" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(4, 3.3, 9)
+tier = 1
+
+[node name="P3Gunman1" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(-6, 6.6, 3)
+tier = 1
+
+[node name="P3Gunman2" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(14, 6.6, 1)
+tier = 1
+
+[node name="P3Stalker1" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(0, 6.6, 0)
+tier = 2
+
+[node name="P3Stalker2" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(8, 6.6, -2)
+tier = 2
+
+[node name="P3Stalker3" parent="." instance=ExtResource("1_enemy")]
+position = Vector3(-4, 6.6, -6)
+tier = 2

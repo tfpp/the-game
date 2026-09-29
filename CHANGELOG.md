@@ -133,6 +133,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Shorten the dealer model forehead and lower its hairline while preserving the quiff and lower face.
 
 - Revise the dealer head against the side concept with a swept-back crown, compact nose, recessed chin and corrected jaw-to-neck transition.
+- Fight lurkers, gunmen and stalkers in the parking garage: each floor above the entrance
+  holds deadlier enemies that chase, shoot and respawn.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

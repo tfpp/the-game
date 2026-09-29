@@ -53,3 +53,6 @@ The checked-in wreck meshes include an outward-facing body, detachable hood,
 opening boot lid, cavity and trim. They replace the old box-car CSG shape; a single static
 collision shape still blocks players. Each placed car keeps its own paint
 color, and damaged variants expose a missing hood.
+
+Hostile enemies live in `features/garage_enemies/`: lurkers on P1, gunmen from
+P2 and fast stalkers on P3, getting more dangerous with every floor you climb.
