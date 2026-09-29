@@ -64,6 +64,11 @@ browsers and passes through nginx-proxy-manager with TLS, so no UDP port-forward
 | Everything else (features, world state, scores, items) | **Server** | Server-owned nodes, `MultiplayerSpawner` / `MultiplayerSynchronizer`, and client→server request RPCs |
 
 Rules for features, repeated in `game/AGENTS.md`:
+- Shared objects use the reusable [networked entity components](../game/core/net/README.md).
+  Features declare state and register validated actions; the component handles server
+  requests, transport identity, cooldowns, acknowledgements and replication. Nearby
+  interactions use `NetworkedInteraction` for player lookup and range validation.
+  Swinging doors and item pickups use this pattern; older systems migrate incrementally.
 - Mutate shared state only when `multiplayer.is_server()` is true.
 - Clients ask for changes with `@rpc("any_peer")` request RPCs, and the server validates
   the sender with `multiplayer.get_remote_sender_id()`.
