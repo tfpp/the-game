@@ -30,8 +30,8 @@ var _lose_sound: AudioStream
 func _ready() -> void:
 	add_to_group(&"interactables")
 	Network.mode_changed.connect(_on_mode_changed)
-	_win_sound = _load_sound("res://features/slot_machine/audio/win.ogg")
-	_lose_sound = _load_sound("res://features/slot_machine/audio/lose.ogg")
+	_win_sound = _load_sound("res://assets/slot_machine/audio/win.ogg")
+	_lose_sound = _load_sound("res://assets/slot_machine/audio/lose.ogg")
 
 
 static func initial_state() -> Dictionary:

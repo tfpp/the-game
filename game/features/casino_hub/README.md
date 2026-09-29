@@ -48,7 +48,7 @@ and a textured palette with vertex tints. Geometry budgets (triangles per model)
 
 `tools/interior_source.tscn` is the editable source. The offline bake combines
 171 non-colliding decorative CSG nodes into 63 material/sector meshes in
-`models/decor_batches.scn`. Sectors retain spatial culling. Colliders, lights,
+`res://assets/casino_hub/models/decor_batches.scn`. Sectors retain spatial culling. Colliders, lights,
 labels, model instances, and all gameplay nodes retain their names and transforms
 in the generated `interior.tscn`. No runtime mesh baking is required.
 
@@ -60,7 +60,7 @@ godot --headless --path game --import
 godot --headless --path game --script res://features/casino_hub/tools/bake_decor.gd
 ```
 
-Artwork prompts and provenance: `textures/GENERATED_ASSETS.md`. Original generated
+Artwork prompts and provenance: `res://assets/casino_hub/textures/GENERATED_ASSETS.md`. Original generated
 sources are retained; imported textures are tiny and the old PBR maps are removed.
 `tests/features/casino_hub/polish_probe.tscn` captures the actual room and verifies
 reel settling during a win.

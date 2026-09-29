@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://features/casino_hub/materials/palette.gdshader" id="1"]
 
-[ext_resource type="Texture2D" path="res://features/casino_hub/textures/surface_atlas.png" id="atlas"]
+[ext_resource type="Texture2D" path="res://assets/casino_hub/textures/surface_atlas.png" id="atlas"]
 
 [resource]
 shader = ExtResource("1")

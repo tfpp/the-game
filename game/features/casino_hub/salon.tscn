@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://features/casino_hub/model_materials.gd" id="finishes"]
 
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_card_table.glb" id="card_table"]
+[ext_resource type="PackedScene" path="res://assets/casino_hub/models/salon_card_table.glb" id="card_table"]
 
 [ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_dealer.tscn" id="dealer"]
 
@@ -12,11 +12,11 @@
 
 [ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_lady.tscn" id="lady"]
 
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_bar.glb" id="bar"]
+[ext_resource type="PackedScene" path="res://assets/casino_hub/models/salon_bar.glb" id="bar"]
 
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_architecture.glb" id="architecture"]
+[ext_resource type="PackedScene" path="res://assets/casino_hub/models/salon_architecture.glb" id="architecture"]
 
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_sconce.glb" id="sconce"]
+[ext_resource type="PackedScene" path="res://assets/casino_hub/models/salon_sconce.glb" id="sconce"]
 
 [ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="carpet"]
 

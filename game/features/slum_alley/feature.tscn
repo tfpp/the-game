@@ -12,8 +12,8 @@
 [ext_resource type="PackedScene" path="res://features/parking_garage/fluorescent_fixture.tscn" id="10_light"]
 [ext_resource type="Script" path="res://features/parking_garage/garage_ambience.gd" id="11_ambience"]
 [ext_resource type="Script" path="res://features/slum_alley/rain.gd" id="12_rain"]
-[ext_resource type="Mesh" path="res://features/slum_alley/models/dumpster.obj" id="13_dumpster"]
-[ext_resource type="Mesh" path="res://features/slum_alley/models/street_details.obj" id="14_streets"]
+[ext_resource type="Mesh" path="res://assets/slum_alley/models/dumpster.obj" id="13_dumpster"]
+[ext_resource type="Mesh" path="res://assets/slum_alley/models/street_details.obj" id="14_streets"]
 
 [sub_resource type="BoxMesh" id="PuddleMesh"]
 size = Vector3(1, 0.02, 1)

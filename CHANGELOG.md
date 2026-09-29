@@ -112,6 +112,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Meet Donald Trump following the mayor by the slots; use E to pay him $100.
 - Fix the web client crashing (`null function`) and getting stuck on "Joining…" when
   joining a server after signing in.
+- Move feature textures, models and audio into `game/assets/<feature>/`.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
