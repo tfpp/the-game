@@ -44,6 +44,10 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Install export dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3
       - name: Link export templates
         run: |
           mkdir -p ~/.local/share/godot/export_templates
