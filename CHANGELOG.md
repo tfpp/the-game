@@ -8,6 +8,9 @@ version. Releases are cut by hand (the `release` workflow): it moves `edge` into
 for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
 - Add Zohran Mamdani as a casino patron who strolls the gaming floor beside the slot machines
   with a floating name tag.
+- Apply Kaaba blessings to online slot odds and show shared blessing bursts and
+  crescent-and-star effects for blessed spins.
+
 
 ## [edge]
 

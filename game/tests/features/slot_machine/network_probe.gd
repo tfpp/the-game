@@ -4,6 +4,7 @@ extends Node
 var _last_snapshot := ""
 var _last_audio := 0
 var _last_money := ""
+var _last_blessings := ""
 var _sent_competing_request := false
 
 @onready var _machine: SlotMachine = $Game/Features/slot_machine/Machine
@@ -12,6 +13,10 @@ var _sent_competing_request := false
 func _ready() -> void:
 	# Keep this probe independent of previously saved development player positions.
 	$Game/Features/character_memory.queue_free()
+	var prayer := $Game/Features/kaaba/Prayer as KaabaPrayer
+	prayer.entity.event_received.connect(
+		func(event: StringName, _payload: Dictionary) -> void: print("BLESSING_EVENT ", event)
+	)
 	if Network.args.get("slot-role", "") == "driver":
 		_drive()
 
@@ -20,6 +25,11 @@ func _process(_delta: float) -> void:
 	if _machine._last_sound_spin != _last_audio:
 		_last_audio = _machine._last_sound_spin
 		print("SLOT_AUDIO ", _last_audio)
+	var prayer := $Game/Features/kaaba/Prayer as KaabaPrayer
+	var blessings := JSON.stringify(prayer.blessings)
+	if blessings != _last_blessings:
+		_last_blessings = blessings
+		print("BLESSING_STATE ", blessings)
 	var wallet := $Game/Features/money as PlayerMoney
 	var money := JSON.stringify(wallet.balances)
 	if money != _last_money:
@@ -55,6 +65,16 @@ func _drive() -> void:
 		get_tree().quit(1)
 		return
 	print("RANGE_REJECTED")
+	var prayer := $Game/Features/kaaba/Prayer as KaabaPrayer
+	player.position = prayer.global_position + Vector3(3.5, 0.9144, 0)
+	player.net_position = player.position
+	await get_tree().create_timer(0.5).timeout
+	prayer.use()
+	while prayer.blessings_for(multiplayer.get_unique_id()) == 0:
+		await get_tree().process_frame
+	print("BLESSING_RECEIVED")
+	await get_tree().create_timer(4.0).timeout
+	player.net_yaw = _machine.global_rotation.y
 	player.position = _machine.to_global(Vector3(0, 0.9144, 2.5))
 	player.net_position = player.position
 	await get_tree().create_timer(0.5).timeout

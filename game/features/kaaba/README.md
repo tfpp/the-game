@@ -19,6 +19,21 @@ joiners see current counts. Blessings reset on disconnect and session change and
 not persisted. `SlotMachine` reads `blessings_for()` and passes it to
 `PlayerMoney.spin()` as `rerolls`, then calls `consume()` on a win.
 
-Limitation: authenticated wallets get their reels from the accounts API, which
-doesn't know about blessings yet, so blessings only change the odds on temporary
-(offline / insecure-auth) wallets. `kaaba_chant.gd` synthesizes the chant at runtime.
+Authenticated wallets now send bounded rerolls to the accounts API, which rolls and
+settles one charged spin atomically. Deploy the updated API before the game server.
+The bonus still applies only to slots, not roulette or craps, and does not multiply prizes.
+
+Prayer uses NetworkedInteraction for validated Use requests and replicated state.
+Completion sends a mint blessing burst at the player; a successfully paid blessed
+spin sends a gold crescent and star above the machine, before its result is revealed.
+Both are authority-only NetworkedEntity events visible to nearby peers, including
+the local player, with no replay for late joiners. Effects expire after two seconds.
+No new controls; touch and controller use the existing Use action.
+`kaaba_chant.gd` synthesizes the chant at runtime.
+
+Validation: from the repository root, run
+`python3 game/tests/features/kaaba/run_network.py` for a real server, player,
+observer and late joiner. This extends the existing slot probe to pray before
+spinning, verifies live effects and late-join state without replaying old VFX,
+then exercises five spins and competing requests. API Go tests cover authenticated
+rerolls and idempotent settlement; the probe uses dev wallets.

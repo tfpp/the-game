@@ -17,6 +17,8 @@ const USE_RANGE := 5.5
 var _timers: Dictionary = {}
 var _chant: AudioStream
 
+@onready var entity: NetworkedInteraction = $NetworkedEntity
+
 @onready var _audio: AudioStreamPlayer3D = $Audio
 
 
@@ -25,6 +27,8 @@ func _ready() -> void:
 	add_to_group(&"kaaba_prayer")
 	multiplayer.peer_disconnected.connect(_forget)
 	Network.mode_changed.connect(_on_mode_changed)
+	entity.register_use(can_use, _start_prayer)
+	entity.event_received.connect(_on_effect)
 
 
 func interaction_text() -> String:
@@ -37,11 +41,15 @@ func interaction_text() -> String:
 func can_use(player: Player) -> bool:
 	var offset := player.net_position - global_position
 	offset.y = 0.0
-	return offset.length() <= USE_RANGE and not praying.has(player.get_multiplayer_authority())
+	return (
+		offset.length() <= USE_RANGE
+		and not praying.has(player.get_multiplayer_authority())
+		and blessings_for(player.get_multiplayer_authority()) < MAX_BLESSINGS
+	)
 
 
 func use() -> void:
-	request_pray.rpc_id(1)
+	entity.request_use()
 
 
 func blessings_for(peer_id: int) -> int:
@@ -58,18 +66,17 @@ func consume(peer_id: int) -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func request_pray() -> void:
-	if not multiplayer.is_server():
-		return
-	var sender := multiplayer.get_remote_sender_id()
-	var peer_id := sender if sender != 0 else multiplayer.get_unique_id()
-	var player := _player_for_peer(peer_id)
-	if player == null or not can_use(player) or blessings_for(peer_id) >= MAX_BLESSINGS:
-		return
+	entity.receive_legacy_action(&"use")
+
+
+func _start_prayer(player: Player) -> bool:
+	var peer_id := player.get_multiplayer_authority()
 	var next := praying.duplicate()
 	next[peer_id] = true
 	praying = next
 	_timers[peer_id] = 0.0
 	play_prayer.rpc()
+	return true
 
 
 func _process(delta: float) -> void:
@@ -89,6 +96,10 @@ func _advance(delta: float) -> void:
 			var next := blessings.duplicate()
 			next[peer_id] = mini(blessings_for(peer_id) + 1, MAX_BLESSINGS)
 			blessings = next
+			var eye := player.movement.eye_height_m() - player.movement.hull_height_m() * 0.5
+			var look := Basis.from_euler(Vector3(player.net_pitch, player.net_yaw, 0))
+			var at := player.net_position + Vector3.UP * eye + look * Vector3.FORWARD * 0.9
+			entity.send_event(&"completed", {"position": at})
 
 
 func _in_range(player: Player) -> bool:
@@ -134,3 +145,20 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 	blessings = {}
 	praying = {}
 	_timers.clear()
+	for child: Node in get_children():
+		if child is BlessingEffect:
+			child.queue_free()
+
+
+## Called only after a paid slot spin succeeds; no effect for rejected wagers.
+func show_blessed_spin(at: Vector3) -> void:
+	entity.send_event(&"gamble", {"position": at})
+
+
+func _on_effect(event: StringName, payload: Dictionary) -> void:
+	if event not in [&"completed", &"gamble"] or Network.mode == Network.Mode.SERVER:
+		return
+	var effect := BlessingEffect.new()
+	add_child(effect)
+	effect.global_position = payload["position"]
+	effect.build(event == &"gamble")

@@ -70,3 +70,9 @@ authentication, income and exact expected payouts. GUT covers offline wallets,
 income, labels, reel timing and interaction. The slot network test checks real
 server/two-client balance replication; `SLOT_TEST_DATABASE=1` includes the real API,
 SQLite and a full minute of income.
+
+
+Slot requests also send `rerolls` (0–5) from server-owned Kaaba blessings. The API
+gives losing reels that many extra attempts and stops on the first win; the existing
+transaction charges one wager and records one result for all retries. Omission means
+zero rerolls for older servers. Deploy this API update before the game update.

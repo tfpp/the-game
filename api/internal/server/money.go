@@ -53,6 +53,7 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		AmountCents int64  `json:"amount_cents"`
 		IncomeCents int64  `json:"income_cents"`
 		WagerCents  int64  `json:"wager_cents"`
+		Rerolls     int    `json:"rerolls"`
 	}
 	if json.Unmarshal(raw, &req) != nil || req.AccountID <= 0 || req.Timestamp < s.cfg.Now().Unix()-60 || req.Timestamp > s.cfg.Now().Unix()+60 {
 		writeError(w, 400, "bad_request", "invalid request")
@@ -143,14 +144,14 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		writeError(w, 400, "bad_request", "invalid wager")
 		return
 	}
-	var reels [3]int
-	for i := range reels {
-		n, err := rand.Int(rand.Reader, big.NewInt(5))
-		if err != nil {
-			s.internalError(w, r, err)
-			return
-		}
-		reels[i] = int(n.Int64())
+	if req.Rerolls < 0 || req.Rerolls > 5 {
+		writeError(w, 400, "bad_request", "invalid blessings")
+		return
+	}
+	reels, err := blessedReels(req.Rerolls, randomReels)
+	if err != nil {
+		s.internalError(w, r, err)
+		return
 	}
 	result, err := s.store.PlaySlot(r.Context(), req.AccountID, req.ID, reels, wagerCents)
 	if errors.Is(err, store.ErrInsufficientMoney) {
@@ -166,4 +167,26 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, result)
+}
+
+// blessedReels gives each blessing one extra attempt after a loss, never an extra charge.
+func blessedReels(rerolls int, roll func() ([3]int, error)) ([3]int, error) {
+	for attempt := 0; ; attempt++ {
+		reels, err := roll()
+		if err != nil || store.SlotPayout(reels, 100) > 0 || attempt >= rerolls {
+			return reels, err
+		}
+	}
+}
+
+func randomReels() ([3]int, error) {
+	var reels [3]int
+	for i := range reels {
+		n, err := rand.Int(rand.Reader, big.NewInt(5))
+		if err != nil {
+			return reels, err
+		}
+		reels[i] = int(n.Int64())
+	}
+	return reels, nil
 }

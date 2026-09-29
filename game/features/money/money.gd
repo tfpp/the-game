@@ -151,8 +151,7 @@ func _refresh(peer: int) -> void:
 
 
 ## wager_cents lets each slot machine set its own buy-in (default $1).
-## `rerolls` (Kaaba blessings) only affects temporary wallets: the accounts API
-## rolls authenticated spins itself.
+## The accounts API and temporary wallets both apply Kaaba blessing rerolls.
 func spin(peer: int, id: String, wager_cents: int = 100, rerolls: int = 0) -> Dictionary:
 	if not multiplayer.is_server() or _busy.has(peer):
 		return {"error": "Wallet loading — try again"}
@@ -172,7 +171,10 @@ func spin(peer: int, id: String, wager_cents: int = 100, rerolls: int = 0) -> Di
 		if not _unresolved.has(account):
 			_unresolved[account] = id
 		result = await _request(
-			account, "spin", str(_unresolved[account]), {"wager_cents": wager_cents}
+			account,
+			"spin",
+			str(_unresolved[account]),
+			{"wager_cents": wager_cents, "rerolls": clampi(rerolls, 0, KaabaPrayer.MAX_BLESSINGS)}
 		)
 		if generation == _generation and (result.has("balance") or result.has("rejected")):
 			_unresolved.erase(account)

@@ -22,7 +22,7 @@ func TestGameMoneyRequiresServerAndRetriesSafely(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	body := []byte(fmt.Sprintf(`{"account_id":%d,"action":"spin","id":"%s","timestamp":%d}`, account.ID, strings.Repeat("a", 64), h.now.Unix()))
+	body := []byte(fmt.Sprintf(`{"account_id":%d,"action":"spin","id":"%s","timestamp":%d,"rerolls":5}`, account.ID, strings.Repeat("a", 64), h.now.Unix()))
 	request := func(key []byte, payload []byte) *httptest.ResponseRecorder {
 		req := httptest.NewRequest("POST", "/api/game/money", bytes.NewReader(payload))
 		mac := hmac.New(sha256.New, key)
@@ -35,6 +35,12 @@ func TestGameMoneyRequiresServerAndRetriesSafely(t *testing.T) {
 	}
 	if res := request([]byte("client-session"), body); res.Code != 401 {
 		t.Fatal(res.Code)
+	}
+	for _, invalid := range []string{"-1", "6"} {
+		payload := bytes.Replace(body, []byte(`"rerolls":5`), []byte(`"rerolls":`+invalid), 1)
+		if res := request(testKey, payload); res.Code != 400 {
+			t.Fatalf("invalid blessings: %d", res.Code)
+		}
 	}
 	first := request(testKey, body)
 	if first.Code != 200 {
@@ -235,5 +241,29 @@ func TestGameMoneySellRequiresValidAmountAndIsIdempotent(t *testing.T) {
 	}
 	if invalid := request(makeBody(0)); invalid.Code != 400 {
 		t.Fatal(invalid.Code, invalid.Body.String())
+	}
+}
+
+func TestBlessedReelsStopsAtWinAndBoundsAttempts(t *testing.T) {
+	for _, blessings := range []int{0, 1, 5} {
+		calls := 0
+		_, err := blessedReels(blessings, func() ([3]int, error) {
+			calls++
+			return [3]int{0, 1, 2}, nil
+		})
+		if err != nil || calls != blessings+1 {
+			t.Fatalf("blessings %d: %d attempts, %v", blessings, calls, err)
+		}
+	}
+	calls := 0
+	reels, err := blessedReels(5, func() ([3]int, error) {
+		calls++
+		if calls == 2 {
+			return [3]int{4, 4, 4}, nil
+		}
+		return [3]int{0, 1, 2}, nil
+	})
+	if err != nil || calls != 2 || reels != [3]int{4, 4, 4} {
+		t.Fatalf("did not stop at first win: %v %d %v", reels, calls, err)
 	}
 }

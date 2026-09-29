@@ -11,6 +11,11 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Shared Kaaba blessings",
+		"summary":
+		"Enjoy blessed slot odds online and shared prayer and crescent-and-star effects.",
+	},
+	{
 		"title": "İstanbul Kebab",
 		"summary": "Order a free kebab from animated staff directly ahead of casino spawn.",
 	},

@@ -98,3 +98,40 @@ func test_chant_is_a_few_seconds_of_audio() -> void:
 	assert_between(KaabaChant.duration_s(), 5.0, KaabaChant.duration_s())
 	assert_eq(chant.data.size(), int(KaabaChant.duration_s() * KaabaChant.MIX_RATE) * 2)
 	assert_ne(chant.data.count(0), chant.data.size(), "not silent")
+
+
+func test_remote_peer_validation_and_completion_effect() -> void:
+	var player := _player(Vector3(3.5, 0.9, 0))
+	player.set_multiplayer_authority(42)
+	assert_false(_prayer.entity._validate_use(7, {}), "cannot borrow another peer")
+	assert_false(_prayer.entity._validate_use(42, {"peer": 7}), "no identity payload")
+	assert_true(_prayer.entity._validate_use(42, {}))
+	watch_signals(_prayer.entity)
+	_prayer.entity._apply_use(42, {})
+	_prayer._advance(KaabaPrayer.PRAYER_S)
+	assert_eq(_prayer.blessings_for(42), 1)
+	assert_eq(_prayer.blessings_for(1), 0)
+	assert_signal_emitted(_prayer.entity, "event_received")
+	var args: Array = get_signal_parameters(_prayer.entity, "event_received")
+	assert_eq(args[0], &"completed")
+	var eye := player.movement.eye_height_m() - player.movement.hull_height_m() * 0.5
+	assert_eq(args[1]["position"], player.net_position + Vector3(0, eye, -0.9))
+
+
+func test_blessed_spin_event_and_effect_cleanup() -> void:
+	watch_signals(_prayer.entity)
+	_prayer.show_blessed_spin(Vector3(1, 2, 3))
+	assert_signal_emitted_with_parameters(
+		_prayer.entity, "event_received", [&"gamble", {"position": Vector3(1, 2, 3)}]
+	)
+	var effect := BlessingEffect.new()
+	add_child_autofree(effect)
+	effect.build(true)
+	assert_eq(effect.get_child_count(), 1, "one lightweight crescent-and-star mesh")
+	effect._process(BlessingEffect.LIFETIME)
+	assert_true(effect.is_queued_for_deletion())
+
+
+func test_replication_includes_blessings_and_prayer_for_late_joiners() -> void:
+	assert_has(_prayer.entity.replicated_properties, NodePath(".:blessings"))
+	assert_has(_prayer.entity.replicated_properties, NodePath(".:praying"))

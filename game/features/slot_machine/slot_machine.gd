@@ -123,8 +123,11 @@ func request_spin() -> void:
 		return
 	var reels: Array[int] = []
 	reels.assign(result["reels"])
-	if prayer != null and is_instance_valid(prayer) and SlotSpinCycle.is_win(reels):
-		prayer.consume(peer_id)
+	if prayer != null and is_instance_valid(prayer):
+		if rerolls > 0:
+			prayer.show_blessed_spin(to_global(Vector3(0, 2.4, 0.7)))
+		if SlotSpinCycle.is_win(reels):
+			prayer.consume(peer_id)
 	_begin_spin(peer_id, operator_name, reels, int(result["payout"]))
 
 
