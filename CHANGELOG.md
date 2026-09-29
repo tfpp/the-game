@@ -145,6 +145,11 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   a floating speech bubble.
 - Bribe Donald Trump for slightly better slot machine luck. Each bribe doubles in price, up
   to five, and he promises to remodel part of the casino with one of 1,000 quips.
+
+- Replace block player avatars with an original connected low-polygon human mesh, bone-driven vertex animation and customizable blend shapes, and saved casual/tactical outfits, skin, hair and eye choices under Settings → Character Model, shared with other players.
+- Add connected palms and five individually rigged digits per hand, with three joints each, relaxed and gripping poses, and shared first- and third-person hand geometry.
+- Add a rebindable B / left-stick-click middle-finger emote with first- and third-person raise/hold/lower animations, server-owned timing, per-player cooldowns, late-join phase synchronization, and weapon support-hand restoration.
+- Fix the gnome reconnect regression test's loop typing so strict GUT collection runs the entire test file.
 - Synchronize Kaaba prayers for everyone and grant +200% base slot win chance per
   blessing, including signed-in wallets.
 

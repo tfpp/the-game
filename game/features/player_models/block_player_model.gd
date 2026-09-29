@@ -1,6 +1,7 @@
 class_name BlockPlayerModel
 extends Node3D
-## Angular low-polygon avatar with adult human proportions. Parent: Player/Body.
+## Textured low-polygon human avatar. Parent: Player/Body.
+## The class name remains compatible with existing inventory and holdables callers.
 ## The camera feature controls first/third-person visibility; replication owns yaw.
 
 ## Uniform rig scale for the "penguin" body type, so the third-person model (and,
@@ -17,7 +18,16 @@ var pants_id := ""
 var body_type: StringName = &"default"
 var head_type: StringName = &"human"
 var tail_type: StringName = &"none"
+var outfit := "casual"
+var hair_style := "classic"
+var hair_color_index := 0
+var eye_color_index := 0
 var locomotion: StringName = &"idle"
+var human := SkinnedHuman.new()
+var _left_forearm := Node3D.new()
+var _right_forearm := Node3D.new()
+var _left_shin := Node3D.new()
+var _right_shin := Node3D.new()
 var _height_scale := 1.0
 var _skin_material: StandardMaterial3D
 var _shirt_material: StandardMaterial3D
@@ -61,6 +71,7 @@ func _process(delta: float) -> void:
 		set_body_type(models.type_for(peer_id))
 		set_head_type(models.type_for_head(peer_id))
 		set_tail_type(models.type_for_tail(peer_id))
+		set_appearance(models.appearance_for(peer_id))
 	var holding := hand != null and ItemCatalog.find(hand.net_item_id) != null
 	var support := holding and hand.support_grip() != null
 	var pitch := player.pitch if player.is_local() else player.net_pitch
@@ -90,6 +101,15 @@ func animate(
 	_right_leg.rotation.x = lerp_angle(_right_leg.rotation.x, pose["right_leg"], blend)
 	_left_arm.rotation.x = lerp_angle(_left_arm.rotation.x, pose["left_arm"], blend)
 	_right_arm.rotation.x = lerp_angle(_right_arm.rotation.x, pose["right_arm"], blend)
+	var active := locomotion != &"idle"
+	for forearm: Node3D in [_left_forearm, _right_forearm]:
+		forearm.rotation.x = lerp_angle(forearm.rotation.x, -0.35 if active else -0.08, blend)
+	_left_shin.rotation.x = lerp_angle(
+		_left_shin.rotation.x, maxf(0.0, -float(pose["left_leg"])) * 0.85, blend
+	)
+	_right_shin.rotation.x = lerp_angle(
+		_right_shin.rotation.x, maxf(0.0, -float(pose["right_leg"])) * 0.85, blend
+	)
 	_left_arm.visible = not left_held
 	_right_arm.visible = not right_held
 	_torso.rotation.x = lerp_angle(_torso.rotation.x, pose["lean"], blend)
@@ -97,6 +117,8 @@ func animate(
 	_head.rotation.x = lerp_angle(_head.rotation.x, pitch - _torso.rotation.x, blend)
 	_rig.scale = Vector3(_height_scale, _height_scale * (1.0 - _landing * 0.055), _height_scale)
 	_rig.position.y = float(pose["bob"]) - _landing * 0.049
+	if human.visible:
+		human.pose(self, left_held, right_held)
 
 
 func shoulder_position(right: bool) -> Vector3:
@@ -143,7 +165,13 @@ func _build() -> void:
 	_pivot(_right_shoulder, _torso, "RightShoulder", Vector3.ZERO)
 	_pivot(_left_leg, _rig, "LeftLeg", Vector3.ZERO)
 	_pivot(_right_leg, _rig, "RightLeg", Vector3.ZERO)
+	_pivot(_left_forearm, _left_arm, "Forearm", Vector3(0, -0.30, 0))
+	_pivot(_right_forearm, _right_arm, "Forearm", Vector3(0, -0.30, 0))
+	_pivot(_left_shin, _left_leg, "Shin", Vector3(0, -0.35, 0))
+	_pivot(_right_shin, _right_leg, "Shin", Vector3(0, -0.35, 0))
 	_pivot(_tail, _torso, "Tail", Vector3(0, -0.05, 0.18))
+	human.name = "Human"
+	_rig.add_child(human)
 	_decorate()
 
 
@@ -153,8 +181,21 @@ func _build() -> void:
 ## the GUT tests).
 func _decorate() -> void:
 	_height_scale = PENGUIN_HEIGHT_SCALE if body_type == &"penguin" else 1.0
-	for node: Node3D in [_torso, _head, _left_arm, _right_arm, _left_leg, _right_leg, _tail]:
+	for node: Node3D in [
+		_torso,
+		_head,
+		_left_arm,
+		_right_arm,
+		_left_leg,
+		_right_leg,
+		_tail,
+		_left_forearm,
+		_right_forearm,
+		_left_shin,
+		_right_shin
+	]:
 		_clear_boxes(node)
+	human.visible = body_type != &"penguin"
 	if body_type == &"penguin":
 		_decorate_penguin()
 	else:
@@ -164,42 +205,15 @@ func _decorate() -> void:
 
 
 func _decorate_humanoid() -> void:
-	var skin := _skin_material
-	var shirt := _shirt_material
-	var trim := _trim_material
-	var pants := _pants_material
-	var underwear := _material(Color("f8f8f1"))
 	var feminine := body_type == &"girl"
-	var shoulder_width := 0.295 if feminine else 0.335
-	var hip_width := 0.145 if feminine else 0.12
-	var shirt_size := Vector3(0.40, 0.62, 0.25) if feminine else Vector3(0.46, 0.62, 0.25)
-	var trouser_width := 0.25 if feminine else 0.22
-	_box(_torso, "Shirt", Vector3(0, 0.31, 0), shirt_size, shirt)
-	_box(_torso, "Hem", Vector3(0, 0.028, 0), Vector3(shirt_size.x + 0.008, 0.055, 0.26), trim)
-	_box(_torso, "Collar", Vector3(0, 0.59, -0.131), Vector3(0.15, 0.06, 0.012), skin)
-	_box(_torso, "Pocket", Vector3(-0.115, 0.41, -0.134), Vector3(0.11, 0.10, 0.014), trim)
-	_decorate_head(feminine)
 	for side: float in [-1.0, 1.0]:
 		var arm := _left_arm if side < 0 else _right_arm
 		var leg := _left_leg if side < 0 else _right_leg
 		var shoulder := _left_shoulder if side < 0 else _right_shoulder
-		arm.position = Vector3(side * shoulder_width, 0.56, 0)
+		arm.position = Vector3(side * (0.235 if feminine else 0.255), 0.54, 0)
 		shoulder.position = arm.position
-		_box(arm, "Sleeve", Vector3(0, -0.20, 0), Vector3(0.19, 0.40, 0.24), shirt)
-		_box(arm, "Cuff", Vector3(0, -0.39, 0), Vector3(0.195, 0.05, 0.245), trim)
-		_box(arm, "Hand", Vector3(0, -0.52, 0), Vector3(0.18, 0.22, 0.23), skin)
-		leg.position = Vector3(side * hip_width, -0.17, 0)
-		_box(leg, "Trousers", Vector3(0, -0.30, 0), Vector3(trouser_width, 0.60, 0.25), pants)
-		_box(
-			leg, "Boot", Vector3(0, -0.66, -0.025), Vector3(trouser_width + 0.005, 0.12, 0.30), skin
-		)
-		_box(
-			leg,
-			"Underwear",
-			Vector3(0, -0.09, 0),
-			Vector3(trouser_width + 0.009, 0.19, 0.26),
-			underwear
-		)
+		leg.position = Vector3(side * (0.120 if feminine else 0.105), -0.10, 0)
+	_decorate_head(feminine)
 
 
 ## Builds the head for the current `head_type`, independent of `body_type` so any
@@ -216,24 +230,9 @@ func _decorate_head(feminine: bool) -> void:
 			_decorate_human_head(feminine)
 
 
-func _decorate_human_head(feminine: bool) -> void:
-	_head.scale = Vector3(0.76, 0.82, 0.76)
-	var skin := _skin_material
-	var hair := _material(Color(0.12, 0.075, 0.05))
-	var whites := _material(Color(0.92, 0.94, 0.88))
-	var eyes := _material(Color(0.12, 0.20, 0.22))
-	var hair_back_size := Vector3(0.44, 0.62, 0.025) if feminine else Vector3(0.44, 0.27, 0.025)
-	var hair_back_y := 0.06 if feminine else 0.24
-	_box(_head, "Face", Vector3(0, 0.19, 0), Vector3(0.43, 0.42, 0.43), skin)
-	_box(_head, "HairTop", Vector3(0, 0.405, 0), Vector3(0.45, 0.075, 0.45), hair)
-	_box(_head, "HairBack", Vector3(0, hair_back_y, 0.211), hair_back_size, hair)
-	_box(_head, "Fringe", Vector3(-0.075, 0.342, -0.22), Vector3(0.29, 0.07, 0.025), hair)
-	_box(_head, "FringeLock", Vector3(-0.15, 0.295, -0.22), Vector3(0.085, 0.07, 0.025), hair)
-	for side: float in [-1.0, 1.0]:
-		_box(_head, "Eye", Vector3(side * 0.105, 0.23, -0.22), Vector3(0.060, 0.035, 0.014), whites)
-		_box(_head, "Pupil", Vector3(side * 0.09, 0.23, -0.23), Vector3(0.025, 0.035, 0.01), eyes)
-	_box(_head, "Nose", Vector3(0, 0.16, -0.23), Vector3(0.065, 0.055, 0.045), skin)
-	_box(_head, "Mouth", Vector3(0, 0.09, -0.22), Vector3(0.095, 0.02, 0.014), hair)
+func _decorate_human_head(_feminine: bool) -> void:
+	_head.scale = Vector3.ONE
+	# The human head and hair are vertices in the same skinned surface as the body.
 
 
 ## A wide-mouthed frog head with bulging eyes on top, regardless of skin tone.
@@ -322,7 +321,7 @@ func _decorate_penguin() -> void:
 	_box(_torso, "Belly", Vector3(0, 0.22, -0.10), Vector3(0.28, 0.42, 0.20), belly)
 	_box(_head, "Face", Vector3(0, 0.19, 0), Vector3(0.36, 0.34, 0.36), feathers)
 	_box(_head, "FaceMask", Vector3(0, 0.11, -0.14), Vector3(0.20, 0.16, 0.10), belly)
-	_box(_head, "Beak", Vector3(0, 0.15, -0.23), Vector3(0.10, 0.07, 0.12), beak)
+	_box(_head, "Beak", Vector3(0, 0.15, -0.183), Vector3(0.10, 0.07, 0.12), beak)
 	for side: float in [-1.0, 1.0]:
 		_box(_head, "Eye", Vector3(side * 0.09, 0.26, -0.19), Vector3(0.055, 0.055, 0.01), eyes)
 	for side: float in [-1.0, 1.0]:
@@ -357,27 +356,9 @@ func _box(
 	var mesh := BoxMesh.new()
 	mesh.size = dimensions
 	part.mesh = mesh
-	if label in ["Shirt", "Trousers", "Face"] and body_type != &"penguin":
-		part.mesh = _tapered_mesh(mesh, 0.82 if label == "Shirt" else 0.9)
 	part.material_override = material
 	part.position = at
 	parent.add_child(part)
-
-
-func _tapered_mesh(box: BoxMesh, lower_width: float) -> ArrayMesh:
-	var arrays := box.surface_get_arrays(0)
-	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-	for index: int in vertices.size():
-		if vertices[index].y < 0.0:
-			vertices[index].x *= lower_width
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var builder := SurfaceTool.new()
-	builder.create_from(mesh, 0)
-	builder.deindex()
-	builder.generate_normals()
-	return builder.commit()
 
 
 func _material(color: Color) -> StandardMaterial3D:
@@ -403,17 +384,15 @@ func _apply_clothing() -> void:
 	# toggle, and always wears its own feathers regardless of equipped clothing.
 	if body_type == &"penguin":
 		return
-	shirt_color = skin_color if shirt_id.is_empty() else ClothingCatalog.color(shirt_id)
-	pants_color = skin_color if pants_id.is_empty() else ClothingCatalog.color(pants_id)
+	var tactical := outfit == "tactical"
+	var bare_shirt := Color("67715b") if tactical else skin_color
+	var bare_pants := Color("565e50") if tactical else skin_color
+	shirt_color = bare_shirt if shirt_id.is_empty() else ClothingCatalog.color(shirt_id)
+	pants_color = bare_pants if pants_id.is_empty() else ClothingCatalog.color(pants_id)
 	_shirt_material.albedo_color = shirt_color
 	_trim_material.albedo_color = shirt_color.lightened(0.22)
 	_pants_material.albedo_color = pants_color
-	for part: String in ["Hem", "Pocket"]:
-		(_torso.get_node(part) as Node3D).visible = not shirt_id.is_empty()
-	for arm: Node3D in [_left_arm, _right_arm]:
-		(arm.get_node("Cuff") as Node3D).visible = not shirt_id.is_empty()
-	for leg: Node3D in [_left_leg, _right_leg]:
-		(leg.get_node("Underwear") as Node3D).visible = pants_id.is_empty()
+	human.apply_appearance(self)
 
 
 ## "girl" narrows the shoulders and waist, widens the hips and grows the hair out.
@@ -473,3 +452,22 @@ func set_skin_index(index: int) -> void:
 	if _skin_material != null:
 		_skin_material.albedo_color = skin_color
 		_apply_clothing()
+
+
+func set_appearance(data: Dictionary) -> void:
+	if not PlayerAppearance.valid(data):
+		return
+	var changed: bool = (
+		outfit != str(data.get("outfit", "casual"))
+		or hair_style != data["hair"]
+		or hair_color_index != int(data["hair_color"])
+		or eye_color_index != int(data["eyes"])
+	)
+	outfit = str(data.get("outfit", "casual"))
+	hair_style = data["hair"]
+	hair_color_index = int(data["hair_color"])
+	eye_color_index = int(data["eyes"])
+	if int(data["skin"]) >= 0:
+		set_skin_index(int(data["skin"]))
+	if changed and _skin_material != null:
+		_decorate()
