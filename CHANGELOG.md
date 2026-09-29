@@ -30,6 +30,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   and server restarts.
 - Press ~ for a Source-style settings console with autocomplete and command history;
   use sv_cheats 1 to unlock noclip and sv_cheats 0 to disable it for everyone.
+- Stop casino benches and props from sliding when you turn the camera, and stop guns,
+  gnomes and other plain-coloured props from rendering almost black.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

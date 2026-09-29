@@ -2,7 +2,8 @@
 
 World surfaces use nearest-neighbour sampling with mipmaps, matte vertex lighting,
 and low-polygon silhouettes. The casino's textured finishes add restrained
-ordered dithering and a 4% affine texture interpolation blend. This runs in the
+ordered dithering, mapped in world space so textures never swim when the camera
+turns (an earlier affine blend made props appear to slide). This runs in the
 surface shader: no full-screen texture copy, depth-of-field or bloom pass.
 
 All fourteen referenced world-image imports are capped at 128 pixels on the longest
@@ -74,6 +75,7 @@ claim or a physical-phone FPS result.
 
 Models use texture artwork by default. Casino palette meshes combine a shared
 128px detail atlas with per-vertex tints and model-space UVs. Older solid-colour
-StandardMaterial3D surfaces receive a shared grain albedo with triplanar mapping;
-authored texture/UV setups and custom shaders are preserved. This includes streamed
-props because it uses the existing bounded material styling queue.
+StandardMaterial3D surfaces keep their plain colour with matte vertex shading: a
+shared grain albedo used to be multiplied in, but it darkened guns, gnomes and other
+dark props to near black. Authored texture/UV setups and custom shaders are preserved.
+This includes streamed props because it uses the existing bounded material styling queue.

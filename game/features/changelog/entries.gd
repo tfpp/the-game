@@ -11,8 +11,14 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Steady casino textures",
+		"summary": "Props no longer slide as you turn, and guns and gnomes show their colours.",
+	},
+	{
 		"title": "Developer console",
 		"summary": "Press ~ for settings commands, autocomplete and sv_cheats to unlock noclip.",
+	},
+	{
 		"title": "Boxing",
 		"summary":
 		"Empty-handed, click to jab or hold and release to power punch; knock dummies flat.",

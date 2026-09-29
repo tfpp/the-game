@@ -31,8 +31,8 @@ Generated burgundy carpet, green wallpaper and walnut artwork is imported at
 128×128 with nearest mipmap sampling. Shared matte finishes use authored warm vertex illumination and fixed indoor
 texture shading, without reflections, normal maps or roughness maps. The salon
 remains readable at night without mobile shadow maps. Outdoor day/night lighting still runs.
-Texture surfaces use dominant-axis world mapping, restrained dithering and subtle
-affine interpolation. See `../retro_style/README.md` for the mobile rendering budget.
+Texture surfaces use dominant-axis world mapping, restrained dithering and no
+affine warp, so textures stay fixed to surfaces as the camera turns. See `../retro_style/README.md` for the mobile rendering budget.
 
 Five original flat-shaded glTF models replace the cabinet, stools, benches,
 planters and chandeliers. Each model uses at most two materials: textured walnut
