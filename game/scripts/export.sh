@@ -7,6 +7,7 @@ GODOT="${GODOT:-godot}"
 target="${1:-all}"
 cleanup() {
   rm -f build_info.gd build_info.gd.uid features/changelog/releases.gd features/changelog/releases.gd.uid
+  rm -f features/console/repo_snapshot.gd features/console/repo_snapshot.gd.uid
   if [[ -f export_presets.cfg.orig ]]; then mv export_presets.cfg.orig export_presets.cfg; fi
 }
 trap cleanup EXIT
@@ -18,6 +19,8 @@ if [[ -n "${BUILD_VERSION:-}" ]]; then
     "$BUILD_VERSION" > build_info.gd
   echo "Build version: $BUILD_VERSION"
 fi
+# Bundle read-only repository metadata for native and browser consoles.
+python3 scripts/git_snapshot.py --gdscript > features/console/repo_snapshot.gd
 # RELEASE_NOTES=1 groups the in-game changelog by release (features/changelog/); it needs
 # git history and the vX.Y.Z tags. Without it the changelog is one list.
 if [[ -n "${RELEASE_NOTES:-}" ]]; then
