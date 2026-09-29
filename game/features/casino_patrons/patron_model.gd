@@ -33,6 +33,11 @@ const MAMDANI_LOOK := 4
 const MAMDANI_NAME := "Zohran Mamdani"
 const TRUMP_LOOK := 5
 const TRUMP_NAME := "Donald Trump"
+## Mitch McConnell rides a wheelchair pushed by his intern (`mitch.gd`); the intern
+## is a second body built with INTERN_LOOK inside his model.
+const MITCH_LOOK := 6
+const MITCH_NAME := "Mitch McConnell"
+const INTERN_LOOK := 7
 
 ## Hip height when standing; the pose lifts and lowers `Hips` around it.
 const HIP_HEIGHT := 0.95
@@ -70,6 +75,18 @@ func build(look: int) -> void:
 		trousers = jacket
 		hair = _material(Color(0.88, 0.73, 0.36))
 		tie = _material(Color(0.8, 0.04, 0.06))
+	if look == MITCH_LOOK:
+		skin = _material(Color(0.93, 0.8, 0.72))
+		jacket = _material(Color(0.1, 0.1, 0.13))
+		trousers = jacket
+		hair = _material(Color(0.9, 0.9, 0.88))
+		tie = _material(Color(0.2, 0.25, 0.55))
+	if look == INTERN_LOOK:
+		skin = _material(Color(0.96, 0.82, 0.72))
+		jacket = _material(Color(0.95, 0.93, 0.9))
+		trousers = _material(Color(0.12, 0.14, 0.24))
+		hair = _material(Color(0.98, 0.84, 0.45))
+		tie = _material(Color(0.85, 0.35, 0.5))
 	_hips = _pivot("Hips", self, Vector3(0, HIP_HEIGHT, 0))
 	_part("Pelvis", _hips, Vector3(0, 0.02, 0), Vector3(0.34, 0.18, 0.22), trousers)
 	_torso = _pivot("Torso", _hips, Vector3(0, 0.1, 0))
@@ -89,6 +106,35 @@ func build(look: int) -> void:
 	if look == TRUMP_LOOK:
 		_part("SweptFringe", _head, Vector3(-0.035, 0.25, -0.12), Vector3(0.28, 0.09, 0.1), hair)
 		_name_tag(TRUMP_NAME)
+	if look == MITCH_LOOK:
+		for side: float in [-1.0, 1.0]:
+			_part(
+				"Lens%d" % int(side),
+				_head,
+				Vector3(side * 0.06, 0.17, -0.13),
+				Vector3(0.07, 0.05, 0.01),
+				dark
+			)
+		_part("Jowls", _head, Vector3(0, 0.02, -0.03), Vector3(0.22, 0.08, 0.2), skin)
+		_name_tag(MITCH_NAME)
+	if look == INTERN_LOOK:
+		_part("LongHair", _head, Vector3(0, 0.05, 0.1), Vector3(0.3, 0.36, 0.1), hair)
+		_part("Bangs", _head, Vector3(0, 0.25, -0.11), Vector3(0.26, 0.06, 0.06), hair)
+		for side: float in [-1.0, 1.0]:
+			_part(
+				"Cheek%d" % int(side),
+				_head,
+				Vector3(side * 0.08, 0.1, -0.126),
+				Vector3(0.04, 0.025, 0.01),
+				_material(Color(0.95, 0.55, 0.6))
+			)
+		_part(
+			"Lanyard",
+			_torso,
+			Vector3(0, 0.2, -0.135),
+			Vector3(0.08, 0.1, 0.01),
+			_material(Color(0.2, 0.4, 0.8))
+		)
 	for side: float in [-1.0, 1.0]:
 		var tag := "L" if side < 0.0 else "R"
 		_part(
@@ -172,3 +218,12 @@ func _material(color: Color) -> StandardMaterial3D:
 	material.albedo_color = color
 	material.roughness = 0.85
 	return material
+
+
+## Raises the right arm forward and up by `amount` (0..1), e.g. to pat a head.
+## Call after `pose()`.
+func reach(amount: float) -> void:
+	if _hips == null or amount <= 0.0:
+		return
+	_shoulders[1].rotation = _shoulders[1].rotation.lerp(Vector3(1.3, 0, 0.1), amount)
+	_elbows[1].rotation.x = lerpf(_elbows[1].rotation.x, 0.2, amount)

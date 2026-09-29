@@ -67,3 +67,23 @@ func test_trump_spawn_and_initial_follow_segment_have_floor_and_clearance() -> v
 	query.transform.origin = start + Vector3.UP * 0.95
 	query.motion = PatronMath.route(PatronModel.MAMDANI_LOOK)[1] - start
 	assert_almost_eq(space.cast_motion(query)[0], 1.0, 0.001)
+
+
+func test_mitch_route_is_clear_and_on_the_floor() -> void:
+	var space := _world.get_world_3d().direct_space_state
+	var points: Array[Vector3] = PatronMath.MITCH_ROUTE
+	for i: int in points.size():
+		var ray := PhysicsRayQueryParameters3D.create(
+			points[i] + Vector3.UP * 0.5, points[i] + Vector3.DOWN * 0.5
+		)
+		var hit := space.intersect_ray(ray)
+		assert_false(hit.is_empty(), "floor under %s" % points[i])
+		var start := points[i] + Vector3.UP * 0.95
+		var end := points[PatronMath.next_waypoint(i, points.size())] + Vector3.UP * 0.95
+		var query := PhysicsShapeQueryParameters3D.new()
+		query.shape = _hull
+		query.transform.origin = start
+		query.motion = end - start
+		assert_almost_eq(space.cast_motion(query)[0], 1.0, 0.001, "leg %s -> %s" % [start, end])
+	# The x 8.5 leg shares the mayor's aisle, so Trump can meet him.
+	assert_almost_eq(points[3].x, PatronMath.route(PatronModel.MAMDANI_LOOK)[0].x, 0.01)
