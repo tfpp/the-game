@@ -1,0 +1,82 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/gps/gps.gd" id="1_gps"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="2_dest"]
+
+[node name="Gps" type="Node3D"]
+script = ExtResource("1_gps")
+
+[node name="Destinations" type="Node3D" parent="."]
+
+[node name="GamingFloor" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+script = ExtResource("2_dest")
+label = "Gaming Floor"
+hint = "Slots and roulette in the sunken middle of the casino"
+
+[node name="PettingParlor" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0, 0)
+script = ExtResource("2_dest")
+label = "Petting Parlor"
+hint = "Frogs, their pond and the penguin (west)"
+
+[node name="HarborRoom" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, 0)
+script = ExtResource("2_dest")
+label = "Harbor Room"
+hint = "The ferry and its basin (east)"
+
+[node name="Gallery" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -10)
+script = ExtResource("2_dest")
+label = "Gallery"
+hint = "Balcony above the gaming floor, up the west stairs"
+
+[node name="Kaaba" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 0, -20.5)
+script = ExtResource("2_dest")
+label = "Kaaba"
+hint = "Pray for luck at the slots (northwest)"
+
+[node name="SouthLobby" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 28)
+script = ExtResource("2_dest")
+label = "South Lobby"
+hint = "Doors to the lounge, hotel, apartments and garage"
+
+[node name="Lounge" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -597)
+script = ExtResource("2_dest")
+label = "The Lounge"
+hint = "Through the booth door in the south lobby"
+
+[node name="WineCellar" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, -599)
+script = ExtResource("2_dest")
+label = "Wine Cellar"
+hint = "Below the lounge"
+
+[node name="HotelWing" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.75, 0, -1396)
+script = ExtResource("2_dest")
+label = "Hotel Wing"
+hint = "Six grand rooms off the south lobby"
+
+[node name="Apartments" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 0, 1200)
+script = ExtResource("2_dest")
+label = "Lily Apartments"
+hint = "Reception desk and elevator to your unit"
+
+[node name="ParkingGarage" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 597)
+script = ExtResource("2_dest")
+label = "Parking Garage"
+hint = "Three dark levels behind the staff door"
+area = AABB(-19, -1, 585, 38, 12, 30)
+
+[node name="AdventureArcade" type="Marker3D" parent="Destinations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 0)
+script = ExtResource("2_dest")
+label = "Adventure Arcade"
+hint = "Classic adventure game cabinets"

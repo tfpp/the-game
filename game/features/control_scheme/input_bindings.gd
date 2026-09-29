@@ -51,6 +51,7 @@ const SECTIONS: Array[Dictionary] = [
 			[&"toggle_console", "Developer console"],
 			[&"spray", "Spray"],
 			[&"toggle_changelog", "Release notes"],
+			[&"gps", "GPS phone"],
 		],
 	},
 ]
