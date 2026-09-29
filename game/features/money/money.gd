@@ -130,6 +130,11 @@ static func poorest_peers(all_balances: Dictionary) -> Dictionary:
 	return result
 
 
+## Server-only: the accounts API ID behind `peer`, or 0 for temporary wallets.
+func account_for(peer: int) -> int:
+	return _account(peer)
+
+
 func _account(peer: int) -> int:
 	var account: Dictionary = Network.peer_accounts.get(peer, {})
 	return int(account.get("account_id", 0))
@@ -283,6 +288,39 @@ func charge(peer: int, id: String, amount_cents: int) -> Dictionary:
 			_unresolved.erase(account)
 	if generation != _generation:
 		return {"error": "Session changed"}
+	if _account(peer) == account and result.has("balance"):
+		_set_balance(peer, int(result["balance"]))
+	_busy.erase(peer)
+	return result
+
+
+## Server-only: settles one player's whole roulette round in a single atomic,
+## idempotent operation: deducts `wager_cents` and pays `payout_cents` (winnings plus
+## returned stakes). `account` is the account captured when the bets locked, so a
+## disconnect mid-spin still settles the bet. Rejects everything, including a win,
+## if the wallet can't cover the wager. Retry with the same `id` after an error.
+func settle_roulette(
+	peer: int, account: int, id: String, wager_cents: int, payout_cents: int
+) -> Dictionary:
+	if not multiplayer.is_server() or _busy.has(peer) or wager_cents <= 0 or payout_cents < 0:
+		return {"error": "Wallet loading — try again"}
+	_busy[peer] = true
+	var generation := _generation
+	var result: Dictionary
+	if account <= 0:
+		var balance := int(balances.get(peer, -1))
+		if not _temporary() or balance < 0:
+			result = {"error": "Wallet unavailable", "rejected": true}
+		elif balance < wager_cents:
+			result = {"error": "You can't cover that bet", "rejected": true}
+		else:
+			result = {"balance": balance - wager_cents + payout_cents}
+	else:
+		result = await _request(
+			account, "roulette", id, {"wager_cents": wager_cents, "payout_cents": payout_cents}
+		)
+	if generation != _generation:
+		return {"error": "Session changed", "rejected": true}
 	if _account(peer) == account and result.has("balance"):
 		_set_balance(peer, int(result["balance"]))
 	_busy.erase(peer)

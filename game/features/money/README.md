@@ -34,6 +34,12 @@ if the wallet can't cover it. It's the `charge` action on `POST /api/game/money`
 (`amount_cents`, capped server-side well above any planned price) — added for
 `features/gun_machine`'s machine; see that feature's README for how it's spent.
 
+`PlayerMoney.settle_roulette(peer, account, id, wager_cents, payout_cents)` settles a
+whole roulette round in one idempotent operation: it deducts the wager and pays the
+payout together, rejecting both if the wallet can't cover the wager. It's the `roulette`
+action (`wager_cents` up to the slot cap, `payout_cents` at most 36 times the wager); see
+`features/roulette/README.md`.
+
 ## Server connection
 
 Deploy the updated **API first**, then the matching game server and web client. The bot
