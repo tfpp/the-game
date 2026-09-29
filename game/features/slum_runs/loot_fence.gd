@@ -59,7 +59,9 @@ func request_sell() -> void:
 	if sale["busy"]:
 		return
 	sale["busy"] = true
-	var result := await wallet.sell_loot(peer_id, sale["operation"], sale["amount"])
+	var result := await wallet.sell_loot(
+		peer_id, sale["operation"], sale["amount"], "Sold loot to the fence"
+	)
 	if not _pending.has(peer_id) or _pending[peer_id] != sale:
 		return
 	if result.has("balance"):

@@ -83,6 +83,10 @@ func interaction_text() -> String:
 	return "Bribe Donald Trump (-%s)" % PlayerMoney.format_money(bribe_price(_my_bribes))
 
 
+func speaker_name() -> String:
+	return "Donald Trump"
+
+
 func _apply_talk(player: Player) -> bool:
 	var peer := player.get_multiplayer_authority()
 	if _charging.has(peer):
