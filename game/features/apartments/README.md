@@ -32,6 +32,9 @@ destination selection, then reuses its preload, sender/range validation and owne
 teleport; a missing replicated floor safely disables travel until it arrives.
 Existing elevator and room-door interfaces are unchanged.
 
+`in_unit(peer, point)` tells whether a point is inside that peer's own unit (from
+`unit_bounds(unit)`, matching `interior.gd`); `features/bar_companion` uses it.
+
 Tests: `tests/features/apartments/` covers allocation thresholds, repeated requests,
 invalid peers/range, reconnects, guest reuse, late snapshots, preloading and return
 travel, and actual collision support/capsule clearance through all ten rooms.

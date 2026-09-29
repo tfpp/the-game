@@ -4,6 +4,10 @@ class_name ChangelogEntries
 
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Vivienne at the bar",
+		"summary": "Buy drinks, win for charisma and walk Vivienne to your room for a lucky night.",
+	},
+	{
 		"title": "Full mobile rendering",
 		"summary": "Phones now use desktop rendering settings without extra graphics limits.",
 	},
