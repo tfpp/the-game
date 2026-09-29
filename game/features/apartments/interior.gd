@@ -1,8 +1,6 @@
 extends Node3D
 ## Static geometry built only inside the local player's StreamedRoom.
 
-const CLERK := preload("res://features/casino_hub/models/salon_dealer.glb")
-const FINISHES := preload("res://features/casino_hub/model_materials.gd")
 const CHROME := preload("res://features/casino_hub/materials/chrome.tres")
 const WALL := preload("res://features/casino_hub/materials/wallpaper.tres")
 const WOOD := preload("res://features/casino_hub/materials/wood.tres")
@@ -32,10 +30,6 @@ func _build_lobby() -> void:
 	_shell(16, 14)
 	_box("Desk", Vector3(0, 0.6, -3), Vector3(4, 1.2, 1.2), WOOD)
 	_box("Counter", Vector3(0, 1.25, -3), Vector3(4.3, 0.1, 1.4), BRASS)
-	var clerk := CLERK.instantiate() as Node3D
-	clerk.position = Vector3(0, 0, -4)
-	add_child(clerk)
-	FINISHES.apply_finishes(clerk)
 	_elevator_frame(Vector3(5, 0, -6), 0)
 	_sign("LILY APARTMENTS\nFRONT DESK · FREE ROOMS", Vector3(0, 2.9, -4))
 	_sign("EXPRESS ELEVATOR\nYour floor ↑", Vector3(5, 2.8, -5.9))

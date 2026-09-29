@@ -98,6 +98,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Keep hotel rooms, stairs, sewers and the atrium readable at night and on phones
   with steady indoor ambient lighting.
 - Remove the Adventure Arcade, its computer games and Python authoring and probe scripts.
+- Shoot salon guests, dealers, the bartender and the apartment clerk with any gun;
+  they return after six seconds.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

@@ -11,6 +11,11 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Shootable salon NPCs",
+		"summary":
+		"Shoot salon guests, dealers and the apartment clerk; they return after six seconds.",
+	},
+	{
 		"title": "Shared search stashes",
 		"summary":
 		"Search wrecks and dumpsters, then drag their shared valuables into your backpack.",

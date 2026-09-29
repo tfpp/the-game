@@ -38,6 +38,7 @@ func test_entire_six_metre_spawn_jitter_area_is_clear() -> void:
 	for x: int in range(-3, 4):
 		for z: int in range(-3, 4):
 			var query := PhysicsShapeQueryParameters3D.new()
+			query.collision_mask = 1  # Match player movement; layer 2 is weapon-only.
 			query.shape = _hull
 			query.transform.origin = spawn.global_position + Vector3(x, 0, z)
 			var hits := _world.get_world_3d().direct_space_state.intersect_shape(query)
@@ -68,6 +69,7 @@ func test_gallery_staircase_has_support_and_standing_clearance() -> void:
 func _sweep(start: Vector3, end: Vector3) -> void:
 	for reverse: bool in [false, true]:
 		var query := PhysicsShapeQueryParameters3D.new()
+		query.collision_mask = 1  # Match player movement; layer 2 is weapon-only.
 		query.shape = _hull
 		query.transform.origin = end if reverse else start
 		query.motion = start - end if reverse else end - start

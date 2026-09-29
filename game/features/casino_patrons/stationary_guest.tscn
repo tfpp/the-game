@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/casino_patrons/stationary_patron.gd" id="script"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_guest.glb" id="model"]
+
+[node name="StationaryPatron" type="StaticBody3D"]
+script = ExtResource("script")
+collision_layer = 2
+collision_mask = 0
+
+[node name="Body" parent="." instance=ExtResource("model")]

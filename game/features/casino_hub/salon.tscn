@@ -4,13 +4,13 @@
 
 [ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_card_table.glb" id="card_table"]
 
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_dealer.glb" id="dealer"]
+[ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_dealer.tscn" id="dealer"]
 
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_guest.glb" id="guest"]
+[ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_guest.tscn" id="guest"]
 
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_seated.glb" id="seated"]
+[ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_seated.tscn" id="seated"]
 
-[ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_lady.glb" id="lady"]
+[ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_lady.tscn" id="lady"]
 
 [ext_resource type="PackedScene" path="res://features/casino_hub/models/salon_bar.glb" id="bar"]
 

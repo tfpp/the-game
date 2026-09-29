@@ -127,3 +127,22 @@ func test_mode_change_discards_old_reservations_and_floors() -> void:
 	assert_eq(_home.unit_for(1), 0)
 	assert_eq(_home.floors.get_child_count(), 0)
 	assert_eq(_home.claim(1), 1)
+
+
+func test_clerk_death_survives_room_streaming_and_does_not_block_claims() -> void:
+	_player()
+	var lobby := _home.get_node("Lobby") as StreamedRoom
+	var clerk := lobby.get_node("Clerk") as StationaryPatron
+	clerk.set_physics_process(false)
+	assert_eq(clerk.global_position, Vector3(200, 0, 1196))
+	clerk.take_hit(1)
+	lobby.load_room(10000)
+	lobby.unload_room()
+	lobby.load_room(10000)
+	await wait_physics_frames(2)
+	assert_false(clerk.net_alive)
+	assert_false(clerk._body.visible)
+	_home.get_node("Lobby/Desk").request_room()
+	assert_eq(_home.unit_for(1), 1)
+	clerk._physics_process(StationaryPatron.RESPAWN_DELAY_S)
+	assert_true(clerk.net_alive)
