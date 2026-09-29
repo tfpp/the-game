@@ -31,6 +31,8 @@ const TIES: Array[Color] = [Color(0.7, 0.1, 0.1), Color(0.8, 0.65, 0.15), Color(
 ## name tag floating overhead.
 const MAMDANI_LOOK := 4
 const MAMDANI_NAME := "Zohran Mamdani"
+const TRUMP_LOOK := 5
+const TRUMP_NAME := "Donald Trump"
 
 ## Hip height when standing; the pose lifts and lowers `Hips` around it.
 const HIP_HEIGHT := 0.95
@@ -62,6 +64,12 @@ func build(look: int) -> void:
 		trousers = jacket
 		hair = _material(Color(0.05, 0.04, 0.04))
 		tie = _material(Color(0.12, 0.3, 0.62))
+	if look == TRUMP_LOOK:
+		skin = _material(Color(0.92, 0.64, 0.43))
+		jacket = _material(Color(0.08, 0.12, 0.23))
+		trousers = jacket
+		hair = _material(Color(0.88, 0.73, 0.36))
+		tie = _material(Color(0.8, 0.04, 0.06))
 	_hips = _pivot("Hips", self, Vector3(0, HIP_HEIGHT, 0))
 	_part("Pelvis", _hips, Vector3(0, 0.02, 0), Vector3(0.34, 0.18, 0.22), trousers)
 	_torso = _pivot("Torso", _hips, Vector3(0, 0.1, 0))
@@ -78,6 +86,9 @@ func build(look: int) -> void:
 		_part("Beard", _head, Vector3(0, 0.04, -0.01), Vector3(0.25, 0.1, 0.25), hair)
 		_part("Moustache", _head, Vector3(0, 0.085, -0.13), Vector3(0.1, 0.02, 0.02), hair)
 		_name_tag(MAMDANI_NAME)
+	if look == TRUMP_LOOK:
+		_part("SweptFringe", _head, Vector3(-0.035, 0.25, -0.12), Vector3(0.28, 0.09, 0.1), hair)
+		_name_tag(TRUMP_NAME)
 	for side: float in [-1.0, 1.0]:
 		var tag := "L" if side < 0.0 else "R"
 		_part(

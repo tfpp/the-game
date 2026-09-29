@@ -11,6 +11,27 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "İstanbul Kebab",
+		"summary": "Order a free kebab from animated staff directly ahead of casino spawn.",
+	},
+	{
+		"title": "Jackpot fireworks",
+		"summary":
+		"Winning slot spins set off fireworks and spill gold coins; bigger prizes, bigger show.",
+	},
+	{
+		"title": "Smoother guns",
+		"summary": "Buying and firing guns no longer makes the game stutter.",
+	},
+	{
+		"title": "Trump follows the mayor",
+		"summary": "Meet Donald Trump behind Mamdani by the slots and use E to pay $100.",
+	},
+	{
+		"title": "Six little secrets",
+		"summary": "Explore the annex wings to discover six hidden joke plaques.",
+	},
+	{
 		"title": "Touch fire button",
 		"summary": "Tap FIRE on a phone or pull a controller's right trigger to attack.",
 	},

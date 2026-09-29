@@ -12,7 +12,7 @@ Its searchable dumpsters use `alley_loot.tres`; their contents reset when the
 next excursion begins. `tests/features/slum_runs/` covers travel, shared
 destination and loot reset behavior.
 
-The checked-in low polygon geometry in `models/` includes stamped dumpsters,
+The checked-in low polygon geometry in `res://assets/slum_alley/models/` includes stamped dumpsters,
 boarded window banks, fire escapes, streetlamp posts and fence wire. The OBJ
 files and material palette are editable assets. Existing CSG remains the collision and loot
 interaction surface; the meshes are visual only. One combined street mesh keeps

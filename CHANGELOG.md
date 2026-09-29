@@ -110,6 +110,21 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   console when the game can't reach the accounts server.
 - Add a FIRE button to the touch controls and let the controller's right trigger attack
   and shoot, alongside the existing right bumper.
+- Explore the annex wings to find six hidden joke plaques with no extra controls.
+- Meet Donald Trump following the mayor by the slots; use E to pay him $100.
+- Fix the web client crashing (`null function`) and getting stuck on "Joining…" when
+  joining a server after signing in.
+- Move feature textures, models and audio into `game/assets/<feature>/`.
+- Add pixel-art roulette table textures (wheel, betting layout, felt, rail, apron) under
+  `game/assets/roulette/textures/`.
+- Stop the game stuttering when you buy a gun or fire: gun flashes are glow effects instead
+  of lights, and their shaders load with the game.
+- Celebrate winning slot machine spins with fireworks over the cabinet and gold coins
+  spilling from the tray; both grow with the size of the prize.
+- Visit İstanbul Kebab directly ahead of casino spawn for animated staff, a rotating döner
+  spit and free kebabs you can hold, share and eat.
+- Stop sign-in failing with "Couldn't reach the accounts server" on slow-loading browsers:
+  long startup frames no longer time out account requests, and the error now names the cause.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

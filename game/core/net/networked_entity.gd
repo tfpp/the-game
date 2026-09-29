@@ -45,7 +45,8 @@ func target() -> Node:
 
 
 func is_authority() -> bool:
-	return multiplayer.is_server() and is_multiplayer_authority()
+	# Detached nodes have no multiplayer API; release builds crash calling into null.
+	return is_inside_tree() and multiplayer.is_server() and is_multiplayer_authority()
 
 
 ## Register trusted callbacks once in the owning feature's _ready.

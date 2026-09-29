@@ -4,7 +4,7 @@ extends SceneTree
 
 const SOURCE := "res://features/casino_hub/tools/interior_source.tscn"
 const OUTPUT := "res://features/casino_hub/interior.tscn"
-const BATCHES := "res://features/casino_hub/models/decor_batches.scn"
+const BATCHES := "res://assets/casino_hub/models/decor_batches.scn"
 
 var _groups: Dictionary[String, SurfaceTool] = {}
 var _materials: Dictionary[String, Material] = {}

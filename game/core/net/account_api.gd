@@ -10,6 +10,10 @@ const SESSION_KEY := "the-game.session"
 const VERIFIER_KEY := "the-game.discord-verifier"
 const NATIVE_STORE := "user://account.cfg"
 const TIMEOUT_S := 15.0
+## Longest single frame counted toward TIMEOUT_S. The web build is single-threaded, so
+## the first frames (shader compiles on slow GPUs) can stall for many seconds while the
+## browser has already received the response; those stalls must not expire a request.
+const MAX_FRAME_S := 0.25
 
 var base_url := ""
 var session_token := ""
@@ -40,7 +44,9 @@ func call_api(method: HTTPClient.Method, path: String, body: Variant = null) -> 
 		log_failure(method, path, "no accounts API URL is configured")
 		return _result(0, {}, "no_api", "No accounts server is configured")
 	var http := HTTPRequest.new()
-	http.timeout = TIMEOUT_S
+	# HTTPRequest's own timeout counts raw frame time, so a long loading stall expires
+	# it even when the server answered; `_await_response` keeps a clamped budget instead.
+	http.timeout = 0.0
 	add_child(http)
 	var headers := PackedStringArray(["Content-Type: application/json", "Accept: application/json"])
 	if has_session():
@@ -49,16 +55,19 @@ func call_api(method: HTTPClient.Method, path: String, body: Variant = null) -> 
 	var err := http.request(base_url + path, headers, method, payload)
 	if err != OK:
 		http.queue_free()
-		log_failure(method, path, "request not sent: %s (%d)" % [error_string(err), err])
-		return _result(0, {}, "network", "Couldn't reach the accounts server")
-	var response: Array = await http.request_completed
+		return _network_failure(
+			method,
+			path,
+			HTTPRequest.RESULT_CANT_CONNECT,
+			"request not sent: %s (%d)" % [error_string(err), err]
+		)
+	var response: Array = await _await_response(http)
 	http.queue_free()
 	var outcome: int = response[0]
 	var status: int = response[1]
 	var raw: PackedByteArray = response[3]
 	if outcome != HTTPRequest.RESULT_SUCCESS:
-		log_failure(method, path, describe_outcome(outcome))
-		return _result(0, {}, "network", "Couldn't reach the accounts server")
+		return _network_failure(method, path, outcome)
 	var data := {}
 	if raw.size() > 0:
 		var parsed: Variant = JSON.parse_string(raw.get_string_from_utf8())
@@ -164,6 +173,70 @@ func finish_discord(code: String) -> Dictionary:
 	save_value(VERIFIER_KEY, "")
 	var body := {"code": code, "code_verifier": verifier}
 	return _keep_session(await call_api(HTTPClient.METHOD_POST, "/auth/discord/exchange", body))
+
+
+## Waits for `http` to finish, giving up after TIMEOUT_S of frame time where each frame
+## counts at most MAX_FRAME_S. Resolves to the `request_completed` arguments.
+func _await_response(http: HTTPRequest) -> Array:
+	var response: Array = []
+	http.request_completed.connect(
+		func(result: int, code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
+			response.append_array([result, code, headers, body])
+	)
+	var waited := 0.0
+	while response.is_empty():
+		await get_tree().process_frame
+		if not response.is_empty():
+			break
+		waited += counted_frame_time(get_process_delta_time())
+		if waited >= TIMEOUT_S:
+			http.cancel_request()
+			return [HTTPRequest.RESULT_TIMEOUT, 0, PackedStringArray(), PackedByteArray()]
+	return response
+
+
+## How much of one frame's `delta` counts toward TIMEOUT_S.
+static func counted_frame_time(delta: float) -> float:
+	return clampf(delta, 0.0, MAX_FRAME_S)
+
+
+## The player-facing message for a failed HTTPRequest `result`, naming the failure so
+## reports say whether it was DNS, TLS, a timeout or a dropped connection.
+static func network_failure_message(result: int) -> String:
+	var reason := ""
+	match result:
+		HTTPRequest.RESULT_CANT_RESOLVE:
+			reason = "DNS lookup failed"
+		HTTPRequest.RESULT_CANT_CONNECT:
+			reason = "couldn't connect"
+		HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR:
+			reason = "TLS handshake failed"
+		HTTPRequest.RESULT_TIMEOUT:
+			reason = "timed out"
+		HTTPRequest.RESULT_NO_RESPONSE, HTTPRequest.RESULT_CONNECTION_ERROR:
+			reason = "connection dropped"
+		_:
+			reason = "error %d" % result
+	return "Couldn't reach the accounts server (%s)" % reason
+
+
+func _network_failure(
+	method: HTTPClient.Method, path: String, result: int, reason: String = ""
+) -> Dictionary:
+	var message := network_failure_message(result)
+	log_failure(method, path, reason if not reason.is_empty() else describe_outcome(result))
+	return _result(0, {}, "network", message)
+
+
+static func _method_name(method: HTTPClient.Method) -> String:
+	match method:
+		HTTPClient.METHOD_GET:
+			return "GET"
+		HTTPClient.METHOD_POST:
+			return "POST"
+		HTTPClient.METHOD_PUT:
+			return "PUT"
+	return "HTTP"
 
 
 func _keep_session(result: Dictionary) -> Dictionary:

@@ -52,3 +52,18 @@ func test_each_route_leg_is_clear() -> void:
 			query.motion = end - start
 			var result := space.cast_motion(query)
 			assert_almost_eq(result[0], 1.0, 0.001, "route %d leg %s -> %s" % [index, start, end])
+
+
+func test_trump_spawn_and_initial_follow_segment_have_floor_and_clearance() -> void:
+	var start := PatronMath.route(PatronModel.MAMDANI_LOOK)[0] + Vector3(0, 0, -0.7)
+	var space := _world.get_world_3d().direct_space_state
+	var ray := PhysicsRayQueryParameters3D.create(start + Vector3.UP * 0.5, start + Vector3.DOWN)
+	var hit := space.intersect_ray(ray)
+	assert_false(hit.is_empty())
+	if not hit.is_empty():
+		assert_almost_eq((hit["position"] as Vector3).y, start.y, 0.05)
+	var query := PhysicsShapeQueryParameters3D.new()
+	query.shape = _hull
+	query.transform.origin = start + Vector3.UP * 0.95
+	query.motion = PatronMath.route(PatronModel.MAMDANI_LOOK)[1] - start
+	assert_almost_eq(space.cast_motion(query)[0], 1.0, 0.001)

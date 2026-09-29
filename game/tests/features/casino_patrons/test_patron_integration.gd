@@ -22,12 +22,14 @@ func test_spawn_builds_the_same_patron_for_every_peer() -> void:
 
 func test_late_joiners_get_position_facing_and_ragdoll_state() -> void:
 	var patron := PatronScene.instantiate()
-	var config := (patron.get_node("Sync") as MultiplayerSynchronizer).replication_config
+	add_child_autofree(patron)
+	var config := (
+		(patron.get_node("NetworkedEntity/Sync") as MultiplayerSynchronizer).replication_config
+	)
 	for property: String in ["net_position", "net_yaw", "net_alive", "net_ragdoll", "net_fall_dir"]:
 		var path := NodePath(".:" + property)
 		assert_true(config.has_property(path), property)
 		assert_true(config.property_get_spawn(path), "%s arrives on spawn" % property)
-	patron.free()
 
 
 func test_patrons_are_punchable_humanoids_with_articulated_limbs() -> void:
