@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Pray together for +200% base slot win chance per blessing, online or offline.",
 	},
 	{
+		"title": "NPC subtitles",
+		"summary": "NPC dialogue now shows as movie subtitles at the bottom of the screen.",
+	},
+	{
 		"title": "Money log",
 		"summary": "The chat log tells you whenever you get money, and why.",
 	},
