@@ -76,6 +76,11 @@ const SPOTS: Array[Vector4] = [
 	Vector4(-22.5, 80.5, 0, -1),
 	Vector4(-30, 74, 1, 0),
 	Vector4(-15, 74, -1, 0),
+	# Food court (features/food_court), east of the south corridor.
+	Vector4(12, 35, 0, 1),
+	Vector4(24, 35, 0, 1),
+	Vector4(10, 51, 0, -1),
+	Vector4(26, 51, 0, -1),
 ]
 
 var _lights: Array[OmniLight3D] = []
