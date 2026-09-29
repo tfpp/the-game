@@ -135,6 +135,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Revise the dealer head against the side concept with a swept-back crown, compact nose, recessed chin and corrected jaw-to-neck transition.
 - Turn the loot fence beside the slum gate into a pawn shop with a glass display case,
   three gold balls and a PAWN SHOP sign; press Use there to pawn a valuable.
+- Meet Vivienne at the casino bar: buy drinks from the bartender, win at the slots to gain
+  charisma, and pay her (cheaper the more charming you are) to walk her to your Lily
+  Apartments room for a 10-minute lucky night with better slot odds. Drink too much and
+  your charisma drops.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

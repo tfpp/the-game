@@ -1,0 +1,128 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/bar_companion/bar_companion.gd" id="root"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="entity"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="interaction"]
+[ext_resource type="Script" path="res://features/bar_companion/bartender.gd" id="bartender"]
+[ext_resource type="Script" path="res://features/bar_companion/companion.gd" id="companion"]
+[ext_resource type="Script" path="res://features/bar_companion/companion_model.gd" id="model"]
+[ext_resource type="Script" path="res://features/bar_companion/charm_hud.gd" id="hud"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
+[ext_resource type="FontFile" path="res://assets/fonts/orbitron/Orbitron-Bold.ttf" id="hud_font"]
+
+[sub_resource type="CylinderMesh" id="seat"]
+top_radius = 0.2
+bottom_radius = 0.2
+height = 0.06
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="pole"]
+top_radius = 0.03
+bottom_radius = 0.03
+height = 0.7
+radial_segments = 6
+
+[sub_resource type="CylinderMesh" id="base"]
+top_radius = 0.18
+bottom_radius = 0.22
+height = 0.03
+radial_segments = 12
+
+[sub_resource type="TorusMesh" id="ring"]
+inner_radius = 0.15
+outer_radius = 0.18
+rings = 12
+ring_segments = 4
+
+[node name="BarCompanion" type="Node3D"]
+script = ExtResource("root")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")
+replicated_properties = Array[NodePath]([NodePath(".:stats")])
+
+[node name="Bartender" type="Node3D" parent="."]
+position = Vector3(-6.5, -0.4, -9.6)
+script = ExtResource("bartender")
+
+[node name="NetworkedEntity" type="Node" parent="Bartender"]
+script = ExtResource("interaction")
+
+[node name="Speech" type="Label3D" parent="Bartender"]
+visible = false
+position = Vector3(0, 1.6, -0.7)
+billboard = 1
+pixel_size = 0.004
+modulate = Color(1, 0.95, 0.6, 1)
+font_size = 36
+outline_size = 10
+
+[node name="Stool" type="Node3D" parent="."]
+position = Vector3(-5.2, -1.5, -8.67)
+
+[node name="Seat" type="MeshInstance3D" parent="Stool"]
+position = Vector3(0, 0.71, 0)
+mesh = SubResource("seat")
+surface_material_override/0 = ExtResource("wood")
+
+[node name="Pole" type="MeshInstance3D" parent="Stool"]
+position = Vector3(0, 0.36, 0)
+mesh = SubResource("pole")
+surface_material_override/0 = ExtResource("brass")
+
+[node name="Base" type="MeshInstance3D" parent="Stool"]
+position = Vector3(0, 0.015, 0)
+mesh = SubResource("base")
+surface_material_override/0 = ExtResource("brass")
+
+[node name="Footrest" type="MeshInstance3D" parent="Stool"]
+position = Vector3(0, 0.3, 0)
+mesh = SubResource("ring")
+surface_material_override/0 = ExtResource("brass")
+
+[node name="Vivienne" type="Node3D" parent="."]
+position = Vector3(-5.2, -1.5, -8.55)
+script = ExtResource("companion")
+
+[node name="NetworkedEntity" type="Node" parent="Vivienne"]
+script = ExtResource("interaction")
+replicated_properties = Array[NodePath]([NodePath(".:net_escort")])
+continuous_properties = Array[NodePath]([NodePath(".:net_position"), NodePath(".:net_yaw")])
+replication_interval = 0.1
+
+[node name="Body" type="Node3D" parent="Vivienne"]
+script = ExtResource("model")
+
+[node name="Speech" type="Label3D" parent="Vivienne"]
+visible = false
+position = Vector3(0, 2.4, 0)
+billboard = 1
+pixel_size = 0.004
+modulate = Color(1, 0.8, 0.85, 1)
+font_size = 36
+outline_size = 10
+
+[node name="Hud" type="CanvasLayer" parent="."]
+script = ExtResource("hud")
+
+[node name="Status" type="Label" parent="Hud"]
+visible = false
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -616.0
+offset_top = -110.0
+offset_right = -16.0
+offset_bottom = -84.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.7, 0.78, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("hud_font")
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 2

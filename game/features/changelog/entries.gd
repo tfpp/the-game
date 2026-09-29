@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Vivienne at the bar",
+		"summary": "Buy drinks, win for charisma and walk Vivienne to your room for a lucky night.",
+	},
+	{
 		"title": "Pawn shop",
 		"summary": "Sell slum loot at the pawn shop counter beside the Crown's slum gate.",
 	},
