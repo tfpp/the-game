@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "End key to Use",
+		"summary": "Press End to interact, handy with the arrow-key layout.",
+	},
+	{
 		"title": "İstanbul Kebab",
 		"summary": "Order a free kebab from animated staff directly ahead of casino spawn.",
 	},

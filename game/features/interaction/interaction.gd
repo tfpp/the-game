@@ -9,9 +9,12 @@ func _ready() -> void:
 	add_to_group(&"interaction")
 	var key := InputEventKey.new()
 	key.physical_keycode = KEY_E
+	# End sits beside the arrow keys, so left-handed players can Use without letting go.
+	var end_key := InputEventKey.new()
+	end_key.physical_keycode = KEY_END
 	var button := InputEventJoypadButton.new()
 	button.button_index = JOY_BUTTON_B
-	Controls.ensure_action(&"use", [key, button])
+	Controls.ensure_action(&"use", [key, end_key, button])
 	_prompt = Label.new()
 	_prompt.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	_prompt.position = Vector2(-250, -165)

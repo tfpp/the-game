@@ -1,6 +1,6 @@
 # Use interaction
 
-Self-registers the `use` action: physical E and the controller's right face button
+Self-registers the `use` action: physical E, End (next to the left-handed arrow-key layout) and the controller's right face button
 (B on Xbox / Circle on PlayStation). The touch overlay calls this feature's `use()`
 through the `interaction` group, once per touch press.
 
