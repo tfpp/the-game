@@ -15,6 +15,14 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Buy drinks, win for charisma and walk Vivienne to your room for a lucky night.",
 	},
 	{
+		"title": "Trump bribes",
+		"summary": "Bribe Donald Trump for slightly better slot luck; each bribe costs more.",
+	},
+	{
+		"title": "NPC subtitles",
+		"summary": "NPC dialogue now shows as movie subtitles at the bottom of the screen.",
+	},
+	{
 		"title": "Money log",
 		"summary": "The chat log tells you whenever you get money, and why.",
 	},

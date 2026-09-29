@@ -145,6 +145,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   charisma, and pay her (cheaper the more charming you are) to walk her to your Lily
   Apartments room for a 10-minute lucky night with better slot odds. Drink too much and
   your charisma drops.
+- Show what NPCs say to you as movie-style subtitles at the bottom of the screen instead of
+  a floating speech bubble.
+- Bribe Donald Trump for slightly better slot machine luck. Each bribe doubles in price, up
+  to five, and he promises to remodel part of the casino with one of 1,000 quips.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

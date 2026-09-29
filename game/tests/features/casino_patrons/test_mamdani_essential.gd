@@ -4,14 +4,18 @@ extends GutTest
 ## peer 1 is the server and the talking player.
 
 const PatronScene := preload("res://features/casino_patrons/patron.tscn")
+const SUBTITLES := preload("res://features/subtitles/feature.tscn")
 const PlayerScene := preload("res://core/player/player.tscn")
 
+var _subtitles: Subtitles
 var _patron: CasinoPatron
 var _player: Player
 var _wallet: PlayerMoney
 
 
 func before_each() -> void:
+	_subtitles = SUBTITLES.instantiate()
+	add_child_autofree(_subtitles)
 	_wallet = PlayerMoney.new()
 	add_child_autofree(_wallet)
 	_wallet.set_process(false)
@@ -98,6 +102,6 @@ func test_talk_request_goes_through_the_entity() -> void:
 	_patron.use()
 	await wait_frames(3)
 	assert_eq(int(_wallet.balances[1]), 2000 + PlayerMoney.COIN_CREDIT_CENTS)
-	var speech := _patron.get_node("Speech") as Label3D
-	assert_true(speech.visible)
-	assert_string_contains(speech.text, "subway")
+	assert_true(_subtitles.is_showing())
+	assert_string_contains(_subtitles.current_text(), "subway")
+	assert_string_contains(_subtitles.current_text(), PatronModel.MAMDANI_NAME)

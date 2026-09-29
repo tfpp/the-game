@@ -119,6 +119,9 @@ func request_spin() -> void:
 	# Vivienne's lucky night (features/bar_companion) adds rolls on top of blessings.
 	var charm := get_tree().get_first_node_in_group(&"bar_companion") as BarCompanion
 	rerolls += charm.rerolls_for(peer_id) if charm != null else 0
+	var trump := get_tree().get_first_node_in_group(&"trump_favor")
+	if trump != null:
+		rerolls += int(trump.favor_rerolls(peer_id))
 	var result: Dictionary = await wallet.spin(peer_id, id, buy_in_cents, rerolls)
 	if generation != _generation:
 		return

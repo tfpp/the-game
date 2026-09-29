@@ -1,7 +1,9 @@
 extends GutTest
 
 const FEATURE := preload("res://features/casino_patrons/feature.tscn")
+const SUBTITLES := preload("res://features/subtitles/feature.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
+var _subtitles: Subtitles
 var _feature: Node3D
 var _trump: CasinoPatron
 var _mayor: CasinoPatron
@@ -21,6 +23,8 @@ class DelayedWallet:
 
 
 func before_each() -> void:
+	_subtitles = SUBTITLES.instantiate()
+	add_child_autofree(_subtitles)
 	_feature = FEATURE.instantiate()
 	add_child_autofree(_feature)
 	_mayor = _feature._spawn_patron({"index": PatronModel.MAMDANI_LOOK})
@@ -79,7 +83,8 @@ func test_use_charges_exactly_100_and_rejects_immediate_duplicate() -> void:
 	_trump.use()
 	await wait_frames(2)
 	assert_eq(int(_wallet.balances[1]), 15000)
-	assert_eq((_trump.get_node("Speech") as Label3D).text, "Paid $100.")
+	assert_string_contains(_subtitles.current_text(), "remodeling")
+	assert_eq(_trump.bribes_for(1), 1)
 
 
 func test_insufficient_funds_leave_wallet_intact() -> void:
@@ -87,7 +92,7 @@ func test_insufficient_funds_leave_wallet_intact() -> void:
 	_trump.use()
 	await wait_frames(2)
 	assert_eq(int(_wallet.balances[1]), 9999)
-	assert_string_contains((_trump.get_node("Speech") as Label3D).text, "afford")
+	assert_string_contains(_subtitles.current_text(), "afford")
 
 
 func test_rejects_unknown_peer_payload_range_and_downed_state() -> void:
@@ -140,4 +145,45 @@ func test_pending_charge_blocks_duplicate_and_disconnect_drops_reply() -> void:
 	delayed.settle.emit()
 	await wait_frames(2)
 	assert_eq(int(delayed.balances[1]), 15000, "accepted charge completes once")
-	assert_false((_trump.get_node("Speech") as Label3D).visible)
+	assert_false(_subtitles.is_showing())
+
+
+func test_bribes_escalate_then_stop_charging() -> void:
+	var paid := 0
+	for bribe: int in Trump.MAX_BRIBES + 1:
+		_wallet.balances[1] = 1000000
+		assert_true(_trump._apply_talk(_player))
+		await wait_frames(2)
+		paid = 1000000 - int(_wallet.balances[1])
+		var expected := 10000 << bribe if bribe < Trump.MAX_BRIBES else 0
+		assert_eq(paid, expected, "bribe %d" % bribe)
+	assert_eq(_trump.bribes_for(1), Trump.MAX_BRIBES)
+	assert_eq(_trump.bribes_for(2), 0)
+	_trump._my_bribes = 2
+	assert_string_contains(_trump.interaction_text(), "$400")
+
+
+func test_failed_charge_adds_no_favor() -> void:
+	_wallet.balances[1] = 50
+	_trump._apply_talk(_player)
+	await wait_frames(2)
+	assert_eq(_trump.bribes_for(1), 0)
+	assert_eq(_trump.favor_rerolls(1), 0)
+
+
+func test_favor_is_slight_and_capped() -> void:
+	assert_eq(Trump.favor_chance(0), 0.0)
+	assert_almost_eq(Trump.favor_chance(1), 0.2, 0.001)
+	assert_almost_eq(Trump.favor_chance(Trump.MAX_BRIBES), 1.0, 0.001)
+	_trump._bribes[1] = Trump.MAX_BRIBES
+	assert_eq(_trump.favor_rerolls(1), 1)
+	assert_eq(_trump.favor_rerolls(2), 0)
+
+
+func test_quips_are_1000_unique_remodels() -> void:
+	var seen := {}
+	for i: int in TrumpQuips.COUNT:
+		var text := TrumpQuips.quip(i)
+		assert_true(text.contains("remodeling"))
+		seen[text] = true
+	assert_eq(seen.size(), 1000)
