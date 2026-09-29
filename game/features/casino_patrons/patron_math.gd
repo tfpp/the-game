@@ -12,6 +12,13 @@ const PERSONAL_SPACE_M := 0.9
 ## ...but only this long, then squeezes past (players don't collide with patrons).
 const MAX_WAIT_S := 2.0
 
+## Zohran Mamdani (PatronModel.MAMDANI_LOOK) is essential: a gunshot knocks him out
+## for this long instead of killing him.
+const KNOCKOUT_S := 5.0
+## Talking to him pays subway fare (PlayerMoney.COIN_CREDIT_CENTS) once per this
+## many seconds per account.
+const FARE_COOLDOWN_S := 3600.0
+
 ## Closed loops of world-space waypoints on the gaming floor's clear aisles
 ## (tests/features/casino_patrons/test_patron_routes.gd sweeps each leg). A
 ## two-point loop is a stroll back and forth.
@@ -57,3 +64,16 @@ static func is_in_the_way(from: Vector3, heading: Vector3, other: Vector3) -> bo
 	if offset.length() > PERSONAL_SPACE_M:
 		return false
 	return offset.dot(Vector3(heading.x, 0.0, heading.z)) > 0.0
+
+
+## Seconds until a player who last got fare at `last_s` can get it again at `now_s`
+## (0 when ready). A negative `last_s` means never claimed.
+static func fare_wait_s(last_s: float, now_s: float) -> float:
+	if last_s < 0.0:
+		return 0.0
+	return maxf(last_s + FARE_COOLDOWN_S - now_s, 0.0)
+
+
+## "59 min", "1 min"... for the cooldown reply; always rounds up.
+static func wait_text(seconds: float) -> String:
+	return "%d min" % maxi(ceili(seconds / 60.0), 1)

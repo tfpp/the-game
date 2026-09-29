@@ -6,7 +6,12 @@ they flinch, stagger back and turn to face you; enough punches (or one full powe
 punch) knock them out into a limp ragdoll. They get back up 4 s after the last
 punch, walk back to where they were hit and carry on. The fifth (`PatronModel.MAMDANI_LOOK`) is Zohran Mamdani, New York
 City's mayor, with a trimmed beard, blue tie and a floating name tag; he strolls
-an aisle beside the slot machines. Any weapon gibs them; they
+an aisle beside the slot machines. He is essential: a gunshot knocks him out for
+5 s (`PatronMath.KNOCKOUT_S`) instead of gibbing him, and he gets up where he fell.
+Press Use (E) near him to talk: he pays $10 of subway fare through
+`PlayerMoney.credit_coin()` once an hour per account (per peer for guests). His
+reply shows in a speech bubble only to the player who talked; the cooldown lives in
+server memory and resets on restart. Any weapon gibs them; they
 walk back in from the start of their route 6 s later.
 
 ## How it works

@@ -104,6 +104,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   movement, snap turning, jump and nearby object interaction.
 - Add Zohran Mamdani as a casino patron who strolls the gaming floor beside the slot machines
   with a floating name tag.
+- Knock out Mamdani instead of killing him; he wakes up a few seconds later. Press Use
+  near him for $10 of subway fare, once an hour.
 - Log detailed reasons (URL, HTTP status, timeout, DNS, TLS or connection error) to the
   console when the game can't reach the accounts server.
 
