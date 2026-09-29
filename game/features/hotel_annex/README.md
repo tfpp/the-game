@@ -71,5 +71,7 @@ arrival marker. Connection `door` objects create corridor partitions and interac
 leaves; the older exterior `openings` describe static joinery.
 
 Validation: GUT `test_hotel_annex.gd` and `test_swing_doors.gd`, plus
-`python3 game/tests/features/room_doors/network_test.py` for real WebSocket peers,
+`godot --headless --path game -s scripts/network_checks.gd -- doors` for real WebSocket peers,
 shared doors/key pickup, range checks, late joins and stream unloads.
+
+Use the same command with `-- hotel` for the full-game hotel/atrium round trip.

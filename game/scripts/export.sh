@@ -19,8 +19,6 @@ if [[ -n "${BUILD_VERSION:-}" ]]; then
     "$BUILD_VERSION" > build_info.gd
   echo "Build version: $BUILD_VERSION"
 fi
-# Bundle read-only repository metadata for native and browser consoles.
-python3 scripts/git_snapshot.py --gdscript > features/console/repo_snapshot.gd
 # RELEASE_NOTES=1 groups the in-game changelog by release (features/changelog/); it needs
 # git history and the vX.Y.Z tags. Without it the changelog is one list.
 if [[ -n "${RELEASE_NOTES:-}" ]]; then
@@ -28,6 +26,8 @@ if [[ -n "${RELEASE_NOTES:-}" ]]; then
   echo "Release notes: $(grep -c '"version"' features/changelog/releases.gd) releases"
 fi
 "$GODOT" --headless --import >/dev/null 2>&1 || true
+# Bundle read-only repository metadata using Godot after its first import.
+"$GODOT" --headless -s scripts/git_snapshot.gd
 # Ship only the assets the game uses: the asset packs stay whole in the repo, and
 # scripts/unused_assets.gd lists the rest, which is added to the presets' exclude
 # filters for this export only.

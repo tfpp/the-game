@@ -87,7 +87,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Space corridor lights, seal window views with day/night sky backdrops, and replace door lock labels with Kenney door and key sounds.
 - Add thirteen hotel skylights, reusable ceiling pieces for every room kit, and broad live daylight with readable night lighting.
 - Add the atrium wing to GPS, keep bird simulation server-authoritative after joining, and clean up Windows multiplayer test processes reliably.
-- Install Python in preview, web and server export containers so the bundled Git-console snapshot can be generated.
+- Use Godot for repository snapshots and multiplayer test runners; remove Python installation from export jobs.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

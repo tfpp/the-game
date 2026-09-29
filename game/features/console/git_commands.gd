@@ -46,9 +46,4 @@ func _load_snapshot() -> void:
 		var resource := load(SNAPSHOT_PATH) as GDScript
 		_data = resource.get("DATA")
 	elif OS.has_feature("editor") and not OS.has_feature("web"):
-		var output: Array = []
-		var script := ProjectSettings.globalize_path("res://scripts/git_snapshot.py")
-		if OS.execute("python3", [script], output) == OK and not output.is_empty():
-			var parsed: Variant = JSON.parse_string(str(output[0]))
-			if parsed is Dictionary:
-				_data = parsed
+		_data = preload("res://features/console/git_snapshot.gd").collect()

@@ -102,6 +102,6 @@ still belongs in replicated properties. Client calls to `send_event` do nothing.
   networking or add server reconciliation for client-owned movement.
 
 Automated coverage: `tests/unit/test_networked_entity.gd` and
-`python3 game/tests/features/room_doors/network_test.py`. The latter exercises a
+`godot --headless --path game -s scripts/network_checks.gd -- doors`. The latter exercises a
 generic spawned counter plus doors/pickups, including rejected requests, authenticated
 senders, replication, late joins and removal on all peers.

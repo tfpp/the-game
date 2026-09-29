@@ -56,5 +56,5 @@ Walking resumes at either landing; session changes release the player. Keep the 
 outside streamed Content and configure `top_landing`, `bottom_landing` and `access_door`.
 The default six-metre ladder descends from y=0 to y=-6 (player centers y=1 and y=-5).
 
-Run `python3 game/tests/features/room_doors/network_test.py` for shared open/close,
+Run `godot --headless --path game -s scripts/network_checks.gd -- doors` for shared open/close,
 server range/key validation, key ring replication, streaming and late-join checks.
