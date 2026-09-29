@@ -30,6 +30,18 @@ func _ready() -> void:
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	Network.mode_changed.connect(_on_mode_changed)
+	# A headless dedicated server draws nothing, so it has no shaders to warm up.
+	set_process(DisplayServer.get_name() != "headless")
+
+
+## Client: once a camera exists, draws every gun and projectile material once
+## (GunFx.warm_up) so buying or firing the first gun doesn't hitch on a shader compile.
+func _process(_delta: float) -> void:
+	var camera := get_viewport().get_camera_3d()
+	if camera == null:
+		return
+	set_process(false)
+	GunFx.warm_up(camera)
 
 
 ## Callable from anywhere via `.call("price_cents")` (a `const` isn't reachable

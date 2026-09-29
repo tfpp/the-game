@@ -94,3 +94,11 @@ roll: `AmmoType.RAY`, semi-auto green bolts with a small splash, 20-round magazi
 
 `GunMachine.PRICE_CENTS` and `GunGenerator.AMMO_PROFILES`' ranges are the only
 numbers to tune for balance; nothing else needs to change.
+
+## Performance
+
+`gun_fx.gd` (`GunFx`) caches every gun and projectile material and the flash mesh.
+Muzzle, impact and explosion flashes are unshaded glow meshes, not `OmniLight3D`s: on
+the web's Compatibility renderer each new light or material variant compiled a shader
+mid-game, which stuttered on buying and firing (issue #241). Clients call
+`GunFx.warm_up()` once a camera exists, drawing each variant for a few frames at load.

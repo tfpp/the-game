@@ -16,6 +16,10 @@ const ENTRIES: Array[Dictionary] = [
 		"Winning slot spins set off fireworks and spill gold coins; bigger prizes, bigger show.",
 	},
 	{
+		"title": "Smoother guns",
+		"summary": "Buying and firing guns no longer makes the game stutter.",
+	},
+	{
 		"title": "Trump follows the mayor",
 		"summary": "Meet Donald Trump behind Mamdani by the slots and use E to pay $100.",
 	},
