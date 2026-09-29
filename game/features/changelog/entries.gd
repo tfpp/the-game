@@ -15,6 +15,11 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "The chat log tells you whenever you get money, and why.",
 	},
 	{
+		"title": "Jackpot fireworks",
+		"summary":
+		"Winning slot spins set off fireworks and spill gold coins; bigger prizes, bigger show.",
+	},
+	{
 		"title": "Smoother guns",
 		"summary": "Buying and firing guns no longer makes the game stutter.",
 	},
