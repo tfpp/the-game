@@ -28,12 +28,12 @@ const ENTRIES: Array[Dictionary] = [
 	},
 	{
 		"title": "Shootable salon NPCs",
-XX
+		"summary":
 		"Shoot salon guests, dealers and the apartment clerk; they return after six seconds.",
 	},
 	{
 		"title": "Shared search stashes",
-XX
+		"summary":
 		"Search wrecks and dumpsters, then drag their shared valuables into your backpack.",
 	},
 	{
@@ -42,22 +42,22 @@ XX
 	},
 	{
 		"title": "Room rendering",
-XX
+		"summary":
 		"The server tracks your room so distant districts stop drawing while you explore indoors.",
 	},
 	{
 		"title": "Golden Crown slum runs",
-XX
+		"summary":
 		"Leave the Crown for shared slum runs, bring valuables home to sell, or lose them when killed.",
 	},
 	{
 		"title": "Rain Alleys",
-XX
+		"summary":
 		"Search rain-soaked dumpsters among boarded blocks and failing streetlights beyond the Crown.",
 	},
 	{
 		"title": "Atrium hotel",
-XX
+		"summary":
 		"Visit the four-floor atrium wing from the classic hotel, with gentle ramps to guest rooms.",
 	},
 	{
@@ -66,27 +66,27 @@ XX
 	},
 	{
 		"title": "Hotel skylights",
-XX
+		"summary":
 		"Thirteen framed skylights brighten hotel rooms with daylight and soft night lighting.",
 	},
 	{
 		"title": "Three hotels and the sewer network",
-XX
+		"summary":
 		"Explore classic, modern and Art Deco hotels linked by sewer junctions and climbable ladders.",
 	},
 	{
 		"title": "Concrete service rooms and clearer interactions",
-XX
+		"summary":
 		"Plain concrete storage rooms, spaced hallway lamps, sky-filled windows and door/key sounds.",
 	},
 	{
 		"title": "Shared networked entities",
-XX
+		"summary":
 		"Doors and pickups share one server-validated networking system for future world objects.",
 	},
 	{
 		"title": "Hotel doors and the Upper Study key",
-XX
+		"summary":
 		"Open shared room doors with Use; find the Reading Room key for the study two stairs up.",
 	},
 	{
@@ -95,7 +95,7 @@ XX
 	},
 	{
 		"title": "Wandering bird",
-XX
+		"summary":
 		(
 			"A friendly bird flies continuously between players and casino patrons, "
 			+ "resting near each before moving on."
@@ -103,12 +103,12 @@ XX
 	},
 	{
 		"title": "Lily Apartments",
-XX
+		"summary":
 		"Claim a free room at the front desk and ride the elevator to expanding ten-unit floors.",
 	},
 	{
 		"title": "Desktop app installer",
-XX
+		"summary":
 		"Install the desktop app with one curl command on macOS, Linux or Windows Git Bash.",
 	},
 	{
@@ -121,7 +121,7 @@ XX
 	},
 	{
 		"title": "Baked hotel lighting and branching wings",
-XX
+		"summary":
 		"Explore six generated rooms with branching halls, soft lamp shadows and baked bounced light.",
 	},
 	{
@@ -138,7 +138,7 @@ XX
 	},
 	{
 		"title": "Procedural room authoring",
-XX
+		"summary":
 		(
 			"Build textured rooms with mouldings, eight-sided pillars, "
 			+ "framed doors and windows from blueprints."
@@ -166,17 +166,17 @@ XX
 	},
 	{
 		"title": "Boxing",
-XX
+		"summary":
 		"Empty-handed, click to jab or hold and release to power punch; knock dummies flat.",
 	},
 	{
 		"title": "Ray Gun",
-XX
+		"summary":
 		"The Gun-O-Matic has a rare 1-in-30 chance to hand out the Ray Gun from Zombies.",
 	},
 	{
 		"title": "Remembered leaderboard",
-XX
+		"summary":
 		"Offline players stay ranked; signed-in scores survive reconnects and server restarts.",
 	},
 	{
@@ -185,7 +185,7 @@ XX
 	},
 	{
 		"title": "Modelled casino furniture and textured surfaces",
-XX
+		"summary":
 		(
 			"Curved padded tables, contoured chairs and shaped patrons replace blocky salon props."
 			+ " Clothing, leather, skin and trim now use small shared textures."
@@ -193,7 +193,7 @@ XX
 	},
 	{
 		"title": "The old casino salon",
-XX
+		"summary":
 		(
 			"Burgundy carpet, green card tables, formal patrons and an amber-lit bar."
 			+ " Explore the upstairs gallery and the new slot-machine bank."
@@ -201,7 +201,7 @@ XX
 	},
 	{
 		"title": "PS1 casino and lighter mobile rendering",
-XX
+		"summary":
 		(
 			"Chunky props, crisp 128-pixel textures and warm matte finishes."
 			+ " Mobile renders a lighter 3D scene with a sharp HUD."
@@ -213,22 +213,22 @@ XX
 	},
 	{
 		"title": "Gnome express tunnels",
-XX
+		"summary":
 		"Use any gnome hole to enter the tunnels, run at 4x speed and exit at any other hole."
 	},
 	{
 		"title": "Flashlights",
-XX
+		"summary":
 		"Press F to toggle a flashlight that follows your aim and lights the way for everyone."
 	},
 	{
 		"title": "Scavenging",
-XX
+		"summary":
 		"Search wrecked cars in the parking garage with Use for wallets, watches, cash and more."
 	},
 	{
 		"title": "Casino material and model polish",
-XX
+		"summary":
 		(
 			"Rich carpet, teal wallpaper and walnut with physical materials,"
 			+ " detailed casino furniture, and realistic slot cabinets with rolling mechanical reels."
@@ -236,7 +236,7 @@ XX
 	},
 	{
 		"title": "Open annex routes and desktop radar",
-XX
+		"summary":
 		(
 			"Explore all ten annex rooms through cleared passages and solid floors."
 			+ " Desktop players now have a top-right radar showing nearby rooms and players."
@@ -244,7 +244,7 @@ XX
 	},
 	{
 		"title": "Room doors",
-XX
+		"summary":
 		(
 			"A lounge booth in the south lobby leads to a lounge and a wine cellar. Rooms"
 			+ " behind doors only load while you're in them."
@@ -252,7 +252,7 @@ XX
 	},
 	{
 		"title": "Codex subscription usage",
-XX
+		"summary":
 		(
 			"Discord's /usage command now shows both Claude and Codex subscription limits,"
 			+ " with reset times and separate status for each provider."
@@ -260,7 +260,7 @@ XX
 	},
 	{
 		"title": "Feature builder usage reports",
-XX
+		"summary":
 		(
 			"PRs and Discord build updates now show the model, tokens used, and estimated"
 			+ " API-equivalent cost, with readable PR-number links."
@@ -268,7 +268,7 @@ XX
 	},
 	{
 		"title": "Choose your feature builder",
-XX
+		"summary":
 		(
 			"Discord's /feature command now requires a harness choice: Claude or Codex."
 			+ " Your choice also handles revisions and conflict fixes for that feature."
@@ -280,7 +280,7 @@ XX
 	},
 	{
 		"title": "Mix-and-match creatures",
-XX
+		"summary":
 		(
 			"Character Model (Esc menu) now picks a body, head and tail independently â€” a"
 			+ " frog head or bird head, a lizard, fin or fluffy tail, on any body. Mix them"
@@ -289,7 +289,7 @@ XX
 	},
 	{
 		"title": "Day/night cycle",
-XX
+		"summary":
 		(
 			"Esc > Leaderboard ranks every connected player by money, jumps and kills, in"
 			+ " three tabs."
@@ -297,7 +297,7 @@ XX
 	},
 	{
 		"title": "Eight slot machines, eight stakes",
-XX
+		"summary":
 		(
 			"Each of the eight slot machines now has its own buy-in, from $1 up to"
 			+ " $1,000,000,000, shown on its cabinet and in the interaction prompt. Prizes"
@@ -306,7 +306,7 @@ XX
 	},
 	{
 		"title": "One weapon at a time",
-XX
+		"summary":
 		(
 			"Equipping a gun now holsters whatever else you had out. A strip at the bottom of"
 			+ " the screen shows every weapon slot (1-8, 9 for the gun machine) and which one's"
@@ -315,17 +315,17 @@ XX
 	},
 	{
 		"title": "Poverty flies",
-XX
+		"summary":
 		"Players ranked in the poorest 80% by wallet balance now have a swarm of flies buzzing overhead."
 	},
 	{
 		"title": "Bouncier frogs",
-XX
+		"summary":
 		"Frogs jump twice as high, bounce off walls, ribbit when hit, and there are twice as many."
 	},
 	{
 		"title": "Dev elevator",
-XX
+		"summary":
 		(
 			"A hazard-striped debug warp pad (noclip to find it) instantly sends you to the"
 			+ " parking garage for testing â€” internal, not part of the game proper."
@@ -333,7 +333,7 @@ XX
 	},
 	{
 		"title": "Parking garage",
-XX
+		"summary":
 		(
 			"A dark three-story parking structure outside the casino â€” take the staff door"
 			+ " near the trampolines. Ramps and a stairwell connect all three levels."
@@ -341,17 +341,17 @@ XX
 	},
 	{
 		"title": "Wandering gnomes",
-XX
+		"summary":
 		"Gnome burrows hug the outer walls, dash to far-off holes along real routed paths, and dodge you."
 	},
 	{
 		"title": "Shooting gallery",
-XX
+		"summary":
 		"A Doom-style arena of killable, gory humanoid dummies. Every weapon can now hurt animals too."
 	},
 	{
 		"title": "Steadier gun viewmodels",
-XX
+		"summary":
 		(
 			"Generated guns no longer jitter in first person, shots fire from where you aim and"
 			+ " stay visible, and each gunshot now plays from the gun that fired it."
@@ -367,12 +367,12 @@ XX
 	},
 	{
 		"title": "Game settings",
-XX
+		"summary":
 		"Esc > Settings > Game: tune jump height and frog hop rate for everyone in the world."
 	},
 	{
 		"title": "Soccer ball physics",
-XX
+		"summary":
 		"The map's soccer ball rolls and bounces now â€” bump it with your body or shoot it."
 	},
 	{
@@ -381,12 +381,12 @@ XX
 	},
 	{
 		"title": "Casino skylights",
-XX
+		"summary":
 		"Two skylights over the gaming floor let you see the daytime sky from the casino."
 	},
 	{
 		"title": "UI refresh",
-XX
+		"summary":
 		"Key and button icons on the Controls page, menu icons, restyled sliders and click sounds."
 	},
 	{
@@ -395,37 +395,37 @@ XX
 	},
 	{
 		"title": "The Gilded Lily casino",
-XX
+		"summary":
 		"Explore a faded 1964 casino with sunken gaming, eight slots, a petting zoo and an indoor ferry."
 	},
 	{
 		"title": "AWP one-shots",
-XX
+		"summary":
 		"The AWP sniper rifle now deals damage like every other gun: a slow, lethal shot."
 	},
 	{
 		"title": "Girl model option",
-XX
+		"summary":
 		"Pick a girl body model from the Esc menu's Character Model screen. Everyone sees your choice."
 	},
 	{
 		"title": "Ferry helm",
-XX
+		"summary":
 		"Taking the ferry's wheel now plants you at its old-timey helm instead of wandering off."
 	},
 	{
 		"title": "Settings menu",
-XX
+		"summary":
 		"Esc > Settings: rebind keys and controller buttons, tune look sensitivity and set volume."
 	},
 	{
 		"title": "Gameplay sound effects",
-XX
+		"summary":
 		"Guns, hits and animal explosions now make sound. Pickups and inventory actions have audio cues."
 	},
 	{
 		"title": "Exploding frogs",
-XX
+		"summary":
 		"Shoot frogs for a burst of flying pieces; they return after four seconds. Penguins face forward."
 	},
 	{
@@ -434,32 +434,32 @@ XX
 	},
 	{
 		"title": "Backpacks and clothing",
-XX
+		"summary":
 		"Start in white underwear. Find clothing, manage your backpack and view your wallet with I."
 	},
 	{
 		"title": "Blocky players",
-XX
+		"summary":
 		"Players now have blocky bodies with walking, running, jumping, and item-holding animations."
 	},
 	{
 		"title": "Better items and grips",
-XX
+		"summary":
 		"Remodeled guns, banana and ball, with visible hands and proper first- and third-person grips."
 	},
 	{
 		"title": "Frogs on the move",
-XX
+		"summary":
 		"Frogs have detailed bodies, varied sizes and hops, avoid obstacles, and flee nearby players."
 	},
 	{
 		"title": "Frog makeover",
-XX
+		"summary":
 		"Frogs are now small blocky voxel frogs in proper frog-green tones, not blue blobs."
 	},
 	{
 		"title": "Noclip for everyone",
-XX
+		"summary":
 		"Press V to toggle noclip. Switching control schemes no longer needs play time first."
 	},
 	{
@@ -476,7 +476,7 @@ XX
 	},
 	{
 		"title": "Update screen",
-XX
+		"summary":
 		"Web client shows an Updatingâ€¦ screen during a deploy instead of flashing reloads."
 	},
 	{
@@ -485,7 +485,7 @@ XX
 	},
 	{
 		"title": "Item drops & new guns",
-XX
+		"summary":
 		"Drop any held item with G; thrown items bounce based on weight. Added an SMG and a shotgun."
 	},
 	{"title": "Esc menu", "summary": "Controls and Release notes moved into the Esc menu."},
