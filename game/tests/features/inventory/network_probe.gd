@@ -104,7 +104,10 @@ func _observe() -> void:
 		await get_tree().process_frame
 	await get_tree().create_timer(0.1).timeout
 	_check(model.shirt_id.is_empty() and model.pants_id.is_empty(), "Remote removal not applied")
-	_check(model.get_node("Rig/LeftLeg/Underwear").visible, "Remote underwear not restored")
+	_check(
+		not bool(model.human.material.get_shader_parameter("pants_equipped")),
+		"Remote underwear not restored"
+	)
 	_check(inventory.backpack[0] == "pistol", "Remote backpack swap missing")
 	print("INVENTORY_OBSERVER_DONE")
 

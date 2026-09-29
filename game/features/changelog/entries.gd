@@ -15,6 +15,21 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Buy drinks, win for charisma and walk Vivienne to your room for a lucky night.",
 	},
 	{
+		"title": "Flip them off",
+		"summary":
+		"Press B for a networked middle-finger emote in first and third person; rebind it in Controls.",
+	},
+	{
+		"title": "Rigged hands and fingers",
+		"summary":
+		"Five articulated digits per hand, with relaxed and gripping poses in both camera views.",
+	},
+	{
+		"title": "Make your character your own",
+		"summary":
+		"Textured human models with casual and tactical outfits; customize your look in Settings.",
+	},
+	{
 		"title": "Trump bribes",
 		"summary": "Bribe Donald Trump for slightly better slot luck; each bribe costs more.",
 	},

@@ -1,20 +1,6 @@
-extends CanvasLayer
-## Lets a player mix and match their avatar's body, head and tail, independently, like
-## an impossible creature. Body is the original "default" build, the "girl" variant
-## (narrower shoulders and waist, wider hips, longer hair) or the full "penguin"
-## costume (its own fixed head, ignoring the head choice below). Head is a "human"
-## face, a "frog" face or a "bird" beak. Tail is "none", a "lizard" tail, a fish
-## "fin" or a "fluffy" tail. Opens from the Esc menu, like Controls. Each choice is
-## server-validated and replicated by `PlayerModels` (see `player_models.gd`), so
-## every peer draws the same combination for everyone, the same way clothing already
-## works.
+extends Node
+## Character settings page. Uses the existing rig, clothing and SettingsStore.
 
-const MODAL_GROUP := &"modal_ui"
-const ESC_MENU_GROUP := &"esc_menu_links"
-const UI_THEME := preload("res://ui/theme/ui_theme.tres")
-
-## Each row's `id` selects the matching `PlayerModels`/`BlockPlayerModel` calls in
-## `_select` and `_refresh` below.
 const ROWS: Array[Dictionary] = [
 	{
 		"id": "body",
@@ -49,141 +35,204 @@ const ROWS: Array[Dictionary] = [
 	},
 ]
 
-var _panel: Control
 var _preview: InventoryPreview
-var _buttons: Dictionary = {}
+var _choices: Dictionary = {}
+var _saved: Dictionary = {}
+var _pending: Array[Dictionary] = []
+var _restore := true
 
 
 func _ready() -> void:
-	layer = 9
-	add_to_group(ESC_MENU_GROUP)
-	_build()
+	add_to_group(&"settings_pages")
+	_saved = SettingsStore.load_data("character")
+	if not PlayerAppearance.valid(_saved):
+		_saved = {}
+	Network.mode_changed.connect(_on_mode_changed)
+	var models := get_parent() as PlayerModels
+	(models.get_node("NetworkedEntity") as NetworkedEntity).request_finished.connect(_finished)
 
 
 func _process(_delta: float) -> void:
-	if _panel.visible:
+	var models := get_parent() as PlayerModels
+	if _restore and Network.mode != Network.Mode.SERVER and multiplayer.multiplayer_peer != null:
+		if (
+			(
+				multiplayer.multiplayer_peer.get_connection_status()
+				== MultiplayerPeer.CONNECTION_CONNECTED
+			)
+			and _local_player_exists()
+		):
+			_restore = false
+			if not _saved.is_empty():
+				_pending.append(_saved.duplicate())
+				models.entity.request_action(&"appearance", _saved)
+	if is_instance_valid(_preview) and _preview.is_visible_in_tree():
 		_refresh()
 
 
-func _input(event: InputEvent) -> void:
-	if _panel.visible and event.is_action_pressed(&"release_mouse"):
-		get_viewport().set_input_as_handled()
-		_close()
+func _local_player_exists() -> bool:
+	for node: Node in get_tree().get_nodes_in_group(&"players"):
+		if node.get_multiplayer_authority() == multiplayer.get_unique_id():
+			return true
+	return false
 
 
-func esc_menu_label() -> String:
+func settings_page_label() -> String:
 	return "Character Model"
 
 
-func esc_menu_open() -> void:
-	_panel.visible = true
-	add_to_group(MODAL_GROUP)
-	Controls.pause()
-	_refresh()
-
-
-func _close() -> void:
-	_panel.visible = false
-	if is_in_group(MODAL_GROUP):
-		remove_from_group(MODAL_GROUP)
-	_preview.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
-	Controls.start()
-
-
-func _select(row_id: String, option_id: String) -> void:
-	var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
-	if models == null:
-		return
-	match row_id:
-		"body":
-			models.request_body_type.rpc_id(1, option_id)
-		"head":
-			models.request_head_type.rpc_id(1, option_id)
-		"tail":
-			models.request_tail_type.rpc_id(1, option_id)
-
-
-func _refresh() -> void:
-	var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
-	var peer := multiplayer.get_unique_id()
-	var body := models.type_for(peer) if models != null else "default"
-	var head := models.type_for_head(peer) if models != null else "human"
-	var tail := models.type_for_tail(peer) if models != null else "none"
-	_set_row("body", body)
-	_set_row("head", head)
-	_set_row("tail", tail)
-	_preview.model.set_body_type(body)
-	_preview.model.set_head_type(head)
-	_preview.model.set_tail_type(tail)
-	var hand := Hand.for_peer(get_tree(), peer)
-	var shirt := ""
-	var pants := ""
-	if hand != null:
-		_preview.model.set_skin_index(hand.skin_tone_index())
-		shirt = hand.inventory().shirt
-		pants = hand.inventory().pants
-	_preview.show_clothing(shirt, pants)
-
-
-func _set_row(row_id: String, current: String) -> void:
-	var buttons: Dictionary = _buttons[row_id]
-	for option_id: String in buttons:
-		(buttons[option_id] as Button).button_pressed = current == option_id
-
-
-func _build() -> void:
-	var backdrop := ColorRect.new()
-	backdrop.color = Color(0.05, 0.06, 0.08, 0.6)
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	backdrop.theme = UI_THEME
-	backdrop.visible = false
-	add_child(backdrop)
-	_panel = backdrop
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	backdrop.add_child(center)
-	var box_panel := PanelContainer.new()
-	box_panel.custom_minimum_size.x = 440.0
-	center.add_child(box_panel)
+func settings_page_build() -> Control:
+	_choices.clear()
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 10)
-	box_panel.add_child(box)
-	var heading := Label.new()
-	heading.text = "Character Model"
-	heading.theme_type_variation = &"HeadingLabel"
-	box.add_child(heading)
+	box.add_theme_constant_override("separation", 8)
 	var status := Label.new()
-	status.text = "Mix and match a body, head and tail. Everyone sees your choice."
+	status.text = "Your look, shared with everyone. Drag the preview to turn."
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(status)
 	_preview = InventoryPreview.new()
-	_preview.custom_minimum_size.y = 200
 	box.add_child(_preview)
+	_preview.ready.connect(func() -> void: _preview.mouse_filter = Control.MOUSE_FILTER_STOP)
+	_preview.gui_input.connect(_turn_preview)
 	for row: Dictionary in ROWS:
-		var row_id: String = row["id"]
-		var row_label := Label.new()
-		row_label.text = row["label"]
-		box.add_child(row_label)
-		var options := HBoxContainer.new()
-		options.add_theme_constant_override("separation", 8)
-		options.alignment = BoxContainer.ALIGNMENT_CENTER
-		box.add_child(options)
-		var buttons: Dictionary = {}
+		var values: Array[String] = []
+		var labels: Array[String] = []
 		for option: Dictionary in row["options"]:
-			var button := Button.new()
-			button.text = option["label"]
-			button.theme_type_variation = &"SecondaryButton"
-			button.toggle_mode = true
-			button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
-			button.custom_minimum_size.y = 44
-			button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			button.pressed.connect(_select.bind(row_id, option["id"]))
-			options.add_child(button)
-			buttons[option["id"]] = button
-		_buttons[row_id] = buttons
-	var close := Button.new()
-	close.text = "Close"
-	close.theme_type_variation = &"SecondaryButton"
-	close.custom_minimum_size.y = 40
-	close.pressed.connect(_close)
-	box.add_child(close)
+			values.append(option["id"])
+			labels.append(option["label"])
+		_add_choice(box, row["id"], row["label"], labels, values)
+	_add_choice(
+		box,
+		"skin",
+		"Skin tone",
+		["Automatic", "Porcelain", "Light", "Warm", "Tan", "Brown", "Deep brown", "Dark", "Deep"],
+		[]
+	)
+	_add_choice(
+		box,
+		"hair",
+		"Hairstyle",
+		["Classic", "Cropped", "Side swept", "Long", "Bald"],
+		PlayerAppearance.HAIR_STYLES
+	)
+	_add_choice(
+		box, "hair_color", "Hair color", ["Dark brown", "Brown", "Blond", "Auburn", "Silver"], []
+	)
+	_add_choice(box, "outfit", "Outfit", ["Casual", "Tactical"], PlayerAppearance.OUTFITS)
+	_add_choice(box, "eyes", "Eye color", ["Brown", "Blue", "Green", "Grey"], [])
+	var note := Label.new()
+	note.text = (
+		"Skin, hair, eye and outfit choices are saved on this device. "
+		+ "Clothing is equipped in your backpack. Human details appear on human heads."
+	)
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(note)
+	_refresh.call_deferred()
+	return box
+
+
+func _add_choice(
+	box: VBoxContainer, key: String, label: String, labels: Array[String], values: Array[String]
+) -> void:
+	var row := HBoxContainer.new()
+	box.add_child(row)
+	var title := Label.new()
+	title.text = label
+	title.custom_minimum_size.x = 130
+	row.add_child(title)
+	var choice := OptionButton.new()
+	choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	choice.custom_minimum_size.y = 38
+	for text: String in labels:
+		choice.add_item(text)
+	choice.item_selected.connect(_select.bind(key, values))
+	row.add_child(choice)
+	_choices[key] = choice
+
+
+func _select(index: int, key: String, values: Array[String]) -> void:
+	if not _can_customize():
+		return
+	var models := get_parent() as PlayerModels
+	if key in ["body", "head", "tail"]:
+		models.entity.request_action(StringName(key), {"value": values[index]})
+		return
+	var appearance: Dictionary = (
+		_pending.back().duplicate()
+		if not _pending.is_empty()
+		else models.appearance_for(multiplayer.get_unique_id())
+	)
+	appearance[key] = (
+		values[index] if not values.is_empty() else (index - 1 if key == "skin" else index)
+	)
+	_pending.append(appearance.duplicate())
+	models.entity.request_action(&"appearance", appearance)
+
+
+func _finished(action: StringName, result: NetworkedEntity.Result) -> void:
+	if action != &"appearance" or _pending.is_empty():
+		return
+	var data: Dictionary = _pending.pop_front()
+	if result == NetworkedEntity.Result.ACCEPTED:
+		_saved = data
+		SettingsStore.save_data("character", data)
+
+
+func _refresh() -> void:
+	if not is_instance_valid(_preview):
+		return
+	var models := get_parent() as PlayerModels
+	var peer := multiplayer.get_unique_id()
+	var appearance := models.appearance_for(peer)
+	for choice: OptionButton in _choices.values():
+		choice.disabled = not _can_customize()
+	var types := {
+		"body": models.type_for(peer),
+		"head": models.type_for_head(peer),
+		"tail": models.type_for_tail(peer)
+	}
+	for row: Dictionary in ROWS:
+		for index: int in row["options"].size():
+			if row["options"][index]["id"] == types[row["id"]]:
+				(_choices[row["id"]] as OptionButton).select(index)
+	(_choices["skin"] as OptionButton).select(int(appearance["skin"]) + 1)
+	(_choices["hair"] as OptionButton).select(PlayerAppearance.HAIR_STYLES.find(appearance["hair"]))
+	(_choices["hair_color"] as OptionButton).select(int(appearance["hair_color"]))
+	(_choices["outfit"] as OptionButton).select(
+		PlayerAppearance.OUTFITS.find(str(appearance.get("outfit", "casual")))
+	)
+	(_choices["eyes"] as OptionButton).select(int(appearance["eyes"]))
+	_preview.model.set_body_type(types["body"])
+	_preview.model.set_head_type(types["head"])
+	_preview.model.set_tail_type(types["tail"])
+	var hand := Hand.for_peer(get_tree(), peer)
+	_preview.model.set_skin_index(
+		hand.skin_tone_index() if hand != null else PlayerSkin.index_for_id(peer)
+	)
+	_preview.model.set_appearance(appearance)
+	_preview.show_clothing(
+		hand.inventory().shirt if hand != null else "",
+		hand.inventory().pants if hand != null else ""
+	)
+
+
+func _turn_preview(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and event.button_mask & MOUSE_BUTTON_MASK_LEFT:
+		_preview.model.rotation.y += event.relative.x * 0.012
+	elif event is InputEventScreenDrag:
+		_preview.model.rotation.y += event.relative.x * 0.012
+
+
+func _on_mode_changed(_mode: Network.Mode) -> void:
+	_restore = true
+	_pending.clear()
+
+
+func _can_customize() -> bool:
+	return (
+		multiplayer.multiplayer_peer != null
+		and (
+			multiplayer.multiplayer_peer.get_connection_status()
+			== MultiplayerPeer.CONNECTION_CONNECTED
+		)
+		and (multiplayer.is_server() or multiplayer.get_peers().has(1))
+	)

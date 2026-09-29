@@ -66,6 +66,9 @@ func _process(delta: float) -> void:
 	if player != null:
 		global_transform = _mount_transform(player)
 		_pose_arms(player)
+		var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
+		if models != null and models.emote_elapsed(peer_id) >= 0.0:
+			_arms.human.material.set_shader_parameter("hide_left_arm", true)
 	if _flash_timer > 0.0:
 		_flash_timer -= delta
 		if _flash_timer <= 0.0:
@@ -311,6 +314,16 @@ func _pose_arms(player: Player) -> void:
 	else:
 		_arms.set_sleeve_color(PlayerSkin.TONES[skin_tone_index()])
 	var first_person := player.is_local() and not body.visible
+	_arms.visible = true
+	if not first_person and avatar is BlockPlayerModel and avatar.human.visible:
+		_arms.visible = false
+		avatar.human.reach_grip(true, _arms.to_global(Vector3(0.055, -0.04, 0.055)), true)
+		avatar.human.orient_grip(true, global_basis.orthonormalized())
+		var support := support_grip()
+		if support != null:
+			avatar.human.reach_grip(false, support.to_global(Vector3(-0.055, -0.04, 0.055)), true)
+			avatar.human.orient_grip(false, support.global_basis.orthonormalized())
+		return
 	if not first_person and avatar != null and avatar.has_method("shoulder_position"):
 		_arms.pose(
 			_arms.to_local(avatar.call("shoulder_position", true)),
@@ -396,8 +409,11 @@ func drop_inventory_item(item_id: String) -> bool:
 
 
 func skin_tone_index() -> int:
-	return (
+	var fallback := (
 		skin_index
 		if skin_index >= 0 and skin_index < PlayerSkin.TONES.size()
 		else PlayerSkin.index_for_id(peer_id)
 	)
+
+	var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
+	return models.skin_for(peer_id, fallback) if models != null else fallback
