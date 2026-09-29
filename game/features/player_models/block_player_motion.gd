@@ -52,3 +52,18 @@ static func pose(phase: float, velocity: Vector3, grounded: bool, max_speed: flo
 		result["lean"] = -0.08 if rising else 0.05
 		result["bob"] = 0.0
 	return result
+
+
+## Sitting on a bench: thighs forward (the blocky legs have no knees), forearms
+## resting towards the table.
+static func seated_pose() -> Dictionary:
+	return {
+		"state": &"seated",
+		"left_leg": 1.45,
+		"right_leg": 1.45,
+		"left_arm": 0.7,
+		"right_arm": 0.7,
+		"lean": 0.0,
+		"roll": 0.0,
+		"bob": 0.0,
+	}

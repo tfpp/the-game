@@ -23,6 +23,9 @@ var hair_style := "classic"
 var hair_color_index := 0
 var eye_color_index := 0
 var locomotion: StringName = &"idle"
+## Sitting (legs forward, hands on the table). Read each frame from the `seating`
+## group's `is_seated(peer)` (features/food_court booths).
+var seated := false
 var human := SkinnedHuman.new()
 var _left_forearm := Node3D.new()
 var _right_forearm := Node3D.new()
@@ -74,6 +77,8 @@ func _process(delta: float) -> void:
 		set_appearance(models.appearance_for(peer_id))
 	var holding := hand != null and ItemCatalog.find(hand.net_item_id) != null
 	var support := holding and hand.support_grip() != null
+	var seating := get_tree().get_first_node_in_group(&"seating")
+	seated = seating != null and bool(seating.call("is_seated", player.get_multiplayer_authority()))
 	var pitch := player.pitch if player.is_local() else player.net_pitch
 	animate(delta, local_motion, grounded, player.movement.max_speed_m(), pitch, holding, support)
 
@@ -95,6 +100,9 @@ func animate(
 	_was_grounded = grounded
 	_landing = maxf(_landing - delta * 7.0, 0.0)
 	var pose := BlockPlayerMotion.pose(_phase, motion, grounded, max_speed)
+	if seated:
+		pose = BlockPlayerMotion.seated_pose()
+		_landing = 0.0
 	locomotion = pose["state"]
 	var blend := 1.0 - exp(-14.0 * delta)
 	_left_leg.rotation.x = lerp_angle(_left_leg.rotation.x, pose["left_leg"], blend)

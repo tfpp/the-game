@@ -4,6 +4,14 @@ class_name ChangelogEntries
 
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Full mobile rendering",
+		"summary": "Phones now use desktop rendering settings without extra graphics limits.",
+	},
+	{
+		"title": "Food court",
+		"summary": "Walk to the new south-wing food court for kebabs and booths you can sit in.",
+	},
+	{
 		"title": "Flip them off",
 		"summary":
 		"Press B for a networked middle-finger emote in first and third person; rebind it in Controls.",
@@ -36,7 +44,7 @@ const ENTRIES: Array[Dictionary] = [
 	},
 	{
 		"title": "İstanbul Kebab",
-		"summary": "Order a free kebab from animated staff directly ahead of casino spawn.",
+		"summary": "Order a free kebab from animated staff in the food court.",
 	},
 	{
 		"title": "Jackpot fireworks",

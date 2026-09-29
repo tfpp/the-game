@@ -1,4 +1,4 @@
-# PS1 presentation and mobile budget
+# PS1 presentation
 
 World surfaces use nearest-neighbour sampling with mipmaps, matte vertex lighting,
 and low-polygon silhouettes. The casino's textured finishes add restrained
@@ -20,61 +20,27 @@ lighting so broad procedural surfaces do not interpolate illumination from only
 their corners.
 Remote-player movement and gameplay replication stay with their original owners.
 
-On Android, iOS and touch browsers (including iPad desktop user agents):
+Mobile and desktop use the same rendering settings: native 3D resolution by default,
+authored shadows and light masks, and authored prop draw distances. RetroStyle
+does not override viewport resolution or anti-aliasing, including on resize.
+There is no mobile-only local-light budget or small-prop distance cutoff.
+Universal material/mesh styling and room-based visibility still apply.
 
-- 3D rendering is capped at 432 pixels high, at most 70% of native resolution.
-- HUD and touch controls keep native resolution, with orientation-aware UI scaling
-  (480×720 portrait, 960×540 landscape virtual layout sizes).
-- The 3D budget uses physical window dimensions, not stretched UI coordinates.
-- Shadow maps, MSAA, screen-space AA and TAA are disabled.
-- At most two nearby local lights are active, selected four times per second.
-- Small props stop drawing beyond 40 metres; room architecture remains visible.
-- Physics catches up at most two steps per frame, so a slow frame doesn't
-  snowball into slower ones.
-- Decorative sphere/cylinder meshes are capped at 12 radial segments.
-- The existing desktop-only radar remains hidden.
+On Android, iOS and touch browsers (including iPad desktop user agents), the HUD
+retains orientation-aware UI scaling (480×720 portrait, 960×540 landscape virtual
+layout sizes). Physics still catches up at most two steps per frame to avoid
+slow-frame spirals. The existing desktop-only radar remains hidden.
 
-No device FPS guarantee is implied by desktop browser emulation. Profile on the
-actual target phone before selecting a frame-rate target. For a reproducible native
-mobile-profile visual/counter probe:
+For a reproducible native mobile-layout visual/counter probe:
 
 ```sh
 godot --path game res://tests/features/retro_style/retro_probe.tscn -- --retro-mobile
 ```
 
-The console reports renderer counters and saves day/night screenshots under `/tmp`.
-The probe also simulates touch controls; browser tests exercise actual touch-device
-detection and radar visibility.
-
-## Measured comparison
-
-Native Compatibility renderer, same 1280×720 lobby camera and touch HUD; previous
-main at `04475dc` versus this mobile profile. Day/night are fixed in the probe.
-Counters measure submitted rendering work, not phone frame rate:
-
-| Metric | Previous | Mobile PS1 |
-| --- | ---: | ---: |
-| Day visible draw calls | 2,285 | 1,027 |
-| Day visible primitives | 228,820 | 169,072 |
-| Night visible draw calls | 2,324 | 1,043 |
-| Night visible primitives | 291,860 | 184,480 |
-| Four casino image payloads, including mips | 25,152,216 bytes | 262,140 bytes |
-
-That is about 55% fewer visible draws and 99% less decoded image data for the four
-casino textures. At this window size, the mobile 3D buffer is 960×540 (56% of the
-original pixel count), while UI remains 1280×720. Scene counters vary with players,
-viewpoint and streamed rooms. These figures do not measure texture-driver overhead.
-
-The reference salon adds original table, bar, gallery and patron meshes. Their
-palette shader computes warm illumination per vertex; indoor texture shaders use
-fixed warm shading with broad light pools, so disabling mobile shadow maps does
-not expose the room to the outdoor sun. The updated probe captures both the
-original lobby viewpoint and the furnished salon at noon and midnight.
-
-With the new salon furnishings, the eye-level salon probe submitted 291–303 draws
-and 66,119–77,675 primitives at 1280×720 with the mobile profile. This is a different
-viewpoint from the lobby comparison above; it is not a like-for-like improvement
-claim or a physical-phone FPS result.
+The console reports renderer counters and saves day/night screenshots under /tmp.
+The probe simulates touch controls and checks native 3D scale. Run without
+--retro-mobile for desktop. These runs do not establish physical-phone frame rate;
+removing the graphics restrictions increases rendering work on phones.
 
 Models use texture artwork by default. Casino palette meshes combine a shared
 128px detail atlas with per-vertex tints and model-space UVs. Older solid-colour
@@ -83,6 +49,5 @@ shared grain albedo used to be multiplied in, but it darkened guns, gnomes and o
 dark props to near black. Authored texture/UV setups and custom shaders are preserved.
 This includes streamed props because it uses the existing bounded material styling queue.
 
-While a WebXR session is active, the viewport uses XR's render size instead of the
-phone's 432-pixel cap, including during resize. The mobile light/material budgets
-still apply. Leaving VR restores the ordinary browser resolution budget.
+WebXR owns render scale while immersive and restores the prior scale on exit.
+RetroStyle's UI resize handling leaves that scale intact in either mode.

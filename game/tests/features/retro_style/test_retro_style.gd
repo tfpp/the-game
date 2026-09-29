@@ -26,12 +26,26 @@ func test_imported_world_textures_fit_budget_and_keep_mipmaps() -> void:
 		assert_true(texture.get_image().has_mipmaps(), texture.resource_path)
 
 
-func test_mobile_render_budget_handles_portrait_landscape_and_retina() -> void:
-	for size: Vector2 in [Vector2(844, 390), Vector2(390, 844), Vector2(2532, 1170)]:
-		var scale := RetroStyle.mobile_scale(size)
-		assert_lte(size.y * scale, RetroStyle.MOBILE_HEIGHT)
-		assert_lte(scale, RetroStyle.MOBILE_MAX_SCALE)
-		assert_gt(scale, 0.1)
+func test_mobile_resize_keeps_render_settings_and_touch_layout() -> void:
+	var window := Window.new()
+	window.size = Vector2i(844, 390)
+	add_child_autofree(window)
+	var style := RetroStyle.new()
+	window.add_child(style)
+	style.mobile = true
+	window.msaa_3d = Viewport.MSAA_2X
+	for size: Vector2i in [Vector2i(844, 390), Vector2i(390, 844), Vector2i(2532, 1170)]:
+		window.size = size
+		style._configure_viewport()
+		assert_eq(window.scaling_3d_scale, 1.0)
+		assert_eq(window.msaa_3d, Viewport.MSAA_2X)
+		assert_eq(
+			window.content_scale_size, Vector2i(480, 720) if size.x < size.y else Vector2i(960, 540)
+		)
+	# Another owner (such as WebXR) can choose a scale without resize overriding it.
+	window.scaling_3d_scale = 0.9
+	style._configure_viewport()
+	assert_almost_eq(window.scaling_3d_scale, 0.9, 0.001)
 
 
 func test_streamed_mesh_gets_cheap_shading_without_touching_custom_screen_shader() -> void:
@@ -62,13 +76,13 @@ func test_streamed_mesh_gets_cheap_shading_without_touching_custom_screen_shader
 	style.free()
 
 
-func test_mobile_disables_shadow_maps_and_post_effects() -> void:
+func test_mobile_preserves_shadows_and_shared_retro_post_effects() -> void:
 	var style := RetroStyle.new()
 	style.mobile = true
 	var light := OmniLight3D.new()
 	light.shadow_enabled = true
 	style.style_node(light)
-	assert_false(light.shadow_enabled)
+	assert_true(light.shadow_enabled)
 	var world := WorldEnvironment.new()
 	world.environment = Environment.new()
 	world.environment.glow_enabled = true
@@ -98,46 +112,31 @@ func test_baked_decor_preserves_architecture_collision() -> void:
 	baked.free()
 
 
-func test_mobile_light_budget_covers_streaming_and_unloading() -> void:
-	var viewport := SubViewport.new()
-	viewport.own_world_3d = true
-	add_child_autofree(viewport)
-	var camera := Camera3D.new()
-	viewport.add_child(camera)
-	camera.current = true
+func test_mobile_streamed_lights_and_props_keep_authored_render_ranges() -> void:
 	var style := RetroStyle.new()
-	viewport.add_child(style)
 	style.mobile = true
-	var lights: Array[OmniLight3D] = []
 	for index: int in 7:
-		var light := OmniLight3D.new()
-		light.position.x = index + 1.0
-		viewport.add_child(light)
-		style.style_node(light)
-		lights.append(light)
-	style._update_light_budget()
-	var visible_count := 0
-	for light: OmniLight3D in lights:
-		visible_count += int(light.light_cull_mask != 0)
-	assert_eq(visible_count, RetroStyle.MOBILE_LOCAL_LIGHTS)
-	assert_ne(lights[0].light_cull_mask, 0)
-	assert_eq(lights[6].light_cull_mask, 0)
-	var dead := OmniLight3D.new()
-	dead.visible = false
-	viewport.add_child(dead)
-	style.style_node(dead)
-	style._update_light_budget()
-	assert_false(dead.visible, "Budget must not revive a dead fixture")
-	assert_eq(dead.light_cull_mask, 0)
-	dead.free()
-	lights[0].free()
-	style._update_light_budget()
-	assert_eq(style._lights.size(), 6, "Unloaded room lights leave the budget")
-	assert_ne(
-		lights[RetroStyle.MOBILE_LOCAL_LIGHTS].light_cull_mask,
-		0,
-		"Next nearest light replaces an unloaded light"
-	)
+		var light: Light3D = OmniLight3D.new() if index % 2 == 0 else SpotLight3D.new()
+		light.light_cull_mask = 1 << index
+		light.shadow_enabled = true
+		light.visible = index != 6
+		style._queue_node(light)
+		style._process(0.0)
+		assert_eq(light.light_cull_mask, 1 << index, "No nearest-two-light cap")
+		assert_true(light.shadow_enabled)
+		assert_eq(light.visible, index != 6, "Dead fixtures stay hidden")
+		light.free()
+	for distance: float in [0.0, 125.0]:
+		var prop := MeshInstance3D.new()
+		prop.mesh = BoxMesh.new()
+		prop.visibility_range_end = distance
+		prop.visibility_range_end_margin = 8.0
+		style._queue_node(prop)
+		style._process(0.0)
+		assert_eq(prop.visibility_range_end, distance, "No 40 metre prop cutoff")
+		assert_eq(prop.visibility_range_end_margin, 8.0)
+		prop.free()
+	style.free()
 
 
 func test_room_unloading_before_style_batch_is_safe() -> void:
