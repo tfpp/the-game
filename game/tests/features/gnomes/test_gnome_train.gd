@@ -144,3 +144,17 @@ func test_floor_snap_ignores_players_and_missing_floors() -> void:
 	assert_almost_eq(train.snap_to_floor(Vector3(-28, 0.1, 0)).y, 0.0, 0.001)
 	var open_air := Vector3(-20, 5, 20)
 	assert_eq(train.snap_to_floor(open_air), open_air)
+
+
+func test_joining_a_server_drops_gnomes_simulated_before_connecting() -> void:
+	# Features load before networking, so a client simulates gnomes until it joins.
+	var train := _train("West")
+	train.start_outing()
+	_run(train, 3.0)
+	assert_ne(train.net_shown, 0, "gnomes came out before joining")
+	Network.mode_changed.emit(Network.Mode.CLIENT)
+	assert_eq(train.net_shown, 0)
+	assert_true(train.is_resting())
+	for i in train._gnomes.size():
+		assert_false(train._gnomes[i].is_shown())
+		assert_eq(train.net_positions[i], train._hole_positions[train._from_hole])

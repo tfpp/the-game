@@ -68,10 +68,27 @@ func _ready() -> void:
 		_alive.append(true)
 		_avoid.append(Vector3.ZERO)
 		_smoothed_ready.append(false)
-	if multiplayer.is_server():
-		_rest_timer = randf_range(GnomeMath.REST_MIN, GnomeMath.REST_MAX)
-	else:
-		set_physics_process(false)
+	_rest_timer = randf_range(GnomeMath.REST_MIN, GnomeMath.REST_MAX)
+	Network.mode_changed.connect(_on_mode_changed)
+
+
+## Features load before networking starts, when every peer still counts as the server.
+## A joining client must drop whatever it simulated so far and show only the
+## server's state; a new server starts its burrows from rest.
+func _on_mode_changed(_mode: Network.Mode) -> void:
+	_resting = true
+	_rest_timer = randf_range(GnomeMath.REST_MIN, GnomeMath.REST_MAX)
+	_elapsed = 0.0
+	net_shown = 0
+	for i in _gnomes.size():
+		_alive[i] = true
+		_avoid[i] = Vector3.ZERO
+		_routes[i] = PackedVector3Array([_hole_positions[_from_hole]])
+		_route_lengths[i] = 0.0
+		net_positions[i] = _hole_positions[_from_hole]
+		net_yaws[i] = 0.0
+		_smoothed_ready[i] = false
+		_gnomes[i].set_shown(false)
 
 
 func _collect_gnomes() -> Array[Gnome]:
@@ -205,6 +222,9 @@ func _nav_path(from: Vector3, to: Vector3) -> PackedVector3Array:
 
 
 func _physics_process(delta: float) -> void:
+	# Checked every frame: authority is only known once networking has started.
+	if not multiplayer.is_server():
+		return
 	if _resting:
 		_rest_timer -= delta
 		if _rest_timer <= 0.0:

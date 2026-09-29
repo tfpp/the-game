@@ -18,7 +18,10 @@ skipping players and other moving bodies), so gnomes walk on the floor rather th
 at the navmesh's rounded height. Every door sits at y=0, the floor at the wall base.
 
 Sync replicates each gnome's position, facing and a bitmask of which gnomes are out.
-Clients never query the navmesh; they only smooth and show that state.
+Clients never query the navmesh; they only smooth and show that state. Features load
+before networking starts, when every peer still counts as the server, so the train
+checks authority every physics frame and resets its burrow on `Network.mode_changed`:
+a joining client drops anything it simulated before connecting.
 
 ## Killing
 
