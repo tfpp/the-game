@@ -25,6 +25,10 @@ const maxLootSaleCents = 100_000_00
 // sanity-check role maxChargeCents plays for "charge".
 const maxWagerCents = 100_000_000_000
 
+// maxRoulettePayoutMultiple bounds a roulette payout: a straight-up win
+// returns 35 to 1 plus the stake, 36 times the whole wager at most.
+const maxRoulettePayoutMultiple = 36
+
 // defaultWagerCents is the wager assumed when a request omits it, so older
 // game servers keep charging the original $1-per-spin price.
 const defaultWagerCents = 100
@@ -53,6 +57,7 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		AmountCents int64  `json:"amount_cents"`
 		IncomeCents int64  `json:"income_cents"`
 		WagerCents  int64  `json:"wager_cents"`
+		PayoutCents int64  `json:"payout_cents"`
 	}
 	if json.Unmarshal(raw, &req) != nil || req.AccountID <= 0 || req.Timestamp < s.cfg.Now().Unix()-60 || req.Timestamp > s.cfg.Now().Unix()+60 {
 		writeError(w, 400, "bad_request", "invalid request")
@@ -121,6 +126,27 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		balance, err := s.store.CreditLoot(r.Context(), req.AccountID, req.ID, req.AmountCents)
 		if errors.Is(err, store.ErrLootSaleConflict) {
 			writeError(w, 409, "sale_conflict", "invalid sale")
+			return
+		}
+		if err != nil {
+			s.internalError(w, r, err)
+			return
+		}
+		writeJSON(w, 200, map[string]int64{"balance": balance})
+		return
+	}
+	if req.Action == "roulette" {
+		if len(req.ID) != 64 || req.WagerCents <= 0 || req.WagerCents > maxWagerCents || req.PayoutCents < 0 || req.PayoutCents > req.WagerCents*maxRoulettePayoutMultiple {
+			writeError(w, 400, "bad_request", "invalid roulette bet")
+			return
+		}
+		balance, err := s.store.SettleRoulette(r.Context(), req.AccountID, req.ID, req.WagerCents, req.PayoutCents)
+		if errors.Is(err, store.ErrInsufficientMoney) {
+			writeError(w, 409, "insufficient_money", "You can't cover that bet.")
+			return
+		}
+		if errors.Is(err, store.ErrRouletteConflict) {
+			writeError(w, 409, "roulette_conflict", "invalid roulette bet")
 			return
 		}
 		if err != nil {

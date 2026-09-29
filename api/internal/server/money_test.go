@@ -237,3 +237,58 @@ func TestGameMoneySellRequiresValidAmountAndIsIdempotent(t *testing.T) {
 		t.Fatal(invalid.Code, invalid.Body.String())
 	}
 }
+
+func TestGameMoneyRouletteSettlesAtomicallyAndIdempotently(t *testing.T) {
+	h := newHarness(t)
+	account, err := h.srv.store.CreateEmailAccount(context.Background(), "roulette@example.com", "hash", "Alice", h.now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := func(payload []byte) *httptest.ResponseRecorder {
+		req := httptest.NewRequest("POST", "/api/game/money", bytes.NewReader(payload))
+		mac := hmac.New(sha256.New, testKey)
+		mac.Write([]byte("game-money-v1\n"))
+		mac.Write(payload)
+		req.Header.Set("X-Game-Signature", hex.EncodeToString(mac.Sum(nil)))
+		res := httptest.NewRecorder()
+		h.h.ServeHTTP(res, req)
+		return res
+	}
+	bet := func(id string, wager, payout int64) []byte {
+		return []byte(fmt.Sprintf(`{"account_id":%d,"action":"roulette","id":"%s","timestamp":%d,"wager_cents":%d,"payout_cents":%d}`, account.ID, strings.Repeat(id, 64), h.now.Unix(), wager, payout))
+	}
+	// A $15 bet that includes a winning $10 straight-up
+	// ($350 winnings + $10 stake): 2000 - 1500 + 36000.
+	body := bet("r", 1500, 36000)
+	first := request(body)
+	if first.Code != 200 {
+		t.Fatal(first.Body.String())
+	}
+	var settled struct {
+		Balance int64 `json:"balance"`
+	}
+	if err := json.Unmarshal(first.Body.Bytes(), &settled); err != nil {
+		t.Fatal(err)
+	}
+	if settled.Balance != 36500 {
+		t.Fatal(settled.Balance)
+	}
+	if second := request(body); second.Body.String() != first.Body.String() {
+		t.Fatalf("retry settled again: %s %s", first.Body, second.Body)
+	}
+	if res := request(bet("r", 1500, 0)); res.Code != 409 {
+		t.Fatalf("altered retry should conflict: %d", res.Code)
+	}
+	if res := request(bet("s", 40000, 0)); res.Code != 409 {
+		t.Fatalf("uncovered wager should be rejected: %d", res.Code)
+	}
+	for _, invalid := range [][2]int64{{0, 0}, {100, -1}, {100, 3601}, {maxWagerCents + 1, 0}} {
+		if res := request(bet("t", invalid[0], invalid[1])); res.Code != 400 {
+			t.Fatalf("%v: %d", invalid, res.Code)
+		}
+	}
+	balance, _ := h.srv.store.Money(context.Background(), account.ID)
+	if balance != 36500 {
+		t.Fatalf("rejected bets must not touch the balance: %d", balance)
+	}
+}
