@@ -1,0 +1,1455 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/casino_hub/textures/prop_grain.png" id="grain"]
+
+[ext_resource type="Script" path="res://features/kebab_shop/shop_view.gd" id="animation"]
+[ext_resource type="PackedScene" path="res://features/kebab_shop/kebab_view.tscn" id="food"]
+
+[sub_resource type="StandardMaterial3D" id="r1"]
+albedo_color = Color(0.94, 0.88, 0.72, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r2"]
+albedo_color = Color(0.61, 0.045, 0.04, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r3"]
+albedo_color = Color(0.015, 0.28, 0.19, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r4"]
+albedo_color = Color(0.38, 0.43, 0.43, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r5"]
+albedo_color = Color(0.08, 0.055, 0.035, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r6"]
+albedo_color = Color(0.68, 0.40, 0.24, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r7"]
+albedo_color = Color(0.95, 0.65, 0.17, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r8"]
+albedo_color = Color(0.40, 0.17, 0.065, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r9"]
+albedo_color = Color(0.018, 0.012, 0.018, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r10"]
+albedo_color = Color(0.55, 0.06, 0.06, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="BoxMesh" id="r11"]
+size = Vector3(6, 1, 0.8)
+
+[sub_resource type="BoxShape3D" id="r12"]
+size = Vector3(6, 1, 0.8)
+
+[sub_resource type="BoxMesh" id="r13"]
+size = Vector3(6.15, 0.08, 0.95)
+
+[sub_resource type="BoxShape3D" id="r14"]
+size = Vector3(6.15, 0.08, 0.95)
+
+[sub_resource type="BoxMesh" id="r15"]
+size = Vector3(6, 0.94, 0.55)
+
+[sub_resource type="BoxShape3D" id="r16"]
+size = Vector3(6, 0.94, 0.55)
+
+[sub_resource type="BoxMesh" id="r17"]
+size = Vector3(6.3, 0.55, 0.18)
+
+[sub_resource type="BoxMesh" id="r18"]
+size = Vector3(0.09, 3, 0.09)
+
+[sub_resource type="BoxShape3D" id="r19"]
+size = Vector3(0.09, 3, 0.09)
+
+[sub_resource type="BoxMesh" id="r20"]
+size = Vector3(0.09, 3, 0.09)
+
+[sub_resource type="BoxShape3D" id="r21"]
+size = Vector3(0.09, 3, 0.09)
+
+[sub_resource type="BoxMesh" id="r22"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r23"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r24"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r25"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r26"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r27"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r28"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r29"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r30"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r31"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r32"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r33"]
+size = Vector3(0.5, 0.1, 1.6)
+
+[sub_resource type="BoxMesh" id="r34"]
+size = Vector3(0.45, 0.28, 0.32)
+
+[sub_resource type="BoxMesh" id="r35"]
+size = Vector3(0.34, 0.18, 0.04)
+
+[sub_resource type="BoxMesh" id="r36"]
+size = Vector3(1, 0.95, 0.12)
+
+[sub_resource type="BoxMesh" id="r37"]
+size = Vector3(0.045, 0.75, 0.035)
+
+[sub_resource type="BoxMesh" id="r38"]
+size = Vector3(0.045, 0.75, 0.035)
+
+[sub_resource type="BoxMesh" id="r39"]
+size = Vector3(0.045, 0.75, 0.035)
+
+[sub_resource type="CylinderMesh" id="r40"]
+top_radius = 0.0175
+bottom_radius = 0.0175
+height = 1.3
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r41"]
+top_radius = 0.14
+bottom_radius = 0.14
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r42"]
+top_radius = 0.15300000000000002
+bottom_radius = 0.15300000000000002
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r43"]
+top_radius = 0.166
+bottom_radius = 0.166
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r44"]
+top_radius = 0.17900000000000002
+bottom_radius = 0.17900000000000002
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r45"]
+top_radius = 0.192
+bottom_radius = 0.192
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r46"]
+top_radius = 0.20500000000000002
+bottom_radius = 0.20500000000000002
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r47"]
+top_radius = 0.21800000000000003
+bottom_radius = 0.21800000000000003
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r48"]
+top_radius = 0.231
+bottom_radius = 0.231
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r49"]
+top_radius = 0.244
+bottom_radius = 0.244
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r50"]
+top_radius = 0.257
+bottom_radius = 0.257
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r51"]
+top_radius = 0.27
+bottom_radius = 0.27
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r52"]
+top_radius = 0.28300000000000003
+bottom_radius = 0.28300000000000003
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r53"]
+top_radius = 0.425
+bottom_radius = 0.425
+height = 0.05
+radial_segments = 12
+
+[sub_resource type="BoxMesh" id="r54"]
+size = Vector3(0.65, 0.05, 0.46)
+
+[sub_resource type="SphereMesh" id="r55"]
+radius = 0.175
+height = 0.13
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r56"]
+radius = 0.175
+height = 0.13
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r57"]
+radius = 0.175
+height = 0.13
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r58"]
+radius = 0.09
+height = 0.16
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="r59"]
+top_radius = 0.085
+bottom_radius = 0.085
+height = 0.72
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r60"]
+radius = 0.09
+height = 0.16
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="r61"]
+top_radius = 0.085
+bottom_radius = 0.085
+height = 0.72
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r62"]
+radius = 0.215
+height = 0.3
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="r63"]
+top_radius = 0.22
+bottom_radius = 0.165
+height = 0.55
+radial_segments = 12
+
+[sub_resource type="BoxMesh" id="r64"]
+size = Vector3(0.32, 0.53, 0.025)
+
+[sub_resource type="CylinderMesh" id="r65"]
+top_radius = 0.065
+bottom_radius = 0.065
+height = 0.15
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r66"]
+radius = 0.15
+height = 0.38
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r67"]
+radius = 0.165
+height = 0.23
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r68"]
+radius = 0.0275
+height = 0.085
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r69"]
+radius = 0.0295
+height = 0.025
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r70"]
+radius = 0.0105
+height = 0.022
+radial_segments = 12
+rings = 6
+
+[sub_resource type="BoxMesh" id="r71"]
+size = Vector3(0.065, 0.012, 0.016)
+
+[sub_resource type="SphereMesh" id="r72"]
+radius = 0.0275
+height = 0.085
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r73"]
+radius = 0.0295
+height = 0.025
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r74"]
+radius = 0.0105
+height = 0.022
+radial_segments = 12
+rings = 6
+
+[sub_resource type="BoxMesh" id="r75"]
+size = Vector3(0.065, 0.012, 0.016)
+
+[sub_resource type="SphereMesh" id="r76"]
+radius = 0.0215
+height = 0.066
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r77"]
+radius = 0.0475
+height = 0.018
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r78"]
+radius = 0.05
+height = 0.025
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="r79"]
+top_radius = 0.16
+bottom_radius = 0.16
+height = 0.16
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r80"]
+radius = 0.09
+height = 0.2
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r81"]
+radius = 0.09
+height = 0.2
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r82"]
+radius = 0.09
+height = 0.2
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="r83"]
+top_radius = 0.08
+bottom_radius = 0.08
+height = 0.31
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r84"]
+top_radius = 0.0575
+bottom_radius = 0.0575
+height = 0.24
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r85"]
+radius = 0.06
+height = 0.14
+radial_segments = 12
+rings = 6
+
+[sub_resource type="BoxMesh" id="r86"]
+size = Vector3(0.035, 0.035, 0.18)
+
+[sub_resource type="BoxMesh" id="r87"]
+size = Vector3(0.015, 0.12, 0.22)
+
+[sub_resource type="CylinderMesh" id="r88"]
+top_radius = 0.08
+bottom_radius = 0.08
+height = 0.31
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r89"]
+top_radius = 0.0575
+bottom_radius = 0.0575
+height = 0.24
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r90"]
+radius = 0.06
+height = 0.14
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r91"]
+radius = 0.09
+height = 0.16
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="r92"]
+top_radius = 0.085
+bottom_radius = 0.085
+height = 0.72
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r93"]
+radius = 0.09
+height = 0.16
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="r94"]
+top_radius = 0.085
+bottom_radius = 0.085
+height = 0.72
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r95"]
+radius = 0.215
+height = 0.3
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="r96"]
+top_radius = 0.22
+bottom_radius = 0.165
+height = 0.55
+radial_segments = 12
+
+[sub_resource type="BoxMesh" id="r97"]
+size = Vector3(0.32, 0.53, 0.025)
+
+[sub_resource type="CylinderMesh" id="r98"]
+top_radius = 0.065
+bottom_radius = 0.065
+height = 0.15
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r99"]
+radius = 0.15
+height = 0.38
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r100"]
+radius = 0.165
+height = 0.23
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r101"]
+radius = 0.0275
+height = 0.085
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r102"]
+radius = 0.0295
+height = 0.025
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r103"]
+radius = 0.0105
+height = 0.022
+radial_segments = 12
+rings = 6
+
+[sub_resource type="BoxMesh" id="r104"]
+size = Vector3(0.065, 0.012, 0.016)
+
+[sub_resource type="SphereMesh" id="r105"]
+radius = 0.0275
+height = 0.085
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r106"]
+radius = 0.0295
+height = 0.025
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r107"]
+radius = 0.0105
+height = 0.022
+radial_segments = 12
+rings = 6
+
+[sub_resource type="BoxMesh" id="r108"]
+size = Vector3(0.065, 0.012, 0.016)
+
+[sub_resource type="SphereMesh" id="r109"]
+radius = 0.0215
+height = 0.066
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r110"]
+radius = 0.0475
+height = 0.018
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r111"]
+radius = 0.0575
+height = 0.17
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r112"]
+radius = 0.0575
+height = 0.17
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r113"]
+radius = 0.0575
+height = 0.17
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r114"]
+radius = 0.0575
+height = 0.17
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r115"]
+radius = 0.0225
+height = 0.08
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r116"]
+radius = 0.0575
+height = 0.17
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r117"]
+radius = 0.0575
+height = 0.17
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r118"]
+radius = 0.0575
+height = 0.17
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r119"]
+radius = 0.0575
+height = 0.17
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r120"]
+radius = 0.0225
+height = 0.08
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r121"]
+radius = 0.02
+height = 0.06
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="r122"]
+top_radius = 0.08
+bottom_radius = 0.08
+height = 0.31
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r123"]
+top_radius = 0.0575
+bottom_radius = 0.0575
+height = 0.24
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r124"]
+radius = 0.06
+height = 0.14
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="r125"]
+top_radius = 0.08
+bottom_radius = 0.08
+height = 0.31
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r126"]
+top_radius = 0.0575
+bottom_radius = 0.0575
+height = 0.24
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r127"]
+radius = 0.06
+height = 0.14
+radial_segments = 12
+rings = 6
+
+[node name="ShopView" type="Node3D"]
+script = ExtResource("animation")
+
+[node name="Counter" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.5, 0)
+mesh = SubResource("r11")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="CounterBody" type="StaticBody3D" parent="."]
+position = Vector3(0, 0.5, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="CounterBody"]
+shape = SubResource("r12")
+
+[node name="Countertop" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.04, 0)
+mesh = SubResource("r13")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="CountertopBody" type="StaticBody3D" parent="."]
+position = Vector3(0, 1.04, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="CountertopBody"]
+shape = SubResource("r14")
+
+[node name="BackBench" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.47, -2.2)
+mesh = SubResource("r15")
+material_override = SubResource("r4")
+visibility_range_end = 45.0
+
+[node name="BackBenchBody" type="StaticBody3D" parent="."]
+position = Vector3(0, 0.47, -2.2)
+
+[node name="Collision" type="CollisionShape3D" parent="BackBenchBody"]
+shape = SubResource("r16")
+
+[node name="Header" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.0, -0.2)
+mesh = SubResource("r17")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="Title" type="Label3D" parent="."]
+position = Vector3(0, 3.02, -0.09)
+text = "İSTANBUL KEBAB"
+font_size = 54
+pixel_size = 0.007
+outline_size = 5
+visibility_range_end = 35.0
+
+[node name="Menu" type="Label3D" parent="."]
+position = Vector3(-1, 0.58, 0.411)
+text = "DÖNER • DÜRÜM\nFresh bread · salad · yogurt sauce\nOpening special: FREE"
+font_size = 26
+pixel_size = 0.007
+outline_size = 5
+visibility_range_end = 35.0
+
+[node name="OrderHere" type="Label3D" parent="."]
+position = Vector3(1.8, 1.48, 0.1)
+text = "ORDER HERE ↓"
+font_size = 26
+pixel_size = 0.007
+outline_size = 5
+visibility_range_end = 35.0
+
+[node name="Post-3.05" type="MeshInstance3D" parent="."]
+position = Vector3(-3.05, 1.5, -0.3)
+mesh = SubResource("r18")
+material_override = SubResource("r7")
+visibility_range_end = 45.0
+
+[node name="Post-3.05Body" type="StaticBody3D" parent="."]
+position = Vector3(-3.05, 1.5, -0.3)
+
+[node name="Collision" type="CollisionShape3D" parent="Post-3.05Body"]
+shape = SubResource("r19")
+
+[node name="Post3.05" type="MeshInstance3D" parent="."]
+position = Vector3(3.05, 1.5, -0.3)
+mesh = SubResource("r20")
+material_override = SubResource("r7")
+visibility_range_end = 45.0
+
+[node name="Post3.05Body" type="StaticBody3D" parent="."]
+position = Vector3(3.05, 1.5, -0.3)
+
+[node name="Collision" type="CollisionShape3D" parent="Post3.05Body"]
+shape = SubResource("r21")
+
+[node name="Awning0" type="MeshInstance3D" parent="."]
+position = Vector3(-2.75, 2.68, -0.85)
+mesh = SubResource("r22")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="Awning1" type="MeshInstance3D" parent="."]
+position = Vector3(-2.25, 2.68, -0.85)
+mesh = SubResource("r23")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Awning2" type="MeshInstance3D" parent="."]
+position = Vector3(-1.75, 2.68, -0.85)
+mesh = SubResource("r24")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="Awning3" type="MeshInstance3D" parent="."]
+position = Vector3(-1.25, 2.68, -0.85)
+mesh = SubResource("r25")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Awning4" type="MeshInstance3D" parent="."]
+position = Vector3(-0.75, 2.68, -0.85)
+mesh = SubResource("r26")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="Awning5" type="MeshInstance3D" parent="."]
+position = Vector3(-0.25, 2.68, -0.85)
+mesh = SubResource("r27")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Awning6" type="MeshInstance3D" parent="."]
+position = Vector3(0.25, 2.68, -0.85)
+mesh = SubResource("r28")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="Awning7" type="MeshInstance3D" parent="."]
+position = Vector3(0.75, 2.68, -0.85)
+mesh = SubResource("r29")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Awning8" type="MeshInstance3D" parent="."]
+position = Vector3(1.25, 2.68, -0.85)
+mesh = SubResource("r30")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="Awning9" type="MeshInstance3D" parent="."]
+position = Vector3(1.75, 2.68, -0.85)
+mesh = SubResource("r31")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Awning10" type="MeshInstance3D" parent="."]
+position = Vector3(2.25, 2.68, -0.85)
+mesh = SubResource("r32")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="Awning11" type="MeshInstance3D" parent="."]
+position = Vector3(2.75, 2.68, -0.85)
+mesh = SubResource("r33")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Register" type="MeshInstance3D" parent="."]
+position = Vector3(1.85, 1.21, -0.08)
+mesh = SubResource("r34")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="RegisterScreen" type="MeshInstance3D" parent="."]
+position = Vector3(1.85, 1.38, -0.04)
+mesh = SubResource("r35")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="GrillBack" type="MeshInstance3D" parent="."]
+position = Vector3(-2.35, 1.58, -2.33)
+mesh = SubResource("r36")
+material_override = SubResource("r4")
+visibility_range_end = 45.0
+
+[node name="Heat-2.65" type="MeshInstance3D" parent="."]
+position = Vector3(-2.65, 1.58, -2.25)
+mesh = SubResource("r37")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="Heat-2.35" type="MeshInstance3D" parent="."]
+position = Vector3(-2.35, 1.58, -2.25)
+mesh = SubResource("r38")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="Heat-2.05" type="MeshInstance3D" parent="."]
+position = Vector3(-2.05, 1.58, -2.25)
+mesh = SubResource("r39")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="Spit" type="Node3D" parent="."]
+position = Vector3(-2.35, 1.05, -1.95)
+
+[node name="Skewer" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.55, 0)
+mesh = SubResource("r40")
+material_override = SubResource("r4")
+visibility_range_end = 45.0
+
+[node name="MeatLayer0" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.17, 0)
+mesh = SubResource("r41")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0.0, 0)
+
+[node name="MeatLayer1" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.23500000000000001, 0)
+mesh = SubResource("r42")
+material_override = SubResource("r8")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0.8, 0)
+
+[node name="MeatLayer2" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.30000000000000004, 0)
+mesh = SubResource("r43")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+rotation = Vector3(0, 1.6, 0)
+
+[node name="MeatLayer3" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.365, 0)
+mesh = SubResource("r44")
+material_override = SubResource("r8")
+visibility_range_end = 45.0
+rotation = Vector3(0, 2.4000000000000004, 0)
+
+[node name="MeatLayer4" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.43000000000000005, 0)
+mesh = SubResource("r45")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+rotation = Vector3(0, 3.2, 0)
+
+[node name="MeatLayer5" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.495, 0)
+mesh = SubResource("r46")
+material_override = SubResource("r8")
+visibility_range_end = 45.0
+rotation = Vector3(0, 4.0, 0)
+
+[node name="MeatLayer6" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.56, 0)
+mesh = SubResource("r47")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+rotation = Vector3(0, 4.800000000000001, 0)
+
+[node name="MeatLayer7" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.625, 0)
+mesh = SubResource("r48")
+material_override = SubResource("r8")
+visibility_range_end = 45.0
+rotation = Vector3(0, 5.6000000000000005, 0)
+
+[node name="MeatLayer8" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.6900000000000001, 0)
+mesh = SubResource("r49")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+rotation = Vector3(0, 6.4, 0)
+
+[node name="MeatLayer9" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.755, 0)
+mesh = SubResource("r50")
+material_override = SubResource("r8")
+visibility_range_end = 45.0
+rotation = Vector3(0, 7.2, 0)
+
+[node name="MeatLayer10" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.8200000000000001, 0)
+mesh = SubResource("r51")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+rotation = Vector3(0, 8.0, 0)
+
+[node name="MeatLayer11" type="MeshInstance3D" parent="Spit"]
+position = Vector3(0, 0.8850000000000001, 0)
+mesh = SubResource("r52")
+material_override = SubResource("r8")
+visibility_range_end = 45.0
+rotation = Vector3(0, 8.8, 0)
+
+[node name="DripTray" type="MeshInstance3D" parent="."]
+position = Vector3(-2.35, 1, -1.95)
+mesh = SubResource("r53")
+material_override = SubResource("r4")
+visibility_range_end = 45.0
+
+[node name="ChoppingBoard" type="MeshInstance3D" parent="."]
+position = Vector3(-0.75, 1.11, -0.08)
+mesh = SubResource("r54")
+material_override = SubResource("r7")
+visibility_range_end = 45.0
+
+[node name="SaladBowl0" type="MeshInstance3D" parent="."]
+position = Vector3(-2.4, 1.13, 0)
+mesh = SubResource("r55")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="SaladBowl1" type="MeshInstance3D" parent="."]
+position = Vector3(-1.8499999999999999, 1.13, 0)
+mesh = SubResource("r56")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="SaladBowl2" type="MeshInstance3D" parent="."]
+position = Vector3(-1.2999999999999998, 1.13, 0)
+mesh = SubResource("r57")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="DisplayKebab" type="Node3D" parent="."]
+position = Vector3(-0.1, 1.25, 0)
+
+[node name="Food" parent="DisplayKebab" instance=ExtResource("food")]
+
+[node name="Chef" type="Node3D" parent="."]
+position = Vector3(-0.9, 0, -0.85)
+
+[node name="Shoe-1" type="MeshInstance3D" parent="Chef"]
+position = Vector3(-0.12, 0.08, 0.075)
+mesh = SubResource("r58")
+material_override = SubResource("r9")
+visibility_range_end = 45.0
+
+[node name="Leg-1" type="MeshInstance3D" parent="Chef"]
+position = Vector3(-0.12, 0.46, 0)
+mesh = SubResource("r59")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Shoe1" type="MeshInstance3D" parent="Chef"]
+position = Vector3(0.12, 0.08, 0.075)
+mesh = SubResource("r60")
+material_override = SubResource("r9")
+visibility_range_end = 45.0
+
+[node name="Leg1" type="MeshInstance3D" parent="Chef"]
+position = Vector3(0.12, 0.46, 0)
+mesh = SubResource("r61")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Hips" type="MeshInstance3D" parent="Chef"]
+position = Vector3(0, 0.86, 0)
+mesh = SubResource("r62")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Torso" type="MeshInstance3D" parent="Chef"]
+position = Vector3(0, 1.14, 0)
+mesh = SubResource("r63")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Apron" type="MeshInstance3D" parent="Chef"]
+position = Vector3(0, 1.02, 0.18)
+mesh = SubResource("r64")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Neck" type="MeshInstance3D" parent="Chef"]
+position = Vector3(0, 1.46, 0)
+mesh = SubResource("r65")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="Head" type="Node3D" parent="Chef"]
+position = Vector3(0, 1.65, 0)
+
+[node name="Face" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0, 0, 0)
+mesh = SubResource("r66")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="Hair" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0, 0.1, -0.045)
+mesh = SubResource("r67")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Ear-1" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(-0.153, 0, 0)
+mesh = SubResource("r68")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="EyeWhite-1" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(-0.068, 0.025, 0.121)
+mesh = SubResource("r69")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Pupil-1" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(-0.068, 0.025, 0.13)
+mesh = SubResource("r70")
+material_override = SubResource("r9")
+visibility_range_end = 45.0
+
+[node name="Brow-1" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(-0.068, 0.065, 0.122)
+mesh = SubResource("r71")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Ear1" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0.153, 0, 0)
+mesh = SubResource("r72")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="EyeWhite1" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0.068, 0.025, 0.121)
+mesh = SubResource("r73")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Pupil1" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0.068, 0.025, 0.13)
+mesh = SubResource("r74")
+material_override = SubResource("r9")
+visibility_range_end = 45.0
+
+[node name="Brow1" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0.068, 0.065, 0.122)
+mesh = SubResource("r75")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Nose" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0, -0.012, 0.145)
+mesh = SubResource("r76")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="Smile" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0, -0.092, 0.116)
+mesh = SubResource("r77")
+material_override = SubResource("r10")
+visibility_range_end = 45.0
+
+[node name="Moustache" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0, -0.067, 0.139)
+mesh = SubResource("r78")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="ToqueBand" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0, 0.22, 0)
+mesh = SubResource("r79")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="ToquePuff0" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(-0.095, 0.32, 0)
+mesh = SubResource("r80")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="ToquePuff1" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0.0, 0.32, 0)
+mesh = SubResource("r81")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="ToquePuff2" type="MeshInstance3D" parent="Chef/Head"]
+position = Vector3(0.095, 0.32, 0)
+mesh = SubResource("r82")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="RightArm" type="Node3D" parent="Chef"]
+position = Vector3(-0.27, 1.34, 0)
+
+[node name="Sleeve" type="MeshInstance3D" parent="Chef/RightArm"]
+position = Vector3(0, -0.14, 0)
+mesh = SubResource("r83")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Forearm" type="MeshInstance3D" parent="Chef/RightArm"]
+position = Vector3(0, -0.34, 0.06)
+mesh = SubResource("r84")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+rotation = Vector3(-0.5, 0, 0)
+
+[node name="Hand" type="MeshInstance3D" parent="Chef/RightArm"]
+position = Vector3(0, -0.44, 0.13)
+mesh = SubResource("r85")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="KnifeHandle" type="MeshInstance3D" parent="Chef/RightArm"]
+position = Vector3(0, -0.45, 0.22)
+mesh = SubResource("r86")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="KnifeBlade" type="MeshInstance3D" parent="Chef/RightArm"]
+position = Vector3(0, -0.42, 0.39)
+mesh = SubResource("r87")
+material_override = SubResource("r4")
+visibility_range_end = 45.0
+
+[node name="LeftArm" type="Node3D" parent="Chef"]
+position = Vector3(0.27, 1.34, 0)
+
+[node name="Sleeve" type="MeshInstance3D" parent="Chef/LeftArm"]
+position = Vector3(0, -0.14, 0)
+mesh = SubResource("r88")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Forearm" type="MeshInstance3D" parent="Chef/LeftArm"]
+position = Vector3(0, -0.34, 0.06)
+mesh = SubResource("r89")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+rotation = Vector3(-0.5, 0, 0)
+
+[node name="Hand" type="MeshInstance3D" parent="Chef/LeftArm"]
+position = Vector3(0, -0.44, 0.13)
+mesh = SubResource("r90")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="Cashier" type="Node3D" parent="."]
+position = Vector3(1.35, 0, -1.1)
+
+[node name="Shoe-1" type="MeshInstance3D" parent="Cashier"]
+position = Vector3(-0.12, 0.08, 0.075)
+mesh = SubResource("r91")
+material_override = SubResource("r9")
+visibility_range_end = 45.0
+
+[node name="Leg-1" type="MeshInstance3D" parent="Cashier"]
+position = Vector3(-0.12, 0.46, 0)
+mesh = SubResource("r92")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Shoe1" type="MeshInstance3D" parent="Cashier"]
+position = Vector3(0.12, 0.08, 0.075)
+mesh = SubResource("r93")
+material_override = SubResource("r9")
+visibility_range_end = 45.0
+
+[node name="Leg1" type="MeshInstance3D" parent="Cashier"]
+position = Vector3(0.12, 0.46, 0)
+mesh = SubResource("r94")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Hips" type="MeshInstance3D" parent="Cashier"]
+position = Vector3(0, 0.86, 0)
+mesh = SubResource("r95")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Torso" type="MeshInstance3D" parent="Cashier"]
+position = Vector3(0, 1.14, 0)
+mesh = SubResource("r96")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Apron" type="MeshInstance3D" parent="Cashier"]
+position = Vector3(0, 1.02, 0.18)
+mesh = SubResource("r97")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Neck" type="MeshInstance3D" parent="Cashier"]
+position = Vector3(0, 1.46, 0)
+mesh = SubResource("r98")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="Head" type="Node3D" parent="Cashier"]
+position = Vector3(0, 1.65, 0)
+
+[node name="Face" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0, 0, 0)
+mesh = SubResource("r99")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="Hair" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0, 0.1, -0.045)
+mesh = SubResource("r100")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Ear-1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(-0.153, 0, 0)
+mesh = SubResource("r101")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="EyeWhite-1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(-0.068, 0.025, 0.121)
+mesh = SubResource("r102")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Pupil-1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(-0.068, 0.025, 0.13)
+mesh = SubResource("r103")
+material_override = SubResource("r9")
+visibility_range_end = 45.0
+
+[node name="Brow-1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(-0.068, 0.065, 0.122)
+mesh = SubResource("r104")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Ear1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0.153, 0, 0)
+mesh = SubResource("r105")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="EyeWhite1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0.068, 0.025, 0.121)
+mesh = SubResource("r106")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+
+[node name="Pupil1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0.068, 0.025, 0.13)
+mesh = SubResource("r107")
+material_override = SubResource("r9")
+visibility_range_end = 45.0
+
+[node name="Brow1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0.068, 0.065, 0.122)
+mesh = SubResource("r108")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Nose" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0, -0.012, 0.145)
+mesh = SubResource("r109")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="Smile" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0, -0.092, 0.116)
+mesh = SubResource("r110")
+material_override = SubResource("r10")
+visibility_range_end = 45.0
+
+[node name="WavyHair-1_0" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(-0.14, 0.1, -0.055)
+mesh = SubResource("r111")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="WavyHair-1_1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(-0.15200000000000002, 0.0, -0.055)
+mesh = SubResource("r112")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="WavyHair-1_2" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(-0.164, -0.1, -0.055)
+mesh = SubResource("r113")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="WavyHair-1_3" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(-0.17600000000000002, -0.20000000000000004, -0.055)
+mesh = SubResource("r114")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="GoldEarring-1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(-0.171, -0.08, 0.025)
+mesh = SubResource("r115")
+material_override = SubResource("r7")
+visibility_range_end = 45.0
+
+[node name="WavyHair1_0" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0.14, 0.1, -0.055)
+mesh = SubResource("r116")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="WavyHair1_1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0.15200000000000002, 0.0, -0.055)
+mesh = SubResource("r117")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="WavyHair1_2" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0.164, -0.1, -0.055)
+mesh = SubResource("r118")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="WavyHair1_3" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0.17600000000000002, -0.20000000000000004, -0.055)
+mesh = SubResource("r119")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="GoldEarring1" type="MeshInstance3D" parent="Cashier/Head"]
+position = Vector3(0.171, -0.08, 0.025)
+mesh = SubResource("r120")
+material_override = SubResource("r7")
+visibility_range_end = 45.0
+
+[node name="Pendant" type="MeshInstance3D" parent="Cashier"]
+position = Vector3(0, 1.35, 0.17)
+mesh = SubResource("r121")
+material_override = SubResource("r7")
+visibility_range_end = 45.0
+
+[node name="RightArm" type="Node3D" parent="Cashier"]
+position = Vector3(-0.27, 1.34, 0)
+
+[node name="Sleeve" type="MeshInstance3D" parent="Cashier/RightArm"]
+position = Vector3(0, -0.14, 0)
+mesh = SubResource("r122")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Forearm" type="MeshInstance3D" parent="Cashier/RightArm"]
+position = Vector3(0, -0.34, 0.06)
+mesh = SubResource("r123")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+rotation = Vector3(-0.5, 0, 0)
+
+[node name="Hand" type="MeshInstance3D" parent="Cashier/RightArm"]
+position = Vector3(0, -0.44, 0.13)
+mesh = SubResource("r124")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="LeftArm" type="Node3D" parent="Cashier"]
+position = Vector3(0.27, 1.34, 0)
+
+[node name="Sleeve" type="MeshInstance3D" parent="Cashier/LeftArm"]
+position = Vector3(0, -0.14, 0)
+mesh = SubResource("r125")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Forearm" type="MeshInstance3D" parent="Cashier/LeftArm"]
+position = Vector3(0, -0.34, 0.06)
+mesh = SubResource("r126")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+rotation = Vector3(-0.5, 0, 0)
+
+[node name="Hand" type="MeshInstance3D" parent="Cashier/LeftArm"]
+position = Vector3(0, -0.44, 0.13)
+mesh = SubResource("r127")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="CashierName" type="Label3D" parent="."]
+position = Vector3(1.35, 2.17, -1.1)
+text = "Aylin"
+font_size = 27
+pixel_size = 0.007
+outline_size = 5
+visibility_range_end = 35.0
+
+[node name="ChefName" type="Label3D" parent="."]
+position = Vector3(-0.9, 2.35, -1.1)
+text = "Chef Kemal"
+font_size = 25
+pixel_size = 0.007
+outline_size = 5
+visibility_range_end = 35.0
+
+[node name="Reply" type="Label3D" parent="."]
+position = Vector3(1.35, 2.48, -0.9)
+text = "Hoş geldiniz! Welcome!"
+font_size = 26
+pixel_size = 0.007
+outline_size = 5
+visibility_range_end = 35.0

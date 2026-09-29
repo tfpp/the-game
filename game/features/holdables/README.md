@@ -63,3 +63,7 @@ action all key off the category.
   pistol just thuds — weapons are heavy enough not to bounce.
 - `throw_math.gd`: pure arc/aim/bounce math, unit-tested the same way
   `features/frogs/frog_hop.gd` keeps its hop math separate from the scene.
+
+The `kebab` FOOD item is supplied by `features/kebab_shop` through the same
+`PlayerInventory.collect` interface. Its detailed view lives with that shop;
+consumption, drops, grip positioning and replication use the ordinary food path.
