@@ -291,7 +291,7 @@ func _give_fare(player: Player) -> bool:
 
 func _pay_fare(wallet: PlayerMoney, peer: int, key: String) -> void:
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
-	var result: Dictionary = await wallet.credit_coin(peer, id)
+	var result: Dictionary = await wallet.credit_coin(peer, id, "Mamdani covered your fare")
 	if result.has("error"):
 		_fare_claims.erase(key)
 		_say(peer, "My wallet's stuck, try again in a moment.")

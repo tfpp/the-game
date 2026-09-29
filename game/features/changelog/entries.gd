@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Money log",
+		"summary": "The chat log tells you whenever you get money, and why.",
+	},
+	{
 		"title": "Trump follows the mayor",
 		"summary": "Meet Donald Trump behind Mamdani by the slots and use E to pay $100.",
 	},

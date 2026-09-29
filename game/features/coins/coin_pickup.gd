@@ -58,7 +58,7 @@ func request_collect() -> void:
 	available = false
 	_timer.start()
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
-	await wallet.credit_coin(peer_id, id)
+	await wallet.credit_coin(peer_id, id, "Picked up a coin")
 
 
 func _on_cooldown_finished() -> void:
