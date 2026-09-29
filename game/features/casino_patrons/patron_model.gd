@@ -26,6 +26,12 @@ const HAIR: Array[Color] = [
 ]
 const TIES: Array[Color] = [Color(0.7, 0.1, 0.1), Color(0.8, 0.65, 0.15), Color(0.1, 0.3, 0.6)]
 
+## The patron index that dresses up as Zohran Mamdani, New York City's mayor:
+## dark suit, white shirt, blue tie, short black hair and a trimmed beard, with a
+## name tag floating overhead.
+const MAMDANI_LOOK := 4
+const MAMDANI_NAME := "Zohran Mamdani"
+
 ## Hip height when standing; the pose lifts and lowers `Hips` around it.
 const HIP_HEIGHT := 0.95
 
@@ -49,6 +55,13 @@ func build(look: int) -> void:
 	var tie := _material(TIES[look % TIES.size()])
 	var shoe := _material(Color(0.06, 0.05, 0.05))
 	var dark := _material(Color(0.05, 0.05, 0.06))
+	var is_mamdani := look == MAMDANI_LOOK
+	if is_mamdani:
+		skin = _material(Color(0.66, 0.47, 0.34))
+		jacket = _material(Color(0.1, 0.11, 0.16))
+		trousers = jacket
+		hair = _material(Color(0.05, 0.04, 0.04))
+		tie = _material(Color(0.12, 0.3, 0.62))
 	_hips = _pivot("Hips", self, Vector3(0, HIP_HEIGHT, 0))
 	_part("Pelvis", _hips, Vector3(0, 0.02, 0), Vector3(0.34, 0.18, 0.22), trousers)
 	_torso = _pivot("Torso", _hips, Vector3(0, 0.1, 0))
@@ -61,6 +74,10 @@ func build(look: int) -> void:
 	_part("Hair", _head, Vector3(0, 0.28, 0.02), Vector3(0.26, 0.06, 0.27), hair)
 	_part("HairBack", _head, Vector3(0, 0.18, 0.12), Vector3(0.26, 0.2, 0.04), hair)
 	_part("Nose", _head, Vector3(0, 0.12, -0.13), Vector3(0.04, 0.06, 0.03), skin)
+	if is_mamdani:
+		_part("Beard", _head, Vector3(0, 0.04, -0.01), Vector3(0.25, 0.1, 0.25), hair)
+		_part("Moustache", _head, Vector3(0, 0.085, -0.13), Vector3(0.1, 0.02, 0.02), hair)
+		_name_tag(MAMDANI_NAME)
 	for side: float in [-1.0, 1.0]:
 		var tag := "L" if side < 0.0 else "R"
 		_part(
@@ -105,6 +122,18 @@ func pose(phase: float, walk: float, limp: float, flinch: float, idle: float) ->
 			-swing * 0.8 * alive - limp * 0.5, 0, side * (0.08 * alive + 1.35 * limp)
 		)
 		_elbows[i].rotation.x = 0.2 * alive + absf(swing) * 0.4 * alive + 0.7 * limp
+
+
+func _name_tag(text: String) -> void:
+	var tag := Label3D.new()
+	tag.name = "NameTag"
+	tag.text = text
+	tag.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	tag.font_size = 40
+	tag.outline_size = 10
+	tag.pixel_size = 0.004
+	tag.position = Vector3(0, 2.1, 0)
+	add_child(tag)
 
 
 func _pivot(label: String, parent: Node3D, at: Vector3) -> Node3D:

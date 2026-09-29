@@ -1,10 +1,12 @@
 # Casino patrons
 
-Four gamblers in suits who stroll the gaming floor, each on their own loop, pausing
+Five patrons in suits who stroll the gaming floor, each on their own loop, pausing
 now and then to look around. Punch them with `features/boxing` and
 they flinch, stagger back and turn to face you; enough punches (or one full power
 punch) knock them out into a limp ragdoll. They get back up 4 s after the last
-punch, walk back to where they were hit and carry on. Any weapon gibs them; they
+punch, walk back to where they were hit and carry on. The fifth (`PatronModel.MAMDANI_LOOK`) is Zohran Mamdani, New York
+City's mayor, with a trimmed beard, blue tie and a floating name tag; he strolls
+an aisle beside the slot machines. Any weapon gibs them; they
 walk back in from the start of their route 6 s later.
 
 ## How it works
