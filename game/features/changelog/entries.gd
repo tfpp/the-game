@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Buy drinks, win for charisma and walk Vivienne to your room for a lucky night.",
 	},
 	{
+		"title": "Full mobile rendering",
+		"summary": "Phones now use desktop rendering settings without extra graphics limits.",
+	},
+	{
 		"title": "Food court",
 		"summary": "Walk to the new south-wing food court for kebabs and booths you can sit in.",
 	},

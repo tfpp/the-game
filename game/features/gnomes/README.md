@@ -17,10 +17,9 @@ The server snaps every route point onto the floor collision below it (layer 1,
 skipping players and other moving bodies), so gnomes walk on the floor rather than
 at the navmesh's rounded height. Every door sits at y=0, the floor at the wall base.
 
-Shadow maps are off on mobile and touch devices, so nothing grounds a gnome visually.
 Each gnome stands on flat boots over an unshaded contact-shadow disc, and door frames
-reach 2 cm into the floor. The mobile profile (`RetroStyle`) culls small props past
-40 m, so each door's floating "Gnome tunnels - USE" label hides at the same distance.
+reach 2 cm into the floor, keeping them grounded even without shadow maps. Doors
+and their "Gnome tunnels - USE" labels have no mobile-only distance cutoff.
 
 Sync replicates each gnome's position, facing and a bitmask of which gnomes are out.
 Clients never query the navmesh; they only smooth and show that state. Features load
