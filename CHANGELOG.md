@@ -133,6 +133,12 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Shorten the dealer model forehead and lower its hairline while preserving the quiff and lower face.
 
 - Revise the dealer head against the side concept with a swept-back crown, compact nose, recessed chin and corrected jaw-to-neck transition.
+- Turn the loot fence beside the slum gate into a pawn shop with a glass display case,
+  three gold balls and a PAWN SHOP sign; press Use there to pawn a valuable.
+- Fix gnomes flickering around the casino for players who joined a server: clients no longer
+  run their own gnome outings from before they connected, and gnomes and two east-wall gnome
+  doors now sit on the floor. Gnomes get boots and a contact shadow, door frames meet the
+  floor, and distant door labels no longer float on their own on phones and touch screens.
 - Bribe Donald Trump for slightly better slot machine luck. Each bribe doubles in price, up
   to five, and he promises to remodel part of the casino with one of 1,000 quips.
 

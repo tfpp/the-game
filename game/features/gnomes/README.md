@@ -13,8 +13,20 @@ on the prebaked navmesh (`gnome_navmesh.tres`), then slips into the chosen door.
 out, gnomes sidestep players and anything in the `killable` group (casino patrons, the
 penguin, frogs, dummies), fading the sidestep out near the doors so they still line up.
 
+The server snaps every route point onto the floor collision below it (layer 1,
+skipping players and other moving bodies), so gnomes walk on the floor rather than
+at the navmesh's rounded height. Every door sits at y=0, the floor at the wall base.
+
+Shadow maps are off on mobile and touch devices, so nothing grounds a gnome visually.
+Each gnome stands on flat boots over an unshaded contact-shadow disc, and door frames
+reach 2 cm into the floor. The mobile profile (`RetroStyle`) culls small props past
+40 m, so each door's floating "Gnome tunnels - USE" label hides at the same distance.
+
 Sync replicates each gnome's position, facing and a bitmask of which gnomes are out.
-Clients never query the navmesh; they only smooth and show that state.
+Clients never query the navmesh; they only smooth and show that state. Features load
+before networking starts, when every peer still counts as the server, so the train
+checks authority every physics frame and resets its burrow on `Network.mode_changed`:
+a joining client drops anything it simulated before connecting.
 
 ## Killing
 

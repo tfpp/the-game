@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://features/gnomes/gnome.gd" id="1_gnome"]
 
@@ -30,6 +30,24 @@ height = 0.16
 
 [sub_resource type="StandardMaterial3D" id="BeardMat"]
 albedo_color = Color(0.95, 0.95, 0.92, 1)
+
+[sub_resource type="BoxMesh" id="BootMesh"]
+size = Vector3(0.1, 0.05, 0.16)
+
+[sub_resource type="StandardMaterial3D" id="BootMat"]
+albedo_color = Color(0.25, 0.15, 0.08, 1)
+
+[sub_resource type="CylinderMesh" id="ShadowMesh"]
+top_radius = 0.22
+bottom_radius = 0.22
+height = 0.002
+radial_segments = 12
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="ShadowMat"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 0.45)
 
 [sub_resource type="CapsuleShape3D" id="HitShape"]
 radius = 0.2
@@ -65,3 +83,19 @@ surface_material_override/0 = SubResource("HatMat")
 transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, -0.06, 0.08)
 mesh = SubResource("BeardMesh")
 surface_material_override/0 = SubResource("BeardMat")
+
+[node name="BootL" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.025, 0.03)
+mesh = SubResource("BootMesh")
+surface_material_override/0 = SubResource("BootMat")
+
+[node name="BootR" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.025, 0.03)
+mesh = SubResource("BootMesh")
+surface_material_override/0 = SubResource("BootMat")
+
+[node name="ContactShadow" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.004, 0)
+cast_shadow = 0
+mesh = SubResource("ShadowMesh")
+surface_material_override/0 = SubResource("ShadowMat")

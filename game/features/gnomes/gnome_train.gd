@@ -17,6 +17,10 @@ const AVOID_SMOOTHING := 8.0
 const NAV_FLOOR_OFFSET := 0.4
 ## Wander stops on a different floor (the gallery, the gaming pit) are rejected.
 const MAX_WANDER_RISE := 0.8
+## Route points snap to floor collision within this height, so gnomes don't hover on
+## the navmesh's approximate (cell-rounded) height.
+const FLOOR_SNAP_RANGE := 0.6
+const FLOOR_LAYER := 1
 const ROAM_SPEED := 3.5
 const FLAP_SMOOTHING := 14.0
 
@@ -64,10 +68,27 @@ func _ready() -> void:
 		_alive.append(true)
 		_avoid.append(Vector3.ZERO)
 		_smoothed_ready.append(false)
-	if multiplayer.is_server():
-		_rest_timer = randf_range(GnomeMath.REST_MIN, GnomeMath.REST_MAX)
-	else:
-		set_physics_process(false)
+	_rest_timer = randf_range(GnomeMath.REST_MIN, GnomeMath.REST_MAX)
+	Network.mode_changed.connect(_on_mode_changed)
+
+
+## Features load before networking starts, when every peer still counts as the server.
+## A joining client must drop whatever it simulated so far and show only the
+## server's state; a new server starts its burrows from rest.
+func _on_mode_changed(_mode: Network.Mode) -> void:
+	_resting = true
+	_rest_timer = randf_range(GnomeMath.REST_MIN, GnomeMath.REST_MAX)
+	_elapsed = 0.0
+	net_shown = 0
+	for i in _gnomes.size():
+		_alive[i] = true
+		_avoid[i] = Vector3.ZERO
+		_routes[i] = PackedVector3Array([_hole_positions[_from_hole]])
+		_route_lengths[i] = 0.0
+		net_positions[i] = _hole_positions[_from_hole]
+		net_yaws[i] = 0.0
+		_smoothed_ready[i] = false
+		_gnomes[i].set_shown(false)
 
 
 func _collect_gnomes() -> Array[Gnome]:
@@ -136,7 +157,31 @@ func _plan_route(from_hole: int, to_hole: int) -> PackedVector3Array:
 		var leg := _nav_path(stops[s - 1], stops[s])
 		for p in range(1, leg.size()):
 			route.append(leg[p])
+	# Hole positions are authored at floor level; everything between them sits on the
+	# floor collision below it.
+	for p in range(1, route.size() - 1):
+		route[p] = snap_to_floor(route[p])
 	return route
+
+
+## Local point moved onto the floor collision directly below or just above it; left
+## unchanged when there is no floor within FLOOR_SNAP_RANGE. Players and other moving
+## bodies are skipped so gnomes never climb onto them.
+func snap_to_floor(local: Vector3) -> Vector3:
+	var space := get_world_3d().direct_space_state
+	var point := to_global(local)
+	var query := PhysicsRayQueryParameters3D.create(
+		point + Vector3.UP * FLOOR_SNAP_RANGE, point + Vector3.DOWN * FLOOR_SNAP_RANGE, FLOOR_LAYER
+	)
+	for attempt in 4:
+		var hit := space.intersect_ray(query)
+		if hit.is_empty():
+			return local
+		if hit["collider"] is PhysicsBody3D and not hit["collider"] is StaticBody3D:
+			query.exclude = query.exclude + [hit["rid"]]
+			continue
+		return to_local(hit["position"] as Vector3)
+	return local
 
 
 ## A random reachable spot in front of `anchor`, snapped onto the navmesh, or a spot
@@ -177,6 +222,9 @@ func _nav_path(from: Vector3, to: Vector3) -> PackedVector3Array:
 
 
 func _physics_process(delta: float) -> void:
+	# Checked every frame: authority is only known once networking has started.
+	if not multiplayer.is_server():
+		return
 	if _resting:
 		_rest_timer -= delta
 		if _rest_timer <= 0.0:

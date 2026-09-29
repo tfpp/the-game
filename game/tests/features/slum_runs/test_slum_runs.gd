@@ -181,3 +181,21 @@ func test_fence_pays_once_for_a_reserved_valuable() -> void:
 	assert_eq(hand.inventory().take_first_valuable(), "")
 	await fence.request_sell()
 	assert_eq(int(wallet.balances.get(1, 0)), 3000)
+
+
+func test_pawn_shop_storefront_sits_on_the_counter() -> void:
+	var runs := _run(_features())
+	var fence := runs.get_node("Fence") as LootFence
+	assert_eq(fence.interaction_text(), "Pawn a valuable")
+	var top := fence.global_position.y + fence.size.y * 0.5
+	var case_node := fence.get_node("DisplayCase") as MeshInstance3D
+	var case_mesh := case_node.mesh as BoxMesh
+	assert_almost_eq(case_node.global_position.y - case_mesh.size.y * 0.5, top, 0.001)
+	var bar := fence.get_node("BallBar") as Node3D
+	for i: int in 3:
+		var ball := fence.get_node("Ball%d" % i) as Node3D
+		assert_lt(ball.global_position.y + LootFence.BALL_RADIUS_M, bar.global_position.y)
+		assert_gt(ball.global_position.y, top + 0.25, "hangs above the display case")
+	var sign := runs.get_node("FenceSign") as Label3D
+	assert_gt(sign.global_position.y, bar.global_position.y)
+	assert_string_contains(sign.text, "PAWN SHOP")
