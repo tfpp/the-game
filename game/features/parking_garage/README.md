@@ -49,8 +49,7 @@ Nine of the wrecked cars carry a `features/loot/` `LootContainer` named `Loot`
 using `car_loot.tres`: walk up and press Use to open the boot and search its
 shared stash. Drag valuables into an empty backpack slot or tap to take one.
 
-`tools/build_car_obj.py` authors the wreck's outward-facing body, detachable
-hood, opening boot lid, cavity and trim as original low polygon OBJ meshes.
-The committed meshes replace the old box-car CSG shape; a single static
+The checked-in wreck meshes include an outward-facing body, detachable hood,
+opening boot lid, cavity and trim. They replace the old box-car CSG shape; a single static
 collision shape still blocks players. Each placed car keeps its own paint
 color, and damaged variants expose a missing hood.

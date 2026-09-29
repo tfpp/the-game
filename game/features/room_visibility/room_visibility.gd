@@ -56,13 +56,16 @@ func _process(_delta: float) -> void:
 
 
 static func far_for_bounds(bounds: AABB, camera_position: Vector3, near: float) -> float:
-	var farthest := near
-	for x: int in 2:
-		for y: int in 2:
-			for z: int in 2:
-				var corner := bounds.position + bounds.size * Vector3(x, y, z)
-				farthest = maxf(farthest, camera_position.distance_to(corner))
-	return farthest + near
+	# The farthest corner is the farther end of each axis. This gives the same
+	# exact bound with one square root instead of measuring all eight corners.
+	var low := bounds.position - camera_position
+	var high := bounds.end - camera_position
+	var distance_squared := (
+		maxf(low.x * low.x, high.x * high.x)
+		+ maxf(low.y * low.y, high.y * high.y)
+		+ maxf(low.z * low.z, high.z * high.z)
+	)
+	return maxf(near, sqrt(distance_squared)) + near
 
 
 func _room_at(position: Vector3) -> Dictionary:

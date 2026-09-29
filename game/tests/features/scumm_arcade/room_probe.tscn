@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3]
-
-[ext_resource type="Script" path="res://tests/features/scumm_arcade/room_probe.gd" id="1"]
-[ext_resource type="PackedScene" path="res://main.tscn" id="2"]
-
-[node name="ArcadeRoomProbe" type="Node"]
-script = ExtResource("1")
-
-[node name="Game" parent="." instance=ExtResource("2")]

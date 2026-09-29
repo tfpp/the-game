@@ -34,6 +34,5 @@ Inventory follows the existing held-item lifetime: it survives an in-session
 combat respawn, but is cleared on disconnect or a network mode change. It is not
 saved between sessions. World pickups follow the existing one-use pickup system.
 
-Run `harness/verify.sh` and
-`GODOT=godot python3 game/tests/features/inventory/network_test.py` from the repo root. Feature tests cover capacity, swaps, consumption, fixed
+Run `harness/verify.sh` from the repo root. Feature tests cover capacity, swaps, consumption, fixed
 colors, invalid and foreign requests, drops, pickups and underwear visuals.

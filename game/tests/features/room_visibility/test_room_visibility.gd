@@ -55,3 +55,6 @@ func test_far_plane_covers_the_selected_room_corners() -> void:
 	var bounds := AABB(Vector3(-10, -1, -10), Vector3(20, 6, 20))
 	var far := RoomVisibility.far_for_bounds(bounds, Vector3(0, 1, 0), 0.05)
 	assert_almost_eq(far, Vector3(10, 4, 10).length() + 0.05, 0.001)
+	var asymmetric := AABB(Vector3(-6, -2, 3), Vector3(10, 7, 12))
+	var outside := RoomVisibility.far_for_bounds(asymmetric, Vector3(8, 1, -4), 0.05)
+	assert_almost_eq(outside, Vector3(-14, 4, 19).length() + 0.05, 0.001)

@@ -30,20 +30,18 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   clients never call TheNewsAPI and restarts reuse recent headlines.
 - Make phones and tablets run faster: render fewer 3D pixels, keep two nearby lights, hide
   small props past 40 metres and cap physics catch-up on slow frames.
+- Reduce rendering work by culling distant rooms, batching frog detail meshes, disabling
+  whole-world sun shadows and playing garage ambience only when a player is nearby.
 - Keep offline players on the leaderboard and remember signed-in scores across reconnects
   and server restarts.
 - Press ~ for a Source-style settings console with autocomplete and command history;
   use sv_cheats 1 to unlock noclip and sv_cheats 0 to disable it for everyone.
-- Play Super Turbo Turkey Puncher 3 on two mouse-operated computers in the Adventure
-  Arcade, with shared screens, timed rounds and cabinet high scores.
 - Stop casino benches and props from sliding when you turn the camera, and stop guns,
   gnomes and other plain-coloured props from rendering almost black.
 - Add four walking casino patrons to the gaming floor: punch them to stagger them, knock
   them out into a limp ragdoll, and watch them get back up and carry on.
 - Pray at the Kaaba with Use: a chant plays and each prayer adds a stacking blessing (up
   to 5) that gives your losing slot spins another roll until you win.
-- Enter the Adventure Arcade without a long freeze: cabinets now show an attract screen
-  and only load and start their game when someone uses them.
 - Find gnome holes as doggy doors on the outer walls: gnomes now come out one by one,
   wander their own routes around players, NPCs and frogs, and can be killed like frogs
   until their burrow next comes out.
@@ -97,6 +95,9 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Open the Golden Crown's slum gate for shared trips to the rain alleys or parking garage; drop carried valuables on slum deaths and sell survivors' loot into the persistent casino wallet.
 - Add a fenced, rain-soaked alley map with searchable dumpsters, boarded buildings, puddles and failing streetlights.
 - Reduce scene draw calls by batching frog details, clipping other rooms from each player's server-assigned view, removing the full-world sun shadow pass, and playing rain ambience only near players.
+- Keep hotel rooms, stairs, sewers and the atrium readable at night and on phones
+  with steady indoor ambient lighting.
+- Remove the Adventure Arcade, its computer games and Python authoring and probe scripts.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

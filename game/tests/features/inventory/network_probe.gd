@@ -1,5 +1,5 @@
 extends Node
-## Standalone real-WebSocket coverage; launched by network_test.py.
+## Standalone real-WebSocket coverage probe.
 
 
 func _ready() -> void:

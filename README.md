@@ -129,9 +129,9 @@ Sign-up emails are printed to the API's log instead of being sent.
 
 ```bash
 game/scripts/export.sh web                 # exports to build/web/
-python3 -m http.server -d build/web 8060
 ```
 
+Serve `build/web/` with a static HTTP server on port 8060.
 Open <http://localhost:8060/?server=ws://127.0.0.1:7777&api=http://127.0.0.1:8080/api>
 to join the local server.
 
