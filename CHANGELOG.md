@@ -98,6 +98,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Keep hotel rooms, stairs, sewers and the atrium readable at night and on phones
   with steady indoor ambient lighting.
 - Remove the Adventure Arcade, its computer games and Python authoring and probe scripts.
+- Shoot salon guests, dealers, the bartender and the apartment clerk with any gun;
+  they return after six seconds.
 - Enter VR from the Quest / WebXR menu in Quest Browser with headset look, stick
   movement, snap turning, jump and nearby object interaction.
 

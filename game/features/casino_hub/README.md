@@ -72,16 +72,18 @@ clearance, landings have floors, and the main rooms have solid ceilings.
 ## Reference salon assets
 
 `salon.tscn` is checked in; edit it for layout changes. Its original meshes have adult proportions,
-formal clothing, posed hands, readable cards and chip stacks. Patrons and card
-tables are scenery: they do not advertise blackjack, add players, award money,
-or create network state. Existing slots and roulette retain their authoritative
-interactions and payouts.
+formal clothing, posed hands, readable cards and chip stacks. Card tables remain
+scenery: they do not advertise blackjack, add players or award money.
+Characters use `casino_patrons/stationary_patron.gd` for synchronized gun deaths
+and six-second respawns, keeping their existing models and poses. Existing slots
+and roulette retain their authoritative interactions and payouts.
 
 The modelled table and its three chairs total 6,230 triangles across three shared
 materials (felt, walnut, textured palette). Each shaped patron is 1,250–1,306
 triangles and one material. The entire bar,
 including 68 bottles, is 5,012 triangles/two materials; gallery architecture is
-3,576 triangles/two materials. Decorative patrons need no frame callbacks or RPCs.
+3,576 triangles/two materials. Stationary patrons replicate only alive state and
+a transient death effect.
 
 `test_salon_access.gd` sweeps a standing player capsule through the central aisle,
 the front of all eight machines, and up/across the gallery in both directions.

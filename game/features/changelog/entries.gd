@@ -15,6 +15,11 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Enter VR from Quest / WebXR in the menu to explore with Touch controllers.",
 	},
 	{
+		"title": "Shootable salon NPCs",
+		"summary":
+		"Shoot salon guests, dealers and the apartment clerk; they return after six seconds.",
+	},
+	{
 		"title": "Shared search stashes",
 		"summary":
 		"Search wrecks and dumpsters, then drag their shared valuables into your backpack.",

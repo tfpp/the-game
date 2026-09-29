@@ -1,8 +1,7 @@
 # Casino patrons
 
 Four gamblers in suits who stroll the gaming floor, each on their own loop, pausing
-now and then to look around. Unlike the salon's seated patrons (baked scenery in
-`features/casino_hub`), they are real NPCs: punch them with `features/boxing` and
+now and then to look around. Punch them with `features/boxing` and
 they flinch, stagger back and turn to face you; enough punches (or one full power
 punch) knock them out into a limp ragdoll. They get back up 4 s after the last
 punch, walk back to where they were hit and carry on. Any weapon gibs them; they
@@ -32,3 +31,21 @@ walk back in from the start of their route 6 s later.
   real room, slots and roulette.
 
 Nothing is persisted.
+
+## Stationary characters
+
+`stationary_patron.gd` wraps the existing salon dealer, guest and seated models in
+layer-2 hitboxes fitted to their imported poses. Salon guests, dealers, bartender
+and the Lily Apartments clerk now implement the same `killable` / `take_hit(peer)`
+contract as roaming patrons. A direct hit from any gun kills them; repeated hits
+while dead do nothing. They respawn in place after six seconds. Power punches also
+use this existing contract. Ordinary jabs do not affect these stationary characters.
+
+Each body owns `net_alive`; its `NetworkedEntity` replicates changes and initial
+state for late joiners, and sends the shared cosmetic MeshExplosion death event.
+There is no client-callable death action: existing weapons validate firing and the
+server resolves collisions. Session changes reset deaths; disconnecting the shooter
+does not affect the respawn. The apartment clerk lives outside streamed Content,
+so unloading the lobby cannot reset its state or remove its server hitbox. The desk
+still allocates apartments during the respawn delay. Existing gun controls apply
+(left click or controller right shoulder); no new touch firing control is added.
