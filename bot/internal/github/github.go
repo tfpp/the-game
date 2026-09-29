@@ -343,6 +343,30 @@ func (a *App) FileContent(ctx context.Context, path, ref string) ([]byte, error)
 	return base64.StdEncoding.DecodeString(strings.ReplaceAll(f.Content, "\n", ""))
 }
 
+// FilePaths lists blobs at an immutable revision. Never silently drop a truncated tree.
+func (a *App) FilePaths(ctx context.Context, ref string) ([]string, error) {
+	var tree struct {
+		Truncated bool `json:"truncated"`
+		Entries   []struct {
+			Path string `json:"path"`
+			Type string `json:"type"`
+		} `json:"tree"`
+	}
+	if err := a.call(ctx, http.MethodGet, "/git/trees/"+url.PathEscape(ref)+"?recursive=1", nil, &tree); err != nil {
+		return nil, err
+	}
+	if tree.Truncated {
+		return nil, fmt.Errorf("file tree at %s is truncated", ref)
+	}
+	var paths []string
+	for _, entry := range tree.Entries {
+		if entry.Type == "blob" {
+			paths = append(paths, entry.Path)
+		}
+	}
+	return paths, nil
+}
+
 // Comparison is how head relates to base.
 type Comparison struct {
 	Status   string `json:"status"` // identical, ahead, behind, diverged

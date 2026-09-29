@@ -19,7 +19,7 @@ import (
 // with its CHANGELOG.md notes, and its commit bumps the game's version, so it deploys
 // like any merge. Once the deployed game server contains a release, the bot posts it to
 // ReleaseChannelID, oldest first, each once. Then it posts the bullets of CHANGELOG.md's
-// `## [edge]` section (merged, not released yet) that went live since, each once.
+// `## [edge]` section and feature-owned JSON notes that went live since, each once.
 
 const (
 	releaseAnnouncedKey = "release_announced" // version of the last announced release
@@ -128,7 +128,7 @@ func (s *Service) announceReleases(ctx context.Context) error {
 	return s.st.Set(ctx, releaseCheckedKey, deployed)
 }
 
-// announceEdge posts the edge bullets in CHANGELOG.md at deployed that haven't been
+// announceEdge posts legacy and feature-owned edge bullets at deployed that haven't been
 // announced. On first use it only records them. A bullet that leaves the edge (released,
 // or reworded) is forgotten, so a reworded one is announced again.
 func (s *Service) announceEdge(ctx context.Context, deployed string) error {
@@ -141,6 +141,15 @@ func (s *Service) announceEdge(ctx context.Context, deployed string) error {
 		return err
 	}
 	edge := edgeBullets(string(raw))
+	lastRelease, err := s.st.Get(ctx, releaseAnnouncedKey)
+	if err != nil {
+		return err
+	}
+	featureNotes, err := s.featureEdge(ctx, deployed, lastRelease)
+	if err != nil {
+		return err
+	}
+	edge = append(edge, featureNotes...)
 	saved, err := s.st.Get(ctx, edgeAnnouncedKey)
 	if err != nil {
 		return err
@@ -158,6 +167,9 @@ func (s *Service) announceEdge(ctx context.Context, deployed string) error {
 		}
 		if len(fresh) > 0 {
 			link := fmt.Sprintf("https://github.com/%s/blob/%s/%s", s.cfg.Repo, deployed, changelogPath)
+			if len(featureNotes) > 0 {
+				link = fmt.Sprintf("https://github.com/%s/tree/%s/game/features", s.cfg.Repo, deployed)
+			}
 			if err := s.chat.Post(ctx, s.cfg.ReleaseChannelID, edgePost(fresh, link)); err != nil {
 				return fmt.Errorf("announce edge: %w", err)
 			}
@@ -169,6 +181,56 @@ func (s *Service) announceEdge(ctx context.Context, deployed string) error {
 		return err
 	}
 	return s.st.Set(ctx, edgeAnnouncedKey, string(b))
+}
+
+var featureNotePath = regexp.MustCompile(`^game/features/[^/]+/release_notes/[^/]+\.json$`)
+
+// featureEdge collects files added since the latest live release, at the deployed commit.
+// Immutable filenames give every PR its own note, including changes to the same feature.
+func (s *Service) featureEdge(ctx context.Context, deployed, tag string) ([]string, error) {
+	paths, err := s.gh.FilePaths(ctx, deployed)
+	if err != nil {
+		return nil, err
+	}
+	old := map[string]bool{}
+	if _, ok := parseVersion(tag); ok {
+		previous, err := s.gh.FilePaths(ctx, tag)
+		if err != nil {
+			return nil, err
+		}
+		for _, path := range previous {
+			old[path] = true
+		}
+	}
+	slices.Sort(paths)
+	var bullets []string
+	for _, path := range paths {
+		if old[path] || !featureNotePath.MatchString(path) {
+			continue
+		}
+		raw, err := s.gh.FileContent(ctx, path, deployed)
+		if err != nil {
+			return nil, err
+		}
+		var note struct {
+			Title   string   `json:"title"`
+			Summary string   `json:"summary"`
+			Notes   []string `json:"notes"`
+		}
+		if err := json.Unmarshal(raw, &note); err != nil {
+			return nil, fmt.Errorf("feature note %s: %w", path, err)
+		}
+		if strings.TrimSpace(note.Title) == "" || strings.TrimSpace(note.Summary) == "" || len(note.Notes) == 0 {
+			return nil, fmt.Errorf("incomplete feature note %s", path)
+		}
+		for _, text := range note.Notes {
+			if strings.TrimSpace(text) == "" || strings.ContainsAny(text, "\r\n") || strings.HasPrefix(text, "- ") || strings.HasPrefix(text, "* ") {
+				return nil, fmt.Errorf("invalid bullet in feature note %s", path)
+			}
+			bullets = append(bullets, "- "+text)
+		}
+	}
+	return bullets, nil
 }
 
 // edgeBullets returns the bullets of the `## [edge]` section of a CHANGELOG.md, each

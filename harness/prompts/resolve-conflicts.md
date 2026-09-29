@@ -11,13 +11,13 @@ don't refactor, restyle or extend either side.
 
 1. List the conflicts: `git status` and `git diff --name-only --diff-filter=U`.
 2. Resolve each one so that both sides' changes survive:
-   - `game/features/changelog/entries.gd`: both sides added entries at the top of
-     `ENTRIES`. Keep every entry whole, in the multi-line shape from "Changelogs", with
-     unique titles and this branch's entry first.
-   - `CHANGELOG.md`: keep every bullet, without duplicates. This branch's bullet belongs
-     under `## [edge]`. If `{{BASE}}` has cut a release since, its old edge bullets moved
-     into a version section: check that this branch's bullet didn't move with them, even
-     if the file merged cleanly.
+   - Feature `release_notes/*.json` files: preserve both additions. If two PRs picked
+     the same filename for different changes, give this branch's unreleased note a unique
+     issue-prefixed filename. Never rename or change a file already in a release tag.
+   - Legacy `game/features/changelog/entries.gd` / `CHANGELOG.md` conflicts from older
+     branches: preserve base history, migrate this branch's new entry and bullet into its
+     own feature JSON file, and remove only that addition from the shared lists. Keep
+     released sections intact and check for duplicated titles.
    - READMEs, tests and lists that both sides appended to: keep both additions.
    - Code: combine both sides' changes. Where they disagree about a shared interface, keep
      `{{BASE}}`'s version, which other features already use, and adapt this branch's code.

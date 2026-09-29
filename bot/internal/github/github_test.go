@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -215,5 +216,28 @@ func TestMergeCalls(t *testing.T) {
 	}
 	if c, err := a.Compare(ctx, "main", "agent/4-x"); err != nil || c.BehindBy != 2 {
 		t.Errorf("compare %+v %v", c, err)
+	}
+}
+
+func TestFilePathsRejectsTruncationAndFiltersTrees(t *testing.T) {
+	for _, truncated := range []bool{false, true} {
+		t.Run(fmt.Sprint(truncated), func(t *testing.T) {
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Path != "/repos/o/r/git/trees/deployed" || r.URL.Query().Get("recursive") != "1" {
+					t.Errorf("unexpected tree request %s", r.URL)
+				}
+				fmt.Fprintf(w, `{"truncated":%t,"tree":[{"path":"game","type":"tree"},{"path":"game/features/frogs/release_notes/1-frogs.json","type":"blob"}]}`, truncated)
+			}))
+			defer srv.Close()
+			a := &App{Repo: "o/r", BaseURL: srv.URL, token: "test", tokenExpiry: time.Now().Add(time.Hour)}
+			paths, err := a.FilePaths(context.Background(), "deployed")
+			if truncated {
+				if err == nil {
+					t.Fatal("truncated tree accepted")
+				}
+			} else if err != nil || len(paths) != 1 || paths[0] != "game/features/frogs/release_notes/1-frogs.json" {
+				t.Fatalf("paths %q error %v", paths, err)
+			}
+		})
 	}
 }
