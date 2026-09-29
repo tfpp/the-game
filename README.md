@@ -128,19 +128,6 @@ python3 -m http.server -d build/web 8060
 Open <http://localhost:8060/?server=ws://127.0.0.1:7777&api=http://127.0.0.1:8080/api>
 to join the local server.
 
-### Desktop app
-
-Use the Electron wrapper on Linux, macOS or Windows. See [desktop/README.md](desktop/README.md)
-for setup, requirements and uninstall instructions. With Node.js 22.12+, npm and curl
-installed, run this in Terminal (macOS/Linux) or Git Bash (Windows):
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/tfpp/the-game/main/desktop/install.sh | bash
-```
-
-It builds and installs the wrapper for your user, loads the live website and requires
-internet access at startup.
-
 ## Contributing
 
 The usual way in is Discord: `/feature request:<text> harness:<claude|codex>` starts

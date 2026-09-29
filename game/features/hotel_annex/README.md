@@ -32,6 +32,21 @@ The hotel sits at `(0, 0, -1400)`. Geometry, collision and live lamps stream in 
 visitors. Door and key synchronizers remain on the always-present Hotel anchor so
 unloading the room never resets shared state. The game supplies the sky/day-night cycle.
 
+## Atrium wing
+
+Use the **ATRIUM** door beside the casino return door in the classic hotel's Grand
+Lounge. The **CLASSIC HOTEL** door returns to that lounge. The atrium wing streams
+separately at `(0, 0, -1500)`, retaining the four floors, fountain, glass roof,
+gallery railings and guest rooms from the upstream hotel rebuild. Floors sit at
+y = 0, 4, 8 and 12. Its switchback ramps run 24 m for a 4 m rise (9.46 degrees).
+The eighteen upper guest rooms use shared swinging doors, kept outside streamed
+geometry so state survives unloading and late joins. Both wings register with GPS
+as separate regions connected by the existing RoomDoor links.
+
+Edit `atrium_hotel.gd` for its layout; it builds when loaded with no bake step.
+`test_atrium.gd` retains the upstream floor, headroom, landing and railing checks.
+Portal tests cover round trips, arrival clearance, independent streaming and GPS.
+
 ## Fast authoring (no lighting bake)
 
 Edit `hotel.json`, then run from the repository root:

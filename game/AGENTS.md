@@ -46,6 +46,7 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
   RPCs inside the scene have matching paths everywhere. The multiplayer rules below apply.
 - A scene that fails to load is logged and skipped, which fails the smoke tests.
 - Put tests in `tests/features/<name>/`.
+- New rooms and areas of the map need a GPS destination (`features/gps/README.md`).
 - Player preferences go on a page in the Esc menu's Settings (join the `settings_pages`
   group; see `features/settings/settings.gd`) and persist with `SettingsStore`. New input
   actions show up on the Controls page automatically; add them to `SECTIONS` in

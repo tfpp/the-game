@@ -7,6 +7,13 @@ a bullet to the end of `## [edge]`:** imperative, one line per change where poss
 version. Releases are cut by hand (the `release` workflow): it moves `edge` into a section
 for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
 
+
+- Connect the four-floor atrium as a separate classic-hotel wing, with gentle ramps, shared guest-room doors and GPS routing between wings.
+
+## [edge]`:** imperative, one line per change where possible, no
+version. Releases are cut by hand (the `release` workflow): it moves `edge` into a section
+for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
+
 - Add synchronized swinging room doors and a Reading Room key for the locked study two stair flights up.
 - Keep stairs between 30 and 37 degrees, with level landings and ramps capped at 10 degrees.
 - Use live hotel lighting and fast geometry builds during development, with no required lightmap bake.
@@ -82,6 +89,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   with locked dependencies and safe rebuilds.
 - Claim a free apartment at the Lily Apartments front desk in the south lobby, and
   take the express elevator to new ten-unit floors as more residents move in.
+- Add a GPS phone: press P (or pick GPS in the Esc menu), search for a room, and follow the
+  purple route on the radar and the direction banner, including through doors.
+- Rebuild the hotel wing as a four-floor hotel around a skylit central atrium, with
+  switchback ramps, gallery railings and guest rooms on every upper floor.
 
 - Join procedural wall corners with mitred trim and one shared pillar; connect raised rooms with level landings, ramps capped at 10 degrees and walkable stairs.
 
@@ -137,7 +148,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Add a Retry button to Discord messages about failed, cancelled or never-started `implement` and `revise` runs, so the requester can start the run again.
 - Name cancelled, failed and skipped agent jobs in the "did not produce a change" comment, without listing unavailable model, token and cost fields.
 - Post every bot message in Discord feature threads as a colour-coded embed (agent progress, CI, previews, approvals, merge queue, conflicts, merges and deploys), with model, shortened token count (such as 1.4M) and estimated cost as fields on agent notifications.
-- Show the agent's reasoning effort next to its model in PR descriptions, 🤖 comments and Discord notifications.
+- Show the agent's reasoning effort next to its model in PR descriptions, ðŸ¤– comments and Discord notifications.
 
 - Add a Monkey Island demo arcade with a brass-trimmed cabinet and synchronized local emulation for every player.
 - Autosave shared arcade progress, restore it after server restarts, and pause the demo when everyone disconnects.

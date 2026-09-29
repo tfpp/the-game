@@ -46,6 +46,7 @@ def run():
             wait('driver', 'HOTEL_ENTERED')
             start('observer', [f'--connect=ws://127.0.0.1:{port}', '--name=HotelObserver'])
             wait('driver', 'REENTRY_PASSED')
+            wait('driver', 'ATRIUM_ROUND_TRIP_PASSED')
             wait('observer', 'OBSERVER_UNCHANGED')
             wait('server', 'SERVER_UNLOADED')
             print('PASS: range rejection, preloaded collision, round trip, unload, re-entry, '

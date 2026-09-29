@@ -103,3 +103,106 @@ kit_id = "concrete"
 [node name="DecoLadder" parent="Hotel" instance=ExtResource("ladder")]
 position = Vector3(-102, 0, -7)
 access_door = NodePath("../DecoSewerDoor")
+
+
+[node name="AtriumArrival" type="Marker3D" parent="Hotel"]
+position = Vector3(5.5, 1, 2.2)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="AtriumEntrance" type="CSGBox3D" parent="Hotel"]
+visible = false
+position = Vector3(5.5, 1.35, 0.15)
+script = ExtResource("door")
+destination = NodePath("../../Atrium/Arrival")
+door_label = "Visit the atrium wing"
+
+[node name="Atrium" type="Node3D" parent="."]
+position = Vector3(0, 0, -1500)
+script = ExtResource("room")
+room_scene = "res://features/hotel_annex/atrium_interior.tscn"
+bounds = AABB(-21, -1, -1, 56, 18, 36)
+
+[node name="Arrival" type="Marker3D" parent="Atrium"]
+position = Vector3(8.75, 1, 2.2)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="Return" type="CSGBox3D" parent="Atrium"]
+visible = false
+position = Vector3(8.75, 1.35, 0.15)
+script = ExtResource("door")
+destination = NodePath("../../Hotel/AtriumArrival")
+door_label = "Return to the classic hotel"
+
+[node name="RoomDoors" type="Node3D" parent="Atrium"]
+
+[node name="Room101" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(-7, 4, 5.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room102" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(-7, 4, 17)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room103" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(-7, 4, 28.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room104" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(21, 4, 5.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room105" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(21, 4, 17)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room106" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(21, 4, 28.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room201" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(-7, 8, 5.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room202" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(-7, 8, 17)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room203" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(-7, 8, 28.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room204" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(21, 8, 5.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room205" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(21, 8, 17)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room206" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(21, 8, 28.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room301" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(-7, 12, 5.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room302" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(-7, 12, 17)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room303" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(-7, 12, 28.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room304" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(21, 12, 5.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room305" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(21, 12, 17)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Room306" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+position = Vector3(21, 12, 28.5)
+rotation = Vector3(0, 1.57079633, 0)

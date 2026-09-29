@@ -25,3 +25,12 @@ position = Vector3(84, 0, 0)
 
 [node name="DecoHotel" parent="." instance=ExtResource("deco")]
 position = Vector3(-84, 0, 0)
+
+
+[node name="AtriumSign" type="Label3D" parent="."]
+position = Vector3(5.5, 3.05, 0.24)
+text = "ATRIUM"
+font_size = 48
+pixel_size = 0.0035
+modulate = Color(1, 0.83, 0.52, 1)
+outline_size = 4

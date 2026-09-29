@@ -9,6 +9,9 @@ const ACCENT := Color("7ce8c2")
 const FLOOR_COLOR := Color("2b4148")
 const WALL_COLOR := Color("819698")
 const ROOTS_PER_FRAME := 16
+## Nodes in this group draw on the map: `draw_radar_overlay(radar: Control)`, using
+## `map_point()` and the radar's draw calls (the GPS route does this).
+const OVERLAY_GROUP := &"radar_overlays"
 
 var _mobile := false
 var _refresh := 0.0
@@ -35,6 +38,7 @@ func _ready() -> void:
 				)
 			)
 		)
+	add_to_group(&"radar")
 	visible = false
 	if _mobile or Network.mode == Network.Mode.SERVER:
 		set_process(false)
@@ -149,6 +153,12 @@ func _build_step() -> void:
 		_building = null
 
 
+## Wall segments (pairs of ground-plane points) of the current storey slice, or
+## empty while nothing has been built. Only desktop clients build them.
+func walls() -> PackedVector2Array:
+	return _geometry.walls if _geometry != null else PackedVector2Array()
+
+
 func map_point(world_position: Vector3) -> Vector2:
 	return size * 0.5 + (Vector2(world_position.x, world_position.z) - _center) * _map_scale()
 
@@ -176,6 +186,8 @@ func _draw() -> void:
 		if not _geometry.walls.is_empty():
 			draw_multiline(_geometry.walls, WALL_COLOR, 1.2 / scale_factor, true)
 		draw_set_transform(Vector2.ZERO)
+	for overlay: Node in get_tree().get_nodes_in_group(OVERLAY_GROUP):
+		overlay.call(&"draw_radar_overlay", self)
 	_draw_players()
 	draw_rect(Rect2(Vector2.ZERO, size), Color("61797e"), false, 2.0)
 	draw_rect(Rect2(1, 1, size.x - 2, 25), Color(0.06, 0.12, 0.15, 0.94))

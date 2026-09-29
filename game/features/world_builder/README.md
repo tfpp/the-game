@@ -46,7 +46,7 @@ Hold right mouse to look, WASD to fly, Q/E to descend/ascend, Shift for speed.
 Escape releases the pointer. The preview includes the existing Kenney clouded daylight sky
 through the clear window glazing. Change `sky_panorama` and `sky_rotation_degrees`
 on the preview root in the Godot inspector to choose another view. Generated room
-modules inherit the environment of their parent world, including the main game’s
+modules inherit the environment of their parent world, including the main gameâ€™s
 day/night sky; they do not add a competing `WorldEnvironment`.
 
 Open the saved scene in Godot to inspect mesh surfaces
@@ -66,8 +66,8 @@ required authoring tool:
 
 ```sh
 godot --headless --path game -s res://features/world_builder/build.gd -- \
-  res://features/hotel_annex/hotel.json \
-  res://features/hotel_annex/hotel.scn --bake --force
+  res://features/world_builder/examples/hotel.json \
+  res://features/world_builder/examples/hotel.scn --bake --force
 ```
 
 The command generates geometry and UV2 atlases, starts an isolated Godot editor
@@ -96,14 +96,14 @@ that action is unavailable. Worker failures retain the previous scene and print
 the temporary project/log location. Successful builds remove temporary files and
 replace obsolete generated lightmaps.
 
-The pass uses high quality, three bounces, 2× supersampling and soft lamp sources.
+The pass uses high quality, three bounces, 2Ã— supersampling and soft lamp sources.
 UV2 unwraps use 50 cm texels on walls and 15 cm on columns, with a native bake
 texel scale of 0.4. This keeps lighting broad while surface textures provide detail.
 The compiler rejects bakes above 1,000,000 bytes in either source or imported
 runtime lighting assets (with 4 KiB reserved for metadata/cache), retaining the
-previous scene. The six-room hotel uses two 256×256 HDR atlas layers. Native HDR
+previous scene. A six-room layout uses two 256Ã—256 HDR atlas layers. Native HDR
 arrays remain uncompressed for Compatibility/WebGL use. Surface textures retain their
-128×128 nearest-filtered appearance. Godot also saves light probes for dynamic objects.
+128Ã—128 nearest-filtered appearance. Godot also saves light probes for dynamic objects.
 
 Static lamps are removed from the runtime scene. Its shader uses Godot's UV2 lighting,
 allows moving flashlights to add illumination, and ignores the outdoor directional
@@ -159,8 +159,8 @@ See Godot's [LightmapGI documentation](https://docs.godotengine.org/en/stable/tu
   default height to 3.5 metres, hallway width to 3 cells, ceilings to true.
 - Room `size` and `at` are integer **cells** on the X/Z plane. Room `elevation` is
   floor Y in **metres**, defaults to 0, and accepts -64 to 64.
-  Cell size is 0.75–8 metres. Rooms have 7–32 cells per axis, with 1–64 rooms total.
-- `height`, room `height`, and `hall_height` are **metres**, each 2.5–8. Room and hallway
+  Cell size is 0.75â€“8 metres. Rooms have 7â€“32 cells per axis, with 1â€“64 rooms total.
+- `height`, room `height`, and `hall_height` are **metres**, each 2.5â€“8. Room and hallway
   heights inherit the global height unless overridden. Ceilings and wall profiles
   follow those heights; vertical infill closes the step above a lower passage.
 - Omit `at` on all rooms for automatic placement in separated 48-cell slots with
@@ -236,16 +236,16 @@ rejects pillars/openings, which require the hotel's joinery generator.
 
 | Setting | Default | Range / behaviour |
 | --- | --- | --- |
-| `panel_spacing` | 2.4 m | 1.5–6; controls wall bays and engaged columns |
-| `wainscot_height` | 1.1 m | 0.5–1.5; timber panels and chair rail |
-| `pillar_width` | 0.34 m | 0.2–0.6; wall column diameter; freestanding shafts use 1.5× |
-| `pillar_depth` | 0.20 m | 0.1–0.3; projection of engaged columns |
-| `trim_depth` | 0.12 m | 0.04–0.2; scales cornice profiles |
+| `panel_spacing` | 2.4 m | 1.5â€“6; controls wall bays and engaged columns |
+| `wainscot_height` | 1.1 m | 0.5â€“1.5; timber panels and chair rail |
+| `pillar_width` | 0.34 m | 0.2â€“0.6; wall column diameter; freestanding shafts use 1.5Ã— |
+| `pillar_depth` | 0.20 m | 0.1â€“0.3; projection of engaged columns |
+| `trim_depth` | 0.12 m | 0.04â€“0.2; scales cornice profiles |
 | `windows` | false | Automatically space windows along exposed room and hallway walls |
-| `window_spacing` | 3 m | 2–8; increased when necessary to fit frames |
-| `window_width` | 1.3 m | 0.6–3 |
-| `window_height` | 2.2 m | 0.6–5; automatic windows shorten to fit a low ceiling |
-| `window_sill` | 1.25 m | 0.5–2 |
+| `window_spacing` | 3 m | 2â€“8; increased when necessary to fit frames |
+| `window_width` | 1.3 m | 0.6â€“3 |
+| `window_height` | 2.2 m | 0.6â€“5; automatic windows shorten to fit a low ceiling |
+| `window_sill` | 1.25 m | 0.5â€“2 |
 | `lights` | true | Procedural sconces/pendants and up to 48 authoring lights; baked scenes remove them |
 
 All these dimensions are metres. Automatic wall columns and panels avoid opening
@@ -291,7 +291,7 @@ CSG, BoxMesh decoration or generator scripts. Rugs and glass use flat surfaces.
 Visual detail is grouped by material and spatial sector. Broad floor/ceiling tiles
 merge. Structure uses triangle collision; columns and doors have conservative
 simple colliders to keep fine mouldings from snagging movement. Decorative cornices,
-light fittings and panel beads do not collide. Four 128×128 texture maps use nearest
+light fittings and panel beads do not collide. Four 128Ã—128 texture maps use nearest
 mipmap sampling. The two-room hotel example has about 72,000 triangles, below the
 80,000-triangle regression budget. Large layouts still need target-device profiling.
 
@@ -307,14 +307,14 @@ Baked structural colliders carry the persistent `radar_geometry` group. The desk
 radar reads their floor and wall triangles automatically, including halls and
 openings, with the placed scene's transform. Rebuild older scenes to enable this.
 
-For a playable example, `features/hotel_annex/` connects its saved hotel to the
-casino through shared streamed rooms and teleport doors. Its geometry loads only
-for visiting players; interaction endpoints stay present on every peer.
+The hotel district uses these blueprints for its classic, modern and Art Deco
+buildings. Its additional four-floor atrium wing uses `atrium_hotel.gd` to build
+stacked floors around an open central courtyard.
 
 Every peer uses the same baked scene, including late joiners. There is no random
 runtime generation. The tool builds axis-aligned interiors with raised rooms,
 ramps and stairs. It does not place around existing world obstacles or generate
-furniture, navigation meshes or interactive door scripts. Outer walls are interior
+furniture or navigation meshes. Interactive doors use the generated companion scene. Outer walls are interior
 shells; compose a separate facade if the building will be seen from outside.
 
 ## Verification

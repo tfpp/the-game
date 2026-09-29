@@ -67,6 +67,15 @@
           "width": 1.5,
           "height": 2.7,
           "open": false
+        },
+        {
+          "id": "AtriumDoor",
+          "kind": "door",
+          "side": "north",
+          "offset": 4.75,
+          "width": 1.5,
+          "height": 2.7,
+          "open": false
         }
       ],
       "pillars": [

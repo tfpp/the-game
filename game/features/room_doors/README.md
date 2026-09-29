@@ -21,7 +21,9 @@ and arrival markers belong on the `StreamedRoom` itself, outside the room scene.
 
 To add a room, add a `StreamedRoom` to `feature.tscn` far from the rest of the map
 (for example `(80, 0, -600)`). Point it at a new scene in `rooms/` and add arrival
-markers plus `RoomDoor`s whose `destination` names the other side's marker.
+markers plus `RoomDoor`s whose `destination` names the other side's marker. Then
+add the room to the GPS (`features/gps/README.md`). Every `StreamedRoom` joins the
+`streamed_rooms` group and `global_bounds()` gives its world extent; the GPS uses both.
 
 Tests are in `tests/features/room_doors/`.
 
