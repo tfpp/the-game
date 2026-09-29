@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Pray together for +200% base slot win chance per blessing, online or offline.",
 	},
 	{
+		"title": "Money log",
+		"summary": "The chat log tells you whenever you get money, and why.",
+	},
+	{
 		"title": "Pawn shop",
 		"summary": "Sell slum loot at the pawn shop counter beside the Crown's slum gate.",
 	},

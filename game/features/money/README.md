@@ -81,3 +81,11 @@ Each stack adds 200% of the base 4% win chance, giving 12% with one and 44% with
 Temporary wallets use the identical distribution. Prizes, charges and transactional
 retries are unchanged; replaying a settled operation always returns its original
 result, even if the blessing count has since changed. Deploy the API first.
+
+## Money log
+
+Whenever a wallet gains money, the server calls `PlayerMoney.announce_gain(peer, cents,
+reason)`, which shows `+$10.00: <reason>` to that player only in the chat log
+(`features/chat_box`'s `send_notice()`). `credit_coin()` and `sell_loot()` take a required
+`reason` and announce on success; minute income and slot wins announce too (a slot win only
+once the reels stop). Features that pay out must pass a player-facing reason.

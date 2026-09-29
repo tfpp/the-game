@@ -13,6 +13,7 @@ const FADE_AFTER_S := 6.0
 const FADE_DURATION_S := 1.2
 const PANEL_WIDTH := 460.0
 const NAME_COLOR := "#ffd166"
+const NOTICE_COLOR := "#83e59b"
 const OPEN_ACTION := &"chat_open"
 const MODAL_GROUP := &"modal_ui"
 
@@ -31,6 +32,7 @@ var _line_edit: LineEdit
 
 
 func _ready() -> void:
+	add_to_group(&"chat_box")
 	Controls.ensure_action(OPEN_ACTION, [_key_event(KEY_ENTER), _key_event(KEY_KP_ENTER)])
 	_build()
 
@@ -68,7 +70,10 @@ static func escape_bbcode(text: String) -> String:
 
 
 ## The BBCode line shown in the log: a colored, escaped sender name plus escaped text.
+## An empty sender makes a system notice, shown in NOTICE_COLOR without a name.
 static func format_line(sender_name: String, text: String) -> String:
+	if sender_name.is_empty():
+		return "[color=%s]%s[/color]" % [NOTICE_COLOR, escape_bbcode(text)]
 	return (
 		"[color=%s]%s:[/color] %s" % [NAME_COLOR, escape_bbcode(sender_name), escape_bbcode(text)]
 	)
@@ -102,6 +107,22 @@ func request_chat_message(text: String) -> void:
 @rpc("authority", "call_local", "reliable")
 func receive_chat_message(sender_name: String, text: String) -> void:
 	_add_line(sender_name, text)
+
+
+## Server-only: shows a system line (no sender name) in one peer's log, such as
+## `features/money`'s "+$10.00: Picked up a coin".
+func send_notice(peer_id: int, text: String) -> void:
+	if not multiplayer.is_server():
+		return
+	if peer_id == multiplayer.get_unique_id():
+		receive_notice(text)
+	elif peer_id in multiplayer.get_peers():
+		receive_notice.rpc_id(peer_id, text)
+
+
+@rpc("authority", "call_remote", "reliable")
+func receive_notice(text: String) -> void:
+	_add_line("", text)
 
 
 ## Client -> server: asks to run a slash command. Commands never appear in the log;
