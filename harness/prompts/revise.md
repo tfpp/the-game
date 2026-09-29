@@ -24,10 +24,9 @@ including changes that merge cleanly but alter shared APIs or semantics.
 - Leave the rest of the feature as it is. Don't refactor or restyle beyond the feedback.
 - If the feedback only asks to update the branch ("fix conflicts", "rebase", "merge
   main"), concluding the merge is the whole task.
-- Keep the changelogs describing the feature as it now works: edit this PR's own entry and
-  `CHANGELOG.md` bullet rather than adding new ones. After the merge, check that the bullet
-  is still under `## [edge]`: if the base has cut a release since, even a clean merge can
-  leave it in the released version's section.
+- Keep this PR's own unreleased `release_notes/*.json` file describing the feature as
+  it now works. Do not add another entry for a revision or edit shared changelog lists.
+  Released files are immutable; if the change has already shipped, add a new JSON file.
 - While a merge is in progress, don't answer `no changes`: the harness can only conclude
   the merge with a normal summary. If you can't act on some feedback, still stage the merge
   and explain why in the summary.

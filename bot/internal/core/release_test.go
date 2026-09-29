@@ -166,3 +166,51 @@ func TestEdgeWithoutAChangelog(t *testing.T) {
 		t.Fatalf("posts %q", posts)
 	}
 }
+
+func TestFeatureEdgeAnnouncementsFollowDeployAndRelease(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	old := "game/features/hats/release_notes/100-hats.json"
+	fresh := "game/features/frogs/release_notes/101-frogs.json"
+	hat := `{"title":"Hats","summary":"Wear hats.","notes":["Add hats."]}`
+	frog := `{"title":"Frogs","summary":"Watch frogs.","notes":["Add frogs.","Color frogs."]}`
+	e.gh.releases = []github.Release{release("v0.6.0", "t0", "- Add hats.")}
+	e.gh.contents[old+"@v0.6.0"] = hat
+	for _, deploy := range []string{"d1", "d2", "d3"} {
+		e.gh.contents[old+"@"+deploy] = hat
+		e.gh.compare["t0..."+deploy] = "ahead"
+	}
+	e.deploy.deployed = "d1"
+	must(t, e.svc.MergeStep(ctx))
+	e.gh.contents[fresh+"@d2"] = frog
+	e.deploy.deployed = "d2"
+	must(t, e.svc.MergeStep(ctx))
+	must(t, e.svc.MergeStep(ctx))
+	posts := e.releasePosts()
+	if len(posts) != 2 || !strings.Contains(posts[1], "- Add frogs.\n- Color frogs.") || strings.Contains(posts[1], "- Add hats.") {
+		t.Fatalf("feature notes %q", posts)
+	}
+	// A live release removes both files from edge without replaying either.
+	e.gh.contents[fresh+"@d3"] = frog
+	e.gh.contents[old+"@v0.7.0"] = hat
+	e.gh.contents[fresh+"@v0.7.0"] = frog
+	e.gh.releases = append(e.gh.releases, release("v0.7.0", "d3", "- Add frogs."))
+	e.deploy.deployed = "d3"
+	must(t, e.svc.MergeStep(ctx))
+	if posts = e.releasePosts(); len(posts) != 3 || !strings.Contains(posts[2], "v0.7.0 is out") {
+		t.Fatalf("after release %q", posts)
+	}
+}
+
+func TestFeatureEdgeRejectsMalformedNotesWithoutMarkingDeployChecked(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	e.deploy.deployed = "d1"
+	e.gh.contents["game/features/frogs/release_notes/101-frogs.json@d1"] = `{bad`
+	if err := e.svc.MergeStep(ctx); err == nil {
+		t.Fatal("malformed feature note accepted")
+	}
+	if checked, err := e.st.Get(ctx, releaseCheckedKey); err != nil || checked != "" {
+		t.Fatalf("failed deploy was marked checked: %q %v", checked, err)
+	}
+}

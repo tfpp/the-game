@@ -9,7 +9,7 @@ failures=0
 cd "$(mktemp -d)"
 git init -q -b main
 mkdir scripts
-cp "$here/release_notes.sh" scripts/
+cp "$here/release_notes.sh" "$here/feature_notes.py" scripts/
 notes="$PWD/scripts/release_notes.sh"
 git config user.email test@example.com
 git config user.name test
@@ -80,6 +80,71 @@ git checkout -q -- game/features/changelog/entries.gd
 check "the commit follows REV" "const COMMIT := \"$(git rev-parse --short=7 v0.6.1)\"" \
   "$("$notes" v0.6.1 | sed -n 5p)"
 check "at a release, the edge is empty" 'const EDGE: Array[String] = []' "$("$notes" v0.6.1 | sed -n 8p)"
+
+# New files are collected alongside legacy entries. Existing release assignments survive.
+mkdir -p game/features/hats/release_notes game/features/frogs/release_notes
+cat > game/features/hats/release_notes/101-feathers.json <<'JSON'
+{"title":"Feather hats","summary":"Hats with feathers.","notes":["Add feather hats."]}
+JSON
+cat > game/features/frogs/release_notes/102-colors.json <<'JSON'
+{"title":"Colored frogs","summary":"Frogs in new colors.","notes":["Add colored frogs."]}
+JSON
+check "WORKTREE collates independent feature files" \
+  'const EDGE: Array[String] = ["Colored frogs", "Feather hats", "Hats"]' \
+  "$("$notes" WORKTREE | sed -n 8p)"
+check "HEAD ignores untracked fragments" 'const EDGE: Array[String] = ["Hats"]' \
+  "$("$notes" HEAD | sed -n 8p)"
+git add game/features
+git commit -q -m fragments
+git tag v0.7.1
+check "released fragments leave edge" 'const EDGE: Array[String] = []' \
+  "$("$notes" HEAD | sed -n 8p)"
+check "fragments are assigned to their first release" \
+  '	{"version": "0.7.1", "date": "'"$date"'", "titles": ["Colored frogs", "Feather hats", "Hats"]},' \
+  "$("$notes" HEAD | sed -n 12p)"
+cat > game/features/hats/release_notes/103-ribbons.json <<'JSON'
+{"title":"Ribbon hats","summary":"Hats with ribbons.","notes":["Add ribbon hats."]}
+JSON
+check "same feature gets a fresh note after release" 'const EDGE: Array[String] = ["Ribbon hats"]' \
+  "$("$notes" WORKTREE | sed -n 8p)"
+check "only unreleased fragment bullets are collected" '- Add ribbon hats.' \
+  "$(python3 scripts/feature_notes.py edge WORKTREE)"
+# A branch's fragment remains edge even if the base cut a release before it merged.
+cp game/features/hats/release_notes/103-ribbons.json game/features/frogs/release_notes/104-duplicate.json
+if "$notes" WORKTREE >/dev/null 2>&1; then
+  echo 'FAIL: duplicate title accepted' >&2; failures=$((failures + 1))
+fi
+rm game/features/frogs/release_notes/104-duplicate.json
+printf '%s' '{bad json' > game/features/frogs/release_notes/104-invalid.json
+if "$notes" WORKTREE >/dev/null 2>&1; then
+  echo 'FAIL: malformed fragment accepted' >&2; failures=$((failures + 1))
+fi
+rm game/features/frogs/release_notes/104-invalid.json
+sed -i.bak 's/Add feather hats./Change released hats./' game/features/hats/release_notes/101-feathers.json
+if python3 scripts/feature_notes.py validate WORKTREE >/dev/null 2>&1; then
+  echo 'FAIL: released fragment mutation accepted' >&2; failures=$((failures + 1))
+fi
+git checkout -q -- game/features/hats/release_notes/101-feathers.json
+rm game/features/hats/release_notes/101-feathers.json.bak
+
+# Concurrent PRs to the same feature merge without a shared-list edit.
+git checkout -q -b note-a
+cat > game/features/hats/release_notes/200-parallel-a.json <<'JSON'
+{"title":"Parallel A","summary":"First parallel change.","notes":["Add parallel A."]}
+JSON
+git add game/features/hats/release_notes/200-parallel-a.json
+git commit -q -m note-a
+git checkout -q main
+git checkout -q -b note-b
+cat > game/features/hats/release_notes/201-parallel-b.json <<'JSON'
+{"title":"Parallel B","summary":"Second parallel change.","notes":["Add parallel B."]}
+JSON
+git add game/features/hats/release_notes/201-parallel-b.json
+git commit -q -m note-b
+git merge -q --no-edit note-a
+check "parallel same-feature PRs merge and collate both notes" \
+  'const EDGE: Array[String] = ["Parallel A", "Parallel B"]' \
+  "$("$notes" HEAD | sed -n 8p)"
 
 if ((failures)); then
   echo "$failures failure(s)" >&2

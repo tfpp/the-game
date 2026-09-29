@@ -10,6 +10,11 @@ SRC=(core ui world tests)
 
 step() { printf '\n==> %s\n' "$*"; }
 
+step "feature release notes"
+(cd .. && python3 scripts/feature_notes.py validate WORKTREE)
+../scripts/release_test.sh
+../scripts/release_notes_test.sh
+
 step "gdformat --check"
 ${GDTOOLKIT}gdformat --check "${SRC[@]}"
 
