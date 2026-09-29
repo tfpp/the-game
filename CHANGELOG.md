@@ -143,6 +143,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   floor, and distant door labels no longer float on their own on phones and touch screens.
 - Show what NPCs say to you as movie-style subtitles at the bottom of the screen instead of
   a floating speech bubble.
+- Bribe Donald Trump for slightly better slot machine luck. Each bribe doubles in price, up
+  to five, and he promises to remodel part of the casino with one of 1,000 quips.
 
 - Replace block player avatars with an original connected low-polygon human mesh, bone-driven vertex animation and customizable blend shapes, and saved casual/tactical outfits, skin, hair and eye choices under Settings → Character Model, shared with other players.
 - Add connected palms and five individually rigged digits per hand, with three joints each, relaxed and gripping poses, and shared first- and third-person hand geometry.
