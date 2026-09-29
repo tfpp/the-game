@@ -1,0 +1,135 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://features/bird/bird.gd" id="1_script"]
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:net_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:net_yaw")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:net_pitch")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:net_roll")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:net_flying")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+properties/5/path = NodePath(".:net_alive")
+properties/5/spawn = true
+properties/5/replication_mode = 2
+
+[sub_resource type="SphereShape3D" id="ColliderShape"]
+radius = 0.22
+
+[sub_resource type="SphereMesh" id="TorsoMesh"]
+radius = 0.12
+height = 0.24
+
+[sub_resource type="StandardMaterial3D" id="TorsoMat"]
+albedo_color = Color(0.2, 0.55, 0.92, 1)
+
+[sub_resource type="SphereMesh" id="BellyMesh"]
+radius = 0.09
+height = 0.18
+
+[sub_resource type="StandardMaterial3D" id="BellyMat"]
+albedo_color = Color(0.95, 0.95, 0.9, 1)
+
+[sub_resource type="SphereMesh" id="HeadMesh"]
+radius = 0.08
+height = 0.14
+
+[sub_resource type="BoxMesh" id="BeakMesh"]
+size = Vector3(0.04, 0.03, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="BeakMat"]
+albedo_color = Color(0.98, 0.6, 0.1, 1)
+
+[sub_resource type="SphereMesh" id="EyeMesh"]
+radius = 0.02
+height = 0.03
+
+[sub_resource type="StandardMaterial3D" id="EyeMat"]
+albedo_color = Color(0.1, 0.1, 0.1, 1)
+
+[sub_resource type="BoxMesh" id="WingMesh"]
+size = Vector3(0.2, 0.02, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="WingMat"]
+albedo_color = Color(0.12, 0.38, 0.75, 1)
+
+[sub_resource type="BoxMesh" id="TailMesh"]
+size = Vector3(0.08, 0.015, 0.16)
+
+[node name="Bird" type="AnimatableBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+script = ExtResource("1_script")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+shape = SubResource("ColliderShape")
+
+[node name="Body" type="Node3D" parent="."]
+
+[node name="Torso" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 0.98, 0.19, 0, -0.19, 0.98, 0, 0, 0)
+mesh = SubResource("TorsoMesh")
+surface_material_override/0 = SubResource("TorsoMat")
+
+[node name="Belly" type="MeshInstance3D" parent="Body/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, -0.04)
+mesh = SubResource("BellyMesh")
+surface_material_override/0 = SubResource("BellyMat")
+
+[node name="Head" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, -0.12)
+mesh = SubResource("HeadMesh")
+surface_material_override/0 = SubResource("TorsoMat")
+
+[node name="Beak" type="MeshInstance3D" parent="Body/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01, -0.08)
+mesh = SubResource("BeakMesh")
+surface_material_override/0 = SubResource("BeakMat")
+
+[node name="EyeLeft" type="MeshInstance3D" parent="Body/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 0.02, -0.03)
+mesh = SubResource("EyeMesh")
+surface_material_override/0 = SubResource("EyeMat")
+
+[node name="EyeRight" type="MeshInstance3D" parent="Body/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.02, -0.03)
+mesh = SubResource("EyeMesh")
+surface_material_override/0 = SubResource("EyeMat")
+
+[node name="Tail" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 0.96, -0.26, 0, 0.26, 0.96, 0, 0.02, 0.14)
+mesh = SubResource("TailMesh")
+surface_material_override/0 = SubResource("WingMat")
+
+[node name="WingLeft" type="Node3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.04, -0.02)
+
+[node name="Mesh" type="MeshInstance3D" parent="Body/WingLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0, 0)
+mesh = SubResource("WingMesh")
+surface_material_override/0 = SubResource("WingMat")
+
+[node name="WingRight" type="Node3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.04, -0.02)
+
+[node name="Mesh" type="MeshInstance3D" parent="Body/WingRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0, 0)
+mesh = SubResource("WingMesh")
+surface_material_override/0 = SubResource("WingMat")
+
+[node name="Audio" type="AudioStreamPlayer3D" parent="."]
+max_distance = 25.0
+unit_size = 3.0
+
+[node name="Sync" type="MultiplayerSynchronizer" parent="."]
+root_path = NodePath("..")
+replication_interval = 0.04
+replication_config = SubResource("Replication")

@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
+[ext_resource type="Script" path="res://features/room_doors/room_door.gd" id="door"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="metal"]
+
+[node name="Floor" type="Node3D"]
+script = ExtResource("room")
+room_scene = "res://features/apartments/floor_content.tscn"
+bounds = AABB(-17, -1, -10, 34, 5, 20)
+
+[node name="Arrival" type="Marker3D" parent="."]
+position = Vector3(-14, 1.2, 0)
+rotation = Vector3(0, -1.5707963, 0)
+
+[node name="Elevator" type="CSGBox3D" parent="."]
+position = Vector3(-16, 1.2, 0)
+size = Vector3(0.12, 2.4, 2)
+material = ExtResource("metal")
+use_collision = true
+script = ExtResource("door")
+destination = NodePath("../../../Lobby/Arrival")
+door_label = "Express elevator: reception"
