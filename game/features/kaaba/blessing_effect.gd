@@ -4,13 +4,17 @@ extends Node3D
 
 const LIFETIME := 2.0
 var elapsed := 0.0
+var _size := 1.0
 
 
-func build(gambling: bool) -> void:
+func build(gambling: bool, size: float = 1.0) -> void:
+	_size = size
+	scale = Vector3.ONE * _size
 	var mesh := ImmediateMesh.new()
 	var material := StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	material.billboard_keep_scale = true
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	material.albedo_color = Color("ffe28a") if gambling else Color("91ffcf")
 	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES, material)
@@ -43,13 +47,14 @@ func build(gambling: bool) -> void:
 	if not gambling:
 		var sparks := CPUParticles3D.new()
 		sparks.amount = 24
-		sparks.lifetime = 1.0
+		sparks.lifetime = 0.5
+		sparks.local_coords = true
 		sparks.one_shot = true
 		sparks.explosiveness = 1.0
 		sparks.direction = Vector3.UP
 		sparks.spread = 65.0
-		sparks.initial_velocity_min = 0.6
-		sparks.initial_velocity_max = 1.4
+		sparks.initial_velocity_min = 0.2
+		sparks.initial_velocity_max = 0.6
 		sparks.gravity = Vector3.ZERO
 		sparks.color = Color("91ffcf")
 		var bead := SphereMesh.new()
@@ -66,6 +71,6 @@ func build(gambling: bool) -> void:
 func _process(delta: float) -> void:
 	elapsed += delta
 	position.y += delta * 0.35
-	scale = Vector3.ONE * (1.0 + elapsed * 0.15)
+	scale = Vector3.ONE * _size * (1.0 + elapsed * 0.15)
 	if elapsed >= LIFETIME:
 		queue_free()

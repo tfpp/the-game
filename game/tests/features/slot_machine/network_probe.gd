@@ -5,6 +5,7 @@ var _last_snapshot := ""
 var _last_audio := 0
 var _last_money := ""
 var _last_blessings := ""
+var _last_praying := ""
 var _sent_competing_request := false
 
 @onready var _machine: SlotMachine = $Game/Features/slot_machine/Machine
@@ -26,6 +27,10 @@ func _process(_delta: float) -> void:
 		_last_audio = _machine._last_sound_spin
 		print("SLOT_AUDIO ", _last_audio)
 	var prayer := $Game/Features/kaaba/Prayer as KaabaPrayer
+	var praying := JSON.stringify(prayer.praying)
+	if praying != _last_praying:
+		_last_praying = praying
+		print("PRAYER_PROGRESS ", praying)
 	var blessings := JSON.stringify(prayer.blessings)
 	if blessings != _last_blessings:
 		_last_blessings = blessings
@@ -66,10 +71,19 @@ func _drive() -> void:
 		return
 	print("RANGE_REJECTED")
 	var prayer := $Game/Features/kaaba/Prayer as KaabaPrayer
-	player.position = prayer.global_position + Vector3(3.5, 0.9144, 0)
+	player.position = prayer.global_position + Vector3(2.7, 0.9144, 0)
 	player.net_position = player.position
 	await get_tree().create_timer(0.5).timeout
-	prayer.use()
+	Controls.select_device(Controls.Device.GAMEPAD)
+	Controls.start()
+	player.net_yaw = PI * 0.5
+	var interaction := get_tree().get_first_node_in_group(&"interaction")
+	assert(interaction._find_target() == prayer)
+	interaction.use()
+	while not prayer.praying.has(multiplayer.get_unique_id()):
+		await get_tree().process_frame
+	assert("Praying" in interaction.target_text())
+	interaction.use()  # A duplicate request must not restart the countdown.
 	while prayer.blessings_for(multiplayer.get_unique_id()) == 0:
 		await get_tree().process_frame
 	print("BLESSING_RECEIVED")

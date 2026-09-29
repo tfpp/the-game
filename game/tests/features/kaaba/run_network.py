@@ -1,5 +1,6 @@
 """Run from the repository root: python3 game/tests/features/kaaba/run_network.py."""
 import pathlib
+import re
 import socket
 import subprocess
 import tempfile
@@ -48,6 +49,8 @@ try:
     wait_for("driver", "DRIVER_DONE", 60)
     for role in ("driver", "observer"):
         assert "BLESSING_EVENT completed" in read(role), role
+        for seconds in (6, 1):
+            assert re.search(r"PRAYER_PROGRESS .*:" + str(seconds) + r"}", read(role)), role
         assert "BLESSING_EVENT gamble" in read(role), role
     assert ":1}" in read("late"), "late joiner missed replicated blessing"
     assert "BLESSING_EVENT completed" not in read("late"), "replayed old VFX"

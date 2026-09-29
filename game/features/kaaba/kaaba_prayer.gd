@@ -11,7 +11,7 @@ const USE_RANGE := 5.5
 
 ## peer id -> blessings earned.
 @export var blessings: Dictionary = {}
-## peer id -> true while that player is mid-prayer.
+## peer id -> whole seconds remaining while that player is mid-prayer.
 @export var praying: Dictionary = {}
 
 var _timers: Dictionary = {}
@@ -27,22 +27,30 @@ func _ready() -> void:
 	add_to_group(&"kaaba_prayer")
 	multiplayer.peer_disconnected.connect(_forget)
 	Network.mode_changed.connect(_on_mode_changed)
-	entity.register_use(can_use, _start_prayer)
+	entity.register_use(_can_start_prayer, _start_prayer)
 	entity.event_received.connect(_on_effect)
 
 
 func interaction_text() -> String:
-	var count := blessings_for(multiplayer.get_unique_id())
+	var peer := multiplayer.get_unique_id()
+	var count := blessings_for(peer)
+	if praying.has(peer):
+		return (
+			"Praying — stay nearby: %ds (blessings %d/%d)" % [praying[peer], count, MAX_BLESSINGS]
+		)
 	if count >= MAX_BLESSINGS:
 		return "Your blessings are full (%d/%d) — try the slots" % [count, MAX_BLESSINGS]
-	return "Pray at the Kaaba (blessings %d/%d)" % [count, MAX_BLESSINGS]
+	return "Pray — stay nearby for 6s (blessings %d/%d)" % [count, MAX_BLESSINGS]
 
 
 func can_use(player: Player) -> bool:
-	var offset := player.net_position - global_position
-	offset.y = 0.0
+	# Keep progress and the full count visible through the shared Use prompt.
+	return _in_range(player) and entity.in_range(player)
+
+
+func _can_start_prayer(player: Player) -> bool:
 	return (
-		offset.length() <= USE_RANGE
+		can_use(player)
 		and not praying.has(player.get_multiplayer_authority())
 		and blessings_for(player.get_multiplayer_authority()) < MAX_BLESSINGS
 	)
@@ -72,7 +80,7 @@ func request_pray() -> void:
 func _start_prayer(player: Player) -> bool:
 	var peer_id := player.get_multiplayer_authority()
 	var next := praying.duplicate()
-	next[peer_id] = true
+	next[peer_id] = int(PRAYER_S)
 	praying = next
 	_timers[peer_id] = 0.0
 	play_prayer.rpc()
@@ -96,10 +104,28 @@ func _advance(delta: float) -> void:
 			var next := blessings.duplicate()
 			next[peer_id] = mini(blessings_for(peer_id) + 1, MAX_BLESSINGS)
 			blessings = next
-			var eye := player.movement.eye_height_m() - player.movement.hull_height_m() * 0.5
-			var look := Basis.from_euler(Vector3(player.net_pitch, player.net_yaw, 0))
-			var at := player.net_position + Vector3.UP * eye + look * Vector3.FORWARD * 0.9
-			entity.send_event(&"completed", {"position": at})
+			entity.send_event(&"completed", _completion_effect(player))
+		else:
+			var remaining := ceili(PRAYER_S - float(_timers[peer_id]))
+			if int(praying[peer_id]) != remaining:
+				var next := praying.duplicate()
+				next[peer_id] = remaining
+				praying = next
+
+
+func _completion_effect(player: Player) -> Dictionary:
+	var eye_height := player.movement.eye_height_m() - player.movement.hull_height_m() * 0.5
+	var eye := player.net_position + Vector3.UP * eye_height
+	var look := Basis.from_euler(Vector3(player.net_pitch, player.net_yaw, 0)) * Vector3.FORWARD
+	var distance := 0.9
+	var query := PhysicsRayQueryParameters3D.create(
+		eye, eye + look * distance, 1, [player.get_rid()]
+	)
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	if not hit.is_empty():
+		distance = maxf(0.1, eye.distance_to(hit["position"]) - 0.15)
+	# Shrink a nearby effect to preserve its apparent size instead of filling the view.
+	return {"position": eye + look * distance, "size": distance / 0.9}
 
 
 func _in_range(player: Player) -> bool:
@@ -161,4 +187,4 @@ func _on_effect(event: StringName, payload: Dictionary) -> void:
 	var effect := BlessingEffect.new()
 	add_child(effect)
 	effect.global_position = payload["position"]
-	effect.build(event == &"gamble")
+	effect.build(event == &"gamble", float(payload.get("size", 1.0)))

@@ -13,7 +13,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Shared Kaaba blessings",
 		"summary":
-		"Enjoy blessed slot odds online and shared prayer and crescent-and-star effects.",
+		"Follow prayer progress to earn online slot luck and see shared blessing effects.",
 	},
 	{
 		"title": "İstanbul Kebab",

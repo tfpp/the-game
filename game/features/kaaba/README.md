@@ -7,7 +7,10 @@ A scaled-down Kaaba in the northwest of the main room, at (-24, 0, -24).
 Stand within 5.5 m of the Kaaba's centre (anywhere around it) and press **Use**
 (E, Circle / B, or mobile **USE**). A takbir-style chant in the Hijaz maqam plays at
 the Kaaba for everyone nearby, and after 6 s of prayer you earn one blessing. Walking
-away interrupts the prayer.
+away interrupts the prayer. The Use prompt stays visible during prayer with a
+server-synchronized countdown, then shows the new blessing count (including at the
+five-blessing cap). Press Use once; extra presses do not restart the timer.
+The prompt and server use the same range checks.
 
 Blessings stack up to 5. Each one gives a losing slot machine spin one more roll of
 the reels, so the win chance goes from 4% to 1 − 0.96^(1 + blessings) (about 22% at
@@ -24,7 +27,8 @@ settles one charged spin atomically. Deploy the updated API before the game serv
 The bonus still applies only to slots, not roulette or craps, and does not multiply prizes.
 
 Prayer uses NetworkedInteraction for validated Use requests and replicated state.
-Completion sends a mint blessing burst at the player; a successfully paid blessed
+Completion sends a mint blessing burst in front of the player’s eyes, shortened
+and scaled when a wall would hide it; a successfully paid blessed
 spin sends a gold crescent and star above the machine, before its result is revealed.
 Both are authority-only NetworkedEntity events visible to nearby peers, including
 the local player, with no replay for late joiners. Effects expire after two seconds.
@@ -37,3 +41,8 @@ observer and late joiner. This extends the existing slot probe to pray before
 spinning, verifies live effects and late-join state without replaying old VFX,
 then exercises five spins and competing requests. API Go tests cover authenticated
 rerolls and idempotent settlement; the probe uses dev wallets.
+
+For rendered first/third-person screenshots of close-wall prayer and a paid blessed
+spin, run `godot --path game res://tests/features/kaaba/visual_probe.tscn` from
+the repository root. Images are written to `/tmp/kaaba-*.png`. The probe uses
+the real level, shared Use action, six-second timer and temporary offline wallet.

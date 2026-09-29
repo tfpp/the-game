@@ -6,6 +6,49 @@ Monorepo for a Discord-driven, agent-built multiplayer game. Architecture:
 - `game/`: Godot 4.7 GDScript project. Read `game/AGENTS.md` before touching it.
 - `bot/`, `api/`: Go services. Use `gofmt`, `go vet` and `go test ./...`.
 - `harness/`: agent runner and `verify.sh`.
+- `docs/`: intended game design, lore, visual references, delivery phases, technical
+  architecture and contributor guides. Start with the reading order below.
+
+## Required game context
+
+Before planning or implementing a task, read both of these documents in full:
+
+1. [Lore and world](docs/design/lore.md): the setting, tone, established canon and
+   mysteries that should remain undefined.
+2. [Gameplay](docs/design/gameplay.md): the player experience, core loop, movement,
+   combat, economy and multiplayer goals.
+
+Use them to understand what Casino Royale should become: a safe social and gambling
+hub in The Golden Crown, connected by elevator to fast, low-friction PvPvE excursions
+in the slums. Keep changes consistent with that direction unless the user explicitly
+requests a departure. Preserve intentionally undefined lore and TBD mechanics.
+
+These documents describe intended design, not necessarily shipped behavior. Inspect
+the relevant code and tests to establish what exists, and identify material differences
+when they affect the task. Reading the design does not expand the requested scope.
+
+## Documentation map
+
+After the required reading, follow the documents relevant to the task:
+
+| Path | What to find / when to read |
+| --- | --- |
+| [docs/design/lore.md](docs/design/lore.md) | World premise, Golden Crown, slums, elevator, tone and canon. Required for every task. |
+| [docs/design/gameplay.md](docs/design/gameplay.md) | Intended player loop and system behavior. Required for every task. |
+| [docs/design/art-style.md](docs/design/art-style.md) | Visual direction, geometry, textures, materials and lighting. Read before visual or asset work. |
+| [docs/design/concept-art/](docs/design/concept-art/) | Visual references. Open relevant images before modeling or scene design: `dealer.png` and `dealer-side.png` for the character, `casino.png` for the casino, and `elevator-parking-garage.png` / `loot-parking-garage.png` for garage scenes. |
+| [docs/design/zones/](docs/design/zones/) | Location-specific design, grouped by zone type. Read the relevant zone document before changing its layout, encounters or atmosphere. |
+| [docs/design/zones/slums/parking-garage.md](docs/design/zones/slums/parking-garage.md) | Garage layout, vertical progression, combat, loot and atmosphere. |
+| [docs/design/zones/casinos/the-golden-crown.md](docs/design/zones/casinos/the-golden-crown.md) | Casino-specific document; currently a placeholder. Use lore and gameplay for established casino requirements. |
+| [docs/project/phases.md](docs/project/phases.md) | Delivery phases, dependencies and progress checklist. Consult before feature planning; check prerequisite work in code before moving to a later phase. |
+| [docs/architecture.md](docs/architecture.md) | Service boundaries, networking, accounts, deployment and the agent pipeline. Read for implementation context. |
+| [docs/controls.md](docs/controls.md) | Player inputs across keyboard/mouse, controller and touch, plus device checks. |
+| [docs/conventional-commits.md](docs/conventional-commits.md) | Commit message conventions. |
+| [docs/pull-requests.md](docs/pull-requests.md) | Pull request requirements and review guidance. |
+
+Run `rg --files docs` to discover new documents and references beyond this map.
+Follow relevant links within the documents and read directory-specific `AGENTS.md`
+files before editing the corresponding code.
 
 ## Rules
 
