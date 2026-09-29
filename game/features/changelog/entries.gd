@@ -15,6 +15,11 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Enter VR from Quest / WebXR in the menu to explore with Touch controllers.",
 	},
 	{
+		"title": "Desktop app installer",
+		"summary":
+		"Install the desktop app with one curl command on macOS, Linux or Windows Git Bash.",
+	},
+	{
 		"title": "Desktop app",
 		"summary": "Run the website in an Electron app for Linux, macOS and Windows.",
 	},

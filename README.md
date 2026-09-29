@@ -131,8 +131,15 @@ to join the local server.
 ### Desktop app
 
 Use the Electron wrapper on Linux, macOS or Windows. See [desktop/README.md](desktop/README.md)
-for running from source and building portable app bundles. It loads the live website
-and requires internet access at startup.
+for setup, requirements and uninstall instructions. With Node.js 22.12+, npm and curl
+installed, run this in Terminal (macOS/Linux) or Git Bash (Windows):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/tfpp/the-game/main/desktop/install.sh | bash
+```
+
+It builds and installs the wrapper for your user, loads the live website and requires
+internet access at startup.
 
 ## Contributing
 

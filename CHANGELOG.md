@@ -6,9 +6,6 @@ Every notable change, newest first. `edge` is what's on `main` but not released 
 a bullet to the end of `## [edge]`:** imperative, one line per change where possible, no
 version. Releases are cut by hand (the `release` workflow): it moves `edge` into a section
 for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
-- Add an Electron desktop app for the live website on Linux, macOS and Windows,
-  with portable app packaging commands.
-
 
 ## [edge]
 
@@ -68,6 +65,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Keep the hotel baked lighting below 1 MB in both saved and exported assets, and enforce the budget before publishing new bakes.
 - Inspect the build's repository snapshot with read-only Git commands in the console;
   type git help to see the supported commands.
+- Add an Electron desktop app for the live website on Linux, macOS and Windows,
+  with portable app packaging commands.
+- Add a curl installer for the Electron desktop app on macOS, Linux and Windows Git Bash,
+  with locked dependencies and safe rebuilds.
 - Enter VR from the Quest / WebXR menu in Quest Browser with headset look, stick
   movement, snap turning, jump and nearby object interaction.
 

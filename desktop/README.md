@@ -6,13 +6,56 @@ multiplayer uses the same accounts and server as browser players. Internet acces
 is required to load the game; the in-game **Play offline** option still means solo
 play after loading, not an install containing offline game assets.
 
+## Install with curl
+
+Requires **Node.js 22.12+**, npm and curl. Run in Terminal on macOS/Linux or in
+**Git Bash** on Windows (with Node.js installed for Windows):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/tfpp/the-game/main/desktop/install.sh | bash
+```
+
+The installer resolves `main` to one commit, downloads only the desktop sources and
+lockfile, runs `npm ci`, and packages Electron for the current x64/arm64 host. It
+installs for your user without sudo. Close the app before rerunning to update.
+Failed downloads or builds leave the previous installation intact.
+
+| OS | Default install | Launch |
+| --- | --- | --- |
+| macOS | `~/Applications/TheGame/TheGame.app` | Open the app in Finder |
+| Linux | `${XDG_DATA_HOME:-~/.local/share}/the-game-desktop` | The Game in your applications menu |
+| Windows (Git Bash) | `%LOCALAPPDATA%\TheGame` | Open `TheGame.exe` in Explorer |
+
+These are locally built, unsigned apps; signing/notarization and prebuilt downloads
+are not provided. Linux still needs a graphical desktop, Electron's system libraries
+and working Chromium sandbox support. The installer does not change system packages
+or disable the sandbox. Internet access is required for installation and game startup.
+
+To download and inspect the script before running, or choose an install directory:
+
+```sh
+curl -fsSLo install-the-game.sh https://raw.githubusercontent.com/tfpp/the-game/main/desktop/install.sh
+less install-the-game.sh
+bash install-the-game.sh --prefix "$HOME/Apps/TheGame"
+```
+
+`--ref <commit-or-branch>` selects the source revision; a full commit SHA pins it.
+For a fully pinned installation, download the script from that same SHA instead of
+`main`. `--prefix` must be an absolute path (a Git Bash path on Windows). Existing
+folders without this installer's marker are never replaced. Concurrent installs to
+the same directory are rejected.
+
+To uninstall, delete the install directory and, on Linux,
+`~/.local/share/applications/the-game.desktop` (or its `$XDG_DATA_HOME` equivalent).
+Your Electron profile is kept, so reinstalling preserves your desktop session.
+
 ## Run and package
 
 On a development machine with Node.js 22.12+ and npm:
 
 ```sh
 cd desktop
-npm install
+npm ci
 npm test
 npm start
 ```
@@ -33,10 +76,8 @@ only the current host/architecture. Linux needs a graphical desktop and Electron
 system libraries; do not disable the Chromium sandbox to launch it.
 
 The manifest's `0.0.0` is a wrapper packaging placeholder, not the game's release
-version. The game continues to show its deployed version. Dependencies are pinned
-at the top level; this change has no generated lockfile because installing dependencies
-was prohibited in the implementation environment. Release operators should generate
-and review a lockfile before reproducible distribution builds.
+version. The game continues to show its deployed version. Dependencies and their
+integrity hashes are pinned in the committed npm lockfile.
 
 ## Use
 
