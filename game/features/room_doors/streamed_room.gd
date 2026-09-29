@@ -24,6 +24,16 @@ var _content: Node3D
 var _hold_until_msec := 0
 
 
+func _enter_tree() -> void:
+	# The GPS (features/gps) treats every streamed room as a region reached by doors.
+	add_to_group(&"streamed_rooms")
+
+
+## `bounds` in world space.
+func global_bounds() -> AABB:
+	return global_transform * bounds
+
+
 func _physics_process(_delta: float) -> void:
 	var player := get_tree().get_first_node_in_group(&"local_player") as Node3D
 	if player != null and contains(player.global_position, unload_margin if is_loaded() else 0.0):

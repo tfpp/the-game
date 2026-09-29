@@ -17,6 +17,10 @@ storeys. It reads existing player replication and adds no camera or network stat
 Geometry work is spread over frames and cached until the player moves, changes
 height, or nearby scene membership changes (including streamed rooms).
 
+Other features draw on the map by joining `radar_overlays` and implementing
+`draw_radar_overlay(radar)` (the GPS route does). `walls()` exposes the current wall
+slice; the radar node is in the `radar` group.
+
 This is a distinct presentation feature: the existing HUD owns connection text
 and input capture, while touch controls own mobile input. Neither owns a map.
 
