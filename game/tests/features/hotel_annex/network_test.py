@@ -9,6 +9,12 @@ import time
 
 GAME = Path(__file__).resolve().parents[3]
 GODOT = os.environ.get('GODOT', 'godot')
+# Godot's Windows console launcher creates another process. Own the engine process
+# directly so terminate/wait also release its log handles during cleanup.
+if os.name == 'nt' and GODOT.endswith('_console.exe'):
+    engine = Path(GODOT.removesuffix('_console.exe') + '.exe')
+    if engine.is_file():
+        GODOT = str(engine)
 SCENE = 'res://tests/features/hotel_annex/probe.tscn'
 
 

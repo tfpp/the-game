@@ -58,6 +58,10 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Features enter the tree before Network switches from offline to client mode.
+	# Recheck authority each tick so a joining client never simulates or sends chirps.
+	if not multiplayer.is_server():
+		return
 	if not net_alive:
 		_respawn_timer -= delta
 		if _respawn_timer <= 0.0:

@@ -9,6 +9,10 @@ import time
 
 GAME = Path(__file__).resolve().parents[3]
 GODOT = os.environ.get('GODOT', 'godot')
+if os.name == 'nt' and GODOT.endswith('_console.exe'):
+    engine = Path(GODOT.removesuffix('_console.exe') + '.exe')
+    if engine.is_file():
+        GODOT = str(engine)
 SCENE = 'res://tests/features/room_doors/network_probe.tscn'
 
 

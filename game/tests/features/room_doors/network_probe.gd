@@ -68,6 +68,10 @@ func _process(_delta: float) -> void:
 		_quiesced = true
 		print("DOORS_QUIESCED")
 	if FileAccess.file_exists(stop):
+		# Every peer has stopped polling. Detach the transport before synchronizers
+		# leave the tree, so teardown cannot send despawns into closing sockets.
+		multiplayer.multiplayer_peer.close()
+		multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 		get_tree().quit()
 
 
