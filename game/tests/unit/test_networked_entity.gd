@@ -90,6 +90,17 @@ func test_cooldown_is_shared_and_session_reset_clears_it() -> void:
 	assert_eq(_target.value, 4)
 
 
+func test_detached_entity_ignores_session_changes() -> void:
+	# Features detach NPCs before respawning them on mode_changed; release web builds
+	# crashed calling multiplayer.is_server() on the detached entity's null API.
+	remove_child(_target)
+	watch_signals(_entity)
+	assert_false(_entity.is_authority())
+	_entity._on_session_changed(Network.Mode.CLIENT)
+	assert_signal_not_emitted(_entity, "session_reset")
+	add_child(_target)
+
+
 func test_replication_declaration_owns_only_component_and_includes_spawn_state() -> void:
 	var sync := _entity.get_node("Sync") as MultiplayerSynchronizer
 	assert_eq(sync.get_multiplayer_authority(), 1)
