@@ -53,6 +53,15 @@ The API commits the charge and prize together before animation begins, so discon
 or a game-server crash during animation cannot lose a prize. Requests are locked
 while payment is pending as well as during animation.
 
+## Win celebration
+
+A win sets off fireworks above the cabinet and sprays gold coins out of the payout tray
+at the front (`slot_celebration.gd`). Both scale with the prize on a log scale from $10
+(one small rocket, a handful of coins) to $30 billion (seven big, fast bursts and about
+80 coins). They start from the reliable `play_result` event, which now carries the
+payout, so every nearby peer sees them once and late joiners don't replay old shows.
+Coins and sparks are `CPUParticles3D` with no collision or lights, and free themselves.
+
 ## Sound assets
 
 Place these two **Ogg Vorbis** files in `res://assets/slot_machine/audio/`:

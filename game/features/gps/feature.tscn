@@ -89,7 +89,7 @@ hint = "Boarded shops, dumpsters and failing streetlights beyond the Crown"
 area = AABB(-25, -1, 875, 50, 20, 50)
 
 [node name="KebabShop" type="Marker3D" parent="Destinations"]
-position = Vector3(11.35, 0, -64)
+position = Vector3(2.55, -1.5, -1.5)
 script = ExtResource("2_dest")
 label = "İstanbul Kebab"
-hint = "Free Turkish kebabs from Aylin in the northeast annex"
+hint = "Free Turkish kebabs from Aylin ahead of spawn on the casino gaming floor"

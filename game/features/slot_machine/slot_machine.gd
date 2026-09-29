@@ -179,15 +179,17 @@ func _advance(delta: float) -> void:
 		next["payout"] = _prize
 	state = next
 	if stopped == 3:
-		play_result.rpc(int(state["spin"]), bool(state["won"]))
+		play_result.rpc(int(state["spin"]), bool(state["won"]), _prize)
 
 
 ## An event, not saved state: late joiners see the result without replaying old audio.
 @rpc("authority", "call_local", "reliable")
-func play_result(spin: int, won: bool) -> void:
+func play_result(spin: int, won: bool, payout: int = 0) -> void:
 	if spin <= _last_sound_spin:
 		return
 	_last_sound_spin = spin
+	if won:
+		$Celebration.celebrate(payout)
 	_audio.stream = _win_sound if won else _lose_sound
 	if _audio.stream != null:
 		_audio.play()
@@ -210,6 +212,7 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 	_result.clear()
 	_last_sound_spin = 0
 	_audio.stop()
+	$Celebration.clear()
 
 
 func _load_sound(path: String) -> AudioStream:

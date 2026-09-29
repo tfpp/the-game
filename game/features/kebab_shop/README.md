@@ -1,10 +1,11 @@
 # İstanbul Kebab
 
-A Turkish kebab counter in existing northeast annex Room 3. From the casino take
-its northeast corridor straight north; the counter is at (10, 0, -65.5). The GPS
-lists **İstanbul Kebab** and routes to the cashier's front at (11.35, 0, -64).
-The shop leaves the room entrance, central approach and the north-wall secret
-plaque accessible. No new room, streaming boundary or light is added.
+A Turkish kebab counter directly ahead of the casino spawn, at (1.2, -1.5, -3).
+Its south-facing front, staff and sign face players' default north-facing view.
+The GPS lists **İstanbul Kebab** and routes to the cashier at (2.55, -1.5, -1.5).
+The full spawn jitter area stays clear, with a walking route around the east side of
+the counter and access to the slot bank and north ramp. No new room, streaming
+boundary or light is added.
 
 Use **E / B / Circle / touch USE** in front of Aylin to order a complimentary
 kebab. Orders place it in an empty hand or the existing backpack. Make room if both
@@ -31,5 +32,5 @@ late joiners; session changes reset them. Only nearby clients pose the cosmetic
 meshes. No state is persisted by this feature; kebabs follow ordinary inventory
 lifetime. Offline uses exactly the same server path.
 
-Tests: `tests/features/kebab_shop/`, alongside the existing annex accessibility,
+Tests: `tests/features/kebab_shop/`, alongside the existing casino accessibility,
 inventory and holdables suites. No new controls or shared method signatures.

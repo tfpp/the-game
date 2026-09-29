@@ -12,7 +12,12 @@ class_name ChangelogEntries
 const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "İstanbul Kebab",
-		"summary": "Order a free kebab from animated staff in the northeast annex shop.",
+		"summary": "Order a free kebab from animated staff directly ahead of casino spawn.",
+	},
+	{
+		"title": "Jackpot fireworks",
+		"summary":
+		"Winning slot spins set off fireworks and spill gold coins; bigger prizes, bigger show.",
 	},
 	{
 		"title": "Smoother guns",
