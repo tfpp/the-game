@@ -113,6 +113,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Fix the web client crashing (`null function`) and getting stuck on "Joining…" when
   joining a server after signing in.
 - Move feature textures, models and audio into `game/assets/<feature>/`.
+- Add pixel-art roulette table textures (wheel, betting layout, felt, rail, apron) under
+  `game/assets/roulette/textures/`.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
