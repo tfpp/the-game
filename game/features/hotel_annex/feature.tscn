@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
 [ext_resource type="Script" path="res://features/room_doors/room_door.gd" id="door"]
@@ -12,10 +12,13 @@
 [ext_resource type="PackedScene" path="res://features/hotel_annex/modern_doors.tscn" id="modern_doors"]
 [ext_resource type="PackedScene" path="res://features/hotel_annex/deco_doors.tscn" id="deco_doors"]
 
+[ext_resource type="Script" path="res://features/hotel_annex/interior_lighting.gd" id="lighting"]
+
 [sub_resource type="StandardMaterial3D" id="Pedestal"]
 albedo_color = Color(0.2, 0.12, 0.065, 1)
 
 [node name="HotelAnnex" type="Node3D"]
+script = ExtResource("lighting")
 
 [node name="CasinoArrival" type="Marker3D" parent="."]
 position = Vector3(5, 1, 27)
