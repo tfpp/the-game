@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/bar_companion/celeste.gd" id="npc"]
+[ext_resource type="Script" path="res://features/bar_companion/celeste_model.gd" id="model"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+
+[sub_resource type="CapsuleShape3D" id="shape"]
+radius = 0.28
+height = 1.8
+
+[node name="Celeste" type="CharacterBody3D"]
+collision_layer = 0
+collision_mask = 1
+floor_snap_length = 0.4
+script = ExtResource("npc")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.9, 0)
+shape = SubResource("shape")
+
+[node name="Body" type="Node3D" parent="."]
+script = ExtResource("model")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("net")
+interaction_range = 2.4
+replicated_properties = Array[NodePath]([NodePath(".:net_leader")])
+continuous_properties = Array[NodePath]([NodePath(".:net_position"), NodePath(".:net_yaw")])
+replication_interval = 0.1

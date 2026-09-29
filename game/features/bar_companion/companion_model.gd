@@ -12,10 +12,15 @@ const SEATED_HIP := 0.82
 
 
 func build_vivienne() -> void:
+	build_evening_guest(NAME, DRESS, HAIR_COLOR)
+
+
+## Shared dress and hair silhouette; existing Vivienne callers keep their appearance.
+func build_evening_guest(guest_name: String, dress_color: Color, hair_color: Color) -> void:
 	build(0)
-	var dress := _material(DRESS)
+	var dress := _material(dress_color)
 	var skin := _material(SKIN)
-	var hair := _material(HAIR_COLOR)
+	var hair := _material(hair_color)
 	for part: String in ["Chest", "Pelvis", "UpperArmL", "UpperArmR", "ThighL", "ThighR"]:
 		_mesh(part).material_override = dress
 	for part: String in ["Face", "Neck", "Nose", "HandL", "HandR", "ForearmL", "ForearmR"]:
@@ -34,7 +39,7 @@ func build_vivienne() -> void:
 		_mesh(part).scale = Vector3(0.2, 0.46, 0.2)
 	_part("LongHair", head, Vector3(0, 0.02, 0.1), Vector3(0.28, 0.4, 0.08), hair)
 	_part("Lips", head, Vector3(0, 0.06, -0.126), Vector3(0.07, 0.02, 0.01), _material(DRESS))
-	_name_tag(NAME)
+	_name_tag(guest_name)
 
 
 ## Poses her sitting: thighs forward along -Z, shins hanging to the stool's footrest.
