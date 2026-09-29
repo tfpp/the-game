@@ -151,7 +151,9 @@ func _refresh(peer: int) -> void:
 
 
 ## wager_cents lets each slot machine set its own buy-in (default $1).
-func spin(peer: int, id: String, wager_cents: int = 100) -> Dictionary:
+## `rerolls` (Kaaba blessings) only affects temporary wallets: the accounts API
+## rolls authenticated spins itself.
+func spin(peer: int, id: String, wager_cents: int = 100, rerolls: int = 0) -> Dictionary:
 	if not multiplayer.is_server() or _busy.has(peer):
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
@@ -163,7 +165,7 @@ func spin(peer: int, id: String, wager_cents: int = 100) -> Dictionary:
 		if balance < wager_cents:
 			result = {"error": "You need %s to spin" % format_money(wager_cents)}
 		else:
-			var reels := SlotSpinCycle.new().next_result()
+			var reels := SlotSpinCycle.new().blessed_result(rerolls)
 			var payout := SlotSpinCycle.payout(reels, wager_cents)
 			result = {"reels": reels, "payout": payout, "balance": balance - wager_cents + payout}
 	else:

@@ -57,6 +57,9 @@ func interaction_text() -> String:
 			" (you have %s)"
 			% PlayerMoney.format_money(int(wallet.balances[multiplayer.get_unique_id()]))
 		)
+	var prayer := get_tree().get_first_node_in_group(&"kaaba_prayer") as KaabaPrayer
+	if prayer != null and prayer.blessings_for(multiplayer.get_unique_id()) > 0:
+		text += " — blessed ×%d" % prayer.blessings_for(multiplayer.get_unique_id())
 	return text
 
 
@@ -107,7 +110,9 @@ func request_spin() -> void:
 	var generation := _generation
 	var operator_name := player.display_name
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
-	var result: Dictionary = await wallet.spin(peer_id, id, buy_in_cents)
+	var prayer := get_tree().get_first_node_in_group(&"kaaba_prayer") as KaabaPrayer
+	var rerolls := prayer.blessings_for(peer_id) if prayer != null else 0
+	var result: Dictionary = await wallet.spin(peer_id, id, buy_in_cents, rerolls)
 	if generation != _generation:
 		return
 	_pending = false
@@ -118,6 +123,8 @@ func request_spin() -> void:
 		return
 	var reels: Array[int] = []
 	reels.assign(result["reels"])
+	if prayer != null and is_instance_valid(prayer) and SlotSpinCycle.is_win(reels):
+		prayer.consume(peer_id)
 	_begin_spin(peer_id, operator_name, reels, int(result["payout"]))
 
 

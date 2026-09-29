@@ -17,7 +17,8 @@ you; every player sees the fists of whoever throws a punch.
 - What a punch does depends on the target:
   - anything with `take_punch(attacker_peer, strength, direction)` handles it
     itself; the shooting gallery's dummies (`features/shooting_gallery`) daze,
-    ragdoll and get knocked away;
+    ragdoll and get knocked away, and so do the walking casino patrons
+    (`features/casino_patrons`);
   - players take `strength × 25` damage through `features/combat`'s `apply_damage`;
   - other `killable`s (frogs, the penguin, the soccer ball) take a `take_hit` from
     power punches only.

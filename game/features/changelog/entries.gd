@@ -15,6 +15,14 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Arcade cabinets idle on a title screen and load their game when you use them.",
 	},
 	{
+		"title": "Prayer at the Kaaba",
+		"summary": "Pray at the Kaaba with Use to stack blessings that improve your slot odds.",
+	},
+	{
+		"title": "Casino patrons",
+		"summary": "Gamblers stroll the casino floor; punch them silly and they ragdoll.",
+	},
+	{
 		"title": "Steady casino textures",
 		"summary": "Props no longer slide as you turn, and guns and gnomes show their colours.",
 	},

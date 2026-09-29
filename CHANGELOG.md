@@ -34,6 +34,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   Arcade, with shared screens, timed rounds and cabinet high scores.
 - Stop casino benches and props from sliding when you turn the camera, and stop guns,
   gnomes and other plain-coloured props from rendering almost black.
+- Add four walking casino patrons to the gaming floor: punch them to stagger them, knock
+  them out into a limp ragdoll, and watch them get back up and carry on.
+- Pray at the Kaaba with Use: a chant plays and each prayer adds a stacking blessing (up
+  to 5) that gives your losing slot spins another roll until you win.
 - Enter the Adventure Arcade without a long freeze: cabinets now show an attract screen
   and only load and start their game when someone uses them.
 

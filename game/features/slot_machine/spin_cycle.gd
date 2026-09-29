@@ -16,6 +16,21 @@ func next_result() -> Array[int]:
 	]
 
 
+## One roll plus up to `rerolls` more while it keeps losing (Kaaba blessings).
+func blessed_result(rerolls: int) -> Array[int]:
+	var result := next_result()
+	for attempt: int in maxi(rerolls, 0):
+		if is_win(result):
+			break
+		result = next_result()
+	return result
+
+
+## Chance that a spin with `rerolls` blessings wins: 1 - 0.96^(1 + rerolls).
+static func win_chance(rerolls: int) -> float:
+	return 1.0 - pow(1.0 - 5.0 / 125.0, 1 + maxi(rerolls, 0))
+
+
 static func is_win(reels: Array[int]) -> bool:
 	return reels.size() == 3 and reels[0] == reels[1] and reels[1] == reels[2]
 
