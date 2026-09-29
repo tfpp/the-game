@@ -121,6 +121,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   spilling from the tray; both grow with the size of the prize.
 - Visit İstanbul Kebab directly ahead of casino spawn for animated staff, a rotating döner
   spit and free kebabs you can hold, share and eat.
+- Stop sign-in failing with "Couldn't reach the accounts server" on slow-loading browsers:
+  long startup frames no longer time out account requests, and the error now names the cause.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
