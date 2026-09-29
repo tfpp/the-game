@@ -1,0 +1,10 @@
+{
+  "title": "Roulette betting",
+  "summary": "Up to three players can now bet real chips on the roulette wheel, one spin a minute.",
+  "notes": [
+    "Let up to three players take a seat at the roulette table: the first to sit opens a one-minute betting round, and seated players stay put until the spin ends or they cancel their bets and leave.",
+    "Add an overhead betting view with a chip rack from $1 to $25K: place any mix of chips on straight, split, street, corner, top-line, six-line, column, dozen and even-money bets, up to your wallet balance.",
+    "Spin the wheel when betting closes, sweep losing chips, mark the winning number and settle every player's bets at American roulette odds in one atomic wallet operation.",
+    "Add a dealer standing behind the roulette table."
+  ]
+}

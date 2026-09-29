@@ -1,12 +1,32 @@
 class_name RouletteTableView
 extends Node3D
-## Table model and spin presentation. Presentation only; never chooses results.
+## Table model, chips and spin presentation. Presentation only; never chooses results.
 ## Each peer animates the spin locally from the replicated snapshot: the rotor spins up,
 ## the ball orbits the track the other way and drops inward, and once the server settles
-## the result the ball rolls into that pocket and rides the rotor.
+## the result the ball rolls into that pocket and rides the rotor. Every seated
+## player's chips are drawn on the layout; the local seated player also gets the
+## betting screen (`roulette_betting_screen.gd`).
 
 const MODEL := preload("res://assets/roulette/models/roulette_table.glb")
+const BETTING_SCREEN := preload("res://features/roulette/roulette_betting_screen.gd")
 const GOLD := Color("f6c85f")
+## Chip models, in RouletteBets.DENOMINATIONS order.
+const CHIP_MODELS: Array[PackedScene] = [
+	preload("res://assets/casino_chips/models/chip_1.glb"),
+	preload("res://assets/casino_chips/models/chip_5.glb"),
+	preload("res://assets/casino_chips/models/chip_50.glb"),
+	preload("res://assets/casino_chips/models/chip_100.glb"),
+	preload("res://assets/casino_chips/models/chip_500.glb"),
+	preload("res://assets/casino_chips/models/chip_1000.glb"),
+	preload("res://assets/casino_chips/models/chip_5000.glb"),
+	preload("res://assets/casino_chips/models/chip_25000.glb"),
+]
+## Chips are drawn larger than life so they read from the overview camera.
+const CHIP_SCALE := 2.2
+const CHIP_HEIGHT_M := 0.0033 * CHIP_SCALE
+const MAX_STACK := 12
+## Each seat's chips sit slightly apart so shared spots stay readable.
+const SEAT_OFFSET_M := 0.014
 
 ## Wheel-local geometry of the model, in metres (see assets/roulette/models).
 const BALL_RADIUS_M := 0.015
@@ -28,10 +48,15 @@ const BOUNCE_M := 0.012
 
 var rotor: Node3D
 var ball: Node3D
+var chips: Node3D
+var marker: MeshInstance3D
+var screen: RouletteBettingScreen
+var chip_meshes: Array[Mesh] = []
 
 var _status: Label3D
 var _caption: Label3D
 var _last_state: Dictionary = {}
+var _last_seconds := -1
 var _spin_id := -1
 var _spin_elapsed := 0.0
 var _settle_elapsed := 0.0
@@ -49,15 +74,27 @@ func _ready() -> void:
 	add_child(model)
 	rotor = model.find_child("rotor", true, false) as Node3D
 	ball = model.find_child("ball", true, false) as Node3D
-	_status = _label("PLACE YOUR BETS", Vector3(0, 1.6, 0), 34, GOLD)
-	_caption = _label("SPIN TO PLAY", Vector3(0, 1.37, 0), 26, Color.WHITE)
+	for scene: PackedScene in CHIP_MODELS:
+		var chip := scene.instantiate() as Node3D
+		var mesh := chip.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D
+		chip_meshes.append(mesh.mesh)
+		chip.free()
+	chips = Node3D.new()
+	chips.name = "Chips"
+	add_child(chips)
+	marker = _winning_marker()
+	add_child(marker)
+	_status = _label("ROULETTE", Vector3(0, 1.6, 0), 34, GOLD)
+	_caption = _label("", Vector3(0, 1.37, 0), 26, Color.WHITE)
 	_rest_in(0)
+	Network.mode_changed.connect(_on_mode_changed)
 
 
 func _process(delta: float) -> void:
 	var snapshot := _table.state
-	if snapshot != _last_state:
+	if snapshot != _last_state or _table.net_seconds_left != _last_seconds:
 		_last_state = snapshot.duplicate(true)
+		_last_seconds = _table.net_seconds_left
 		_on_state(snapshot)
 	animate(delta)
 
@@ -105,28 +142,162 @@ static func ball_height(radius: float) -> float:
 
 
 func _on_state(snapshot: Dictionary) -> void:
+	_animate_wheel(snapshot)
+	_update_labels(snapshot)
+	_update_chips(snapshot)
+	_update_screen(snapshot)
+
+
+func _animate_wheel(snapshot: Dictionary) -> void:
 	var spin := int(snapshot["spin"])
 	if snapshot["spinning"]:
 		if spin != _spin_id:
 			_start_spin(spin)
-		_status.text = "SPINNING…"
-		_caption.text = str(snapshot["operator"]).left(20)
+		return
+	if spin == 0:
+		_rest_in(0)
 		return
 	var number := int(snapshot["number"])
-	if spin > 0:
-		if _spinning and spin == _spin_id:
-			_settle_into(number)
-		elif spin != _spin_id:
-			# Joined after this spin finished: show the result without replaying it.
-			_spin_id = spin
-			_rest_in(number)
-		var pocket := RouletteWheel.label_for(number)
-		_status.text = "%s — %s" % [pocket, str(snapshot["color"]).to_upper()]
-		_caption.text = str(snapshot["operator"]).left(20)
-	else:
-		_rest_in(0)
-		_status.text = "PLACE YOUR BETS"
-		_caption.text = "SPIN TO PLAY"
+	if _spinning and spin == _spin_id:
+		_settle_into(number)
+	elif spin != _spin_id:
+		# Joined after this spin finished: show the result without replaying it.
+		_spin_id = spin
+		_rest_in(number)
+
+
+func _update_labels(snapshot: Dictionary) -> void:
+	var seated := (snapshot["seats"] as Array).count(0)
+	seated = RouletteTable.SEAT_COUNT - seated
+	var last := ""
+	if int(snapshot["spin"]) > 0 and not snapshot["spinning"]:
+		last = pocket_text(int(snapshot["number"]))
+	match str(snapshot["phase"]):
+		RouletteTable.PHASE_BETTING:
+			_status.text = "PLACE YOUR BETS"
+			_caption.text = (
+				"%s  ·  %d/%d SEATED"
+				% [clock_text(_table.net_seconds_left), seated, RouletteTable.SEAT_COUNT]
+			)
+		RouletteTable.PHASE_SPINNING:
+			_status.text = "NO MORE BETS"
+			_caption.text = ""
+		RouletteTable.PHASE_RESULT:
+			_status.text = last
+			_caption.text = winners_text(snapshot)
+		_:
+			_status.text = "ROULETTE"
+			_caption.text = str(snapshot["message"]) if snapshot["message"] else "UP TO 3 PLAYERS"
+			if not last.is_empty():
+				_caption.text += "  ·  LAST: " + last
+	marker.visible = str(snapshot["phase"]) == RouletteTable.PHASE_RESULT
+	if marker.visible:
+		var anchor := RouletteBets.anchor(str(int(snapshot["number"])))
+		marker.position = RouletteBets.pixel_to_local(anchor) + Vector3.UP * 0.026
+
+
+## "17 RED", "00 GREEN".
+static func pocket_text(number: int) -> String:
+	return "%s %s" % [RouletteWheel.label_for(number), RouletteWheel.color_for(number).to_upper()]
+
+
+## "0:42".
+static func clock_text(seconds: int) -> String:
+	return "%d:%02d" % [seconds / 60, seconds % 60]
+
+
+static func winners_text(snapshot: Dictionary) -> String:
+	var parts := PackedStringArray()
+	var results := snapshot["results"] as Dictionary
+	for peer: int in results:
+		var result := results[peer] as Dictionary
+		var won := int(result["payout"]) - int(result["wager"])
+		if won > 0:
+			var seat := (snapshot["seats"] as Array).find(peer)
+			var name := str(snapshot["names"][seat]) if seat >= 0 else "A player"
+			parts.append("%s +%s" % [name.left(14), PlayerMoney.format_money(won)])
+	return ", ".join(parts) if not parts.is_empty() else "HOUSE WINS"
+
+
+## Rebuilds the chip stacks: every seated player's placements, or, once the ball
+## lands, only the winning spots (losing chips are swept).
+func _update_chips(snapshot: Dictionary) -> void:
+	for child: Node in chips.get_children():
+		chips.remove_child(child)
+		child.queue_free()
+	var result_phase := str(snapshot["phase"]) == RouletteTable.PHASE_RESULT
+	var number := int(snapshot["number"])
+	var bets := snapshot["bets"] as Dictionary
+	for peer: int in bets:
+		var seat := maxi(0, (snapshot["seats"] as Array).find(peer))
+		var spots := RouletteBets.by_spot(bets[peer])
+		for key: String in spots:
+			if result_phase and not RouletteBets.numbers(key).has(number):
+				continue
+			var base := RouletteBets.pixel_to_local(RouletteBets.anchor(key))
+			base.x += (seat - 1) * SEAT_OFFSET_M
+			_stack(base, int(spots[key]))
+
+
+func _stack(base: Vector3, cents: int) -> void:
+	var values := RouletteBets.chips_for(cents)
+	var count := mini(values.size(), MAX_STACK)
+	for index: int in count:
+		var chip := MeshInstance3D.new()
+		chip.mesh = chip_meshes[RouletteBets.DENOMINATIONS.find(values[index])]
+		chip.scale = Vector3.ONE * CHIP_SCALE
+		chip.position = base + Vector3.UP * (index * CHIP_HEIGHT_M + 0.0005)
+		chip.rotation.y = index * 0.7
+		chip.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		chips.add_child(chip)
+
+
+## Opens the betting screen while the local player holds a seat. When the round
+## releases them it stays up showing the result until they continue or play again,
+## so resuming play (and pointer capture) follows a click rather than a timer.
+func _update_screen(snapshot: Dictionary) -> void:
+	if not is_inside_tree() or multiplayer.multiplayer_peer == null:
+		return
+	var seated := (snapshot["seats"] as Array).has(multiplayer.get_unique_id())
+	if seated and screen == null:
+		screen = BETTING_SCREEN.new() as RouletteBettingScreen
+		screen.table = _table
+		screen.view = self
+		screen.closed.connect(_on_screen_closed)
+		add_child(screen)
+	if screen != null:
+		screen.refresh()
+	# The seated player's screen shows the same information without covering the felt.
+	_status.visible = screen == null
+	_caption.visible = screen == null
+
+
+func _on_mode_changed(_mode: Network.Mode) -> void:
+	if screen != null:
+		screen.close()
+
+
+func _on_screen_closed() -> void:
+	screen = null
+	_status.visible = true
+	_caption.visible = true
+
+
+func _winning_marker() -> MeshInstance3D:
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = 0.012
+	mesh.bottom_radius = 0.02
+	mesh.height = 0.05
+	var material := StandardMaterial3D.new()
+	material.albedo_color = GOLD
+	material.metallic = 0.8
+	material.roughness = 0.35
+	mesh.material = material
+	var node := MeshInstance3D.new()
+	node.name = "WinningMarker"
+	node.mesh = mesh
+	node.visible = false
+	return node
 
 
 func _start_spin(spin: int) -> void:
