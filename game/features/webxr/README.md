@@ -51,8 +51,8 @@ mouse events cannot steal input or double movement. `project.godot` enables XR
 shader variants **only for web exports**, needed for stereo rendering before
 runtime initialization. Both are human-review paths. The existing Compatibility
 renderer and single-thread export stay in place; no OpenXR/plugin install is needed.
-RetroStyle keeps its mobile light/material budgets but yields its phone-sized 3D
-buffer to WebXR while immersive, including browser resize events.
+RetroStyle preserves the viewport render scale, including browser resize events.
+Mobile uses the same rendering settings as desktop; WebXR owns its immersive scale.
 
 Implementation references: [Godot WebXR](https://docs.godotengine.org/en/4.7/tutorials/xr/webxr_intro.html),
 [session API](https://docs.godotengine.org/en/4.7/classes/class_webxrinterface.html),
@@ -63,7 +63,7 @@ and [XR shader setup](https://docs.godotengine.org/en/4.7/tutorials/xr/setting_u
 Run `godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests/features/webxr -gexit`
 from `game/`. Tests exercise lifecycle cleanup, input isolation, camera/teleport
 math, snap-turn latching, modal camera preservation, shared loot Use/range checks,
-third-person restoration and mobile render budgeting.
+third-person restoration and mobile resize compatibility.
 
 Physical acceptance still requires a Quest 3: test HTTPS entry/denial/re-entry,
 both eyes, controller mappings, seated calibration/recenter, tracking loss,

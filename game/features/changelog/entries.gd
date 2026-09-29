@@ -1,18 +1,15 @@
 class_name ChangelogEntries
-## Player-facing list of shipped features, shown in the in-game changelog panel
-## (features/changelog/changelog.gd).
-##
-## Whenever a new feature ships under `game/features/<name>/`, add one entry here in
-## the same change (see AGENTS.md). Newest entries go at the top of the array.
+## Frozen legacy entries for historical releases. New changes add a JSON file under
+## features/<owner>/release_notes/; all_entries() collates them without a shared list.
 
-## `title`: the feature's display name, unique across the list: released builds use it to
-## find the release that added the entry (scripts/release_notes.sh), so don't rename one
-## once it ships. `summary`: a one-line, player-facing description of what it does.
-## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
-		"title": "Poke bowls",
-		"summary": "Buy a $29 poke bowl in the food court and choose a 15–40% tip.",
+		"title": "Vivienne at the bar",
+		"summary": "Buy drinks, win for charisma and walk Vivienne to your room for a lucky night.",
+	},
+	{
+		"title": "Full mobile rendering",
+		"summary": "Phones now use desktop rendering settings without extra graphics limits.",
 	},
 	{
 		"title": "Food court",
@@ -563,3 +560,34 @@ const ENTRIES: Array[Dictionary] = [
 	{"title": "Chat", "summary": "Press Enter to open a Source-style chat line."},
 	{"title": "Character memory", "summary": "The world remembers where you logged off."},
 ]
+
+
+static func all_entries(root: String = "res://features") -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	var features := DirAccess.get_directories_at(root)
+	features.sort()
+	for feature: String in features:
+		var folder := root.path_join(feature).path_join("release_notes")
+		if not DirAccess.dir_exists_absolute(folder):
+			continue
+		var files := DirAccess.get_files_at(folder)
+		files.sort()
+		for file: String in files:
+			if file.ends_with(".json"):
+				var entry := read_note(folder.path_join(file))
+				if not entry.is_empty():
+					entries.append(entry)
+	entries.append_array(ENTRIES)
+	return entries
+
+
+static func read_note(path: String) -> Dictionary:
+	var parser := JSON.new()
+	if parser.parse(FileAccess.get_file_as_string(path)) != OK:
+		push_error("Invalid feature release note: " + path)
+		return {}
+	var note: Variant = parser.data
+	if not note is Dictionary:
+		push_error("Feature release note must be an object: " + path)
+		return {}
+	return {"title": str(note.get("title", "")), "summary": str(note.get("summary", ""))}

@@ -2,8 +2,8 @@ extends CanvasLayer
 ## In-game feature changelog: open "Release notes" from the Esc menu (or press L) to see
 ## what's shipped, Esc or L again to close.
 ##
-## The entries live in entries.gd so new features can add to the list without touching
-## this script (see AGENTS.md for the rule that every new feature must add one). This
+## Entries are collated from each feature's release_notes/*.json plus frozen legacy
+## entries.gd (see AGENTS.md). This
 ## is static, read-only content baked into the client, so it needs no server round trip.
 ##
 ## Entries are grouped under "Edge" (added since the latest release, headed with the
@@ -217,8 +217,8 @@ func _text() -> String:
 	if releases.is_empty():
 		releases = local_releases()
 	if releases.is_empty():
-		return body_text(ChangelogEntries.ENTRIES)
-	return releases_text(releases, ChangelogEntries.ENTRIES)
+		return body_text(ChangelogEntries.all_entries())
+	return releases_text(releases, ChangelogEntries.all_entries())
 
 
 func _close() -> void:

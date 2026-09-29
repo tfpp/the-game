@@ -13,6 +13,7 @@ var _reservations: Dictionary = {}
 
 
 func _ready() -> void:
+	add_to_group(&"apartments")
 	_spawner.spawn_function = _spawn_floor
 	Network.mode_changed.connect(_reset)
 	multiplayer.peer_disconnected.connect(_disconnected)
@@ -35,6 +36,24 @@ func floor_for(peer: int) -> StreamedRoom:
 	if unit == 0:
 		return null
 	return floors.get_node_or_null("Floor%d" % floor_number(unit)) as StreamedRoom
+
+
+## A unit's room in its floor's local space, matching `interior.gd`: five rooms each
+## side of the corridor, 6 m wide, from the doorway wall (z ±2) to the window (z ±9).
+static func unit_bounds(unit: int) -> AABB:
+	var slot := (unit - 1) % UNITS_PER_FLOOR
+	var x := -12.0 + (slot % 5) * 6.0
+	var near := -9.0 if slot < 5 else 2.0
+	return AABB(Vector3(x - 3.0, -0.5, near), Vector3(6.0, 4.0, 7.0))
+
+
+## True when `global_point` is inside `peer`'s assigned unit (not just on its floor).
+func in_unit(peer: int, global_point: Vector3) -> bool:
+	var floor_node := floor_for(peer)
+	return (
+		floor_node != null
+		and unit_bounds(unit_for(peer)).has_point(floor_node.to_local(global_point))
+	)
 
 
 ## No peer or unit is accepted from the client. Calls are serialized on the server.

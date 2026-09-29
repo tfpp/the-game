@@ -118,3 +118,6 @@ Players who prayed at the Kaaba ([kaaba](../kaaba/README.md)) carry blessings. T
 server passes them to `PlayerMoney.spin()` as `rerolls`: each gives a losing spin one
 more roll of the reels, and a win spends them. The 80% return above is for unblessed
 spins. The accounts API ignores blessings, so they only apply to temporary wallets.
+
+Vivienne's lucky night (`features/bar_companion`) adds two rerolls on top of Kaaba
+blessings for its 10 minutes, and each win gives the winner charisma once the reels stop.

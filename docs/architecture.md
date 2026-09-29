@@ -303,9 +303,10 @@ are cut by hand: run the `release` workflow (Actions > release > Run workflow) a
 the bump, `patch`, `minor` or `major`.
 
 - **`CHANGELOG.md`** has an `## [edge]` section for what's on `main` but not released.
-  Every pull request with a notable change adds a bullet there (see `AGENTS.md`).
+  New PRs add feature-owned JSON notes instead (see `docs/release-notes.md`).
 - **`release.yml`** runs `scripts/release.sh` (tested by `scripts/release_test.sh`) on the
-  tip of `main`. It moves the edge into a `## [X.Y.Z]` section, leaves an empty edge and
+  tip of `main`. It collates new feature notes with legacy edge bullets into a
+  `## [X.Y.Z]` section, leaves an empty edge and
   bumps `config/version`. It pushes that `chore(release): vX.Y.Z` commit and the
   `vX.Y.Z` tag to `main` together, using the `tfpp-clanker` App, which bypasses the
   "protect main" ruleset. Then it publishes a GitHub Release with the edge's notes.
@@ -317,7 +318,7 @@ the bump, `patch`, `minor` or `major`.
   latest release) and the last 10 releases. `pages.yml` sets `RELEASE_NOTES=1`, and
   `export.sh` runs `scripts/release_notes.sh` (tested by `scripts/release_notes_test.sh`)
   to generate `releases.gd` from the tags. An entry belongs to the first release whose
-  tagged `entries.gd` has its title. Local debug runs call the script on the checkout
+  tagged legacy list or feature-owned JSON notes contain its title. Local debug runs call the script on the checkout
   (including uncommitted entries) when the panel first opens; PR previews list every
   entry.
 - Joining still compares commits, not versions (see "Version check").
