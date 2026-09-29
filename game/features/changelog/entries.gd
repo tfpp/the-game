@@ -11,6 +11,11 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "PlayStation-style picture",
+		"summary":
+		"Explore with low-poly shapes, warped textures and dithered colours at full resolution.",
+	},
+	{
 		"title": "Shared search stashes",
 		"summary":
 		"Search wrecks and dumpsters, then drag their shared valuables into your backpack.",

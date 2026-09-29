@@ -26,12 +26,14 @@ func test_imported_world_textures_fit_budget_and_keep_mipmaps() -> void:
 		assert_true(texture.get_image().has_mipmaps(), texture.resource_path)
 
 
-func test_mobile_render_budget_handles_portrait_landscape_and_retina() -> void:
-	for size: Vector2 in [Vector2(844, 390), Vector2(390, 844), Vector2(2532, 1170)]:
-		var scale := RetroStyle.mobile_scale(size)
-		assert_lte(size.y * scale, RetroStyle.MOBILE_HEIGHT)
-		assert_lte(scale, RetroStyle.MOBILE_MAX_SCALE)
-		assert_gt(scale, 0.1)
+func test_screen_effect_preserves_ui_layer() -> void:
+	var scene := preload("res://features/retro_style/feature.tscn").instantiate()
+	var screen := scene.get_node("Screen") as CanvasLayer
+	var pixels := scene.get_node("Screen/PixelColor") as ColorRect
+	assert_eq(screen.layer, -1)
+	assert_eq(pixels.mouse_filter, Control.MOUSE_FILTER_IGNORE)
+	assert_not_null(pixels.material as ShaderMaterial)
+	scene.free()
 
 
 func test_streamed_mesh_gets_cheap_shading_without_touching_custom_screen_shader() -> void:

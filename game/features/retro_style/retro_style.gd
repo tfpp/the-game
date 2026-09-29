@@ -1,10 +1,8 @@
 class_name RetroStyle
 extends Node
 ## Apply the same inexpensive art direction to existing and streamed 3D props.
-## UI, font atlases and arcade screen shaders keep their own sampling and resolution.
+## UI and font atlases keep their own sampling and resolution.
 
-const MOBILE_HEIGHT := 432.0
-const MOBILE_MAX_SCALE := 0.7
 const BATCH_SIZE := 64
 const MOBILE_LOCAL_LIGHTS := 2
 const MOBILE_PROP_DISTANCE := 40.0
@@ -52,22 +50,16 @@ static func is_mobile_device() -> bool:
 	return false
 
 
-static func mobile_scale(viewport_size: Vector2) -> float:
-	return minf(MOBILE_MAX_SCALE, MOBILE_HEIGHT / maxf(viewport_size.y, 1.0))
-
-
 func _configure_viewport() -> void:
-	if not mobile:
-		return
 	var viewport := get_viewport()
 	var window := get_window()
-	# Use framebuffer dimensions, not the stretched UI's virtual rectangle.
-	# Portrait otherwise gets an accidentally tiny 3D buffer and unreadable UI.
-	var portrait := window.size.x < window.size.y
-	var ui_size := Vector2i(480, 720) if portrait else Vector2i(960, 540)
-	if window.content_scale_size != ui_size:
-		window.content_scale_size = ui_size
-	viewport.scaling_3d_scale = mobile_scale(Vector2(window.size))
+	if mobile:
+		# Use framebuffer dimensions, not the stretched UI's virtual rectangle.
+		var portrait := window.size.x < window.size.y
+		var ui_size := Vector2i(480, 720) if portrait else Vector2i(960, 540)
+		if window.content_scale_size != ui_size:
+			window.content_scale_size = ui_size
+	viewport.scaling_3d_scale = 1.0
 	viewport.msaa_3d = Viewport.MSAA_DISABLED
 	viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 	viewport.use_taa = false

@@ -4,8 +4,15 @@ render_mode unshaded;
 uniform sampler2D surface_atlas : filter_nearest_mipmap, repeat_disable;
 varying vec3 baked_color;
 varying flat float surface_kind;
+varying vec2 affine_uv;
+varying float affine_depth;
 
 void vertex() {
+	// Affine UVs on these small authored faces produce PSX texture warp without
+	// changing the world-anchored textures on the large casino surfaces.
+	float clip_depth = (PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).w;
+	affine_uv = UV * clip_depth;
+	affine_depth = clip_depth;
 	surface_kind = floor(COLOR.a * 3.0 + 0.5);
 	// Authored warm vertex illumination: no shadow maps or per-pixel light loops.
 	// A small lift preserves the facets of dark suits and charcoal wall panels.
@@ -21,7 +28,8 @@ void vertex() {
 void fragment() {
 	vec2 tile = vec2(mod(surface_kind, 2.0), floor(surface_kind / 2.0));
 	// Keep sampling inside each 64-pixel tile, away from neighbouring atlas cells.
-	vec2 atlas_uv = tile * 0.5 + vec2(0.015625) + fract(UV) * 0.46875;
+	vec2 warped_uv = mix(UV, affine_uv / max(affine_depth, 0.001), 0.35);
+	vec2 atlas_uv = tile * 0.5 + vec2(0.015625) + fract(warped_uv) * 0.46875;
 	float grain = texture(surface_atlas, atlas_uv).r;
 	float midpoint = surface_kind == 1.0 ? 0.39 : 0.56;
 	float amount = surface_kind == 0.0 ? 0.25 : 1.0;

@@ -98,6 +98,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Keep hotel rooms, stairs, sewers and the atrium readable at night and on phones
   with steady indoor ambient lighting.
 - Remove the Adventure Arcade, its computer games and Python authoring and probe scripts.
+- Render the 3D world with PlayStation-style affine texture warp and 15-bit dithered colour at native resolution while keeping the HUD sharp and geometry stable.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

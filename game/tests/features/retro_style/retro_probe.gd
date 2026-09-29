@@ -38,12 +38,8 @@ func _run() -> void:
 	await _capture("salon-day")
 	cycle._apply(0.0)
 	await _capture("salon-night")
+	assert(is_equal_approx(get_viewport().scaling_3d_scale, 1.0))
 	if style.mobile:
-		assert(
-			is_equal_approx(
-				get_viewport().scaling_3d_scale, RetroStyle.mobile_scale(Vector2(get_window().size))
-			)
-		)
 		assert(get_viewport().msaa_3d == Viewport.MSAA_DISABLED)
 		for node: Node in get_tree().root.find_children("*", "Light3D", true, false):
 			assert(not (node as Light3D).shadow_enabled)
