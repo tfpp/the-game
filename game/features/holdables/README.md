@@ -67,3 +67,6 @@ action all key off the category.
 The `kebab` FOOD item is supplied by `features/kebab_shop` through the same
 `PlayerInventory.collect` interface. Its detailed view lives with that shop;
 consumption, drops, grip positioning and replication use the ordinary food path.
+
+The `poke_bowl` FOOD item is sold by `features/food_court/poke_stand.gd` and uses
+that same collection, consumption and drop path, with a two-hand bowl view.

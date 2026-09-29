@@ -71,6 +71,25 @@ func test_booths_stand_on_the_floor_and_clear_the_walls() -> void:
 		assert_between(booth.global_position.x, 4.5, 26.0)
 
 
+func test_poke_counter_is_grounded_faces_west_and_has_a_clear_approach() -> void:
+	var stand := _court.get_node("PokeStand") as PokeStand
+	var counter := stand.get_node("Counter") as CSGBox3D
+	assert_almost_eq(counter.global_position.y - counter.size.y * 0.5, 0.0, 0.001)
+	assert_almost_eq(stand.global_basis.z, Vector3.LEFT, Vector3.ONE * 0.001)
+	assert_almost_eq(stand.global_position, Vector3(30, 0, 37.5), Vector3.ONE * 0.001)
+	var customer := stand.to_global(Vector3(0, 0.95, 1.7))
+	_sweep(Vector3(27, 0.95, 43), Vector3(27, 0.95, 37.5))
+	_sweep(Vector3(27, 0.95, 37.5), customer)
+	_assert_clear(customer)
+	_assert_floor(customer, 0.0)
+	var bowl := stand.get_node("DisplayBowl/Bowl") as MeshInstance3D
+	var mesh := bowl.mesh as CylinderMesh
+	var top := stand.get_node("Top") as CSGBox3D
+	assert_almost_eq(
+		bowl.global_position.y - mesh.height * 0.5, top.global_position.y + top.size.y * 0.5, 0.001
+	)
+
+
 func _assert_clear(origin: Vector3) -> void:
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.collision_mask = 1

@@ -9,7 +9,9 @@ failures=0
 cd "$(mktemp -d)"
 git init -q -b main
 mkdir scripts
-cp "$here/release_notes.sh" "$here/feature_notes.py" scripts/
+cp "$here/release_notes.sh" "$here/feature_notes.sh" scripts/
+mkdir -p scripts/release_notes
+cp "$here/release_notes/collect.gd" "$here/release_notes/project.godot" scripts/release_notes/
 notes="$PWD/scripts/release_notes.sh"
 git config user.email test@example.com
 git config user.name test
@@ -108,7 +110,7 @@ JSON
 check "same feature gets a fresh note after release" 'const EDGE: Array[String] = ["Ribbon hats"]' \
   "$("$notes" WORKTREE | sed -n 8p)"
 check "only unreleased fragment bullets are collected" '- Add ribbon hats.' \
-  "$(python3 scripts/feature_notes.py edge WORKTREE)"
+  "$(scripts/feature_notes.sh edge WORKTREE)"
 # A branch's fragment remains edge even if the base cut a release before it merged.
 cp game/features/hats/release_notes/103-ribbons.json game/features/frogs/release_notes/104-duplicate.json
 if "$notes" WORKTREE >/dev/null 2>&1; then
@@ -121,7 +123,7 @@ if "$notes" WORKTREE >/dev/null 2>&1; then
 fi
 rm game/features/frogs/release_notes/104-invalid.json
 sed -i.bak 's/Add feather hats./Change released hats./' game/features/hats/release_notes/101-feathers.json
-if python3 scripts/feature_notes.py validate WORKTREE >/dev/null 2>&1; then
+if scripts/feature_notes.sh validate WORKTREE >/dev/null 2>&1; then
   echo 'FAIL: released fragment mutation accepted' >&2; failures=$((failures + 1))
 fi
 git checkout -q -- game/features/hats/release_notes/101-feathers.json
@@ -145,6 +147,17 @@ git merge -q --no-edit note-a
 check "parallel same-feature PRs merge and collate both notes" \
   'const EDGE: Array[String] = ["Parallel A", "Parallel B"]' \
   "$("$notes" HEAD | sed -n 8p)"
+
+# Match the export container: the existing Godot binary and shell/Git tools only.
+# This catches any attempt to bring back a separate JSON interpreter dependency.
+native_bin="$(mktemp -d)"
+native_godot="$(command -v "${GODOT:-godot}")"
+for native_tool in bash git dirname mktemp rm cat sed grep head; do
+  ln -s "$(command -v "$native_tool")" "$native_bin/$native_tool"
+done
+check "release collection works with no Python on PATH" "$("$notes" HEAD)" \
+  "$(GODOT="$native_godot" PATH="$native_bin" "$notes" HEAD)"
+rm -rf "$native_bin"
 
 if ((failures)); then
   echo "$failures failure(s)" >&2

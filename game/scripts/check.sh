@@ -11,15 +11,17 @@ SRC=(core ui world tests)
 step() { printf '\n==> %s\n' "$*"; }
 
 step "feature release notes"
-(cd .. && python3 scripts/feature_notes.py validate WORKTREE)
+(cd .. && scripts/feature_notes.sh validate WORKTREE)
 ../scripts/release_test.sh
 ../scripts/release_notes_test.sh
 
 step "gdformat --check"
 ${GDTOOLKIT}gdformat --check "${SRC[@]}"
+${GDTOOLKIT}gdformat --check ../scripts/release_notes
 
 step "gdlint"
 ${GDTOOLKIT}gdlint "${SRC[@]}"
+${GDTOOLKIT}gdlint ../scripts/release_notes
 
 step "import (parse all scripts/scenes)"
 out=$("$GODOT" --headless --import 2>&1 || true)

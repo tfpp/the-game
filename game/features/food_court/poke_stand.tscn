@@ -1,0 +1,77 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://features/food_court/poke_stand.gd" id="stand"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="Script" path="res://features/food_court/poke_menu.gd" id="menu"]
+[ext_resource type="PackedScene" path="res://features/food_court/poke_bowl_view.tscn" id="bowl"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/cream.tres" id="cream"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/teal.tres" id="teal"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
+[node name="PokeStand" type="Node3D"]
+script = ExtResource("stand")
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("net")
+interaction_offset = Vector3(0, 1, 0.6)
+interaction_range = 2.5
+[node name="Menu" type="CanvasLayer" parent="."]
+script = ExtResource("menu")
+
+[node name="Counter" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.5, 0)
+size = Vector3(2.6, 1, 1.2)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="Top" type="CSGBox3D" parent="."]
+position = Vector3(0, 1.04, 0)
+size = Vector3(2.8, 0.08, 1.3)
+material = ExtResource("cream")
+use_collision = true
+
+[node name="FrontPanel" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.56, 0.608)
+size = Vector3(2.3, 0.66, 0.025)
+material = ExtResource("teal")
+use_collision = false
+
+[node name="Rail" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.94, 0.635)
+size = Vector3(2.7, 0.045, 0.045)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="PostLeft" type="CSGBox3D" parent="."]
+position = Vector3(-1.2, 1.65, -0.4)
+size = Vector3(0.065, 1.3, 0.065)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="PostRight" type="CSGBox3D" parent="."]
+position = Vector3(1.2, 1.65, -0.4)
+size = Vector3(0.065, 1.3, 0.065)
+material = ExtResource("brass")
+use_collision = false
+
+[node name="Header" type="CSGBox3D" parent="."]
+position = Vector3(0, 2.35, -0.4)
+size = Vector3(2.8, 0.65, 0.12)
+material = ExtResource("teal")
+use_collision = false
+
+[node name="Sign" type="Label3D" parent="."]
+position = Vector3(0, 2.35, -0.325)
+text = "POKE BOWLS\n$29 + TIP 15–40%"
+font_size = 48
+pixel_size = 0.004
+modulate = Color(1, 0.9, 0.65, 1)
+double_sided = false
+[node name="FrontLabel" type="Label3D" parent="."]
+position = Vector3(0, 0.6, 0.63)
+text = "SALMON • RICE • AVOCADO\nORDER HERE"
+font_size = 40
+pixel_size = 0.0035
+double_sided = false
+[node name="DisplayBowl" parent="." instance=ExtResource("bowl")]
+position = Vector3(0, 1.16, 0.1)
+[node name="SecondBowl" parent="." instance=ExtResource("bowl")]
+position = Vector3(-0.6, 1.16, 0.05)
