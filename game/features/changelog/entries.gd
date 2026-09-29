@@ -11,8 +11,12 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Food court",
+		"summary": "Walk to the new south-wing food court for kebabs and booths you can sit in.",
+	},
+	{
 		"title": "İstanbul Kebab",
-		"summary": "Order a free kebab from animated staff directly ahead of casino spawn.",
+		"summary": "Order a free kebab from animated staff in the food court.",
 	},
 	{
 		"title": "Jackpot fireworks",

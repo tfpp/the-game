@@ -55,6 +55,8 @@ and white underwear keep their own colors.
 - Walking below 55% of the player's configured maximum speed.
 - Running above that threshold, with longer strides, stronger arm swing and lean.
 - Jump takeoff and falling poses, followed by a brief landing compression.
+- Seated (legs forward, hands towards the table) while the `seating` group's
+  `is_seated(peer)` says so (food court booths).
 
 Stride phase advances with horizontal speed, with reversed steps when backing up
 and side lean when strafing. The model blends pose transitions and turns its head
