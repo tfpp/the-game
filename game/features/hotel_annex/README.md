@@ -75,3 +75,16 @@ Validation: GUT `test_hotel_annex.gd` and `test_swing_doors.gd`, plus
 shared doors/key pickup, range checks, late joins and stream unloads.
 
 Use the same command with `-- hotel` for the full-game hotel/atrium round trip.
+
+## Indoor visibility
+
+`interior_lighting.gd` on the feature root applies warm ambient fill (energy 0.8)
+while the active camera is within either existing streamed-room bound. This covers
+all three hotels, storage, sewers and every atrium floor, even at midnight or when
+phones limit local lamps to two. Existing lamps still add contrast. No new lights,
+shadows, controls or replicated state are added.
+
+The camera receives a private Environment copy; the outdoor environment is never
+modified. The shared sky and its day/night brightness keep updating. Leaving the
+hotel, changing cameras (including F3), or removing the feature restores the prior
+camera environment. This is local presentation for every peer and offline play.
