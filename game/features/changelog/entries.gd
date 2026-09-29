@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Enter VR from Quest / WebXR in the menu to explore with Touch controllers.",
 	},
 	{
+		"title": "GPS phone",
+		"summary": "Press P to pick a place on your phone and follow the route on the radar.",
+	},
+	{
 		"title": "Wandering bird",
 		"summary":
 		(

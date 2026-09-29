@@ -72,6 +72,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   with locked dependencies and safe rebuilds.
 - Claim a free apartment at the Lily Apartments front desk in the south lobby, and
   take the express elevator to new ten-unit floors as more residents move in.
+- Add a GPS phone: press P (or pick GPS in the Esc menu), search for a room, and follow the
+  purple route on the radar and the direction banner, including through doors.
 - Enter VR from the Quest / WebXR menu in Quest Browser with headset look, stick
   movement, snap turning, jump and nearby object interaction.
 
