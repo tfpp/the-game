@@ -1,3 +1,4 @@
+# gdlint: disable=max-public-methods
 class_name ScummArcadeCabinet
 extends StaticBody3D
 ## The server owns control and immutable input ticks. Each client interprets the
@@ -44,6 +45,10 @@ var _save_in := SAVE_SECONDS
 var _saved_tick := -1
 var _save_blocked := false
 var _view: ScummArcadeView
+## The local player has used this cabinet since entering the room (attract mode until then).
+var _engaged := false
+## Server: peers who have used this cabinet and are still in the room.
+var _watchers: Dictionary = {}
 
 
 func _ready() -> void:
@@ -76,6 +81,8 @@ func _process(delta: float) -> void:
 	_activation_in -= delta
 	if _activation_in <= 0:
 		_activation_in = 0.2
+		if room_only:
+			_sync_room_view()
 		_set_active(_wants_runtime())
 	if not _active:
 		return
@@ -106,6 +113,7 @@ func _process(delta: float) -> void:
 		if not _subscribed and (not _waiting or now - _requested_at > 1500):
 			_waiting = true
 			_requested_at = now
+			request_watch.rpc_id(1)
 			request_batch.rpc_id(1, _epoch, _inbox.next_tick, _emulator.runtime_id)
 		_emulator.advance(_inbox.take(local_tick))
 
@@ -120,9 +128,36 @@ func _wants_runtime() -> bool:
 	if not room_only:
 		return true
 	if multiplayer.is_server():
-		return _has_audience()
+		return _has_audience() or (_engaged and _local_in_room())
+	return _engaged and _local_in_room()
+
+
+func _local_in_room() -> bool:
 	var player := get_tree().get_first_node_in_group(&"local_player") as Player
 	return player != null and ScummArcadeRoom.contains(player.global_position)
+
+
+## Room cabinets show a cheap attract screen while the local player is in the room.
+## The interpreter only loads once someone uses the cabinet.
+func _sync_room_view() -> void:
+	var inside := _local_in_room()
+	if not inside:
+		_engaged = false
+	if inside and _view == null and DisplayServer.get_name() != "headless":
+		_ensure_view()
+	elif not inside and _view != null:
+		_view.close(false)
+		_view.queue_free()
+		_view = null
+
+
+## Loads and starts this cabinet's game for the local player (attract mode ends).
+func engage() -> void:
+	if _engaged:
+		return
+	_engaged = true
+	_activation_in = 0
+	request_watch.rpc_id(1)
 
 
 func _set_active(enabled: bool) -> void:
@@ -148,9 +183,7 @@ func _set_active(enabled: bool) -> void:
 		else:
 			leave_room.rpc_id(1)
 		if _view != null:
-			_view.close(false)
-			_view.queue_free()
-			_view = null
+			_view.show_attract()
 		_texture = null
 		_audio.stop()
 		_playback = null
@@ -244,6 +277,7 @@ func can_use(player: Player) -> bool:
 
 
 func use() -> void:
+	engage()
 	if _view != null:
 		_view.open()
 
@@ -337,6 +371,24 @@ func request_batch(epoch: int, from_tick: int, signature: String) -> void:
 	_ready_peers[peer] = from_tick
 	_delivery_ticks[peer] = from_tick
 	_send_batch(peer, true)
+
+
+## A peer asks to watch or play; the server only runs the game while someone watches.
+@rpc("any_peer", "call_local", "reliable")
+func request_watch() -> void:
+	if not multiplayer.is_server():
+		return
+	var peer := _sender()
+	var player := _player_for_peer(peer)
+	if player == null:
+		return
+	# Watching is harmless anywhere inside the room; controls still check range and facing.
+	if room_only and not ScummArcadeRoom.contains(player.net_position):
+		return
+	if not room_only and not _in_range(player):
+		return
+	_watchers[peer] = true
+	_activation_in = 0
 
 
 @rpc("any_peer", "call_local", "reliable")
@@ -458,6 +510,7 @@ func _player_for_peer(peer: int) -> Player:
 
 
 func _peer_left(peer: int) -> void:
+	_watchers.erase(peer)
 	_delivery_ticks.erase(peer)
 	_ready_peers.erase(peer)
 	_last_request.erase(peer)
@@ -486,6 +539,8 @@ func _mode_changed(_mode: Network.Mode) -> void:
 	_playback = null
 	_inbox = ScummArcadeInbox.new()
 	_active = false
+	_engaged = false
+	_watchers.clear()
 	_activation_in = 0
 	_delivery_ticks.clear()
 	_subscribed = false
@@ -503,10 +558,11 @@ func _mode_changed(_mode: Network.Mode) -> void:
 
 func _has_audience() -> bool:
 	if room_only:
-		for player: Player in get_tree().get_nodes_in_group(&"players"):
-			if ScummArcadeRoom.contains(player.net_position):
-				return true
-		return false
+		for peer: int in _watchers.keys():
+			var player := _player_for_peer(peer)
+			if player == null or not ScummArcadeRoom.contains(player.net_position):
+				_watchers.erase(peer)
+		return not _watchers.is_empty()
 	if Network.mode != Network.Mode.SERVER:
 		return true
 	for peer: int in _ready_peers:

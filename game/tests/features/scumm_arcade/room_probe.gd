@@ -41,9 +41,13 @@ func _run() -> void:
 	_move(cabinet.global_position + Vector3(0, 0.9144, 1.95))
 	var bus := AudioServer.get_bus_index(GameAudio.BUS)
 	AudioServer.add_bus_effect(bus, capture)
+	await get_tree().create_timer(0.5).timeout
+	for machine: ScummArcadeCabinet in machines:
+		assert(machine._emulator.status == "stopped" and machine._view != null)
+	print("ROOM_ATTRACT: cabinets show attract mode without interpreters")
+	cabinet.use()
 	while cabinet.local_tick < 150:
 		await get_tree().process_frame
-	cabinet.use()
 	measuring = true
 	capture.clear_buffer()
 	await get_tree().create_timer(5).timeout
@@ -85,6 +89,8 @@ func _run() -> void:
 	(room.get_node("Entrance") as RoomDoor).use()
 	await get_tree().create_timer(0.3).timeout
 	_move(cabinet.global_position + Vector3(0, 0.9144, 1.95))
+	await get_tree().create_timer(0.3).timeout
+	cabinet.engage()
 	while cabinet.local_tick < paused:
 		await get_tree().process_frame
 	assert(cabinet.local_error.is_empty())

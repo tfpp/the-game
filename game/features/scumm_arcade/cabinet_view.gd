@@ -19,6 +19,8 @@ var _heartbeat := 0.0
 var _motion_in := 0.0
 var _point := Vector2i(160, 100)
 var _sign: Label3D
+var _attract: Label3D
+var _attract_time := 0.0
 
 
 func build(cabinet: ScummArcadeCabinet) -> void:
@@ -58,6 +60,9 @@ func build(cabinet: ScummArcadeCabinet) -> void:
 	_label("TAKE A TURN · SHARE THE ADVENTURE", Vector3(0, 0.760, 0.468), 10, Color("b8c8c4"))
 	_sign = _label(str(_cabinet.details()["marquee"]), Vector3(0, 1.778, 0.508), 28, GOLD)
 	_sign.rotation.x = deg_to_rad(-16)
+	_attract = _label("", Vector3(0, 1.62, 0.553), 16, Color("b8e7ee"))
+	_attract.rotation.x = deg_to_rad(-16)
+	_update_attract()
 	_build_panel()
 	get_window().focus_exited.connect(_focus_lost)
 
@@ -66,6 +71,28 @@ func set_screen(texture: Texture2D) -> void:
 	_screen_material.albedo_color = Color.WHITE
 	_screen_material.albedo_texture = texture
 	_sign.hide()
+	_attract.hide()
+
+
+## Attract mode: a title card that costs no interpreter until someone uses the cabinet.
+func show_attract() -> void:
+	_screen_material.albedo_texture = null
+	_screen_material.albedo_color = Color("152339")
+	_sign.show()
+	_attract_time = 0.0
+	_update_attract()
+
+
+func attract_text() -> String:
+	if _cabinet._engaged:
+		return "LOADING GAME..."
+	return "PRESS USE TO " + ("PLAY" if _cabinet.is_interactive() else "WATCH")
+
+
+func _update_attract() -> void:
+	_attract.text = attract_text()
+	# Blink while waiting for a player; stay lit while loading.
+	_attract.visible = _cabinet._engaged or fmod(_attract_time, 1.2) < 0.8
 
 
 func open() -> void:
@@ -107,6 +134,9 @@ func _focus_lost() -> void:
 
 func _process(delta: float) -> void:
 	_motion_in -= delta
+	if _sign != null and _sign.visible:
+		_attract_time += delta
+		_update_attract()
 	if _cabinet == null or _panel == null or not _panel.visible:
 		return
 	var owns := _cabinet.controls_local()

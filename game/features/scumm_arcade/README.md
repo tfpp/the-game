@@ -13,6 +13,11 @@ cabinets along its north wall. Each runs an independent game:
 | Blue | Passport to Adventure, English DOS EGA | Choose Indy, Monkey Island or Loom |
 | Purple | Day of the Tentacle, English DOS non-interactive | Watch |
 
+Until someone uses a cabinet it shows an **attract mode**: the game's title on the
+screen and a blinking "PRESS USE TO PLAY" (or "WATCH"). Entering the room loads no
+interpreter. Using a cabinet loads that one game ("LOADING GAME...") and starts it;
+it keeps running for you until you leave the room.
+
 Walk up and press **E** to enter. A free cabinet gives you control automatically
 once your local game has caught up; an occupied cabinet lets you watch until it is free.
 Click directly on the cabinet’s 3D screen; right-click performs the default action,
@@ -63,10 +68,13 @@ while open. Restart increments the generation, clearing replay and checksums.
 The room uses the shared `StreamedRoom` and `RoomDoor` systems. Floors, walls and
 lights are built before the entry teleport and freed on exit; dedicated servers
 never build that cosmetic interior. The lightweight cabinet RPC nodes keep stable
-paths on every peer. Their model,
-texture and local WASM worker/process are created only when the local player is
-inside the room, and freed on exit. The dedicated server runs its authoritative
-interpreters only while at least one player is in the room. Empty rooms save and
+paths on every peer. Their model
+and attract screen are created only when the local player is inside the room, and
+freed on exit. A cabinet's texture and local WASM worker/process start only after
+the local player uses it (`engage()`), because starting all five at once froze room
+entry. `use()` sends the validated `request_watch` RPC; the server keeps a watcher set
+per cabinet (pruned when a watcher leaves the room or disconnects) and runs that
+cabinet's authoritative interpreter only while it has a watcher. Empty rooms save and
 pause progress, including when people are still playing elsewhere in the casino.
 Returning players replay the preserved input history. Game binaries remain bundled
 in the web export; this defers runtime initialization rather than the initial PCK download.

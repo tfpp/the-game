@@ -65,6 +65,9 @@ func _drive() -> void:
 	print("RANGE_REJECTED")
 	player.position.z = _cabinet.position.z + 2.5
 	player.net_position = player.position
+	await get_tree().create_timer(0.3).timeout
+	for machine: ScummArcadeCabinet in _machines():
+		machine.engage()
 	while _cabinet.local_tick < 50:
 		await get_tree().process_frame
 	await get_tree().create_timer(0.5).timeout
@@ -100,6 +103,9 @@ func _observe() -> void:
 	player.net_position = player.position
 	player.net_yaw = 0
 	player.net_pitch = 0
+	await get_tree().create_timer(0.3).timeout
+	for machine: ScummArcadeCabinet in _machines():
+		machine.engage()
 	while _cabinet.local_tick < 50:
 		await get_tree().process_frame
 	await get_tree().create_timer(0.5).timeout
@@ -126,6 +132,8 @@ func _observe() -> void:
 	assert(int(_cabinet.state["tick"]) == paused)
 	player.position = _cabinet.position + Vector3(0.4, 0.9144, 2.5)
 	player.net_position = player.position
+	await get_tree().create_timer(0.3).timeout
+	_cabinet.engage()
 	while _cabinet.local_tick < paused:
 		await get_tree().process_frame
 	assert(_cabinet.local_error.is_empty())
@@ -139,6 +147,8 @@ func _check_restore() -> void:
 	player.set_physics_process(false)
 	player.position = _cabinet.position + Vector3(0, 0.9144, 2.5)
 	player.net_position = player.position
+	await get_tree().create_timer(0.3).timeout
+	_cabinet.engage()
 	while _cabinet.local_tick < 750:
 		await get_tree().process_frame
 	assert(int(_cabinet.state["owner"]) == 0)
