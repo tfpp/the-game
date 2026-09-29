@@ -89,6 +89,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Add the atrium wing to GPS, keep bird simulation server-authoritative after joining, and clean up Windows multiplayer test processes reliably.
 - Use Godot for repository snapshots and multiplayer test runners; remove Python installation from export jobs.
 - Handle container checkout ownership and empty Git output when generating export snapshots, and report the underlying Git error on failure.
+- Compress the preview's game pack alongside the WebAssembly engine to fit the host's per-file size limit.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
