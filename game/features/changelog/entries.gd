@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Arcade attract mode",
+		"summary": "Arcade cabinets idle on a title screen and load their game when you use them.",
+	},
+	{
 		"title": "Steady casino textures",
 		"summary": "Props no longer slide as you turn, and guns and gnomes show their colours.",
 	},

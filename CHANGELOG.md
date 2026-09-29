@@ -34,6 +34,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   Arcade, with shared screens, timed rounds and cabinet high scores.
 - Stop casino benches and props from sliding when you turn the camera, and stop guns,
   gnomes and other plain-coloured props from rendering almost black.
+- Enter the Adventure Arcade without a long freeze: cabinets now show an attract screen
+  and only load and start their game when someone uses them.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
