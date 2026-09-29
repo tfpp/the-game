@@ -344,12 +344,9 @@ func _set_flash(active: bool) -> void:
 		return
 	var existing := muzzle.get_node_or_null("MuzzleFlash")
 	if active and existing == null:
-		var light := OmniLight3D.new()
-		light.name = "MuzzleFlash"
-		light.light_energy = 3.0
-		light.omni_range = 2.5
-		light.light_color = Color(1.0, 0.85, 0.5)
-		muzzle.add_child(light)
+		var glow := GunFx.flash(Color(1.0, 0.85, 0.5, 0.9), 0.12)
+		glow.name = "MuzzleFlash"
+		muzzle.add_child(glow)
 	elif not active and existing != null:
 		existing.queue_free()
 
