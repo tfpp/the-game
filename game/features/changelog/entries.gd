@@ -15,6 +15,11 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Enter VR from Quest / WebXR in the menu to explore with Touch controllers.",
 	},
 	{
+		"title": "Atrium hotel",
+		"summary":
+		"The hotel wing is now a four-floor hotel around a skylit atrium, with ramps to guest rooms.",
+	},
+	{
 		"title": "GPS phone",
 		"summary": "Press P to pick a place on your phone and follow the route on the radar.",
 	},

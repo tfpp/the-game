@@ -1,6 +1,7 @@
 extends GutTest
 
 const Feature := preload("res://features/hotel_annex/feature.tscn")
+const Atrium := preload("res://features/hotel_annex/atrium_hotel.gd")
 const PlayerScene := preload("res://core/player/player.tscn")
 
 var _feature: Node3D
@@ -93,79 +94,96 @@ func test_arrival_has_floor_and_clear_player_hull() -> void:
 	assert_eq(space.intersect_shape(query).size(), 0, "Arrival clears walls, pillars and door")
 
 
-func test_expanded_wing_has_six_rooms_and_clear_connecting_hallways() -> void:
-	var Layout := preload("res://features/world_builder/layout.gd")
-	var spec: Dictionary = JSON.parse_string(
-		FileAccess.get_file_as_string("res://features/hotel_annex/hotel.json")
+func test_floor_holes_leave_atrium_open_and_ramp_landings_solid() -> void:
+	assert_eq(Atrium.floor_holes(0), [] as Array[Rect2])
+	for level: int in range(1, Atrium.LEVELS):
+		var rects := Atrium.subtract(Atrium.OUTER, Atrium.floor_holes(level))
+		var area := 0.0
+		for rect: Rect2 in rects:
+			area += rect.get_area()
+			assert_false(rect.intersects(Atrium.ATRIUM), "Atrium stays open")
+		var holes := 0.0
+		for hole: Rect2 in Atrium.floor_holes(level):
+			holes += hole.get_area()
+		assert_almost_eq(area, Atrium.OUTER.get_area() - holes, 0.01)
+		# The ramp from below lands on solid floor just past its top end.
+		var top: Vector3 = Atrium.ramp_ends(level - 1)[1]
+		var landing := Vector2(top.x + signf(top.x) * 0.6, top.z)
+		var solid := false
+		for rect: Rect2 in rects:
+			solid = solid or rect.has_point(landing)
+		assert_true(solid, "Landing at storey %d" % level)
+
+
+func _space() -> PhysicsDirectSpaceState3D:
+	return _hotel.get_world_3d().direct_space_state
+
+
+func _floor_at(local: Vector3) -> float:
+	var ray := PhysicsRayQueryParameters3D.create(
+		_hotel.to_global(local), _hotel.to_global(local + Vector3.DOWN * 3)
 	)
-	var layout: Dictionary = Layout.compile(spec)
-	assert_eq(layout["errors"], [])
-	assert_eq(layout["rooms"].size(), 6)
-	assert_eq(layout["paths"].size(), 5)
+	var hit := _space().intersect_ray(ray)
+	return -INF if hit.is_empty() else _hotel.to_local(hit.position as Vector3).y
+
+
+func test_every_storey_has_floor_around_the_open_atrium() -> void:
 	_hotel.load_room(3000)
 	await wait_physics_frames(3)
-	var query := PhysicsShapeQueryParameters3D.new()
+	var center := Atrium.ATRIUM.get_center()
+	for level: int in Atrium.LEVELS:
+		var y := Atrium.floor_y(level)
+		assert_almost_eq(_floor_at(Vector3(center.x, y + 1, 4)), y, 0.02, "Gallery %d" % level)
+		assert_almost_eq(_floor_at(Vector3(-13, y + 1, 5)), y, 0.02, "West room %d" % level)
+		assert_almost_eq(_floor_at(Vector3(27, y + 1, 17)), y, 0.02, "East room %d" % level)
+	# Looking down the atrium from the top storey reaches the lobby floor.
+	var top := Atrium.floor_y(Atrium.LEVELS - 1) + 1
+	var ray := PhysicsRayQueryParameters3D.create(
+		_hotel.to_global(Vector3(center.x + 5, top, center.y)),
+		_hotel.to_global(Vector3(center.x + 5, -1, center.y))
+	)
+	var hit := _space().intersect_ray(ray)
+	assert_almost_eq(_hotel.to_local(hit.position as Vector3).y, 0.0, 0.02)
+
+
+func test_ramps_climb_every_storey_with_headroom() -> void:
+	_hotel.load_room(3000)
+	await wait_physics_frames(3)
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = 0.4064
 	capsule.height = 1.8288
+	var query := PhysicsShapeQueryParameters3D.new()
 	query.shape = capsule
-	var space := _hotel.get_world_3d().direct_space_state
-	for path: Array in layout["paths"]:
-		for index: int in 2:
-			var a: Vector2i = path[index]
-			var b: Vector2i = path[index + 1]
-			if a == b:
-				continue
+	for level: int in Atrium.LEVELS - 1:
+		var ends := Atrium.ramp_ends(level)
+		var start: Vector3 = ends[0]
+		var end: Vector3 = ends[1]
+		var slope := (end.y - start.y) / absf(end.x - start.x)
+		assert_lt(atan(slope), acos(0.7), "Walkable slope")
+		for step: int in range(1, 10):
+			var point := start.lerp(end, step / 10.0)
+			assert_almost_eq(_floor_at(point + Vector3.UP), point.y, 0.05, "Ramp %d" % level)
 			query.transform = Transform3D(
-				Basis.IDENTITY, _hotel.to_global(Vector3(a.x + 0.5, 0.94, a.y + 0.5))
+				Basis.IDENTITY, _hotel.to_global(point + Vector3.UP * 1.05)
 			)
-			query.motion = Vector3(b.x - a.x, 0, b.y - a.y)
-			assert_true(space.intersect_shape(query).is_empty(), "Clear hallway entrance")
-			assert_almost_eq(
-				space.cast_motion(query)[0], 1.0, 0.001, "Walkable connection %s" % str(path)
-			)
+			assert_true(_space().intersect_shape(query).is_empty(), "Headroom on ramp %d" % level)
+		# Step off onto the landing and turn into the next ramp's lane.
+		var landing := end + Vector3(signf(end.x) * 1.0, 0, 0)
+		assert_almost_eq(_floor_at(landing + Vector3.UP), end.y, 0.02, "Landing %d" % level)
+		query.transform = Transform3D(Basis.IDENTITY, _hotel.to_global(landing + Vector3.UP * 0.96))
+		query.motion = _hotel.global_basis * Vector3(0, 0, -2.5 if level % 2 == 0 else 2.5)
+		assert_almost_eq(_space().cast_motion(query)[0], 1.0, 0.001, "Turn at %d" % level)
+		query.motion = Vector3.ZERO
 
 
-func test_saved_wing_uses_uv2_lightmaps_without_runtime_lamp_lights() -> void:
-	var scene := preload("res://features/hotel_annex/hotel.scn").instantiate() as Node3D
-	assert_true(scene.has_meta("baked_lighting"))
-	assert_eq(scene.find_children("*", "OmniLight3D", true, false).size(), 0)
-	var chunks := 0
-	for node: Node in scene.get_children():
-		if not node is MeshInstance3D or str(node.name).ends_with("_unshadowed"):
-			continue
-		var mesh := node as MeshInstance3D
-		for index: int in mesh.mesh.get_surface_count():
-			var material := mesh.get_surface_override_material(index) as ShaderMaterial
-			assert_not_null(material, "Baked shader survives scene save")
-			assert_eq(mesh.gi_mode, GeometryInstance3D.GI_MODE_STATIC)
-			var arrays := mesh.mesh.surface_get_arrays(index)
-			assert_eq(arrays[Mesh.ARRAY_TEX_UV2].size(), arrays[Mesh.ARRAY_VERTEX].size())
-		chunks += 1
-	assert_gt(chunks, 0)
-	assert_eq(chunks, scene.get_meta("lightmap_chunks", 0))
-	var lightmap := scene.get_node_or_null("LightmapGI") as LightmapGI
-	assert_not_null(lightmap)
-	if lightmap != null:
-		assert_true(lightmap.interior)
-		assert_not_null(lightmap.light_data)
-		if lightmap.light_data != null:
-			assert_eq(lightmap.light_data.get_user_count(), chunks)
-			assert_gt(lightmap.light_data.get_lightmap_textures().size(), 0)
-			for index: int in lightmap.light_data.get_user_count():
-				assert_is(
-					lightmap.get_node(lightmap.light_data.get_user_path(index)), MeshInstance3D
-				)
-	scene.free()
-
-
-func test_saved_lighting_fits_one_megabyte_in_git_and_export() -> void:
-	var files: Array[String] = []
-	var folder := "res://features/hotel_annex/hotel_lightmaps"
-	for name: String in DirAccess.get_files_at(folder):
-		files.append(folder.path_join(name))
-	var sizes := preload("res://features/world_builder/tools/bake_files.gd").lighting_sizes(files)
-	assert_gt(sizes.x, 0, "Source lighting files exist")
-	assert_gt(sizes.y, 0, "Imported runtime lighting files exist")
-	assert_lt(sizes.x, 1000000, "Saved source lightmaps and probe data fit the budget")
-	assert_lt(sizes.y, 1000000, "Imported texture arrays and probe data fit the budget")
+func test_gallery_rail_guards_the_atrium_drop() -> void:
+	_hotel.load_room(3000)
+	await wait_physics_frames(3)
+	var center := Atrium.ATRIUM.get_center()
+	for level: int in range(1, Atrium.LEVELS):
+		var y := Atrium.floor_y(level) + 0.7
+		var ray := PhysicsRayQueryParameters3D.create(
+			_hotel.to_global(Vector3(center.x, y, Atrium.ATRIUM.position.y - 1)),
+			_hotel.to_global(Vector3(center.x, y, Atrium.ATRIUM.position.y + 1))
+		)
+		assert_false(_space().intersect_ray(ray).is_empty(), "Rail on storey %d" % level)

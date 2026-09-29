@@ -60,7 +60,7 @@ hint = "Below the lounge"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.75, 0, -1396)
 script = ExtResource("2_dest")
 label = "Hotel Wing"
-hint = "Six grand rooms off the south lobby"
+hint = "Four floors around a skylit atrium, off the south lobby"
 
 [node name="Apartments" type="Marker3D" parent="Destinations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 0, 1200)

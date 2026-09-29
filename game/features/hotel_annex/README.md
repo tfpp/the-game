@@ -10,24 +10,27 @@ Doors and arrival markers remain present on every peer, using the shared
 `RoomDoor` server range validation and owner teleport. Entry loads collision
 before sending the request. The hotel inherits the game's sky/day-night cycle.
 
-The wing contains six rooms linked by five corridors: Grand Lounge, Gallery,
-West Salon, Reading Room, East Salon and Conservatory. Heights range from 3.4 m
-to 6 m, with lower connecting halls, branching routes and authored windows/pillars.
-Static soft shadows and bounced light are compiled into UV2 lightmaps. There are
-no runtime point lights in the saved wing; player flashlights remain additive.
+The wing is a four-storey hotel (`atrium_hotel.gd`) around a 20 × 20 m central
+atrium with a fountain and a glass skylight. Galleries with brass railings ring the
+atrium on every upper floor. Switchback ramps along the south wall (x -4 to 4)
+climb one storey each. The west and east wings hold three rooms per floor: the ground
+floor keeps the old lounge names (Reading Room, West Salon, Gallery, Grand Lounge,
+Conservatory, East Salon) and upper floors have numbered guest rooms with beds.
+Storeys are 4 m apart, so floors sit at y = 0, 4, 8 and 12 and the roof is at 16.
 
 ## Authoring
 
-Edit `hotel.json` to change room sizes, heights, windows, pillars or connections.
-Keep the GrandLounge north door at offset 8 aligned with the return trigger and
-arrival marker in `feature.tscn`. That closed door is the teleport; the other
-closed doors are decorative. Geometry has no runtime generator or network nodes.
+The building is made of boxes built when the streamed room loads, the same way on
+every peer, so there is no bake step. Edit the constants at the top of
+`atrium_hotel.gd` (footprint, atrium, ramp lanes, wing walls) and keep the casino
+door at x = 8.75 on the north wall (z = 0) aligned with `Return` and `Arrival` in
+`feature.tscn`. Lighting is twelve shadowless omni lights (atrium and both wings on
+each floor), loaded only for visitors. Structural colliders join `radar_geometry` so
+the radar draws every floor.
 
-From the repository root:
+To rebuild the casino-side entrance mesh, run from the repository root:
 
 ```sh
-godot --headless --path game -s res://features/world_builder/build.gd -- \
-  res://features/hotel_annex/hotel.json res://features/hotel_annex/hotel.scn --bake --force
 godot --headless --path game -s res://features/hotel_annex/tools/build_entrance.gd
 ```
 
@@ -39,7 +42,3 @@ Validation: GUT `test_hotel_annex.gd`; run `python3 game/tests/features/hotel_an
 for a real server, visiting client and late-joining observer. Run
 `godot --path game res://tests/features/hotel_annex/probe.tscn` for full-game
 arrival clearance, round-trip and screenshots in `/tmp/hotel-*.png`.
-
-See the [world builder](../world_builder/README.md#compile-baked-lighting) for bake
-requirements and quality settings. The compiler uses native Godot LightmapGI;
-Godot is the only required authoring tool.
