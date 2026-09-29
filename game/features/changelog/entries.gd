@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Lurkers, gunmen and stalkers haunt the parking garage, deadlier each floor up.",
 	},
 	{
+		"title": "Money log",
+		"summary": "The chat log tells you whenever you get money, and why.",
+	},
+	{
 		"title": "Pawn shop",
 		"summary": "Sell slum loot at the pawn shop counter beside the Crown's slum gate.",
 	},

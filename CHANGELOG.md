@@ -117,6 +117,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   `game/assets/roulette/textures/`.
 - Stop the game stuttering when you buy a gun or fire: gun flashes are glow effects instead
   of lights, and their shaders load with the game.
+- Show a line in your chat log whenever you receive money (income, coins, fares, loot sales
+  and slot wins), with the reason.
 - Celebrate winning slot machine spins with fireworks over the cabinet and gold coins
   spilling from the tray; both grow with the size of the prize.
 - Visit İstanbul Kebab directly ahead of casino spawn for animated staff, a rotating döner
@@ -135,6 +137,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Revise the dealer head against the side concept with a swept-back crown, compact nose, recessed chin and corrected jaw-to-neck transition.
 - Turn the loot fence beside the slum gate into a pawn shop with a glass display case,
   three gold balls and a PAWN SHOP sign; press Use there to pawn a valuable.
+- Fix gnomes flickering around the casino for players who joined a server: clients no longer
+  run their own gnome outings from before they connected, and gnomes and two east-wall gnome
+  doors now sit on the floor. Gnomes get boots and a contact shadow, door frames meet the
+  floor, and distant door labels no longer float on their own on phones and touch screens.
 - Fight lurkers, gunmen and stalkers in the parking garage: each floor above the entrance
   holds deadlier enemies that chase, shoot and respawn.
 
