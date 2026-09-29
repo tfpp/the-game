@@ -148,6 +148,11 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Fight lurkers, gunmen and stalkers in the parking garage: each floor above the entrance
   holds deadlier enemies that chase, shoot and respawn.
 
+- Replace block player avatars with an original connected low-polygon human mesh, bone-driven vertex animation and customizable blend shapes, and saved casual/tactical outfits, skin, hair and eye choices under Settings → Character Model, shared with other players.
+- Add connected palms and five individually rigged digits per hand, with three joints each, relaxed and gripping poses, and shared first- and third-person hand geometry.
+- Add a rebindable B / left-stick-click middle-finger emote with first- and third-person raise/hold/lower animations, server-owned timing, per-player cooldowns, late-join phase synchronization, and weapon support-hand restoration.
+- Fix the gnome reconnect regression test's loop typing so strict GUT collection runs the entire test file.
+
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
 - Stop the HUD version test from failing CI after every release.
