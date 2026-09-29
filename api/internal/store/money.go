@@ -11,6 +11,7 @@ var ErrInsufficientMoney = errors.New("insufficient money")
 var ErrSpinConflict = errors.New("spin belongs to another account")
 var ErrCreditConflict = errors.New("credit belongs to another account")
 var ErrChargeConflict = errors.New("charge belongs to another account")
+var ErrLootSaleConflict = errors.New("loot sale does not match its original account and amount")
 
 // CoinCreditCents is the flat reward for collecting a map coin pickup.
 const CoinCreditCents = 1000
@@ -100,6 +101,36 @@ func (s *Store) CreditCoin(ctx context.Context, accountID int64, id string) (int
 		return 0, err
 	}
 	if _, err = tx.ExecContext(ctx, "INSERT INTO coin_credits VALUES (?, ?, ?)", id, accountID, balance); err != nil {
+		return 0, err
+	}
+	return balance, tx.Commit()
+}
+
+// CreditLoot records a server-authorized sale and pays its value exactly once.
+// A retry must name the same account and amount so an operation ID cannot be
+// repurposed after a lost response.
+func (s *Store) CreditLoot(ctx context.Context, accountID int64, id string, amountCents int64) (int64, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
+	var owner, amount, balance int64
+	err = tx.QueryRowContext(ctx, "SELECT account_id, amount, balance FROM loot_sales WHERE id = ?", id).Scan(&owner, &amount, &balance)
+	if err == nil {
+		if owner != accountID || amount != amountCents {
+			return 0, ErrLootSaleConflict
+		}
+		return balance, nil
+	}
+	if !errors.Is(err, sql.ErrNoRows) {
+		return 0, err
+	}
+	err = tx.QueryRowContext(ctx, "UPDATE accounts SET money = money + ? WHERE id = ? RETURNING money", amountCents, accountID).Scan(&balance)
+	if err != nil {
+		return 0, err
+	}
+	if _, err = tx.ExecContext(ctx, "INSERT INTO loot_sales VALUES (?, ?, ?, ?)", id, accountID, amountCents, balance); err != nil {
 		return 0, err
 	}
 	return balance, tx.Commit()

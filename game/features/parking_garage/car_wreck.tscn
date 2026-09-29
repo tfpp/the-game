@@ -1,52 +1,34 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://features/parking_garage/car_wreck.gd" id="1_script"]
-[ext_resource type="Material" path="res://features/parking_garage/materials/rubber.tres" id="2_rubber"]
+[ext_resource type="Mesh" path="res://features/parking_garage/models/wreck_body.obj" id="2_body"]
+[ext_resource type="Mesh" path="res://features/parking_garage/models/wreck_hood.obj" id="3_hood"]
+[ext_resource type="Mesh" path="res://features/parking_garage/models/wreck_trim.obj" id="4_trim"]
+[ext_resource type="Mesh" path="res://features/parking_garage/models/wreck_boot.obj" id="5_boot"]
+[ext_resource type="Mesh" path="res://features/parking_garage/models/wreck_cavity.obj" id="6_cavity"]
 
-[node name="CarWreck" type="CSGCombiner3D"]
-use_collision = true
+[sub_resource type="BoxShape3D" id="CarShape"]
+size = Vector3(4.25, 1.65, 1.9)
+
+[node name="CarWreck" type="StaticBody3D"]
 script = ExtResource("1_script")
 
-[node name="Body" type="CSGBox3D" parent="."]
-position = Vector3(0, 0.45, 0)
-size = Vector3(4.2, 0.9, 1.8)
+[node name="Collision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.825, 0)
+shape = SubResource("CarShape")
 
-[node name="Cabin" type="CSGBox3D" parent="."]
-position = Vector3(-0.1, 1.2, 0)
-size = Vector3(2.2, 0.6, 1.6)
+[node name="BodyPaint" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2_body")
 
-[node name="Hood" type="CSGBox3D" parent="."]
-position = Vector3(1.6, 0.95, 0)
-size = Vector3(1.3, 0.15, 1.7)
+[node name="HoodPaint" type="MeshInstance3D" parent="."]
+mesh = ExtResource("3_hood")
 
-[node name="Trunk" type="CSGBox3D" parent="."]
-position = Vector3(-1.7, 0.95, 0)
-size = Vector3(1.0, 0.15, 1.7)
+[node name="Trim" type="MeshInstance3D" parent="."]
+mesh = ExtResource("4_trim")
 
-[node name="WheelFrontLeft" type="CSGCylinder3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 1.4, 0.35, 0.95)
-radius = 0.35
-height = 0.3
-sides = 12
-material = ExtResource("2_rubber")
+[node name="TrunkCavity" type="MeshInstance3D" parent="."]
+mesh = ExtResource("6_cavity")
 
-[node name="WheelFrontRight" type="CSGCylinder3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 1.4, 0.35, -0.95)
-radius = 0.35
-height = 0.3
-sides = 12
-material = ExtResource("2_rubber")
-
-[node name="WheelRearLeft" type="CSGCylinder3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -1.4, 0.35, 0.95)
-radius = 0.35
-height = 0.3
-sides = 12
-material = ExtResource("2_rubber")
-
-[node name="WheelRearRight" type="CSGCylinder3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -1.4, 0.35, -0.95)
-radius = 0.35
-height = 0.3
-sides = 12
-material = ExtResource("2_rubber")
+[node name="BootLid" type="MeshInstance3D" parent="."]
+position = Vector3(-1.1, 1, 0)
+mesh = ExtResource("5_boot")

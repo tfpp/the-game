@@ -6,7 +6,6 @@ const ROOM_SCENES: Array[String] = [
 	"res://features/hotel_annex/feature.tscn",
 	"res://features/apartments/feature.tscn",
 	"res://features/parking_garage/feature.tscn",
-	"res://features/scumm_arcade/feature.tscn",
 ]
 
 var _gps: Gps

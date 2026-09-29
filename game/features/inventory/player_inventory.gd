@@ -55,8 +55,58 @@ func collect(id: String) -> bool:
 	return true
 
 
+## Server-only transfer into a chosen empty backpack slot. Stash drags use this
+## so the player's drop target, rather than the automatic equipment slot, wins.
+func collect_into_slot(id: String, slot: int) -> bool:
+	if not multiplayer.is_server() or slot < 0 or slot >= CAPACITY:
+		return false
+	var definition := ItemCatalog.find(id)
+	if definition == null or definition.category == ItemDefinition.Category.KEY:
+		return false
+	if not backpack[slot].is_empty():
+		return false
+	_set_item(slot, id)
+	hand()._play_inventory.rpc_id(hand().peer_id, &"pickup")
+	return true
+
+
 func has_key(id: String) -> bool:
 	return not id.is_empty() and keys.has(id)
+
+
+## Server-only: reserves one sellable item before an asynchronous wallet sale.
+## Keeping it out of the inventory prevents a player from dropping or selling it
+## twice while the accounts API is resolving the operation.
+func take_first_valuable() -> String:
+	if not multiplayer.is_server():
+		return ""
+	for slot: int in [-1, 0, 1, 2, 3, 4, 5, 6, 7]:
+		var id := item_at(slot)
+		var def := ItemCatalog.find(id)
+		if def != null and def.sale_value_cents > 0:
+			_set_item(slot, "")
+			return id
+	return ""
+
+
+## Server-only: valuables are left where a slum player was killed, available
+## for the killer or any other survivor to collect. Clothing, weapons and keys
+## remain with the player after respawn.
+func drop_valuables(at: Vector3) -> int:
+	if not multiplayer.is_server():
+		return 0
+	var holdables := get_tree().get_first_node_in_group(&"holdables_root")
+	if holdables == null:
+		return 0
+	var count := 0
+	while true:
+		var id := take_first_valuable()
+		if id.is_empty():
+			break
+		var offset := Vector3(randf_range(-0.6, 0.6), 0.0, randf_range(-0.6, 0.6))
+		holdables.call("spawn_thrown_item", id, at + Vector3.UP * 0.7, at + offset)
+		count += 1
+	return count
 
 
 @rpc("any_peer", "call_local", "reliable")

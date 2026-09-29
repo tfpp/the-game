@@ -40,6 +40,4 @@ The receptionist reuses the casino's static `salon_dealer.glb` and
 `model_materials.gd` finishes. It has no separate NPC simulation or combat state.
 No new textures, dynamic lights or frame-by-frame geometry rebuilding are added.
 
-Run `python3 game/tests/features/apartments/network_test.py` from the repository
-root for real WebSocket coverage: server/resident/late observer, distant rejection,
-replicated claims and floors, idempotence, preloaded lift travel, return and unload.
+Run `harness/verify.sh` for unit and standard multiplayer checks.

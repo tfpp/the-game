@@ -66,6 +66,31 @@ func test_the_entrance_door_and_garage_door_are_solid() -> void:
 		assert_false(hit.is_empty(), "Door panel at %s must be solid" % pos)
 
 
+func test_wreck_models_keep_their_paint_collision_and_damaged_variant() -> void:
+	var car := _root.get_node("Garage/Car_F0_1") as CarWreck
+	var body := car.get_node("BodyPaint") as MeshInstance3D
+	assert_not_null(body.mesh)
+	assert_eq(body.mesh.get_surface_count(), 1)
+	assert_true((car.get_node("Trim") as MeshInstance3D).mesh.get_surface_count() > 1)
+	assert_eq(
+		(body.get_surface_override_material(0) as StandardMaterial3D).albedo_color, car.body_color
+	)
+	var hit := _ray(car.global_position + Vector3(0, 1, -3), car.global_position + Vector3(0, 1, 3))
+	assert_eq(hit.get("collider"), car)
+	var damaged := _root.get_node("Garage/Car_F1_5") as CarWreck
+	assert_true(damaged.damaged)
+	assert_false((damaged.get_node("HoodPaint") as MeshInstance3D).visible)
+	var boot := car.get_node("BootLid") as MeshInstance3D
+	var loot := car.get_node("Loot") as LootContainer
+	assert_almost_eq(boot.rotation_degrees.z, 0.0, 0.001)
+	loot.net_searched = true
+	car._process(0.5)
+	assert_almost_eq(boot.rotation_degrees.z, -68.0, 0.001)
+	loot.reset()
+	car._process(0.5)
+	assert_almost_eq(boot.rotation_degrees.z, 0.0, 0.001)
+
+
 func _assert_floor(from: Vector3, expected_y: float, tolerance: float = 0.05) -> void:
 	var hit := _ray(from, from - Vector3(0, 8, 0))
 	assert_false(hit.is_empty(), "Walkable floor at %s" % from)

@@ -15,8 +15,28 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Enter VR from Quest / WebXR in the menu to explore with Touch controllers.",
 	},
 	{
+		"title": "Shared search stashes",
+		"summary":
+		"Search wrecks and dumpsters, then drag their shared valuables into your backpack.",
+	},
+	{
 		"title": "Brighter hotel interiors",
 		"summary": "Explore the hotels, sewers and atrium with reliable lighting, even at night.",
+	},
+	{
+		"title": "Room rendering",
+		"summary":
+		"The server tracks your room so distant districts stop drawing while you explore indoors.",
+	},
+	{
+		"title": "Golden Crown slum runs",
+		"summary":
+		"Leave the Crown for shared slum runs, bring valuables home to sell, or lose them when killed.",
+	},
+	{
+		"title": "Rain Alleys",
+		"summary":
+		"Search rain-soaked dumpsters among boarded blocks and failing streetlights beyond the Crown.",
 	},
 	{
 		"title": "Atrium hotel",
@@ -112,10 +132,6 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Gnomes pop out of wall doggy doors, roam, dodge you and can be shot.",
 	},
 	{
-		"title": "Arcade attract mode",
-		"summary": "Arcade cabinets idle on a title screen and load their game when you use them.",
-	},
-	{
 		"title": "Prayer at the Kaaba",
 		"summary": "Pray at the Kaaba with Use to stack blessings that improve your slot odds.",
 	},
@@ -126,10 +142,6 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Steady casino textures",
 		"summary": "Props no longer slide as you turn, and guns and gnomes show their colours.",
-	},
-	{
-		"title": "Turkey Puncher computers",
-		"summary": "Click arcade computer screens to play Super Turbo Turkey Puncher 3.",
 	},
 	{
 		"title": "Developer console",
@@ -214,29 +226,11 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
-		"title": "Adventure arcade room",
-		"summary":
-		(
-			"A dedicated arcade room loads games only while you are inside,"
-			+ " with smoother play and reliable positional sound."
-		)
-	},
-	{
 		"title": "Room doors",
 		"summary":
 		(
 			"A lounge booth in the south lobby leads to a lounge and a wine cellar. Rooms"
 			+ " behind doors only load while you're in them."
-		)
-	},
-	{
-		"title": "Adventure arcade",
-		"summary":
-		(
-			"Five adventure demo cabinets: Monkey Island, Sam & Max, Fate of Atlantis,"
-			+ " Passport to Adventure and a Day of the Tentacle display. Share play and"
-			+ " autosaved progress, with sound fading to silence at 5 m. Play on the 3D"
-			+ " screens and look around without leaving your turn. Enter to play; one button leaves."
 		)
 	},
 	{

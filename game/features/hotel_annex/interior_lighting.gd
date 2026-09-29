@@ -9,6 +9,9 @@ var _previous: Environment
 var _source: Environment
 var _indoor: Environment
 
+@onready var _hotel: StreamedRoom = $Hotel
+@onready var _atrium: StreamedRoom = $Atrium
+
 
 func _process(_delta: float) -> void:
 	update_camera(get_viewport().get_camera_3d())
@@ -17,9 +20,8 @@ func _process(_delta: float) -> void:
 func update_camera(camera: Camera3D) -> void:
 	var inside := false
 	if is_instance_valid(camera):
-		for room: StreamedRoom in [$Hotel, $Atrium]:
-			if room.contains(camera.global_position):
-				inside = true
+		var position := camera.global_position
+		inside = _hotel.contains(position) or _atrium.contains(position)
 	if camera != _camera or not inside:
 		_restore()
 	if not inside:

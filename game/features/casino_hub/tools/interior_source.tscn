@@ -1081,7 +1081,7 @@ use_collision = true
 
 [node name="CasinoName" type="Label3D" parent="."]
 position = Vector3(0, 5.2, -15.75)
-text = "THE GILDED LILY"
+text = "THE GOLDEN CROWN"
 font_size = 90
 pixel_size = 0.012
 modulate = Color(0.92, 0.69, 0.36, 1)

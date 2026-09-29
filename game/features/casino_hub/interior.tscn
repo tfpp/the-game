@@ -517,7 +517,7 @@ pixel_size = 0.012
 double_sided = false
 modulate = Color(0.92, 0.69, 0.36, 1)
 outline_modulate = Color(0.1, 0.04, 0.025, 1)
-text = "THE GILDED LILY"
+text = "THE GOLDEN CROWN"
 font_size = 90
 outline_size = 6
 

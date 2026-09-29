@@ -22,14 +22,16 @@ const DAY_ELEVATION_DEG := 20.0
 ## Fixed compass heading for the sun's path; only its elevation animates.
 const SUN_AZIMUTH_DEG := 35.0
 
-const NIGHT_SUN_ENERGY := 0.05
+const NIGHT_SUN_ENERGY := 0.45
 const DAY_SUN_ENERGY := 1.0
 const NIGHT_SUN_COLOR := Color(0.55, 0.65, 0.9)
 const DAY_SUN_COLOR := Color(1.0, 0.96, 0.88)
 
-const NIGHT_AMBIENT_COLOR := Color(0.05, 0.07, 0.16)
-const NIGHT_AMBIENT_ENERGY := 0.15
-const NIGHT_SKY_ENERGY_MULTIPLIER := 0.1
+## Keep dark materials and player silhouettes readable even where a fixture fails.
+## The old values multiplied to near-black before local lights were considered.
+const NIGHT_AMBIENT_COLOR := Color(0.69, 0.73, 0.81)
+const NIGHT_AMBIENT_ENERGY := 0.75
+const NIGHT_SKY_ENERGY_MULTIPLIER := 0.42
 
 const DAY_SKY_TEXTURE := preload("res://assets/kenney/skyboxes/skybox-day.png")
 const NIGHT_SKY_TEXTURE := preload("res://assets/kenney/skyboxes/skybox-night.png")
@@ -47,7 +49,9 @@ var _base_background_energy := 1.0
 
 
 func _ready() -> void:
-	_sun.shadow_enabled = true
+	# The casino and most playable rooms use authored lighting. Rendering a
+	# whole-world directional shadow map redraws thousands of surfaces each frame.
+	_sun.shadow_enabled = false
 	var world_env := _find_world_environment()
 	if world_env:
 		_environment = world_env.environment
@@ -96,7 +100,13 @@ func _apply(t: float) -> void:
 
 
 func _apply_sun(elevation_deg: float, factor: float) -> void:
-	_sun.rotation_degrees = Vector3(-elevation_deg, SUN_AZIMUTH_DEG, 0.0)
+	# At night this light becomes a soft overhead moon. A sun below the horizon
+	# cannot illuminate streets or the garage at all, even with nonzero energy.
+	_sun.rotation_degrees = Vector3(
+		-lerpf(35.0, elevation_deg, factor),
+		lerpf(SUN_AZIMUTH_DEG + 160.0, SUN_AZIMUTH_DEG, factor),
+		0.0
+	)
 	_sun.light_energy = lerpf(NIGHT_SUN_ENERGY, DAY_SUN_ENERGY, factor)
 	_sun.light_color = NIGHT_SUN_COLOR.lerp(DAY_SUN_COLOR, factor)
 

@@ -41,6 +41,5 @@ There are no floating door labels or lock-status prompts. Late joins replay no s
 
 ## Checks
 
-Run `harness/verify.sh`, plus the audio WebSocket probe under
-`game/tests/features/game_audio/network_test.py`. Unit tests cover accepted and
+Run `harness/verify.sh`. Unit tests cover accepted and
 rejected actions, shot cooldowns, effect location, voice limits and cleanup.

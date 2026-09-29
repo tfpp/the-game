@@ -26,14 +26,8 @@ CODEX_AUTH_JSON='{"auth_mode":"chatgpt","tokens":{"access_token":"secret-marker"
 [[ "$(jq -r .tokens.access_token "$CODEX_HOME/auth.json")" == secret-marker ]]
 grep -q 'cli_auth_credentials_store = "file"' "$CODEX_HOME/config.toml"
 grep -q 'forced_login_method = "chatgpt"' "$CODEX_HOME/config.toml"
-python3 - "$CODEX_HOME" <<'PY'
-import pathlib
-import stat
-import sys
-home = pathlib.Path(sys.argv[1])
-assert stat.S_IMODE(home.stat().st_mode) == 0o700
-assert stat.S_IMODE((home / 'auth.json').stat().st_mode) == 0o600
-PY
+[[ "$(stat -c '%a' "$CODEX_HOME")" == 700 ]]
+[[ "$(stat -c '%a' "$CODEX_HOME/auth.json")" == 600 ]]
 # Older Codex login files omit auth_mode.
 CODEX_AUTH_JSON="$(jq 'del(.auth_mode)' <<<"$CODEX_AUTH_JSON")"
 "$root/harness/codex-auth.sh"

@@ -10,11 +10,12 @@ const USE_RANGE_M := 2.5
 @export var destination: NodePath
 @export var door_label: String = "Enter"
 
-@onready var _arrival: Marker3D = get_node(destination)
+var _arrival: Marker3D
 
 
 func _ready() -> void:
 	add_to_group(&"interactables")
+	_arrival = get_node_or_null(destination) as Marker3D
 
 
 func interaction_text() -> String:
@@ -38,9 +39,21 @@ func request_enter() -> void:
 	var player := _player_for_peer(peer_id)
 	if player == null or not can_use(player):
 		return
-	var arrival_yaw := _arrival.global_transform.basis.get_euler().y
+	var arrival := (
+		_arrival if is_instance_valid(_arrival) else get_node_or_null(destination) as Marker3D
+	)
+	if arrival == null:
+		return
+	_arrival = arrival
+	var runs := get_tree().get_first_node_in_group(&"slum_runs") as SlumRuns
+	if runs != null:
+		if arrival is SlumArrivalPoint:
+			runs.begin(peer_id, arrival as SlumArrivalPoint)
+		else:
+			runs.finish(peer_id)
+	var arrival_yaw := arrival.global_transform.basis.get_euler().y
 	player.server_teleport.rpc_id(
-		player.get_multiplayer_authority(), _arrival.global_position, arrival_yaw
+		player.get_multiplayer_authority(), arrival.global_position, arrival_yaw
 	)
 
 

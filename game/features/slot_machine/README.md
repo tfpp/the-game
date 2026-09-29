@@ -87,30 +87,12 @@ each instance has its own busy state. All machines share player wallets.
 
 ## Verification
 
-`harness/verify.sh` runs unit and standard multiplayer checks. For the slot-specific
-real server + two-client test (including a mid-spin join):
-
-```sh
-python3 game/tests/features/slot_machine/network_test.py
-```
-
-Set `GODOT` to the Godot executable if it is not on `PATH`. The test checks identical
-results and balances on all peers, correct prizes, left-to-right stops, exactly one
-result-audio event per spin, and rejection of out-of-range and competing requests.
-
-For the real accounts API and SQLite integration, including a full minute of income:
-
-```sh
-SLOT_TEST_DATABASE=1 python3 game/tests/features/slot_machine/network_test.py
-```
-
-This builds a temporary API binary, creates an isolated database and test key, and
-uses signed account join tickets. Nothing is written to a production database.
+`harness/verify.sh` runs unit and standard multiplayer checks. Set `GODOT` to the
+Godot executable if it is not on `PATH`.
 
 ## Visual assets
 
-The original cabinet model and reproducible Blender build script live in
-`../casino_hub/models/` and `../casino_hub/tools/`. `textures/reel_symbols.png`
+The original cabinet model lives in `../casino_hub/models/`. `textures/reel_symbols.png`
 contains five generated icons in the exact gameplay order: 7, BAR, STAR, BELL,
 GEM. Prompts and provenance are in `../casino_hub/textures/GENERATED_ASSETS.md`.
 The cabinet keeps its existing collision hull and interaction point. Materials

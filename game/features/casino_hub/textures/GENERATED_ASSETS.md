@@ -3,7 +3,7 @@
 Original project artwork generated with the built-in ImageGen tool, September 2026.
 The PNGs are base-color artwork, not measured material scans. The PS1 materials use matte vertex lighting without normal maps or metal reflections.
 Reel artwork lives in `../../slot_machine/textures/reel_symbols.png`.
-Models are original Blender meshes; rebuild with `../tools/build_models.py`.
+Models are original Blender meshes saved in the repository.
 
 ## Saved artwork
 
