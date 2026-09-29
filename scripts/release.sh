@@ -28,10 +28,7 @@ fi
   { echo "$changelog needs exactly one '## [edge]' heading" >&2; exit 1; }
 
 # The edge's lines, without leading or trailing blank lines.
-awk '
-  /^## / { in_edge = ($0 == "## [edge]"); next }
-  in_edge { if (NF) { if (seen) for (; n > 0; n--) print ""; n = 0; seen = 1; print } else n++ }
-' "$changelog" > "$notes_file"
+python3 "$(dirname "$0")/feature_notes.py" edge WORKTREE > "$notes_file"
 if [[ ! -s "$notes_file" ]]; then
   echo "- No notable changes." > "$notes_file"
 fi

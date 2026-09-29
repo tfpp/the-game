@@ -120,3 +120,9 @@ Each stack adds 200% of the base win chance (4% becomes 12% with one, up to 44%
 with five); a win spends all stacks. Temporary wallets and the authenticated API
 use the same exact odds and equal winning-symbol probabilities. The 80% return
 above is for unblessed spins; blessings increase it without changing prize sizes.
+
+Vivienne's lucky night (`features/bar_companion`) adds two rerolls on top of Kaaba
+blessings for its 10 minutes, and each win gives the winner charisma once the reels stop.
+
+Lucky-night and Trump favor rerolls still apply only to temporary wallets;
+authenticated accounts receive the Kaaba blessing odds.

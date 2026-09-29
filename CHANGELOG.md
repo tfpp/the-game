@@ -2,10 +2,10 @@
 
 Every notable change, newest first. `edge` is what's on `main` but not released yet.
 
-**In every pull request with a change players, operators or contributors would notice, add
-a bullet to the end of `## [edge]`:** imperative, one line per change where possible, no
-version. Releases are cut by hand (the `release` workflow): it moves `edge` into a section
-for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
+New changes live in `game/features/<name>/release_notes/*.json`; feature PRs do not
+edit this shared list. The release workflow collates those files and any remaining legacy
+edge bullets into the next version section. See [Release notes](docs/release-notes.md).
+
 - Add Zohran Mamdani as a casino patron who strolls the gaming floor beside the slot machines
   with a floating name tag.
 
@@ -141,6 +141,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   run their own gnome outings from before they connected, and gnomes and two east-wall gnome
   doors now sit on the floor. Gnomes get boots and a contact shadow, door frames meet the
   floor, and distant door labels no longer float on their own on phones and touch screens.
+- Meet Vivienne at the casino bar: buy drinks from the bartender, win at the slots to gain
+  charisma, and pay her (cheaper the more charming you are) to walk her to your Lily
+  Apartments room for a 10-minute lucky night with better slot odds. Drink too much and
+  your charisma drops.
 - Show what NPCs say to you as movie-style subtitles at the bottom of the screen instead of
   a floating speech bubble.
 - Bribe Donald Trump for slightly better slot machine luck. Each bribe doubles in price, up
@@ -154,8 +158,6 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Fix the gnome reconnect regression test's loop typing so strict GUT collection runs the entire test file.
 - Remove mobile-only resolution, shadow, anti-aliasing, light and prop-distance limits
   while keeping touch-friendly layouts.
-- Synchronize Kaaba prayers for everyone and grant +200% base slot win chance per
-  blessing, including signed-in wallets.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

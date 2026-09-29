@@ -36,6 +36,7 @@ type GitHub interface {
 	PullRequest(ctx context.Context, n int) (github.PullRequest, error)
 	PullRequestFiles(ctx context.Context, n int) ([]string, error)
 	FileContent(ctx context.Context, path, ref string) ([]byte, error)
+	FilePaths(ctx context.Context, ref string) ([]string, error)
 	Compare(ctx context.Context, base, head string) (github.Comparison, error)
 	CommitParents(ctx context.Context, sha string) ([]string, error)
 	WorkflowRunsForSHA(ctx context.Context, workflow, sha string) ([]github.WorkflowRun, error)

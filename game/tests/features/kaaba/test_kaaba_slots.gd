@@ -5,7 +5,14 @@ extends GutTest
 class AccountWallet:
 	extends PlayerMoney
 	var sent: Dictionary = {}
+	var extra_rolls := 0
 	var response: Dictionary = {"reels": [0, 1, 2], "payout": 0, "balance": 1900}
+
+	func spin(
+		peer: int, id: String, wager_cents: int = 100, rerolls: int = 0, blessings: int = 0
+	) -> Dictionary:
+		extra_rolls = rerolls
+		return await super.spin(peer, id, wager_cents, rerolls, blessings)
 
 	func _account(_peer: int) -> int:
 		return 42
@@ -33,6 +40,10 @@ func test_slot_passes_only_operators_blessings_and_consumes_only_on_win() -> voi
 	trump._bribes[1] = Trump.MAX_BRIBES
 	add_child_autofree(trump)
 	trump.set_physics_process(false)
+	var bar := preload("res://features/bar_companion/feature.tscn").instantiate() as BarCompanion
+	add_child_autofree(bar)
+	bar.set_process(false)
+	bar.grant_luck(1)
 	var machine := preload("res://features/slot_machine/machine.tscn").instantiate() as SlotMachine
 	add_child_autofree(machine)
 	machine.set_process(false)
@@ -43,8 +54,12 @@ func test_slot_passes_only_operators_blessings_and_consumes_only_on_win() -> voi
 	player.set_physics_process(false)
 	player.net_position = player.position
 	await get_tree().physics_frame
+	assert_string_contains(machine.interaction_text(), "slot luck +400%")
+	assert_string_contains(machine.interaction_text(), "lucky night")
 	machine.request_spin()
 	assert_eq(wallet.sent, {"wager_cents": 100, "blessings": 2})
+	assert_eq(wallet.extra_rolls, 3, "lucky night and Trump rolls stay separate from blessings")
+	assert_string_contains(machine.interaction_text(), "spinning")
 	assert_eq(prayer.blessings_for(1), 2, "a losing spin keeps blessings")
 	machine._advance(4.0)
 	wallet.response = {"error": "API unavailable"}
@@ -56,6 +71,11 @@ func test_slot_passes_only_operators_blessings_and_consumes_only_on_win() -> voi
 	assert_eq(prayer.blessings_for(2), 5, "another player's blessings remain")
 	assert_eq(int(machine.state["spin"]), 2, "the failed request did not spin")
 	assert_eq(int(wallet.balances[1]), 2800, "the account result owns the balance")
+	assert_eq(bar.charisma_for(1), 0, "charisma waits for the reels")
+	machine._advance(4.0)
+	machine._advance(4.0)
+	assert_eq(bar.charisma_for(1), int(CharmMath.WIN_CHARISMA), "reward the win once")
+	assert_eq(bar.rerolls_for(1), CharmMath.LUCK_REROLLS, "wins keep lucky night")
 
 
 func test_old_wallet_callers_send_zero_blessings_and_excess_is_bounded() -> void:
