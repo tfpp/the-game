@@ -16,6 +16,15 @@ const ENTRIES: Array[Dictionary] = [
 		"Claim a free room at the front desk and ride the elevator to expanding ten-unit floors.",
 	},
 	{
+		"title": "Desktop app installer",
+		"summary":
+		"Install the desktop app with one curl command on macOS, Linux or Windows Git Bash.",
+	},
+	{
+		"title": "Desktop app",
+		"summary": "Run the website in an Electron app for Linux, macOS and Windows.",
+	},
+	{
 		"title": "Read-only Git console",
 		"summary": "Use git help in the console to inspect the build's repository snapshot.",
 	},
