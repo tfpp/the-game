@@ -53,6 +53,7 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		AmountCents int64  `json:"amount_cents"`
 		IncomeCents int64  `json:"income_cents"`
 		WagerCents  int64  `json:"wager_cents"`
+		Blessings   int    `json:"blessings"`
 	}
 	if json.Unmarshal(raw, &req) != nil || req.AccountID <= 0 || req.Timestamp < s.cfg.Now().Unix()-60 || req.Timestamp > s.cfg.Now().Unix()+60 {
 		writeError(w, 400, "bad_request", "invalid request")
@@ -143,15 +144,16 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		writeError(w, 400, "bad_request", "invalid wager")
 		return
 	}
-	var reels [3]int
-	for i := range reels {
-		n, err := rand.Int(rand.Reader, big.NewInt(5))
-		if err != nil {
-			s.internalError(w, r, err)
-			return
-		}
-		reels[i] = int(n.Int64())
+	if req.Blessings < 0 || req.Blessings > 5 {
+		writeError(w, 400, "bad_request", "invalid blessings")
+		return
 	}
+	n, err := rand.Int(rand.Reader, big.NewInt(125))
+	if err != nil {
+		s.internalError(w, r, err)
+		return
+	}
+	reels := slotReels(int(n.Int64()), req.Blessings)
 	result, err := s.store.PlaySlot(r.Context(), req.AccountID, req.ID, reels, wagerCents)
 	if errors.Is(err, store.ErrInsufficientMoney) {
 		writeError(w, 409, "insufficient_money", "You can't afford that spin.")
@@ -166,4 +168,16 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, result)
+}
+
+// slotReels matches SlotSpinCycle.result_for_ticket in the game. Each blessing
+// adds 200% of the 4% base win chance; all five winning symbols stay equiprobable.
+func slotReels(ticket, blessings int) [3]int {
+	if ticket < 5+10*blessings {
+		symbol := ticket % 5
+		return [3]int{symbol, symbol, symbol}
+	}
+	losing := ticket - 5
+	index := losing + 1 + losing/30
+	return [3]int{index / 25, (index / 5) % 5, index % 5}
 }

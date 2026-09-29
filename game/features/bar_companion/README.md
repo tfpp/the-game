@@ -13,8 +13,8 @@ facing the counter. Everything uses Use (E, Circle / B, or mobile **USE**).
   You need a Lily Apartments unit first (`features/apartments`). After paying she
   follows you (catching up through doors and elevators) and asks you to lead her to
   your room. Walk into your own unit with her there and you get a **lucky night**:
-  for 10 minutes, every slot spin gets two extra reel rolls, the same mechanism as
-  Kaaba blessings, which it stacks with. Wins don't use it up. She lingers a few
+  for 10 minutes, every slot spin gets two extra reel rolls, stacking with the separate
+  Kaaba blessing bonus. Wins don't use it up. She lingers a few
   seconds, then returns to her stool. If you disconnect or take longer than 5 minutes
   she goes back too. Only one player can have her at a time.
 - A line above the wallet (bottom right) shows your charisma, mood, lucky-night timer
@@ -35,8 +35,8 @@ facing the counter. Everything uses Use (E, Circle / B, or mobile **USE**).
   `note_win()` when the reels stop on a win (not earlier, so charisma can't spoil the
   result). `features/apartments` gained `unit_bounds()` and `in_unit()`.
 
-Limitation: like Kaaba blessings, extra rolls only change the odds on temporary
-(offline / dev) wallets until the accounts API accepts rerolls (see open PRs #255/#257).
+Limitation: extra rolls only change the odds on temporary (offline / dev) wallets;
+Kaaba blessings also apply to authenticated accounts, through a separate bonus.
 Nothing is persisted: charisma, drinks and luck reset on disconnect and server restart.
 
 Tests: `tests/features/bar_companion/`.

@@ -72,9 +72,9 @@ loses (`favor_rerolls()`, group `trump_favor`, read by `SlotMachine`), so five
 bribes guarantee one extra roll: a 4% spin becomes about 7.8%. Favor is never spent.
 After five bribes he takes no more money. Counts live in server memory per peer,
 reset on disconnect or session change, and the owning client gets its own count
-through a private `bribes` event for the prompt price. Like Kaaba blessings, the
-extra roll only affects temporary (offline / insecure-auth) wallets until the
-accounts API accepts rerolls.
+through a private `bribes` event for the prompt price. The extra roll only affects temporary (offline / insecure-auth) wallets until the
+accounts API accepts rerolls. Kaaba blessings are separate and also apply to signed-in
+wallets; favor retries a losing blessed spin once with ordinary 4% odds.
 
 `trump.gd` specializes CasinoPatron's walking and talk callback, reusing its body,
 combat, six-second respawn, subtitles and the feature's MultiplayerSpawner.

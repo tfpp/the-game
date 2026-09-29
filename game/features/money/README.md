@@ -50,7 +50,7 @@ The game server uses `Network.resolve_api_url()` (the normal API URL), or pass
 for spins and credits), and `timestamp` (Unix seconds, within 60 seconds of the API
 clock).
 
-For spins, the API generates independent random reels and transactionally records
+For unblessed spins, the API generates uniform random reels and transactionally records
 the result, deducts the request's `wager_cents` (each machine sets its own; omitted
 or zero defaults to $1 for older game servers), and pays a prize scaled to that
 wager so every machine keeps the same 80% return. `wager_cents` is capped server-side
@@ -70,6 +70,17 @@ authentication, income and exact expected payouts. GUT covers offline wallets,
 income, labels, reel timing and interaction. The slot network test checks real
 server/two-client balance replication; `SLOT_TEST_DATABASE=1` includes the real API,
 SQLite and a full minute of income.
+
+## Kaaba luck
+
+`spin(peer, id, wager_cents, rerolls, blessings)` retains temporary-wallet extra
+rolls in `rerolls` and adds optional Kaaba `blessings` (clamped to 0..5). The server reads them from KaabaPrayer,
+never from a client payload, and includes `blessings` in its signed spin request.
+The API rejects counts outside 0..5; omitted counts default to zero for old servers.
+Each stack adds 200% of the base 4% win chance, giving 12% with one and 44% with five.
+Temporary wallets use the identical distribution. Prizes, charges and transactional
+retries are unchanged; replaying a settled operation always returns its original
+result, even if the blessing count has since changed. Deploy the API first.
 
 ## Money log
 

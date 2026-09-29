@@ -1,5 +1,5 @@
 extends GutTest
-## Praying at the Kaaba: server validation, stacking blessings and slot rerolls.
+## Praying at the Kaaba: server validation, stacking blessings and slot luck.
 
 const FEATURE_PATH := "res://features/kaaba/feature.tscn"
 const PlayerScene := preload("res://core/player/player.tscn")
@@ -24,6 +24,7 @@ func _player(offset: Vector3) -> Player:
 
 func test_prayer_is_an_interactable_at_the_kaaba() -> void:
 	assert_true(_prayer.is_in_group(&"interactables"))
+	assert_true(_prayer.interaction_text().contains("+200% slot luck"))
 	assert_eq(_prayer.global_position, _root.global_position)
 	assert_true(_prayer.can_use(_player(Vector3(0, 0.9, 3.5))), "beside the south wall")
 	assert_false(_prayer.can_use(_player(Vector3(0, 0.9, 9.0))), "too far away")
@@ -70,27 +71,67 @@ func test_win_disconnect_and_session_change_clear_blessings() -> void:
 	assert_eq(_prayer.blessings_for(1), 0)
 
 
-func test_blessings_raise_the_slot_win_chance() -> void:
-	assert_almost_eq(SlotSpinCycle.win_chance(0), 0.04, 0.0001)
-	assert_gt(SlotSpinCycle.win_chance(5), SlotSpinCycle.win_chance(1))
-	var cycle := SlotSpinCycle.new()
-	var plain := 0
-	var blessed := 0
-	for spin: int in 2000:
-		plain += int(SlotSpinCycle.is_win(cycle.next_result()))
-		blessed += int(SlotSpinCycle.is_win(cycle.blessed_result(5)))
-	assert_gt(blessed, plain * 2, "five blessings win far more often")
+func test_blessings_raise_exact_slot_win_chance_by_200_percent_each() -> void:
+	for stacks: int in range(6):
+		var wins := 0
+		var outcomes: Dictionary = {}
+		for ticket: int in range(125):
+			var reels := SlotSpinCycle.result_for_ticket(ticket, stacks)
+			outcomes[str(reels)] = true
+			wins += int(SlotSpinCycle.is_win(reels))
+			for symbol: int in reels:
+				assert_between(symbol, 0, 4)
+		assert_eq(wins, 5 + 10 * stacks)
+		assert_almost_eq(SlotSpinCycle.win_chance(stacks), float(wins) / 125.0, 0.00001)
+		if stacks == 0:
+			assert_eq(outcomes.size(), 125, "all original outcomes remain equally likely")
+	assert_almost_eq(SlotSpinCycle.win_chance(1), 0.12, 0.00001)
+	assert_eq(SlotSpinCycle.win_chance(99), SlotSpinCycle.win_chance(5))
 
 
-func test_temporary_wallet_uses_blessings_as_rerolls() -> void:
+func test_temporary_wallet_uses_blessings() -> void:
 	var wallet := PlayerMoney.new()
 	add_child_autofree(wallet)
 	wallet.set_process(false)
 	var wins := 0
-	for spin: int in 200:
-		var result: Dictionary = await wallet.spin(1, "id%d" % spin, 1, 30)
+	for spin: int in 1000:
+		var result: Dictionary = await wallet.spin(1, "id%d" % spin, 1, 0, 5)
 		wins += int(int(result.get("payout", 0)) > 0)
-	assert_gt(wins, 100, "30 rerolls win most spins (~71%)")
+	assert_between(wins, 330, 550, "five blessings win 44% of spins")
+
+
+func test_component_rejects_forgery_unknown_peer_and_vertical_distance() -> void:
+	var player := _player(Vector3(3.5, 0.9, 0))
+	var entity := _prayer.get_node("NetworkedEntity") as NetworkedInteraction
+	assert_eq(entity._evaluate(1, &"use", {"peer": 2}), NetworkedEntity.Result.DENIED)
+	assert_eq(entity._evaluate(2, &"use", {}), NetworkedEntity.Result.DENIED)
+	player.net_position.y += 20
+	assert_eq(entity._evaluate(1, &"use", {}), NetworkedEntity.Result.DENIED)
+	assert_true(_prayer.praying.is_empty())
+
+
+func test_simultaneous_players_and_death_cancel_only_their_own_prayer() -> void:
+	_player(Vector3(3.5, 0.9, 0))
+	var other := _player(Vector3(-3.5, 0.9, 0))
+	other.set_multiplayer_authority(2)
+	var entity := _prayer.get_node("NetworkedEntity") as NetworkedInteraction
+	assert_eq(entity._evaluate(1, &"use", {}), NetworkedEntity.Result.ACCEPTED)
+	assert_eq(entity._evaluate(2, &"use", {}), NetworkedEntity.Result.ACCEPTED)
+	_prayer._advance(3.0)
+	_prayer._on_death(1, 2)
+	_prayer._advance(3.0)
+	assert_eq(_prayer.blessings_for(1), 0)
+	assert_eq(_prayer.blessings_for(2), 1)
+	assert_true(_prayer.praying.is_empty())
+
+
+func test_replication_includes_current_prayers_and_blessings_for_late_joiners() -> void:
+	var sync := _prayer.get_node("NetworkedEntity/Sync") as MultiplayerSynchronizer
+	assert_eq(sync.get_multiplayer_authority(), 1)
+	assert_same(sync.get_node(sync.root_path), _prayer)
+	for property: NodePath in [NodePath(".:blessings"), NodePath(".:praying")]:
+		assert_true(sync.replication_config.property_get_spawn(property))
+		assert_eq(sync.replication_config.property_get_replication_mode(property), 2)
 
 
 func test_chant_is_a_few_seconds_of_audio() -> void:

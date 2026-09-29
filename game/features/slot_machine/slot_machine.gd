@@ -60,7 +60,7 @@ func interaction_text() -> String:
 		)
 	var prayer := get_tree().get_first_node_in_group(&"kaaba_prayer") as KaabaPrayer
 	if prayer != null and prayer.blessings_for(multiplayer.get_unique_id()) > 0:
-		text += " — blessed ×%d" % prayer.blessings_for(multiplayer.get_unique_id())
+		text += " — slot luck +%d%%" % (200 * prayer.blessings_for(multiplayer.get_unique_id()))
 	var charm := get_tree().get_first_node_in_group(&"bar_companion") as BarCompanion
 	if charm != null and charm.rerolls_for(multiplayer.get_unique_id()) > 0:
 		text += " — lucky night"
@@ -115,14 +115,15 @@ func request_spin() -> void:
 	var operator_name := player.display_name
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
 	var prayer := get_tree().get_first_node_in_group(&"kaaba_prayer") as KaabaPrayer
-	var rerolls := prayer.blessings_for(peer_id) if prayer != null else 0
-	# Vivienne's lucky night (features/bar_companion) adds rolls on top of blessings.
+	var blessings := prayer.blessings_for(peer_id) if prayer != null else 0
+	var rerolls := 0
+	# Vivienne adds ordinary extra rolls separately from Kaaba blessings.
 	var charm := get_tree().get_first_node_in_group(&"bar_companion") as BarCompanion
 	rerolls += charm.rerolls_for(peer_id) if charm != null else 0
 	var trump := get_tree().get_first_node_in_group(&"trump_favor")
 	if trump != null:
 		rerolls += int(trump.favor_rerolls(peer_id))
-	var result: Dictionary = await wallet.spin(peer_id, id, buy_in_cents, rerolls)
+	var result: Dictionary = await wallet.spin(peer_id, id, buy_in_cents, rerolls, blessings)
 	if generation != _generation:
 		return
 	_pending = false
