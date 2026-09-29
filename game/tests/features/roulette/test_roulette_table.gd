@@ -25,13 +25,21 @@ func test_wheel_covers_every_pocket_with_correct_colors() -> void:
 	assert_eq(RouletteWheel.color_for(2), "black")
 	var reds := 0
 	var blacks := 0
-	for number: int in range(1, RouletteWheel.POCKET_COUNT):
+	for number: int in range(1, 37):
 		if RouletteWheel.color_for(number) == "red":
 			reds += 1
 		else:
 			blacks += 1
 	assert_eq(reds, 18)
 	assert_eq(blacks, 18)
+
+
+func test_wheel_has_a_green_double_zero() -> void:
+	assert_eq(RouletteWheel.POCKET_COUNT, 38)
+	assert_eq(RouletteWheel.color_for(RouletteWheel.DOUBLE_ZERO), "green")
+	assert_eq(RouletteWheel.label_for(RouletteWheel.DOUBLE_ZERO), "00")
+	assert_eq(RouletteWheel.label_for(0), "0")
+	assert_eq(RouletteWheel.label_for(17), "17")
 
 
 func test_ball_spins_then_settles_once() -> void:

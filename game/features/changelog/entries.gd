@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "American roulette",
+		"summary": "The roulette wheel now has a green 00 pocket beside the 0.",
+	},
+	{
 		"title": "Flip them off",
 		"summary":
 		"Press B for a networked middle-finger emote in first and third person; rebind it in Controls.",

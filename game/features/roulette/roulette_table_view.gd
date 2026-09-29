@@ -49,7 +49,8 @@ func _process(_delta: float) -> void:
 		_status.text = "SPINNING…"
 		_caption.text = str(snapshot["operator"]).left(20)
 	elif int(snapshot["spin"]) > 0:
-		_status.text = "%d — %s" % [int(snapshot["number"]), str(snapshot["color"]).to_upper()]
+		var pocket := RouletteWheel.label_for(int(snapshot["number"]))
+		_status.text = "%s — %s" % [pocket, str(snapshot["color"]).to_upper()]
 		_caption.text = str(snapshot["operator"]).left(20)
 	else:
 		_status.text = "PLACE YOUR BETS"
