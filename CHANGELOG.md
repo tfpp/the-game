@@ -8,6 +8,7 @@ version. Releases are cut by hand (the `release` workflow): it moves `edge` into
 for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
 - Add an Electron desktop app for the live website on Linux, macOS and Windows,
   with portable app packaging commands.
+- Add a curl installer for the Electron desktop app on macOS, Linux and Windows Git Bash, with locked dependencies and safe rebuilds.
 
 
 ## [edge]
