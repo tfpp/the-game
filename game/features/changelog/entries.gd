@@ -16,6 +16,10 @@ const ENTRIES: Array[Dictionary] = [
 		"Follow prayer progress to earn online slot luck and see shared blessing effects.",
 	},
 	{
+		"title": "NPC subtitles",
+		"summary": "NPC dialogue now shows as movie subtitles at the bottom of the screen.",
+	},
+	{
 		"title": "Money log",
 		"summary": "The chat log tells you whenever you get money, and why.",
 	},
