@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "seed": 12,
+  "height": 4.8,
+  "hall_height": 3.6,
+  "hall_width": 5,
+  "style": {
+    "theme": "hotel",
+    "panel_spacing": 2.8,
+    "wainscot_height": 1.1,
+    "windows": false,
+    "lights": true
+  },
+  "rooms": [
+    {
+      "id": "GrandLounge",
+      "size": [
+        12,
+        10
+      ],
+      "at": [
+        0,
+        0
+      ],
+      "height": 5.2,
+      "openings": [
+        {
+          "id": "WestWindow1",
+          "kind": "window",
+          "side": "west",
+          "offset": 1,
+          "width": 1.5,
+          "height": 2.9,
+          "sill": 1.3
+        },
+        {
+          "id": "WestWindow2",
+          "kind": "window",
+          "side": "west",
+          "offset": 4,
+          "width": 1.5,
+          "height": 2.9,
+          "sill": 1.3
+        },
+        {
+          "id": "WestWindow3",
+          "kind": "window",
+          "side": "west",
+          "offset": 7,
+          "width": 1.5,
+          "height": 2.9,
+          "sill": 1.3
+        },
+        {
+          "id": "SuiteDoor",
+          "kind": "door",
+          "side": "east",
+          "offset": 2,
+          "width": 1.5,
+          "height": 2.7
+        },
+        {
+          "id": "GardenDoor",
+          "kind": "door",
+          "side": "north",
+          "offset": 8,
+          "width": 1.5,
+          "height": 2.7,
+          "open": true
+        }
+      ],
+      "pillars": [
+        [
+          2,
+          2
+        ],
+        [
+          10,
+          2
+        ]
+      ]
+    },
+    {
+      "id": "Gallery",
+      "size": [
+        10,
+        8
+      ],
+      "at": [
+        0,
+        26
+      ],
+      "height": 4.2,
+      "openings": [
+        {
+          "id": "BalconyWindow",
+          "kind": "window",
+          "side": "south",
+          "offset": 3,
+          "width": 2.4,
+          "height": 2.3,
+          "sill": 1.1
+        },
+        {
+          "id": "EastDoor",
+          "kind": "door",
+          "side": "east",
+          "offset": 3,
+          "width": 1.3,
+          "height": 2.6
+        }
+      ]
+    }
+  ],
+  "connections": [
+    [
+      "GrandLounge",
+      "Gallery"
+    ]
+  ]
+}

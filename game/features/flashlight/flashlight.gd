@@ -61,6 +61,8 @@ func _process(_delta: float) -> void:
 			light.spot_angle = 32.0
 			light.spot_attenuation = 0.7
 			light.shadow_enabled = true
+			# Avoid striped self-shadowing on fine mouldings in distant streamed rooms.
+			light.shadow_bias = 0.15
 			add_child(light)
 			_lights[peer] = light
 		_lights[peer].global_transform = _beam_transform(player)

@@ -131,7 +131,11 @@ func _style_material(material: Material) -> void:
 		return
 	var surface := material as BaseMaterial3D
 	if surface.shading_mode != BaseMaterial3D.SHADING_MODE_UNSHADED:
-		surface.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
+		surface.shading_mode = (
+			BaseMaterial3D.SHADING_MODE_PER_PIXEL
+			if surface.get_meta(&"per_pixel_lighting", false)
+			else BaseMaterial3D.SHADING_MODE_PER_VERTEX
+		)
 	surface.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
 	surface.metallic = 0.0
 	surface.metallic_specular = 0.0

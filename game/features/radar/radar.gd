@@ -91,10 +91,14 @@ func _collect(node: Node, result: Array[Node3D]) -> void:
 		candidate = true
 	elif node is CollisionShape3D and node.is_in_group(&"radar_geometry"):
 		var collider := node as CollisionShape3D
-		var box := collider.shape as BoxShape3D
-		if box != null and not collider.disabled:
-			bounds = collider.global_transform * AABB(-box.size * 0.5, box.size)
-			candidate = true
+		if not collider.disabled and collider.shape != null:
+			if collider.shape is BoxShape3D:
+				var box := collider.shape as BoxShape3D
+				bounds = collider.global_transform * AABB(-box.size * 0.5, box.size)
+				candidate = true
+			elif collider.shape is ConcavePolygonShape3D:
+				bounds = collider.global_transform * collider.shape.get_debug_mesh().get_aabb()
+				candidate = true
 	if candidate:
 		var area := Rect2(
 			Vector2(bounds.position.x, bounds.position.z), Vector2(bounds.size.x, bounds.size.z)
@@ -118,11 +122,19 @@ func _build_step() -> void:
 		if not is_instance_valid(shape):
 			continue
 		if shape is CollisionShape3D:
-			# Only explicitly marked static boxes are collected. This runs on desktop
-			# during a map rebuild, reusing the authored collision instead of drawing it.
-			var box := BoxMesh.new()
-			box.size = (shape.shape as BoxShape3D).size
-			_building.append_mesh(box, shape.global_transform, _build_height)
+			# Generated worlds mark their structural collision, omitting decorative
+			# mouldings and furniture meshes from the floor plan.
+			var collider := shape as CollisionShape3D
+			if collider.shape is ConcavePolygonShape3D:
+				_building.append_faces(
+					(collider.shape as ConcavePolygonShape3D).get_faces(),
+					shape.global_transform,
+					_build_height
+				)
+			elif collider.shape is BoxShape3D:
+				var box := BoxMesh.new()
+				box.size = (collider.shape as BoxShape3D).size
+				_building.append_mesh(box, shape.global_transform, _build_height)
 		else:
 			var meshes := (shape as CSGShape3D).get_meshes()
 			if meshes.size() == 2:

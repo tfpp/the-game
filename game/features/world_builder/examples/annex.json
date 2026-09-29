@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "seed": 42,
+  "height": 3.5,
+  "hall_width": 3,
+  "rooms": [
+    {
+      "id": "Lobby",
+      "size": [
+        12,
+        10
+      ],
+      "at": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "Arcade",
+      "size": [
+        14,
+        12
+      ],
+      "at": [
+        22,
+        0
+      ]
+    },
+    {
+      "id": "Lounge",
+      "size": [
+        12,
+        10
+      ],
+      "at": [
+        22,
+        22
+      ]
+    },
+    {
+      "id": "Workshop",
+      "size": [
+        10,
+        12
+      ],
+      "at": [
+        0,
+        22
+      ]
+    }
+  ],
+  "connections": [
+    [
+      "Lobby",
+      "Arcade"
+    ],
+    [
+      "Arcade",
+      "Lounge"
+    ],
+    [
+      "Lounge",
+      "Workshop"
+    ],
+    [
+      "Workshop",
+      "Lobby"
+    ]
+  ],
+  "style": {
+    "theme": "prototype"
+  }
+}

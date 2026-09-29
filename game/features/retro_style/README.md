@@ -14,7 +14,10 @@ Cards, chips and prompts stay legible; multiplayer gameplay keeps its existing o
 
 `RetroStyle` styles existing and newly streamed meshes in bounded batches, then
 stops processing. Materials and primitive meshes are handled once per resource;
-weak caches do not retain unloaded rooms. Authored shader materials are preserved.
+weak caches do not retain unloaded rooms. Authored shader materials are preserved, including the world builder's baked
+lightmaps. Standard materials with `per_pixel_lighting` metadata retain per-pixel
+lighting so broad procedural surfaces do not interpolate illumination from only
+their corners.
 Remote-player movement and gameplay replication stay with their original owners.
 
 On Android, iOS and touch browsers (including iPad desktop user agents):
