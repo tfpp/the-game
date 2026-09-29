@@ -112,6 +112,9 @@ func request_spin() -> void:
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
 	var prayer := get_tree().get_first_node_in_group(&"kaaba_prayer") as KaabaPrayer
 	var rerolls := prayer.blessings_for(peer_id) if prayer != null else 0
+	var trump := get_tree().get_first_node_in_group(&"trump_favor")
+	if trump != null:
+		rerolls += int(trump.favor_rerolls(peer_id))
 	var result: Dictionary = await wallet.spin(peer_id, id, buy_in_cents, rerolls)
 	if generation != _generation:
 		return

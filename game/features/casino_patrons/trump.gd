@@ -1,17 +1,51 @@
+class_name Trump
 extends CasinoPatron
 ## A patron who follows the mayor instead of walking an independent route.
+## Bribing him costs more each time and tilts your slot machine odds slightly.
 
 const PRICE_CENTS := 10000
+## Bribes that still add favor; the price doubles with each one.
+const MAX_BRIBES := 5
+## Chance per bribe that a losing slot spin gets one more roll of the reels.
+const FAVOR_PER_BRIBE := 0.2
 const FOLLOW_DISTANCE := 1.5
 const FOLLOW_SPEED := 1.8
 
 var _leader: CasinoPatron
 var _charging: Dictionary[int, bool] = {}
+## Server: peer id -> accepted bribes. Session-only, forgotten on disconnect.
+var _bribes: Dictionary[int, int] = {}
+## Client copy of this peer's own bribe count, for the prompt's price.
+var _my_bribes := 0
+var _rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
 	super._ready()
 	_setup_talk()
+	add_to_group(&"trump_favor")
+	_talk.event_received.connect(_on_bribe_event)
+	multiplayer.peer_disconnected.connect(func(peer: int) -> void: _bribes.erase(peer))
+	_talk.session_reset.connect(func(_mode: Network.Mode) -> void: _bribes.clear())
+
+
+## Cost of a peer's next bribe: $100, $200, $400, $800, $1,600.
+static func bribe_price(bribes: int) -> int:
+	return PRICE_CENTS << clampi(bribes, 0, MAX_BRIBES - 1)
+
+
+## Chance that a spin gets Trump's extra roll after `bribes` bribes.
+static func favor_chance(bribes: int) -> float:
+	return clampf(bribes * FAVOR_PER_BRIBE, 0.0, 1.0)
+
+
+func bribes_for(peer: int) -> int:
+	return int(_bribes.get(peer, 0))
+
+
+## Server-only: extra slot rerolls (0 or 1) granted by this peer's bribes.
+func favor_rerolls(peer: int) -> int:
+	return 1 if _rng.randf() < favor_chance(bribes_for(peer)) else 0
 
 
 func _walk_on(delta: float) -> void:
@@ -44,13 +78,18 @@ func can_use(player: Player) -> bool:
 
 
 func interaction_text() -> String:
-	return "Talk to Donald Trump (-$100)"
+	if _my_bribes >= MAX_BRIBES:
+		return "Talk to Donald Trump (he's already yours)"
+	return "Bribe Donald Trump (-%s)" % PlayerMoney.format_money(bribe_price(_my_bribes))
 
 
 func _apply_talk(player: Player) -> bool:
 	var peer := player.get_multiplayer_authority()
 	if _charging.has(peer):
 		return false
+	if bribes_for(peer) >= MAX_BRIBES:
+		_say(peer, "You've bought all the favor there is. Tremendous.")
+		return true
 	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
 	if wallet == null:
 		_say(peer, "Wallet unavailable. Try again later.")
@@ -63,14 +102,23 @@ func _apply_talk(player: Player) -> bool:
 
 func _charge(wallet: PlayerMoney, peer: int, player: Player) -> void:
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
-	var result: Dictionary = await wallet.charge(peer, id, PRICE_CENTS)
+	var price := bribe_price(bribes_for(peer))
+	var result: Dictionary = await wallet.charge(peer, id, price)
 	_charging.erase(peer)
 	# Never deliver a delayed reply to a disconnected/replaced player's peer ID.
 	if peer != multiplayer.get_unique_id() and not multiplayer.get_peers().has(peer):
 		return
+	if not result.has("error"):
+		_bribes[peer] = bribes_for(peer) + 1
+		_talk.send_event(&"bribes", {"count": bribes_for(peer)}, peer)
 	if not is_instance_valid(player) or _talk.player_for_peer(peer) != player:
 		return
 	if result.has("error"):
 		_say(peer, str(result["error"]))
 	else:
-		_say(peer, "Paid $100.")
+		_say(peer, TrumpQuips.pick(_rng))
+
+
+func _on_bribe_event(event: StringName, payload: Dictionary) -> void:
+	if event == &"bribes":
+		_my_bribes = clampi(int(payload.get("count", 0)), 0, MAX_BRIBES)

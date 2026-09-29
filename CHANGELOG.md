@@ -133,6 +133,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Shorten the dealer model forehead and lower its hairline while preserving the quiff and lower face.
 
 - Revise the dealer head against the side concept with a swept-back crown, compact nose, recessed chin and corrected jaw-to-neck transition.
+- Bribe Donald Trump for slightly better slot machine luck. Each bribe doubles in price, up
+  to five, and he promises to remodel part of the casino with one of 1,000 quips.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

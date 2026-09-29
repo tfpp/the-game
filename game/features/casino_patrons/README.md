@@ -62,10 +62,19 @@ still allocates apartments during the respawn delay. Existing gun controls apply
 Trump (look 5) follows Mamdani along the slot aisle, staying about 1.5 metres
 away and stopping when he catches up. He has blond swept hair, a navy suit, a
 red tie and a name tag. Find him initially at (8.5, -1.5, -11.7).
-Use E, controller B/Circle or touch USE near him: the prompt shows **-$100**.
-Each accepted interaction charges the interacting player's existing wallet exactly
-10,000 cents; insufficient funds leave it unchanged and show a private reply.
-There is no reward or debt. The usual wallet persistence rules apply.
+Use E, controller B/Circle or touch USE near him to bribe him. The price doubles
+with each bribe: $100, $200, $400, $800, $1,600 (`Trump.bribe_price()`), charged
+through the existing wallet; insufficient funds leave it unchanged and add nothing.
+After a paid bribe he privately promises to remodel part of the casino, picked from
+1,000 generated quips (`trump_quips.gd`: 10 openers × 10 areas × 10 plans).
+Each bribe gives a 20% chance per slot spin of one extra roll of the reels if it
+loses (`favor_rerolls()`, group `trump_favor`, read by `SlotMachine`), so five
+bribes guarantee one extra roll: a 4% spin becomes about 7.8%. Favor is never spent.
+After five bribes he takes no more money. Counts live in server memory per peer,
+reset on disconnect or session change, and the owning client gets its own count
+through a private `bribes` event for the prompt price. Like Kaaba blessings, the
+extra roll only affects temporary (offline / insecure-auth) wallets until the
+accounts API accepts rerolls.
 
 `trump.gd` specializes CasinoPatron's walking and talk callback, reusing its body,
 combat, six-second respawn, speech bubble and the feature's MultiplayerSpawner.
