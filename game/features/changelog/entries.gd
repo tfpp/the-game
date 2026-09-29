@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "İstanbul Kebab",
+		"summary": "Order a free kebab from animated staff in the northeast annex shop.",
+	},
+	{
 		"title": "Smoother guns",
 		"summary": "Buying and firing guns no longer makes the game stutter.",
 	},
