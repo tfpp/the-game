@@ -32,7 +32,8 @@ func test_every_hole_is_on_an_outer_wall_facing_into_the_room() -> void:
 			var hole := train.get_node("Hole%d" % number) as Node3D
 			var pos := hole.global_position
 			assert_almost_eq(maxf(absf(pos.x), absf(pos.z)), WALL, 0.01, hole.name)
-			assert_lt(pos.y, 0.5, "doors sit at floor level")
+			# The casino floor is y=0 at the foot of every outer wall (issue #240).
+			assert_almost_eq(pos.y, 0.0, 0.001, "%s door sits on the floor" % side)
 			var normal: Vector3 = train.hole_normal(number)
 			var inward := (
 				Vector3(-signf(pos.x), 0, 0)
@@ -112,3 +113,34 @@ func test_gnomes_sidestep_a_player_in_their_way() -> void:
 	var pushed: Vector3 = train._avoid[0]
 	assert_gt(pushed.length(), 0.05, "moves aside")
 	assert_lt(pushed.dot(dir.cross(Vector3.UP)), 0.0, "away from the player")
+
+
+func _box(body: PhysicsBody3D, size: Vector3, at: Vector3) -> PhysicsBody3D:
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = size
+	shape.shape = box
+	body.add_child(shape)
+	body.position = at
+	add_child_autofree(body)
+	return body
+
+
+func test_route_points_snap_onto_the_floor_instead_of_hovering() -> void:
+	var train := _train("West")
+	# Floor top at y=0 under a navmesh point that came back 0.17 m too high.
+	_box(StaticBody3D.new(), Vector3(4, 1, 4), Vector3(-28, -0.5, 0))
+	await wait_physics_frames(2)
+	var snapped: Vector3 = train.snap_to_floor(Vector3(-28, 0.17, 0))
+	assert_almost_eq(snapped.y, 0.0, 0.001)
+	assert_almost_eq(snapped.x, -28.0, 0.001)
+
+
+func test_floor_snap_ignores_players_and_missing_floors() -> void:
+	var train := _train("West")
+	_box(StaticBody3D.new(), Vector3(4, 1, 4), Vector3(-28, -0.5, 0))
+	_box(CharacterBody3D.new(), Vector3(1, 0.3, 1), Vector3(-28, 0.15, 0))
+	await wait_physics_frames(2)
+	assert_almost_eq(train.snap_to_floor(Vector3(-28, 0.1, 0)).y, 0.0, 0.001)
+	var open_air := Vector3(-20, 5, 20)
+	assert_eq(train.snap_to_floor(open_air), open_air)

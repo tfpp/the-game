@@ -54,11 +54,11 @@ position = Vector3(34, 0, -30)
 rotation = Vector3(0, -1.5708, 0)
 
 [node name="Hole1" parent="TrainEast" index="1"]
-position = Vector3(34, 0.12, -18)
+position = Vector3(34, 0, -18)
 rotation = Vector3(0, -1.5708, 0)
 
 [node name="Hole2" parent="TrainEast" index="2"]
-position = Vector3(34, 0.12, 6)
+position = Vector3(34, 0, 6)
 rotation = Vector3(0, -1.5708, 0)
 
 [node name="Hole3" parent="TrainEast" index="3"]

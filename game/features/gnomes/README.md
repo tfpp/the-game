@@ -13,6 +13,10 @@ on the prebaked navmesh (`gnome_navmesh.tres`), then slips into the chosen door.
 out, gnomes sidestep players and anything in the `killable` group (casino patrons, the
 penguin, frogs, dummies), fading the sidestep out near the doors so they still line up.
 
+The server snaps every route point onto the floor collision below it (layer 1,
+skipping players and other moving bodies), so gnomes walk on the floor rather than
+at the navmesh's rounded height. Every door sits at y=0, the floor at the wall base.
+
 Sync replicates each gnome's position, facing and a bitmask of which gnomes are out.
 Clients never query the navmesh; they only smooth and show that state.
 
