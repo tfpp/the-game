@@ -59,12 +59,15 @@ files before editing the corresponding code.
 - Feature work goes in `<type>/<short-description>`. Don't modify `.github/`, `harness/`,
   `bot/`, `api/`, `game/core/` or `game/project.godot` unless the task explicitly asks
   for it. Those paths need human review.
-- Every new feature must add one entry to the in-game changelog: `ENTRIES` in
-  `game/features/changelog/entries.gd` (players open it in-game with `L`). Add the
-  entry in the same change that ships the feature.
-- Keep `CHANGELOG.md` up to date: every change that players, operators or contributors
-  would notice adds a bullet to the end of its `## [edge]` section, in the same change.
-  Don't add version sections or change `config/version`: releases are cut by hand with the
-  `release` workflow, which rolls `edge` into the new version.
+- Every notable change adds a new JSON file in the owning feature's
+  `game/features/<name>/release_notes/` directory. Use a unique issue-prefixed or
+  descriptive filename, even when several PRs change the same feature. See
+  `docs/release-notes.md` for the schema. The same file supplies the in-game entry,
+  release bullets and Discord edge announcements. For cross-cutting tooling/docs work,
+  use the nearest affected feature (release tooling belongs to `changelog`).
+- Do not edit the shared `game/features/changelog/entries.gd` or `CHANGELOG.md` lists
+  to record new changes. They retain legacy history; release automation updates
+  `CHANGELOG.md`. Once a note ships in a release, keep its filename, title and content
+  immutable and add a new file for the next change. Do not bump `config/version`.
 - Commits follow Conventional Commits (`docs/conventional-commits.md`).
 - Pull requests follow (`docs/pull-requests.md`).

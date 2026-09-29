@@ -61,6 +61,9 @@ func interaction_text() -> String:
 	var prayer := get_tree().get_first_node_in_group(&"kaaba_prayer") as KaabaPrayer
 	if prayer != null and prayer.blessings_for(multiplayer.get_unique_id()) > 0:
 		text += " — blessed ×%d" % prayer.blessings_for(multiplayer.get_unique_id())
+	var charm := get_tree().get_first_node_in_group(&"bar_companion") as BarCompanion
+	if charm != null and charm.rerolls_for(multiplayer.get_unique_id()) > 0:
+		text += " — lucky night"
 	return text
 
 
@@ -113,6 +116,9 @@ func request_spin() -> void:
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
 	var prayer := get_tree().get_first_node_in_group(&"kaaba_prayer") as KaabaPrayer
 	var rerolls := prayer.blessings_for(peer_id) if prayer != null else 0
+	# Vivienne's lucky night (features/bar_companion) adds rolls on top of blessings.
+	var charm := get_tree().get_first_node_in_group(&"bar_companion") as BarCompanion
+	rerolls += charm.rerolls_for(peer_id) if charm != null else 0
 	var trump := get_tree().get_first_node_in_group(&"trump_favor")
 	if trump != null:
 		rerolls += int(trump.favor_rerolls(peer_id))
@@ -182,6 +188,10 @@ func _advance(delta: float) -> void:
 		next["spinning"] = false
 		next["won"] = SlotSpinCycle.is_win(_result)
 		next["payout"] = _prize
+		# Winning makes the winner more charming, only once the reels show it.
+		var charm := get_tree().get_first_node_in_group(&"bar_companion") as BarCompanion
+		if charm != null and next["won"]:
+			charm.note_win(_prize_peer)
 	state = next
 	if stopped == 3:
 		play_result.rpc(int(state["spin"]), bool(state["won"]), _prize)

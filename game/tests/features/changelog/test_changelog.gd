@@ -66,7 +66,7 @@ func test_heading_text_uses_the_heading_font_and_a_muted_detail() -> void:
 
 
 func test_every_shipped_entry_has_a_title_and_summary() -> void:
-	for entry: Dictionary in ChangelogEntries.ENTRIES:
+	for entry: Dictionary in ChangelogEntries.all_entries():
 		assert_false(str(entry.get("title", "")).is_empty(), "entry missing a title")
 		assert_false(str(entry.get("summary", "")).is_empty(), "entry missing a summary")
 
@@ -74,7 +74,7 @@ func test_every_shipped_entry_has_a_title_and_summary() -> void:
 func test_every_shipped_entry_title_is_unique() -> void:
 	# releases.gd matches entries to releases by title.
 	var seen := {}
-	for entry: Dictionary in ChangelogEntries.ENTRIES:
+	for entry: Dictionary in ChangelogEntries.all_entries():
 		var title := str(entry.get("title", ""))
 		assert_false(seen.has(title), "duplicate changelog title: " + title)
 		seen[title] = true

@@ -54,6 +54,21 @@ check "refuses an existing tag" "" "$("$release" patch notes.md 2>/dev/null || t
 check "bad bump" "" "$("$release" huge notes.md 2>/dev/null || true)"
 check "nothing changed after a refusal" 'config/version="0.6.0"' "$(grep config/version game/project.godot)"
 
+# Release collation keeps feature files unchanged and tags prevent replay.
+setup 0.6.0 $'\n- Legacy note.\n'
+mkdir -p game/features/hats/release_notes
+cat > game/features/hats/release_notes/201-hats.json <<'JSON'
+{"title":"Hats","summary":"Wear hats.","notes":["Add hats.","Fix hat colors."]}
+JSON
+check "collated release version" 0.6.1 "$("$release" patch notes.md)"
+check "collated notes" $'- Legacy note.\n- Add hats.\n- Fix hat colors.' "$(cat notes.md)"
+git -c user.email=t@e -c user.name=t add game CHANGELOG.md
+git -c user.email=t@e -c user.name=t commit -q -m release
+git tag v0.6.1
+check "following release version" 0.6.2 "$("$release" patch notes.md)"
+check "released files are not replayed" '- No notable changes.' "$(cat notes.md)"
+check "released feature file is retained" true "$([[ -f game/features/hats/release_notes/201-hats.json ]] && echo true)"
+
 if ((failures)); then
   echo "$failures failure(s)" >&2
   exit 1

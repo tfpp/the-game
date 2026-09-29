@@ -2,14 +2,16 @@
 
 Every notable change, newest first. `edge` is what's on `main` but not released yet.
 
-**In every pull request with a change players, operators or contributors would notice, add
-a bullet to the end of `## [edge]`:** imperative, one line per change where possible, no
-version. Releases are cut by hand (the `release` workflow): it moves `edge` into a section
-for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
+New changes live in `game/features/<name>/release_notes/*.json`; feature PRs do not
+edit this shared list. The release workflow collates those files and any remaining legacy
+edge bullets into the next version section. See [Release notes](docs/release-notes.md).
+
 - Add Zohran Mamdani as a casino patron who strolls the gaming floor beside the slot machines
   with a floating name tag.
 
 ## [edge]
+
+## [0.8.0](https://github.com/tfpp/the-game/releases/tag/v0.8.0) - 2026-09-29
 
 - Brand the game Casino Royale and dress the Rain Alleys with original vertex-authored OBJ dumpsters, boarded facades, fire escapes, lamps and fence wire.
 - Replace the garage's box-shaped wrecks with original low polygon OBJ sedans, preserving varied paint, missing hoods, collision and searchable loot.
@@ -141,18 +143,24 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   run their own gnome outings from before they connected, and gnomes and two east-wall gnome
   doors now sit on the floor. Gnomes get boots and a contact shadow, door frames meet the
   floor, and distant door labels no longer float on their own on phones and touch screens.
+- Meet Vivienne at the casino bar: buy drinks from the bartender, win at the slots to gain
+  charisma, and pay her (cheaper the more charming you are) to walk her to your Lily
+  Apartments room for a 10-minute lucky night with better slot odds. Drink too much and
+  your charisma drops.
 - Show what NPCs say to you as movie-style subtitles at the bottom of the screen instead of
   a floating speech bubble.
 - Bribe Donald Trump for slightly better slot machine luck. Each bribe doubles in price, up
   to five, and he promises to remodel part of the casino with one of 1,000 quips.
+- Add a food court wing off the south corridor, reached on foot, with the İstanbul Kebab
+  counter moved into it and eight booths you can sit in with Use.
 
 - Replace block player avatars with an original connected low-polygon human mesh, bone-driven vertex animation and customizable blend shapes, and saved casual/tactical outfits, skin, hair and eye choices under Settings → Character Model, shared with other players.
 - Add connected palms and five individually rigged digits per hand, with three joints each, relaxed and gripping poses, and shared first- and third-person hand geometry.
 - Add a rebindable B / left-stick-click middle-finger emote with first- and third-person raise/hold/lower animations, server-owned timing, per-player cooldowns, late-join phase synchronization, and weapon support-hand restoration.
 - Fix the gnome reconnect regression test's loop typing so strict GUT collection runs the entire test file.
-- Switch roulette to an American wheel with a green 00 pocket, on the wheel and table layout.
-- Add low-poly 3D models for the roulette table (wheel, spinning rotor, rollable ball and dealer chip tray) and for the eight casino chip denominations, with 256px-or-smaller pixel-art textures.
-- Replace the placeholder roulette table with the new model: the rotor spins, the ball rolls around the track and drops into the winning pocket, and the table has a matching rectangular collider and sits clear of its neighbours.
+- Remove mobile-only resolution, shadow, anti-aliasing, light and prop-distance limits
+  while keeping touch-friendly layouts.
+- Collect release notes from one file per feature change for the in-game changelog, releases and Discord edge announcements; stop editing shared note lists in feature PRs.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
