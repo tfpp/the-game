@@ -15,6 +15,14 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Talk to Donald Trump and he plays an invisible accordion for everyone to see.",
 	},
 	{
+		"title": "NPC subtitles",
+		"summary": "NPC dialogue now shows as movie subtitles at the bottom of the screen.",
+	},
+	{
+		"title": "Money log",
+		"summary": "The chat log tells you whenever you get money, and why.",
+	},
+	{
 		"title": "Pawn shop",
 		"summary": "Sell slum loot at the pawn shop counter beside the Crown's slum gate.",
 	},

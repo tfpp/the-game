@@ -51,6 +51,10 @@ func interaction_text() -> String:
 	return "Talk to Donald Trump (-$100)"
 
 
+func speaker_name() -> String:
+	return "Donald Trump"
+
+
 func _apply_talk(player: Player) -> bool:
 	var peer := player.get_multiplayer_authority()
 	if _charging.has(peer):
