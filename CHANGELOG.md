@@ -149,6 +149,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   a floating speech bubble.
 - Bribe Donald Trump for slightly better slot machine luck. Each bribe doubles in price, up
   to five, and he promises to remodel part of the casino with one of 1,000 quips.
+- Add a food court wing off the south corridor, reached on foot, with the İstanbul Kebab
+  counter moved into it and eight booths you can sit in with Use.
 
 - Replace block player avatars with an original connected low-polygon human mesh, bone-driven vertex animation and customizable blend shapes, and saved casual/tactical outfits, skin, hair and eye choices under Settings → Character Model, shared with other players.
 - Add connected palms and five individually rigged digits per hand, with three joints each, relaxed and gripping poses, and shared first- and third-person hand geometry.

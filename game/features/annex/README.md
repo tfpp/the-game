@@ -9,6 +9,9 @@ matching the floor footprints. These remove crossing walls at bends and T juncti
 while keeping floors and ceilings intact. The round northwest room also has a clearance cut
 where its outer wall otherwise protrudes into the adjoining corridor.
 
+The south corridor's east wall has one more cut, `FoodCourtDoorway` (x 3, z 38…42,
+3.2 m high), into the food court wing (`features/food_court`).
+
 Keep subtraction volumes after additive geometry in each combiner. New passages
 need continuous floors and standing-player clearance in both directions.
 `tests/features/annex/test_accessibility.gd` sweeps the full standing capsule
