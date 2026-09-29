@@ -67,7 +67,7 @@ func _configure_viewport() -> void:
 	var ui_size := Vector2i(480, 720) if portrait else Vector2i(960, 540)
 	if window.content_scale_size != ui_size:
 		window.content_scale_size = ui_size
-	viewport.scaling_3d_scale = mobile_scale(Vector2(window.size))
+	viewport.scaling_3d_scale = 1.0 if viewport.use_xr else mobile_scale(Vector2(window.size))
 	viewport.msaa_3d = Viewport.MSAA_DISABLED
 	viewport.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
 	viewport.use_taa = false

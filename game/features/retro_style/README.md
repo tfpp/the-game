@@ -82,3 +82,7 @@ StandardMaterial3D surfaces keep their plain colour with matte vertex shading: a
 shared grain albedo used to be multiplied in, but it darkened guns, gnomes and other
 dark props to near black. Authored texture/UV setups and custom shaders are preserved.
 This includes streamed props because it uses the existing bounded material styling queue.
+
+While a WebXR session is active, the viewport uses XR's render size instead of the
+phone's 432-pixel cap, including during resize. The mobile light/material budgets
+still apply. Leaving VR restores the ordinary browser resolution budget.
