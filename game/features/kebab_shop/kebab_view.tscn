@@ -1,0 +1,476 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/casino_hub/textures/prop_grain.png" id="grain"]
+
+
+[sub_resource type="StandardMaterial3D" id="r1"]
+albedo_color = Color(0.87, 0.61, 0.29, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r2"]
+albedo_color = Color(0.31, 0.12, 0.05, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r3"]
+albedo_color = Color(0.83, 0.08, 0.035, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r4"]
+albedo_color = Color(0.27, 0.58, 0.08, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r5"]
+albedo_color = Color(0.98, 0.91, 0.73, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r6"]
+albedo_color = Color(0.65, 0.24, 0.43, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="StandardMaterial3D" id="r7"]
+albedo_color = Color(0.94, 0.90, 0.79, 1)
+roughness = 0.85
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+
+[sub_resource type="CylinderMesh" id="r8"]
+top_radius = 0.08
+bottom_radius = 0.05
+height = 0.32
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r9"]
+top_radius = 0.0725
+bottom_radius = 0.0475
+height = 0.2
+radial_segments = 12
+
+[sub_resource type="BoxMesh" id="r10"]
+size = Vector3(0.048, 0.08, 0.025)
+
+[sub_resource type="BoxMesh" id="r11"]
+size = Vector3(0.048, 0.08, 0.025)
+
+[sub_resource type="BoxMesh" id="r12"]
+size = Vector3(0.048, 0.08, 0.025)
+
+[sub_resource type="BoxMesh" id="r13"]
+size = Vector3(0.048, 0.08, 0.025)
+
+[sub_resource type="BoxMesh" id="r14"]
+size = Vector3(0.048, 0.08, 0.025)
+
+[sub_resource type="BoxMesh" id="r15"]
+size = Vector3(0.048, 0.08, 0.025)
+
+[sub_resource type="BoxMesh" id="r16"]
+size = Vector3(0.048, 0.08, 0.025)
+
+[sub_resource type="BoxMesh" id="r17"]
+size = Vector3(0.048, 0.08, 0.025)
+
+[sub_resource type="BoxMesh" id="r18"]
+size = Vector3(0.048, 0.08, 0.025)
+
+[sub_resource type="SphereMesh" id="r19"]
+radius = 0.025
+height = 0.035
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r20"]
+radius = 0.0165
+height = 0.016
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r21"]
+radius = 0.016
+height = 0.012
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r22"]
+radius = 0.017
+height = 0.012
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r23"]
+radius = 0.025
+height = 0.035
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r24"]
+radius = 0.0165
+height = 0.016
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r25"]
+radius = 0.016
+height = 0.012
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r26"]
+radius = 0.017
+height = 0.012
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r27"]
+radius = 0.025
+height = 0.035
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r28"]
+radius = 0.0165
+height = 0.016
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r29"]
+radius = 0.016
+height = 0.012
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r30"]
+radius = 0.017
+height = 0.012
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r31"]
+radius = 0.025
+height = 0.035
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r32"]
+radius = 0.0165
+height = 0.016
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r33"]
+radius = 0.016
+height = 0.012
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r34"]
+radius = 0.017
+height = 0.012
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r35"]
+radius = 0.025
+height = 0.035
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r36"]
+radius = 0.0165
+height = 0.016
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r37"]
+radius = 0.016
+height = 0.012
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r38"]
+radius = 0.017
+height = 0.012
+radial_segments = 12
+rings = 6
+
+[sub_resource type="BoxMesh" id="r39"]
+size = Vector3(0.021, 0.009, 0.005)
+
+[sub_resource type="BoxMesh" id="r40"]
+size = Vector3(0.021, 0.009, 0.005)
+
+[sub_resource type="BoxMesh" id="r41"]
+size = Vector3(0.021, 0.009, 0.005)
+
+[sub_resource type="BoxMesh" id="r42"]
+size = Vector3(0.021, 0.009, 0.005)
+
+[sub_resource type="BoxMesh" id="r43"]
+size = Vector3(0.021, 0.009, 0.005)
+
+[sub_resource type="BoxMesh" id="r44"]
+size = Vector3(0.021, 0.009, 0.005)
+
+[sub_resource type="BoxMesh" id="r45"]
+size = Vector3(0.021, 0.009, 0.005)
+
+[node name="Kebab" type="Node3D"]
+
+
+[node name="Grip" type="Marker3D" parent="."]
+position = Vector3(0, -0.05, 0)
+
+[node name="Flatbread" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, 0)
+mesh = SubResource("r8")
+material_override = SubResource("r1")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0, -0.12)
+
+[node name="PaperSleeve" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.06, 0.003)
+mesh = SubResource("r9")
+material_override = SubResource("r7")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0, -0.12)
+
+[node name="ShavedMeat0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.042, 0.15, -0.035)
+mesh = SubResource("r10")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0.0, 0.25)
+
+[node name="ShavedMeat1" type="MeshInstance3D" parent="."]
+position = Vector3(0.0, 0.16499999999999998, -0.035)
+mesh = SubResource("r11")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0.8, 0.25)
+
+[node name="ShavedMeat2" type="MeshInstance3D" parent="."]
+position = Vector3(0.042, 0.15, -0.035)
+mesh = SubResource("r12")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+rotation = Vector3(0, 1.6, 0.25)
+
+[node name="ShavedMeat3" type="MeshInstance3D" parent="."]
+position = Vector3(-0.042, 0.16499999999999998, 0.0)
+mesh = SubResource("r13")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+rotation = Vector3(0, 2.4000000000000004, 0.25)
+
+[node name="ShavedMeat4" type="MeshInstance3D" parent="."]
+position = Vector3(0.0, 0.15, 0.0)
+mesh = SubResource("r14")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+rotation = Vector3(0, 3.2, 0.25)
+
+[node name="ShavedMeat5" type="MeshInstance3D" parent="."]
+position = Vector3(0.042, 0.16499999999999998, 0.0)
+mesh = SubResource("r15")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+rotation = Vector3(0, 4.0, 0.25)
+
+[node name="ShavedMeat6" type="MeshInstance3D" parent="."]
+position = Vector3(-0.042, 0.15, 0.035)
+mesh = SubResource("r16")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+rotation = Vector3(0, 4.800000000000001, 0.25)
+
+[node name="ShavedMeat7" type="MeshInstance3D" parent="."]
+position = Vector3(0.0, 0.16499999999999998, 0.035)
+mesh = SubResource("r17")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+rotation = Vector3(0, 5.6000000000000005, 0.25)
+
+[node name="ShavedMeat8" type="MeshInstance3D" parent="."]
+position = Vector3(0.042, 0.15, 0.035)
+mesh = SubResource("r18")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+rotation = Vector3(0, 6.4, 0.25)
+
+[node name="Lettuce0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.052, 0.173, 0.058)
+mesh = SubResource("r19")
+material_override = SubResource("r4")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0, 0.0)
+
+[node name="Tomato0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.052, 0.188, -0.014)
+mesh = SubResource("r20")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Onion0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.052, 0.2, 0.025)
+mesh = SubResource("r21")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="YogurtSauce0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.052, 0.207, 0.009)
+mesh = SubResource("r22")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Lettuce1" type="MeshInstance3D" parent="."]
+position = Vector3(-0.026, 0.173, 0.058)
+mesh = SubResource("r23")
+material_override = SubResource("r4")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0, 0.5)
+
+[node name="Tomato1" type="MeshInstance3D" parent="."]
+position = Vector3(-0.026, 0.188, -0.014)
+mesh = SubResource("r24")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Onion1" type="MeshInstance3D" parent="."]
+position = Vector3(-0.026, 0.2, 0.025)
+mesh = SubResource("r25")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="YogurtSauce1" type="MeshInstance3D" parent="."]
+position = Vector3(-0.026, 0.207, 0.009)
+mesh = SubResource("r26")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Lettuce2" type="MeshInstance3D" parent="."]
+position = Vector3(0.0, 0.173, 0.058)
+mesh = SubResource("r27")
+material_override = SubResource("r4")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0, 1.0)
+
+[node name="Tomato2" type="MeshInstance3D" parent="."]
+position = Vector3(0.0, 0.188, -0.014)
+mesh = SubResource("r28")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Onion2" type="MeshInstance3D" parent="."]
+position = Vector3(0.0, 0.2, 0.025)
+mesh = SubResource("r29")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="YogurtSauce2" type="MeshInstance3D" parent="."]
+position = Vector3(0.0, 0.207, 0.009)
+mesh = SubResource("r30")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Lettuce3" type="MeshInstance3D" parent="."]
+position = Vector3(0.026, 0.173, 0.058)
+mesh = SubResource("r31")
+material_override = SubResource("r4")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0, 1.5)
+
+[node name="Tomato3" type="MeshInstance3D" parent="."]
+position = Vector3(0.026, 0.188, -0.014)
+mesh = SubResource("r32")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Onion3" type="MeshInstance3D" parent="."]
+position = Vector3(0.026, 0.2, 0.025)
+mesh = SubResource("r33")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="YogurtSauce3" type="MeshInstance3D" parent="."]
+position = Vector3(0.026, 0.207, 0.009)
+mesh = SubResource("r34")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="Lettuce4" type="MeshInstance3D" parent="."]
+position = Vector3(0.052, 0.173, 0.058)
+mesh = SubResource("r35")
+material_override = SubResource("r4")
+visibility_range_end = 45.0
+rotation = Vector3(0, 0, 2.0)
+
+[node name="Tomato4" type="MeshInstance3D" parent="."]
+position = Vector3(0.052, 0.188, -0.014)
+mesh = SubResource("r36")
+material_override = SubResource("r3")
+visibility_range_end = 45.0
+
+[node name="Onion4" type="MeshInstance3D" parent="."]
+position = Vector3(0.052, 0.2, 0.025)
+mesh = SubResource("r37")
+material_override = SubResource("r6")
+visibility_range_end = 45.0
+
+[node name="YogurtSauce4" type="MeshInstance3D" parent="."]
+position = Vector3(0.052, 0.207, 0.009)
+mesh = SubResource("r38")
+material_override = SubResource("r5")
+visibility_range_end = 45.0
+
+[node name="ToastMark0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.035, 0.065, 0.066)
+mesh = SubResource("r39")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="ToastMark1" type="MeshInstance3D" parent="."]
+position = Vector3(0.0, 0.065, 0.066)
+mesh = SubResource("r40")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="ToastMark2" type="MeshInstance3D" parent="."]
+position = Vector3(0.035, 0.065, 0.066)
+mesh = SubResource("r41")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="ToastMark3" type="MeshInstance3D" parent="."]
+position = Vector3(-0.035, 0.09, 0.066)
+mesh = SubResource("r42")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="ToastMark4" type="MeshInstance3D" parent="."]
+position = Vector3(0.0, 0.09, 0.066)
+mesh = SubResource("r43")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="ToastMark5" type="MeshInstance3D" parent="."]
+position = Vector3(0.035, 0.09, 0.066)
+mesh = SubResource("r44")
+material_override = SubResource("r2")
+visibility_range_end = 45.0
+
+[node name="ToastMark6" type="MeshInstance3D" parent="."]
+position = Vector3(-0.035, 0.115, 0.066)
+mesh = SubResource("r45")
+material_override = SubResource("r2")
+visibility_range_end = 45.0

@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "The chat log tells you whenever you get money, and why.",
 	},
 	{
+		"title": "İstanbul Kebab",
+		"summary": "Order a free kebab from animated staff directly ahead of casino spawn.",
+	},
+	{
 		"title": "Jackpot fireworks",
 		"summary":
 		"Winning slot spins set off fireworks and spill gold coins; bigger prizes, bigger show.",

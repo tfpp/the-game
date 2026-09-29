@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/holdables/item_definition.gd" id="1"]
+[ext_resource type="PackedScene" path="res://features/kebab_shop/kebab_view.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = "kebab"
+display_name = "Turkish kebab"
+category = 1
+view_scene = ExtResource("2")
+weight = 0.4
+ground_clearance = 0.18
+first_person_offset = Vector3(0.22, -0.23, -0.43)
