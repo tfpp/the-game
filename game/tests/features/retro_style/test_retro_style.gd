@@ -46,7 +46,9 @@ func test_streamed_mesh_gets_cheap_shading_without_touching_custom_screen_shader
 	style.style_node(prop)
 	assert_eq(finish.shading_mode, BaseMaterial3D.SHADING_MODE_PER_VERTEX)
 	assert_eq(finish.texture_filter, BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS)
-	assert_same(finish.albedo_texture, RetroStyle.PROP_GRAIN)
+	# Untextured props keep their true colour: a grain multiply turned guns and gnomes black.
+	assert_null(finish.albedo_texture)
+	assert_false(finish.uv1_triplanar)
 	assert_false(finish.normal_enabled)
 	assert_eq(finish.metallic, 0.0)
 	assert_lte(mesh.radial_segments, 12)
