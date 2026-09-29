@@ -33,6 +33,16 @@ func (f *fakeGitHub) FileContent(_ context.Context, path, ref string) ([]byte, e
 	return nil, &github.APIError{Status: 404, Message: "Not Found"}
 }
 
+func (f *fakeGitHub) FilePaths(_ context.Context, ref string) ([]string, error) {
+	var paths []string
+	for key := range f.contents {
+		if strings.HasSuffix(key, "@"+ref) {
+			paths = append(paths, strings.TrimSuffix(key, "@"+ref))
+		}
+	}
+	return paths, nil
+}
+
 func (f *fakeGitHub) Compare(_ context.Context, base, head string) (github.Comparison, error) {
 	if base == "main" {
 		return github.Comparison{Status: "ahead", BehindBy: f.behind[head]}, nil

@@ -1,0 +1,7 @@
+{
+  "title": "Feature-owned release notes",
+  "summary": "Release notes are collected from each feature so parallel changes can merge cleanly.",
+  "notes": [
+    "Collect release notes from one file per feature change for the in-game changelog, releases and Discord edge announcements; stop editing shared note lists in feature PRs."
+  ]
+}

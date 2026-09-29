@@ -80,28 +80,25 @@ complete, run `harness/verify.sh > /tmp/verify.log 2>&1` and read the end of the
 
 ## Changelogs
 
-A new feature adds one in-game changelog entry, and every change players would notice adds
-one `CHANGELOG.md` bullet (see `AGENTS.md`). Agents have put these in the wrong place
-before, so follow this exactly.
+Every notable change adds one new JSON file under the owning feature's
+`game/features/<name>/release_notes/`. Read `docs/release-notes.md` for the contract.
+Use a unique filename such as `123-jump-pads.json` (substitute the actual issue
+number); concurrent changes to one feature must use different files.
 
-**`game/features/changelog/entries.gd`:** insert the entry at the top of `ENTRIES` in this
-shape (tab-indented), then run `gdformat` on the file:
-
-```gdscript
-	{
-		"title": "Jump pads",
-		"summary": "Step on a glowing pad in the lobby to launch high into the air.",
-	},
+```json
+{
+  "title": "Jump pads",
+  "summary": "Step on a glowing pad to launch high into the air.",
+  "notes": ["Add jump pads to the lobby."]
+}
 ```
 
-Keep the trailing comma after the summary. Without it, `gdformat` joins a short entry onto
-one line, and `scripts/release_notes.sh` only finds titles on their own line. Titles are
-unique and never change once released. The summary is one short sentence for players.
-
-**`CHANGELOG.md`:** add one bullet as the last bullet of the `## [edge]` section: after any
-bullets already under that heading, and before the next `## [` heading. Never put it in the
-introduction above `## [edge]` or in a released version's section. Write it in the
-imperative, for players, wrapped at about 90 columns with a two-space continuation indent.
+Titles are unique and immutable after release. Summary is one short sentence for players.
+Notes are one or more single-line imperative bullets without the `- ` prefix. The game,
+release scripts and Discord bot collect these files automatically. For tooling/docs work,
+use the nearest affected feature; release tooling belongs to `changelog`.
+Do not add to shared `entries.gd` or `CHANGELOG.md`, and do not commit generated lists.
+Revisions edit this PR's own unreleased JSON file; released files remain unchanged.
 
 ## When you finish
 

@@ -33,7 +33,7 @@ the literal words.
    from "Checking your work".
 6. **Document.** Give a new system or public interface a short README in its feature
    directory, update the README of any feature whose behavior or interface you change, and
-   add the changelog entries.
+   add this change's feature-owned release note (see "Changelogs").
 7. **Review your diff** against "What verify.sh can't see", then run `harness/verify.sh`,
    commit, and finish the summary. Reviewers first try the change in an offline web preview
    (single player), so make sure it works there and tell them where to find it.

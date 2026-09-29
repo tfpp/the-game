@@ -109,7 +109,8 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    "🎉 vX.Y.Z is out!" with those notes to `BOT_RELEASE_CHANNEL_ID`, oldest first, each
    once. It checks after each new deploy. The first check announces only the newest live
    release. Then it posts "🧪 New on edge" with the bullets of `CHANGELOG.md`'s
-   `## [edge]` section (merged, not released yet) that the deploy made live, each once;
+   `## [edge]` section plus feature-owned `release_notes/*.json` files added since the
+   latest live release, each once;
    the first check only records them.
 
 **`/queue`** answers privately, to anyone: `/queue which:agent runs` lists the active runs, then
