@@ -104,6 +104,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   they return after six seconds.
 - Enter VR from the Quest / WebXR menu in Quest Browser with headset look, stick
   movement, snap turning, jump and nearby object interaction.
+- Knock out Mamdani instead of killing him; he wakes up a few seconds later. Press Use
+  near him for $10 of subway fare, once an hour.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
