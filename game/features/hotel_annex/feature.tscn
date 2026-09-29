@@ -13,7 +13,7 @@ position = Vector3(5, 1, 27)
 position = Vector3(0, 0, -1400)
 script = ExtResource("room")
 room_scene = "res://features/hotel_annex/interior.tscn"
-bounds = AABB(-21, -1, -1, 56, 10, 36)
+bounds = AABB(-21, -1, -1, 56, 18, 36)
 
 [node name="Arrival" type="Marker3D" parent="Hotel"]
 position = Vector3(8.75, 1, 2.2)

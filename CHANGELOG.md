@@ -74,6 +74,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   take the express elevator to new ten-unit floors as more residents move in.
 - Add a GPS phone: press P (or pick GPS in the Esc menu), search for a room, and follow the
   purple route on the radar and the direction banner, including through doors.
+- Rebuild the hotel wing as a four-floor hotel around a skylit central atrium, with
+  switchback ramps, gallery railings and guest rooms on every upper floor.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

@@ -50,8 +50,8 @@ required authoring tool:
 
 ```sh
 godot --headless --path game -s res://features/world_builder/build.gd -- \
-  res://features/hotel_annex/hotel.json \
-  res://features/hotel_annex/hotel.scn --bake --force
+  res://features/world_builder/examples/hotel.json \
+  res://features/world_builder/examples/hotel.scn --bake --force
 ```
 
 The command generates geometry and UV2 atlases, starts an isolated Godot editor
@@ -85,7 +85,7 @@ UV2 unwraps use 50 cm texels on walls and 15 cm on columns, with a native bake
 texel scale of 0.4. This keeps lighting broad while surface textures provide detail.
 The compiler rejects bakes above 1,000,000 bytes in either source or imported
 runtime lighting assets (with 4 KiB reserved for metadata/cache), retaining the
-previous scene. The six-room hotel uses two 256×256 HDR atlas layers. Native HDR
+previous scene. A six-room layout uses two 256×256 HDR atlas layers. Native HDR
 arrays remain uncompressed for Compatibility/WebGL use. Surface textures retain their
 128×128 nearest-filtered appearance. Godot also saves light probes for dynamic objects.
 
@@ -233,9 +233,8 @@ Baked structural colliders carry the persistent `radar_geometry` group. The desk
 radar reads their floor and wall triangles automatically, including halls and
 openings, with the placed scene's transform. Rebuild older scenes to enable this.
 
-For a playable example, `features/hotel_annex/` connects its saved hotel to the
-casino through shared streamed rooms and teleport doors. Its geometry loads only
-for visiting players; interaction endpoints stay present on every peer.
+The builder is single-storey, so the playable hotel (`features/hotel_annex/`) now
+builds its four-floor atrium from boxes instead of a baked blueprint.
 
 Every peer uses the same baked scene, including late joiners. There is no random
 runtime generation. The tool currently builds flat, axis-aligned, single-storey
