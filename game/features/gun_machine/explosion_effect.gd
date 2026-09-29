@@ -28,29 +28,27 @@ static func spawn(parent: Node, at: Vector3, radius: float) -> void:
 
 
 static func _spawn_flash(effect: Node3D, radius: float) -> void:
-	var light := OmniLight3D.new()
-	light.light_color = Color(1.0, 0.55, 0.15)
-	light.light_energy = 6.0
-	light.omni_range = maxf(radius * 1.5, 2.0)
-	effect.add_child(light)
+	var core := GunFx.flash(Color(1.0, 0.55, 0.15), maxf(radius * 0.6, 0.5))
+	var material := GunFx.glow_material(Color(1.0, 0.55, 0.15)).duplicate() as StandardMaterial3D
+	core.material_override = material
+	effect.add_child(core)
 	var tween := effect.create_tween()
-	tween.tween_property(light, "light_energy", 0.0, FLASH_DURATION_S)
-	tween.tween_callback(light.queue_free)
+	tween.tween_property(material, "albedo_color:a", 0.0, FLASH_DURATION_S)
+	tween.tween_callback(core.queue_free)
 
 
 static func _spawn_shockwave(effect: Node3D, radius: float) -> void:
 	var sphere := MeshInstance3D.new()
-	var mesh := SphereMesh.new()
-	mesh.radius = SHOCKWAVE_START_RADIUS
-	mesh.height = SHOCKWAVE_START_RADIUS * 2.0
-	sphere.mesh = mesh
-	var material := StandardMaterial3D.new()
-	material.albedo_color = Color(1.0, 0.6, 0.15, 0.85)
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	sphere.set_surface_override_material(0, material)
+	sphere.mesh = GunFx.flash_mesh()
+	var material := (
+		GunFx.fade_material(Color(1.0, 0.6, 0.15, 0.85)).duplicate() as StandardMaterial3D
+	)
+	sphere.material_override = material
 	effect.add_child(sphere)
-	var target_scale := Vector3.ONE * maxf(radius / SHOCKWAVE_START_RADIUS, 1.0)
+	# The shared mesh has radius FLASH_MESH_RADIUS; scale it to the start and end radii.
+	var unit := 1.0 / GunFx.FLASH_MESH_RADIUS
+	sphere.scale = Vector3.ONE * SHOCKWAVE_START_RADIUS * unit
+	var target_scale := Vector3.ONE * maxf(radius, SHOCKWAVE_START_RADIUS) * unit
 	var tween := effect.create_tween()
 	tween.set_parallel(true)
 	(

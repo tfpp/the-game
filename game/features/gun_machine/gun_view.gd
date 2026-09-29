@@ -67,10 +67,7 @@ static func _add_ray_gun_details(
 		ring.mesh = mesh
 		ring.rotation.x = deg_to_rad(90.0)
 		ring.position = Vector3(0, 0, -length * (0.25 + index * 0.25))
-		var material := _material(glow)
-		material.emission_enabled = true
-		material.emission = glow
-		ring.material_override = material
+		ring.material_override = GunFx.material(glow, true)
 		root.add_child(ring)
 
 
@@ -102,6 +99,4 @@ static func _barrel_offsets(barrel_count: int) -> Array[Vector2]:
 
 
 static func _material(color: Color) -> StandardMaterial3D:
-	var material := StandardMaterial3D.new()
-	material.albedo_color = color
-	return material
+	return GunFx.material(color)

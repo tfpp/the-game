@@ -115,6 +115,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Move feature textures, models and audio into `game/assets/<feature>/`.
 - Add pixel-art roulette table textures (wheel, betting layout, felt, rail, apron) under
   `game/assets/roulette/textures/`.
+- Stop the game stuttering when you buy a gun or fire: gun flashes are glow effects instead
+  of lights, and their shaders load with the game.
 - Fix gnomes and two east-wall gnome doors floating slightly above the casino floor.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
