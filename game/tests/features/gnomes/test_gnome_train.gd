@@ -155,6 +155,6 @@ func test_joining_a_server_drops_gnomes_simulated_before_connecting() -> void:
 	Network.mode_changed.emit(Network.Mode.CLIENT)
 	assert_eq(train.net_shown, 0)
 	assert_true(train.is_resting())
-	for i in train._gnomes.size():
+	for i: int in train._gnomes.size():
 		assert_false(train._gnomes[i].is_shown())
 		assert_eq(train.net_positions[i], train._hole_positions[train._from_hole])

@@ -185,6 +185,13 @@ func _refresh() -> void:
 	_stow.disabled = _selected >= 0 or item.is_empty() or not _inventory.backpack.has("")
 	_drop.disabled = item.is_empty()
 	_preview.model.set_skin_index(_inventory.hand().skin_tone_index())
+	var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
+	if models != null:
+		var peer := _inventory.hand().peer_id
+		_preview.model.set_body_type(models.type_for(peer))
+		_preview.model.set_head_type(models.type_for_head(peer))
+		_preview.model.set_tail_type(models.type_for_tail(peer))
+		_preview.model.set_appearance(models.appearance_for(peer))
 	_preview.show_clothing(_inventory.shirt, _inventory.pants)
 	_refresh_stash()
 
