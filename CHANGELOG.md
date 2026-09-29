@@ -65,10 +65,6 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Keep the hotel baked lighting below 1 MB in both saved and exported assets, and enforce the budget before publishing new bakes.
 - Inspect the build's repository snapshot with read-only Git commands in the console;
   type git help to see the supported commands.
-- Add an Electron desktop app for the live website on Linux, macOS and Windows,
-  with portable app packaging commands.
-- Add a curl installer for the Electron desktop app on macOS, Linux and Windows Git Bash,
-  with locked dependencies and safe rebuilds.
 - Claim a free apartment at the Lily Apartments front desk in the south lobby, and
   take the express elevator to new ten-unit floors as more residents move in.
 
