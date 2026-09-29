@@ -3,8 +3,10 @@ extends RefCounted
 # Command dispatch uses early returns to keep validation next to each command.
 ## Explicit adapter to existing settings owners. Never evaluates code or arbitrary properties.
 
+const GitCommands := preload("res://features/console/git_commands.gd")
 const Bindings := preload("res://features/control_scheme/input_bindings.gd")
 const HELP := {
+	"git": "Read-only repository snapshot; git help lists supported commands",
 	"help": "List commands; help <text> filters them",
 	"clear": "Clear console output",
 	"sensitivity": "Mouse sensitivity: 0.1..10 (local, saved)",
@@ -24,6 +26,7 @@ const HELP := {
 }
 
 var tree: SceneTree
+var git_commands := GitCommands.new()
 
 
 func _init(scene_tree: SceneTree) -> void:
@@ -44,6 +47,8 @@ func execute(raw: String) -> String:
 			if value.is_empty() or key.contains(value.to_lower()):
 				lines.append("%s — %s" % [key, HELP[key]])
 		return "\n".join(lines)
+	if command == "git":
+		return git_commands.execute(value)
 	if command == "clear":
 		return ""
 	if command == "bind":
@@ -106,7 +111,9 @@ func execute(raw: String) -> String:
 func suggestions(raw: String) -> PackedStringArray:
 	var query := raw.to_lower().strip_edges(true, false)
 	var candidates: Array[String] = []
-	if query.begins_with("bind "):
+	if query.begins_with("git "):
+		candidates.assign(GitCommands.COMMANDS)
+	elif query.begins_with("bind "):
 		var words := query.split(" ", false)
 		if (
 			words.size() >= 2
@@ -155,9 +162,9 @@ func suggestions(raw: String) -> PackedStringArray:
 	var prefix: PackedStringArray = []
 	var partial: PackedStringArray = []
 	for candidate: String in candidates:
-		if candidate.begins_with(query):
+		if candidate.to_lower().begins_with(query):
 			prefix.append(candidate)
-		elif not query.is_empty() and candidate.contains(query):
+		elif not query.is_empty() and candidate.to_lower().contains(query):
 			partial.append(candidate)
 	prefix.append_array(partial)
 	return prefix

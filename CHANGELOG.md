@@ -66,6 +66,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Reuse unchanged world-builder bakes using input and output content hashes; add `--rebake` and reduce pillars and light fittings to at most eight radial sides.
 
 - Keep the hotel baked lighting below 1 MB in both saved and exported assets, and enforce the budget before publishing new bakes.
+- Inspect the build's repository snapshot with read-only Git commands in the console;
+  type git help to see the supported commands.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
