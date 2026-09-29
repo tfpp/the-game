@@ -30,6 +30,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   and server restarts.
 - Press ~ for a Source-style settings console with autocomplete and command history;
   use sv_cheats 1 to unlock noclip and sv_cheats 0 to disable it for everyone.
+- Add four walking casino patrons to the gaming floor: punch them to stagger them, knock
+  them out into a limp ragdoll, and watch them get back up and carry on.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

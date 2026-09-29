@@ -11,8 +11,14 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Casino patrons",
+		"summary": "Gamblers stroll the casino floor; punch them silly and they ragdoll.",
+	},
+	{
 		"title": "Developer console",
 		"summary": "Press ~ for settings commands, autocomplete and sv_cheats to unlock noclip.",
+	},
+	{
 		"title": "Boxing",
 		"summary":
 		"Empty-handed, click to jab or hold and release to power punch; knock dummies flat.",
