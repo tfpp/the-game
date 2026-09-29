@@ -26,6 +26,10 @@ const ENTRIES: Array[Dictionary] = [
 		"Textured human models with casual and tactical outfits; customize your look in Settings.",
 	},
 	{
+		"title": "NPC subtitles",
+		"summary": "NPC dialogue now shows as movie subtitles at the bottom of the screen.",
+	},
+	{
 		"title": "Money log",
 		"summary": "The chat log tells you whenever you get money, and why.",
 	},

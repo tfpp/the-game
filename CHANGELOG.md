@@ -141,6 +141,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   run their own gnome outings from before they connected, and gnomes and two east-wall gnome
   doors now sit on the floor. Gnomes get boots and a contact shadow, door frames meet the
   floor, and distant door labels no longer float on their own on phones and touch screens.
+- Show what NPCs say to you as movie-style subtitles at the bottom of the screen instead of
+  a floating speech bubble.
 
 - Replace block player avatars with an original connected low-polygon human mesh, bone-driven vertex animation and customizable blend shapes, and saved casual/tactical outfits, skin, hair and eye choices under Settings → Character Model, shared with other players.
 - Add connected palms and five individually rigged digits per hand, with three joints each, relaxed and gripping poses, and shared first- and third-person hand geometry.
