@@ -115,7 +115,7 @@ shader uploads. Labels and interaction prompts keep their normal readable fonts.
 ## Kaaba blessings
 
 Players who prayed at the Kaaba ([kaaba](../kaaba/README.md)) carry blessings. The
-server passes them to `PlayerMoney.spin()` through the legacy `rerolls` argument.
+server passes them to `PlayerMoney.spin()` through the separate `blessings` argument.
 Each stack adds 200% of the base win chance (4% becomes 12% with one, up to 44%
 with five); a win spends all stacks. Temporary wallets and the authenticated API
 use the same exact odds and equal winning-symbol probabilities. The 80% return

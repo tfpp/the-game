@@ -29,6 +29,10 @@ func test_slot_passes_only_operators_blessings_and_consumes_only_on_win() -> voi
 	add_child_autofree(kaaba)
 	var prayer := kaaba.get_node("Prayer") as KaabaPrayer
 	prayer.blessings = {1: 2, 2: 5}
+	var trump := preload("res://features/casino_patrons/trump.tscn").instantiate() as Trump
+	trump._bribes[1] = Trump.MAX_BRIBES
+	add_child_autofree(trump)
+	trump.set_physics_process(false)
 	var machine := preload("res://features/slot_machine/machine.tscn").instantiate() as SlotMachine
 	add_child_autofree(machine)
 	machine.set_process(false)
@@ -60,5 +64,17 @@ func test_old_wallet_callers_send_zero_blessings_and_excess_is_bounded() -> void
 	wallet.set_process(false)
 	await wallet.spin(1, "plain")
 	assert_eq(wallet.sent, {"wager_cents": 100, "blessings": 0})
-	await wallet.spin(1, "bounded", 1500, 999)
+	await wallet.spin(1, "bounded", 1500, 0, 999)
 	assert_eq(wallet.sent, {"wager_cents": 1500, "blessings": 5})
+
+
+func test_legacy_extra_roll_stays_small_and_separate_from_blessings() -> void:
+	var wallet := PlayerMoney.new()
+	add_child_autofree(wallet)
+	wallet.set_process(false)
+	var wins := 0
+	for spin: int in 10000:
+		wallet.balances[1] = 2000
+		var result: Dictionary = await wallet.spin(1, "favor%d" % spin, 1, 1)
+		wins += int(int(result.get("payout", 0)) > 0)
+	assert_between(wins, 650, 920, "one extra ordinary roll wins about 7.84%, not 12%")

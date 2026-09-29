@@ -172,9 +172,11 @@ func _refresh(peer: int) -> void:
 
 
 ## wager_cents lets each slot machine set its own buy-in (default $1).
-## `rerolls` is the legacy parameter name for Kaaba blessing stacks (0..5).
+## `rerolls` retains temporary-wallet extra rolls; `blessings` applies exact Kaaba odds.
 ## Both temporary wallets and the accounts API apply +200% base win chance per stack.
-func spin(peer: int, id: String, wager_cents: int = 100, rerolls: int = 0) -> Dictionary:
+func spin(
+	peer: int, id: String, wager_cents: int = 100, rerolls: int = 0, blessings: int = 0
+) -> Dictionary:
 	if not multiplayer.is_server() or _busy.has(peer):
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
@@ -186,7 +188,12 @@ func spin(peer: int, id: String, wager_cents: int = 100, rerolls: int = 0) -> Di
 		if balance < wager_cents:
 			result = {"error": "You need %s to spin" % format_money(wager_cents)}
 		else:
-			var reels := SlotSpinCycle.new().blessed_result(rerolls)
+			var cycle := SlotSpinCycle.new()
+			var reels := cycle.blessed_result(blessings)
+			for attempt: int in maxi(rerolls, 0):
+				if SlotSpinCycle.is_win(reels):
+					break
+				reels = cycle.next_result()
 			var payout := SlotSpinCycle.payout(reels, wager_cents)
 			result = {"reels": reels, "payout": payout, "balance": balance - wager_cents + payout}
 	else:
@@ -196,7 +203,7 @@ func spin(peer: int, id: String, wager_cents: int = 100, rerolls: int = 0) -> Di
 			account,
 			"spin",
 			str(_unresolved[account]),
-			{"wager_cents": wager_cents, "blessings": clampi(rerolls, 0, 5)}
+			{"wager_cents": wager_cents, "blessings": clampi(blessings, 0, 5)}
 		)
 		if generation == _generation and (result.has("balance") or result.has("rejected")):
 			_unresolved.erase(account)

@@ -28,8 +28,8 @@ Different players can pray simultaneously. Duplicate requests cannot restart tim
 Walking away, death or a missing player cancels an unfinished prayer. Earned blessings
 survive respawn; disconnect and session change clear them. They are not persisted.
 `SlotMachine` reads `blessings_for()` and passes it to `PlayerMoney.spin()` through the
-legacy `rerolls` argument, then calls `consume()` on a win. That argument now means
-blessing stacks, not repeated independent rolls. Both game and API map a uniform
+separate `blessings` argument, then calls `consume()` on a win. The `rerolls` argument
+remains reserved for extra independent rolls. Both game and API map a uniform
 0..124 ticket to the same outcome distribution, preserving equal winning symbols.
 
 Deploy the updated accounts API before the game; old APIs ignore the new signed

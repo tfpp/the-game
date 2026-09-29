@@ -73,8 +73,8 @@ SQLite and a full minute of income.
 
 ## Kaaba luck
 
-`spin(peer, id, wager_cents, rerolls)` keeps its signature; `rerolls` now denotes
-Kaaba blessing stacks (clamped to 0..5). The server reads them from KaabaPrayer,
+`spin(peer, id, wager_cents, rerolls, blessings)` retains temporary-wallet extra
+rolls in `rerolls` and adds optional Kaaba `blessings` (clamped to 0..5). The server reads them from KaabaPrayer,
 never from a client payload, and includes `blessings` in its signed spin request.
 The API rejects counts outside 0..5; omitted counts default to zero for old servers.
 Each stack adds 200% of the base 4% win chance, giving 12% with one and 44% with five.

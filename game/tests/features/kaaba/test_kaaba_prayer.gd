@@ -95,7 +95,7 @@ func test_temporary_wallet_uses_blessings() -> void:
 	wallet.set_process(false)
 	var wins := 0
 	for spin: int in 1000:
-		var result: Dictionary = await wallet.spin(1, "id%d" % spin, 1, 5)
+		var result: Dictionary = await wallet.spin(1, "id%d" % spin, 1, 0, 5)
 		wins += int(int(result.get("payout", 0)) > 0)
 	assert_between(wins, 330, 550, "five blessings win 44% of spins")
 
