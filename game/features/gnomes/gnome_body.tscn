@@ -1,4 +1,6 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://features/gnomes/gnome.gd" id="1_gnome"]
 
 [sub_resource type="CapsuleMesh" id="TorsoMesh"]
 radius = 0.16
@@ -29,24 +31,37 @@ height = 0.16
 [sub_resource type="StandardMaterial3D" id="BeardMat"]
 albedo_color = Color(0.95, 0.95, 0.92, 1)
 
-[node name="GnomeBody" type="Node3D"]
+[sub_resource type="CapsuleShape3D" id="HitShape"]
+radius = 0.2
+height = 0.8
 
-[node name="Torso" type="MeshInstance3D" parent="."]
+[node name="GnomeBody" type="StaticBody3D"]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_gnome")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+shape = SubResource("HitShape")
+
+[node name="Body" type="Node3D" parent="."]
+
+[node name="Torso" type="MeshInstance3D" parent="Body"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.21, 0)
 mesh = SubResource("TorsoMesh")
 surface_material_override/0 = SubResource("TorsoMat")
 
-[node name="Head" type="MeshInstance3D" parent="."]
+[node name="Head" type="MeshInstance3D" parent="Body"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 mesh = SubResource("HeadMesh")
 surface_material_override/0 = SubResource("HeadMat")
 
-[node name="Hat" type="MeshInstance3D" parent="Head"]
+[node name="Hat" type="MeshInstance3D" parent="Body/Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 mesh = SubResource("HatMesh")
 surface_material_override/0 = SubResource("HatMat")
 
-[node name="Beard" type="MeshInstance3D" parent="Head"]
+[node name="Beard" type="MeshInstance3D" parent="Body/Head"]
 transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, -0.06, 0.08)
 mesh = SubResource("BeardMesh")
 surface_material_override/0 = SubResource("BeardMat")

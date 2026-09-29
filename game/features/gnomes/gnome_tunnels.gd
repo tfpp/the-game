@@ -29,14 +29,15 @@ func _ready() -> void:
 func _link(hole: Node3D, index: int, label: String) -> void:
 	var surface := Marker3D.new()
 	surface.name = "SurfaceArrival"
-	surface.position = Vector3(0, 1.1, 0)
+	# Holes sit on walls facing +Z; surface a step into the room.
+	surface.position = Vector3(0, 1.1, 1.2)
 	hole.add_child(surface)
 	var arrival := Marker3D.new()
 	arrival.name = "Arrival%d" % index
 	arrival.position = Vector3(index * 8, 1.1, 0)
 	arrival.rotation.y = -PI / 2
 	tunnel.add_child(arrival)
-	_add_door(hole, "Enter", Vector3(0, 0.15, 0), arrival, "Enter gnome tunnels (4x speed)")
+	_add_door(hole, "Enter", Vector3(0, 0.4, 0.2), arrival, "Enter gnome tunnels (4x speed)")
 	_add_door(tunnel, "Exit%d" % index, Vector3(index * 8, 1, -2.8), surface, "Exit to " + label)
 	var sign := Label3D.new()
 	sign.text = label + "\nUSE to surface"
@@ -46,7 +47,7 @@ func _link(hole: Node3D, index: int, label: String) -> void:
 	tunnel.add_child(sign)
 	var entry_sign := Label3D.new()
 	entry_sign.text = label + "\nGnome tunnels - USE"
-	entry_sign.position = Vector3(0, 0.8, 0)
+	entry_sign.position = Vector3(0, 1.0, 0.15)
 	entry_sign.pixel_size = 0.003
 	entry_sign.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	hole.add_child(entry_sign)

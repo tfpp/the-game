@@ -12,49 +12,73 @@ script = ExtResource("3_tunnels")
 navigation_mesh = ExtResource("2_navmesh")
 
 [node name="TrainNorth" parent="." instance=ExtResource("1_train")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 0, -32.5)
+
+[node name="Hole0" parent="TrainNorth" index="0"]
+position = Vector3(-30, 0, -34)
+rotation = Vector3(0, 0, 0)
+
+[node name="Hole1" parent="TrainNorth" index="1"]
+position = Vector3(-18, 0, -34)
+rotation = Vector3(0, 0, 0)
+
+[node name="Hole2" parent="TrainNorth" index="2"]
+position = Vector3(0, 0, -34)
+rotation = Vector3(0, 0, 0)
+
+[node name="Hole3" parent="TrainNorth" index="3"]
+position = Vector3(18, 0, -34)
+rotation = Vector3(0, 0, 0)
 
 [node name="TrainSouth" parent="." instance=ExtResource("1_train")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 20, 0, 32.5)
 
 [node name="Hole0" parent="TrainSouth" index="0"]
-position = Vector3(-13, 0, -1)
+position = Vector3(-24, 0, 34)
+rotation = Vector3(0, 3.14159, 0)
 
 [node name="Hole1" parent="TrainSouth" index="1"]
-position = Vector3(16, 0, 17)
+position = Vector3(-6, 0, 34)
+rotation = Vector3(0, 3.14159, 0)
 
 [node name="Hole2" parent="TrainSouth" index="2"]
-position = Vector3(7, 0, -1)
+position = Vector3(12, 0, 34)
+rotation = Vector3(0, 3.14159, 0)
 
 [node name="Hole3" parent="TrainSouth" index="3"]
-position = Vector3(-3, 0, 10)
+position = Vector3(30, 0, 34)
+rotation = Vector3(0, 3.14159, 0)
 
 [node name="TrainEast" parent="." instance=ExtResource("1_train")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 32.5, 0, -20)
 
 [node name="Hole0" parent="TrainEast" index="0"]
-position = Vector3(-16, 0, -3)
+position = Vector3(34, 0, -30)
+rotation = Vector3(0, -1.5708, 0)
 
 [node name="Hole1" parent="TrainEast" index="1"]
-position = Vector3(0, 0, 1)
+position = Vector3(34, 0.12, -18)
+rotation = Vector3(0, -1.5708, 0)
 
 [node name="Hole2" parent="TrainEast" index="2"]
-position = Vector3(-9, 0, 3)
+position = Vector3(34, 0.12, 6)
+rotation = Vector3(0, -1.5708, 0)
 
 [node name="Hole3" parent="TrainEast" index="3"]
-position = Vector3(-6, 0, -3)
+position = Vector3(34, 0, 24)
+rotation = Vector3(0, -1.5708, 0)
 
 [node name="TrainWest" parent="." instance=ExtResource("1_train")]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -32.5, 0, 18)
 
 [node name="Hole0" parent="TrainWest" index="0"]
-position = Vector3(-16, 0, -3)
+position = Vector3(-34, 0, -30)
+rotation = Vector3(0, 1.5708, 0)
 
 [node name="Hole1" parent="TrainWest" index="1"]
-position = Vector3(2, 0, 1)
+position = Vector3(-34, 0, -18)
+rotation = Vector3(0, 1.5708, 0)
 
 [node name="Hole2" parent="TrainWest" index="2"]
-position = Vector3(-7, 0, -2)
+position = Vector3(-34, 0, 0)
+rotation = Vector3(0, 1.5708, 0)
 
 [node name="Hole3" parent="TrainWest" index="3"]
-position = Vector3(-2, 0, -3)
+position = Vector3(-34, 0, 18)
+rotation = Vector3(0, 1.5708, 0)

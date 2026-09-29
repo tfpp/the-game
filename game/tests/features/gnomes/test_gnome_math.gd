@@ -54,3 +54,20 @@ func test_gnome_visible_only_strictly_between_the_holes() -> void:
 	assert_false(GnomeMath.gnome_visible(0.0, 5.0))
 	assert_false(GnomeMath.gnome_visible(5.0, 5.0))
 	assert_true(GnomeMath.gnome_visible(2.5, 5.0))
+
+
+func test_wander_target_goes_into_the_room() -> void:
+	var target := GnomeMath.wander_target(Vector3(0, 0, -34), Vector3(0, 0, 1), Vector2(0.5, 0))
+	assert_gt(target.z, -34.0 + GnomeMath.WANDER_MIN_DEPTH - 0.001)
+	assert_almost_eq(target.y, 0.0, 0.0001)
+
+
+func test_route_distance_waits_for_the_delay() -> void:
+	assert_eq(GnomeMath.route_distance(1.0, 2.0, 3.0), 0.0)
+	assert_almost_eq(GnomeMath.route_distance(3.0, 1.0, 2.0), 4.0, 0.0001)
+
+
+func test_flap_opens_only_near_the_door() -> void:
+	assert_almost_eq(GnomeMath.flap_angle(0.0), GnomeMath.FLAP_OPEN, 0.0001)
+	assert_eq(GnomeMath.flap_angle(INF), 0.0)
+	assert_eq(GnomeMath.flap_angle(GnomeMath.FLAP_REACH), 0.0)

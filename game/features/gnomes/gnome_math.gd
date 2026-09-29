@@ -1,7 +1,7 @@
 class_name GnomeMath
 extends RefCounted
-## Pure math for the gnomes feature: single-file "train" spacing as a line of gnomes
-## dashes along a navmesh path between holes picked at random from a burrow's set.
+## Pure math for the gnomes feature: routes, wandering, avoidance and door flaps for
+## a burrow of gnomes that roam between holes picked at random from a burrow's set.
 ## Deterministic given its inputs and free of scene access, so it's unit-testable the
 ## same way core/movement/source_movement.gd keeps math separate from the node that
 ## uses it.
@@ -14,6 +14,13 @@ const GNOME_COUNT := 3
 const SPEED_JITTER := 0.2
 const AVOID_RADIUS := 3.0
 const AVOID_MAX_OFFSET := 1.1
+const WANDER_RADIUS := 7.0
+const WANDER_MIN_DEPTH := 1.5
+const WANDER_STOPS_MIN := 2
+const WANDER_STOPS_MAX := 4
+const EMERGE_STAGGER := 0.6
+const FLAP_REACH := 0.9
+const FLAP_OPEN := 1.2
 
 
 ## Total distance (meters) the leader must cover for the whole line to clear a
@@ -162,7 +169,7 @@ static func leg_speed(base_speed: float, rng: float) -> float:
 
 
 ## Sideways nudge (world-space, y = 0) that steers a gnome at `gnome_pos` away from
-## every position in `player_positions` within AVOID_RADIUS, perpendicular to
+## every obstacle (player, NPC, frog) in `player_positions` within AVOID_RADIUS, perpendicular to
 ## `travel_dir` so it reads as a sidestep rather than a slowdown. Contributions from
 ## multiple nearby players stack, then the total is capped at AVOID_MAX_OFFSET.
 static func avoidance_offset(
@@ -185,3 +192,29 @@ static func avoidance_offset(
 	if push.length() > AVOID_MAX_OFFSET:
 		push = push.normalized() * AVOID_MAX_OFFSET
 	return push
+
+
+## Where a wandering gnome should head next: `offset` (a caller-supplied random
+## vector in [-1, 1] on x and z, normally from `randf_range`) scaled to WANDER_RADIUS,
+## then pushed into the room along the hole's outward `normal` so gnomes spread out
+## into the room instead of scraping along the wall they came out of.
+static func wander_target(hole: Vector3, normal: Vector3, offset: Vector2) -> Vector3:
+	var flat_normal := Vector3(normal.x, 0.0, normal.z)
+	flat_normal = flat_normal.normalized() if not flat_normal.is_zero_approx() else Vector3.BACK
+	var target := hole + flat_normal * (WANDER_MIN_DEPTH + absf(offset.y) * WANDER_RADIUS)
+	target += Vector3(-flat_normal.z, 0.0, flat_normal.x) * offset.x * WANDER_RADIUS
+	return target
+
+
+## Distance (meters) a gnome has covered on its own route `elapsed` seconds into an
+## outing, leaving the hole `delay` seconds after the outing started. Never negative.
+static func route_distance(elapsed: float, delay: float, speed: float) -> float:
+	return maxf(elapsed - delay, 0.0) * maxf(speed, 0.0)
+
+
+## Swing (radians) of a doggy-door flap given how far the nearest visible gnome is
+## from the door: fully open (FLAP_OPEN) at the door, closed at FLAP_REACH and beyond.
+static func flap_angle(nearest_distance: float) -> float:
+	if nearest_distance >= FLAP_REACH:
+		return 0.0
+	return FLAP_OPEN * (1.0 - clampf(nearest_distance, 0.0, FLAP_REACH) / FLAP_REACH)

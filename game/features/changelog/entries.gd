@@ -36,6 +36,10 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
+		"title": "Doggy-door gnomes",
+		"summary": "Gnomes pop out of wall doggy doors, roam, dodge you and can be shot.",
+	},
+	{
 		"title": "Arcade attract mode",
 		"summary": "Arcade cabinets idle on a title screen and load their game when you use them.",
 	},
