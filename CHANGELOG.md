@@ -32,6 +32,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   use sv_cheats 1 to unlock noclip and sv_cheats 0 to disable it for everyone.
 - Play Super Turbo Turkey Puncher 3 on two mouse-operated computers in the Adventure
   Arcade, with shared screens, timed rounds and cabinet high scores.
+- Stop casino benches and props from sliding when you turn the camera, and stop guns,
+  gnomes and other plain-coloured props from rendering almost black.
 - Add four walking casino patrons to the gaming floor: punch them to stagger them, knock
   them out into a limp ragdoll, and watch them get back up and carry on.
 

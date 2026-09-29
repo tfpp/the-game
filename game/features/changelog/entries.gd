@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Gamblers stroll the casino floor; punch them silly and they ragdoll.",
 	},
 	{
+		"title": "Steady casino textures",
+		"summary": "Props no longer slide as you turn, and guns and gnomes show their colours.",
+	},
+	{
 		"title": "Turkey Puncher computers",
 		"summary": "Click arcade computer screens to play Super Turbo Turkey Puncher 3.",
 	},

@@ -3,8 +3,6 @@ extends Node
 ## Apply the same inexpensive art direction to existing and streamed 3D props.
 ## UI, font atlases and arcade screen shaders keep their own sampling and resolution.
 
-const PROP_GRAIN := preload("res://features/casino_hub/textures/prop_grain.png")
-
 const MOBILE_HEIGHT := 432.0
 const MOBILE_MAX_SCALE := 0.7
 const BATCH_SIZE := 64
@@ -135,10 +133,6 @@ func _style_material(material: Material) -> void:
 	if surface.shading_mode != BaseMaterial3D.SHADING_MODE_UNSHADED:
 		surface.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
 	surface.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
-	if surface.albedo_texture == null:
-		surface.albedo_texture = PROP_GRAIN
-		surface.uv1_triplanar = true
-		surface.uv1_scale = Vector3(2.5, 2.5, 2.5)
 	surface.metallic = 0.0
 	surface.metallic_specular = 0.0
 	surface.roughness = 1.0

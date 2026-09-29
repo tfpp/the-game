@@ -6,23 +6,17 @@ uniform vec4 tint : source_color = vec4(1.0);
 uniform float texture_scale = 0.25;
 uniform float texture_inset = 0.0;
 uniform float color_steps = 31.0;
-// A small affine interpolation blend suggests console texture swim without moving targets.
-uniform float affine_amount : hint_range(0.0, 0.15) = 0.04;
 varying vec3 world_position;
 varying vec3 world_normal;
-varying vec3 affine_position;
-varying float affine_w;
 
 void vertex() {
 	world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	world_normal = MODEL_NORMAL_MATRIX * NORMAL;
-	float clip_w = max(0.01, (PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).w);
-	affine_position = world_position * clip_w;
-	affine_w = clip_w;
 }
 
 void fragment() {
-	vec3 p = mix(world_position, affine_position / max(affine_w, 0.01), affine_amount);
+	// World-anchored mapping: textures must not swim when the camera turns.
+	vec3 p = world_position;
 	vec3 n = abs(world_normal);
 	vec2 uv = n.y >= max(n.x, n.z) ? p.xz : (n.x > n.z ? p.zy : p.xy);
 	vec2 sample_uv = uv * texture_scale;
