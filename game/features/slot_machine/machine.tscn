@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://features/slot_machine/slot_machine.gd" id="1"]
 [ext_resource type="Script" path="res://features/slot_machine/slot_machine_view.gd" id="2"]
+[ext_resource type="Script" path="res://features/slot_machine/slot_celebration.gd" id="3"]
 
 [sub_resource type="BoxShape3D" id="Hull"]
 size = Vector3(2.2, 2.8, 1.2)
@@ -29,3 +30,6 @@ unit_size = 5.0
 [node name="Sync" type="MultiplayerSynchronizer" parent="."]
 root_path = NodePath("..")
 replication_config = SubResource("Replication")
+
+[node name="Celebration" type="Node3D" parent="."]
+script = ExtResource("3")
