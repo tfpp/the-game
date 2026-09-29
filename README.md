@@ -1,4 +1,4 @@
-# The Game
+# Casino Royale
 
 [![Play now](https://img.shields.io/badge/play-tfpp.github.io%2Fthe--game-blue)](https://tfpp.github.io/the-game/)
 [![Game CI](https://github.com/tfpp/the-game/actions/workflows/game-ci.yml/badge.svg)](https://github.com/tfpp/the-game/actions/workflows/game-ci.yml)
@@ -6,10 +6,17 @@
 
 **▶ Play it in your browser: <https://tfpp.github.io/the-game/>**
 
-A multiplayer first-person sandbox with Source-style movement (strafe-jumping, timed
-b-hops), built by friends and LLM agents through Discord. Someone posts `/feature` in
-Discord, a coding agent opens a pull request, a trusted member approves it from the
-thread, and the change ships to everyone.
+Casino Royale is a multiplayer game of desperation, greed and fleeting fortune.
+Gamble inside the worn Golden Crown, then leave its gates for rain-soaked alleys
+and an abandoned parking garage. Search for valuables, fight over them, escape
+alive and sell what you carried home. Your winnings feed the same wallet used at
+the slots and roulette table; dying during an excursion scatters your valuables
+for other players to claim.
+
+The game uses first-person Source-style movement (strafe-jumping, timed b-hops)
+and is built by friends and LLM agents through Discord. Someone posts `/feature`
+in Discord, a coding agent opens a pull request, a trusted member approves it
+from the thread, and the change ships to everyone.
 
 ## Contents
 

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://tests/features/retro_style/runtime_perf_probe.gd" id="1_probe"]
+[ext_resource type="PackedScene" path="res://main.tscn" id="2_game"]
+
+[node name="RuntimePerfProbe" type="Node"]
+script = ExtResource("1_probe")
+
+[node name="Game" parent="." instance=ExtResource("2_game")]

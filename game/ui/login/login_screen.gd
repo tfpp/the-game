@@ -205,7 +205,8 @@ func _after_sign_in(account: Dictionary, message: String, auto_play: bool = fals
 
 
 func _show_sign_in(message: String) -> void:
-	_clear("Sign in", message)
+	_clear("CASINO ROYALE", message)
+	_label("Sign in to the Golden Crown")
 	var email := _field("Email")
 	var password := _field("Password", true)
 	var submit := func() -> void:
@@ -324,7 +325,8 @@ func _show_game_menu(message: String) -> void:
 
 ## Menu when no server is configured (native builds default to offline).
 func _show_offline_menu() -> void:
-	_clear("Menu", "")
+	_clear("CASINO ROYALE", "")
+	_label("The Golden Crown is open. Gamble inside, or leave the gate to find your fortune.")
 	_menu_open = true
 	_resume_button()
 	_add_esc_menu_links()
@@ -353,6 +355,7 @@ func _show_ready(message: String, auto_play: bool = false) -> void:
 		_play()
 		return
 	_clear("Signed in as %s" % _account.get("display_name", ""), message)
+	_label("Make money. Lose money. Steal it back. Get lucky.")
 	if version_mismatch:
 		_button("Reload page", func() -> void: JavaScriptBridge.eval("window.location.reload()"))
 		_game_button("Play", _play, false)

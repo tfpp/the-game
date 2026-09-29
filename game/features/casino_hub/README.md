@@ -1,4 +1,4 @@
-# The Gilded Lily
+# The Golden Crown
 
 A faded 1964 casino. `world/room.tscn` instances `interior.tscn` and
 retains the stable `Room/Spawn` path and all five original annex entrances. This

@@ -12,6 +12,10 @@ fill the matching empty equipment slot first (hand, shirt or pants), then use th
 backpack. Equipping a backpack item swaps it with the current item in that slot,
 even when the bag is full. Eating and throwing affect only the held item.
 
+Searching a car or dumpster opens its shared stash beside your backpack. Drag
+an item to an empty slot, or tap it to fill the next empty slot. Other players
+see items disappear as they are claimed.
+
 Shirts and pants have fixed colors. Find other colors to change your outfit;
 there are no dye controls. Two clothing pickups sit near spawn, two to the west,
 and two to the east. Clothes keep their color through swaps, drops and pickups.

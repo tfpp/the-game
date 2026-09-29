@@ -41,11 +41,16 @@ PCM, so the feature ships with no new audio assets.
 buffers, and the baked collision — floors, both ramps' slopes, and both
 stair flights — the same way `test_casino_layout.gd` checks the casino.
 
-`Garage/GarageArrival` also carries `features/dev_elevator/slum_arrival_point.gd`,
-which registers it as a valid landing spot for a randomized slum destination system
-(not built yet — see `features/dev_elevator/README.md`). For now the only way to reach
-it without walking through the casino is `features/dev_elevator/`'s debug warp pad.
+`Garage/GarageArrival` carries `features/dev_elevator/slum_arrival_point.gd`,
+which registers it for the Golden Crown's shared slum gate. Players can also
+enter directly through the casino staff door.
 
 Nine of the wrecked cars carry a `features/loot/` `LootContainer` named `Loot`
-using `car_loot.tres`: walk up, press Use to search, and the server rolls
-randomized valuables into your inventory.
+using `car_loot.tres`: walk up and press Use to open the boot and search its
+shared stash. Drag valuables into an empty backpack slot or tap to take one.
+
+`tools/build_car_obj.py` authors the wreck's outward-facing body, detachable
+hood, opening boot lid, cavity and trim as original low polygon OBJ meshes.
+The committed meshes replace the old box-car CSG shape; a single static
+collision shape still blocks players. Each placed car keeps its own paint
+color, and damaged variants expose a missing hood.

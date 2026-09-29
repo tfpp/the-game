@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="LootTable" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/loot/loot_table.gd" id="1_table"]
+
+[resource]
+script = ExtResource("1_table")
+empty_chance = 0.2
+min_items = 1
+max_items = 2
+item_ids = PackedStringArray("scrap", "stolen_wallet", "electronics", "cash_bundle", "watch", "jewelry")
+weights = PackedFloat32Array(5, 4, 2, 3, 1, 0.5)

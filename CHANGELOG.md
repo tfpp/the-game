@@ -9,6 +9,10 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 
 ## [edge]
 
+- Brand the game Casino Royale and dress the Rain Alleys with original vertex-authored OBJ dumpsters, boarded facades, fire escapes, lamps and fence wire.
+- Replace the garage's box-shaped wrecks with original low polygon OBJ sedans, preserving varied paint, missing hoods, collision and searchable loot.
+- Brighten the slums and garage at night, correct car mesh faces, open wrecked car boots when searched, and let players drag shared stash items into backpack slots.
+
 - Add an F-toggle flashlight with shared beams and a rebindable Controls entry.
 - Connect all gnome holes through enterable tunnels with four-times running speed and labeled exits.
 - Hang a BREAKING NEWS screen over the casino floor that scrolls top headlines from
@@ -90,6 +94,9 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Use Godot for repository snapshots and multiplayer test runners; remove Python installation from export jobs.
 - Handle container checkout ownership and empty Git output when generating export snapshots, and report the underlying Git error on failure.
 - Compress the preview's game pack alongside the WebAssembly engine to fit the host's per-file size limit.
+- Open the Golden Crown's slum gate for shared trips to the rain alleys or parking garage; drop carried valuables on slum deaths and sell survivors' loot into the persistent casino wallet.
+- Add a fenced, rain-soaked alley map with searchable dumpsters, boarded buildings, puddles and failing streetlights.
+- Reduce scene draw calls by batching frog details, clipping other rooms from each player's server-assigned view, removing the full-world sun shadow pass, and playing rain ambience only near players.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

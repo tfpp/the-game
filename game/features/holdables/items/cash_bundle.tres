@@ -10,5 +10,6 @@ display_name = "Cash Bundle"
 category = 2
 view_scene = ExtResource("2_view")
 weight = 0.15
+sale_value_cents = 500
 ground_clearance = 0.03
 first_person_offset = Vector3(0.24, -0.23, -0.55)

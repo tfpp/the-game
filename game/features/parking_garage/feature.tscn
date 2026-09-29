@@ -543,7 +543,7 @@ fixture_seed = 1
 
 [node name="Light_F0_3" parent="Garage" instance=ExtResource("2_fixture")]
 position = Vector3(0, 2.85, -1)
-mode = 2
+mode = 0
 fixture_seed = 2
 
 [node name="Light_F0_4" parent="Garage" instance=ExtResource("2_fixture")]
@@ -553,7 +553,7 @@ fixture_seed = 3
 
 [node name="Light_F0_5" parent="Garage" instance=ExtResource("2_fixture")]
 position = Vector3(14, 2.85, -1)
-mode = 3
+mode = 1
 fixture_seed = 4
 
 [node name="Light_F1_1" parent="Garage" instance=ExtResource("2_fixture")]
@@ -568,7 +568,7 @@ fixture_seed = 6
 
 [node name="Light_F1_3" parent="Garage" instance=ExtResource("2_fixture")]
 position = Vector3(0, 6.15, -1)
-mode = 3
+mode = 0
 fixture_seed = 7
 
 [node name="Light_F1_4" parent="Garage" instance=ExtResource("2_fixture")]
@@ -578,22 +578,22 @@ fixture_seed = 8
 
 [node name="Light_F1_5" parent="Garage" instance=ExtResource("2_fixture")]
 position = Vector3(14, 6.15, -1)
-mode = 3
+mode = 2
 fixture_seed = 9
 
 [node name="Light_F2_1" parent="Garage" instance=ExtResource("2_fixture")]
 position = Vector3(-14, 9.45, -1)
-mode = 3
+mode = 0
 fixture_seed = 10
 
 [node name="Light_F2_2" parent="Garage" instance=ExtResource("2_fixture")]
 position = Vector3(-7, 9.45, -1)
-mode = 1
+mode = 0
 fixture_seed = 11
 
 [node name="Light_F2_3" parent="Garage" instance=ExtResource("2_fixture")]
 position = Vector3(0, 9.45, -1)
-mode = 3
+mode = 2
 fixture_seed = 12
 
 [node name="Light_F2_4" parent="Garage" instance=ExtResource("2_fixture")]
@@ -603,7 +603,7 @@ fixture_seed = 13
 
 [node name="Light_F2_5" parent="Garage" instance=ExtResource("2_fixture")]
 position = Vector3(14, 9.45, -1)
-mode = 3
+mode = 1
 fixture_seed = 14
 
 [node name="Car_F0_1" parent="Garage" instance=ExtResource("1_car")]

@@ -11,6 +11,26 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Shared search stashes",
+		"summary":
+		"Search wrecks and dumpsters, then drag their shared valuables into your backpack.",
+	},
+	{
+		"title": "Room rendering",
+		"summary":
+		"The server tracks your room so distant districts stop drawing while you explore indoors.",
+	},
+	{
+		"title": "Golden Crown slum runs",
+		"summary":
+		"Leave the Crown for shared slum runs, bring valuables home to sell, or lose them when killed.",
+	},
+	{
+		"title": "Rain Alleys",
+		"summary":
+		"Search rain-soaked dumpsters among boarded blocks and failing streetlights beyond the Crown.",
+	},
+	{
 		"title": "Atrium hotel",
 		"summary":
 		"Visit the four-floor atrium wing from the classic hotel, with gentle ramps to guest rooms.",

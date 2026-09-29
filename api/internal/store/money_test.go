@@ -90,6 +90,47 @@ func TestCoinCreditIsIdempotentAndPersists(t *testing.T) {
 	}
 }
 
+func TestLootSalePaysOnceAndRejectsAlteredRetries(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "loot.db")
+	s, err := Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+	a, err := s.CreateEmailAccount(ctx, "loot@example.com", "hash", "Alice", time.Now())
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, err := s.CreditLoot(ctx, a.ID, "sale-one", 1500)
+	if err != nil || first != 3500 {
+		t.Fatalf("sale: %d %v", first, err)
+	}
+	s.Close()
+	s, err = Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	replay, err := s.CreditLoot(ctx, a.ID, "sale-one", 1500)
+	if err != nil || replay != first {
+		t.Fatalf("retry: %d %v", replay, err)
+	}
+	if _, err = s.CreditLoot(ctx, a.ID, "sale-one", 500); !errors.Is(err, ErrLootSaleConflict) {
+		t.Fatal(err)
+	}
+	b, err := s.CreateEmailAccount(ctx, "loot-b@example.com", "hash", "Bob", time.Now())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.CreditLoot(ctx, b.ID, "sale-one", 1500); !errors.Is(err, ErrLootSaleConflict) {
+		t.Fatal(err)
+	}
+	balance, err := s.Money(ctx, a.ID)
+	if err != nil || balance != 3500 {
+		t.Fatalf("balance changed on retry: %d %v", balance, err)
+	}
+}
+
 func TestChargeAccountIsIdempotentAndRejectsInsufficientFunds(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "charge.db")
 	s, err := Open(path)

@@ -21,8 +21,8 @@ material_override = ExtResource("3_glow")
 
 [node name="Light" type="OmniLight3D" parent="."]
 position = Vector3(0, -0.1, 0)
-light_energy = 1.6
-omni_range = 9.0
+light_energy = 2.4
+omni_range = 18.0
 shadow_enabled = false
 
 [node name="Hum" type="AudioStreamPlayer3D" parent="."]

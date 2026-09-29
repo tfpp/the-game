@@ -23,7 +23,7 @@ var _last_state: Dictionary = {}
 func _ready() -> void:
 	add_child(CABINET.instantiate())
 	_label("LUCKY FIVE", Vector3(0, 2.49, 0.596), 48, INK, 0.004)
-	_label("THE GILDED LILY  •  EST. 1964", Vector3(0, 2.38, 0.596), 18, INK, 0.003)
+	_label("THE GOLDEN CROWN  •  EST. 1964", Vector3(0, 2.38, 0.596), 18, INK, 0.003)
 	var drum := SlotReelMesh.create()
 	for index: int in 3:
 		var reel := MeshInstance3D.new()

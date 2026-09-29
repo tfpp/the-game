@@ -9,10 +9,7 @@ RPC or `MultiplayerSynchronizer`.
 
 ## What moves
 
-- A `DirectionalLight3D` ("Sun") swings through a 180° arc: straight down at noon,
-  at the horizon for sunrise/sunset, straight up (no light reaching the ground) at
-  midnight. Its energy and color fade between a warm daytime sun and a faint, cool
-  moonlight across a dawn/dusk twilight band.
+- A `DirectionalLight3D` ("Sun") crosses the sky during the day, then becomes a soft overhead moonlight at night so outdoor paths and silhouettes stay readable. Its energy and color fade through dawn and dusk.
 - The world's `WorldEnvironment` (in `world/room.tscn`) gets its sky material
   swapped for `day_night_sky.gdshader`, which cross-fades the existing day skybox
   against a night skybox from the same Kenney pack, and its ambient light color,

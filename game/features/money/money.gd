@@ -210,6 +210,28 @@ func credit_coin(peer: int, id: String) -> Dictionary:
 	return result
 
 
+## Server-only: settles one valuable at its catalog price. The caller holds the
+## item while awaiting the result and retries the same operation ID if the API
+## response is lost. The API records the amount and rejects altered retries.
+func sell_loot(peer: int, id: String, amount_cents: int) -> Dictionary:
+	if not multiplayer.is_server() or _busy.has(peer) or amount_cents <= 0:
+		return {"error": "Wallet loading — try again"}
+	_busy[peer] = true
+	var generation := _generation
+	var account := _account(peer)
+	var result: Dictionary
+	if _temporary() and account <= 0:
+		result = {"balance": int(balances.get(peer, 2000)) + amount_cents}
+	else:
+		result = await _request(account, "sell", id, {"amount_cents": amount_cents})
+	if generation != _generation:
+		return {"error": "Session changed"}
+	if _account(peer) == account and result.has("balance"):
+		_set_balance(peer, int(result["balance"]))
+	_busy.erase(peer)
+	return result
+
+
 ## Server-only: deducts a flat, feature-chosen price from `peer`'s wallet — the same
 ## persisted, idempotent-retry path `credit_coin()` uses in the other direction.
 ## Rejects (without spending anything) if the wallet can't cover `amount_cents`.

@@ -12,7 +12,7 @@ const ProceduralAudio := preload("res://features/parking_garage/procedural_audio
 const HUM_FREQUENCIES := [116.0, 120.0, 122.0]
 
 @export var mode: Mode = Mode.STEADY
-@export var base_energy: float = 1.6
+@export var base_energy: float = 2.4
 @export var light_color: Color = Color(0.75, 0.85, 1.0)
 @export var fixture_seed: int = 0
 

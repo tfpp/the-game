@@ -81,6 +81,13 @@ label = "Parking Garage"
 hint = "Three dark levels behind the staff door"
 area = AABB(-19, -1, 585, 38, 12, 30)
 
+[node name="RainAlleys" type="Marker3D" parent="Destinations"]
+position = Vector3(0, 0, 900)
+script = ExtResource("2_dest")
+label = "Rain Alleys"
+hint = "Boarded shops, dumpsters and failing streetlights beyond the Crown"
+area = AABB(-25, -1, 875, 50, 20, 50)
+
 [node name="AdventureArcade" type="Marker3D" parent="Destinations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 0)
 script = ExtResource("2_dest")
