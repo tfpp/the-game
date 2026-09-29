@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Lurkers, gunmen and stalkers haunt the parking garage, deadlier each floor up.",
 	},
 	{
+		"title": "NPC subtitles",
+		"summary": "NPC dialogue now shows as movie subtitles at the bottom of the screen.",
+	},
+	{
 		"title": "Money log",
 		"summary": "The chat log tells you whenever you get money, and why.",
 	},
