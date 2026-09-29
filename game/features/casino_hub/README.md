@@ -23,7 +23,7 @@ not a second copy loaded by the feature loader. Collision-bearing architecture r
 - Spawn: (2, 0.2, 5), in the clear central gaming aisle. The stable `Room/Spawn`
   path is unchanged. Weapons, clothing, recreation areas and the south lobby
   remain reachable via the original south ramp.
-- North promenade: both gnome trains; the Kaaba remains in its northwest gallery.
+- North promenade: the Kaaba remains in its northwest gallery.
   All three coin pickups remain available. Original annex rooms and routes are
   retained, with covered ceilings and matching finishes.
 

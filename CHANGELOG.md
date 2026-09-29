@@ -40,6 +40,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   to 5) that gives your losing slot spins another roll until you win.
 - Enter the Adventure Arcade without a long freeze: cabinets now show an attract screen
   and only load and start their game when someone uses them.
+- Remove the gnome trains, their holes and the Gnome Express tunnels for now; they may
+  return in a later update.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
