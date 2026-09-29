@@ -120,3 +120,10 @@ The PS1 cabinet uses 844 triangles and flat, matte finishes. The reel texture im
 at 128×128 with nearest mipmap filtering; its five icons and server-selected results
 keep their original order. Drums use eight segments and idle reels skip redundant
 shader uploads. Labels and interaction prompts keep their normal readable fonts.
+
+## Kaaba blessings
+
+Players who prayed at the Kaaba ([kaaba](../kaaba/README.md)) carry blessings. The
+server passes them to `PlayerMoney.spin()` as `rerolls`: each gives a losing spin one
+more roll of the reels, and a win spends them. The 80% return above is for unblessed
+spins. The accounts API ignores blessings, so they only apply to temporary wallets.

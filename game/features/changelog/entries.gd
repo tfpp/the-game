@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Prayer at the Kaaba",
+		"summary": "Pray at the Kaaba with Use to stack blessings that improve your slot odds.",
+	},
+	{
 		"title": "Turkey Puncher computers",
 		"summary": "Click arcade computer screens to play Super Turbo Turkey Puncher 3.",
 	},
