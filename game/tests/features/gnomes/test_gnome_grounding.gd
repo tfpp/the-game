@@ -1,6 +1,5 @@
 extends GutTest
-## Gnomes and doors must read as standing on the floor even without shadow maps (the
-## mobile profile) and at a distance, where the mobile profile culls small props.
+## Gnomes and doors remain grounded, with labels visible at the same distance as doors.
 
 const Feature := preload("res://features/gnomes/feature.tscn")
 const BodyScene := preload("res://features/gnomes/gnome_body.tscn")
@@ -21,13 +20,13 @@ func test_door_frames_reach_down_to_the_floor() -> void:
 			assert_lte(hole.position.y + _bottom(frame), 0.0, "%s %d frame" % [side, number])
 
 
-func test_door_labels_hide_with_culled_doors() -> void:
+func test_door_labels_have_no_mobile_distance_cap() -> void:
 	var feature := Feature.instantiate() as Node3D
 	add_child_autofree(feature)
 	var labels := feature.get_node("TrainNorth/Hole2").find_children("*", "Label3D", false, false)
 	assert_eq(labels.size(), 1)
 	var label := labels[0] as Label3D
-	assert_eq(label.visibility_range_end, RetroStyle.MOBILE_PROP_DISTANCE)
+	assert_eq(label.visibility_range_end, 0.0)
 
 
 func test_gnome_stands_on_boots_over_a_contact_shadow() -> void:

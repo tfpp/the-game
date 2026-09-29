@@ -71,7 +71,7 @@ func test_third_person_yields_during_vr_and_returns_afterwards() -> void:
 	assert_true((player.get_node("Body") as Node3D).visible)
 
 
-func test_mobile_resize_preserves_xr_render_size_and_restores_phone_budget() -> void:
+func test_mobile_resize_preserves_native_render_size_inside_and_outside_xr() -> void:
 	var style := RetroStyle.new()
 	add_child_autofree(style)
 	style.mobile = true
@@ -83,9 +83,7 @@ func test_mobile_resize_preserves_xr_render_size_and_restores_phone_budget() -> 
 	assert_eq(get_viewport().scaling_3d_scale, 1.0)
 	get_viewport().use_xr = false
 	style._configure_viewport()
-	assert_almost_eq(
-		get_viewport().scaling_3d_scale, RetroStyle.mobile_scale(Vector2(window.size)), 0.001
-	)
+	assert_eq(get_viewport().scaling_3d_scale, 1.0)
 	window.content_scale_size = old_ui_size
 	get_viewport().scaling_3d_scale = old_scale
 

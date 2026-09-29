@@ -967,6 +967,12 @@ size = Vector3(4.0, 4.5, 17.0)
 operation = 2
 material = ExtResource("2_wall")
 
+[node name="FoodCourtDoorway" type="CSGBox3D" parent="WingSC/WingSCCorridors/Walls"]
+position = Vector3(3.0, 1.6, 40.0)
+size = Vector3(1.2, 3.2, 4.0)
+operation = 2
+material = ExtResource("2_wall")
+
 [node name="Room2EastPassage" type="CSGBox3D" parent="Loop/LoopCorridors/Walls"]
 position = Vector3(-45, 2.25, -58)
 size = Vector3(6, 4.5, 4)

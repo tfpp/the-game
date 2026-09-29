@@ -50,10 +50,6 @@ func _link(hole: Node3D, index: int, label: String) -> void:
 	entry_sign.position = Vector3(0, 1.0, 0.15)
 	entry_sign.pixel_size = 0.003
 	entry_sign.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	# Hide with the door: the mobile profile culls small props past this distance, which
-	# otherwise left the label floating over an empty floor.
-	entry_sign.visibility_range_end = RetroStyle.MOBILE_PROP_DISTANCE
-	entry_sign.visibility_range_end_margin = 4.0
 	hole.add_child(entry_sign)
 
 

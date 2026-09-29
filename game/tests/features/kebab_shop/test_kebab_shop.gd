@@ -17,7 +17,7 @@ func before_each() -> void:
 	_player.name = "1"
 	add_child_autofree(_player)
 	_player.set_physics_process(false)
-	_player.net_position = _shop.position + Vector3(1.35, 1, 1.5)
+	_player.net_position = _shop.to_global(Vector3(1.35, 1, 1.5))
 	_hand = HAND.instantiate() as Hand
 	_hand.peer_id = 1
 	add_child_autofree(_hand)
@@ -46,7 +46,7 @@ func test_rejects_unknown_peer_payload_distance_and_kitchen_side() -> void:
 	_player.net_position += Vector3(10, 0, 0)
 	_shop.use()
 	assert_eq(_hand.net_item_id, "")
-	_player.net_position = _shop.position + Vector3(1.35, 1, -0.5)
+	_player.net_position = _shop.to_global(Vector3(1.35, 1, -0.5))
 	_shop.use()
 	assert_eq(_hand.net_item_id, "")
 	assert_eq(_shop.net_serving, 0.0)
