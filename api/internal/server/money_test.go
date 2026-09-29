@@ -202,3 +202,38 @@ func TestGameMoneyCreditIsIdempotent(t *testing.T) {
 		t.Fatalf("retry paid again: %s %s", first.Body, second.Body)
 	}
 }
+
+func TestGameMoneySellRequiresValidAmountAndIsIdempotent(t *testing.T) {
+	h := newHarness(t)
+	account, err := h.srv.store.CreateEmailAccount(context.Background(), "seller@example.com", "hash", "Alice", h.now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := func(payload []byte) *httptest.ResponseRecorder {
+		req := httptest.NewRequest("POST", "/api/game/money", bytes.NewReader(payload))
+		mac := hmac.New(sha256.New, testKey)
+		mac.Write([]byte("game-money-v1\n"))
+		mac.Write(payload)
+		req.Header.Set("X-Game-Signature", hex.EncodeToString(mac.Sum(nil)))
+		res := httptest.NewRecorder()
+		h.h.ServeHTTP(res, req)
+		return res
+	}
+	id := strings.Repeat("f", 64)
+	makeBody := func(amount int) []byte {
+		return []byte(fmt.Sprintf(`{"account_id":%d,"action":"sell","id":"%s","timestamp":%d,"amount_cents":%d}`, account.ID, id, h.now.Unix(), amount))
+	}
+	first := request(makeBody(1500))
+	if first.Code != 200 || !strings.Contains(first.Body.String(), `"balance":3500`) {
+		t.Fatal(first.Code, first.Body.String())
+	}
+	if again := request(makeBody(1500)); again.Code != 200 || again.Body.String() != first.Body.String() {
+		t.Fatal(again.Code, again.Body.String())
+	}
+	if altered := request(makeBody(500)); altered.Code != 409 {
+		t.Fatal(altered.Code, altered.Body.String())
+	}
+	if invalid := request(makeBody(0)); invalid.Code != 400 {
+		t.Fatal(invalid.Code, invalid.Body.String())
+	}
+}

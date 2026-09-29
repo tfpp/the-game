@@ -19,6 +19,7 @@ import (
 // than a real security boundary — the game server is already fully trusted via
 // the HMAC signature this handler requires.
 const maxChargeCents = 100_00
+const maxLootSaleCents = 100_000_00
 
 // maxWagerCents bounds a slot machine's buy-in at $1,000,000,000, the same
 // sanity-check role maxChargeCents plays for "charge".
@@ -103,6 +104,23 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		}
 		if errors.Is(err, store.ErrChargeConflict) {
 			writeError(w, 409, "charge_conflict", "invalid charge")
+			return
+		}
+		if err != nil {
+			s.internalError(w, r, err)
+			return
+		}
+		writeJSON(w, 200, map[string]int64{"balance": balance})
+		return
+	}
+	if req.Action == "sell" {
+		if len(req.ID) != 64 || req.AmountCents <= 0 || req.AmountCents > maxLootSaleCents {
+			writeError(w, 400, "bad_request", "invalid sale")
+			return
+		}
+		balance, err := s.store.CreditLoot(r.Context(), req.AccountID, req.ID, req.AmountCents)
+		if errors.Is(err, store.ErrLootSaleConflict) {
+			writeError(w, 409, "sale_conflict", "invalid sale")
 			return
 		}
 		if err != nil {

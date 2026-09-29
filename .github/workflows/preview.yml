@@ -80,25 +80,26 @@ jobs:
         with:
           name: web
           path: web
-      # Pages rejects files over 25 MiB and Godot's engine (index.wasm) is ~38 MiB. Ship
-      # it gzipped (~10 MiB) and have the page inflate it with DecompressionStream before
-      # Godot's loader sees it. Only previews do this; production is unchanged.
+      # Pages rejects files over 25 MiB. Compress both the engine and game pack,
+      # then inflate them before Godot's loader sees the response.
       - name: Fit the Pages file size limit
         run: |
-          gzip -9 -n web/index.wasm
+          gzip -9 -n web/index.wasm web/index.pck
           cat > web/wasm-gz.js <<'EOF'
-          // Added by preview.yml: serve index.wasm from index.wasm.gz.
+          // Added by preview.yml: transparently decompress the engine and game pack.
           (() => {
             const fetch = window.fetch.bind(window);
             window.fetch = (input, init) => {
               const url = new URL(input instanceof Request ? input.url : String(input), location.href);
-              if (url.origin !== location.origin || !url.pathname.endsWith('/index.wasm')) {
+              const type = url.pathname.endsWith('/index.wasm') ? 'application/wasm'
+                : url.pathname.endsWith('/index.pck') ? 'application/octet-stream' : null;
+              if (url.origin !== location.origin || !type) {
                 return fetch(input, init);
               }
               url.pathname += '.gz';
               return fetch(url, init).then((r) => !r.ok ? r : new Response(
                 r.body.pipeThrough(new DecompressionStream('gzip')),
-                { headers: { 'Content-Type': 'application/wasm' } },
+                { headers: { 'Content-Type': type } },
               ));
             };
           })();

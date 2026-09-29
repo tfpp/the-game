@@ -19,5 +19,4 @@ the new destination. Removing/replacing the local player cleans up flight state.
 No remote player's movement or collider is manipulated by this feature.
 
 GUT tests cover flight math, gate validation, revocation, teleport/reset cleanup,
-and the replication schema. Run the real server/two-client late-join probe with
-`python3 tests/features/noclip/network_test.py` from game/.
+and the replication schema. Run `harness/verify.sh` for standard multiplayer smoke checks.

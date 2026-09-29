@@ -30,6 +30,8 @@ const ROUTES: Array[Array] = [
 		Vector3(-12, FLOOR_Y, 10.5)
 	],
 	[Vector3(-12.5, FLOOR_Y, -11), Vector3(-5, FLOOR_Y, -11)],
+	# Zohran Mamdani (PatronModel.MAMDANI_LOOK) strolls an aisle by the slots.
+	[Vector3(8.5, FLOOR_Y, -11), Vector3(8.5, FLOOR_Y, 2)],
 ]
 
 

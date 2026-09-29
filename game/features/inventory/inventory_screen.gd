@@ -18,6 +18,7 @@ var _selected := -2
 var _title: Label
 var _description: Label
 var _count: Label
+var _keys: Label
 var _equip: Button
 var _stow: Button
 var _drop: Button
@@ -27,11 +28,17 @@ var _heading: Label
 var _character: VBoxContainer
 var _wallet: Label
 var _inventory: PlayerInventory
+var _stash: LootContainer
+var _stash_box: VBoxContainer
+var _stash_items: VBoxContainer
+var _stash_status: Label
+var _stash_buttons: Array[Button] = []
 
 
 func _ready() -> void:
 	layer = 9
 	add_to_group(&"esc_menu_links")
+	add_to_group(&"inventory_screen")
 	var key := InputEventKey.new()
 	key.physical_keycode = KEY_I
 	var pad := InputEventJoypadButton.new()
@@ -45,6 +52,9 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not _panel.visible:
 		return
+	if _stash != null and not is_instance_valid(_stash):
+		_close(false)
+		return
 	_refresh_wallet()
 	var hand := Hand.for_peer(get_tree(), multiplayer.get_unique_id())
 	var next := hand.inventory() if hand != null else null
@@ -54,7 +64,17 @@ func _process(_delta: float) -> void:
 	if _inventory == null:
 		_close(false)
 		return
-	var state := str([_inventory.backpack, _inventory.shirt, _inventory.pants, hand.net_item_id])
+	var state := str(
+		[
+			_inventory.backpack,
+			_inventory.shirt,
+			_inventory.pants,
+			_inventory.keys,
+			hand.net_item_id,
+			_stash.net_searched if _stash != null else false,
+			_stash.net_contents if _stash != null else PackedStringArray(),
+		]
+	)
 	if state != _last_state:
 		_last_state = state
 		_refresh()
@@ -83,6 +103,16 @@ func esc_menu_icon() -> Texture2D:
 
 
 func esc_menu_open() -> void:
+	_stash = null
+	_show_inventory()
+
+
+func open_stash(stash: LootContainer) -> void:
+	_stash = stash
+	_show_inventory()
+
+
+func _show_inventory() -> void:
 	var hand := Hand.for_peer(get_tree(), multiplayer.get_unique_id())
 	if hand == null:
 		return
@@ -94,13 +124,17 @@ func esc_menu_open() -> void:
 	_last_state = ""
 	_refresh()
 	_refresh_wallet()
-	_equipment[1].grab_focus()
+	if _stash == null:
+		_equipment[1].grab_focus()
 
 
 func _close(resume: bool = true) -> void:
 	if _panel.visible and resume:
 		GameAudio.play_ui(self, &"close")
 	_panel.hide()
+	_stash = null
+	_stash_box.hide()
+	_character.show()
 	if is_in_group(&"modal_ui"):
 		remove_from_group(&"modal_ui")
 	_preview.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
@@ -132,6 +166,11 @@ func _refresh() -> void:
 		_slots[index].tooltip_text = "Slot %d: %s" % [index + 1, _item_name(id)]
 		_slots[index].button_pressed = _selected == index
 	_count.text = "BACKPACK   %d / %d" % [filled, PlayerInventory.CAPACITY]
+	var key_names := PackedStringArray()
+	for id: String in _inventory.keys:
+		key_names.append(_item_name(id))
+	_keys.text = "KEY RING: " + ", ".join(key_names)
+	_keys.visible = not key_names.is_empty()
 	var item := _inventory.item_at(_selected)
 	var clothing := not ClothingCatalog.slot(item).is_empty()
 	_title.text = _item_name(item)
@@ -147,6 +186,74 @@ func _refresh() -> void:
 	_drop.disabled = item.is_empty()
 	_preview.model.set_skin_index(_inventory.hand().skin_tone_index())
 	_preview.show_clothing(_inventory.shirt, _inventory.pants)
+	_refresh_stash()
+
+
+func _refresh_stash() -> void:
+	_stash_box.visible = _stash != null
+	_character.visible = _stash == null
+	if _stash == null:
+		return
+	for button: Button in _stash_buttons:
+		_stash_items.remove_child(button)
+		button.queue_free()
+	_stash_buttons.clear()
+	if not _stash.net_searched:
+		_stash_status.text = "Searching…"
+		return
+	if _stash.net_contents.is_empty():
+		_stash_status.text = "Nothing left in this stash."
+		return
+	_stash_status.text = "Drag items into an empty backpack slot. Tap to take the next free slot."
+	for index: int in _stash.net_contents.size():
+		var id := _stash.net_contents[index]
+		var button := _button(_stash_items, _item_name(id), _take_stash_item.bind(index))
+		button.custom_minimum_size.y = 52
+		button.set_drag_forwarding(_drag_stash.bind(index), Callable(), Callable())
+		_stash_buttons.append(button)
+
+
+func _drag_stash(_at: Vector2, index: int) -> Variant:
+	if _stash == null or index >= _stash.net_contents.size():
+		return null
+	var id := _stash.net_contents[index]
+	var preview := Label.new()
+	preview.text = _item_name(id)
+	preview.add_theme_font_override("font", _body_font)
+	_stash_buttons[index].set_drag_preview(preview)
+	return {"stash": _stash, "index": index, "id": id}
+
+
+func _can_drop_on_bag(_at: Vector2, data: Variant, slot: int) -> bool:
+	if not data is Dictionary or _stash == null or not is_instance_valid(_inventory):
+		return false
+	var claim := data as Dictionary
+	var index := int(claim.get("index", -1))
+	return (
+		claim.get("stash") == _stash
+		and index >= 0
+		and index < _stash.net_contents.size()
+		and _stash.net_contents[index] == str(claim.get("id", ""))
+		and _inventory.backpack[slot].is_empty()
+	)
+
+
+func _drop_on_bag(_at: Vector2, data: Variant, slot: int) -> void:
+	if not _can_drop_on_bag(Vector2.ZERO, data, slot):
+		return
+	var claim := data as Dictionary
+	_stash.request_take(int(claim["index"]), slot, str(claim["id"]))
+
+
+func _take_stash_item(index: int) -> void:
+	if _stash == null or not is_instance_valid(_inventory):
+		return
+	var slot := _inventory.backpack.find("")
+	if slot < 0:
+		_stash_status.text = "Backpack full. Free a slot first."
+		return
+	if index < _stash.net_contents.size():
+		_stash.request_take(index, slot, _stash.net_contents[index])
 
 
 func _item_name(id: String) -> String:
@@ -201,7 +308,7 @@ func _build() -> void:
 	_wallet.clip_text = true
 	_wallet.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_wallet.add_theme_font_size_override("font_size", 18)
-	var hint := _label(box, "I / View to open  •  E / Use to collect")
+	var hint := _label(box, "I / View for inventory  •  E / Use to search stashes")
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var scroll := ScrollContainer.new()
 	scroll.follow_focus = true
@@ -214,6 +321,18 @@ func _build() -> void:
 	_character = VBoxContainer.new()
 	var character := _character
 	columns.add_child(character)
+	_stash_box = VBoxContainer.new()
+	_stash_box.custom_minimum_size.x = 240
+	_stash_box.hide()
+	columns.add_child(_stash_box)
+	_label(_stash_box, "STASH", true).add_theme_font_size_override("font_size", 18)
+	_stash_status = _label(_stash_box, "")
+	_stash_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var stash_scroll := ScrollContainer.new()
+	stash_scroll.custom_minimum_size = Vector2(240, 250)
+	_stash_box.add_child(stash_scroll)
+	_stash_items = VBoxContainer.new()
+	stash_scroll.add_child(_stash_items)
 	_preview = InventoryPreview.new()
 	character.add_child(_preview)
 	_label(character, "YOUR CHARACTER", true).add_theme_font_size_override("font_size", 17)
@@ -248,7 +367,12 @@ func _build() -> void:
 		icon.position = Vector2(10, 8)
 		icon.size = Vector2(64, 34)
 		button.add_child(icon)
+		button.set_drag_forwarding(
+			Callable(), _can_drop_on_bag.bind(index), _drop_on_bag.bind(index)
+		)
 		_slots.append(button)
+	_keys = _label(bag, "")
+	_keys.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_title = _label(bag, "", true)
 	_title.add_theme_font_size_override("font_size", 20)
 	_description = _label(bag, "")

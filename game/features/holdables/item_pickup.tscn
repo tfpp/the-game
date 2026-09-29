@@ -1,17 +1,13 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://features/holdables/item_pickup.gd" id="1_script"]
-
-[sub_resource type="SceneReplicationConfig" id="Replication"]
-properties/0/path = NodePath(".:net_taken")
-properties/0/spawn = true
-properties/0/replication_mode = 2
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="entity"]
 
 [node name="ItemPickup" type="Node3D"]
 script = ExtResource("1_script")
 
 [node name="Mount" type="Node3D" parent="."]
 
-[node name="Sync" type="MultiplayerSynchronizer" parent="."]
-root_path = NodePath("..")
-replication_config = SubResource("Replication")
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")
+replicated_properties = Array[NodePath]([NodePath(".:net_taken")])

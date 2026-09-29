@@ -110,7 +110,12 @@ func test_finished_voices_cleanup_and_assets_are_short_non_looping_clips() -> vo
 		&"close",
 		&"equip",
 		&"pickup",
-		&"drop"
+		&"drop",
+		&"door_open",
+		&"door_close",
+		&"door_locked",
+		&"door_unlock",
+		&"key_pickup"
 	]:
 		var profile := _audio._profile(cue)
 		var stream := profile[0] as AudioStreamOggVorbis
@@ -130,3 +135,34 @@ func test_unknown_sound_and_invalid_position_do_not_allocate_voices() -> void:
 	GameAudio.play_at(self, &"pistol", Vector3.INF)
 	assert_eq(_events.size(), 0)
 	assert_eq(_audio._world.get_child_count(), 0)
+
+
+func test_door_feedback_replaces_status_text_and_only_follows_accepted_actions() -> void:
+	var door := preload("res://features/room_doors/swing_door.tscn").instantiate() as SwingDoor
+	door.key_id = "upper_study_key"
+	add_child_autofree(door)
+	_player.net_position = Vector3(0, 1, -1.5)
+	assert_eq(door.interaction_text(), "Use door")
+	assert_eq(door.find_children("*", "Label3D", true, false).size(), 0)
+	door.use()
+	assert_eq(_events.size(), 1)
+	assert_eq(_events[0].cue, &"door_locked")
+	assert_true(_events[0].positional)
+	door.use()
+	assert_eq(_events.size(), 1, "Repeated denied requests cannot spam sound")
+	assert_true(_hand.inventory().collect("upper_study_key"))
+	assert_eq(_events[1].cue, &"key_pickup")
+	assert_false(_hand.inventory().collect("upper_study_key"))
+	assert_eq(_events.size(), 2, "Rejected duplicate pickup is silent")
+	door.use()
+	assert_eq(_events[2].cue, &"door_unlock")
+	assert_eq(_events[3].cue, &"door_open")
+	door.use()
+	assert_eq(_events.size(), 4)
+	await wait_seconds(0.5)
+	door.use()
+	assert_eq(_events[4].cue, &"door_close")
+	_player.net_position = Vector3(0, 1, -20)
+	await wait_seconds(0.5)
+	door.use()
+	assert_eq(_events.size(), 5, "Out-of-range request is silent")

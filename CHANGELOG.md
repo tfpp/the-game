@@ -6,10 +6,12 @@ Every notable change, newest first. `edge` is what's on `main` but not released 
 a bullet to the end of `## [edge]`:** imperative, one line per change where possible, no
 version. Releases are cut by hand (the `release` workflow): it moves `edge` into a section
 for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
-- Log detailed reasons (URL, HTTP status, timeout, DNS, TLS or connection error) to the
-  console when the game can't reach the accounts server.
 
 ## [edge]
+
+- Brand the game Casino Royale and dress the Rain Alleys with original vertex-authored OBJ dumpsters, boarded facades, fire escapes, lamps and fence wire.
+- Replace the garage's box-shaped wrecks with original low polygon OBJ sedans, preserving varied paint, missing hoods, collision and searchable loot.
+- Brighten the slums and garage at night, correct car mesh faces, open wrecked car boots when searched, and let players drag shared stash items into backpack slots.
 
 - Add an F-toggle flashlight with shared beams and a rebindable Controls entry.
 - Connect all gnome holes through enterable tunnels with four-times running speed and labeled exits.
@@ -28,20 +30,18 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   clients never call TheNewsAPI and restarts reuse recent headlines.
 - Make phones and tablets run faster: render fewer 3D pixels, keep two nearby lights, hide
   small props past 40 metres and cap physics catch-up on slow frames.
+- Reduce rendering work by culling distant rooms, batching frog detail meshes, disabling
+  whole-world sun shadows and playing garage ambience only when a player is nearby.
 - Keep offline players on the leaderboard and remember signed-in scores across reconnects
   and server restarts.
 - Press ~ for a Source-style settings console with autocomplete and command history;
   use sv_cheats 1 to unlock noclip and sv_cheats 0 to disable it for everyone.
-- Play Super Turbo Turkey Puncher 3 on two mouse-operated computers in the Adventure
-  Arcade, with shared screens, timed rounds and cabinet high scores.
 - Stop casino benches and props from sliding when you turn the camera, and stop guns,
   gnomes and other plain-coloured props from rendering almost black.
 - Add four walking casino patrons to the gaming floor: punch them to stagger them, knock
   them out into a limp ragdoll, and watch them get back up and carry on.
 - Pray at the Kaaba with Use: a chant plays and each prayer adds a stacking blessing (up
   to 5) that gives your losing slot spins another roll until you win.
-- Enter the Adventure Arcade without a long freeze: cabinets now show an attract screen
-  and only load and start their game when someone uses them.
 - Find gnome holes as doggy doors on the outer walls: gnomes now come out one by one,
   wander their own routes around players, NPCs and frogs, and can be killed like frogs
   until their burrow next comes out.
@@ -76,6 +76,36 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   take the express elevator to new ten-unit floors as more residents move in.
 - Add a GPS phone: press P (or pick GPS in the Esc menu), search for a room, and follow the
   purple route on the radar and the direction banner, including through doors.
+- Rebuild the hotel wing as a four-floor hotel around a skylit central atrium, with
+  switchback ramps, gallery railings and guest rooms on every upper floor.
+
+- Join procedural wall corners with mitred trim and one shared pillar; connect raised rooms with level landings, ramps capped at 10 degrees and walkable stairs.
+- Connect the four-floor atrium as a separate classic-hotel wing, with gentle ramps, shared guest-room doors and GPS routing between wings.
+- Add synchronized swinging room doors and a Reading Room key for the locked study two stair flights up.
+- Keep stairs between 30 and 37 degrees, with level landings and ramps capped at 10 degrees.
+- Use live hotel lighting and fast geometry builds during development, with no required lightmap bake.
+- Add reusable networked entity and player interaction components; migrate doors and pickups and document the shared workflow for contributors.
+- Add three reusable hotel kits and a plain concrete service kit, with nearby hotels connected by a branching sewer network, junctions, an alternate loop and three climbable ladders.
+- Space corridor lights, seal window views with day/night sky backdrops, and replace door lock labels with Kenney door and key sounds.
+- Add thirteen hotel skylights, reusable ceiling pieces for every room kit, and broad live daylight with readable night lighting.
+- Add the atrium wing to GPS, keep bird simulation server-authoritative after joining, and clean up Windows multiplayer test processes reliably.
+- Use Godot for repository snapshots and multiplayer test runners; remove Python installation from export jobs.
+- Handle container checkout ownership and empty Git output when generating export snapshots, and report the underlying Git error on failure.
+- Compress the preview's game pack alongside the WebAssembly engine to fit the host's per-file size limit.
+- Open the Golden Crown's slum gate for shared trips to the rain alleys or parking garage; drop carried valuables on slum deaths and sell survivors' loot into the persistent casino wallet.
+- Add a fenced, rain-soaked alley map with searchable dumpsters, boarded buildings, puddles and failing streetlights.
+- Reduce scene draw calls by batching frog details, clipping other rooms from each player's server-assigned view, removing the full-world sun shadow pass, and playing rain ambience only near players.
+- Keep hotel rooms, stairs, sewers and the atrium readable at night and on phones
+  with steady indoor ambient lighting.
+- Remove the Adventure Arcade, its computer games and Python authoring and probe scripts.
+- Shoot salon guests, dealers, the bartender and the apartment clerk with any gun;
+  they return after six seconds.
+- Enter VR from the Quest / WebXR menu in Quest Browser with headset look, stick
+  movement, snap turning, jump and nearby object interaction.
+- Add Zohran Mamdani as a casino patron who strolls the gaming floor beside the slot machines
+  with a floating name tag.
+- Log detailed reasons (URL, HTTP status, timeout, DNS, TLS or connection error) to the
+  console when the game can't reach the accounts server.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
@@ -129,7 +159,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Add a Retry button to Discord messages about failed, cancelled or never-started `implement` and `revise` runs, so the requester can start the run again.
 - Name cancelled, failed and skipped agent jobs in the "did not produce a change" comment, without listing unavailable model, token and cost fields.
 - Post every bot message in Discord feature threads as a colour-coded embed (agent progress, CI, previews, approvals, merge queue, conflicts, merges and deploys), with model, shortened token count (such as 1.4M) and estimated cost as fields on agent notifications.
-- Show the agent's reasoning effort next to its model in PR descriptions, 🤖 comments and Discord notifications.
+- Show the agent's reasoning effort next to its model in PR descriptions, ðŸ¤– comments and Discord notifications.
 
 - Add a Monkey Island demo arcade with a brass-trimmed cabinet and synchronized local emulation for every player.
 - Autosave shared arcade progress, restore it after server restarts, and pause the demo when everyone disconnects.

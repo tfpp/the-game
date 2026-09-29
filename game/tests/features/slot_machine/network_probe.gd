@@ -1,5 +1,5 @@
 extends Node
-## Standalone real-WebSocket test driver; used by network_test.py, never by the game.
+## Standalone real-WebSocket test driver, never loaded by the game.
 
 var _last_snapshot := ""
 var _last_audio := 0

@@ -7,7 +7,7 @@ extends Node
 signal menu_requested
 signal input_reset
 
-enum Device { KEYBOARD, GAMEPAD, TOUCH }
+enum Device { KEYBOARD, GAMEPAD, TOUCH, XR }
 
 ## Left-handed frees the left hand for the mouse: movement on the arrow keys, jump on
 ## Shift. Right-handed is the classic WASD + Space layout.
@@ -23,6 +23,7 @@ var scheme := Scheme.LEFT_HANDED
 var touch_available := false
 var joypad := -1
 var playing := false
+var xr_move := Vector2.ZERO
 var touch_move := Vector2.ZERO
 var look_delta := Vector2.ZERO
 var jump_queued := false
@@ -144,6 +145,7 @@ func pause() -> void:
 
 
 func clear_input() -> void:
+	xr_move = Vector2.ZERO
 	touch_move = Vector2.ZERO
 	look_delta = Vector2.ZERO
 	jump_queued = false
@@ -162,6 +164,9 @@ func select_device(next: Device) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	# Immersive input is supplied by WebXR, never browser mouse/gamepad emulation.
+	if device == Device.XR:
+		return
 	if event is InputEventJoypadMotion:
 		var motion := event as InputEventJoypadMotion
 		if motion.axis <= JOY_AXIS_RIGHT_Y and absf(motion.axis_value) > DEADZONE:
@@ -201,6 +206,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func movement() -> Vector2:
 	if not gameplay_active():
 		return Vector2.ZERO
+	if device == Device.XR:
+		return xr_move.limit_length()
 	var result := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	if device == Device.GAMEPAD and joypad >= 0:
 		result += stick(JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y)
@@ -218,7 +225,7 @@ func consume_jump() -> bool:
 func consume_look(delta: float) -> Vector2:
 	var result := look_delta
 	look_delta = Vector2.ZERO
-	if not gameplay_active():
+	if not gameplay_active() or device == Device.XR:
 		return Vector2.ZERO
 	if device == Device.GAMEPAD and joypad >= 0:
 		result += stick(JOY_AXIS_RIGHT_X, JOY_AXIS_RIGHT_Y) * stick_sensitivity * delta
@@ -237,6 +244,8 @@ static func deadzone(value: Vector2) -> Vector2:
 
 
 func _joy_connection_changed(id: int, connected: bool) -> void:
+	if device == Device.XR:
+		return
 	if connected:
 		joypad = id
 		select_device(Device.GAMEPAD)

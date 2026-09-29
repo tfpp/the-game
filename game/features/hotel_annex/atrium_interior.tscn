@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/hotel_annex/atrium_hotel.gd" id="hotel"]
+
+[node name="Interior" type="Node3D"]
+
+[node name="Architecture" type="Node3D" parent="."]
+script = ExtResource("hotel")
+
+[node name="ReturnSign" type="Label3D" parent="."]
+position = Vector3(8.75, 3.05, 0.24)
+text = "CLASSIC HOTEL"
+font_size = 48
+pixel_size = 0.004
+modulate = Color(1, 0.83, 0.52, 1)
+outline_size = 4

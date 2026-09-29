@@ -11,7 +11,9 @@ static func sweep(
 	origin: Vector3,
 	basis: Basis,
 	length: float,
-	profile: Array[Vector2]
+	profile: Array[Vector2],
+	start_miter: float = 0.0,
+	end_miter: float = 0.0
 ) -> void:
 	# Local X follows the run. Profile X is local Y; profile Y is local Z.
 	var area := 0.0
@@ -22,20 +24,24 @@ static func sweep(
 		var a := profile[i]
 		var b := profile[(i + 1) % profile.size()]
 		var edge := b - a
-		var normal := basis * Vector3(0, edge.y, -edge.x).normalized() * signf(area)
+		var normal := (
+			(basis.inverse().transposed() * Vector3(0, edge.y, -edge.x)).normalized() * signf(area)
+		)
 		g.quad(
 			material,
 			[
-				origin + basis * Vector3(0, a.x, a.y),
-				origin + basis * Vector3(length, a.x, a.y),
-				origin + basis * Vector3(length, b.x, b.y),
-				origin + basis * Vector3(0, b.x, b.y)
+				origin + basis * Vector3(start_miter * a.y, a.x, a.y),
+				origin + basis * Vector3(length + end_miter * a.y, a.x, a.y),
+				origin + basis * Vector3(length + end_miter * b.y, b.x, b.y),
+				origin + basis * Vector3(start_miter * b.y, b.x, b.y)
 			],
 			normal,
 			false
 		)
 	var indices := Geometry2D.triangulate_polygon(PackedVector2Array(profile))
 	for end: float in [0.0, length]:
+		if not is_zero_approx(start_miter if end == 0 else end_miter):
+			continue
 		for i: int in range(0, indices.size(), 3):
 			var points: Array[Vector3] = []
 			for j: int in 3:

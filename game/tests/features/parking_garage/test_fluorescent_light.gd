@@ -18,6 +18,7 @@ func test_steady_fixture_stays_at_base_energy() -> void:
 	var fixture := _spawn(FluorescentLight.Mode.STEADY)
 	var light := fixture.get_node("Light") as OmniLight3D
 	assert_almost_eq(light.light_energy, fixture.base_energy, 0.001)
+	assert_true(light.omni_range >= 18.0)
 
 
 func test_dead_fixture_gives_no_light() -> void:

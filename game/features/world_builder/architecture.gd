@@ -1,24 +1,48 @@
 extends RefCounted
 ## Procedural wall profiles, joinery, columns, rugs and light fittings.
 
+const KitPieces := preload("res://features/room_kits/pieces.gd")
+
 const Geometry := preload("res://features/world_builder/geometry.gd")
 const Profiles := preload("res://features/world_builder/profiles.gd")
 const ROUND_SIDES := 8
 const Joinery := preload("res://features/world_builder/joinery.gd")
+const Elevation := preload("res://features/world_builder/elevation.gd")
 
 var _g: Geometry
 var _style: Dictionary
 var _root: Node3D
 var _light_count := 0
 var _sconce_count := 0
+var _pendant_positions: Array[Vector3] = []
+var _sconce_positions: Array[Vector3] = []
 
 
 func build(geometry: Geometry, layout: Dictionary, root: Node3D) -> void:
 	_g = geometry
 	_style = layout["style"]
 	_root = root
+	# Reserve lights for changes in floor level before the general room light budget.
+	_flight_lights(layout)
+	var corners := Node3D.new()
+	corners.name = "Corners"
+	Geometry.attach(root, corners, root)
+	for corner: Dictionary in layout["corners"]:
+		var kit: String = corner.get("kit", "classic")
+		if kit == "classic":
+			_column(corner["position"], corner["height"], _style["pillar_width"])
+		else:
+			KitPieces.corner(_g, kit, corner["position"], corner["height"])
+		var marker := Marker3D.new()
+		marker.name = "Corner%d" % corners.get_child_count()
+		marker.position = corner["position"]
+		marker.set_meta("kind", corner["kind"])
+		Geometry.attach(corners, marker, root)
 	for wall: Dictionary in layout["walls"]:
 		_wall(wall)
+	for door: Dictionary in layout["doors"]:
+		for reverse: bool in [false, true]:
+			_wall(preload("res://features/world_builder/doorways.gd").wall(door, reverse))
 	for pillar: Dictionary in layout["pillars"]:
 		_column(pillar["position"], pillar["height"], _style["pillar_width"] * 1.5)
 	for room_id: String in layout["rooms"]:
@@ -26,82 +50,91 @@ func build(geometry: Geometry, layout: Dictionary, root: Node3D) -> void:
 		var scale: float = layout["cell_size"]
 		var center := Vector3(
 			(rect.position.x + rect.size.x * 0.5) * scale,
-			0,
+			layout["room_elevations"][room_id],
 			(rect.position.y + rect.size.y * 0.5) * scale
 		)
 		var size := Vector3(rect.size.x * scale - 1.6, 0.008, rect.size.y * scale - 1.6)
-		_flat("gold", center + Vector3.UP * 0.009, size)
-		_flat("carpet", center + Vector3.UP * 0.015, size - Vector3(0.18, 0, 0.18))
+		if layout["room_floor_finishes"][room_id] == "floor":
+			_flat("gold", center + Vector3.UP * 0.009, size)
+			_flat("carpet", center + Vector3.UP * 0.015, size - Vector3(0.18, 0, 0.18))
 		var height: float = layout["heights"][rect.position]
+		var kit: String = layout["room_kits"][room_id]
 		if layout["ceiling"]:
-			_ceiling_frame(center, size, height)
-			if _style["lights"]:
-				_pendant(center, height)
+			if kit == "classic":
+				_ceiling_frame(center, size, height)
+			var has_skylight: bool = layout["skylights"].any(
+				func(s: Dictionary) -> bool: return s["room"] == room_id
+			)
+			if _style["lights"] and not has_skylight:
+				_pendant(center, height, kit)
 	_hall_details(layout)
+
+
+func _flight_lights(layout: Dictionary) -> void:
+	if not layout["ceiling"] or not _style["lights"]:
+		return
+	var scale: float = layout["cell_size"]
+	for flight: Dictionary in layout["flights"]:
+		var count := maxi(1, ceili(float(flight["length"]) / 4.0))
+		for index: int in count:
+			var point: Vector2 = (
+				flight["start"] + flight["axis"] * (index + 0.5) * float(flight["length"]) / count
+			)
+			var cell := Vector2i(floori(point.x / scale), floori(point.y / scale))
+			var position := Vector3(point.x, Elevation.floor_at(layout, cell, point), point.y)
+			_pendant(position, layout["heights"][cell])
 
 
 func _hall_details(layout: Dictionary) -> void:
 	var scale: float = layout["cell_size"]
+	for cell: Vector2i in layout["cells"]:
+		if _style.get("kit", "classic") != "classic" or layout["room_cells"].has(cell):
+			continue
+		var flight: Dictionary = layout["flight_cells"].get(cell, {})
+		if flight.get("kind") == "stairs":
+			continue
+		var plane: Vector3 = layout["floors"][cell]
+		# A single tiled runner follows the union of halls, including turns and junctions.
+		# Only exposed edges are inset, so adjacent tiles share their full edge.
+		for material: String in ["gold", "carpet"]:
+			var inset := 0.42 if material == "gold" else 0.50
+			var a := Vector2(cell) * scale
+			var b := a + Vector2.ONE * scale
+			if not layout["cells"].has(cell + Vector2i.LEFT):
+				a.x += inset
+			if not layout["cells"].has(cell + Vector2i.UP):
+				a.y += inset
+			if not layout["cells"].has(cell + Vector2i.RIGHT):
+				b.x -= inset
+			if not layout["cells"].has(cell + Vector2i.DOWN):
+				b.y -= inset
+			var points: Array[Vector3] = []
+			for point: Vector2 in [a, Vector2(b.x, a.y), b, Vector2(a.x, b.y)]:
+				var y := Elevation.sample(plane, point) + (0.015 if material == "gold" else 0.021)
+				points.append(Vector3(point.x, y, point.y))
+			_g.quad(material, points, Vector3(-plane.x, 1, -plane.y).normalized(), false)
+	_hall_lights(layout)
+
+
+func _hall_lights(layout: Dictionary) -> void:
+	if not layout["ceiling"] or not _style["lights"]:
+		return
+	var scale: float = layout["cell_size"]
 	for path: Array in layout["paths"]:
-		for i: int in 2:
-			var a := (Vector2(path[i]) + Vector2.ONE * 0.5) * scale
-			var b := (Vector2(path[i + 1]) + Vector2.ONE * 0.5) * scale
-			if a.is_equal_approx(b):
-				continue
-			var along_x := absf(a.x - b.x) > 0.1
-			var fixed := a.y if along_x else a.x
-			var spans: Array[Vector2] = [
-				(
-					Vector2(minf(a.x, b.x), maxf(a.x, b.x))
-					if along_x
-					else Vector2(minf(a.y, b.y), maxf(a.y, b.y))
-				)
-			]
-			for rect: Rect2i in layout["rooms"].values():
-				var cross_start := (rect.position.y if along_x else rect.position.x) * scale
-				var cross_end := (rect.end.y if along_x else rect.end.x) * scale
-				if fixed < cross_start or fixed > cross_end:
+		for segment: int in 2:
+			var start: Vector2i = path[segment]
+			var delta: Vector2i = path[segment + 1] - start
+			var length := absi(delta.x) + absi(delta.y)
+			var axis := Vector2i(signi(delta.x), signi(delta.y))
+			for step: int in range(0, length + 1, maxi(1, ceili(4.0 / scale))):
+				var cell := start + axis * step
+				if layout["room_cells"].has(cell) or layout["flight_cells"].has(cell):
 					continue
-				var low := (rect.position.x if along_x else rect.position.y) * scale
-				var high := (rect.end.x if along_x else rect.end.y) * scale
-				spans = _subtract(spans, low, high)
-			for span: Vector2 in spans:
-				var length := span.y - span.x
-				var mid := (span.x + span.y) / 2.0
-				var center := Vector3(mid, 0.015, fixed) if along_x else Vector3(fixed, 0.015, mid)
-				var width := float(layout["hall_width"]) * scale * 0.58
-				_flat(
-					"gold",
-					center,
-					Vector3(length, 0.006, width) if along_x else Vector3(width, 0.006, length)
+				var point := (Vector2(cell) + Vector2.ONE * 0.5) * scale
+				_pendant(
+					Vector3(point.x, Elevation.floor_at(layout, cell, point), point.y),
+					layout["heights"][cell]
 				)
-				_flat(
-					"carpet",
-					center + Vector3.UP * 0.006,
-					(
-						Vector3(length, 0.006, width - 0.15)
-						if along_x
-						else Vector3(width - 0.15, 0.006, length)
-					)
-				)
-				if not layout["ceiling"]:
-					continue
-				var count := maxi(1, roundi(length / 4.0))
-				for index: int in count:
-					var point := span.x + (index + 0.5) * length / count
-					var position := (
-						Vector3(point, 0, fixed) if along_x else Vector3(fixed, 0, point)
-					)
-					var cell := Vector2i(floori(position.x / scale), floori(position.z / scale))
-					var height: float = layout["heights"][cell]
-					var size := Vector3(
-						length / count - 0.25, 0, float(layout["hall_width"]) * scale - 0.5
-					)
-					if not along_x:
-						size = Vector3(size.z, 0, size.x)
-					_ceiling_frame(position, size, height)
-					if index % 2 == 0 and _style["lights"]:
-						_pendant(position, height)
 
 
 func _subtract(spans: Array[Vector2], low: float, high: float) -> Array[Vector2]:
@@ -118,6 +151,11 @@ func _subtract(spans: Array[Vector2], low: float, high: float) -> Array[Vector2]
 
 
 func _wall(wall: Dictionary) -> void:
+	if wall.get("kit", "classic") != "classic":
+		KitPieces.wall_detail(_g, wall["kit"], wall)
+		for opening: Dictionary in wall["openings"]:
+			_opening(wall, opening)
+		return
 	var length: float = wall["a"].distance_to(wall["b"])
 	var height: float = wall["height"]
 	var dado: float = _style["wainscot_height"]
@@ -132,6 +170,8 @@ func _wall(wall: Dictionary) -> void:
 			_style["trim_depth"] * (1.0 + layer * 0.45),
 			"plaster" if layer != 1 else "gold"
 		)
+	if not is_equal_approx(wall["a"].y, wall["b"].y):
+		return
 	var count := maxi(1, roundi(length / float(_style["panel_spacing"])))
 	var bay := length / count
 	for i: int in count:
@@ -151,8 +191,8 @@ func _wall(wall: Dictionary) -> void:
 			)
 			if i % 2 == 0 and _style["lights"]:
 				_sconce(wall, start + width / 2, minf(height - 0.65, dado + 1.0))
-	for i: int in range(count + 1):
-		var x := clampf(i * bay, 0.25, length - 0.25)
+	for i: int in range(1, count):
+		var x := i * bay
 		var width: float = _style["pillar_width"]
 		if not _blocked(wall, x - width * 0.75, width * 1.5):
 			_pilaster(wall, x, height)
@@ -194,7 +234,14 @@ func _band(wall: Dictionary, y: float, height: float, depth: float, material: St
 	]
 	for span: Vector2 in spans:
 		Profiles.sweep(
-			_g, material, wall["a"] + u * span.x + Vector3.UP * y, basis, span.y - span.x, profile
+			_g,
+			material,
+			wall["a"] + u * span.x + Vector3.UP * y,
+			basis,
+			span.y - span.x,
+			profile,
+			wall.get("join_a", 0.0) if is_zero_approx(span.x) else 0.0,
+			wall.get("join_b", 0.0) if is_equal_approx(span.y, length) else 0.0
 		)
 
 
@@ -352,38 +399,53 @@ func _opening(wall: Dictionary, opening: Dictionary) -> void:
 	var width: float = opening["width"]
 	var y: float = opening["sill"]
 	var height: float = opening["height"]
-	_frame(
-		wall,
-		x - 0.11,
-		y,
-		width + 0.22,
-		height + 0.08,
-		0.18,
-		0.08,
-		"plaster",
-		opening["kind"] == "window"
-	)
-	_frame(wall, x, y, width, height, 0.075, 0.13, "wood", opening["kind"] == "window")
-	_frame(
-		wall,
-		x - 0.055,
-		y,
-		width + 0.11,
-		height + 0.04,
-		0.025,
-		0.18,
-		"gold",
-		opening["kind"] == "window"
-	)
-	# A real cut opening has reveals, a header and (for windows) a sill.
-	for side: float in [x, x + width]:
-		_wall_box(wall, "wood", Vector3(side, y + height / 2, -0.08), Vector3(0.06, height, 0.24))
-	_wall_box(
-		wall,
-		"plaster",
-		Vector3(x + width / 2, y + height + 0.15, 0.1),
-		Vector3(width + 0.5, 0.16, 0.28)
-	)
+	var kit: String = wall.get("kit", "classic")
+	if kit == "classic":
+		_frame(
+			wall,
+			x - 0.11,
+			y,
+			width + 0.22,
+			height + 0.08,
+			0.18,
+			0.08,
+			"plaster",
+			opening["kind"] == "window"
+		)
+		_frame(wall, x, y, width, height, 0.075, 0.13, "wood", opening["kind"] == "window")
+		_frame(
+			wall,
+			x - 0.055,
+			y,
+			width + 0.11,
+			height + 0.04,
+			0.025,
+			0.18,
+			"gold",
+			opening["kind"] == "window"
+		)
+		# A real cut opening has reveals, a header and (for windows) a sill.
+		for side: float in [x, x + width]:
+			_wall_box(
+				wall, "wood", Vector3(side, y + height / 2, -0.08), Vector3(0.06, height, 0.24)
+			)
+		_wall_box(
+			wall,
+			"plaster",
+			Vector3(x + width / 2, y + height + 0.15, 0.1),
+			Vector3(width + 0.5, 0.16, 0.28)
+		)
+	else:
+		var right: Vector3 = (wall["b"] - wall["a"]).normalized()
+		KitPieces.frame(
+			_g,
+			kit,
+			wall["a"] + right * (x + width / 2) + Vector3.UP * y,
+			Basis(right, Vector3.UP, wall["normal"]),
+			width,
+			height,
+			opening["kind"] == "window"
+		)
 	var marker := Marker3D.new()
 	marker.name = opening["id"]
 	var u: Vector3 = (wall["b"] - wall["a"]).normalized()
@@ -392,6 +454,7 @@ func _opening(wall: Dictionary, opening: Dictionary) -> void:
 	marker.set_meta("kind", opening["kind"])
 	Geometry.attach(_root.get_node("Openings"), marker, _root)
 	if opening["kind"] == "window":
+		_window_backdrop(marker, width, height)
 		_wall_box(
 			wall,
 			"glass",
@@ -399,21 +462,44 @@ func _opening(wall: Dictionary, opening: Dictionary) -> void:
 			Vector3(width, height, 0.02),
 			true
 		)
-		_wall_box(
-			wall, "wood", Vector3(x + width / 2, y + height / 2, 0.07), Vector3(0.055, height, 0.08)
-		)
-		for level: float in [0.32, 0.66]:
+		if kit == "classic":
 			_wall_box(
 				wall,
 				"wood",
-				Vector3(x + width / 2, y + height * level, 0.07),
-				Vector3(width, 0.055, 0.08)
+				Vector3(x + width / 2, y + height / 2, 0.07),
+				Vector3(0.055, height, 0.08)
 			)
-		_wall_box(
-			wall, "plaster", Vector3(x + width / 2, y, 0.08), Vector3(width + 0.3, 0.09, 0.45)
-		)
-	else:
+			for level: float in [0.32, 0.66]:
+				_wall_box(
+					wall,
+					"wood",
+					Vector3(x + width / 2, y + height * level, 0.07),
+					Vector3(width, 0.055, 0.08)
+				)
+			_wall_box(
+				wall, "plaster", Vector3(x + width / 2, y, 0.08), Vector3(width + 0.3, 0.09, 0.45)
+			)
+
+	elif not opening.get("interactive", false):
 		_door(wall, opening)
+
+
+func _window_backdrop(marker: Marker3D, width: float, height: float) -> void:
+	if not _root.has_node("WindowSky"):
+		var clock := Node.new()
+		clock.name = "WindowSky"
+		clock.set_script(load("res://features/world_builder/window_sky.gd"))
+		Geometry.attach(_root, clock, _root)
+	var backdrop := MeshInstance3D.new()
+	backdrop.name = "SkyBackdrop"
+	var mesh := QuadMesh.new()
+	mesh.size = Vector2(width + 0.04, height + 0.04)
+	mesh.material = preload("res://features/world_builder/window_sky.tres")
+	backdrop.mesh = mesh
+	# Opening markers point outside; the opaque plane seals the view immediately past the glass.
+	backdrop.position = Vector3(0, height / 2, 0.12)
+	backdrop.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	Geometry.attach(marker, backdrop, _root)
 
 
 func _door(wall: Dictionary, opening: Dictionary) -> void:
@@ -455,10 +541,14 @@ func _ceiling_frame(center: Vector3, size: Vector3, height: float) -> void:
 
 
 func _sconce(wall: Dictionary, x: float, y: float) -> void:
-	_g.cast_shadows = false
 	var u: Vector3 = (wall["b"] - wall["a"]).normalized()
 	var n: Vector3 = wall["normal"]
 	var mount: Vector3 = wall["a"] + u * x + Vector3.UP * (y - 0.15)
+	for previous: Vector3 in _sconce_positions:
+		if previous.distance_to(mount) < 1.2:
+			return
+	_sconce_positions.append(mount)
+	_g.cast_shadows = false
 	Profiles.lathe(
 		_g,
 		"gold",
@@ -512,7 +602,17 @@ func _sconce(wall: Dictionary, x: float, y: float) -> void:
 	_g.cast_shadows = true
 
 
-func _pendant(center: Vector3, height: float) -> void:
+func _pendant(center: Vector3, height: float, kit: String = "") -> void:
+	if kit.is_empty():
+		kit = _style.get("kit", "classic")
+	for previous: Vector3 in _pendant_positions:
+		if Vector2(previous.x, previous.z).distance_to(Vector2(center.x, center.z)) < 3.0:
+			return
+	_pendant_positions.append(center)
+	if kit != "classic":
+		KitPieces.fixture(_g, kit, center + Vector3.UP * (height - 0.12))
+		_add_light("Pendant", center + Vector3.UP * (height - 0.55), 1.1, 7.0, false)
+		return
 	_g.cast_shadows = false
 	var drop := minf(0.9, height - 2.15)
 	Profiles.lathe(

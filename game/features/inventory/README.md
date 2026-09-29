@@ -12,6 +12,10 @@ fill the matching empty equipment slot first (hand, shirt or pants), then use th
 backpack. Equipping a backpack item swaps it with the current item in that slot,
 even when the bag is full. Eating and throwing affect only the held item.
 
+Searching a car or dumpster opens its shared stash beside your backpack. Drag
+an item to an empty slot, or tap it to fill the next empty slot. Other players
+see items disappear as they are claimed.
+
 Shirts and pants have fixed colors. Find other colors to change your outfit;
 there are no dye controls. Two clothing pickups sit near spawn, two to the west,
 and two to the east. Clothes keep their color through swaps, drops and pickups.
@@ -30,6 +34,5 @@ Inventory follows the existing held-item lifetime: it survives an in-session
 combat respawn, but is cleared on disconnect or a network mode change. It is not
 saved between sessions. World pickups follow the existing one-use pickup system.
 
-Run `harness/verify.sh` and
-`GODOT=godot python3 game/tests/features/inventory/network_test.py` from the repo root. Feature tests cover capacity, swaps, consumption, fixed
+Run `harness/verify.sh` from the repo root. Feature tests cover capacity, swaps, consumption, fixed
 colors, invalid and foreign requests, drops, pickups and underwear visuals.

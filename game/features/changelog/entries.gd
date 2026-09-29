@@ -11,8 +11,79 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Zohran Mamdani",
+		"summary": "New York's mayor now strolls the casino gaming floor.",
+	},
+	{
+		"title": "Quest 3 browser VR",
+		"summary": "Enter VR from Quest / WebXR in the menu to explore with Touch controllers.",
+	},
+	{
+		"title": "Shootable salon NPCs",
+		"summary":
+		"Shoot salon guests, dealers and the apartment clerk; they return after six seconds.",
+	},
+	{
+		"title": "Shared search stashes",
+		"summary":
+		"Search wrecks and dumpsters, then drag their shared valuables into your backpack.",
+	},
+	{
+		"title": "Brighter hotel interiors",
+		"summary": "Explore the hotels, sewers and atrium with reliable lighting, even at night.",
+	},
+	{
+		"title": "Room rendering",
+		"summary":
+		"The server tracks your room so distant districts stop drawing while you explore indoors.",
+	},
+	{
+		"title": "Golden Crown slum runs",
+		"summary":
+		"Leave the Crown for shared slum runs, bring valuables home to sell, or lose them when killed.",
+	},
+	{
+		"title": "Rain Alleys",
+		"summary":
+		"Search rain-soaked dumpsters among boarded blocks and failing streetlights beyond the Crown.",
+	},
+	{
+		"title": "Atrium hotel",
+		"summary":
+		"Visit the four-floor atrium wing from the classic hotel, with gentle ramps to guest rooms.",
+	},
+	{
 		"title": "GPS phone",
 		"summary": "Press P to pick a place on your phone and follow the route on the radar.",
+	},
+	{
+		"title": "Hotel skylights",
+		"summary":
+		"Thirteen framed skylights brighten hotel rooms with daylight and soft night lighting.",
+	},
+	{
+		"title": "Three hotels and the sewer network",
+		"summary":
+		"Explore classic, modern and Art Deco hotels linked by sewer junctions and climbable ladders.",
+	},
+	{
+		"title": "Concrete service rooms and clearer interactions",
+		"summary":
+		"Plain concrete storage rooms, spaced hallway lamps, sky-filled windows and door/key sounds.",
+	},
+	{
+		"title": "Shared networked entities",
+		"summary":
+		"Doors and pickups share one server-validated networking system for future world objects.",
+	},
+	{
+		"title": "Hotel doors and the Upper Study key",
+		"summary":
+		"Open shared room doors with Use; find the Reading Room key for the study two stairs up.",
+	},
+	{
+		"title": "Connected rooms and raised floors",
+		"summary": "Room corners share one pillar; gentle ramps and stairs connect raised rooms.",
 	},
 	{
 		"title": "Wandering bird",
@@ -20,12 +91,21 @@ const ENTRIES: Array[Dictionary] = [
 		(
 			"A friendly bird flies continuously between players and casino patrons, "
 			+ "resting near each before moving on."
-		)
+		),
 	},
 	{
 		"title": "Lily Apartments",
 		"summary":
 		"Claim a free room at the front desk and ride the elevator to expanding ten-unit floors.",
+	},
+	{
+		"title": "Desktop app installer",
+		"summary":
+		"Install the desktop app with one curl command on macOS, Linux or Windows Git Bash.",
+	},
+	{
+		"title": "Desktop app",
+		"summary": "Run the website in an Electron app for Linux, macOS and Windows.",
 	},
 	{
 		"title": "Read-only Git console",
@@ -61,10 +141,6 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Gnomes pop out of wall doggy doors, roam, dodge you and can be shot.",
 	},
 	{
-		"title": "Arcade attract mode",
-		"summary": "Arcade cabinets idle on a title screen and load their game when you use them.",
-	},
-	{
 		"title": "Prayer at the Kaaba",
 		"summary": "Pray at the Kaaba with Use to stack blessings that improve your slot odds.",
 	},
@@ -75,10 +151,6 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Steady casino textures",
 		"summary": "Props no longer slide as you turn, and guns and gnomes show their colours.",
-	},
-	{
-		"title": "Turkey Puncher computers",
-		"summary": "Click arcade computer screens to play Super Turbo Turkey Puncher 3.",
 	},
 	{
 		"title": "Developer console",
@@ -163,29 +235,11 @@ const ENTRIES: Array[Dictionary] = [
 		)
 	},
 	{
-		"title": "Adventure arcade room",
-		"summary":
-		(
-			"A dedicated arcade room loads games only while you are inside,"
-			+ " with smoother play and reliable positional sound."
-		)
-	},
-	{
 		"title": "Room doors",
 		"summary":
 		(
 			"A lounge booth in the south lobby leads to a lounge and a wine cellar. Rooms"
 			+ " behind doors only load while you're in them."
-		)
-	},
-	{
-		"title": "Adventure arcade",
-		"summary":
-		(
-			"Five adventure demo cabinets: Monkey Island, Sam & Max, Fate of Atlantis,"
-			+ " Passport to Adventure and a Day of the Tentacle display. Share play and"
-			+ " autosaved progress, with sound fading to silence at 5 m. Play on the 3D"
-			+ " screens and look around without leaving your turn. Enter to play; one button leaves."
 		)
 	},
 	{
@@ -220,7 +274,7 @@ const ENTRIES: Array[Dictionary] = [
 		"title": "Mix-and-match creatures",
 		"summary":
 		(
-			"Character Model (Esc menu) now picks a body, head and tail independently — a"
+			"Character Model (Esc menu) now picks a body, head and tail independently â€” a"
 			+ " frog head or bird head, a lizard, fin or fluffy tail, on any body. Mix them"
 			+ " into your own impossible creature."
 		)
@@ -266,14 +320,14 @@ const ENTRIES: Array[Dictionary] = [
 		"summary":
 		(
 			"A hazard-striped debug warp pad (noclip to find it) instantly sends you to the"
-			+ " parking garage for testing — internal, not part of the game proper."
+			+ " parking garage for testing â€” internal, not part of the game proper."
 		)
 	},
 	{
 		"title": "Parking garage",
 		"summary":
 		(
-			"A dark three-story parking structure outside the casino — take the staff door"
+			"A dark three-story parking structure outside the casino â€” take the staff door"
 			+ " near the trampolines. Ramps and a stairwell connect all three levels."
 		)
 	},
@@ -311,7 +365,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"title": "Soccer ball physics",
 		"summary":
-		"The map's soccer ball rolls and bounces now — bump it with your body or shoot it."
+		"The map's soccer ball rolls and bounces now â€” bump it with your body or shoot it."
 	},
 	{
 		"title": "Wallet and health HUD",
@@ -410,16 +464,16 @@ const ENTRIES: Array[Dictionary] = [
 	},
 	{
 		"title": "Killable penguin",
-		"summary": "The penguin can now be shot with any weapon — she explodes and waddles back."
+		"summary": "The penguin can now be shot with any weapon â€” she explodes and waddles back."
 	},
 	{
 		"title": "Update screen",
 		"summary":
-		"Web client shows an Updating… screen during a deploy instead of flashing reloads."
+		"Web client shows an Updatingâ€¦ screen during a deploy instead of flashing reloads."
 	},
 	{
 		"title": "Combat",
-		"summary": "Weapons can now kill — take damage and respawn once your health runs out."
+		"summary": "Weapons can now kill â€” take damage and respawn once your health runs out."
 	},
 	{
 		"title": "Item drops & new guns",

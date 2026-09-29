@@ -8,19 +8,19 @@
 
 config_version=5
 
-[audio]
-
-driver/enable_input=true
-
 [application]
 
-config/name="The Game"
-config/description="Open multiplayer sandbox with Source-style movement."
+config/name="Casino Royale"
+config/description="Risk your fortune at the Golden Crown and in the slums beyond."
 config/version="0.7.1"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 run/flush_stdout_on_print=true
 config/icon="res://icon.svg"
+
+[audio]
+
+driver/enable_input=true
 
 [autoload]
 
@@ -64,3 +64,7 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
 anti_aliasing/quality/msaa_3d=1
+
+[xr]
+
+shaders/enabled.web=true

@@ -10,6 +10,7 @@ enum Category {
 	FOOD,  ## Eaten once; removed from hand.
 	PROP,  ## Thrown; removed from hand and becomes a world pickup where it lands.
 	CLOTHING,  ## Equipped in a shirt or pants slot.
+	KEY,  ## Stored in the inventory key ring; cannot be thrown, eaten or dropped.
 }
 
 @export var id := ""
@@ -25,6 +26,9 @@ enum Category {
 ## Kilograms-ish. Thrown or dropped items bounce less the heavier they are (see
 ## throw_math.gd's `bounce_height`); heavy weapons barely bounce at all.
 @export var weight := 1.0
+## Cash paid by the Golden Crown's fence for valuables brought back from a slum.
+## Zero keeps ordinary equipment, clothing and keys out of the sale inventory.
+@export var sale_value_cents := 0
 ## WEAPON only: health removed from whoever a hitscan hit lands on.
 @export var damage := 0.0
 ## WEAPON only: minimum seconds between shots.

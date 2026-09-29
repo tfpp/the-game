@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://tests/features/room_doors/network_probe.gd" id="probe"]
+[ext_resource type="PackedScene" path="res://features/hotel_annex/feature.tscn" id="hotel"]
+[ext_resource type="PackedScene" path="res://features/holdables/feature.tscn" id="items"]
+
+[ext_resource type="PackedScene" path="res://features/game_audio/feature.tscn" id="audio"]
+
+[node name="Game" type="Node3D"]
+script = ExtResource("probe")
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Players")
+
+[node name="Entities" type="Node" parent="."]
+
+[node name="EntitySpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Entities")
+
+[node name="Room" type="Node3D" parent="."]
+
+[node name="Spawn" type="Marker3D" parent="Room"]
+position = Vector3(0, 1, 0)
+
+[node name="Features" type="Node3D" parent="."]
+
+[node name="hotel_annex" parent="Features" instance=ExtResource("hotel")]
+
+[node name="holdables" parent="Features" instance=ExtResource("items")]
+
+[node name="game_audio" parent="Features" instance=ExtResource("audio")]

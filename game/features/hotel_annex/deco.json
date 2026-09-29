@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "seed": 27,
+  "height": 3.5,
+  "hall_height": 3.5,
+  "hall_width": 5,
+  "style": {
+    "theme": "hotel",
+    "kit": "deco",
+    "windows": false,
+    "lights": true
+  },
+  "rooms": [
+    {
+      "id": "StorageRoom",
+      "at": [
+        -20,
+        -10
+      ],
+      "size": [
+        12,
+        14
+      ],
+      "height": 3.5,
+      "kit": "concrete",
+      "floor_material": "concrete",
+      "floor_holes": [
+        [
+          1,
+          2,
+          2,
+          2
+        ]
+      ]
+    },
+    {
+      "id": "Lobby",
+      "at": [
+        -20,
+        10
+      ],
+      "size": [
+        12,
+        12
+      ],
+      "height": 4.0,
+      "openings": [
+        {
+          "id": "Window",
+          "kind": "window",
+          "side": "east",
+          "offset": 2,
+          "width": 2,
+          "height": 2,
+          "sill": 1
+        }
+      ],
+      "skylight": true
+    },
+    {
+      "id": "GuestRooms",
+      "at": [
+        -20,
+        34
+      ],
+      "size": [
+        12,
+        10
+      ],
+      "height": 3.5,
+      "openings": [
+        {
+          "id": "Window",
+          "kind": "window",
+          "side": "west",
+          "offset": 2,
+          "width": 2,
+          "height": 2,
+          "sill": 1
+        }
+      ],
+      "skylight": true
+    },
+    {
+      "id": "Lounge",
+      "at": [
+        2,
+        34
+      ],
+      "size": [
+        14,
+        10
+      ],
+      "height": 4.2,
+      "openings": [
+        {
+          "id": "Window",
+          "kind": "window",
+          "side": "east",
+          "offset": 2,
+          "width": 2,
+          "height": 2,
+          "sill": 1
+        }
+      ],
+      "skylight": true
+    }
+  ],
+  "connections": [
+    {
+      "from": "StorageRoom",
+      "to": "Lobby",
+      "door": {
+        "id": "LobbyDoor",
+        "label": "Lobby"
+      }
+    },
+    {
+      "from": "Lobby",
+      "to": "GuestRooms",
+      "door": {
+        "id": "GuestRoomsDoor",
+        "label": "GuestRooms"
+      }
+    },
+    {
+      "from": "GuestRooms",
+      "to": "Lounge",
+      "door": {
+        "id": "LoungeDoor",
+        "label": "Lounge"
+      }
+    }
+  ]
+}

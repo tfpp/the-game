@@ -67,6 +67,15 @@
           "width": 1.5,
           "height": 2.7,
           "open": false
+        },
+        {
+          "id": "AtriumDoor",
+          "kind": "door",
+          "side": "north",
+          "offset": 4.75,
+          "width": 1.5,
+          "height": 2.7,
+          "open": false
         }
       ],
       "pillars": [
@@ -78,7 +87,8 @@
           10,
           2
         ]
-      ]
+      ],
+      "skylight": true
     },
     {
       "id": "Gallery",
@@ -101,7 +111,8 @@
           "height": 2.3,
           "sill": 1.1
         }
-      ]
+      ],
+      "skylight": true
     },
     {
       "id": "WestSalon",
@@ -133,7 +144,8 @@
           "height": 1.9,
           "sill": 1.1
         }
-      ]
+      ],
+      "skylight": true
     },
     {
       "id": "ReadingRoom",
@@ -164,15 +176,6 @@
           "width": 1.5,
           "height": 2.5,
           "sill": 1.1
-        },
-        {
-          "id": "North",
-          "kind": "window",
-          "side": "north",
-          "offset": 4,
-          "width": 2.5,
-          "height": 2.5,
-          "sill": 1.1
         }
       ],
       "pillars": [
@@ -184,7 +187,8 @@
           10,
           2
         ]
-      ]
+      ],
+      "skylight": true
     },
     {
       "id": "EastSalon",
@@ -216,7 +220,9 @@
           "height": 2.5,
           "sill": 1.1
         }
-      ]
+      ],
+      "elevation": 1.0,
+      "skylight": true
     },
     {
       "id": "Conservatory",
@@ -235,24 +241,6 @@
           "kind": "window",
           "side": "east",
           "offset": 1,
-          "width": 2,
-          "height": 3.7,
-          "sill": 1.1
-        },
-        {
-          "id": "East2",
-          "kind": "window",
-          "side": "east",
-          "offset": 5,
-          "width": 2,
-          "height": 3.7,
-          "sill": 1.1
-        },
-        {
-          "id": "East3",
-          "kind": "window",
-          "side": "east",
-          "offset": 9,
           "width": 2,
           "height": 3.7,
           "sill": 1.1
@@ -284,29 +272,106 @@
           12,
           10
         ]
-      ]
+      ],
+      "elevation": 2.5,
+      "skylight": true
+    },
+    {
+      "id": "UpperStudy",
+      "at": [
+        44,
+        8
+      ],
+      "size": [
+        8,
+        8
+      ],
+      "height": 4.5,
+      "elevation": 4.0,
+      "skylight": true
+    },
+    {
+      "id": "StorageRoom",
+      "at": [
+        -20,
+        -10
+      ],
+      "size": [
+        12,
+        14
+      ],
+      "height": 3.5,
+      "floor_material": "concrete",
+      "floor_holes": [
+        [
+          1,
+          2,
+          2,
+          2
+        ]
+      ],
+      "kit": "concrete"
     }
   ],
   "connections": [
-    [
-      "GrandLounge",
-      "Gallery"
-    ],
-    [
-      "Gallery",
-      "WestSalon"
-    ],
-    [
-      "WestSalon",
-      "ReadingRoom"
-    ],
-    [
-      "Gallery",
-      "EastSalon"
-    ],
-    [
-      "EastSalon",
-      "Conservatory"
-    ]
+    {
+      "from": "GrandLounge",
+      "to": "Gallery",
+      "door": {
+        "id": "GalleryDoor",
+        "label": "Gallery"
+      }
+    },
+    {
+      "from": "Gallery",
+      "to": "WestSalon",
+      "door": {
+        "id": "WestSalonDoor",
+        "label": "West salon"
+      }
+    },
+    {
+      "from": "WestSalon",
+      "to": "ReadingRoom",
+      "door": {
+        "id": "ReadingRoomDoor",
+        "label": "Reading room"
+      }
+    },
+    {
+      "from": "Gallery",
+      "to": "EastSalon",
+      "door": {
+        "id": "EastSalonDoor",
+        "label": "East salon"
+      }
+    },
+    {
+      "from": "EastSalon",
+      "to": "Conservatory",
+      "kind": "stairs",
+      "door": {
+        "id": "ConservatoryDoor",
+        "label": "Conservatory"
+      }
+    },
+    {
+      "from": "Conservatory",
+      "to": "UpperStudy",
+      "kind": "stairs",
+      "door": {
+        "id": "UpperStudyDoor",
+        "label": "Upper study",
+        "key_id": "upper_study_key"
+      }
+    },
+    {
+      "from": "ReadingRoom",
+      "to": "StorageRoom",
+      "door": {
+        "id": "StorageDoor",
+        "label": "Storage room"
+      }
+    }
   ]
 }

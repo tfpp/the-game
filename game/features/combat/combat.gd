@@ -48,11 +48,13 @@ func apply_damage(target_peer: int, amount: float, attacker_peer: int) -> void:
 		return
 	_set_health(target_peer, MAX_HEALTH)
 	var player := _player_for_peer(target_peer)
-	if player != null:
-		player.server_teleport.rpc_id(target_peer, _respawn_position())
 	if attacker_peer != target_peer:
 		_add_kill(attacker_peer)
+	# Announce before teleporting so slum-run listeners can scatter the victim's
+	# valuables where they actually fell, not at the casino respawn point.
 	_announce_death.rpc(target_peer, attacker_peer)
+	if player != null:
+		player.server_teleport.rpc_id(target_peer, _respawn_position())
 
 
 @rpc("authority", "call_local", "reliable")

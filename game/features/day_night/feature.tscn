@@ -8,4 +8,4 @@ script = ExtResource("1_script")
 [node name="Sun" type="DirectionalLight3D" parent="."]
 rotation_degrees = Vector3(-45, 35, 0)
 light_energy = 1.0
-shadow_enabled = true
+shadow_enabled = false

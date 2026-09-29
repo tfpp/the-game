@@ -1,8 +1,8 @@
 class_name LootContainer
 extends Node3D
-## A generic searchable object (car, dumpster, locker, crate...). Use it once to
-## search: the server rolls `loot_table` and hands out whatever fits in the
-## searcher's inventory. Leftovers stay inside for anyone to take with Use.
+## A generic searchable object (car, dumpster, locker, crate...). Use opens a
+## stash menu. The server rolls contents once; each drag claims one item into a
+## chosen backpack slot. Other players see the same remaining contents.
 ## A searched container stays searched until `reset()`, which lets the next
 ## search roll fresh loot.
 
@@ -20,10 +20,15 @@ const GROUP := &"loot_containers"
 ## Server-only randomness; tests may replace it with a seeded generator.
 var rng := RandomNumberGenerator.new()
 
+@onready var _entity: NetworkedInteraction = $NetworkedEntity
+
 
 func _ready() -> void:
 	add_to_group(GROUP)
 	add_to_group(&"interactables")
+	_entity.interaction_range = search_range
+	_entity.register_use(can_use, _search)
+	_entity.register_action(&"take", _validate_take, _take)
 
 
 ## Server-only: every container under `tree` becomes unsearched, so the next
@@ -50,7 +55,7 @@ func regenerate() -> void:
 
 
 func can_use(player: Player) -> bool:
-	return global_position.distance_to(player.global_position) <= search_range
+	return _entity.in_range(player)
 
 
 func interaction_text() -> String:
@@ -58,40 +63,69 @@ func interaction_text() -> String:
 		return "Search %s" % noun
 	if net_contents.is_empty():
 		return "Searched %s (empty)" % noun
-	var def := ItemCatalog.find(net_contents[0])
-	return "Take %s (%d left)" % [def.display_name if def != null else "item", net_contents.size()]
+	return "Open %s stash (%d items)" % [noun, net_contents.size()]
 
 
 func use() -> void:
-	if not net_searched or not net_contents.is_empty():
-		request_search.rpc_id(1)
+	request_search()
+	var screen := get_tree().get_first_node_in_group(&"inventory_screen")
+	if screen != null:
+		screen.call("open_stash", self)
 
 
-## Searches an unsearched container, or takes leftovers from a searched one.
-## Claims run on the server one at a time, so an item can only be taken once.
-@rpc("any_peer", "call_local", "reliable")
+## Searching reveals contents. It does not automatically collect them.
 func request_search() -> void:
-	if not multiplayer.is_server():
-		return
-	var sender := multiplayer.get_remote_sender_id()
-	var peer_id := sender if sender != 0 else multiplayer.get_unique_id()
-	var player := _player_for_peer(peer_id)
-	var hand := Hand.for_peer(get_tree(), peer_id)
-	if player == null or hand == null or not can_use(player):
-		return
+	_entity.request_use()
+
+
+func _search(_player: Player) -> bool:
 	if not net_searched:
 		regenerate()
-	var left := PackedStringArray()
-	for id: String in net_contents:
-		if not hand.inventory().collect(id):
-			left.append(id)
-	if left != net_contents:
-		net_contents = left
+	return true
 
 
-func _player_for_peer(peer_id: int) -> Player:
-	for node: Node in get_tree().get_nodes_in_group(&"players"):
-		var player := node as Player
-		if player != null and player.get_multiplayer_authority() == peer_id:
-			return player
-	return null
+## The expected ID prevents a stale drag index from taking a different item
+## after another player removes one from this shared stash.
+func request_take(index: int, backpack_slot: int, expected_id: String) -> void:
+	_entity.request_action(&"take", {"index": index, "slot": backpack_slot, "id": expected_id})
+
+
+func _validate_take(peer: int, payload: Dictionary) -> bool:
+	if payload.size() != 3:
+		return false
+	if not payload.has_all(["index", "slot", "id"]):
+		return false
+	if (
+		typeof(payload["index"]) != TYPE_INT
+		or typeof(payload["slot"]) != TYPE_INT
+		or typeof(payload["id"]) != TYPE_STRING
+	):
+		return false
+	var player := _entity.player_for_peer(peer)
+	var hand := Hand.for_peer(get_tree(), peer)
+	if not _entity.in_range(player) or hand == null or not net_searched:
+		return false
+	var index: int = payload["index"]
+	var slot: int = payload["slot"]
+	var id: String = payload["id"]
+	return (
+		index >= 0
+		and index < net_contents.size()
+		and net_contents[index] == id
+		and slot >= 0
+		and slot < PlayerInventory.CAPACITY
+		and hand.inventory().backpack[slot].is_empty()
+	)
+
+
+func _take(peer: int, payload: Dictionary) -> bool:
+	var index: int = payload["index"]
+	var slot: int = payload["slot"]
+	var id: String = payload["id"]
+	var hand := Hand.for_peer(get_tree(), peer)
+	if hand == null or not hand.inventory().collect_into_slot(id, slot):
+		return false
+	var remaining := net_contents.duplicate()
+	remaining.remove_at(index)
+	net_contents = remaining
+	return true

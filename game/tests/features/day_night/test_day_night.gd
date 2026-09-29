@@ -64,9 +64,10 @@ func test_apply_sun_at_noon_is_bright_and_overhead() -> void:
 func test_apply_sun_at_midnight_is_dim_moonlight() -> void:
 	_day_night._apply_sun(-90.0, 0.0)
 	var sun: DirectionalLight3D = _day_night.get_node("Sun")
-	assert_almost_eq(sun.rotation_degrees.x, 90.0, 0.001)
+	assert_almost_eq(sun.rotation_degrees.x, -35.0, 0.001)
 	assert_almost_eq(sun.light_energy, DayNight.NIGHT_SUN_ENERGY, 0.0001)
 	assert_eq(sun.light_color, DayNight.NIGHT_SUN_COLOR)
+	assert_true(sun.light_energy >= 0.25)
 
 
 func test_apply_environment_blends_between_night_and_captured_base() -> void:
@@ -84,6 +85,7 @@ func test_apply_environment_blends_between_night_and_captured_base() -> void:
 	assert_eq(env.ambient_light_color, DayNight.NIGHT_AMBIENT_COLOR)
 	assert_almost_eq(env.ambient_light_energy, DayNight.NIGHT_AMBIENT_ENERGY, 0.0001)
 	assert_almost_eq(env.background_energy_multiplier, DayNight.NIGHT_SKY_ENERGY_MULTIPLIER, 0.0001)
+	assert_true(env.ambient_light_color.get_luminance() * env.ambient_light_energy > 0.25)
 
 
 func test_runs_without_a_world_environment_in_the_tree() -> void:

@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="brass"]
+albedo_color = Color(0.92, 0.64, 0.18, 1)
+metallic = 0.65
+roughness = 0.32
+
+[sub_resource type="TorusMesh" id="bow"]
+material = SubResource("brass")
+inner_radius = 0.045
+outer_radius = 0.075
+rings = 12
+ring_segments = 6
+
+[sub_resource type="CylinderMesh" id="shaft"]
+material = SubResource("brass")
+top_radius = 0.016
+bottom_radius = 0.016
+height = 0.22
+radial_segments = 8
+
+[sub_resource type="BoxMesh" id="tooth"]
+material = SubResource("brass")
+size = Vector3(0.075, 0.025, 0.025)
+
+[node name="Key" type="Node3D"]
+scale = Vector3(1.35, 1.35, 1.35)
+
+[node name="Grip" type="Marker3D" parent="."]
+position = Vector3(0, 0, 0.17)
+
+[node name="Bow" type="MeshInstance3D" parent="."]
+mesh = SubResource("bow")
+
+[node name="Shaft" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, 0.17)
+rotation = Vector3(1.5707963, 0, 0)
+mesh = SubResource("shaft")
+
+[node name="ToothA" type="MeshInstance3D" parent="."]
+position = Vector3(0.025, 0, 0.23)
+mesh = SubResource("tooth")
+
+[node name="ToothB" type="MeshInstance3D" parent="."]
+position = Vector3(0.025, 0, 0.27)
+mesh = SubResource("tooth")

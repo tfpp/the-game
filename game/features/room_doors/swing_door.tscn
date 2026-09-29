@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/room_doors/swing_door.gd" id="door"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="entity"]
+
+[node name="SwingDoor" type="Node3D"]
+script = ExtResource("door")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")
+replicated_properties = Array[NodePath]([NodePath(".:net_state")])
+interaction_offset = Vector3(0, 1, 0)

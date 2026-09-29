@@ -18,6 +18,7 @@ func _run() -> void:
 	if role == "server":
 		await get_tree().create_timer(8).timeout
 		assert(not _hotel.is_loaded())
+		assert(not (_feature.get_node("Atrium") as StreamedRoom).is_loaded())
 		print("SERVER_UNLOADED")
 		return
 	while _player == null:
@@ -32,6 +33,8 @@ func _run() -> void:
 	await get_tree().create_timer(0.6).timeout
 	_entrance.request_enter.rpc_id(1)
 	_exit.request_enter.rpc_id(1)
+	(_hotel.get_node("AtriumEntrance") as RoomDoor).request_enter.rpc_id(1)
+	(_feature.get_node("Atrium/Return") as RoomDoor).request_enter.rpc_id(1)
 	await get_tree().create_timer(0.5).timeout
 	assert(_player.net_position.is_equal_approx(Vector3(2, 1, 5)))
 	print("RANGE_REJECTED")
@@ -63,6 +66,7 @@ func _run() -> void:
 		while get_tree().get_nodes_in_group(&"players").size() < 2:
 			await get_tree().process_frame
 		await get_tree().create_timer(2).timeout
+		await _visit_atrium()
 	else:
 		_move(_hotel.to_global(Vector3(7.5, 1, 7.5)), 0.9)
 		await _capture("room")
@@ -70,7 +74,7 @@ func _run() -> void:
 		await _capture("hallway")
 		_move(_hotel.to_global(Vector3(5, 1, 30)), PI / 2)
 		await _capture("junction")
-		_move(_hotel.to_global(Vector3(27, 1, 13)), -PI / 2)
+		_move(_hotel.to_global(Vector3(27, 3.5, 13)), -PI / 2)
 		await _capture("conservatory")
 		_move(_hotel.to_global(Vector3(-14, 1, 14)), PI / 2)
 		await _capture("reading-room")
@@ -115,6 +119,45 @@ func _check_radar(in_hotel: bool) -> void:
 		if point.y < -1300:
 			found_hotel = true
 	assert(found_hotel == in_hotel, "Radar follows streamed hotel entry, exit and re-entry")
+
+
+func _visit_atrium() -> void:
+	var atrium := _feature.get_node("Atrium") as StreamedRoom
+	_move((_hotel.get_node("AtriumArrival") as Marker3D).global_position)
+	await get_tree().create_timer(0.6).timeout
+	_use(_hotel.get_node("AtriumEntrance") as RoomDoor)
+	assert(atrium.is_loaded(), "Atrium collision preloaded")
+	await get_tree().create_timer(0.6).timeout
+	assert(
+		(
+			_player.net_position.distance_to(
+				(atrium.get_node("Arrival") as Marker3D).global_position
+			)
+			< 0.02
+		)
+	)
+	_check_floor_and_hull()
+	await get_tree().create_timer(3.1).timeout
+	assert(not _hotel.is_loaded() and atrium.is_loaded())
+	_move((atrium.get_node("Arrival") as Marker3D).global_position)
+	await get_tree().create_timer(0.6).timeout
+	_use(atrium.get_node("Return") as RoomDoor)
+	assert(_hotel.is_loaded(), "Classic collision preloaded on return")
+	await get_tree().create_timer(0.6).timeout
+	assert(
+		(
+			_player.net_position.distance_to(
+				(_hotel.get_node("AtriumArrival") as Marker3D).global_position
+			)
+			< 0.02
+		)
+	)
+	_check_floor_and_hull()
+	await get_tree().create_timer(3.1).timeout
+	assert(not atrium.is_loaded())
+	print("ATRIUM_ROUND_TRIP_PASSED")
+	_move((_hotel.get_node("Arrival") as Marker3D).global_position)
+	await get_tree().create_timer(0.6).timeout
 
 
 func _use(expected: RoomDoor) -> void:
