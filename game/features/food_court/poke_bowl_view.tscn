@@ -1,0 +1,121 @@
+[gd_scene format=3]
+[ext_resource type="Texture2D" path="res://assets/casino_hub/textures/prop_grain.png" id="grain"]
+
+[sub_resource type="StandardMaterial3D" id="ceramic"]
+albedo_color = Color(0.16, 0.29, 0.25, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="rice"]
+albedo_color = Color(0.94, 0.88, 0.7, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="salmon"]
+albedo_color = Color(0.88, 0.43, 0.3, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="avocado"]
+albedo_color = Color(0.43, 0.6, 0.22, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="seaweed"]
+albedo_color = Color(0.1, 0.18, 0.12, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="bowl"]
+top_radius = 0.2
+bottom_radius = 0.12
+height = 0.16
+radial_segments = 12
+rings = 1
+[sub_resource type="CylinderMesh" id="rice_mesh"]
+top_radius = 0.18
+bottom_radius = 0.18
+height = 0.025
+radial_segments = 12
+rings = 1
+[sub_resource type="BoxMesh" id="cube"]
+size = Vector3(0.065, 0.045, 0.055)
+[sub_resource type="BoxMesh" id="strip"]
+size = Vector3(0.02, 0.012, 0.14)
+[node name="PokeBowl" type="Node3D"]
+[node name="Grip" type="Marker3D" parent="."]
+position = Vector3(0.16, -0.055, 0.04)
+[node name="SupportGrip" type="Marker3D" parent="."]
+position = Vector3(-0.16, -0.055, 0.04)
+[node name="Bowl" type="MeshInstance3D" parent="."]
+mesh = SubResource("bowl")
+material_override = SubResource("ceramic")
+[node name="Rice" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.073, 0)
+mesh = SubResource("rice_mesh")
+material_override = SubResource("rice")
+
+[node name="Topping0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.08, 0.105, -0.065)
+rotation = Vector3(0, 0.0, 0)
+mesh = SubResource("cube")
+material_override = SubResource("salmon")
+
+[node name="Topping1" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.105, -0.085)
+rotation = Vector3(0, 0.7, 0)
+mesh = SubResource("cube")
+material_override = SubResource("salmon")
+
+[node name="Topping2" type="MeshInstance3D" parent="."]
+position = Vector3(0.08, 0.105, -0.06)
+rotation = Vector3(0, 1.4, 0)
+mesh = SubResource("cube")
+material_override = SubResource("salmon")
+
+[node name="Topping3" type="MeshInstance3D" parent="."]
+position = Vector3(-0.07, 0.105, 0.01)
+rotation = Vector3(0, 2.0999999999999996, 0)
+mesh = SubResource("cube")
+material_override = SubResource("salmon")
+
+[node name="Topping4" type="MeshInstance3D" parent="."]
+position = Vector3(0.02, 0.105, 0.0)
+rotation = Vector3(0, 2.8, 0)
+mesh = SubResource("cube")
+material_override = SubResource("avocado")
+
+[node name="Topping5" type="MeshInstance3D" parent="."]
+position = Vector3(0.09, 0.105, 0.03)
+rotation = Vector3(0, 3.5, 0)
+mesh = SubResource("cube")
+material_override = SubResource("avocado")
+
+[node name="Topping6" type="MeshInstance3D" parent="."]
+position = Vector3(-0.055, 0.105, 0.08)
+rotation = Vector3(0, 4.199999999999999, 0)
+mesh = SubResource("cube")
+material_override = SubResource("avocado")
+
+[node name="Topping7" type="MeshInstance3D" parent="."]
+position = Vector3(0.02, 0.105, 0.09)
+rotation = Vector3(0, 4.8999999999999995, 0)
+mesh = SubResource("cube")
+material_override = SubResource("avocado")
+
+[node name="Seaweed0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.03, 0.133, 0)
+rotation = Vector3(0, 0.5, 0)
+mesh = SubResource("strip")
+material_override = SubResource("seaweed")
+
+[node name="Seaweed1" type="MeshInstance3D" parent="."]
+position = Vector3(0.03, 0.133, 0)
+rotation = Vector3(0, 0.5, 0)
+mesh = SubResource("strip")
+material_override = SubResource("seaweed")

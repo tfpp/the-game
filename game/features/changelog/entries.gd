@@ -11,6 +11,10 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Poke bowls",
+		"summary": "Buy a $29 poke bowl in the food court and choose a 15–40% tip.",
+	},
+	{
 		"title": "Food court",
 		"summary": "Walk to the new south-wing food court for kebabs and booths you can sit in.",
 	},

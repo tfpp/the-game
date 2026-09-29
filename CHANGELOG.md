@@ -152,6 +152,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Add connected palms and five individually rigged digits per hand, with three joints each, relaxed and gripping poses, and shared first- and third-person hand geometry.
 - Add a rebindable B / left-stick-click middle-finger emote with first- and third-person raise/hold/lower animations, server-owned timing, per-player cooldowns, late-join phase synchronization, and weapon support-hand restoration.
 - Fix the gnome reconnect regression test's loop typing so strict GUT collection runs the entire test file.
+- Order a $29 poke bowl in the food court with a 15–40% tip, then carry or eat it.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
