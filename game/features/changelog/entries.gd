@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Pray together for +200% base slot win chance per blessing, online or offline.",
 	},
 	{
+		"title": "Pawn shop",
+		"summary": "Sell slum loot at the pawn shop counter beside the Crown's slum gate.",
+	},
+	{
 		"title": "İstanbul Kebab",
 		"summary": "Order a free kebab from animated staff directly ahead of casino spawn.",
 	},

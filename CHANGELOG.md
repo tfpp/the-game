@@ -123,6 +123,18 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   spit and free kebabs you can hold, share and eat.
 - Stop sign-in failing with "Couldn't reach the accounts server" on slow-loading browsers:
   long startup frames no longer time out account requests, and the error now names the cause.
+
+- Add an editable low-poly Blockbench dealer character asset, pixel atlas and joint hierarchy based on the dealer concept.
+
+- Refine the Blockbench dealer face with a stronger jaw, prominent brows, natural lip colors and an upward quiff, preserving the approved body.
+
+- Match the dealer concept with lowered stylized brow/eye shapes, a leaner tapered face and sculpted facial depth.
+
+- Shorten the dealer model forehead and lower its hairline while preserving the quiff and lower face.
+
+- Revise the dealer head against the side concept with a swept-back crown, compact nose, recessed chin and corrected jaw-to-neck transition.
+- Turn the loot fence beside the slum gate into a pawn shop with a glass display case,
+  three gold balls and a PAWN SHOP sign; press Use there to pawn a valuable.
 - Synchronize Kaaba prayers for everyone and grant +200% base slot win chance per
   blessing, including signed-in wallets.
 
