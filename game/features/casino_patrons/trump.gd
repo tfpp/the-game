@@ -4,9 +4,13 @@ extends CasinoPatron
 const PRICE_CENTS := 10000
 const FOLLOW_DISTANCE := 1.5
 const FOLLOW_SPEED := 1.8
+## How long the invisible-accordion emote plays after each accepted talk.
+const ACCORDION_S := 3.0
+const ACCORDION_BLEND_S := 0.3
 
 var _leader: CasinoPatron
 var _charging: Dictionary[int, bool] = {}
+var _accordion_left := 0.0
 
 
 func _ready() -> void:
@@ -56,6 +60,8 @@ func _apply_talk(player: Player) -> bool:
 		_say(peer, "Wallet unavailable. Try again later.")
 		return false
 	_charging[peer] = true
+	# Everyone nearby sees him play along, not just the player who talked.
+	_talk.send_event(&"accordion")
 	# Launch asynchronous wallet work without yielding the validated apply callback.
 	_charge(wallet, peer, player)
 	return true
@@ -74,3 +80,27 @@ func _charge(wallet: PlayerMoney, peer: int, player: Player) -> void:
 		_say(peer, str(result["error"]))
 	else:
 		_say(peer, "Paid $100.")
+
+
+func _on_talk_event(event: StringName, payload: Dictionary) -> void:
+	if event == &"accordion":
+		_accordion_left = ACCORDION_S
+		return
+	super._on_talk_event(event, payload)
+
+
+func _process(delta: float) -> void:
+	super._process(delta)
+	if _accordion_left <= 0.0:
+		return
+	_accordion_left = maxf(_accordion_left - delta, 0.0)
+	if not net_alive or net_ragdoll:
+		_accordion_left = 0.0
+		return
+	_body.play_accordion(accordion_weight(_accordion_left), ACCORDION_S - _accordion_left)
+
+
+## 0..1 emote strength: eases in at the start and out at the end of the emote.
+static func accordion_weight(left: float) -> float:
+	var elapsed := ACCORDION_S - left
+	return clampf(minf(elapsed, left) / ACCORDION_BLEND_S, 0.0, 1.0)

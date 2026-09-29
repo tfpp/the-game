@@ -37,6 +37,8 @@ const TRUMP_NAME := "Donald Trump"
 ## Hip height when standing; the pose lifts and lowers `Hips` around it.
 const HIP_HEIGHT := 0.95
 
+const ACCORDION_SPEED := 7.0
+
 var _cube := BoxMesh.new()
 var _hips: Node3D
 var _torso: Node3D
@@ -133,6 +135,20 @@ func pose(phase: float, walk: float, limp: float, flinch: float, idle: float) ->
 			-swing * 0.8 * alive - limp * 0.5, 0, side * (0.08 * alive + 1.35 * limp)
 		)
 		_elbows[i].rotation.x = 0.2 * alive + absf(swing) * 0.4 * alive + 0.7 * limp
+
+
+## Blends both arms toward an invisible-accordion squeeze. `amount` (0..1) fades the
+## emote over the current pose; `time` drives the bellows in and out.
+func play_accordion(amount: float, time: float) -> void:
+	if _hips == null or amount <= 0.0:
+		return
+	var bellows := 0.5 + 0.5 * sin(time * ACCORDION_SPEED)
+	_torso.rotation.y = lerpf(_torso.rotation.y, sin(time * ACCORDION_SPEED * 0.5) * 0.12, amount)
+	for i: int in 2:
+		var side := -1.0 if i == 0 else 1.0
+		var target := Vector3(0.75, 0, side * (0.12 + 0.4 * bellows))
+		_shoulders[i].rotation = _shoulders[i].rotation.lerp(target, amount)
+		_elbows[i].rotation.x = lerpf(_elbows[i].rotation.x, 0.85, amount)
 
 
 func _name_tag(text: String) -> void:

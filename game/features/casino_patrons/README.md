@@ -65,7 +65,8 @@ red tie and a name tag. Find him initially at (8.5, -1.5, -11.7).
 Use E, controller B/Circle or touch USE near him: the prompt shows **-$100**.
 Each accepted interaction charges the interacting player's existing wallet exactly
 10,000 cents; insufficient funds leave it unchanged and show a private reply.
-There is no reward or debt. The usual wallet persistence rules apply.
+There is no reward or debt. Every accepted talk broadcasts an `accordion` event, so
+all peers see him squeeze an invisible accordion for 3 s (`PatronModel.play_accordion`). The usual wallet persistence rules apply.
 
 `trump.gd` specializes CasinoPatron's walking and talk callback, reusing its body,
 combat, six-second respawn, speech bubble and the feature's MultiplayerSpawner.

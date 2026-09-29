@@ -141,3 +141,24 @@ func test_pending_charge_blocks_duplicate_and_disconnect_drops_reply() -> void:
 	await wait_frames(2)
 	assert_eq(int(delayed.balances[1]), 15000, "accepted charge completes once")
 	assert_false((_trump.get_node("Speech") as Label3D).visible)
+
+
+func test_talking_plays_accordion_emote_for_everyone() -> void:
+	var shoulder := _trump.find_child("ShoulderR", true, false) as Node3D
+	_trump._process(0.016)
+	var rest := shoulder.rotation
+	_trump.use()
+	await wait_frames(2)
+	assert_gt(_trump._accordion_left, 0.0, "accepted talk broadcasts the emote")
+	_trump._process(1.0)
+	assert_gt(shoulder.rotation.x, rest.x + 0.5, "arms raised to squeeze the bellows")
+	_trump._process(5.0)
+	assert_eq(_trump._accordion_left, 0.0)
+	assert_almost_eq(shoulder.rotation.x, rest.x, 0.01, "arms return to rest")
+
+
+func test_accordion_weight_eases_in_and_out() -> void:
+	var script: GDScript = _trump.get_script()
+	assert_eq(script.accordion_weight(script.ACCORDION_S), 0.0)
+	assert_eq(script.accordion_weight(script.ACCORDION_S / 2.0), 1.0)
+	assert_eq(script.accordion_weight(0.0), 0.0)
