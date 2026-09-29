@@ -19,7 +19,6 @@ const GET_UP_SPEED := 1.5
 const LYING_LIFT := 0.14
 const STRIDE_PER_M := 4.2
 const TALK_RANGE := 2.5
-const SPEECH_S := 4.0
 
 ## Replicated (server -> everyone), see patron.tscn's synchronizer.
 @export var net_position := Vector3.ZERO
@@ -56,8 +55,6 @@ var _collider_rest := Transform3D.IDENTITY
 ## Server-only, Mamdani: last fare time (seconds) per account key.
 var _fare_claims: Dictionary[String, float] = {}
 var _talk: NetworkedInteraction
-var _speech: Label3D
-var _speech_timer := 0.0
 
 @onready var _body: PatronModel = $Body
 @onready var _collider: CollisionShape3D = $Collider
@@ -164,9 +161,6 @@ func _process(delta: float) -> void:
 	_body.transform = pose
 	_body.pose(_phase, _walk, _fallen, _flinch, _idle)
 	_collider.transform = pose * _collider_rest
-	if _speech != null and _speech.visible:
-		_speech_timer -= delta
-		_speech.visible = _speech_timer > 0.0
 
 
 ## Server-only: a punch from features/boxing. `strength` is 0..1, `direction`
@@ -240,16 +234,6 @@ func _setup_talk() -> void:
 	add_child(_talk)
 	_talk.register_use(can_use, _apply_talk, 0.5)
 	_talk.event_received.connect(_on_talk_event)
-	_speech = Label3D.new()
-	_speech.name = "Speech"
-	_speech.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_speech.font_size = 36
-	_speech.outline_size = 10
-	_speech.pixel_size = 0.004
-	_speech.modulate = Color(1.0, 0.95, 0.6)
-	_speech.position = Vector3(0, 2.35, 0)
-	_speech.visible = false
-	add_child(_speech)
 
 
 func can_use(player: Player) -> bool:
@@ -291,7 +275,7 @@ func _give_fare(player: Player) -> bool:
 
 func _pay_fare(wallet: PlayerMoney, peer: int, key: String) -> void:
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
-	var result: Dictionary = await wallet.credit_coin(peer, id)
+	var result: Dictionary = await wallet.credit_coin(peer, id, "Mamdani covered your fare")
 	if result.has("error"):
 		_fare_claims.erase(key)
 		_say(peer, "My wallet's stuck, try again in a moment.")
@@ -317,11 +301,14 @@ func _say(peer: int, text: String) -> void:
 
 
 func _on_talk_event(event: StringName, payload: Dictionary) -> void:
-	if event != &"say" or _speech == null:
+	if event != &"say":
 		return
-	_speech.text = str(payload.get("text", ""))
-	_speech.visible = true
-	_speech_timer = SPEECH_S
+	Subtitles.say(get_tree(), speaker_name(), str(payload.get("text", "")))
+
+
+## Name shown before this patron's lines in the subtitles.
+func speaker_name() -> String:
+	return PatronModel.MAMDANI_NAME
 
 
 func _respawn() -> void:
