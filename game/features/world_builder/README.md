@@ -1,6 +1,21 @@
 # Procedural world authoring
 
-Describe rooms and connections in JSON, then bake an ordinary Godot scene with
+Set `"skylight": true` on a room to cut a centered, cell-aligned ceiling opening.
+The builder adds kit-matched frames, sealed glazing, an opaque sky backdrop and
+broad live light. Day/night energy varies from 3.0 to 1.2 to retain room visibility.
+Floors remain solid; skylights require a ceiling and need no lighting bake.
+
+Select a reusable room kit with `style.kit` (`classic`, `modern`, `deco`) and
+override individual rooms with `kit: "concrete"` for service areas. See
+[Room kits](../room_kits/README.md) for definitions and reusable scene pieces.
+
+Rooms support `floor_material: "concrete"` and `floor_holes: [[x, z, width, depth]]`.
+Holes use room-local whole cells, require concrete, and leave a one-cell wall margin.
+They remove floor collision and carpet while retaining the ceiling. Hotel windows
+receive an opaque day/night sky plane immediately outside their glazing. Ceiling
+lights follow corridor centerlines with a three-metre minimum separation.
+
+Describe rooms and connections in JSON, then generate an ordinary Godot scene with
 textured meshes, static collision and named placement markers. The `hotel` theme
 uses profiled architectural meshes: eight-sided columns, curved bases and capitals,
 mitred mouldings, recessed panel doors, turned handles, window joinery, ceiling
@@ -43,8 +58,9 @@ binary storage, recommended for detailed geometry. Replacing existing files requ
 The destination directory must exist. Invalid input exits with status 1 before
 building or changing the output.
 
-## Compile baked lighting
+## Optional baked lighting
 
+Normal development uses the fast geometry build above with live lamps. Baking is optional.
 For static lighting, include `--bake` in the same build command. Godot is the only
 required authoring tool:
 
@@ -141,7 +157,8 @@ See Godot's [LightmapGI documentation](https://docs.godotengine.org/en/stable/tu
 
 - `version: 1` and `rooms` are required. Seed defaults to 1, cell size to 1 metre,
   default height to 3.5 metres, hallway width to 3 cells, ceilings to true.
-- Room `size` and `at` are integer **cells** on the X/Z plane. Floor elevation is Y=0.
+- Room `size` and `at` are integer **cells** on the X/Z plane. Room `elevation` is
+  floor Y in **metres**, defaults to 0, and accepts -64 to 64.
   Cell size is 0.75–8 metres. Rooms have 7–32 cells per axis, with 1–64 rooms total.
 - `height`, room `height`, and `hall_height` are **metres**, each 2.5–8. Room and hallway
   heights inherit the global height unless overridden. Ceilings and wall profiles
@@ -155,10 +172,62 @@ See Godot's [LightmapGI documentation](https://docs.godotengine.org/en/stable/tu
   undirected links. Every room must be reachable. Links carve straight or seeded
   L-shaped corridors between centers; crossings become junctions. A route may pass
   through another room. Hallway width is 3, 5 or 7 cells.
+- Floors, ceilings, windows, rugs, pillars and room markers follow room elevation.
+  `height` remains the clearance above the floor, not an absolute ceiling Y.
 - `ceiling: false` omits roofs, ceiling coffers and hanging lights.
 - Identical input and compiler/engine version produce identical geometry. Godot may
   assign different internal scene IDs when saving. Keep blueprints and baked scenes
   together in version control.
+
+### Ramps and stairs
+
+Existing `["RoomA", "RoomB"]` connections still work. Different floor elevations
+use a ramp by default. Use an object to choose stairs or a gentler ramp limit:
+
+```json
+"connections": [
+  {"from": "Lobby", "to": "Gallery", "kind": "ramp", "max_slope": 10},
+  {"from": "Gallery", "to": "UpperRoom", "kind": "stairs"}
+]
+```
+
+The compiler puts one flight on the longest clear straight section of the seeded
+route. Room floors and L-shaped bend landings stay level. Each flight also leaves
+at least one cell of level landing at both ends. Ramp `max_slope` is in degrees,
+defaults to 10, and must be between 0.1 and 10. A 1 m rise needs at least 5.68 m
+of ramp, plus landings. Short routes fail with the required run length; increase
+the room separation, reduce the elevation difference, or explicitly choose stairs.
+
+Stairs have risers no taller than 18 cm, treads at least 22 cm deep, and a flight
+angle between 30 and 37 degrees. Long corridors get level landings around a shorter
+flight. Their visible treads use a continuous sloped
+collider for the existing player controller, so ascending requires no jumping.
+Ceilings follow flights with the configured hallway clearance.
+
+Corridor intersections must agree in elevation along their shared edges. The
+compiler rejects incompatible crossings and routes through rooms at the wrong
+height. It does not silently create drops, overpasses or stacked rooms. Room
+footprints still cannot overlap, even at different elevations.
+
+### Interactive connection doors
+
+Add a `door` to a connection object:
+
+```json
+{"from":"Conservatory","to":"UpperStudy","kind":"stairs",
+ "door":{"id":"UpperStudyDoor","label":"Upper study","key_id":"upper_study_key"}}
+```
+
+Omit `key_id` for an unlocked door. Width defaults to 1.8 m and height to 2.6 m.
+The compiler places a full-width partition at the destination threshold and validates
+level clearance. It also writes `<output>_doors.tscn`. Instance this companion at the
+same transform as the generated room, outside streamed geometry, on every peer.
+`SwingDoor` uses the existing Use interaction and server-owned state replication.
+Key IDs refer to ItemCatalog entries collected into PlayerInventory's key ring.
+
+Stair endpoints align to cell edges. If a rise cannot fit 30-37 degrees at the chosen
+cell size, compilation rejects it with guidance to use a smaller cell size or a ramp.
+
 
 ### Architectural settings
 
@@ -183,6 +252,11 @@ All these dimensions are metres. Automatic wall columns and panels avoid opening
 frames. Free columns use room `pillars: [[x,z], ...]`, measured in metres from that
 room's `at` origin. Up to 16 columns per room; placement must leave clearance to
 walls, other columns and the center routes connecting rooms.
+
+Inside corners and outside corridor turns share one column at the wall junction.
+Skirting, chair rails and cornices use matching mitred profile edges. Wall bays
+only add columns between corners. Hallway carpet follows the union of corridor
+cells, so branches and bends connect without overlapping runner strips.
 
 ### Doors and windows
 
@@ -224,7 +298,7 @@ mipmap sampling. The two-room hotel example has about 72,000 triangles, below th
 1. Store the blueprint and generated scene in the feature that owns the area.
 2. Instance the baked scene below that feature's `feature.tscn` and position its root.
 3. Place gameplay content relative to `Rooms/Lounge` etc. Room markers sit at floor
-   level and carry `floor_rect` (cells) and `height` (metres) metadata.
+   level and carry `floor_rect` (cells), `elevation` and `height` (metres) metadata.
 4. `Openings/Lounge_GardenDoor` etc. identify authored openings; their local forward
    direction faces into the room. Automated windows have `AutoWindowN` names.
 5. Keep gameplay nodes in the parent scene so rebuilding does not overwrite them.
@@ -238,8 +312,8 @@ casino through shared streamed rooms and teleport doors. Its geometry loads only
 for visiting players; interaction endpoints stay present on every peer.
 
 Every peer uses the same baked scene, including late joiners. There is no random
-runtime generation. The tool currently builds flat, axis-aligned, single-storey
-interiors. It does not place around existing world obstacles, generate stairs,
+runtime generation. The tool builds axis-aligned interiors with raised rooms,
+ramps and stairs. It does not place around existing world obstacles or generate
 furniture, navigation meshes or interactive door scripts. Outer walls are interior
 shells; compose a separate facade if the building will be seen from outside.
 
@@ -256,6 +330,12 @@ closure, hole and fixed-glass collision, open/closed doors, column collision and
 clearance, small rooms, automatic windows, save/reload, texture size, profiled mesh
 normals and geometry budgets. Preview captures should include the room, hallway,
 door joinery and column profiles after changes.
+
+Corner/elevation tests also check matching mitre edges, one column per corner,
+continuous floors in all four directions, descending flights, scaled cells,
+invalid intersections, saved collision and player traversal in both directions.
+Run `res://tests/features/world_builder/visual_probe.gd` with a real renderer and
+an output directory after `--` to capture the saved hotel's corners, ramp and stairs.
 
 Pillars use eight sides around the shaft, base and capital; wall columns use four
 exposed sides. Sconces and pendants also use at most eight sides around each fitting.

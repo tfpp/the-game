@@ -4,7 +4,7 @@ extends Node3D
 ## existing "Use" interaction (features/interaction): E, or the controller's B/Circle,
 ## adds the item to equipment or the backpack.
 
-const PICKUP_RANGE := 2.5
+const PICKUP_RANGE := NetworkedInteraction.DEFAULT_RANGE
 
 ## Which ItemCatalog entry this pickup offers. Set per-instance in feature.tscn.
 @export var item_id := ""
@@ -15,6 +15,7 @@ const PICKUP_RANGE := 2.5
 var _last_taken := false
 
 @onready var _mount: Node3D = $Mount
+@onready var _entity: NetworkedInteraction = $NetworkedEntity
 
 
 func _ready() -> void:
@@ -22,6 +23,7 @@ func _ready() -> void:
 	if def != null:
 		_mount.add_child(ItemCatalog.create_view(item_id))
 	_apply_taken(net_taken)
+	_entity.register_use(can_use, _collect)
 
 
 func _process(_delta: float) -> void:
@@ -30,7 +32,7 @@ func _process(_delta: float) -> void:
 
 
 func can_use(player: Player) -> bool:
-	if net_taken or global_position.distance_to(player.global_position) > PICKUP_RANGE:
+	if net_taken or not _entity.in_range(player):
 		return false
 	var hand := Hand.for_peer(get_tree(), player.get_multiplayer_authority())
 	return hand != null and hand.inventory().can_collect(item_id)
@@ -42,22 +44,21 @@ func interaction_text() -> String:
 
 
 func use() -> void:
-	request_pickup.rpc_id(1)
+	_entity.request_use()
 
 
+## Kept for existing callers; new interactions call use() or the entity component.
 @rpc("any_peer", "call_local", "reliable")
 func request_pickup() -> void:
-	if not multiplayer.is_server() or net_taken:
-		return
-	var sender := multiplayer.get_remote_sender_id()
-	var peer_id := sender if sender != 0 else multiplayer.get_unique_id()
-	var player := _player_for_peer(peer_id)
-	if player == null or not can_use(player):
-		return
-	var hand := Hand.for_peer(get_tree(), peer_id)
+	_entity.receive_legacy_action(&"use")
+
+
+func _collect(player: Player) -> bool:
+	var hand := Hand.for_peer(get_tree(), player.get_multiplayer_authority())
 	if hand == null or not hand.inventory().collect(item_id):
-		return
+		return false
 	net_taken = true
+	return true
 
 
 func _apply_taken(taken: bool) -> void:
@@ -67,11 +68,3 @@ func _apply_taken(taken: bool) -> void:
 		remove_from_group(&"interactables")
 	else:
 		add_to_group(&"interactables")
-
-
-func _player_for_peer(peer_id: int) -> Player:
-	for node: Node in get_tree().get_nodes_in_group(&"players"):
-		var player := node as Player
-		if player != null and player.get_multiplayer_authority() == peer_id:
-			return player
-	return null

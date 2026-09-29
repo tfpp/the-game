@@ -1,0 +1,43 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/room_doors/swing_door.tscn" id="1_m1ao6"]
+[ext_resource type="Script" path="res://features/room_doors/swing_door.gd" id="2_kj5ly"]
+
+[node name="RoomDoors" type="Node3D" unique_id=1232731714]
+
+[node name="GalleryDoor" type="Node3D" parent="." unique_id=1874444735 instance=ExtResource("1_m1ao6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, 26)
+script = ExtResource("2_kj5ly")
+door_label = "Gallery"
+
+[node name="WestSalonDoor" type="Node3D" parent="." unique_id=617052533 instance=ExtResource("1_m1ao6")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -8, 0, 30.5)
+script = ExtResource("2_kj5ly")
+door_label = "West salon"
+
+[node name="ReadingRoomDoor" type="Node3D" parent="." unique_id=1068254034 instance=ExtResource("1_m1ao6")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -13.5, 0, 18)
+script = ExtResource("2_kj5ly")
+door_label = "Reading room"
+
+[node name="EastSalonDoor" type="Node3D" parent="." unique_id=1032959715 instance=ExtResource("1_m1ao6")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 20, 1, 30.5)
+script = ExtResource("2_kj5ly")
+door_label = "East salon"
+
+[node name="ConservatoryDoor" type="Node3D" parent="." unique_id=1423590583 instance=ExtResource("1_m1ao6")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 27.5, 2.5, 18)
+script = ExtResource("2_kj5ly")
+door_label = "Conservatory"
+
+[node name="UpperStudyDoor" type="Node3D" parent="." unique_id=376754248 instance=ExtResource("1_m1ao6")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 44, 4, 12.5)
+script = ExtResource("2_kj5ly")
+door_label = "Upper study"
+key_id = "upper_study_key"
+
+[node name="StorageDoor" type="Node3D" parent="." unique_id=602704169 instance=ExtResource("1_m1ao6")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -13.5, 0, 4)
+script = ExtResource("2_kj5ly")
+door_label = "Storage room"
+kit_id = "concrete"

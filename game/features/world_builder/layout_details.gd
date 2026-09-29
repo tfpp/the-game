@@ -2,6 +2,8 @@ extends RefCounted
 ## Resolves room heights, exterior openings and column positions before mesh generation.
 
 const Style := preload("res://features/world_builder/style.gd")
+const Elevation := preload("res://features/world_builder/elevation.gd")
+const Corners := preload("res://features/world_builder/corners.gd")
 const DIRECTIONS: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
 
 
@@ -17,7 +19,8 @@ static func apply(layout: Dictionary, spec: Dictionary) -> void:
 			for x: int in range(rect.position.x, rect.end.x):
 				heights[Vector2i(x, z)] = float(room.get("height", layout["height"]))
 	layout["heights"] = heights
-	layout["walls"] = _walls(heights, scale)
+	layout["walls"] = _walls(layout, heights, scale)
+	Corners.apply(layout)
 	layout["openings"] = []
 	layout["pillars"] = []
 	for room: Dictionary in spec["rooms"]:
@@ -35,19 +38,23 @@ static func apply(layout: Dictionary, spec: Dictionary) -> void:
 		layout["errors"].append("Openings and pillars require the hotel theme.")
 
 
-static func _walls(heights: Dictionary[Vector2i, float], scale: float) -> Array[Dictionary]:
-	var groups: Dictionary[Vector3, Array] = {}
+static func _walls(
+	layout: Dictionary, heights: Dictionary[Vector2i, float], scale: float
+) -> Array[Dictionary]:
+	var groups: Dictionary[Array, Array] = {}
 	for cell: Vector2i in heights:
 		for direction: int in 4:
 			if heights.has(cell + DIRECTIONS[direction]):
 				continue
 			var fixed := cell.x + direction if direction < 2 else cell.y + direction - 2
-			var key := Vector3(direction, fixed, heights[cell])
+			var key: Array = [
+				direction, fixed, heights[cell], layout["floors"][cell], layout["cell_kits"][cell]
+			]
 			if not groups.has(key):
 				groups[key] = []
 			groups[key].append(cell.y if direction < 2 else cell.x)
 	var walls: Array[Dictionary] = []
-	for key: Vector3 in groups:
+	for key: Array in groups:
 		var values: Array = groups[key]
 		values.sort()
 		var index := 0
@@ -58,18 +65,23 @@ static func _walls(heights: Dictionary[Vector2i, float], scale: float) -> Array[
 			while index < values.size() and values[index] == end:
 				end += 1
 				index += 1
-			var a := Vector3(key.y, 0, start) if key.x < 2 else Vector3(start, 0, key.y)
-			var b := Vector3(key.y, 0, end) if key.x < 2 else Vector3(end, 0, key.y)
+			var a := (
+				(Vector3(key[1], 0, start) if key[0] < 2 else Vector3(start, 0, key[1])) * scale
+			)
+			var b := (Vector3(key[1], 0, end) if key[0] < 2 else Vector3(end, 0, key[1])) * scale
+			a.y = Elevation.sample(key[3], Vector2(a.x, a.z))
+			b.y = Elevation.sample(key[3], Vector2(b.x, b.z))
 			var normal: Vector3 = [Vector3.RIGHT, Vector3.LEFT, Vector3.BACK, Vector3.FORWARD][int(
-				key.x
+				key[0]
 			)]
 			walls.append(
 				{
-					"a": a * scale,
-					"b": b * scale,
+					"a": a,
+					"b": b,
 					"normal": normal,
-					"height": key.z,
-					"side": int(key.x),
+					"height": key[2],
+					"kit": key[4],
+					"side": int(key[0]),
 					"openings": []
 				}
 			)
@@ -106,6 +118,11 @@ static func _add_opening(
 	for wall: Dictionary in layout["walls"]:
 		var a: Vector3 = wall["a"]
 		var b: Vector3 = wall["b"]
+		if (
+			not is_equal_approx(a.y, float(room.get("elevation", 0)))
+			or not is_equal_approx(a.y, b.y)
+		):
+			continue
 		var wall_fixed := a.x if side < 2 else a.z
 		var wall_start := a.z if side < 2 else a.x
 		var wall_end := b.z if side < 2 else b.x
@@ -137,6 +154,8 @@ static func _overlaps(openings: Array, start: float, width: float) -> bool:
 static func _auto_windows(layout: Dictionary) -> void:
 	var style: Dictionary = layout["style"]
 	for wall: Dictionary in layout["walls"]:
+		if not is_equal_approx(wall["a"].y, wall["b"].y):
+			continue
 		var length: float = wall["a"].distance_to(wall["b"])
 		var width: float = style["window_width"]
 		var spacing := maxf(style["window_spacing"], width + 0.8)
@@ -167,7 +186,9 @@ static func _add_pillar(layout: Dictionary, room: Dictionary, rect: Rect2i, poin
 	var scale: float = layout["cell_size"]
 	var margin := float(layout["style"]["pillar_width"]) + 0.65
 	var position := Vector3(
-		rect.position.x * scale + float(point[0]), 0, rect.position.y * scale + float(point[1])
+		rect.position.x * scale + float(point[0]),
+		float(room.get("elevation", 0)),
+		rect.position.y * scale + float(point[1])
 	)
 	if (
 		point[0] < margin

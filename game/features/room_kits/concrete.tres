@@ -1,0 +1,12 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+[ext_resource type="Script" path="res://features/room_kits/definition.gd" id="kit"]
+[resource]
+script = ExtResource("kit")
+id = "concrete"
+profile = "concrete"
+wall_color = Color(0.52, 0.54, 0.52, 1)
+floor_color = Color(0.40, 0.42, 0.40, 1)
+ceiling_color = Color(0.48, 0.50, 0.48, 1)
+trim_color = Color(0.25, 0.28, 0.27, 1)
+accent_color = Color(0.38, 0.41, 0.39, 1)
+light_color = Color(0.89, 0.94, 0.88, 1)

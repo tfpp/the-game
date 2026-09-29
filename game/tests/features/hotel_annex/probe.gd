@@ -70,7 +70,7 @@ func _run() -> void:
 		await _capture("hallway")
 		_move(_hotel.to_global(Vector3(5, 1, 30)), PI / 2)
 		await _capture("junction")
-		_move(_hotel.to_global(Vector3(27, 1, 13)), -PI / 2)
+		_move(_hotel.to_global(Vector3(27, 3.5, 13)), -PI / 2)
 		await _capture("conservatory")
 		_move(_hotel.to_global(Vector3(-14, 1, 14)), PI / 2)
 		await _capture("reading-room")

@@ -7,6 +7,16 @@ a bullet to the end of `## [edge]`:** imperative, one line per change where poss
 version. Releases are cut by hand (the `release` workflow): it moves `edge` into a section
 for the new version. See "Versioning" in [docs/architecture.md](docs/architecture.md).
 
+- Add synchronized swinging room doors and a Reading Room key for the locked study two stair flights up.
+- Keep stairs between 30 and 37 degrees, with level landings and ramps capped at 10 degrees.
+- Use live hotel lighting and fast geometry builds during development, with no required lightmap bake.
+
+- Add reusable networked entity and player interaction components; migrate doors and pickups and document the shared workflow for contributors.
+- Add three reusable hotel kits and a plain concrete service kit, with nearby hotels connected by a branching sewer network, junctions, an alternate loop and three climbable ladders.
+- Space corridor lights, seal window views with day/night sky backdrops, and replace door lock labels with Kenney door and key sounds.
+- Add thirteen hotel skylights, reusable ceiling pieces for every room kit, and broad live daylight with readable night lighting.
+
+
 ## [edge]
 
 - Add an F-toggle flashlight with shared beams and a rebindable Controls entry.
@@ -72,6 +82,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   with locked dependencies and safe rebuilds.
 - Claim a free apartment at the Lily Apartments front desk in the south lobby, and
   take the express elevator to new ten-unit floors as more residents move in.
+
+- Join procedural wall corners with mitred trim and one shared pillar; connect raised rooms with level landings, ramps capped at 10 degrees and walkable stairs.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

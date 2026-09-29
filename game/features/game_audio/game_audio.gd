@@ -18,6 +18,11 @@ const CLOSE := preload("res://features/game_audio/audio/interface-sounds/close_0
 const EQUIP := preload("res://features/game_audio/audio/interface-sounds/select_001.ogg")
 const PICKUP := preload("res://features/game_audio/audio/interface-sounds/confirmation_001.ogg")
 const DROP := preload("res://features/game_audio/audio/interface-sounds/drop_001.ogg")
+const DOOR_OPEN := preload("res://features/game_audio/audio/rpg-audio/doorOpen_1.ogg")
+const DOOR_CLOSE := preload("res://features/game_audio/audio/rpg-audio/doorClose_2.ogg")
+const DOOR_LOCKED := preload("res://features/game_audio/audio/rpg-audio/metalLatch.ogg")
+const DOOR_UNLOCK := preload("res://features/game_audio/audio/rpg-audio/metalClick.ogg")
+const KEY_PICKUP := preload("res://features/game_audio/audio/rpg-audio/handleCoins2.ogg")
 
 const PROFILES := {
 	&"pistol": [SHOT, -9.0, 1.8],
@@ -33,6 +38,11 @@ const PROFILES := {
 	&"pickup": [PICKUP, -16.0, 1.0],
 	&"drop": [DROP, -16.0, 1.0],
 	&"elevator_ding": [PICKUP, -10.0, 1.4],
+	&"door_open": [DOOR_OPEN, -12.0, 1.0],
+	&"door_close": [DOOR_CLOSE, -12.0, 1.0],
+	&"door_locked": [DOOR_LOCKED, -9.0, 0.8],
+	&"door_unlock": [DOOR_UNLOCK, -9.0, 1.0],
+	&"key_pickup": [KEY_PICKUP, -12.0, 1.2],
 }
 
 var _world := Node3D.new()

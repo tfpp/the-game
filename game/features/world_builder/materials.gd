@@ -11,6 +11,7 @@ const PROTO_WALL := preload("res://world/materials/proto_wall.tres")
 static func create(theme: String) -> Dictionary[String, Material]:
 	var result: Dictionary[String, Material] = {
 		"floor": _material("Parquet walnut", WOOD, Color("82603c"), 0.6),
+		"concrete": _material("Worn concrete", PLASTER, Color("777a76"), 1.2),
 		"wall": _material("Cream damask", WALLPAPER, Color("e0cda8"), 0.5),
 		"ceiling": _material("Ivory plaster", PLASTER, Color("e8d9bc"), 0.4),
 		"wood": _material("Panelled walnut", WOOD, Color("ad8056"), 0.6),
@@ -20,6 +21,7 @@ static func create(theme: String) -> Dictionary[String, Material]:
 		"glass": _material("Window glass", PLASTER, Color("9eafbe"), 0.3),
 		"glow": _material("Warm opal glass", PLASTER, Color("ffda8d"), 0.5),
 	}
+	result.merge(preload("res://features/room_kits/catalog.gd").materials())
 	var glow := result["glow"] as StandardMaterial3D
 	glow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	var glass := result["glass"] as StandardMaterial3D

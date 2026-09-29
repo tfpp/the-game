@@ -1,45 +1,60 @@
 # Hotel wing
 
-Use the **HOTEL WING** door in the casino's south lobby (between the lounge and
-parking garage entrances). Inside, use the **CASINO** door to return. These use
-the normal Use control: E, controller B/Circle, or the mobile Use button.
+Use **HOTEL WING** in the casino's south lobby to enter, and **CASINO** inside to return.
+Use is E, controller B/Circle, or the mobile Use button.
 
-The hotel is a separate area at `(0, 0, -1400)`. The lobby entrance is always
-present; the hotel mesh, collision and lightmaps stream in only for its visitor.
-Doors and arrival markers remain present on every peer, using the shared
-`RoomDoor` server range validation and owner teleport. Entry loads collision
-before sending the request. The hotel inherits the game's sky/day-night cycle.
+Eight rooms connect through seven swinging doors. Anyone can open and close them;
+the server validates distance and synchronizes the result, including for late joiners.
+Doors swing away from the player and refuse to swing through someone standing nearby.
 
-The wing contains six rooms linked by five corridors: Grand Lounge, Gallery,
-West Salon, Reading Room, East Salon and Conservatory. Heights range from 3.4 m
-to 6 m, with lower connecting halls, branching routes and authored windows/pillars.
-Static soft shadows and bounced light are compiled into UV2 lightmaps. There are
-no runtime point lights in the saved wing; player flashlights remain additive.
+The East Salon is 1 m above the Gallery, reached by a ramp below 10 degrees.
+Two stair flights continue through the Conservatory (2.5 m) to the Upper Study (4 m).
+Both stairs are 36.9 degrees with level landings. Only the study door is locked.
+Find its key on the pedestal in the Reading Room, then Use the study door to unlock it.
+It stays unlocked for everyone until the session resets. Keys use a separate inventory
+key ring, even with a full backpack. If the holder leaves before unlocking, the key respawns.
 
-## Authoring
+The Reading Room connects to a concrete storage room. Open its sewer door and Use
+the ladder, then move forward/backward to climb up/down. A branching sewer network sits six
+metres below the hotels. It connects the classic hotel to a modern hotel 84 metres
+east and an Art Deco hotel 84 metres west, with a loop offering an alternate route. The storage floor and sewer roof have matching shaft openings.
+Storage walls and ceilings also use the plain concrete service kit, with steel
+doors and strip lights. Hotel kits have their own geometry and materials.
+Window panes have opaque sky backdrops; corridor pendants follow a spaced centerline.
+Door state has no floating labels or lock-status text.
 
-Edit `hotel.json` to change room sizes, heights, windows, pillars or connections.
-Keep the GrandLounge north door at offset 8 aligned with the return trigger and
-arrival marker in `feature.tscn`. That closed door is the teleport; the other
-closed doors are decorative. Geometry has no runtime generator or network nodes.
+Thirteen hotel rooms have broad skylights with frames matching their hotel kit.
+Live daylight fills the rooms, with softer fill retained after sunset. The glazed
+openings replace the central pendant, retain ceiling collision above the opening,
+and show the sky immediately outside. Concrete service rooms retain their strip lights.
 
-From the repository root:
+The hotel sits at `(0, 0, -1400)`. Geometry, collision and live lamps stream in for
+visitors. Door and key synchronizers remain on the always-present Hotel anchor so
+unloading the room never resets shared state. The game supplies the sky/day-night cycle.
+
+## Fast authoring (no lighting bake)
+
+Edit `hotel.json`, then run from the repository root:
 
 ```sh
 godot --headless --path game -s res://features/world_builder/build.gd -- \
-  res://features/hotel_annex/hotel.json res://features/hotel_annex/hotel.scn --bake --force
-godot --headless --path game -s res://features/hotel_annex/tools/build_entrance.gd
+  res://features/hotel_annex/hotel.json res://features/hotel_annex/hotel.scn --force
 ```
 
-The entrance is a baked mesh with recessed panels, turned brass hardware and
-mitred limestone trim. Hidden `RoomDoor` CSG nodes only supply interaction/RPC
-endpoints; the visible doorway and its collision come from the baked mesh.
+This writes the room geometry and `hotel_doors.tscn`, the companion instanced under
+Hotel in `feature.tscn`. Keep both generated scenes with the blueprint. Live lamps
+work immediately; normal builds do not unwrap UV2, start an editor worker or bake lightmaps.
+The optional world-builder lighting tools remain available for later.
 
-Validation: GUT `test_hotel_annex.gd`; run `python3 game/tests/features/hotel_annex/network_test.py`
-for a real server, visiting client and late-joining observer. Run
-`godot --path game res://tests/features/hotel_annex/probe.tscn` for full-game
-arrival clearance, round-trip and screenshots in `/tmp/hotel-*.png`.
+Rebuild the sewer and storage fixtures with
+`godot --headless --path game -s res://features/hotel_annex/tools/build_service.gd`.
+The workspace's `Rebuild Hotel.cmd` rebuilds all three hotel blueprints, the sewer
+and the reusable kit scenes. The nearby hotels use `modern.json` and `deco.json`.
 
-See the [world builder](../world_builder/README.md#compile-baked-lighting) for bake
-requirements and quality settings. The compiler uses native Godot LightmapGI;
-Godot is the only required authoring tool.
+Keep the GrandLounge north door at offset 8 aligned with the return trigger and
+arrival marker. Connection `door` objects create corridor partitions and interactive
+leaves; the older exterior `openings` describe static joinery.
+
+Validation: GUT `test_hotel_annex.gd` and `test_swing_doors.gd`, plus
+`python3 game/tests/features/room_doors/network_test.py` for real WebSocket peers,
+shared doors/key pickup, range checks, late joins and stream unloads.

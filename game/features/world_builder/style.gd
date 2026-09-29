@@ -1,8 +1,11 @@
 extends RefCounted
 ## Blueprint defaults and validation for architectural details. All dimensions are metres.
 
+const Kits := preload("res://features/room_kits/catalog.gd")
+
 const DEFAULTS := {
 	"theme": "hotel",
+	"kit": "classic",
 	"panel_spacing": 2.4,
 	"wainscot_height": 1.1,
 	"pillar_width": 0.34,
@@ -50,6 +53,8 @@ static func validate(spec: Dictionary, errors: Array[String]) -> void:
 			)
 	if style.get("theme", "hotel") not in ["hotel", "prototype"]:
 		errors.append("style.theme must be hotel or prototype.")
+	if not Kits.KITS.has(style.get("kit", "classic")):
+		errors.append("Unknown room kit.")
 	for key: String in ["windows", "lights"]:
 		if style.has(key) and not style[key] is bool:
 			errors.append("style.%s must be a boolean." % key)
@@ -58,6 +63,12 @@ static func validate(spec: Dictionary, errors: Array[String]) -> void:
 
 
 static func validate_room(room: Dictionary, errors: Array[String]) -> void:
+	if room.has("skylight") and not room["skylight"] is bool:
+		errors.append("Room skylight must be true or false.")
+	if room.has("kit") and not Kits.KITS.has(room["kit"]):
+		errors.append("Unknown room kit.")
+	if room.has("elevation") and not number_in(room["elevation"], -64, 64):
+		errors.append("Room elevation must be between -64 and 64 metres.")
 	if room.has("height") and not number_in(room["height"], 2.5, 8):
 		errors.append("Room height must be between 2.5 and 8 metres.")
 	var openings: Variant = room.get("openings", [])

@@ -11,12 +11,43 @@ class_name ChangelogEntries
 ## Don't add a version; the build works it out from the release tags.
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Hotel skylights",
+		"summary":
+		"Thirteen framed skylights brighten hotel rooms with daylight and soft night lighting.",
+	},
+	{
+		"title": "Three hotels and the sewer network",
+		"summary":
+		"Explore classic, modern and Art Deco hotels linked by sewer junctions and climbable ladders.",
+	},
+	{
+		"title": "Concrete service rooms and clearer interactions",
+		"summary":
+		"Plain concrete storage rooms, spaced hallway lamps, sky-filled windows and door/key sounds.",
+	},
+	{
+		"title": "Shared networked entities",
+		"summary":
+		"Doors and pickups share one server-validated networking system for future world objects.",
+	},
+	{
+		"title": "Hotel doors and the Upper Study key",
+		"summary":
+		"Open shared room doors with Use; find the Reading Room key for the study two stairs up.",
+	},
+	{
+		"title": "Connected rooms and raised floors",
+		"summary": "Room corners share one pillar; gentle ramps and stairs connect raised rooms.",
+	},
+	{
 		"title": "Wandering bird",
 		"summary":
 		(
 			"A friendly bird flies continuously between players and casino patrons, "
 			+ "resting near each before moving on."
-		)
+		),
+	},
+	{
 		"title": "Lily Apartments",
 		"summary":
 		"Claim a free room at the front desk and ride the elevator to expanding ten-unit floors.",

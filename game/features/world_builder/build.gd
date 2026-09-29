@@ -59,6 +59,8 @@ func _run() -> void:
 	if result != OK:
 		_fail("Could not save scene: %s" % error_string(result))
 		return
+	if not _save_doors(layout, args[1]):
+		return
 	print(
 		(
 			"WORLD_BUILD: %d rooms, %d connections, %d floor cells -> %s"
@@ -77,8 +79,26 @@ func _compile_lighting(layout: Dictionary, output: String, overwrite: bool, reba
 	if result != OK:
 		_fail("Lighting compilation failed; see the compiler output above.")
 		return
+	if not _save_doors(layout, output):
+		return
 	print("WORLD_BUILD: baked scene ready -> ", output)
 	quit()
+
+
+func _save_doors(layout: Dictionary, output: String) -> bool:
+	var companion := output.get_basename() + "_doors.tscn"
+	if layout["doors"].is_empty() and not FileAccess.file_exists(companion):
+		return true
+	var root := preload("res://features/world_builder/doorways.gd").runtime_scene(layout)
+	var packed := PackedScene.new()
+	var error := packed.pack(root)
+	if error == OK:
+		error = ResourceSaver.save(packed, companion)
+	root.free()
+	if error != OK:
+		_fail("Could not save runtime door companion: %s" % error_string(error))
+		return false
+	return true
 
 
 func _fail(message: String) -> void:

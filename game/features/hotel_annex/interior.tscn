@@ -1,10 +1,16 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="PackedScene" path="res://features/hotel_annex/hotel.scn" id="hotel"]
+[ext_resource type="PackedScene" path="res://features/hotel_annex/service.scn" id="service"]
+
+[ext_resource type="PackedScene" path="res://features/hotel_annex/modern.scn" id="modern"]
+[ext_resource type="PackedScene" path="res://features/hotel_annex/deco.scn" id="deco"]
 
 [node name="Interior" type="Node3D"]
 
 [node name="Architecture" parent="." instance=ExtResource("hotel")]
+
+[node name="ServiceArea" parent="." instance=ExtResource("service")]
 
 [node name="ReturnSign" type="Label3D" parent="."]
 position = Vector3(8.75, 3.05, 0.24)
@@ -13,3 +19,9 @@ font_size = 48
 pixel_size = 0.0035
 modulate = Color(1, 0.83, 0.52, 1)
 outline_size = 4
+
+[node name="ModernHotel" parent="." instance=ExtResource("modern")]
+position = Vector3(84, 0, 0)
+
+[node name="DecoHotel" parent="." instance=ExtResource("deco")]
+position = Vector3(-84, 0, 0)

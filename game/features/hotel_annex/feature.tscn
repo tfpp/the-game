@@ -1,8 +1,19 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
 [ext_resource type="Script" path="res://features/room_doors/room_door.gd" id="door"]
 [ext_resource type="PackedScene" path="res://features/hotel_annex/entrance.scn" id="model"]
+[ext_resource type="PackedScene" path="res://features/hotel_annex/hotel_doors.tscn" id="doors"]
+[ext_resource type="PackedScene" path="res://features/holdables/item_pickup.tscn" id="pickup"]
+[ext_resource type="Script" path="res://features/room_doors/room_key_pickup.gd" id="key"]
+[ext_resource type="PackedScene" path="res://features/room_doors/swing_door.tscn" id="swing"]
+[ext_resource type="PackedScene" path="res://features/room_doors/ladder.tscn" id="ladder"]
+
+[ext_resource type="PackedScene" path="res://features/hotel_annex/modern_doors.tscn" id="modern_doors"]
+[ext_resource type="PackedScene" path="res://features/hotel_annex/deco_doors.tscn" id="deco_doors"]
+
+[sub_resource type="StandardMaterial3D" id="Pedestal"]
+albedo_color = Color(0.2, 0.12, 0.065, 1)
 
 [node name="HotelAnnex" type="Node3D"]
 
@@ -13,7 +24,31 @@ position = Vector3(5, 1, 27)
 position = Vector3(0, 0, -1400)
 script = ExtResource("room")
 room_scene = "res://features/hotel_annex/interior.tscn"
-bounds = AABB(-21, -1, -1, 56, 10, 36)
+bounds = AABB(-106, -7, -11, 211, 18, 60)
+
+[node name="RoomDoors" parent="Hotel" instance=ExtResource("doors")]
+
+[node name="SewerDoor" parent="Hotel" instance=ExtResource("swing")]
+position = Vector3(-18, 0, -4)
+rotation = Vector3(0, 3.14159265, 0)
+door_label = "Sewer door"
+kit_id = "concrete"
+
+[node name="SewerLadder" parent="Hotel" instance=ExtResource("ladder")]
+position = Vector3(-18, 0, -7)
+access_door = NodePath("../SewerDoor")
+
+[node name="StudyKey" parent="Hotel" instance=ExtResource("pickup")]
+position = Vector3(-16, 0.923, 13)
+script = ExtResource("key")
+item_id = "upper_study_key"
+locked_door = NodePath("../RoomDoors/UpperStudyDoor")
+
+[node name="KeyPedestal" type="CSGBox3D" parent="Hotel"]
+position = Vector3(-16, 0.45, 13)
+size = Vector3(0.7, 0.9, 0.7)
+use_collision = true
+material = SubResource("Pedestal")
 
 [node name="Arrival" type="Marker3D" parent="Hotel"]
 position = Vector3(8.75, 1, 2.2)
@@ -44,3 +79,27 @@ position = Vector3(5, 1.35, 29)
 script = ExtResource("door")
 destination = NodePath("../Hotel/Arrival")
 door_label = "Visit the hotel wing"
+
+[node name="ModernDoors" parent="Hotel" instance=ExtResource("modern_doors")]
+position = Vector3(84, 0, 0)
+
+[node name="ModernSewerDoor" parent="Hotel" instance=ExtResource("swing")]
+position = Vector3(66, 0, -4)
+rotation = Vector3(0, 3.14159265, 0)
+kit_id = "concrete"
+
+[node name="ModernLadder" parent="Hotel" instance=ExtResource("ladder")]
+position = Vector3(66, 0, -7)
+access_door = NodePath("../ModernSewerDoor")
+
+[node name="DecoDoors" parent="Hotel" instance=ExtResource("deco_doors")]
+position = Vector3(-84, 0, 0)
+
+[node name="DecoSewerDoor" parent="Hotel" instance=ExtResource("swing")]
+position = Vector3(-102, 0, -4)
+rotation = Vector3(0, 3.14159265, 0)
+kit_id = "concrete"
+
+[node name="DecoLadder" parent="Hotel" instance=ExtResource("ladder")]
+position = Vector3(-102, 0, -7)
+access_door = NodePath("../DecoSewerDoor")

@@ -10,6 +10,7 @@ enum Category {
 	FOOD,  ## Eaten once; removed from hand.
 	PROP,  ## Thrown; removed from hand and becomes a world pickup where it lands.
 	CLOTHING,  ## Equipped in a shirt or pants slot.
+	KEY,  ## Stored in the inventory key ring; cannot be thrown, eaten or dropped.
 }
 
 @export var id := ""
