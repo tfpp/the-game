@@ -123,6 +123,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   spit and free kebabs you can hold, share and eat.
 - Stop sign-in failing with "Couldn't reach the accounts server" on slow-loading browsers:
   long startup frames no longer time out account requests, and the error now names the cause.
+- Synchronize Kaaba prayers for everyone and grant +200% base slot win chance per
+  blessing, including signed-in wallets.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

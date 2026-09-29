@@ -1,6 +1,6 @@
 class_name SlotSpinCycle
 extends RefCounted
-## Independent, uniform reels. Used for temporary offline/dev wallets only;
+## Uniform unblessed reels, with matching blessed odds for offline/dev wallets;
 ## authenticated spins are generated and settled by the accounts API.
 
 const SYMBOL_COUNT := 5
@@ -9,26 +9,29 @@ var _rng := RandomNumberGenerator.new()
 
 
 func next_result() -> Array[int]:
-	return [
-		_rng.randi_range(0, SYMBOL_COUNT - 1),
-		_rng.randi_range(0, SYMBOL_COUNT - 1),
-		_rng.randi_range(0, SYMBOL_COUNT - 1)
-	]
+	return blessed_result(0)
 
 
-## One roll plus up to `rerolls` more while it keeps losing (Kaaba blessings).
-func blessed_result(rerolls: int) -> Array[int]:
-	var result := next_result()
-	for attempt: int in maxi(rerolls, 0):
-		if is_win(result):
-			break
-		result = next_result()
-	return result
+## Each blessing adds 200% of the base chance (8 percentage points), capped at five.
+func blessed_result(blessings: int) -> Array[int]:
+	return result_for_ticket(_rng.randi_range(0, 124), blessings)
 
 
-## Chance that a spin with `rerolls` blessings wins: 1 - 0.96^(1 + rerolls).
-static func win_chance(rerolls: int) -> float:
-	return 1.0 - pow(1.0 - 5.0 / 125.0, 1 + maxi(rerolls, 0))
+## A uniform ticket preserves all 125 unblessed outcomes and equal winning symbols.
+static func result_for_ticket(ticket: int, blessings: int) -> Array[int]:
+	if ticket < 5 + 10 * clampi(blessings, 0, 5):
+		var symbol := ticket % SYMBOL_COUNT
+		return [symbol, symbol, symbol]
+	# Map the remaining tickets onto non-triples, skipping indices 0,31,62,93,124.
+	var losing := ticket - 5
+	@warning_ignore("integer_division")
+	var index := losing + 1 + losing / 30
+	@warning_ignore("integer_division")
+	return [index / 25, (index / 5) % SYMBOL_COUNT, index % SYMBOL_COUNT]
+
+
+static func win_chance(blessings: int) -> float:
+	return (5.0 + 10.0 * clampi(blessings, 0, 5)) / 125.0
 
 
 static func is_win(reels: Array[int]) -> bool:

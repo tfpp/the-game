@@ -115,6 +115,8 @@ shader uploads. Labels and interaction prompts keep their normal readable fonts.
 ## Kaaba blessings
 
 Players who prayed at the Kaaba ([kaaba](../kaaba/README.md)) carry blessings. The
-server passes them to `PlayerMoney.spin()` as `rerolls`: each gives a losing spin one
-more roll of the reels, and a win spends them. The 80% return above is for unblessed
-spins. The accounts API ignores blessings, so they only apply to temporary wallets.
+server passes them to `PlayerMoney.spin()` through the legacy `rerolls` argument.
+Each stack adds 200% of the base win chance (4% becomes 12% with one, up to 44%
+with five); a win spends all stacks. Temporary wallets and the authenticated API
+use the same exact odds and equal winning-symbol probabilities. The 80% return
+above is for unblessed spins; blessings increase it without changing prize sizes.

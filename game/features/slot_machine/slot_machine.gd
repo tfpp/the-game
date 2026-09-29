@@ -59,7 +59,7 @@ func interaction_text() -> String:
 		)
 	var prayer := get_tree().get_first_node_in_group(&"kaaba_prayer") as KaabaPrayer
 	if prayer != null and prayer.blessings_for(multiplayer.get_unique_id()) > 0:
-		text += " — blessed ×%d" % prayer.blessings_for(multiplayer.get_unique_id())
+		text += " — slot luck +%d%%" % (200 * prayer.blessings_for(multiplayer.get_unique_id()))
 	return text
 
 
