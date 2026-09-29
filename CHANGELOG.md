@@ -152,6 +152,7 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Fix the gnome reconnect regression test's loop typing so strict GUT collection runs the entire test file.
 - Switch roulette to an American wheel with a green 00 pocket, on the wheel and table layout.
 - Add low-poly 3D models for the roulette table (wheel, spinning rotor, rollable ball and dealer chip tray) and for the eight casino chip denominations, with 256px-or-smaller pixel-art textures.
+- Replace the placeholder roulette table with the new model: the rotor spins, the ball rolls around the track and drops into the winning pocket, and the table has a matching rectangular collider and sits clear of its neighbours.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 

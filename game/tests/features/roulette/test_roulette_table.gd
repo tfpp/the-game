@@ -92,7 +92,7 @@ func test_server_checks_range_facing_and_obstructions() -> void:
 	assert_false(_table.can_use(player), "Cannot use through a wall")
 
 
-func test_round_table_can_be_used_from_either_side() -> void:
+func test_table_can_be_used_from_either_long_side() -> void:
 	var south := PlayerScene.instantiate() as Player
 	south.set_multiplayer_authority(2)
 	south.position = Vector3(0, 0.9144, 2.5)
@@ -115,3 +115,62 @@ func test_switching_sessions_clears_old_state() -> void:
 	_table._advance(4.0)
 	_table._on_mode_changed(Network.Mode.OFFLINE)
 	assert_eq(_table.state, RouletteTable.initial_state())
+
+
+func test_wheel_order_lists_every_pocket_once_with_00_opposite_0() -> void:
+	var order := RouletteWheel.WHEEL_ORDER
+	assert_eq(order.size(), RouletteWheel.POCKET_COUNT)
+	for number: int in RouletteWheel.POCKET_COUNT:
+		assert_true(order.has(number), "pocket %d is on the wheel" % number)
+	assert_eq(RouletteWheel.wheel_index(0), 0)
+	assert_eq(RouletteWheel.wheel_index(RouletteWheel.DOUBLE_ZERO), RouletteWheel.POCKET_COUNT / 2)
+	for index: int in order.size():
+		var here := RouletteWheel.color_for(order[index])
+		var next := RouletteWheel.color_for(order[(index + 1) % order.size()])
+		if here != "green" and next != "green":
+			assert_ne(here, next, "red and black alternate around the wheel")
+
+
+func test_view_shows_the_model_with_a_rotor_and_ball() -> void:
+	var view := _table.get_node("View") as RouletteTableView
+	assert_not_null(view.rotor)
+	assert_not_null(view.ball)
+	assert_eq(
+		view.ball.get_parent(), view.rotor.get_parent(), "ball orbits separately from the rotor"
+	)
+
+
+func test_ball_rolls_then_settles_in_the_winning_pocket() -> void:
+	var view := _table.get_node("View") as RouletteTableView
+	_table._begin_spin(1, "Alice")
+	view._process(0.0)
+	var start := view.ball.position
+	var start_basis := view.ball.basis
+	view.animate(0.5)
+	assert_gt(Vector2(view.ball.position.x, view.ball.position.z).length(), 0.3, "on the track")
+	assert_ne(view.ball.position, start)
+	assert_ne(view.ball.basis, start_basis, "the ball rolls as it moves")
+	_table._advance(4.0)
+	var number := int(_table.state["number"])
+	view._process(0.0)
+	for _frame: int in 60:
+		view.animate(1.0 / 30.0)
+	var angle := view.pocket_angle(number)
+	var expected := Vector3(sin(angle), 0, -cos(angle)) * RouletteTableView.POCKET_RADIUS_M
+	expected.y = RouletteTableView.ball_height(RouletteTableView.POCKET_RADIUS_M)
+	assert_almost_eq(view.ball.position, expected, Vector3.ONE * 0.001)
+	view.animate(0.5)
+	angle = view.pocket_angle(number)
+	assert_almost_eq(view.ball.position.x, sin(angle) * RouletteTableView.POCKET_RADIUS_M, 0.001)
+	assert_almost_eq(view.ball.position.z, -cos(angle) * RouletteTableView.POCKET_RADIUS_M, 0.001)
+
+
+func test_late_joiner_sees_the_ball_already_in_the_winning_pocket() -> void:
+	var view := _table.get_node("View") as RouletteTableView
+	_table.state = {
+		"spin": 4, "spinning": false, "ball": 17, "number": 17, "color": "black", "operator": "Bob"
+	}
+	view._process(0.0)
+	var angle := view.pocket_angle(17)
+	assert_almost_eq(view.ball.position.x, sin(angle) * RouletteTableView.POCKET_RADIUS_M, 0.001)
+	assert_almost_eq(view.ball.position.z, -cos(angle) * RouletteTableView.POCKET_RADIUS_M, 0.001)

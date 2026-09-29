@@ -2,7 +2,7 @@ class_name RouletteTable
 extends StaticBody3D
 ## Clients request a spin; only the server validates, chooses, advances and settles it.
 ## One atomic replicated snapshot includes the spinning ball and the final result.
-## The table is round, so unlike the slot machine it can be used from any side.
+## Unlike the slot machine, the table can be used from either long side.
 
 const USE_RANGE := 3.5
 const SPIN_DURATION_S := 3.0
