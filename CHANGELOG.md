@@ -143,6 +143,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
   floor, and distant door labels no longer float on their own on phones and touch screens.
 - Show what NPCs say to you as movie-style subtitles at the bottom of the screen instead of
   a floating speech bubble.
+- Bribe Donald Trump for slightly better slot machine luck. Each bribe doubles in price, up
+  to five, and he promises to remodel part of the casino with one of 1,000 quips.
 - Fight lurkers, gunmen and stalkers in the parking garage: each floor above the entrance
   holds deadlier enemies that chase, shoot and respawn.
 

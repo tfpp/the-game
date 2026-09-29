@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Lurkers, gunmen and stalkers haunt the parking garage, deadlier each floor up.",
 	},
 	{
+		"title": "Trump bribes",
+		"summary": "Bribe Donald Trump for slightly better slot luck; each bribe costs more.",
+	},
+	{
 		"title": "NPC subtitles",
 		"summary": "NPC dialogue now shows as movie subtitles at the bottom of the screen.",
 	},
