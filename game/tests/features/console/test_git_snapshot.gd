@@ -65,6 +65,17 @@ func test_metadata_excludes_contents_and_untracked_files_without_changing_reposi
 	assert_eq(data["ls-files"], "example.txt")
 	assert_false(str(data).contains("content"))
 	assert_false(str(data).contains("untracked.txt"))
+	# Container exports can read a checkout owned by the host user. Trust only
+	# this explicit repository, without relying on checkout's temporary HOME.
+	var had_owner_override := OS.has_environment("GIT_TEST_ASSUME_DIFFERENT_OWNER")
+	var owner_override := OS.get_environment("GIT_TEST_ASSUME_DIFFERENT_OWNER")
+	OS.set_environment("GIT_TEST_ASSUME_DIFFERENT_OWNER", "1")
+	var container_data := Snapshot.collect(_root)
+	if had_owner_override:
+		OS.set_environment("GIT_TEST_ASSUME_DIFFERENT_OWNER", owner_override)
+	else:
+		OS.unset_environment("GIT_TEST_ASSUME_DIFFERENT_OWNER")
+	assert_eq(container_data, data, "Container ownership does not hide the snapshot")
 	assert_eq(_git(["rev-parse", "HEAD"]), before)
 	assert_eq(FileAccess.get_file_as_string(_root.path_join("example.txt")), "modified content\n")
 	_git(["checkout", "--detach", "-q"])
@@ -72,4 +83,6 @@ func test_metadata_excludes_contents_and_untracked_files_without_changing_reposi
 
 
 func test_missing_repository_returns_no_snapshot() -> void:
-	assert_eq(Snapshot.collect(_root), {})
+	var failure := {}
+	assert_eq(Snapshot.collect(_root, failure), {})
+	assert_true(str(failure.get("message", "")).contains("git log failed"))

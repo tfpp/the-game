@@ -22,7 +22,7 @@ const QUERIES := {
 const LIMIT := 12000
 
 
-static func collect(root: String = "") -> Dictionary:
+static func collect(root: String = "", failure: Dictionary = {}) -> Dictionary:
 	if root.is_empty():
 		root = ProjectSettings.globalize_path("res://").trim_suffix("/").get_base_dir()
 	var data := {}
@@ -35,15 +35,20 @@ static func collect(root: String = "") -> Dictionary:
 				"core.fsmonitor=false",
 				"-c",
 				"color.ui=false",
+				"-c",
+				"safe.directory=" + root,
 				"-C",
 				root
 			]
 		)
 		args.append_array(PackedStringArray(QUERIES[name]))
 		var output: Array = []
-		if OS.execute("git", args, output, true) != OK or output.is_empty():
+		var status := OS.execute("git", args, output, true)
+		if status != OK:
+			failure["message"] = "git %s failed (%d): %s" % [name, status, str(output)]
 			return {}
-		var value := str(output[0]).strip_edges()
+		# Clean status and a detached branch legitimately produce no output.
+		var value := str(output[0]).strip_edges() if not output.is_empty() else ""
 		if value.length() > LIMIT:
 			value = value.left(LIMIT) + "\n[Output truncated to 12000 characters.]"
 		data[name] = value

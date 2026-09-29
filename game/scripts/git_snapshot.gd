@@ -3,9 +3,10 @@ extends SceneTree
 
 
 func _initialize() -> void:
-	var data: Dictionary = preload("res://features/console/git_snapshot.gd").collect()
+	var failure := {}
+	var data: Dictionary = preload("res://features/console/git_snapshot.gd").collect("", failure)
 	if data.is_empty():
-		printerr("Repository snapshot unavailable.")
+		printerr("Repository snapshot unavailable: " + str(failure.get("message", "No metadata")))
 		quit(1)
 		return
 	var file := FileAccess.open("res://features/console/repo_snapshot.gd", FileAccess.WRITE)
