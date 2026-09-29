@@ -43,6 +43,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Find gnome holes as doggy doors on the outer walls: gnomes now come out one by one,
   wander their own routes around players, NPCs and frogs, and can be killed like frogs
   until their burrow next comes out.
+- Claim a free apartment at the Lily Apartments front desk in the south lobby, and
+  take the express elevator to new ten-unit floors as more residents move in.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
