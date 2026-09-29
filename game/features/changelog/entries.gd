@@ -15,6 +15,10 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "New York's mayor now strolls the casino gaming floor.",
 	},
 	{
+		"title": "Quest 3 browser VR",
+		"summary": "Enter VR from Quest / WebXR in the menu to explore with Touch controllers.",
+	},
+	{
 		"title": "Shootable salon NPCs",
 		"summary":
 		"Shoot salon guests, dealers and the apartment clerk; they return after six seconds.",

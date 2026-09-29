@@ -66,3 +66,9 @@ func _find_target() -> Node3D:
 			nearest = candidate
 			distance = next
 	return nearest
+
+
+## Current eligible interaction, also shown by the immersive VR prompt.
+func target_text() -> String:
+	var target := _find_target()
+	return str(target.call("interaction_text")) if target != null else ""

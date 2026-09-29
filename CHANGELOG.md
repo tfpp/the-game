@@ -102,6 +102,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Remove the Adventure Arcade, its computer games and Python authoring and probe scripts.
 - Shoot salon guests, dealers, the bartender and the apartment clerk with any gun;
   they return after six seconds.
+- Enter VR from the Quest / WebXR menu in Quest Browser with headset look, stick
+  movement, snap turning, jump and nearby object interaction.
 
 ## [0.7.1](https://github.com/tfpp/the-game/releases/tag/v0.7.1) - 2026-09-28
 
