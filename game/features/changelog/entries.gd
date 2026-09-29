@@ -15,6 +15,14 @@ const ENTRIES: Array[Dictionary] = [
 		"summary": "Walk to the new south-wing food court for kebabs and booths you can sit in.",
 	},
 	{
+		"title": "Money log",
+		"summary": "The chat log tells you whenever you get money, and why.",
+	},
+	{
+		"title": "Pawn shop",
+		"summary": "Sell slum loot at the pawn shop counter beside the Crown's slum gate.",
+	},
+	{
 		"title": "İstanbul Kebab",
 		"summary": "Order a free kebab from animated staff in the food court.",
 	},

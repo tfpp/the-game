@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3]
 
 [sub_resource type="BoxMesh" id="FrameMesh"]
-size = Vector3(0.64, 0.8, 0.05)
+size = Vector3(0.64, 0.84, 0.05)
 
 [sub_resource type="StandardMaterial3D" id="FrameMat"]
 albedo_color = Color(0.86, 0.82, 0.72, 1)
@@ -22,7 +22,7 @@ albedo_color = Color(0.3, 0.26, 0.2, 1)
 [node name="Hole" type="Node3D"]
 
 [node name="Frame" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0.025)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0.025)
 mesh = SubResource("FrameMesh")
 surface_material_override/0 = SubResource("FrameMat")
 

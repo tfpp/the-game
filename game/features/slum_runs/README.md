@@ -7,7 +7,8 @@ searchable containers. The old parking garage staff door remains a direct way
 to enter that map and participates in the same run tracking.
 
 Each slum has a return door. Surviving players bring valuables back in their
-inventory. The fence beside the Crown gate buys one valuable per Use press at
+inventory. The pawn shop counter (`Fence`, `loot_fence.gd`) beside the Crown
+gate, marked by three gold balls and a glass display case, buys one valuable per Use press at
 the price on its `ItemDefinition`; the sale goes into the same wallet used by
 slots. Items are reserved before an online sale starts. If the accounts API
 does not answer, pressing Use again retries the same operation ID, so the
