@@ -133,6 +133,8 @@ for the new version. See "Versioning" in [docs/architecture.md](docs/architectur
 - Shorten the dealer model forehead and lower its hairline while preserving the quiff and lower face.
 
 - Revise the dealer head against the side concept with a swept-back crown, compact nose, recessed chin and corrected jaw-to-neck transition.
+- Turn the loot fence beside the slum gate into a pawn shop with a glass display case,
+  three gold balls and a PAWN SHOP sign; press Use there to pawn a valuable.
 - Fight lurkers, gunmen and stalkers in the parking garage: each floor above the entrance
   holds deadlier enemies that chase, shoot and respawn.
 
