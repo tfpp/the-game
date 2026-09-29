@@ -12,7 +12,7 @@ ever in hand. See `gun_rig.gd`'s `holster`/`net_equipped` and
 ## How it works
 
 - `gun_generator.gd`: pure, seeded random generation (`GunGenerator.generate(rng)`),
-  unit-testable, with its math kept separate
+  unit-testable the same way `features/gnomes/gnome_math.gd` keeps its math separate
   from the node that uses it. Every gun rolls an ammo type (`AmmoType`: buckshot,
   rifle, low-caliber, rocket, grenade, plasma) and, within that type's ranges,
   barrel count, fire rate, magazine size, damage, total ammo capacity, projectile

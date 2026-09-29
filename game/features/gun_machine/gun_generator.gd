@@ -3,7 +3,7 @@ extends RefCounted
 ## Pure random-gun generation for the gun machine: picks an ammo type and rolls
 ## every other stat within that type's range. Deterministic given the
 ## RandomNumberGenerator it's handed, and free of scene access, so it's
-## unit-testable
+## unit-testable the same way features/gnomes/gnome_math.gd keeps its math
 ## separate from the node that uses it.
 
 enum AmmoType { BUCKSHOT, RIFLE, LOW_CALIBER, ROCKET, GRENADE, PLASMA, RAY }

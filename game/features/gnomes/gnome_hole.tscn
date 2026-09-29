@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3]
+
+[sub_resource type="BoxMesh" id="FrameMesh"]
+size = Vector3(0.64, 0.8, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="FrameMat"]
+albedo_color = Color(0.86, 0.82, 0.72, 1)
+
+[sub_resource type="BoxMesh" id="OpeningMesh"]
+size = Vector3(0.48, 0.62, 0.02)
+
+[sub_resource type="StandardMaterial3D" id="OpeningMat"]
+albedo_color = Color(0.03, 0.025, 0.02, 1)
+roughness = 1.0
+
+[sub_resource type="BoxMesh" id="FlapMesh"]
+size = Vector3(0.44, 0.58, 0.015)
+
+[sub_resource type="StandardMaterial3D" id="FlapMat"]
+albedo_color = Color(0.3, 0.26, 0.2, 1)
+
+[node name="Hole" type="Node3D"]
+
+[node name="Frame" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0.025)
+mesh = SubResource("FrameMesh")
+surface_material_override/0 = SubResource("FrameMat")
+
+[node name="Opening" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37, 0.055)
+mesh = SubResource("OpeningMesh")
+surface_material_override/0 = SubResource("OpeningMat")
+
+[node name="Flap" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 0.075)
+
+[node name="Panel" type="MeshInstance3D" parent="Flap"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+mesh = SubResource("FlapMesh")
+surface_material_override/0 = SubResource("FlapMat")
