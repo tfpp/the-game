@@ -114,8 +114,15 @@ static func gain_text(cents: int, reason: String) -> String:
 	return "+%s: %s" % [format_money(cents), reason]
 
 
+## "$1,234,567.89", "-$5.00". Integer maths, so large balances never round.
 static func format_money(cents: int) -> String:
-	return "$%.2f" % (float(cents) / 100.0)
+	var whole := str(absi(cents) / 100)
+	var grouped := ""
+	while whole.length() > 3:
+		grouped = "," + whole.right(3) + grouped
+		whole = whole.left(whole.length() - 3)
+	var sign := "-" if cents < 0 else ""
+	return "%s$%s%s.%02d" % [sign, whole, grouped, absi(cents) % 100]
 
 
 ## Peers in the poorest 80% by wallet balance (rounded down), poorest first. A lone

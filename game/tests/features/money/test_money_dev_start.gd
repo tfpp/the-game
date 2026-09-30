@@ -17,4 +17,4 @@ func test_local_dev_start_is_one_hundred_thousand_dollars() -> void:
 	add_child_autofree(wallet)
 	wallet.set_process(false)
 	wallet._refresh(1)
-	assert_eq(PlayerMoney.format_money(int(wallet.balances[1])), "$100000.00")
+	assert_eq(PlayerMoney.format_money(int(wallet.balances[1])), "$100,000.00")

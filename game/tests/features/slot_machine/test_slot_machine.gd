@@ -210,7 +210,7 @@ func test_wallet_charges_and_rejects_empty_balance() -> void:
 
 func test_interaction_text_and_wallet_use_the_machines_own_buy_in() -> void:
 	_machine.buy_in_cents = 250000
-	assert_true(_machine.interaction_text().contains("$2500.00"))
+	assert_true(_machine.interaction_text().contains("$2,500.00"))
 	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
 	wallet.balances[1] = 250000
 	var result: Dictionary = await wallet.spin(1, "high-roller", _machine.buy_in_cents)
@@ -219,7 +219,7 @@ func test_interaction_text_and_wallet_use_the_machines_own_buy_in() -> void:
 	wallet.balances[1] = 249999
 	result = await wallet.spin(1, "high-roller-2", _machine.buy_in_cents)
 	assert_true(result.has("error"))
-	assert_true(str(result["error"]).contains("$2500.00"))
+	assert_true(str(result["error"]).contains("$2,500.00"))
 	assert_eq(int(wallet.balances[1]), 249999)
 
 
@@ -232,7 +232,7 @@ func test_different_machines_can_have_different_buy_ins() -> void:
 	add_child_autofree(expensive)
 	expensive.set_process(false)
 	assert_ne(cheap.interaction_text(), expensive.interaction_text())
-	assert_true(expensive.interaction_text().contains("$1000000000.00"))
+	assert_true(expensive.interaction_text().contains("$1,000,000,000.00"))
 
 
 func test_temporary_income_and_remote_nameplate() -> void:

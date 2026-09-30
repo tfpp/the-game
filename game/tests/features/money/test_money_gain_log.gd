@@ -46,3 +46,13 @@ func test_notice_line_has_no_sender_and_escapes_bbcode() -> void:
 	var chat_script := load("res://features/chat_box/chat_box.gd")
 	var line: String = chat_script.format_line("", "+$1.00: [b]x")
 	assert_eq(line, "[color=#83e59b]+$1.00: [lb]b]x[/color]")
+
+
+func test_money_groups_thousands_with_commas() -> void:
+	assert_eq(PlayerMoney.format_money(0), "$0.00")
+	assert_eq(PlayerMoney.format_money(5), "$0.05")
+	assert_eq(PlayerMoney.format_money(99999), "$999.99")
+	assert_eq(PlayerMoney.format_money(100000), "$1,000.00")
+	assert_eq(PlayerMoney.format_money(123456789), "$1,234,567.89")
+	assert_eq(PlayerMoney.format_money(100_000_000_000), "$1,000,000,000.00")
+	assert_eq(PlayerMoney.format_money(-2566300), "-$25,663.00")

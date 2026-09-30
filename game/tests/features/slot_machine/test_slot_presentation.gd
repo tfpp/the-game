@@ -44,7 +44,7 @@ func test_large_prices_and_server_messages_fit_real_display_widths() -> void:
 	_view._process(0.016)
 	var caption: Label3D = _view._caption
 	var status: Label3D = _view._status
-	assert_string_contains(caption.text, "1000000000.00")
+	assert_string_contains(caption.text, "1,000,000,000.00")
 	for label: Label3D in [caption, status]:
 		var width := (
 			(
