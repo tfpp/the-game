@@ -35,6 +35,8 @@ var _arms := HeldArms.new()
 var _flash_timer := 0.0
 var _fire_cooldown := 0.0
 
+@onready var consumption: ConsumableUse = $Consumption
+
 @onready var _mount: Node3D = $Mount
 
 
@@ -59,13 +61,19 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if net_item_id != _mounted_item_id:
+	consumption.advance(delta)
+	if consumption.view_id() != _mounted_item_id:
 		_rebuild_view()
+	if _view != null:
+		var smoke := _view.get_node_or_null("Smoke") as CPUParticles3D
+		if smoke != null:
+			smoke.emitting = consumption.active()
 	var player := _player()
-	visible = player != null and not net_item_id.is_empty()
+	visible = player != null and not consumption.view_id().is_empty()
 	if player != null:
-		global_transform = _mount_transform(player)
+		global_transform = consumption.pose(player, _mount_transform(player))
 		_pose_arms(player)
+		consumption.pose_fingers(player)
 		var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
 		if models != null and models.emote_elapsed(peer_id) >= 0.0:
 			_arms.human.material.set_shader_parameter("hide_left_arm", true)
@@ -94,6 +102,11 @@ func _unhandled_input(event: InputEvent) -> void:
 func request_primary_action() -> void:
 	if not multiplayer.is_server() or not _is_own_request():
 		return
+	if consumption.active():
+		return
+	if ItemCatalog.uses_remaining(net_item_id) > 0:
+		consumption.entity.receive_legacy_action(&"consume")
+		return
 	var def := ItemCatalog.find(net_item_id)
 	if def == null:
 		return
@@ -110,6 +123,8 @@ func request_primary_action() -> void:
 ## player. Inventory storage and swapping provide the other ways to free a hand.
 @rpc("any_peer", "call_local", "reliable")
 func request_drop_item() -> void:
+	if consumption.active():
+		return
 	if not multiplayer.is_server() or not _is_own_request() or net_item_id.is_empty():
 		return
 	var def := ItemCatalog.find(net_item_id)
@@ -359,16 +374,19 @@ func _player() -> Player:
 
 
 func _rebuild_view() -> void:
-	_mounted_item_id = net_item_id
+	_mounted_item_id = consumption.view_id()
 	for child: Node in _mount.get_children():
 		_mount.remove_child(child)
 		child.queue_free()
 	_view = null
-	var def := ItemCatalog.find(net_item_id)
+	var def := ItemCatalog.find(consumption.view_id())
 	if def != null and def.view_scene != null:
 		_view = def.view_scene.instantiate() as Node3D
 		_mount.add_child(_view)
 		HeldItemPose.align_grip(_view)
+		var smoke := _view.get_node_or_null("Smoke") as CPUParticles3D
+		if smoke != null:
+			smoke.emitting = consumption.active()
 
 
 func _set_flash(active: bool) -> void:

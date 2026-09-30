@@ -1,8 +1,11 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://features/holdables/hand.gd" id="1_script"]
 
 [ext_resource type="Script" path="res://features/inventory/player_inventory.gd" id="2_inventory"]
+
+[ext_resource type="Script" path="res://features/holdables/consumable_use.gd" id="consume"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="entity"]
 
 [sub_resource type="SceneReplicationConfig" id="Replication"]
 properties/0/path = NodePath(".:net_item_id")
@@ -38,3 +41,10 @@ script = ExtResource("2_inventory")
 [node name="Sync" type="MultiplayerSynchronizer" parent="Inventory"]
 root_path = NodePath("..")
 replication_config = SubResource("InventoryReplication")
+
+[node name="Consumption" type="Node" parent="."]
+script = ExtResource("consume")
+
+[node name="NetworkedEntity" type="Node" parent="Consumption"]
+script = ExtResource("entity")
+continuous_properties = Array[NodePath]([NodePath(".:state")])

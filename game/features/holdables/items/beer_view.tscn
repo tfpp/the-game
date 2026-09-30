@@ -1,0 +1,55 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="glass"]
+albedo_color = Color(0.22, 0.12, 0.035, 1)
+roughness = 0.72
+[sub_resource type="StandardMaterial3D" id="label"]
+albedo_color = Color(0.83, 0.73, 0.47, 1)
+roughness = 1.0
+[sub_resource type="CylinderMesh" id="bottle"]
+top_radius = 0.045
+bottom_radius = 0.05
+height = 0.22
+radial_segments = 8
+[sub_resource type="CylinderMesh" id="shoulder"]
+top_radius = 0.02
+bottom_radius = 0.045
+height = 0.05
+radial_segments = 8
+[sub_resource type="CylinderMesh" id="neck"]
+top_radius = 0.019
+bottom_radius = 0.02
+height = 0.06
+radial_segments = 8
+[sub_resource type="CylinderMesh" id="band"]
+top_radius = 0.048
+bottom_radius = 0.049
+height = 0.09
+radial_segments = 8
+
+[node name="Beer" type="Node3D"]
+[node name="Bottle" type="MeshInstance3D" parent="."]
+mesh = SubResource("bottle")
+material_override = SubResource("glass")
+[node name="Shoulder" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.135, 0)
+mesh = SubResource("shoulder")
+material_override = SubResource("glass")
+[node name="Neck" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.19, 0)
+mesh = SubResource("neck")
+material_override = SubResource("glass")
+[node name="Label" type="MeshInstance3D" parent="."]
+mesh = SubResource("band")
+material_override = SubResource("label")
+[node name="Brand" type="Label3D" parent="."]
+position = Vector3(0, 0, 0.05)
+pixel_size = 0.0007
+text = "CROWN\nBEER"
+font_size = 20
+outline_size = 0
+modulate = Color(0.24, 0.10, 0.04, 1)
+[node name="Grip" type="Marker3D" parent="."]
+
+[node name="Mouth" type="Marker3D" parent="."]
+position = Vector3(0, 0.22, 0)

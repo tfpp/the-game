@@ -488,3 +488,27 @@ func set_appearance(data: Dictionary) -> void:
 		set_skin_index(int(data["skin"]))
 	if changed and _skin_material != null:
 		_decorate()
+
+
+## Mouth contact for rig-driven smoking and drinking, including creature heads.
+func mouth_transform() -> Transform3D:
+	# Face UV mouth is at y=0.622 on the authored human mesh. Follow its actual
+	# weighted head bone (the creature proxy pivot is slightly lower).
+	if body_type != &"penguin" and head_type == &"human":
+		var bone := human.skeleton.find_bone("Head")
+		var rest := human.skeleton.get_bone_global_rest(bone)
+		var posed := human.skeleton.get_bone_global_pose(bone)
+		return (
+			human.skeleton.global_transform
+			* posed
+			* rest.affine_inverse()
+			* Transform3D(Basis.IDENTITY, Vector3(0, 0.622, -0.077))
+		)
+	var offset := Vector3.ZERO
+	if body_type == &"penguin":
+		offset = Vector3(0, 0.15, -0.25)
+	elif head_type == &"frog":
+		offset = Vector3(0, -0.02, -0.27)
+	elif head_type == &"bird":
+		offset = Vector3(0, 0.15, -0.32)
+	return _head.global_transform * Transform3D(Basis.IDENTITY, offset)

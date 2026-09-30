@@ -55,13 +55,16 @@ func _talk(node: Node3D) -> NetworkedInteraction:
 func test_drinks_charge_the_wallet_and_raise_then_hurt_charisma() -> void:
 	_player(1, _bartender.global_position + Vector3(0, -1.1, 0.8))
 	for drink: int in 3:
-		assert_eq(_talk(_bartender)._evaluate(1, &"use", {}), NetworkedEntity.Result.ACCEPTED)
-		_talk(_bartender)._actions[&"use"].next_msec = 0
+		assert_eq(
+			_talk(_bartender)._evaluate(1, &"order", {"item": "drink"}),
+			NetworkedEntity.Result.ACCEPTED
+		)
+		_talk(_bartender)._actions[&"order"].next_msec = 0
 	assert_eq(int(_wallet.balances[1]), 20000 - 3 * CharmMath.DRINK_CENTS)
 	assert_eq(int(_wallet.balances[2]), 20000, "only the buyer pays")
 	assert_eq(_bar.charisma_for(1), 3)
 	assert_eq(_bar.intoxication_for(1), 3)
-	_talk(_bartender)._evaluate(1, &"use", {})
+	_talk(_bartender)._evaluate(1, &"order", {"item": "drink"})
 	assert_eq(_bar.charisma_for(1), 1, "one drink too many")
 	_bar.advance(CharmMath.SOBER_S * 2.0)
 	_bar._publish()
@@ -70,11 +73,13 @@ func test_drinks_charge_the_wallet_and_raise_then_hurt_charisma() -> void:
 
 func test_bartender_rejects_far_unknown_and_broke_players() -> void:
 	var player := _player(1, _bartender.global_position + Vector3(0, 0, 8))
-	assert_eq(_talk(_bartender)._evaluate(1, &"use", {}), NetworkedEntity.Result.DENIED)
+	assert_eq(
+		_talk(_bartender)._evaluate(1, &"order", {"item": "drink"}), NetworkedEntity.Result.DENIED
+	)
 	assert_eq(_talk(_bartender)._evaluate(9, &"use", {}), NetworkedEntity.Result.DENIED)
 	player.net_position = _bartender.global_position + Vector3(0, -1.1, 0.8)
 	_wallet.balances[1] = 100
-	_talk(_bartender)._evaluate(1, &"use", {})
+	_talk(_bartender)._evaluate(1, &"order", {"item": "drink"})
 	assert_eq(int(_wallet.balances[1]), 100)
 	assert_eq(_bar.intoxication_for(1), 0)
 

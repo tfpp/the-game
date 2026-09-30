@@ -60,6 +60,13 @@ func _draw() -> void:
 		draw_rect(Rect2(19, 2, 26, 10), color)
 		draw_rect(Rect2(19, 10, 11, 24), color)
 		draw_rect(Rect2(34, 10, 11, 24), color)
+	elif ItemCatalog.consumable_kind(_item) == "beer":
+		draw_rect(Rect2(25, 10, 14, 24), Color("634119"))
+		draw_rect(Rect2(29, 1, 6, 12), Color("634119"))
+		draw_rect(Rect2(25, 18, 14, 10), Color("d4ba78"))
+	elif ItemCatalog.consumable_kind(_item) == "cigarette":
+		draw_line(Vector2(12, 24), Vector2(48, 10), Color("e3d9ba"), 5, true)
+		draw_line(Vector2(39, 14), Vector2(48, 10), Color("a65c21"), 5, true)
 	elif _item == "banana":
 		draw_arc(Vector2(30, 5), 22, 0.15, 2.5, 16, Color("ebc64c"), 9, true)
 	elif _item == "ball":

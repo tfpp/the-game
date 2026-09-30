@@ -75,3 +75,28 @@ late join and disconnect checks with
 because it retains a freed remote hand after disconnect on this base snapshot.
 To capture the actual salon, run its `celeste_network_probe.tscn` with
 `-- --offline --celeste-role=capture` using a display; it writes `/tmp/celeste.png`.
+
+## Bar shop items (#290)
+
+Use the existing bartender at the salon counter to open **THE CROWN — BAR SHOP**.
+Choose **Bottled beer — $5**, **Cigarette — $2**, or **Drink now — $5**. The last
+option preserves the original immediate drink/charisma service. Opening the shop
+never charges money. Close the menu to resume play; stored purchases are equipped
+through Inventory, then used with primary action (left click / RB / trigger / FIRE).
+
+The bartender's existing NetworkedInteraction owns `order` with exactly one
+`item` string from its fixed stock. It resolves the sender, rechecks range and
+allows only one pending payment per player. `PlayerMoney.charge` remains the only
+wallet; `PlayerInventory.collect` delivers items. A full inventory rejects before
+payment. If it fills or the buyer disconnects during payment, the paid item lands
+on the existing customer-side floor at (-6.5, -1.5, -8.35), as a normal shared
+pickup. Session generations discard stale callbacks after a mode change.
+
+Bottled beer applies the same intoxication/charisma rules as the original drink,
+once on the first of three sips; cigarettes last three puffs and have no stat effects.
+Each primary action takes one sip/puff. Shop UI uses the existing
+modal pause/resume contract, gamepad focus and phone-sized buttons. Stock is
+unlimited and has no persistent state; purchases follow ordinary inventory lifetime.
+`test_bar_shop.gd` covers purchase authority, stock/range validation, balances,
+capacity, async races, reset and the menu. Original drink/charisma tests now select
+`order` with `{"item": "drink"}` after the interaction opens the shop.

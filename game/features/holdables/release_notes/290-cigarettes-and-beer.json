@@ -1,0 +1,10 @@
+{
+  "title": "Cigarettes and bottled beer",
+  "summary": "Buy cigarettes and beer at the casino bar and watch your character smoke or drink.",
+  "notes": [
+    "Sell $2 cigarettes and $5 bottled beers through the existing bar shop and inventory.",
+    "Animate three separately triggered puffs or sips per item with the player rig for everyone, including late joiners.",
+    "Preserve remaining puffs and sips through inventory storage, swaps and drops.",
+    "Apply existing intoxication rules once per bottle on its first sip and retain the immediate bar drink option."
+  ]
+}
