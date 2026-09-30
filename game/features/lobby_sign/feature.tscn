@@ -1,0 +1,68 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="1_brass"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/velvet.tres" id="2_velvet"]
+[ext_resource type="FontFile" path="res://assets/fonts/notosanssc/NotoSansSC-Bold-subset.ttf" id="3_cjk"]
+[ext_resource type="FontFile" path="res://assets/fonts/inter/Inter-Regular.ttf" id="4_latin"]
+
+[sub_resource type="BoxMesh" id="FrameBarH"]
+material = ExtResource("1_brass")
+size = Vector3(4.7, 0.2, 0.09)
+
+[sub_resource type="BoxMesh" id="FrameBarV"]
+material = ExtResource("1_brass")
+size = Vector3(0.2, 1.9, 0.09)
+
+[sub_resource type="BoxMesh" id="Face"]
+material = ExtResource("2_velvet")
+size = Vector3(4.34, 1.54, 0.06)
+
+[node name="LobbySign" type="Node3D"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 10.5, 4, 34)
+
+[node name="BarTop" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.85, 0.05)
+mesh = SubResource("FrameBarH")
+cast_shadow = 0
+
+[node name="BarBottom" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.85, 0.05)
+mesh = SubResource("FrameBarH")
+cast_shadow = 0
+
+[node name="BarLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-2.25, 0, 0.05)
+mesh = SubResource("FrameBarV")
+cast_shadow = 0
+
+[node name="BarRight" type="MeshInstance3D" parent="."]
+position = Vector3(2.25, 0, 0.05)
+mesh = SubResource("FrameBarV")
+cast_shadow = 0
+
+[node name="Face" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, 0.04)
+mesh = SubResource("Face")
+cast_shadow = 0
+
+[node name="Mandarin" type="Label3D" parent="."]
+position = Vector3(0, 0.26, 0.075)
+pixel_size = 0.012
+double_sided = false
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
+font = ExtResource("3_cjk")
+font_size = 46
+outline_size = 6
+text = "中国共产党万岁"
+
+[node name="Caption" type="Label3D" parent="."]
+position = Vector3(0, -0.5, 0.075)
+pixel_size = 0.012
+double_sided = false
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
+font = ExtResource("4_latin")
+font_size = 15
+outline_size = 4
+text = "ALL HAIL THE CHINESE COMMUNIST PARTY"

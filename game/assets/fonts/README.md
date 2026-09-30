@@ -11,6 +11,7 @@ and Orbitron are static weights instanced from the variable fonts with overlaps 
 | [Exo 2](https://fonts.google.com/specimen/Exo+2) | Headings (`HeadingLabel`, release notes, inventory) | `exo2/Exo2-Bold.ttf` |
 | [Barlow](https://fonts.google.com/specimen/Barlow) | Buttons, and small HUD details | `barlow/Barlow-SemiBold.ttf`, `barlow/Barlow-Medium.ttf` |
 | [Orbitron](https://fonts.google.com/specimen/Orbitron) | HUD readouts (version, players, money, HP) | `orbitron/Orbitron-Bold.ttf` |
+| [Noto Sans SC](https://fonts.google.com/specimen/Noto+Sans+SC) | Mandarin glyphs for the lobby proclamation sign; a 7-glyph `text=` subset from the css2 API (bold, static) | `notosanssc/NotoSansSC-Bold-subset.ttf` |
 
 Use static, overlap-free weights: Godot draws overlapping contours (as in variable fonts
 and Google's generated static instances) with visible seams, like a line through Exo 2's
