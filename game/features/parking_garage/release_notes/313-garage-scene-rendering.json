@@ -1,0 +1,9 @@
+{
+  "title": "Garage-only rendering",
+  "summary": "Explore the garages without rendering the casino, with lighter basement rain and lighting.",
+  "notes": [
+    "Separate both garages into reusable Godot scenes while preserving doors, loot and elevator routes.",
+    "Render only the local garage and exclude garage visuals when outside it.",
+    "Reduce basement rain to 120 shadowless drops and skip distant deck lighting and flicker work."
+  ]
+}

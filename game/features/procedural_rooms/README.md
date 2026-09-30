@@ -122,6 +122,17 @@ godot --headless --path game --import
 The generator overwrites its own twelve textures/materials and preview.
 Import sidecars retain mipmap settings. See the asset README for measurement units.
 
+## Live garage scene and rendering
+
+`garage.tscn` owns the live basement kit, arrival and return portal.
+`feature.tscn` instances it at the unchanged transform/path `Garage`.
+`playable_world.gd` extends the existing room-visibility feature's `RenderZone`
+on layer 20; only this zone is rendered while the local camera is below the
+casino. The cab and casino landing remain visible across the boundary.
+RPC nodes, collision and deterministic layout are always loaded on every peer;
+this does not create private excursion instances or reduce network replication.
+See [room visibility](../room_visibility/README.md) for the render-only contract.
+
 ## Connected garage world
 
 Open `examples/world_level.tscn`, or run:
@@ -225,12 +236,16 @@ B1 loses few tubes and B5 the most. Two tubes per deck carry the only deck light
 (range 12) and a 120 Hz hum, and never die, so every floor keeps readable pools of
 light. `flicker_level()` gives short stutters every few seconds. Flicker, hum and all
 atmosphere are local presentation computed from the seed and clock on each client;
-nothing is replicated, and it only updates within 36 m of the deck.
+nothing is replicated. Flicker updates at 20 Hz only within 28 m horizontally and
+4 m vertically of the deck's camera height; distant deck lights, beacons and hums
+are disabled. Emissive tubes remain visible across the atrium.
 
 `garage_atmosphere.gd` (live game only, added by `playable_world.gd`) swaps the
 camera to a dark, foggy copy of the environment and hides the unshadowed sun while
 the camera is inside the garage, restoring both on exit, like the annex's interior
-lighting. It also runs CPU rain, rain audio and a wet pool in the central atrium.
+lighting. It also runs CPU rain, rain audio and a wet pool in the central atrium. Rain is
+limited to 120 shadowless drops (previously 450) to reduce mobile CPU work and
+transparent overdraw.
 The live structure uses the weathered 128×128 textures in
 `res://assets/procedural_rooms/garage_textures/`; regenerate them with:
 

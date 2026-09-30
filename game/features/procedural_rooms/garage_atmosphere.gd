@@ -62,7 +62,7 @@ func _build_rain() -> CPUParticles3D:
 	var particles := CPUParticles3D.new()
 	particles.name = "Rain"
 	particles.position = Vector3(0, ATRIUM.end.y, ATRIUM.get_center().z)
-	particles.amount = 450
+	particles.amount = 120
 	particles.lifetime = 1.3
 	particles.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
 	particles.emission_box_extents = Vector3(ATRIUM.size.x / 2 - 0.3, 0.1, ATRIUM.size.z / 2 - 0.3)
@@ -83,6 +83,7 @@ func _build_rain() -> CPUParticles3D:
 	material.billboard_keep_scale = true
 	drop.material = material
 	particles.mesh = drop
+	particles.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	particles.visibility_aabb = AABB(
 		Vector3(-ATRIUM.size.x / 2, -ATRIUM.size.y - 1, -ATRIUM.size.z / 2),
 		Vector3(ATRIUM.size.x, ATRIUM.size.y + 2, ATRIUM.size.z)

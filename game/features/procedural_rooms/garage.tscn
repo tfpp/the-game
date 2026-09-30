@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="Script" path="res://features/procedural_rooms/playable_world.gd" id="1_world"]
+[ext_resource type="Script" path="res://features/procedural_rooms/portal.gd" id="2_portal"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="3_net"]
+[ext_resource type="Material" path="res://features/procedural_rooms/materials/elevator.tres" id="5_paint"]
+
+[node name="Garage" type="Node3D"]
+script = ExtResource("1_world")
+
+[node name="Arrival" type="Marker3D" parent="."]
+position = Vector3(0, 17, 5)
+
+[node name="Return" type="CSGBox3D" parent="."]
+position = Vector3(4, 17.1, 5)
+size = Vector3(0.2, 2.2, 1.4)
+material = ExtResource("5_paint")
+use_collision = true
+script = ExtResource("2_portal")
+destination = NodePath("../../CasinoArrival")
+door_label = "Return to the casino"
+
+[node name="NetworkedEntity" type="Node" parent="Return"]
+script = ExtResource("3_net")
+interaction_range = 2.5
+
+[node name="Sign" type="Label3D" parent="Return"]
+position = Vector3(0, 1.4, 0)
+billboard = 1
+text = "RETURN TO CASINO\nE / USE TO TELEPORT"
+font_size = 36
+pixel_size = 0.004

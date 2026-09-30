@@ -141,6 +141,7 @@ static func build(
 			world, "SERVICE ELEVATOR\nC / CASINO  •  B1–B5", Vector3(0, 25.25, -7.85)
 		)
 		sign.billboard = BaseMaterial3D.BILLBOARD_DISABLED
+		sign.add_to_group(&"render_zone_shared")
 	Shell.rebuild(world)
 	var collision := world.get_node("Structure/ShellCollision").get_child(0) as CollisionShape3D
 	(collision.shape as ConcavePolygonShape3D).backface_collision = true

@@ -6,7 +6,7 @@ room to that player when the assignment changes. The client loads only the
 selected streamed interior and frees the previous one. Door interactions may
 preload the destination briefly so the arrival floor is ready.
 
-For rendering, the client sets Godot's camera far plane to the farthest corner
+For distance culling, the client sets Godot's camera far plane to the farthest corner
 of the assigned room. The casino's bounds come from its world geometry; other
 rooms use their authored extents. This keeps always-loaded geometry in distant
 districts out of the draw list without fixed distance cutoffs. Shared gameplay
@@ -16,3 +16,31 @@ room interiors.
 New door-only districts should have either a `StreamedRoom` anchor or a GPS
 destination with an `area` covering their visible district. The server uses
 those same bounds for room assignment and camera clipping.
+
+## Garage scene isolation
+
+The P1–P3 and B1–B5 garages are separate `garage.tscn` scenes in their
+existing feature directories. Their roots extend `RenderZone`, with local
+`render_bounds` and reserved visual layers **19** and **20**, respectively.
+`zone_rendering.gd` selects a camera mask from the local camera position each
+frame: inside a garage, no casino or other district visuals/lights are drawn;
+outside, garage visuals are excluded. This also covers offline play, immediate
+teleports, first/third-person camera changes and respawns without waiting for a
+room-assignment RPC. The HUD is unaffected.
+
+Static visuals are classified once, new visuals on arrival, and moving
+physics-body visuals (players, enemies, held items) at 10 Hz. Cosmetic additions
+outside zone roots are also refreshed so transient projectiles/effects follow
+their position. Freed visuals are removed from the cache. Lights use matching
+illumination masks. The physical basement cab and casino landing use the
+`render_zone_shared` group so the crossing remains visible from either side.
+Do not use layers 19/20 for unrelated visuals.
+
+This is **render isolation**, not unloading of gameplay or network interest
+management. Colliders, authoritative enemies, searchable boots, lift, doors and
+RPC paths remain loaded identically on every peer. StreamedRoom's static-only
+contents still use the existing load/free lifecycle. Dedicated servers skip the
+render classifier. No authority, balance, inventory or persistence changes.
+
+Tests: `tests/features/room_visibility/test_zone_rendering.gd`, plus existing
+room assignment, garage layout, portal, lift and enemy suites.
