@@ -1,7 +1,7 @@
 # Shooting gallery
 
 A Doom-style arena of killable humanoid dummies, detached from the main casino
-room the way `features/elevator`'s "Back Room No. 1" is — reachable only through
+room the way `features/dev_elevator`'s sealed test room is — reachable only through
 its own entrance, not by walking there.
 
 ## How it works

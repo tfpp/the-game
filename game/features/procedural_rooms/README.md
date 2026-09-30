@@ -10,6 +10,8 @@ The standalone cyan **PROCEDURAL GARAGE**
 teleporter stands on the north wall of the [dev room](../dev_room/README.md),
 or locate **Garage Teleporter** in GPS. E / controller
 Use / touch Use teleports to B1. Its **RETURN TO CASINO** portal is beside arrival.
+Players normally arrive through the non-moving [garage elevator](../elevator/README.md)
+set into the south lobby wall; its partner cab stands in B1's front wall.
 The kit uses a fixed seed on every peer; there is no live reroll control, general random
 layout solver or automatic map mutation. The proposed complete system is described in
 [the plan](../../../docs/design/procedural-rooms.md).

@@ -1,11 +1,12 @@
 class_name ElevatorCab
 extends Node3D
-## One elevator cab with real sliding doors. `feature.tscn` instances this script twice
-## — a lobby cab and a room cab — each pointing at the other through `destination`.
-## Calling either one is symmetric: press the call button, its doors open, board within
-## the boarding window, the doors close and a ding sounds, and everyone who was inside
-## reappears inside the other cab in the same relative arrangement, facing the same way
-## relative to the cab (see `ElevatorMath.relative_offset`/`apply_offset` and
+## One elevator cab built into a wall, dressed in the painted service-elevator models
+## from features/procedural_rooms. `feature.tscn` instances this scene twice — a casino
+## cab in the south lobby wall and a garage cab on B1 — each pointing at the other
+## through `destination`. The cab never moves: press the call button, its doors open,
+## board within the boarding window, the doors close with a ding, and everyone who was
+## inside reappears inside the other cab in the same relative arrangement, facing the
+## same way relative to the cab (see `ElevatorMath.relative_offset`/`apply_offset` and
 ## `relative_yaw`/`apply_yaw`), whose doors then open to reveal them.
 ##
 ## Server-authoritative: `net_state` is the only replicated property (see the
@@ -21,14 +22,24 @@ const ElevatorMath := preload("res://features/elevator/elevator_math.gd")
 
 const DOOR_SLIDE_S := 1.1
 const BOARDING_S := 4.5
-const CALL_RANGE_M := 3.0
-const CAB_HALF_WIDTH := 1.0
-const CAB_HALF_DEPTH := 1.0
-const CAB_HEIGHT := 2.3
-const DOOR_MAX_OFFSET := 1.0
+const CALL_RANGE_M := 3.2
+## Boarding footprint around the cab origin: the model's 3 m wide interior, from the
+## back wall up to the door leaves at local z 1.35.
+const CAB_HALF_WIDTH := 1.4
+const CAB_HALF_DEPTH := 1.35
+const CAB_HEIGHT := 2.9
+## Door leaves (elevator_door_model.tscn) meet at x ±0.75 and retract into the wall.
+const DOOR_CLOSED_X := 0.75
+const DOOR_MAX_OFFSET := 1.5
 
 ## Sibling cab occupants are sent to when this cab departs.
 @export var destination: NodePath
+## Finish on the surrounding wall block, matching the wall the cab is built into.
+@export var shell_material: Material
+## Text over the doors, seen from outside.
+@export_multiline var sign_text := "ELEVATOR"
+## Height of the surrounding wall block, up to the ceiling it tucks under.
+@export var shell_height := 7.98
 
 ## Replicated state (server -> everyone). See the synchronizer config in elevator_cab.tscn.
 @export var net_state: State = State.CLOSED
@@ -37,13 +48,20 @@ var _state_elapsed := 0.0
 var _visual_state: State = State.CLOSED
 var _visual_elapsed := 0.0
 
-@onready var _door_left: Node3D = $DoorLeft
-@onready var _door_right: Node3D = $DoorRight
-@onready var _destination_cab: Node3D = get_node(destination)
+@onready var _door_left: Node3D = $Doors/LeftLeaf
+@onready var _door_right: Node3D = $Doors/RightLeaf
+@onready var _destination_cab: Node3D = get_node_or_null(destination) as Node3D
 
 
 func _ready() -> void:
 	add_to_group(&"interactables")
+	($Sign as Label3D).text = sign_text
+	var block := $Shell/Block as CSGBox3D
+	block.size.y = shell_height
+	block.position.y = shell_height * 0.5
+	if shell_material != null:
+		for part: Node in $Shell.get_children():
+			(part as CSGPrimitive3D).material = shell_material
 
 
 func _physics_process(delta: float) -> void:
@@ -125,7 +143,7 @@ func _depart() -> void:
 	var occupants := _collect_occupants()
 	net_state = State.CLOSED
 	_state_elapsed = 0.0
-	if occupants.is_empty():
+	if occupants.is_empty() or _destination_cab == null:
 		return
 	var origin_transform := global_transform
 	var destination_transform := _destination_cab.global_transform
@@ -170,5 +188,5 @@ func _update_doors() -> void:
 		State.CLOSED:
 			t = 0.0
 	var offset := ElevatorMath.door_leaf_offset(t, DOOR_MAX_OFFSET)
-	_door_left.position.x = -0.475 - offset
-	_door_right.position.x = 0.475 + offset
+	_door_left.position.x = -DOOR_CLOSED_X - offset
+	_door_right.position.x = DOOR_CLOSED_X + offset
