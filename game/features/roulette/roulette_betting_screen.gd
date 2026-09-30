@@ -8,18 +8,6 @@ extends CanvasLayer
 
 signal closed
 
-const UI_THEME := preload("res://ui/theme/ui_theme.tres")
-## Chip faces (top 64x64 of each albedo), in RouletteBets.DENOMINATIONS order.
-const CHIP_TEXTURES: Array[Texture2D] = [
-	preload("res://assets/casino_chips/textures/chip_1_albedo.png"),
-	preload("res://assets/casino_chips/textures/chip_5_albedo.png"),
-	preload("res://assets/casino_chips/textures/chip_50_albedo.png"),
-	preload("res://assets/casino_chips/textures/chip_100_albedo.png"),
-	preload("res://assets/casino_chips/textures/chip_500_albedo.png"),
-	preload("res://assets/casino_chips/textures/chip_1000_albedo.png"),
-	preload("res://assets/casino_chips/textures/chip_5000_albedo.png"),
-	preload("res://assets/casino_chips/textures/chip_25000_albedo.png"),
-]
 ## Table-local overview camera: above the players' side, looking across the layout.
 const CAMERA_POSITION := Vector3(0.5, 2.4, -0.42)
 const CAMERA_TARGET := Vector3(0.5, 0.86, 0.0)
@@ -349,6 +337,7 @@ func _refresh_wallet() -> void:
 		var value := RouletteBets.DENOMINATIONS[index]
 		_chip_buttons[index].disabled = not betting or value > available
 		_chip_buttons[index].button_pressed = index == selected
+		(_chip_buttons[index].get_node("SelectedRing") as Control).visible = index == selected
 
 
 func _hover(spot: String) -> void:
@@ -419,12 +408,10 @@ func _on_request_finished(action: StringName, result: NetworkedEntity.Result) ->
 
 
 func _build() -> void:
-	var root := Control.new()
-	root.theme = UI_THEME
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var root := RouletteUiTheme.root()
 	add_child(root)
 	var top := PanelContainer.new()
+	top.theme_type_variation = RouletteUiTheme.PLAQUE_TYPE
 	top.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	top.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	top.position.y = 12
@@ -451,23 +438,30 @@ func _build() -> void:
 	box.add_child(rack)
 	_rack = rack
 	for index: int in RouletteBets.DENOMINATIONS.size():
-		var icon := AtlasTexture.new()
-		icon.atlas = CHIP_TEXTURES[index]
-		icon.region = Rect2(0, 0, 64, 64)
 		var button := _button(
 			rack, _chip_label(RouletteBets.DENOMINATIONS[index]), _select.bind(index)
 		)
-		button.icon = icon
+		button.theme_type_variation = RouletteUiTheme.CHIP_TYPE
+		button.icon = RouletteUiTheme.CHIP_ICONS[index]
 		button.expand_icon = true
 		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 		button.toggle_mode = true
-		button.custom_minimum_size = Vector2(64, 80)
+		button.custom_minimum_size = Vector2(64, 84)
 		button.tooltip_text = PlayerMoney.format_money(RouletteBets.DENOMINATIONS[index]) + " chip"
+		var ring := RouletteUiTheme.chip_ring()
+		ring.set_anchors_preset(Control.PRESET_TOP_WIDE)
+		ring.offset_left = -4
+		ring.offset_right = 4
+		ring.offset_top = -4
+		ring.offset_bottom = 64
+		ring.visible = false
+		button.add_child(ring)
 		_chip_buttons.append(button)
 	_wallet = _label(box, "", 15)
 	_notice = _label(box, "", 14)
 	_notice.modulate = Color("ffb36b")
+	_hover_label.modulate = RouletteUiTheme.BRASS
 	var actions := HBoxContainer.new()
 	actions.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_child(actions)
@@ -510,7 +504,6 @@ func _label(parent: Node, text: String, font_size: int) -> Label:
 func _button(parent: Node, text: String, callback: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.theme_type_variation = &"SecondaryButton"
 	button.focus_mode = Control.FOCUS_NONE
 	button.custom_minimum_size.y = 38
 	button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS

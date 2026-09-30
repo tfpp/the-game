@@ -5,7 +5,6 @@ extends CanvasLayer
 ## round; the bet key (C / controller Y / the touch button) opens the overhead betting
 ## view, and jump stands up when the player has nothing riding on the spin.
 
-const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const ACTION := &"roulette_bets"
 
 var table: RouletteTable
@@ -126,10 +125,7 @@ func _hint_text(betting: bool) -> String:
 
 
 func _build() -> void:
-	var root := Control.new()
-	root.theme = UI_THEME
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var root := RouletteUiTheme.root()
 	add_child(root)
 	_panel = PanelContainer.new()
 	_panel.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
@@ -162,7 +158,6 @@ func _label(parent: Node, text: String, font_size: int) -> Label:
 func _button(parent: Node, text: String, callback: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.theme_type_variation = &"SecondaryButton"
 	button.focus_mode = Control.FOCUS_NONE
 	button.custom_minimum_size.y = 34
 	button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
