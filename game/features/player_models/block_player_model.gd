@@ -26,6 +26,9 @@ var locomotion: StringName = &"idle"
 ## Sitting (legs forward, hands on the table). Read each frame from the `seating`
 ## group's `is_seated(peer)` (features/food_court booths).
 var seated := false
+## Crouching (knees bent, body lowered). Read each frame from the `crouching`
+## group's `is_crouching(peer)` (features/crouch).
+var crouched := false
 var human := SkinnedHuman.new()
 var _left_forearm := Node3D.new()
 var _right_forearm := Node3D.new()
@@ -38,6 +41,7 @@ var _trim_material: StandardMaterial3D
 var _pants_material: StandardMaterial3D
 var _phase := 0.0
 var _landing := 0.0
+var _drop := 0.0
 var _was_grounded := true
 var _rig := Node3D.new()
 var _torso := Node3D.new()
@@ -79,6 +83,10 @@ func _process(delta: float) -> void:
 	var support := holding and hand.support_grip() != null
 	var seating := get_tree().get_first_node_in_group(&"seating")
 	seated = seating != null and bool(seating.call("is_seated", player.get_multiplayer_authority()))
+	var crouch := get_tree().get_first_node_in_group(&"crouching")
+	crouched = (
+		crouch != null and bool(crouch.call("is_crouching", player.get_multiplayer_authority()))
+	)
 	var pitch := player.pitch if player.is_local() else player.net_pitch
 	animate(delta, local_motion, grounded, player.movement.max_speed_m(), pitch, holding, support)
 
@@ -100,6 +108,8 @@ func animate(
 	_was_grounded = grounded
 	_landing = maxf(_landing - delta * 7.0, 0.0)
 	var pose := BlockPlayerMotion.pose(_phase, motion, grounded, max_speed)
+	if crouched and not seated:
+		pose = BlockPlayerMotion.crouch_pose(_phase, motion, max_speed)
 	if seated:
 		pose = BlockPlayerMotion.seated_pose()
 		_landing = 0.0
@@ -112,19 +122,18 @@ func animate(
 	var active := locomotion != &"idle"
 	for forearm: Node3D in [_left_forearm, _right_forearm]:
 		forearm.rotation.x = lerp_angle(forearm.rotation.x, -0.35 if active else -0.08, blend)
-	_left_shin.rotation.x = lerp_angle(
-		_left_shin.rotation.x, maxf(0.0, -float(pose["left_leg"])) * 0.85, blend
-	)
-	_right_shin.rotation.x = lerp_angle(
-		_right_shin.rotation.x, maxf(0.0, -float(pose["right_leg"])) * 0.85, blend
-	)
+	var left_shin: float = pose.get("left_shin", maxf(0.0, -float(pose["left_leg"])) * 0.85)
+	var right_shin: float = pose.get("right_shin", maxf(0.0, -float(pose["right_leg"])) * 0.85)
+	_left_shin.rotation.x = lerp_angle(_left_shin.rotation.x, left_shin, blend)
+	_right_shin.rotation.x = lerp_angle(_right_shin.rotation.x, right_shin, blend)
+	_drop = lerpf(_drop, float(pose.get("drop", 0.0)), blend)
 	_left_arm.visible = not left_held
 	_right_arm.visible = not right_held
 	_torso.rotation.x = lerp_angle(_torso.rotation.x, pose["lean"], blend)
 	_torso.rotation.z = lerp_angle(_torso.rotation.z, pose["roll"], blend)
 	_head.rotation.x = lerp_angle(_head.rotation.x, pitch - _torso.rotation.x, blend)
 	_rig.scale = Vector3(_height_scale, _height_scale * (1.0 - _landing * 0.055), _height_scale)
-	_rig.position.y = float(pose["bob"]) - _landing * 0.049
+	_rig.position.y = float(pose["bob"]) - _landing * 0.049 - _drop * _height_scale
 	if human.visible:
 		human.pose(self, left_held, right_held)
 

@@ -97,3 +97,22 @@ func test_every_authored_garage_car_has_one_searchable_boot() -> void:
 			assert_is(car.get_node("Loot"), CarBoot)
 			assert_eq(car.find_children("Loot", "Node3D", true, false).size(), 1)
 	assert_eq(count, 17)
+
+
+func test_remote_crouching_uses_the_replicated_lower_eye_height() -> void:
+	var car := CAR.instantiate() as Node3D
+	add_child_autofree(car)
+	var boot := car.get_node("Loot") as CarBoot
+	var crouch := preload("res://features/crouch/feature.tscn").instantiate() as Crouch
+	add_child_autofree(crouch)
+	crouch.set_physics_process(false)
+	_player.set_multiplayer_authority(77)
+	crouch.crouched = {77: true}
+	var expected := (
+		_player.net_position.y
+		+ Crouch.EYE_HEIGHT * MovementConfig.UNIT_TO_METERS
+		- _player.movement.hull_height_m() * .5
+	)
+	assert_almost_eq(boot.eye_for_player(_player).y, expected, .001)
+	crouch.crouched = {}
+	assert_gt(boot.eye_for_player(_player).y, expected + .4)

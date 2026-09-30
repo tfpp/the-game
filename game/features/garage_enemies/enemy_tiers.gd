@@ -82,6 +82,12 @@ static func same_floor(feet: Vector3, player_origin: Vector3) -> bool:
 	return absf(player_origin.y - 0.9 - feet.y) <= SAME_FLOOR_BAND
 
 
+## How far away an enemy with this aggro radius notices a player. Crouching halves
+## it, so sneaking players get closer, but enemies can still see them.
+static func notice_radius(aggro: float, crouching: bool) -> float:
+	return aggro * (Crouch.NOTICE_SCALE if crouching else 1.0)
+
+
 static func flat_distance(a: Vector3, b: Vector3) -> float:
 	return Vector2(a.x - b.x, a.z - b.z).length()
 

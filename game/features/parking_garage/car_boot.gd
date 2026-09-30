@@ -52,10 +52,7 @@ func _pose() -> void:
 func can_use(player: Player) -> bool:
 	if not super.can_use(player):
 		return false
-	var eye := (
-		player.net_position
-		+ Vector3.UP * (player.movement.eye_height_m() - player.movement.hull_height_m() * .5)
-	)
+	var eye := eye_for_player(player)
 	var yaw := player.yaw if player.is_local() else player.net_yaw
 	var pitch := player.pitch if player.is_local() else player.net_pitch
 	var direction := Basis.from_euler(Vector3(pitch, yaw, 0)) * Vector3.FORWARD
@@ -84,3 +81,12 @@ func _reset_boot(_mode: Network.Mode) -> void:
 	if multiplayer.is_server():
 		net_boot_open = false
 	_check_in = 0.0
+
+
+func eye_for_player(player: Player) -> Vector3:
+	var height := player.movement.eye_height_m()
+	if not player.is_local():
+		var crouch := get_tree().get_first_node_in_group(&"crouching") as Crouch
+		if crouch != null and crouch.is_crouching(player.get_multiplayer_authority()):
+			height = Crouch.EYE_HEIGHT * MovementConfig.UNIT_TO_METERS
+	return player.net_position + Vector3.UP * (height - player.movement.hull_height_m() * .5)
