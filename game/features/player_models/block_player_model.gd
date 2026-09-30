@@ -134,8 +134,28 @@ func animate(
 	_head.rotation.x = lerp_angle(_head.rotation.x, pitch - _torso.rotation.x, blend)
 	_rig.scale = Vector3(_height_scale, _height_scale * (1.0 - _landing * 0.055), _height_scale)
 	_rig.position.y = float(pose["bob"]) - _landing * 0.049 - _drop * _height_scale
+	var punching := false
+	if player != null and not right_held and not left_held:
+		var boxing := get_tree().get_first_node_in_group(&"boxing") as Boxing
+		if boxing != null:
+			var swing := boxing.arm_pose(player.get_multiplayer_authority())
+			if not swing.is_empty():
+				punching = true
+				var power: bool = swing["power"]
+				var extension: float = float(swing["reach"]) / 0.45
+				var lead := _right_arm if power else _left_arm
+				var guard := _left_arm if power else _right_arm
+				var elbow := _right_forearm if power else _left_forearm
+				var guard_elbow := _left_forearm if power else _right_forearm
+				lead.rotation.x = lerpf(0.65, PI * 0.5, extension)
+				elbow.rotation.x = lerpf(1.4, 0.05, extension)
+				guard.rotation.x = 0.45
+				guard_elbow.rotation.x = 1.6
 	if human.visible:
 		human.pose(self, left_held, right_held)
+		if punching:
+			human.set_finger_curl(false, 1.0)
+			human.set_finger_curl(true, 1.0)
 
 
 func shoulder_position(right: bool) -> Vector3:

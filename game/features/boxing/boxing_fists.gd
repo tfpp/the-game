@@ -8,28 +8,47 @@ extends Node3D
 
 const SWING_S := 0.22
 const POWER_SWING_S := 0.35
-const SKIN := Color(0.85, 0.68, 0.54)
-const WRAP := Color(0.7, 0.1, 0.1)
 
 ## peer -> seconds left in that peer's swing, and whether it's a power punch.
 var _swing_left: Dictionary[int, float] = {}
 var _swing_power: Dictionary[int, bool] = {}
 var _views: Dictionary[int, Node3D] = {}
 var _local_charge := -1.0
-var _cube := BoxMesh.new()
-var _skin := StandardMaterial3D.new()
-var _wrap := StandardMaterial3D.new()
 
 
 func _ready() -> void:
 	top_level = true
-	_skin.albedo_color = SKIN
-	_wrap.albedo_color = WRAP
+	process_priority = 24
 
 
 ## -1 hides the local wind-up; 0..1 shows the fists drawn back by that charge.
 func set_local_charge(charge: float) -> void:
 	_local_charge = charge
+
+
+## Read-only presentation shared with the avatar; only accepted server swings enter here.
+func arm_pose(peer: int) -> Dictionary:
+	if not _swing_left.has(peer):
+		return {}
+	var power := _swing_power[peer]
+	var total := POWER_SWING_S if power else SWING_S
+	return {"power": power, "reach": swing_reach(1.0 - _swing_left[peer] / total)}
+
+
+func forget_peer(peer: int) -> void:
+	_swing_left.erase(peer)
+	_swing_power.erase(peer)
+	if _views.has(peer):
+		_views[peer].queue_free()
+		_views.erase(peer)
+
+
+func reset() -> void:
+	for peer: int in _views.keys():
+		forget_peer(peer)
+	_swing_left.clear()
+	_swing_power.clear()
+	_local_charge = -1.0
 
 
 func swing(peer: int, power: bool) -> void:
@@ -72,22 +91,37 @@ func _pose(peer: int, reach: float, power: bool) -> void:
 	if player == null:
 		view.visible = false
 		return
-	view.visible = true
-	var eye := (
-		player.global_position
-		+ Vector3.UP * (player.movement.eye_height_m() - player.movement.hull_height_m() * 0.5)
-	)
-	view.global_transform = Transform3D(
-		Basis.from_euler(Vector3(player.net_pitch, player.net_yaw, 0.0)), eye
-	)
+	# The world avatar supplies remote and third-person arms.
+	view.visible = player.is_local() and not (player.get_node("Body") as Node3D).visible
+	if not view.visible:
+		return
+	var avatar := player.get_node_or_null("Body/Avatar") as BlockPlayerModel
+	if avatar == null:
+		view.hide()
+		return
+	var camera := player.get_node("Camera") as Camera3D
+	view.global_transform = camera.global_transform
+	var human := view.get_node("Hands") as SkinnedHuman
+	human.apply_appearance(avatar)
+	human.pose(avatar, false, false)
+	human.material.set_shader_parameter("arms_only", true)
+	human.material.set_shader_parameter("shirt_tint", avatar.sleeve_color())
 	var shake := 0.0
 	if peer == multiplayer.get_unique_id() and _local_charge >= 0.0:
 		shake = sin(Time.get_ticks_msec() * 0.06) * 0.008 * _local_charge
-	# Power punches come from the right hand, jabs from the left.
-	var lead := view.get_node(^"Right" if power else ^"Left") as Node3D
-	var guard := view.get_node(^"Left" if power else ^"Right") as Node3D
-	lead.position = Vector3(lead.position.x, -0.2 + shake, -0.4 - reach)
-	guard.position = Vector3(guard.position.x, -0.2, -0.4)
+	# Camera-space wrists point down -Z; IK keeps elbows connected to shoulders.
+	var drop := -0.36 * avatar.height_scale()
+	for right: bool in [false, true]:
+		var side := 1.0 if right else -1.0
+		var lead := right == power
+		human.place_shoulder(right, view.to_global(Vector3(side * 0.28, drop, 0.05)))
+		var wrist := Vector3(side * 0.2, drop + 0.16, -0.4)
+		if lead:
+			wrist.z -= reach
+			wrist.y += shake
+		human.reach_grip(right, view.to_global(wrist), true)
+		human.orient_grip(right, view.global_basis)
+		human.set_finger_curl(right, 1.0)
 
 
 func _view_for(peer: int) -> Node3D:
@@ -95,21 +129,11 @@ func _view_for(peer: int) -> Node3D:
 		return _views[peer]
 	var view := Node3D.new()
 	view.name = "Fists%d" % peer
-	for side: float in [-1.0, 1.0]:
-		var fist := MeshInstance3D.new()
-		fist.name = "Right" if side > 0.0 else "Left"
-		fist.mesh = _cube
-		fist.material_override = _wrap
-		fist.scale = Vector3(0.1, 0.1, 0.13)
-		fist.position = Vector3(side * 0.2, -0.2, -0.4)
-		var wrist := MeshInstance3D.new()
-		wrist.mesh = _cube
-		wrist.material_override = _skin
-		wrist.scale = Vector3(0.9, 0.9, 0.5)
-		wrist.position = Vector3(0, 0, 0.7)
-		fist.add_child(wrist)
-		view.add_child(fist)
+	view.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	add_child(view)
+	var human := SkinnedHuman.new()
+	human.name = "Hands"
+	view.add_child(human)
 	_views[peer] = view
 	return view
 

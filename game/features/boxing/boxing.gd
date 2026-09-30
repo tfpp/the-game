@@ -173,6 +173,11 @@ func _play_landed(at: Vector3) -> void:
 	GameAudio.play_at(self, &"hit", at)
 
 
+## Cosmetic pose of the last server-accepted swing, or empty when at rest.
+func arm_pose(peer: int) -> Dictionary:
+	return _fists.arm_pose(peer)
+
+
 func _unarmed(peer: int) -> bool:
 	var hand := Hand.for_peer(get_tree(), peer)
 	if hand != null and not hand.net_item_id.is_empty():
@@ -199,11 +204,13 @@ func _local_player() -> Player:
 
 
 func _forget_peer(peer: int) -> void:
+	_fists.forget_peer(peer)
 	_wind_up_ms.erase(peer)
 	_ready_at_ms.erase(peer)
 
 
 func _on_mode_changed(_mode: Network.Mode) -> void:
+	_fists.reset()
 	_wind_up_ms.clear()
 	_ready_at_ms.clear()
 	_local_press_ms = -1

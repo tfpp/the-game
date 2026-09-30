@@ -1,0 +1,10 @@
+{
+  "title": "Garage elevator in the lobby wall",
+  "summary": "A painted service elevator in the south lobby wall now takes everyone inside down to the parking garage.",
+  "notes": [
+    "Rebuild the casino elevator with the service-elevator model and set it into the south lobby wall near spawn.",
+    "Send everyone inside to a matching cab on garage B1 in the same spot and facing, and back again.",
+    "Remove the old trampoline-side elevator and its empty Back Room No. 1.",
+    "Add a Garage Elevator GPS destination."
+  ]
+}

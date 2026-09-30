@@ -26,4 +26,14 @@ you; every player sees the fists of whoever throws a punch.
   0.5–1.0. `boxing_fists.gd` is cosmetic only.
 - Nothing is persisted; wind-ups and cooldowns are cleared on disconnect.
 
-Touch players have no primary action button, so they can't punch.
+Touch players punch with the Attack button (hold and release for power punches).
+
+`Boxing.arm_pose(peer)` exposes only the current accepted cosmetic swing (power
+and reach), or an empty dictionary at rest. The player avatar layers the swing
+over locomotion, bends both arms and closes its fingers; penguin flippers use the
+same pivots. First-person feedback uses the same skinned human asset and finger
+bones as held items, matching skin, build and sleeves (including costume sleeve
+color). Camera-space shoulder and wrist IK keeps the arms connected during jabs,
+power swings and charge draw-back; the non-arm surface is masked out. No extra RPCs
+or persistence are needed: accepted swings already broadcast to every peer, and
+late joiners start at rest rather than replaying old punches.
