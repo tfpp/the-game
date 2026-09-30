@@ -7,6 +7,12 @@ const COIN_CREDIT_CENTS := 1000
 const DEFAULT_INCOME_CENTS := 500
 const GIRL_INCOME_CENTS := 425
 const INCOME_REASON := "Income for time connected"
+## Temporary (offline / dev-auth) wallets start with this: $20.
+const STARTING_CENTS := 2000
+## Local development only: $100,000 when running the project from the Godot editor
+## binary with a window (see `local_dev()`). Exported builds and headless checks
+## keep STARTING_CENTS; real accounts are never affected.
+const DEV_STARTING_CENTS := 100_000_00
 
 @export var balances: Dictionary = {}
 var _busy: Dictionary = {}
@@ -15,6 +21,7 @@ var _poll_elapsed := 5.0
 var _unresolved: Dictionary = {}
 var _temporary_seconds: Dictionary = {}
 var _temporary_income_units: Dictionary = {}
+var _starting_cents := DEV_STARTING_CENTS if local_dev() else STARTING_CENTS
 
 
 func _ready() -> void:
@@ -41,7 +48,7 @@ func _process(delta: float) -> void:
 			var seconds := float(_temporary_seconds.get(peer, 0.0)) + delta
 			var units := float(_temporary_income_units.get(peer, 0.0)) + delta * _income_cents(peer)
 			if seconds >= 60.0:
-				_set_balance(peer, int(balances.get(peer, 2000)) + int(units / 60.0))
+				_set_balance(peer, int(balances.get(peer, _starting_cents)) + int(units / 60.0))
 				announce_gain(peer, int(units / 60.0), INCOME_REASON)
 				seconds = fmod(seconds, 60.0)
 				units = fmod(units, 60.0)
@@ -135,6 +142,12 @@ func account_for(peer: int) -> int:
 	return _account(peer)
 
 
+## True when running the project locally from the editor binary with a window. Exported
+## web/server builds lack the "editor" feature; GUT and the smoke tests run headless.
+static func local_dev() -> bool:
+	return OS.has_feature("editor") and DisplayServer.get_name() != "headless"
+
+
 func _account(peer: int) -> int:
 	var account: Dictionary = Network.peer_accounts.get(peer, {})
 	return int(account.get("account_id", 0))
@@ -159,7 +172,7 @@ func _refresh(peer: int) -> void:
 	var account := _account(peer)
 	if _temporary() and account <= 0:
 		if not balances.has(peer):
-			_set_balance(peer, 2000)
+			_set_balance(peer, _starting_cents)
 	else:
 		var result: Dictionary = await _request(
 			account, "balance", "", {"income_cents": _income_cents(peer)}
@@ -187,7 +200,7 @@ func spin(peer: int, id: String, wager_cents: int = 100, rerolls: int = 0) -> Di
 	var account := _account(peer)
 	var result: Dictionary
 	if _temporary() and account <= 0:
-		var balance := int(balances.get(peer, 2000))
+		var balance := int(balances.get(peer, _starting_cents))
 		if balance < wager_cents:
 			result = {"error": "You need %s to spin" % format_money(wager_cents)}
 		else:
@@ -221,7 +234,7 @@ func credit_coin(peer: int, id: String, reason: String) -> Dictionary:
 	var account := _account(peer)
 	var result: Dictionary
 	if _temporary() and account <= 0:
-		var balance := int(balances.get(peer, 2000)) + COIN_CREDIT_CENTS
+		var balance := int(balances.get(peer, _starting_cents)) + COIN_CREDIT_CENTS
 		result = {"balance": balance}
 	else:
 		if not _unresolved.has(account):
@@ -249,7 +262,7 @@ func sell_loot(peer: int, id: String, amount_cents: int, reason: String) -> Dict
 	var account := _account(peer)
 	var result: Dictionary
 	if _temporary() and account <= 0:
-		result = {"balance": int(balances.get(peer, 2000)) + amount_cents}
+		result = {"balance": int(balances.get(peer, _starting_cents)) + amount_cents}
 	else:
 		result = await _request(account, "sell", id, {"amount_cents": amount_cents})
 	if generation != _generation:
@@ -273,7 +286,7 @@ func charge(peer: int, id: String, amount_cents: int) -> Dictionary:
 	var account := _account(peer)
 	var result: Dictionary
 	if _temporary() and account <= 0:
-		var balance := int(balances.get(peer, 2000))
+		var balance := int(balances.get(peer, _starting_cents))
 		if balance < amount_cents:
 			result = {"error": "You can't afford that"}
 		else:
