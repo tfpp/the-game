@@ -55,6 +55,7 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
      `preview.yml` deploys there (run name `preview #<pr> deploy`) post the preview link
      (`BOT_PREVIEW_URL`).
    - `pull_request`: merged or closed.
+   - `issues`: a feature's issue closed or reopened on GitHub before its PR exists.
    - **Live progress** (`/bot/progress`, optional): while a run is active, the agent job
      streams its reasoning and tool calls ([harness/progress.sh](../harness/README.md#live-progress)).
      Each run gets one 🧠 message in the thread, edited at most every 3 seconds with the
@@ -115,8 +116,9 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    `main` commit, and it's newer than the last one requested, the bot writes that commit to
    `$BOT_DEPLOY_DIR/request`. A host service deploys it (in the homelab repo:
    `the-game-deploy-server`) and writes the commit to `$BOT_DEPLOY_DIR/deployed`. The bot
-   then posts "🚀 PR #n is live" in the threads of the merged PRs it contains. Waiting for
-   both builds keeps the server from getting ahead of the web client.
+   then posts "🚀 PR #n is live" in the threads of the merged PRs it contains, whether
+   the bot merged them or someone merged on GitHub. Waiting for both builds keeps the
+   server from getting ahead of the web client.
    The accounts API deploys on its own: when `api-image.yml` succeeds for a newer `main`
    commit (it only runs when `api/` changes), the bot writes that commit to
    `$BOT_DEPLOY_DIR/api-request`, and the host deploys it (`the-game-deploy api`). The API
@@ -130,6 +132,13 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    `## [edge]` section plus feature-owned `release_notes/*.json` files added since the
    latest live release, each once;
    the first check only records them.
+9. **Closing threads.** A feature's thread is closed (archived, not locked) once its work
+   is over: after `/close`, when its PR is closed without merging, when the bot closes an
+   issue the agent declined, when its issue is closed on GitHub before a PR exists, and
+   when its merged PR is live (right after "🚀 Live"). Merging alone doesn't close it. An
+   issue closed while the agent is running is left to the run's result; once a PR exists,
+   only the PR counts, since merging it closes the issue too. Any later post reopens the
+   thread, so a reopened PR or issue brings it back.
 
 **`/queue`** answers privately, to anyone: `/queue which:agent runs` lists the active runs, then
 the waiting ones in the order they'll start (issue or PR, mode, status, who started it, age,
@@ -219,7 +228,8 @@ Create it under the `tfpp` organization (Settings → Developer settings → Git
   results); Contents (merging, deleting merged branches, reading `CODEOWNERS`), Issues and
   Pull requests read and write; Metadata read. Leave **Workflows at no access**, so agents
   can't change CI.
-- **Events:** Issue comment, Pull request, Workflow run.
+- **Events:** Issue comment, Issues, Pull request, Workflow run. Without Issues, the bot
+  can't see issues closed on GitHub, but everything else works.
 - **Installable:** only on this account. Install it on `tfpp/the-game` only.
 - Generate a private key and note the **client ID**.
 
@@ -239,8 +249,10 @@ In the [developer portal](https://discord.com/developers/applications):
 
 - **Bot:** reset and copy the token. No privileged intents. Turn off "Public Bot".
 - **Installation:** guild install with scopes `bot` and `applications.commands`, and the
-  permissions View Channels, Send Messages, Create Public Threads and Send Messages in
-  Threads. Open the install link and add the bot to the server.
+  permissions View Channels, Send Messages, Create Public Threads, Send Messages in
+  Threads and Manage Threads (to close finished feature threads). Open the install link
+  and add the bot to the server. On an existing install, grant the bot's role Manage
+  Threads in the feature channel; without it, closing threads fails and is only logged.
 - With Developer Mode on (User Settings → Advanced), copy the server ID, the requester
   role's ID, the approver role's ID and, optionally, the feature channel's ID.
 
