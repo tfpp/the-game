@@ -67,7 +67,7 @@ func _process(delta: float) -> void:
 func _update_snapshot(snapshot: Dictionary) -> void:
 	var reels: Array = snapshot["reels"]
 	for index: int in 3:
-		if _last_state.is_empty():
+		if _last_state.is_empty() or not bool(snapshot["spinning"]):
 			_positions[index] = float(reels[index])
 			_targets[index] = _positions[index]
 		elif index < int(snapshot["stopped"]):

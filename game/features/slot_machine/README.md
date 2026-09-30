@@ -50,8 +50,13 @@ in a server-owned `MultiplayerSynchronizer` snapshot. Late joiners receive the
 current state. Result audio is a separate reliable server event, so joining after
 a result does not replay an old sound. A spin finishes even if its player disconnects.
 The API commits the charge and prize together before animation begins, so disconnects
-or a game-server crash during animation cannot lose a prize. Requests are locked
-while payment is pending as well as during animation.
+or a game-server crash during animation cannot lose a prize. The in-game wallet shows
+only the deducted buy-in until the final reel stops: then the server reveals the prize
+with the coin spray, fireworks launch and win notice. The wallet stays locked to other
+transactions and balance refreshes during the animation, so the prize cannot be spent
+or exposed early; temporary minute income still accrues. Reconnecting after a crash
+recovers the already committed account balance. Requests are locked while payment is
+pending as well as during animation.
 
 ## Win celebration
 
@@ -60,7 +65,16 @@ at the front (`slot_celebration.gd`). Both scale with the prize on a log scale f
 (one small rocket, a handful of coins) to $30 billion (seven big, fast bursts and about
 80 coins). They start from the reliable `play_result` event, which now carries the
 payout, so every nearby peer sees them once and late joiners don't replay old shows.
-Coins and sparks are `CPUParticles3D` with no collision or lights, and free themselves.
+Coins and sparks are `CPUParticles3D` with no collision, lights or shadows. Each cabinet
+prebuilds one coin emitter and seven shell/burst pairs; subsequent wins reuse those
+nodes and shared meshes, materials and fade gradient instead of creating/freeing them
+at payout or each burst. Particle counts remain bounded and prize-scaled. A small
+local timeline replaces per-rocket tweens and stops processing when idle. Shows beyond
+35 metres from the viewing camera are skipped; dedicated servers allocate no effects.
+Session changes hide/reset the pool and cancel remaining launches. A one-time tiny
+startup draw warms the coin, shell and particle-billboard material variants (following
+GunFx's existing pattern); it never runs on headless/dedicated processes. Actual browser
+frame times still require visual profiling.
 
 ## Sound assets
 
@@ -98,6 +112,13 @@ each instance has its own busy state. All machines share player wallets.
 
 `harness/verify.sh` runs unit and standard multiplayer checks. Set `GODOT` to the
 Godot executable if it is not on `PATH`.
+
+From `game/`, run `tests/features/slot_machine/network_test.sh` for a real server,
+two competing clients and a late joiner. The test-only server fixture gives temporary
+wallets many rerolls to exercise five wins, and checks buy-in-only balances during
+animation, final credits and no replayed late-join audio. Override `SLOT_TEST_PORT`
+if needed. Like the Celeste probe, it disables the server's unrelated weapon-hotbar
+process because this base retains a freed remote hand after disconnect.
 
 ## Visual assets
 

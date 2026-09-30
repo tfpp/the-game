@@ -18,6 +18,7 @@ var _pending := false
 var _generation := 0
 var _prize := 0
 var _prize_peer := 0
+var _prize_id := ""
 var _result: Array[int] = []
 var _elapsed := 0.0
 var _frame_elapsed := 0.0
@@ -123,7 +124,9 @@ func request_spin() -> void:
 	var trump := get_tree().get_first_node_in_group(&"trump_favor")
 	if trump != null:
 		rerolls += int(trump.favor_rerolls(peer_id))
-	var result: Dictionary = await wallet.spin(peer_id, id, buy_in_cents, rerolls, blessings)
+	var result: Dictionary = await wallet.spin_animated(
+		peer_id, id, buy_in_cents, rerolls, blessings
+	)
 	if generation != _generation:
 		return
 	_pending = false
@@ -136,6 +139,7 @@ func request_spin() -> void:
 	reels.assign(result["reels"])
 	if prayer != null and is_instance_valid(prayer) and SlotSpinCycle.is_win(reels):
 		prayer.consume(peer_id)
+	_prize_id = id
 	_begin_spin(peer_id, operator_name, reels, int(result["payout"]))
 
 
@@ -165,7 +169,7 @@ func _process(delta: float) -> void:
 
 
 func _advance(delta: float) -> void:
-	if not state["spinning"]:
+	if not multiplayer.is_server() or not state["spinning"]:
 		return
 	_elapsed += delta
 	_frame_elapsed += delta
@@ -195,11 +199,24 @@ func _advance(delta: float) -> void:
 			charm.note_win(_prize_peer)
 	state = next
 	if stopped == 3:
+		_reveal_wallet()
 		play_result.rpc(int(state["spin"]), bool(state["won"]), _prize)
 		_announce_prize()
 
 
-## The wallet already holds the prize; the chat log hears about it once the reels stop.
+func _reveal_wallet() -> void:
+	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
+	if wallet != null and not _prize_id.is_empty():
+		wallet.reveal_spin(_prize_peer, _prize_id)
+	_prize_id = ""
+
+
+func _exit_tree() -> void:
+	# Removing a cabinet must not leave its player's wallet locked.
+	_reveal_wallet()
+
+
+## The wallet and chat log reveal the prize once the reels stop.
 func _announce_prize() -> void:
 	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
 	if wallet != null and _prize > 0:
@@ -234,6 +251,7 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 	_pending = false
 	_generation += 1
 	_prize = 0
+	_prize_id = ""
 	_result.clear()
 	_last_sound_spin = 0
 	_audio.stop()
