@@ -64,14 +64,17 @@ Coins and sparks are `CPUParticles3D` with no collision or lights, and free them
 
 ## Sound assets
 
-Place these two **Ogg Vorbis** files in `res://assets/slot_machine/audio/`:
+Clips in `res://assets/slot_machine/audio/` play spatially from each cabinet:
 
-- `win.ogg` — the winning “cha-ching!” sound.
-- `lose.ogg` — the negative/losing sound.
+- `win.ogg` — the winning “cha-ching!” sound, at its original volume and pitch.
+- `toot.wav` — a synthesized 0.22-second fart-like losing toot, played at -14 dB.
+  Each new loss picks a local random pitch from 0.85–1.35, also varying its length
+  to roughly 0.16–0.26 seconds. Duplicate results do not reroll or replay it.
 
-Use short, non-looping clips. Restart/re-export after adding or replacing them.
-They play spatially from the cabinet for nearby players. Missing files are silently
-optional, so the feature works before assets are supplied. No code edits are needed.
+Both clips are short and non-looping. Restart/re-export after replacing them.
+Missing files remain optional. The legacy `lose.ogg` is no longer used.
+No shared state or new RPC is needed for cosmetic pitch variation; different
+listeners may hear slightly different pitches on the same loss.
 
 ## Layout
 
