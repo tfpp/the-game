@@ -1,0 +1,8 @@
+{
+  "title": "Mandarin hello sign",
+  "summary": "The casino lobby now greets you with a golden 你好 banner.",
+  "notes": [
+    "Add a Mandarin hello sign to the south lobby wall, east of the south doors.",
+    "Paint the 你 characters onto the sign from a 64x128 texture so they render without a CJK font."
+  ]
+}

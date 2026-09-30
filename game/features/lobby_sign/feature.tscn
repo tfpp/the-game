@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="1_wood"]
+[ext_resource type="Material" path="res://features/lobby_sign/materials/face.tres" id="2_face"]
+
+[sub_resource type="BoxMesh" id="Plaque"]
+size = Vector3(1.36, 2.9, 0.08)
+
+[sub_resource type="QuadMesh" id="Face"]
+size = Vector2(1.2, 2.4)
+
+[node name="LobbySign" type="Node3D"]
+
+[node name="Sign" type="Node3D" parent="."]
+position = Vector3(10, 2.25, 34)
+rotation = Vector3(0, 3.141592654, 0)
+
+[node name="Plaque" type="MeshInstance3D" parent="Sign"]
+position = Vector3(0, 0, 0.045)
+visibility_range_end = 50.0
+mesh = SubResource("Plaque")
+surface_material_override/0 = ExtResource("1_wood")
+cast_shadow = 0
+
+[node name="Face" type="MeshInstance3D" parent="Sign"]
+position = Vector3(0, 0.15, 0.09)
+visibility_range_end = 50.0
+mesh = SubResource("Face")
+surface_material_override/0 = ExtResource("2_face")
+cast_shadow = 0
+
+[node name="Caption" type="Label3D" parent="Sign"]
+position = Vector3(0, -1.25, 0.095)
+visibility_range_end = 50.0
+pixel_size = 0.008
+modulate = Color(0.92, 0.69, 0.36, 1)
+outline_modulate = Color(0.1, 0.04, 0.025, 1)
+text = "HELLO · NI HAO"
+font_size = 14
+outline_size = 4
+no_depth_test = false
+shaded = false
+double_sided = false
+cast_shadow = 0
