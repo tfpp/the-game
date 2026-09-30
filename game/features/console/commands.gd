@@ -9,6 +9,9 @@ const HELP := {
 	"git": "Read-only repository snapshot; git help lists supported commands",
 	"help": "List commands; help <text> filters them",
 	"clear": "Clear console output",
+	"profiler": "0 | 1: local frametime graph; Esc > Profiler inspects missed frames",
+	"profiler_budget": "Local frame budget in milliseconds: 1..1000 (default 16.667)",
+	"profiler_clear": "Clear local profiler graph and retained missed-frame traces",
 	"sensitivity": "Mouse sensitivity: 0.1..10 (local, saved)",
 	"stick_scale": "Controller look scale: 0.25..3 (local, saved)",
 	"touch_scale": "Touch look scale: 0.25..3 (local, saved)",
@@ -51,6 +54,8 @@ func execute(raw: String) -> String:
 		return git_commands.execute(value)
 	if command == "clear":
 		return ""
+	if command in ["profiler", "profiler_budget", "profiler_clear"]:
+		return _profiler(command, value)
 	if command == "bind":
 		return _bind(words)
 	var controls := _page("Controls")
@@ -149,7 +154,7 @@ func suggestions(raw: String) -> PackedStringArray:
 	elif query.contains(" "):
 		var command := query.get_slice(" ", 0)
 		var values: Array = []
-		if command in ["sv_cheats", "mute"]:
+		if command in ["sv_cheats", "mute", "profiler"]:
 			values = ["0", "1"]
 		elif command == "scheme":
 			values = ["left", "right"]
@@ -172,6 +177,31 @@ func suggestions(raw: String) -> PackedStringArray:
 
 func describe(command: String) -> String:
 	return str(HELP.get(command.get_slice(" ", 0), ""))
+
+
+func _profiler(command: String, value: String) -> String:
+	var profiler := tree.get_first_node_in_group(&"frame_profiler")
+	if profiler == null:
+		return "Profiler unavailable."
+	match command:
+		"profiler":
+			if value.is_empty():
+				return "profiler %d (local)" % int(profiler.capture.enabled)
+			if value not in ["0", "1"]:
+				return "Expected 0 or 1."
+			profiler.set_enabled(value == "1")
+			return "profiler %s — Esc > Profiler to inspect missed frames." % value
+		"profiler_budget":
+			if value.is_empty():
+				return "profiler_budget %.3f ms (local)" % profiler.capture.budget_ms
+			if not value.is_valid_float() or not profiler.set_budget(value.to_float()):
+				return str(HELP[command])
+			return "profiler_budget %.3f ms (local)" % profiler.capture.budget_ms
+		_:
+			if not value.is_empty():
+				return str(HELP[command])
+			profiler.clear_capture()
+			return "Profiler capture cleared."
 
 
 func _page(label: String) -> Node:
