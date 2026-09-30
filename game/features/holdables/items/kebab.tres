@@ -12,3 +12,4 @@ view_scene = ExtResource("2")
 weight = 0.4
 ground_clearance = 0.18
 first_person_offset = Vector3(0.22, -0.23, -0.43)
+heal_amount = 100.0

@@ -51,7 +51,8 @@ action all key off the category.
     `take_hit` on it, so non-player targets can handle being shot on their own
     terms. `fire_cooldown_s` caps the rate of fire, so an SMG just needs a short
     cooldown to feel automatic even though every shot is still its own click.
-  - `FOOD`: eaten once and gone.
+  - `FOOD`: eaten once and gone, restoring its `heal_amount` of health through
+    `features/combat`'s `heal()` (kebab and poke bowl: full health; banana: 25).
   - `PROP`: thrown.
   - Any held item can also be dropped with G / left shoulder button
     (`request_drop_item`), regardless of category. The inventory can also store
