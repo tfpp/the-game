@@ -162,7 +162,13 @@ export HARNESS_MODEL="$model"
 effort="${HARNESS_REASONING_EFFORT:-}"
 case "$agent" in
   claude) effort="${effort:-low}" ;;
-  codex | pi) effort="${effort:-medium}" ;;
+  codex) effort="${effort:-medium}" ;;
+  pi)
+    # Per-model levels (also written to the runner's pi settings.json by pi-setup.sh).
+    [[ -n "$effort" ]] ||
+      effort="$(jq -r --arg m "$model" '.[$m] // empty' "$HARNESS_DIR/pi/thinking-levels.json")"
+    effort="${effort:-medium}"
+    ;;
 esac
 [[ -n "$effort" ]] && export HARNESS_REASONING_EFFORT="$effort"
 # add_usage: adds the last adapter call's usage.json to $usage. A missing cost makes the

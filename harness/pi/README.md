@@ -9,6 +9,10 @@ from npm at a pinned version instead of being vendored.
 | `anthropic-omp/` | Claude subscription provider backed by a pinned oh-my-pi snapshot, run in Bun. See its README |
 | `image-generation/` | `imagegen` tool through pi's `openai-codex` login, or `OPENAI_API_KEY` |
 
+`thinking-levels.json` maps each pi model to its default thinking level. `run.sh` passes it
+with `--thinking` (and records it in the PR) unless `AGENT_REASONING_EFFORT` is set;
+`pi-setup.sh` writes it to the runner's `settings.json` as `modelThinkingLevels`.
+
 Changes from the personal copies, needed on Linux runners:
 
 - `anthropic-omp/runtime/package.json` lists `@oh-my-pi/pi-utils` (the worker imports it

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # pi adapter. Usage: pi.sh PROMPT_FILE LOG_FILE CONTINUE(0|1)
 # Env: HARNESS_OUT (required), HARNESS_MODEL (openai-codex/gpt-6.1-sol),
-# HARNESS_REASONING_EFFORT (medium; pi's --thinking level).
+# HARNESS_REASONING_EFFORT (pi's --thinking level; run.sh picks it per model).
 # Auth and extensions come from PI_CODING_AGENT_DIR (~/.pi/agent); on Actions,
 # harness/pi-setup.sh prepares it.
 # Writes the call's token usage to $HARNESS_OUT/usage.json (see run.sh).

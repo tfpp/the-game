@@ -73,8 +73,10 @@ fi
 printf '%s\n' "$auth" >"$dir/auth.json"
 chmod 600 "$dir/auth.json"
 
-jq -n '{defaultProvider: "openai-codex", defaultModel: "gpt-6.1-sol",
-  defaultThinkingLevel: "medium", quietStartup: true, packages: []}' >"$dir/settings.json"
+# run.sh passes the same per-model level with --thinking; keep pi's own settings in step.
+jq -n --slurpfile levels "$HARNESS_DIR/pi/thinking-levels.json" \
+  '{defaultProvider: "openai-codex", defaultModel: "gpt-6.1-sol", defaultThinkingLevel: "medium",
+    modelThinkingLevels: $levels[0], quietStartup: true, packages: []}' >"$dir/settings.json"
 
 mkdir -p "$dir/extensions"
 cp -R "$HARNESS_DIR/pi/extensions/." "$dir/extensions/"

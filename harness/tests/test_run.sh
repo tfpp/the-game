@@ -143,6 +143,20 @@ for pair in claude:claude-opus-5-5:low codex:gpt-6.1-sol:medium pi:openai-codex/
   expect_eq "$(field reasoning_effort)" "$want_effort" "$name recorded effort"
 done
 
+case_ "pi: per-model thinking levels unless an effort is configured"
+# model|configured effort|expected effort
+for triple in 'openrouter/z-ai/glm-5.3||max' 'anthropic-omp/claude-opus-5-5||low' \
+  'openrouter/moonshotai/kimi-k3|high|high' 'openrouter/unlisted/model||medium'; do
+  IFS='|' read -r pi_model configured want_effort <<<"$triple"
+  new_repo
+  cp "$HARNESS_ADAPTERS/fake.sh" "$HARNESS_ADAPTERS/pi.sh"
+  agent <<<'echo "$HARNESS_MODEL $HARNESS_REASONING_EFFORT" >"$HARNESS_OUT/seen"; echo x >game/x.txt'
+  HARNESS_MODEL="$pi_model" HARNESS_REASONING_EFFORT="$configured" \
+    run --mode implement --branch "agent/25-x" --agent pi
+  expect_eq "$(cat "$out/seen")" "$pi_model $want_effort" "pi $pi_model effort"
+  expect_eq "$(field reasoning_effort)" "$want_effort" "pi $pi_model recorded effort"
+done
+
 case_ "implement: gives up after --attempts"
 new_repo
 verify 'exit 1'

@@ -196,7 +196,8 @@ bounds numeric values and validates model IDs before rendering them. The human P
    5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6.1-sol`, GPT-6.1 Sol), `PI_MODEL`
    (pi, as `provider/id`; defaults to `openai-codex/gpt-6.1-sol`; the `pi_model` input wins), `PI_VERSION`
    (defaults to `0.99.1`), `AGENT_REASONING_EFFORT` (overrides every agent; unset, Claude
-   uses `low` and Codex and pi use `medium`), `AGENT_MAX_TURNS`,
+   uses `low`, Codex `medium`, and pi the level for its model in `pi/thinking-levels.json`,
+   else `medium`), `AGENT_MAX_TURNS`,
    `AGENT_ATTEMPTS` (default 3), `AGENT_TRUSTED_BOTS` (comma-separated logins, such as
    the bot App's `<slug>[bot]`). Existing model variables override these defaults;
    remove or update old overrides to use the new defaults.
@@ -221,9 +222,12 @@ harness/run.sh --agent claude --mode implement --branch agent/0-jump-pad --task 
 ```
 
 All three adapters use the same model and reasoning defaults locally and on
-retries/resumes: Claude `claude-opus-5-5` with low effort, Codex `gpt-6.1-sol` and pi
-`openai-codex/gpt-6.1-sol` with medium effort. Override with `HARNESS_MODEL` and `HARNESS_REASONING_EFFORT` (pi's
-`--thinking` level). `result.json` records the effort as `reasoning_effort`, and publish
+retries/resumes: Claude `claude-opus-5-5` with low effort, Codex `gpt-6.1-sol` with medium effort, and pi
+`openai-codex/gpt-6.1-sol` with its per-model thinking level from `pi/thinking-levels.json`
+(for example `max` for the OpenRouter models, `low` for Claude; `medium` for unlisted
+models). `pi-setup.sh` also writes that map to the runner's pi `settings.json` as
+`modelThinkingLevels`. Override with `HARNESS_MODEL` and `HARNESS_REASONING_EFFORT`
+(pi's `--thinking` level). `result.json` records the effort as `reasoning_effort`, and publish
 shows it in the PR's Agent Usage section and the 🤖 comments. Locally, pi uses your own
 `~/.pi/agent` login and extensions unless `PI_CODING_AGENT_DIR` points elsewhere.
 
