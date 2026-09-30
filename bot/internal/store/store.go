@@ -52,6 +52,8 @@ type Job struct {
 	RequesterName string
 	State         string
 	Harness       string // empty for legacy jobs, which use Config.Agent
+	Model         string // pi only; empty uses the workflow's default model
+	Reasoning     string // effort override for every run; empty uses the workflow's default
 	ConflictSHA   string // head SHA last found to conflict with the base branch
 	ResolveSHA    string // head SHA a resolve-conflicts run was started for
 	CreatedAt     time.Time
@@ -168,11 +170,48 @@ var migrations = []string{
 	`ALTER TABLE runs ADD COLUMN instructions TEXT NOT NULL DEFAULT '';`,
 	// 4: pin each job to its agent harness; empty preserves legacy configuration fallback.
 	`ALTER TABLE jobs ADD COLUMN harness TEXT NOT NULL DEFAULT '' CHECK(harness IN ('', 'claude', 'codex'));`,
+	// 5: allow the pi harness and pin its model. SQLite can't alter a CHECK, so rebuild jobs
+	// (migrate turns foreign keys off, so dropping the old table cascades to nothing).
+	`CREATE TABLE jobs_new (
+		id             INTEGER PRIMARY KEY,
+		issue          INTEGER NOT NULL UNIQUE,
+		pr             INTEGER,
+		title          TEXT NOT NULL,
+		channel_id     TEXT NOT NULL,
+		thread_id      TEXT UNIQUE,
+		requester_id   TEXT NOT NULL,
+		requester_name TEXT NOT NULL,
+		state          TEXT NOT NULL DEFAULT 'open',
+		created_at     INTEGER NOT NULL,
+		updated_at     INTEGER NOT NULL,
+		conflict_sha   TEXT NOT NULL DEFAULT '',
+		resolve_sha    TEXT NOT NULL DEFAULT '',
+		harness        TEXT NOT NULL DEFAULT '' CHECK(harness IN ('', 'claude', 'codex', 'pi')),
+		model          TEXT NOT NULL DEFAULT '' CHECK(model = '' OR harness = 'pi')
+	);
+	INSERT INTO jobs_new (id, issue, pr, title, channel_id, thread_id, requester_id, requester_name,
+		state, created_at, updated_at, conflict_sha, resolve_sha, harness)
+	SELECT id, issue, pr, title, channel_id, thread_id, requester_id, requester_name,
+		state, created_at, updated_at, conflict_sha, resolve_sha, harness FROM jobs;
+	DROP TABLE jobs;
+	ALTER TABLE jobs_new RENAME TO jobs;
+	CREATE UNIQUE INDEX jobs_pr ON jobs(pr) WHERE pr IS NOT NULL;`,
+	// 6: an optional reasoning effort chosen with /feature; empty uses the workflow default.
+	`ALTER TABLE jobs ADD COLUMN reasoning TEXT NOT NULL DEFAULT ''
+		CHECK(reasoning IN ('', 'low', 'medium', 'high', 'xhigh', 'max'));`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {
 	var version int
 	if err := s.db.QueryRowContext(ctx, "PRAGMA user_version").Scan(&version); err != nil {
+		return err
+	}
+	if version >= len(migrations) {
+		return nil
+	}
+	// Table rebuilds must not cascade or rewrite references, so foreign keys are off while
+	// migrating (the pragma is a no-op inside a transaction; the pool has one connection).
+	if _, err := s.db.ExecContext(ctx, "PRAGMA foreign_keys = OFF"); err != nil {
 		return err
 	}
 	for i := version; i < len(migrations); i++ {
@@ -192,7 +231,19 @@ func (s *Store) migrate(ctx context.Context) error {
 			return err
 		}
 	}
-	return nil
+	rows, err := s.db.QueryContext(ctx, "PRAGMA foreign_key_check")
+	if err != nil {
+		return err
+	}
+	broken := rows.Next()
+	if err := rows.Close(); err != nil {
+		return err
+	}
+	if broken {
+		return errors.New("foreign key check failed after migrating")
+	}
+	_, err = s.db.ExecContext(ctx, "PRAGMA foreign_keys = ON")
+	return err
 }
 
 // --- limits and reservations ------------------------------------------------------------
@@ -323,9 +374,9 @@ func (s *Store) CreateJob(ctx context.Context, j Job, runID int64, now time.Time
 	}
 	defer tx.Rollback()
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO jobs (issue, title, channel_id, requester_id, requester_name, state, harness, created_at, updated_at)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		j.Issue, j.Title, j.ChannelID, j.RequesterID, j.RequesterName, JobOpen, j.Harness, now.Unix(), now.Unix())
+		`INSERT INTO jobs (issue, title, channel_id, requester_id, requester_name, state, harness, model, reasoning, created_at, updated_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		j.Issue, j.Title, j.ChannelID, j.RequesterID, j.RequesterName, JobOpen, j.Harness, j.Model, j.Reasoning, now.Unix(), now.Unix())
 	if err != nil {
 		return Job{}, err
 	}
@@ -340,13 +391,13 @@ func (s *Store) CreateJob(ctx context.Context, j Job, runID int64, now time.Time
 }
 
 const jobCols = `id, issue, COALESCE(pr, 0), title, channel_id, COALESCE(thread_id, ''), requester_id,
-	requester_name, state, harness, conflict_sha, resolve_sha, created_at`
+	requester_name, state, harness, model, reasoning, conflict_sha, resolve_sha, created_at`
 
 func scanJob(row interface{ Scan(...any) error }) (Job, error) {
 	var j Job
 	var created int64
 	err := row.Scan(&j.ID, &j.Issue, &j.PR, &j.Title, &j.ChannelID, &j.ThreadID, &j.RequesterID,
-		&j.RequesterName, &j.State, &j.Harness, &j.ConflictSHA, &j.ResolveSHA, &created)
+		&j.RequesterName, &j.State, &j.Harness, &j.Model, &j.Reasoning, &j.ConflictSHA, &j.ResolveSHA, &created)
 	if errors.Is(err, sql.ErrNoRows) {
 		return Job{}, ErrNotFound
 	}

@@ -1,0 +1,73 @@
+{
+  "lockfileVersion": 2,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "anthropic-omp-runtime",
+      "dependencies": {
+        "@oh-my-pi/pi-ai": "workspace:*",
+        "@oh-my-pi/pi-catalog": "workspace:*",
+        "@oh-my-pi/pi-utils": "workspace:*",
+      },
+      "optionalDependencies": {
+        "@oh-my-pi/pi-natives-darwin-arm64": "18.3.0",
+        "@oh-my-pi/pi-natives-linux-x64": "18.3.0",
+      },
+    },
+    "vendor/ai": {
+      "name": "@oh-my-pi/pi-ai",
+      "version": "18.3.0",
+      "dependencies": {
+        "@oh-my-pi/omptype": "workspace:*",
+        "@oh-my-pi/pi-catalog": "workspace:*",
+        "@oh-my-pi/pi-natives": "workspace:*",
+        "@oh-my-pi/pi-utils": "workspace:*",
+        "@oh-my-pi/pi-wire": "workspace:*",
+      },
+    },
+    "vendor/catalog": {
+      "name": "@oh-my-pi/pi-catalog",
+      "version": "18.3.0",
+      "dependencies": {
+        "@oh-my-pi/omptype": "workspace:*",
+        "@oh-my-pi/pi-utils": "workspace:*",
+      },
+    },
+    "vendor/natives": {
+      "name": "@oh-my-pi/pi-natives",
+      "version": "18.3.0",
+    },
+    "vendor/omptype": {
+      "name": "@oh-my-pi/omptype",
+      "version": "18.3.0",
+    },
+    "vendor/utils": {
+      "name": "@oh-my-pi/pi-utils",
+      "version": "18.3.0",
+      "dependencies": {
+        "@oh-my-pi/pi-natives": "workspace:*",
+      },
+    },
+    "vendor/wire": {
+      "name": "@oh-my-pi/pi-wire",
+      "version": "18.3.0",
+    },
+  },
+  "packages": {
+    "@oh-my-pi/omptype": ["@oh-my-pi/omptype@workspace:vendor/omptype"],
+
+    "@oh-my-pi/pi-ai": ["@oh-my-pi/pi-ai@workspace:vendor/ai"],
+
+    "@oh-my-pi/pi-catalog": ["@oh-my-pi/pi-catalog@workspace:vendor/catalog"],
+
+    "@oh-my-pi/pi-natives": ["@oh-my-pi/pi-natives@workspace:vendor/natives"],
+
+    "@oh-my-pi/pi-natives-darwin-arm64": ["@oh-my-pi/pi-natives-darwin-arm64@18.3.0", "", { "os": "darwin", "cpu": "arm64" }, "sha512-8Flp4f7We20TsGLND9LvzIMTuJmBC5OVeQNL3h1utqD9NUlrRqB/psjqFbKyyiltqEcDVWYluTDKZZ4FslUbGw=="],
+
+    "@oh-my-pi/pi-natives-linux-x64": ["@oh-my-pi/pi-natives-linux-x64@18.3.0", "", { "os": "linux", "cpu": "x64" }, "sha512-ZSsqlgKMGhv8wAUrN8uzzjbCBeHvbtLElyVlt0HKAK6gWkfpPA0dzBAp3g2OOalWIAfGYrydr9yhSYSQ+2OiqQ=="],
+
+    "@oh-my-pi/pi-utils": ["@oh-my-pi/pi-utils@workspace:vendor/utils"],
+
+    "@oh-my-pi/pi-wire": ["@oh-my-pi/pi-wire@workspace:vendor/wire"],
+  }
+}

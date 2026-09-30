@@ -16,12 +16,21 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
 
 ## How it works
 
-1. **`/feature request:<text> harness:<claude|codex>`** in a text channel (optionally only
-   `BOT_FEATURE_CHANNEL_ID`). Both parameters are required. The selected harness is
-   saved with the feature and used for its initial run, queued runs, `/revise`, and
-   automatic conflict resolution, including after bot restarts. Claude defaults to
-   **Opus 5.5** with low effort; Codex defaults to **GPT-6 Astra** with low reasoning.
-   Configure both credentials in [the harness setup](../harness/README.md#setup).
+1. **`/feature request:<text> [harness:<pi|claude|codex>] [model:<pi model>]
+   [reasoning:<low|medium|high|xhigh|max>]`** in a text channel (optionally only
+   `BOT_FEATURE_CHANNEL_ID`). Only `request` is required; `harness` defaults to **pi**.
+   `model` is for pi only and offers GPT-6.1 Sol, GPT-6 Astra, GPT-6 Luna, Claude Opus
+   5.5, Claude Fable 5.1 and the OpenRouter models (DeepSeek V4.1 Flash, GLM-5.3,
+   GLM-5.3 Flash, Qwen3.8 Max, Qwen3.8 Flash, Kimi K3); `core.PiModels` must match
+   `agent.yml`'s `pi_model` choices. `reasoning` overrides the effort for any harness
+   (`core.ReasoningLevels`, matching `agent.yml`'s `reasoning` input). The harness, model
+   and reasoning are saved with the feature and used for its initial run, queued runs,
+   `/revise`, and automatic conflict resolution, including after bot restarts; the bot
+   sends `pi_model` and `reasoning` only when chosen. Claude defaults to **Opus 5.5**
+   with low effort; Codex defaults to **GPT-6.1 Sol** with medium reasoning; pi defaults
+   to `openai-codex/gpt-6.1-sol` with medium thinking (each pi model has its own level in
+   `harness/pi/thinking-levels.json`). Configure the credentials in
+   [the harness setup](../harness/README.md#setup).
    The user needs `BOT_REQUESTER_ROLE_ID`. The bot reserves a run against the limits,
    opens an issue whose body ends in `Requested-by: <name> <discord:<id>>` (the harness
    credits that person in the PR), answers publicly, opens a thread on the answer, and
@@ -183,7 +192,7 @@ Environment variables; secrets are files.
 | `BOT_DEPLOY_DIR` | off | Directory shared with the host's deploy service |
 | `BOT_RELEASE_CHANNEL_ID` | off | Channel for release and edge announcements (needs `BOT_DEPLOY_DIR`) |
 | `BOT_REF`, `BOT_WORKFLOW`, `BOT_CI_WORKFLOW` | `main`, `agent.yml`, `game-ci.yml` | |
-| `BOT_AGENT` | `claude` | Fallback only for old jobs created before per-feature harness selection; new requests always use their required `harness` choice |
+| `BOT_AGENT` | `claude` | Fallback only for old jobs created before per-feature harness selection; new requests use their `harness` choice, or pi when omitted |
 | `BOT_SERVER_WORKFLOW`, `BOT_PAGES_WORKFLOW` | `server-image.yml`, `pages.yml` | Builds that gate a deploy |
 | `BOT_API_WORKFLOW` | `api-image.yml` | Build that deploys the accounts API |
 | `BOT_PREVIEW_WORKFLOW`, `BOT_PREVIEW_URL` | `preview.yml`, `https://pr-{pr}.tfpp-game.pages.dev/` | PR preview deploys and their link (`{pr}` is the PR number) |

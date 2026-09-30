@@ -13,6 +13,8 @@ definition of done for agents and humans alike.
 | `context.sh` | Writes the task, current PR, sibling PRs and paths, recent merges, and feedback from GitHub |
 | `check-summary.sh` | Requires integration review notes before agent-written work can be bundled |
 | `publish.sh` | Pushes the bundle, opens the PR or comments, reports failures |
+| `pi-setup.sh` | Builds a temporary pi agent directory (auth, extensions, `pi-web-access`) on Actions |
+| `pi/extensions/` | Vendored pi extensions: `anthropic-omp` (Claude subscription provider) and `image-generation` |
 | `claude-app-token.sh` | Fallback push token from the Claude GitHub App |
 | `tests/` | Offline tests with a fake agent, `gh` and remote |
 
@@ -30,10 +32,15 @@ Only people with write access (or bots in `AGENT_TRUSTED_BOTS`) can start a run.
 | Run the workflow by hand (`workflow_dispatch`) | Any mode, by issue or PR number (the bot will use this) |
 
 The label is removed when the run ends, so adding it again starts another run.
-Labels and comments use Claude. To use Codex, select `codex` in the workflow's
-`agent` input (or dispatch with `-f agent=codex`); all three modes are supported.
-Discord's `/feature request:<text> harness:<claude|codex>` requires a harness choice
-and saves it for that feature's later revisions and conflict resolution. `BOT_AGENT`
+**pi is the default harness**: labels, `/agent` comments, dispatches without `agent`, and
+`/feature` without `harness` all use it. To use Claude or Codex, select `claude` or `codex`
+in the workflow's `agent` input (or dispatch with `-f agent=claude` / `-f agent=codex`);
+all three modes are supported.
+Discord's `/feature request:<text> [harness:<pi|claude|codex>] [model:<pi model>]
+[reasoning:<level>]` saves the harness (pi when omitted), pi's optional model and the
+optional reasoning level for that feature's later revisions and conflict resolution; the
+bot sends `pi_model` and `reasoning` only when chosen. The workflow's `reasoning` input
+(`low` to `max`) overrides `AGENT_REASONING_EFFORT` and each agent's default. `BOT_AGENT`
 is only a fallback for legacy features with no saved selection.
 
 ## Keeping PRs aligned
@@ -118,13 +125,14 @@ pricing is shown as unavailable, never silently replaced with zero. An automatic
 merge that does not invoke an agent reports no model, zero tokens and zero cost.
 
 Costs are **API-equivalent estimates, not subscription charges**. Claude and pi supply
-API-price estimates. Codex's `gpt-6-astra` estimate uses standard short-context rates
-per million tokens: $10 uncached input, $1 cached input, $12.50 cache writes and $50
-output ([OpenAI pricing](https://developers.openai.com/api/docs/pricing), checked
-2026-09-28). It excludes separate tool fees, fast-mode pricing and long-context premiums.
+API-price estimates. Codex estimates use standard short-context rates per million tokens
+([OpenAI pricing](https://developers.openai.com/api/docs/pricing), checked 2026-09-30):
+`gpt-6.1-sol` (the default) $2 uncached input, $0.10 cached input, $2.50 cache writes and
+$10 output; `gpt-6-astra` $10, $1, $12.50 and $50. They exclude separate tool fees,
+fast-mode pricing and long-context premiums.
 Turn-level telemetry aggregates multiple requests, so the adapter cannot determine
 which requests crossed the 272K-input long-context threshold. Unsupported model
-overrides report unavailable cost rather than using Astra's rates.
+overrides report unavailable cost rather than borrowing another model's rates.
 
 These fields come from the untrusted agent job and are informational: the publisher
 bounds numeric values and validates model IDs before rendering them. The human PR
@@ -151,6 +159,29 @@ bounds numeric values and validates model IDs before rendering them. The human P
      sharing one login may also require reauthentication. Discord `/usage` needs a
      separate mount of that account's `auth.json` on the bot via `BOT_CODEX_AUTH_FILE`;
      GitHub Secrets are not available to the bot. See [bot setup](../bot/README.md).
+   - **pi:** reuses both logins above and adds OpenRouter. `CODEX_AUTH_JSON` becomes
+     pi's `openai-codex` login for the default model, `imagegen` and Codex-backed web
+     search; `CLAUDE_CODE_OAUTH_TOKEN` enables the vendored `anthropic-omp` provider; and
+     `OPENROUTER_API_KEY` (`gh secret set OPENROUTER_API_KEY`) enables the `openrouter/*`
+     models. Any one credential is enough to start, but the selected model needs its own:
+     the default needs the Codex login. Pick a model with the dispatch's `pi_model` input
+     (`-f pi_model=openrouter/z-ai/glm-5.3`) or the `PI_MODEL` variable. The input offers
+     `openai-codex/gpt-6.1-sol`, `gpt-6-astra` and `gpt-6-luna`;
+     `anthropic-omp/claude-opus-5-5` and `claude-fable-5-1`; and on OpenRouter
+     `deepseek/deepseek-v4.1-flash`, `z-ai/glm-5.3`, `z-ai/glm-5.3-flash`,
+     `qwen/qwen3.8-max-0902`, `qwen/qwen3.8-flash` and `moonshotai/kimi-k3`. pi reads the
+     OpenRouter key from the job environment; it is never written to disk.
+     `harness/pi-setup.sh` builds a private `PI_CODING_AGENT_DIR` in `$RUNNER_TEMP`,
+     copies `pi/extensions/` there, installs the extension's Bun runtime (and its Linux
+     native addon) plus `pi-web-access`, writes `auth.json`, and installs the MCP servers
+     from `pi/mcp.json` (chrome-devtools, Playwright and Godot, all headless; see
+     [pi/README.md](pi/README.md)). The Claude token is
+     **not** written there: the job exports it as `ANTHROPIC_OAUTH_TOKEN`, which the
+     extension's backend reads while its own credential store is empty. The directory is
+     deleted after the run. As with Codex, pi may refresh the ChatGPT token in its
+     temporary copy; that refresh is not persisted, and a rotated refresh token can
+     invalidate `CODEX_AUTH_JSON` for later runs. The `anthropic-omp` provider is an
+     unofficial Claude subscription client (see its README's policy caveat).
 3. **Push identity:** pick one. Pushes made with either identity trigger CI, which
    `GITHUB_TOKEN` pushes don't.
    - **Own GitHub App (preferred; the v0.5 bot needs it anyway).** Create an App with
@@ -168,20 +199,26 @@ bounds numeric values and validates model IDs before rendering them. The human P
      as `anthropics/claude-code-action`. That endpoint is internal to the action and
      could change. Commits and PRs appear as `claude[bot]`.
 4. **Optional variables:** `AGENT_MODEL` (Claude; defaults to `claude-opus-5-5`, Opus
-   5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6-astra`, GPT-6 Astra),
-   `AGENT_REASONING_EFFORT` (both; defaults to `low`), `AGENT_MAX_TURNS`,
-   `AGENT_ATTEMPTS` (default 3), `AGENT_TRUSTED_BOTS` (comma-separated logins, such as
-   the bot App's `<slug>[bot]`). Existing model variables override these defaults;
-   remove or update old overrides to use the new defaults.
+   5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6.1-sol`, GPT-6.1 Sol), `PI_MODEL` (pi,
+   as `provider/id`; defaults to `openai-codex/gpt-6.1-sol`; the `pi_model` input wins),
+   `PI_VERSION` (defaults to `0.99.1`), `AGENT_REASONING_EFFORT` (overrides every agent
+   unless the dispatch's `reasoning` input is set; unset, Claude uses `low`, Codex
+   `medium`, and pi the level for its model in `pi/thinking-levels.json`, else `medium`),
+   `AGENT_MAX_TURNS`, `AGENT_ATTEMPTS` (default 3), `AGENT_TRUSTED_BOTS`
+   (comma-separated logins, such as the bot App's `<slug>[bot]`). Existing model
+   variables override these defaults; remove or update old overrides to use the new
+   defaults.
 
 For example, after the workflow change is merged:
 
 ```bash
 gh workflow run agent.yml -f number=123 -f mode=implement -f agent=codex
+gh workflow run agent.yml -f number=123 -f mode=implement -f agent=pi
+gh workflow run agent.yml -f number=123 -f mode=implement -f agent=pi -f pi_model=openrouter/moonshotai/kimi-k3
 ```
 
-The same gate, verification/retry loop, and isolated App-token publisher apply to both
-agents. Codex still needs one of the push identities above; its ChatGPT login does not
+The same gate, verification/retry loop, and isolated App-token publisher apply to every
+agent. Codex and pi still need one of the push identities above; their model logins do not
 provide GitHub permissions.
 
 ## Local runs
@@ -191,10 +228,16 @@ echo "Add a jump pad that launches players upward" > /tmp/task.md
 harness/run.sh --agent claude --mode implement --branch agent/0-jump-pad --task /tmp/task.md --out /tmp/run
 ```
 
-The Claude and Codex adapters use the same model/low-reasoning defaults locally and
-on retries/resumes. Override with `HARNESS_MODEL` and `HARNESS_REASONING_EFFORT`.
-`result.json` records the effort as `reasoning_effort` (null for pi), and publish shows it
-in the PR's Agent Usage section and the 🤖 comments.
+All three adapters use the same model and reasoning defaults locally and on
+retries/resumes: Claude `claude-opus-5-5` with low effort, Codex `gpt-6.1-sol` with
+medium effort, and pi `openai-codex/gpt-6.1-sol` with its per-model thinking level from
+`pi/thinking-levels.json` (for example `max` for the OpenRouter models, `low` for Claude;
+`medium` for unlisted models). `pi-setup.sh` also writes that map to the runner's pi
+`settings.json` as `modelThinkingLevels`. Override with `HARNESS_MODEL` and
+`HARNESS_REASONING_EFFORT` (pi's `--thinking` level). `result.json` records the effort as
+`reasoning_effort`, and publish shows it in the PR's Agent Usage section and the 🤖
+comments. Locally, pi uses your own `~/.pi/agent` login and extensions unless
+`PI_CODING_AGENT_DIR` points elsewhere.
 
 This needs a clean tree. It leaves you on the new branch, and `/tmp/run` holds the logs
 and `summary.md`. Nothing is pushed.

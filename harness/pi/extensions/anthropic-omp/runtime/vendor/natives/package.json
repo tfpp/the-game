@@ -1,0 +1,69 @@
+{
+  "name": "@oh-my-pi/pi-natives",
+  "version": "18.3.0",
+  "description": "Native Rust bindings for PDF conversion, audio, WebRTC, grep, clipboard, image processing, syntax highlighting, PTY, and shell operations via N-API",
+  "type": "module",
+  "homepage": "https://omp.sh",
+  "author": {
+    "name": "Stencil Labs, Inc.",
+    "url": "https://stencil.so"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/can1357/oh-my-pi.git",
+    "directory": "packages/natives"
+  },
+  "bugs": {
+    "url": "https://github.com/can1357/oh-my-pi/issues"
+  },
+  "keywords": [
+    "napi",
+    "rust",
+    "native",
+    "grep",
+    "text-processing",
+    "clipboard",
+    "image",
+    "pty",
+    "shell",
+    "syntax-highlighting"
+  ],
+  "main": "./native/index.js",
+  "types": "./native/index.d.ts",
+  "engines": {
+    "bun": ">=1.3.14"
+  },
+  "napi": {
+    "binaryName": "pi_natives",
+    "triples": {}
+  },
+  "files": [
+    "src",
+    "native",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./native/index.d.ts",
+      "import": "./native/index.js",
+      "default": "./native/index.js"
+    },
+    "./desktop": {
+      "types": "./native/desktop.d.ts",
+      "import": "./native/desktop.js",
+      "default": "./native/desktop.js"
+    },
+    "./clipboard": {
+      "types": "./native/clipboard.d.ts",
+      "import": "./native/clipboard.js",
+      "default": "./native/clipboard.js"
+    },
+    "./vcs": {
+      "types": "./native/vcs.d.ts",
+      "import": "./native/vcs.js",
+      "default": "./native/vcs.js"
+    }
+  }
+}

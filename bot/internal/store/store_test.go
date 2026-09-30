@@ -126,8 +126,12 @@ func TestJobsAndRuns(t *testing.T) {
 }
 
 func TestJobHarnessRoundTrip(t *testing.T) {
-	for _, harness := range []string{"codex", "claude", ""} {
+	for _, harness := range []string{"codex", "claude", "pi", ""} {
 		t.Run("harness="+harness, func(t *testing.T) {
+			model := ""
+			if harness == "pi" {
+				model = "openrouter/moonshotai/kimi-k3"
+			}
 			ctx := context.Background()
 			now := time.Unix(1_800_000_000, 0)
 			path := filepath.Join(t.TempDir(), "jobs.db")
@@ -144,8 +148,8 @@ func TestJobHarnessRoundTrip(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			j, err := s.CreateJob(ctx, Job{Issue: 3, Title: "t", ChannelID: "c", RequesterID: "u", RequesterName: "U", Harness: harness}, r.ID, now)
-			if err != nil || j.Harness != harness {
+			j, err := s.CreateJob(ctx, Job{Issue: 3, Title: "t", ChannelID: "c", RequesterID: "u", RequesterName: "U", Harness: harness, Model: model, Reasoning: "xhigh"}, r.ID, now)
+			if err != nil || j.Harness != harness || j.Model != model || j.Reasoning != "xhigh" {
 				t.Fatalf("CreateJob = %+v, %v", j, err)
 			}
 			if err := s.SetThread(ctx, j.ID, "th", now); err != nil {
@@ -208,6 +212,72 @@ func TestJobHarnessConstraints(t *testing.T) {
 	if got, err := s.JobByID(ctx, j.ID); err != nil || got.Harness != "" {
 		t.Fatalf("legacy harness = %+v, %v", got, err)
 	}
+	// Only pi jobs carry a model.
+	if _, err := s.CreateJob(ctx, Job{Issue: 2, Harness: "codex", Model: "openai-codex/gpt-6.1-sol"}, 0, now); err == nil || !strings.Contains(err.Error(), "CHECK constraint failed") {
+		t.Fatalf("model on a codex job: %v", err)
+	}
+	if _, err := s.CreateJob(ctx, Job{Issue: 2, Harness: "pi", Model: "openrouter/z-ai/glm-5.3"}, 0, now); err != nil {
+		t.Fatalf("pi job: %v", err)
+	}
+	if _, err := s.CreateJob(ctx, Job{Issue: 3, Harness: "claude", Reasoning: "extreme"}, 0, now); err == nil || !strings.Contains(err.Error(), "CHECK constraint failed") {
+		t.Fatalf("invalid reasoning: %v", err)
+	}
+}
+
+func TestMigrateV4RebuildsJobsKeepingReferences(t *testing.T) {
+	ctx := context.Background()
+	path := filepath.Join(t.TempDir(), "v4.db")
+	db, err := sql.Open("sqlite", path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	for _, migration := range migrations[:4] {
+		if _, err := db.ExecContext(ctx, migration); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := db.ExecContext(ctx, `PRAGMA user_version = 4;
+		INSERT INTO jobs (id, issue, pr, title, channel_id, thread_id, requester_id, requester_name, state, conflict_sha, resolve_sha, harness, created_at, updated_at)
+		VALUES (7, 3, 4, 'codex job', 'c', 'th', 'u', 'U', 'open', 'conflict', 'resolve', 'codex', 1800000000, 1800000010);
+		INSERT INTO runs (id, job_id, mode, instructions, user_id, status, created_at, updated_at)
+		VALUES (9, 7, 'revise', 'keep this', 'u', 'completed', 1800000000, 1800000010);
+		INSERT INTO merges (id, job_id, pr, approved_sha, head_sha, approver_id, approver_name, status, created_at, updated_at)
+		VALUES (5, 7, 4, 'aaa', 'aaa', 'a', 'A', 'queued', 1800000000, 1800000000);`); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Close(); err != nil {
+		t.Fatal(err)
+	}
+	s, err := Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	want := Job{ID: 7, Issue: 3, PR: 4, Title: "codex job", ChannelID: "c", ThreadID: "th", RequesterID: "u", RequesterName: "U", State: JobOpen, Harness: "codex", ConflictSHA: "conflict", ResolveSHA: "resolve", CreatedAt: time.Unix(1800000000, 0)}
+	if got, err := s.JobByID(ctx, 7); err != nil || !reflect.DeepEqual(got, want) {
+		t.Fatalf("migrated job = %+v, %v; want %+v", got, err, want)
+	}
+	// Dropping the old table must not have cascaded to its runs or merges.
+	if r, err := s.RunByID(ctx, 9); err != nil || r.JobID != 7 {
+		t.Fatalf("run after rebuild = %+v, %v", r, err)
+	}
+	if m, err := s.ActiveMergeForJob(ctx, 7); err != nil || m.ID != 5 {
+		t.Fatalf("merge after rebuild = %+v, %v", m, err)
+	}
+	// Foreign keys and the PR index are back in force.
+	if _, err := s.db.ExecContext(ctx, `INSERT INTO runs (job_id, mode, user_id, status, created_at, updated_at) VALUES (999, 'implement', 'u', 'reserved', 0, 0)`); err == nil {
+		t.Fatal("run for a missing job accepted")
+	}
+	if _, err := s.CreateJob(ctx, Job{Issue: 8}, 0, time.Unix(1800000000, 0)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.db.ExecContext(ctx, `UPDATE jobs SET pr = 4 WHERE issue = 8`); err == nil {
+		t.Fatal("duplicate PR accepted")
+	}
+	if _, err := s.db.ExecContext(ctx, `UPDATE jobs SET harness = 'pi' WHERE id = 7`); err != nil {
+		t.Fatalf("pi harness after migration: %v", err)
+	}
 }
 
 func TestMigrateV3JobHarness(t *testing.T) {
@@ -239,7 +309,7 @@ func TestMigrateV3JobHarness(t *testing.T) {
 	}
 	defer s.Close()
 	var version int
-	if err := s.db.QueryRowContext(ctx, "PRAGMA user_version").Scan(&version); err != nil || version != 4 {
+	if err := s.db.QueryRowContext(ctx, "PRAGMA user_version").Scan(&version); err != nil || version != len(migrations) {
 		t.Fatalf("version = %d, %v", version, err)
 	}
 	wantJob := Job{ID: 7, Issue: 3, PR: 4, Title: "legacy", ChannelID: "c", ThreadID: "th", RequesterID: "u", RequesterName: "U", State: JobOpen, ConflictSHA: "conflict", ResolveSHA: "resolve", CreatedAt: time.Unix(1800000000, 0)}

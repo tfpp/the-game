@@ -78,11 +78,20 @@ var (
 					MinLength: &minLen, MaxLength: &maxLen,
 				},
 				discord.ApplicationCommandOptionString{
-					Name: "harness", Description: "Which coding harness should build and revise this feature?", Required: true,
+					Name: "harness", Description: "Which coding harness should build and revise this feature? (default: pi)",
 					Choices: []discord.ApplicationCommandOptionChoiceString{
+						{Name: "pi", Value: "pi"},
 						{Name: "claude", Value: "claude"},
 						{Name: "codex", Value: "codex"},
 					},
+				},
+				discord.ApplicationCommandOptionString{
+					Name: "model", Description: "pi only: which model runs it (default GPT-6.1 Sol)",
+					Choices: piModelChoices(),
+				},
+				discord.ApplicationCommandOptionString{
+					Name: "reasoning", Description: "Override the reasoning effort (default depends on the harness and model)",
+					Choices: reasoningChoices(),
 				},
 			},
 		},
@@ -123,6 +132,24 @@ var (
 		},
 	}
 )
+
+// piModelChoices offers core.PiModels as /feature's model option.
+func piModelChoices() []discord.ApplicationCommandOptionChoiceString {
+	choices := make([]discord.ApplicationCommandOptionChoiceString, 0, len(core.PiModels))
+	for _, m := range core.PiModels {
+		choices = append(choices, discord.ApplicationCommandOptionChoiceString{Name: m.Name, Value: m.ID})
+	}
+	return choices
+}
+
+// reasoningChoices offers core.ReasoningLevels as /feature's reasoning option.
+func reasoningChoices() []discord.ApplicationCommandOptionChoiceString {
+	choices := make([]discord.ApplicationCommandOptionChoiceString, 0, len(core.ReasoningLevels))
+	for _, level := range core.ReasoningLevels {
+		choices = append(choices, discord.ApplicationCommandOptionChoiceString{Name: level, Value: level})
+	}
+	return choices
+}
 
 // Open registers the guild commands and connects to the gateway.
 func (b *Bot) Open(ctx context.Context) error {
@@ -215,6 +242,7 @@ func (b *Bot) onCommand(e *events.ApplicationCommandInteractionCreate) {
 			err = b.Service.Feature(ctx, core.FeatureRequest{
 				UserID: member.User.ID.String(), UserName: name, HasRole: hasRole,
 				ChannelID: ch.ID().String(), Text: data.String("request"), Harness: data.String("harness"),
+				Model: data.String("model"), Reasoning: data.String("reasoning"),
 			}, r)
 		}
 	case "revise":

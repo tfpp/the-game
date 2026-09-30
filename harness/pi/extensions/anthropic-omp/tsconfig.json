@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", "module": "ESNext", "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true, "allowArbitraryExtensions": true, "resolveJsonModule": true, "esModuleInterop": true,
+    "strict": true, "skipLibCheck": true, "noEmit": true,
+    "types": ["bun", "node"], "lib": ["ESNext", "DOM.AsyncIterable"]
+  },
+  "include": ["assets.d.ts", "index.ts", "src/**/*.ts", "runtime/backend.ts", "runtime/worker.ts", "test/**/*.ts"]
+}

@@ -33,5 +33,5 @@ Generated PRs describe the implementation run; subsequent push comments describe
 own revision or conflict-resolution run, not lifetime PR totals. Unknown telemetry is
 `Unavailable`, not zero. Human-only PRs may use `None (human-authored)` and `Not applicable`.
 Costs estimate API-equivalent usage, not the amount billed to a subscription. Codex's
-GPT-6 Astra estimate uses standard short-context token rates and excludes long-context
-premiums and separate tool fees; unsupported model pricing remains unavailable.
+GPT-6.1 Sol and GPT-6 Astra estimates use standard short-context token rates and exclude
+long-context premiums and separate tool fees; unsupported model pricing remains unavailable.

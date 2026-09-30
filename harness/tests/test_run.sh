@@ -131,6 +131,32 @@ agent <<<'echo x >game/x.txt'
 HARNESS_REASONING_EFFORT=high run --mode implement --branch agent/23-x
 expect_eq "$(jq -c .reasoning_effort "$out/result.json")" '"high"' "configured reasoning effort"
 
+case_ "per-agent default model and effort reach the adapter and result.json"
+for pair in claude:claude-opus-5-5:low codex:gpt-6.1-sol:medium pi:openai-codex/gpt-6.1-sol:medium; do
+  IFS=: read -r name want_model want_effort <<<"$pair"
+  new_repo
+  cp "$HARNESS_ADAPTERS/fake.sh" "$HARNESS_ADAPTERS/$name.sh"
+  agent <<<'echo "$HARNESS_MODEL $HARNESS_REASONING_EFFORT" >"$HARNESS_OUT/seen"; echo x >game/x.txt'
+  run --mode implement --branch "agent/24-$name" --agent "$name"
+  expect_eq "$(cat "$out/seen")" "$want_model $want_effort" "$name adapter defaults"
+  expect_eq "$(jq -c .models "$out/result.json")" "[\"$want_model\"]" "$name recorded model"
+  expect_eq "$(field reasoning_effort)" "$want_effort" "$name recorded effort"
+done
+
+case_ "pi: per-model thinking levels unless an effort is configured"
+# model|configured effort|expected effort
+for triple in 'openrouter/z-ai/glm-5.3||max' 'anthropic-omp/claude-opus-5-5||low' \
+  'openrouter/moonshotai/kimi-k3|high|high' 'openrouter/unlisted/model||medium'; do
+  IFS='|' read -r pi_model configured want_effort <<<"$triple"
+  new_repo
+  cp "$HARNESS_ADAPTERS/fake.sh" "$HARNESS_ADAPTERS/pi.sh"
+  agent <<<'echo "$HARNESS_MODEL $HARNESS_REASONING_EFFORT" >"$HARNESS_OUT/seen"; echo x >game/x.txt'
+  HARNESS_MODEL="$pi_model" HARNESS_REASONING_EFFORT="$configured" \
+    run --mode implement --branch "agent/25-x" --agent pi
+  expect_eq "$(cat "$out/seen")" "$pi_model $want_effort" "pi $pi_model effort"
+  expect_eq "$(field reasoning_effort)" "$want_effort" "pi $pi_model recorded effort"
+done
+
 case_ "implement: gives up after --attempts"
 new_repo
 verify 'exit 1'

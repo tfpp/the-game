@@ -1,0 +1,25 @@
+{
+  "name": "pi-anthropic-omp-local",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "pi": { "extensions": ["./index.ts"] },
+  "scripts": {
+    "test": "bun test test/",
+    "check": "tsgo --noEmit -p tsconfig.json",
+    "verify:snapshot": "bun scripts/verify-snapshot.ts"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-ai": { "optional": true },
+    "@earendil-works/pi-coding-agent": { "optional": true }
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.14",
+    "@types/node": "^24.0.0",
+    "@typescript/native-preview": "7.0.0-dev.20260707.2"
+  }
+}
