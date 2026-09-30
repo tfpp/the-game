@@ -40,7 +40,11 @@ func _run() -> void:
 	]:
 		table.request_bet(bet[0], bet[1])
 	await get_tree().create_timer(0.3).timeout
-	var screen := (table.get_node("View") as RouletteTableView).screen
+	var view := table.get_node("View") as RouletteTableView
+	_player.pitch = -0.35
+	await _capture("/tmp/roulette/seated.png")
+	view.open_betting()
+	var screen := view.screen
 	screen._hover("20-23")
 	await _capture("/tmp/roulette/overview.png")
 	table._elapsed = RouletteTable.BETTING_S - 0.1

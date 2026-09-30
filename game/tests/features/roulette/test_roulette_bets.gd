@@ -17,7 +17,7 @@ func test_layout_has_every_american_bet() -> void:
 	# 12 streets plus the 0-1-2 and 00-2-3 trios.
 	assert_eq(counts[3], 14)
 	assert_eq(counts[4], 22, "corners")
-	assert_false(counts.has(5), "no five-number top line")
+	assert_eq(counts[5], 1, "the five-number top line")
 	assert_eq(counts[6], 11, "six lines")
 	assert_eq(counts[12], 6, "dozens and columns")
 	assert_eq(counts[18], 6, "even-money bets")
@@ -29,6 +29,7 @@ func test_payouts_follow_american_odds() -> void:
 	assert_eq(RouletteBets.payout_to_one("17-20"), 17)
 	assert_eq(RouletteBets.payout_to_one("16-17-18"), 11)
 	assert_eq(RouletteBets.payout_to_one("16-17-19-20"), 8)
+	assert_eq(RouletteBets.payout_to_one("0-1-2-3-37"), 6, "36/5 - 1 rounded down")
 	assert_eq(RouletteBets.payout_to_one("13-14-15-16-17-18"), 5)
 	assert_eq(RouletteBets.payout_to_one("dozen2"), 2)
 	assert_eq(RouletteBets.payout_to_one("column3"), 2)
@@ -39,6 +40,8 @@ func test_payouts_follow_american_odds() -> void:
 func test_every_bet_follows_n_over_38_with_the_same_house_edge() -> void:
 	for key: String in RouletteBets.spots():
 		var count := RouletteBets.numbers(key).size()
+		if count == 5:
+			continue
 		assert_eq((RouletteBets.payout_to_one(key) + 1) * count, 36, "%s pays 36/n - 1" % key)
 		assert_almost_eq(RouletteBets.probability(key), count / 38.0, 0.000001)
 		assert_almost_eq(RouletteBets.expected_return(key), -2.0 / 38.0, 0.000001, key)
@@ -50,11 +53,23 @@ func test_odds_match_the_published_american_table() -> void:
 	assert_eq(RouletteBets.odds_text("16-17-18"), "7.89% (11.6 : 1)")
 	assert_eq(RouletteBets.odds_text("16-17-19-20"), "10.52% (8.5 : 1)")
 	assert_eq(RouletteBets.odds_text("13-14-15-16-17-18"), "15.78% (5.3 : 1)")
+	assert_eq(RouletteBets.odds_text("0-1-2-3-37"), "13.15% (6.6 : 1)")
 	assert_eq(RouletteBets.odds_text("column1"), "31.57% (2.1 : 1)")
 	assert_eq(RouletteBets.odds_text("dozen2"), "31.57% (2.1 : 1)")
 	assert_eq(RouletteBets.odds_text("red"), "47.36% (1.1 : 1)")
 	assert_eq(RouletteBets.odds_text("odd"), "47.36% (1.1 : 1)")
 	assert_eq(RouletteBets.odds_text("high"), "47.36% (1.1 : 1)")
+
+
+func test_top_line_pays_six_to_one_with_the_larger_edge() -> void:
+	var key := "0-1-2-3-37"
+	assert_eq(RouletteBets.spot_at(RouletteBets.anchor(key)), key)
+	assert_eq(
+		RouletteBets.describe(key),
+		"Top line 0 / 1 / 2 / 3 / 00 — wins 13.15% (6.6 : 1), pays 6 to 1"
+	)
+	assert_almost_eq(RouletteBets.expected_return(key), -3.0 / 38.0, 0.000001)
+	assert_eq(RouletteBets.settle([[key, 100]], RouletteWheel.DOUBLE_ZERO)["payout"], 700)
 
 
 func test_colour_plus_opposite_numbers_matches_the_worked_example() -> void:

@@ -6,12 +6,14 @@ extends RefCounted
 ## Positions are texture pixels of `roulette_layout_albedo.png` (256x128), which the
 ## model maps across the table-local rectangle LAYOUT_MIN..LAYOUT_MAX at LAYOUT_Y.
 ## Spot keys are the covered pockets, sorted and joined with "-" (00 is 37), e.g.
-## "17", "17-20", "0-2-37"; outside bets use names such as "red" or "dozen2".
+## "17", "17-20", "0-1-2-3-37"; outside bets use names such as "red" or "dozen2".
 ##
 ## Odds follow Barboianu's model (https://probability.infarom.ro/roulette.html): a
 ## simple bet covering n of the 38 pockets wins with probability n/38 and pays
-## 36/n - 1 to 1, so every bet carries the same 2/38 house edge. The five-number
-## top line (0-00-1-2-3, 6 to 1) breaks that rule and is not offered.
+## k = 36/n - 1 to 1, so every bet carries the same 2/38 house edge. The page's
+## tables omit the American five-number top line (0-00-1-2-3), where 36/5 - 1 = 6.2
+## is not a whole payout; casinos round it down to 6 to 1, which is what it pays here
+## (a 3/38 house edge, the one worse bet on the layout).
 
 ## Chip values in cents, matching assets/casino_chips/models/chip_<dollars>.glb.
 const DENOMINATIONS: Array[int] = [100, 500, 5000, 10000, 50000, 100000, 500000, 2500000]
@@ -64,7 +66,8 @@ static func numbers(key: String) -> Array[int]:
 	return result
 
 
-## "x to 1" winnings for a winning bet on `key` (stake returned on top): 36/n - 1.
+## "x to 1" winnings for a winning bet on `key` (stake returned on top): 36/n - 1,
+## rounded down for the five-number top line (6.2 -> 6).
 static func payout_to_one(key: String) -> int:
 	var count := numbers(key).size()
 	return 36 / count - 1 if count > 0 else 0
@@ -81,7 +84,7 @@ static func odds_against(key: String) -> float:
 	return (RouletteWheel.POCKET_COUNT - count) / float(count) if count > 0 else 0.0
 
 
-## Expected profit per unit staked; -2/38 for every bet on the layout.
+## Expected profit per unit staked; -2/38 for every bet but the top line (-3/38).
 static func expected_return(key: String) -> float:
 	var win := probability(key)
 	return win * payout_to_one(key) - (1.0 - win)
@@ -160,7 +163,7 @@ static func describe(key: String) -> String:
 		var pockets := PackedStringArray()
 		for number: int in numbers(key):
 			pockets.append(RouletteWheel.label_for(number))
-		var kinds := {1: "Straight", 2: "Split", 3: "Street", 4: "Corner", 6: "Line"}
+		var kinds := {1: "Straight", 2: "Split", 3: "Street", 4: "Corner", 5: "Top line", 6: "Line"}
 		label = "%s %s" % [kinds.get(pockets.size(), "Bet"), " / ".join(pockets)]
 	return "%s — wins %s, pays %d to 1" % [label, odds_text(key), payout_to_one(key)]
 
@@ -263,6 +266,7 @@ static func _build() -> Dictionary:
 	_add(result, [zero, 3], Vector2(GRID_LEFT, _row_y(2.5)))
 	_add(result, [0, 1, 2], Vector2(GRID_LEFT, _row_y(1)))
 	_add(result, [zero, 2, 3], Vector2(GRID_LEFT, _row_y(2)))
+	_add(result, [0, zero, 1, 2, 3], Vector2(GRID_LEFT, GRID_TOP))
 	for column: int in 12:
 		var middle := (_column_x(column) + _column_x(column + 1)) * 0.5
 		var street: Array[int] = [_number(column, 0), _number(column, 1), _number(column, 2)]

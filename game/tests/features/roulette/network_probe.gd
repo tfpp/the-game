@@ -86,8 +86,12 @@ func _drive() -> void:
 	var seat := _table.seat_of(peer)
 	if player.global_position.distance_to(_table.seat_position(seat)) > 0.05:
 		_fail("not moved to seat %d" % seat)
-	if get_tree().get_first_node_in_group(&"modal_ui") == null:
+	var view := _table.get_node("View") as RouletteTableView
+	if view.seat_view == null or player.is_physics_processing():
 		_fail("seated player can still move")
+	view.open_betting()
+	if view.screen == null:
+		_fail("bet view did not open")
 	# Forged identity and chips the wallet cannot cover are refused.
 	_table.entity.request_action(&"bet", {"spot": "red", "cents": 100, "peer": 1})
 	_table.request_bet("black", 5000)

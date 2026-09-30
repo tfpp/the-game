@@ -5,10 +5,12 @@ extends Node3D
 ## the ball orbits the track the other way and drops inward, and once the server settles
 ## the result the ball rolls into that pocket and rides the rotor. Every seated
 ## player's chips are drawn on the layout; the local seated player also gets the
-## betting screen (`roulette_betting_screen.gd`).
+## seated view (`roulette_seat_view.gd`) and, on request, the overhead betting screen
+## (`roulette_betting_screen.gd`).
 
 const MODEL := preload("res://assets/roulette/models/roulette_table.glb")
 const BETTING_SCREEN := preload("res://features/roulette/roulette_betting_screen.gd")
+const SEAT_VIEW := preload("res://features/roulette/roulette_seat_view.gd")
 const GOLD := Color("f6c85f")
 ## Chip models, in RouletteBets.DENOMINATIONS order.
 const CHIP_MODELS: Array[PackedScene] = [
@@ -51,6 +53,7 @@ var ball: Node3D
 var chips: Node3D
 var marker: MeshInstance3D
 var screen: RouletteBettingScreen
+var seat_view: RouletteSeatView
 var chip_meshes: Array[Mesh] = []
 
 var _status: Label3D
@@ -88,6 +91,7 @@ func _ready() -> void:
 	_caption = _label("", Vector3(0, 1.37, 0), 26, Color.WHITE)
 	_rest_in(0)
 	Network.mode_changed.connect(_on_mode_changed)
+	RouletteSeatView.register_action()
 
 
 func _process(delta: float) -> void:
@@ -252,22 +256,43 @@ func _stack(base: Vector3, cents: int) -> void:
 		chips.add_child(chip)
 
 
-## Opens the betting screen while the local player holds a seat. When the round
-## releases them it stays up showing the result until they continue or play again,
-## so resuming play (and pointer capture) follows a click rather than a timer.
+## While the local player holds a seat they spectate from it (`RouletteSeatView`);
+## the bet key opens the overhead betting screen. If the round releases them while
+## that screen is open it stays up showing the result until they continue.
 func _update_screen(snapshot: Dictionary) -> void:
 	if not is_inside_tree() or multiplayer.multiplayer_peer == null:
 		return
 	var seated := (snapshot["seats"] as Array).has(multiplayer.get_unique_id())
-	if seated and screen == null:
-		screen = BETTING_SCREEN.new() as RouletteBettingScreen
-		screen.table = _table
-		screen.view = self
-		screen.closed.connect(_on_screen_closed)
-		add_child(screen)
+	if seated and seat_view == null:
+		seat_view = SEAT_VIEW.new() as RouletteSeatView
+		seat_view.table = _table
+		seat_view.view = self
+		add_child(seat_view)
+	elif not seated and seat_view != null:
+		seat_view.release()
+		seat_view = null
 	if screen != null:
 		screen.refresh()
-	# The seated player's screen shows the same information without covering the felt.
+	if seat_view != null:
+		seat_view.refresh()
+	_show_labels()
+
+
+## Opens the overhead betting screen for the seated local player.
+func open_betting() -> void:
+	if screen != null or seat_view == null:
+		return
+	screen = BETTING_SCREEN.new() as RouletteBettingScreen
+	screen.table = _table
+	screen.view = self
+	screen.closed.connect(_on_screen_closed)
+	add_child(screen)
+	seat_view.refresh()
+	_show_labels()
+
+
+## The overhead screen shows the round itself, so the 3D labels would cover the felt.
+func _show_labels() -> void:
 	_status.visible = screen == null
 	_caption.visible = screen == null
 
@@ -275,12 +300,16 @@ func _update_screen(snapshot: Dictionary) -> void:
 func _on_mode_changed(_mode: Network.Mode) -> void:
 	if screen != null:
 		screen.close()
+	if seat_view != null:
+		seat_view.release()
+		seat_view = null
 
 
 func _on_screen_closed() -> void:
 	screen = null
-	_status.visible = true
-	_caption.visible = true
+	_show_labels()
+	if seat_view != null:
+		seat_view.refresh()
 
 
 func _winning_marker() -> MeshInstance3D:

@@ -1,10 +1,10 @@
 class_name RouletteBettingScreen
 extends CanvasLayer
-## Local-only betting view for a seated player: an overview camera above the table,
-## a chip rack and bet controls. Placing a chip only sends a request; the table's
-## replicated state draws the chips. While open the screen is modal, so the player
-## cannot move until the round ends or they leave the table. After the table
-## releases them the result stays up until they continue or play again.
+## Local-only betting view a seated player opens from their seat with the bet key:
+## an overview camera above the table, a chip rack and bet controls. Placing a chip
+## only sends a request; the table's replicated state draws the chips. Esc or the bet
+## key returns to the seat view. If the table releases the player while this is open,
+## the result stays up until they continue or play again.
 
 signal closed
 
@@ -58,6 +58,7 @@ var _chip_buttons: Array[Button] = []
 var _undo: Button
 var _clear: Button
 var _leave: Button
+var _back: Button
 var _again: Button
 var _rack: Control
 ## The local player asked to leave, so close as soon as the seat is released.
@@ -145,9 +146,13 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"release_mouse") or event.is_action_pressed(&"ui_cancel"):
+	if (
+		event.is_action_pressed(&"release_mouse")
+		or event.is_action_pressed(&"ui_cancel")
+		or event.is_action_pressed(RouletteSeatView.ACTION)
+	):
 		get_viewport().set_input_as_handled()
-		_request_leave()
+		close()
 		return
 	if not seated():
 		if event is InputEventJoypadButton and (event as InputEventJoypadButton).pressed:
@@ -184,10 +189,10 @@ func _pad_button(button: JoyButton) -> void:
 			_place(hovered)
 		JOY_BUTTON_X:
 			_remove(hovered)
-		JOY_BUTTON_Y:
+		JOY_BUTTON_DPAD_DOWN:
 			table.request_undo()
 		JOY_BUTTON_B:
-			_request_leave()
+			close()
 		JOY_BUTTON_LEFT_SHOULDER:
 			_select(maxi(0, selected - 1))
 		JOY_BUTTON_RIGHT_SHOULDER:
@@ -259,6 +264,7 @@ func refresh() -> void:
 	_rack.visible = seat >= 0
 	_undo.visible = seat >= 0
 	_clear.visible = seat >= 0
+	_back.visible = seat >= 0
 	_again.visible = seat < 0
 	_again.disabled = not _can_play_again()
 	if seat < 0:
@@ -468,6 +474,7 @@ func _build() -> void:
 	_undo = _button(actions, "Undo", table.request_undo)
 	_clear = _button(actions, "Clear bets", table.request_clear)
 	_again = _button(actions, "Play again", _play_again)
+	_back = _button(actions, "Seat view", close)
 	_leave = _button(actions, "Leave table", _request_leave)
 	_hint = _label(box, _hint_text(), 13)
 	_hint.modulate = Color(1, 1, 1, 0.7)
@@ -485,10 +492,10 @@ func _hint_text() -> String:
 			return "A play again · B back to game"
 		return "Esc returns to the game"
 	if Controls.device == Controls.Device.GAMEPAD:
-		return "Left stick aim · A place · X remove spot · LB/RB chip · Y undo · B leave"
+		return "Stick aim · A place · X remove · LB/RB chip · D-pad down undo · B/Y seat view"
 	if Controls.device == Controls.Device.TOUCH:
 		return "Tap the layout to place the selected chip"
-	return "Click to place the selected chip · Right-click removes a spot · Esc leaves"
+	return "Click to place the selected chip · Right-click removes a spot · Esc / C seat view"
 
 
 func _label(parent: Node, text: String, font_size: int) -> Label:

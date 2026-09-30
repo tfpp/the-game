@@ -238,18 +238,31 @@ func test_table_has_a_dealer_across_from_the_seats() -> void:
 	assert_lt(_table.seat_position(0).z, 0.0)
 
 
-func test_betting_screen_opens_for_the_local_seated_player() -> void:
+func test_seated_players_spectate_and_open_the_bet_view_on_request() -> void:
 	var view := _table.get_node("View") as RouletteTableView
 	var local := _players[2] as Player
 	local.set_multiplayer_authority(multiplayer.get_unique_id())
+	local.add_to_group(&"local_player")
 	_wallet.balances[multiplayer.get_unique_id()] = 2000
 	var state := _table.state.duplicate(true)
 	state["phase"] = RouletteTable.PHASE_BETTING
 	state["seats"] = [multiplayer.get_unique_id(), 0, 0]
 	_table.state = state
 	view._process(0.0)
+	assert_not_null(view.seat_view, "sitting starts the seat view")
+	assert_null(view.screen, "the overhead view waits for the bet key")
+	assert_false(view.seat_view.is_in_group(&"modal_ui"), "the player can still look around")
+	assert_false(local.is_physics_processing(), "but cannot walk away")
+	assert_true(InputMap.has_action(RouletteSeatView.ACTION))
+	view.seat_view.open_bets()
 	assert_not_null(view.screen)
-	assert_true(view.screen.is_in_group(&"modal_ui"), "seated players cannot move")
+	assert_false(view.seat_view.visible, "the seat panel hides under the bet view")
+	view.screen.close()
+	assert_null(view.screen, "Esc / the bet key returns to the seat")
+	assert_true(view.seat_view.visible)
+	assert_false(local.is_physics_processing())
+	view.open_betting()
+	assert_true(view.screen.is_in_group(&"modal_ui"), "the bet view blocks movement")
 	assert_true(view.screen.camera.current, "overview camera")
 	var center := view.screen.camera.unproject_position(
 		_table.to_global(RouletteBets.pixel_to_local(RouletteBets.anchor("14")))
@@ -286,12 +299,38 @@ func test_betting_screen_opens_for_the_local_seated_player() -> void:
 	assert_eq(screen.spot_at_screen(screen.camera.unproject_position(layout)), "14")
 	_table.state = RouletteTable.initial_state()
 	view._process(0.0)
+	assert_null(view.seat_view)
+	assert_true(local.is_physics_processing(), "released players can move again")
 	assert_not_null(view.screen, "the result stays up after release")
 	assert_false(view.screen.seated())
 	assert_true(view.screen.is_in_group(&"modal_ui"))
 	view.screen._continue()
 	assert_null(view.screen, "continuing returns to the game")
 	Controls.pause()
+
+
+func test_standing_up_from_the_seat_view_leaves_the_table() -> void:
+	var view := _table.get_node("View") as RouletteTableView
+	var local := _players[2] as Player
+	local.set_multiplayer_authority(multiplayer.get_unique_id())
+	local.add_to_group(&"local_player")
+	var state := _table.state.duplicate(true)
+	state["phase"] = RouletteTable.PHASE_BETTING
+	state["seats"] = [multiplayer.get_unique_id(), 0, 0]
+	_table.state = state
+	view._process(0.0)
+	assert_true(view.seat_view._hint.text.contains("leave table"))
+	state = _table.state.duplicate(true)
+	state["phase"] = RouletteTable.PHASE_SPINNING
+	_table._locked[multiplayer.get_unique_id()] = {}
+	_table.state = state
+	view._process(0.0)
+	assert_true(view.seat_view._hint.text.contains("riding"), "no standing up mid-spin")
+	assert_true(view.seat_view._leave_button.disabled)
+	_table.state = RouletteTable.initial_state()
+	view._process(0.0)
+	assert_null(view.seat_view)
+	assert_null(view.screen, "released straight back to the game from the seat")
 
 
 class FixedWheel:

@@ -11,19 +11,26 @@ mobile **USE**. Menus and chat suppress interaction.
   Sitting teleports you there facing the layout; the first player to sit at an idle
   table opens a **30-second** betting round (`betting_seconds`). Others may join
   while seats and betting remain.
-- Seated players get the betting screen (`roulette_betting_screen.gd`): an overhead
-  camera over the layout and a rack of chips ($1, $5, $50, $100, $500, $1K, $5K, $25K).
-  Click (tap / controller A) to place the selected chip on the spot under the cursor;
-  right-click (X) removes a spot, and Undo / Clear edit your bets. Any combination is
-  allowed as long as the total stays within your wallet balance.
-- The screen is modal, so seated players cannot move. Leaving before the spin cancels
-  your bets for free; once betting closes, a player with chips on the table stays until
-  the ball lands. Players without bets may always stand up.
-- When the clock runs out the bets lock and the wheel spins (3 s), and every seated
-  player's camera pans over the wheel to watch the ball. With no bets the round simply
+- Seated players spectate from their seat (`roulette_seat_view.gd`): they keep their
+  own first-person view and can look around, but cannot walk. A panel shows the clock
+  and their stake. **C** / controller **Y** / the Place bets button (rebindable as
+  `roulette_bets`) opens the betting view; **Jump** or Leave table stands up.
+- The betting view (`roulette_betting_screen.gd`) is an overhead camera over the
+  layout with a rack of chips ($1, $5, $50, $100, $500, $1K, $5K, $25K). Click (tap /
+  controller A) to place the selected chip on the spot under the cursor; right-click
+  (X) removes a spot, and Undo (D-pad down) / Clear edit your bets. Any combination is
+  allowed as long as the total stays within your wallet balance. Esc, C or B/Y returns
+  to the seat view.
+- Leaving before the spin cancels your bets for free; once betting closes, a player
+  with chips on the table stays until the ball lands. Players without bets may always
+  stand up.
+- When the clock runs out the bets lock and the wheel spins (3 s). In the betting
+  view the camera pans over the wheel to watch the ball; from the seat you watch it
+  yourself. With no bets the round simply
   ends. After the ball lands, losing chips are swept, the camera pans back to the
   layout, a gold marker shows the winning pocket and each player's bets settle; five
-  seconds later every seat is released. The result stays on the local screen until you continue or play again.
+  seconds later every seat is released: seat-view players simply walk away, while a betting view left open keeps
+  the result up until you continue or play again.
 - A seated player who disconnects or ends up away from their seat (respawn, elevator)
   loses it. Unlocked bets are dropped; locked bets still settle against the account
   captured when betting closed.
@@ -32,9 +39,11 @@ Odds follow the American column of [Barboianu's roulette model](https://probabil
 (`roulette_bets.gd`). Each spin is an independent, uniform draw of the 38 pockets, so a
 bet covering n pockets wins with probability n/38 and pays 36/n − 1 to 1: straight
 35:1, split 17:1, street (and the 0-1-2 / 00-2-3 trios) 11:1, corner 8:1, six line 5:1,
-columns and dozens 2:1, red/black/odd/even/high/low 1:1. Every bet therefore has the
-same expected return of −2/38 (−5.26%). The five-number top line (0-00-1-2-3, 6:1) is
-not in that model and is not offered. Hovering a spot shows its probability and odds
+columns and dozens 2:1, red/black/odd/even/high/low 1:1. Every one of these has the
+same expected return of −2/38 (−5.26%). The page's tables leave out the American
+five-number top line (0-00-1-2-3): its formula payout, 36/5 − 1 = 6.2, is not a whole
+number, so it pays the standard casino 6:1 here, winning 5/38 (13.15%, 6.6 : 1) with an
+expected return of −3/38 (−7.89%), the one worse bet on the layout. Hovering a spot shows its probability and odds
 against as the page prints them, e.g. "5.26% (18 : 1)". Slot machine luck buffs do not
 apply.
 
@@ -69,6 +78,7 @@ not learn the winning pocket until the spin ends.
   lists the pocket order around the wheel.
 - `roulette_table_view.gd` shows the table model, chips (`assets/casino_chips/`) and
   labels, animates the rotor and ball, and opens the local betting screen.
+- `roulette_seat_view.gd` is the local seated spectator mode and bet-view key.
 - `roulette_betting_screen.gd` is the local overview camera, chip rack and controls.
 - `../interaction/` supplies the shared Use binding and proximity prompt.
 
