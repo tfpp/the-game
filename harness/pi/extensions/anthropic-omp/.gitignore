@@ -1,0 +1,5 @@
+node_modules/
+runtime/node_modules/
+runtime/vendor/**/node_modules/
+runtime/vendor/natives/native/*.node
+state/

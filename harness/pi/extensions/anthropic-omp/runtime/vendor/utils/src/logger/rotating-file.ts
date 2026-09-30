@@ -1,0 +1,182 @@
+/** Behavior-compatible reimplementation of winston-daily-rotate-file's used surface. */
+import * as fs from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
+import { localDay } from "../dirs";
+
+interface AuditEntry {
+	readonly date: number;
+	readonly name: string;
+	readonly hash: string;
+}
+
+interface AuditState {
+	readonly keep: { readonly days: false; readonly amount: number };
+	readonly auditLog: string;
+	readonly files: AuditEntry[];
+	readonly hashType: "sha256";
+}
+
+/** Configuration for a process-local rotating file sink. */
+export interface RotatingFileOptions {
+	readonly directory: string;
+	readonly filenamePrefix: string;
+	readonly filenameSuffix: string;
+	readonly auditFile: string;
+	readonly maxBytes: number;
+	readonly maxFiles: number;
+}
+
+function isAuditEntry(value: unknown): value is AuditEntry {
+	if (value === null || typeof value !== "object") return false;
+	const entry = value as Record<string, unknown>;
+	return typeof entry.date === "number" && typeof entry.name === "string" && typeof entry.hash === "string";
+}
+
+/** Synchronous append sink with local-day and size rotation plus bounded retention. */
+export class RotatingFileSink {
+	readonly #directory: string;
+	readonly #filenamePrefix: string;
+	readonly #filenameSuffix: string;
+	readonly #auditFile: string;
+	readonly #maxBytes: number;
+	readonly #maxFiles: number;
+	#files: AuditEntry[];
+	#activeDay: string | undefined;
+	#activeIndex = 0;
+	#activePath: string | undefined;
+	#activeBytes = 0;
+	#closed = false;
+	// Held append fd: the old code did open+write+close per line
+	// (appendFileSync) plus a throwaway open in the constructor. A single fd
+	// per active file removes two syscalls per log line; it is reopened on
+	// rotation and closed on close()/rotation (required for Windows
+	// delete-on-prune semantics).
+	#fd: number | undefined;
+
+	constructor(options: RotatingFileOptions) {
+		this.#directory = options.directory;
+		this.#filenamePrefix = options.filenamePrefix;
+		this.#filenameSuffix = options.filenameSuffix;
+		this.#auditFile = options.auditFile;
+		this.#maxBytes = options.maxBytes;
+		this.#maxFiles = options.maxFiles;
+		this.#files = this.#readAudit();
+		const now = new Date();
+		this.#selectFile(localDay(now));
+		const activePath = this.#activePath;
+		if (activePath) {
+			this.#registerFile(activePath, now.getTime());
+			this.#openFd(activePath);
+		}
+	}
+
+	#openFd(filePath: string): void {
+		this.#closeFd();
+		this.#fd = fs.openSync(filePath, "a");
+	}
+
+	#closeFd(): void {
+		if (this.#fd !== undefined) {
+			try {
+				fs.closeSync(this.#fd);
+			} catch {
+				// Best-effort: the fd may already be invalid after rotation.
+			}
+			this.#fd = undefined;
+		}
+	}
+
+	/** Append one already-formatted log record. */
+	write(line: string): void {
+		if (this.#closed) return;
+		const prevPath = this.#activePath;
+		const now = new Date();
+		this.#selectFile(localDay(now));
+		const activePath = this.#activePath;
+		if (!activePath) return;
+		// Rotation moved the active path: close the old descriptor BEFORE
+		// registering the new path, because registration prunes beyond
+		// maxFiles — on Windows the pruned predecessor cannot be deleted
+		// while still open, which would leak it (audit entry removed, file
+		// left on disk, retention unbounded).
+		if (activePath !== prevPath) this.#closeFd();
+		this.#registerFile(activePath, now.getTime());
+		if (this.#fd === undefined) this.#openFd(activePath);
+		const record = `${line}${os.EOL}`;
+		const buf = Buffer.from(record, "utf8");
+		let off = 0;
+		while (off < buf.length) {
+			const written = fs.writeSync(this.#fd!, buf, off);
+			if (written <= 0) break;
+			off += written;
+		}
+		this.#activeBytes += buf.length;
+	}
+
+	/** Stop accepting records. Synchronous writes require no drain phase. */
+	close(): void {
+		this.#closed = true;
+		this.#closeFd();
+	}
+
+	#selectFile(day: string): void {
+		if (day !== this.#activeDay) {
+			this.#activeDay = day;
+			this.#activeIndex = 0;
+			this.#setActivePath(day, 0);
+		}
+		while (this.#activeBytes > this.#maxBytes) {
+			this.#activeIndex++;
+			this.#setActivePath(day, this.#activeIndex);
+		}
+	}
+
+	#setActivePath(day: string, index: number): void {
+		const suffix = index === 0 ? "" : `.${index}`;
+		this.#activePath = path.join(
+			this.#directory,
+			`${this.#filenamePrefix}.${day}.${this.#filenameSuffix}.log${suffix}`,
+		);
+		try {
+			this.#activeBytes = fs.statSync(this.#activePath).size;
+		} catch {
+			this.#activeBytes = 0;
+		}
+	}
+
+	#registerFile(filePath: string, date: number): void {
+		if (this.#files.some(file => file.name === filePath)) return;
+		const hash = Bun.SHA256.hash(`${filePath}LOG_FILE${date}`, "hex");
+		this.#files.push({ date, name: filePath, hash });
+		while (this.#files.length > this.#maxFiles) {
+			const removed = this.#files.shift();
+			if (!removed) break;
+			try {
+				fs.rmSync(removed.name, { force: true });
+			} catch {
+				// Retention is best-effort; the current record must still be written.
+			}
+		}
+		this.#writeAudit();
+	}
+
+	#readAudit(): AuditEntry[] {
+		try {
+			const parsed = JSON.parse(fs.readFileSync(this.#auditFile, "utf8")) as { files?: unknown };
+			return Array.isArray(parsed.files) ? parsed.files.filter(isAuditEntry) : [];
+		} catch {
+			return [];
+		}
+	}
+
+	#writeAudit(): void {
+		const state: AuditState = {
+			keep: { days: false, amount: this.#maxFiles },
+			auditLog: this.#auditFile,
+			files: this.#files,
+			hashType: "sha256",
+		};
+		fs.writeFileSync(this.#auditFile, JSON.stringify(state, undefined, 4), "utf8");
+	}
+}

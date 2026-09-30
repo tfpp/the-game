@@ -1,0 +1,17 @@
+{
+  "name": "anthropic-omp-runtime",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "vendor/*"
+  ],
+  "dependencies": {
+    "@oh-my-pi/pi-ai": "workspace:*",
+    "@oh-my-pi/pi-catalog": "workspace:*",
+    "@oh-my-pi/pi-utils": "workspace:*"
+  },
+  "optionalDependencies": {
+    "@oh-my-pi/pi-natives-darwin-arm64": "18.3.0",
+    "@oh-my-pi/pi-natives-linux-x64": "18.3.0"
+  }
+}
