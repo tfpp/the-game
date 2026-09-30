@@ -1,0 +1,5 @@
+{
+  "title": "Painted alley dumpster models",
+  "summary": "Searchable alley dumpsters now have painted panels, ribbed lids, handles and castors.",
+  "notes": ["Replace the four alley dumpster placeholders with reusable textured meshes and fitted colliders."]
+}

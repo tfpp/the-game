@@ -20,6 +20,14 @@ uses its registered Use action. Take uses a registered action with a validated
 item index, expected item ID and backpack slot. The server resolves the sender,
 checks range and inventory capacity, then transfers one item atomically.
 
+`net_active_searchers` tracks current stash viewers separately from `net_searched`.
+Use adds the authenticated player once and releases their previous stash. The
+inventory sends a keepalive every 0.75 seconds and an end action on close, switch
+or destruction. Server range checks, disconnects, resets and a three-second lease
+also clear presence. One viewer leaving never closes another viewer's search.
+The replicated count is included in late-join state; scenery can animate from it
+without broadcasting animation frames or trusting client-supplied peer IDs.
+
 ## Resetting
 
 A searched container stays searched. Server code calls `reset()` on one container

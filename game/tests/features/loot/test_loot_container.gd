@@ -114,6 +114,91 @@ func test_distant_player_cannot_search() -> void:
 	assert_eq(_inventory_count("watch"), 0)
 
 
+func test_searchers_share_open_state_and_end_only_their_own_session() -> void:
+	var container := _container(_table(0.0, 1, 1))
+	var second := PLAYER.instantiate() as Player
+	second.name = "SecondSearcher"
+	second.set_multiplayer_authority(2)
+	add_child_autofree(second)
+	second.set_physics_process(false)
+	var entity := container.get_node("NetworkedEntity") as NetworkedInteraction
+	assert_eq(entity._evaluate(1, &"use", {}), NetworkedEntity.Result.ACCEPTED)
+	assert_eq(entity._evaluate(2, &"use", {}), NetworkedEntity.Result.ACCEPTED)
+	assert_eq(entity._evaluate(2, &"use", {}), NetworkedEntity.Result.ACCEPTED)
+	assert_eq(container.net_active_searchers, 2, "Repeated searches do not duplicate a viewer")
+	assert_eq(entity._evaluate(2, &"search_end", {"peer": 1}), NetworkedEntity.Result.DENIED)
+	assert_eq(entity._evaluate(3, &"search_end", {}), NetworkedEntity.Result.ACCEPTED)
+	assert_eq(container.net_active_searchers, 2, "An unrelated peer cannot remove either viewer")
+	assert_eq(entity._evaluate(1, &"search_end", {}), NetworkedEntity.Result.ACCEPTED)
+	assert_eq(container.net_active_searchers, 1)
+	assert_eq(entity._evaluate(1, &"search_keepalive", {}), NetworkedEntity.Result.DENIED)
+	assert_eq(entity._evaluate(2, &"search_end", {}), NetworkedEntity.Result.ACCEPTED)
+	assert_eq(container.net_active_searchers, 0)
+	assert_true(container.net_searched, "Closing does not reroll or forget loot")
+
+
+func test_search_presence_clears_on_range_timeout_disconnect_reset_and_switch() -> void:
+	var container := _container(_table(0.0, 1, 1))
+	var other := _container(_table(0.0, 1, 1))
+	container.request_search()
+	other.request_search()
+	assert_eq(container.net_active_searchers, 0)
+	assert_eq(other.net_active_searchers, 1)
+	other._searchers[1] = Time.get_ticks_msec() - LootContainer.SEARCH_LEASE_MSEC - 1
+	other._physics_process(.3)
+	assert_eq(other.net_active_searchers, 0, "Lost UI heartbeat expires")
+	container.request_search()
+	_player.net_position = Vector3(100, 0, 0)
+	container._physics_process(.3)
+	assert_eq(container.net_active_searchers, 0, "Walking or teleporting away closes")
+	_player.net_position = Vector3.ZERO
+	container.request_search()
+	container._forget_searcher(1)
+	assert_eq(container.net_active_searchers, 0)
+	container.request_search()
+	container.reset()
+	assert_eq(container.net_active_searchers, 0)
+	container.request_search()
+	container._reset_search_session(Network.Mode.OFFLINE)
+	assert_eq(container.net_active_searchers, 0)
+
+
+func test_inventory_close_switch_and_destruction_release_search_presence() -> void:
+	var screen := CanvasLayer.new()
+	screen.set_script(INVENTORY_SCREEN)
+	add_child(screen)
+	var container := _container(_table(0.0, 1, 1))
+	container.use()
+	assert_eq(container.net_active_searchers, 1)
+	screen.call("_close", false)
+	assert_eq(container.net_active_searchers, 0)
+	container.use()
+	screen.call("esc_menu_open")
+	assert_eq(container.net_active_searchers, 0)
+	container.use()
+	screen.free()
+	assert_eq(container.net_active_searchers, 0)
+
+
+func test_keepalive_requires_an_existing_in_range_sender_and_refreshes_the_lease() -> void:
+	var container := _container(_table(0.0, 1, 1))
+	container.request_search()
+	container._searchers[1] = Time.get_ticks_msec() - LootContainer.SEARCH_LEASE_MSEC - 1
+	var old: int = container._searchers[1]
+	var entity := container.get_node("NetworkedEntity") as NetworkedInteraction
+	assert_eq(entity._evaluate(2, &"search_keepalive", {}), NetworkedEntity.Result.DENIED)
+	assert_eq(entity._evaluate(1, &"search_keepalive", {"peer": 1}), NetworkedEntity.Result.DENIED)
+	assert_eq(container._searchers[1], old)
+	assert_eq(entity._evaluate(1, &"search_keepalive", {}), NetworkedEntity.Result.ACCEPTED)
+	assert_gt(container._searchers[1], old)
+	container._physics_process(.3)
+	assert_eq(container.net_active_searchers, 1)
+	_player.net_position = Vector3(100, 0, 0)
+	assert_eq(entity._evaluate(1, &"search_keepalive", {}), NetworkedEntity.Result.DENIED)
+	container._physics_process(.3)
+	assert_eq(container.net_active_searchers, 0)
+
+
 func test_networked_entity_rejects_foreign_and_malformed_claims() -> void:
 	var container := _container(_table(0.0, 1, 1))
 	var entity := container.get_node("NetworkedEntity") as NetworkedInteraction
@@ -125,6 +210,7 @@ func test_networked_entity_rejects_foreign_and_malformed_claims() -> void:
 	assert_true(config.has_property(NodePath(".:net_contents")))
 	assert_true(config.property_get_spawn(NodePath(".:net_searched")))
 	assert_true(config.property_get_spawn(NodePath(".:net_contents")))
+	assert_true(config.property_get_spawn(NodePath(".:net_active_searchers")))
 	assert_eq(entity._evaluate(2, &"use", {}), NetworkedEntity.Result.DENIED)
 	assert_eq(entity._evaluate(1, &"use", {"peer": 1}), NetworkedEntity.Result.DENIED)
 	assert_eq(entity._evaluate(1, &"use", {}), NetworkedEntity.Result.ACCEPTED)

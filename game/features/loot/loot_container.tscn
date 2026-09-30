@@ -8,4 +8,4 @@ script = ExtResource("1_script")
 
 [node name="NetworkedEntity" type="Node" parent="."]
 script = ExtResource("2_entity")
-replicated_properties = Array[NodePath]([NodePath(".:net_searched"), NodePath(".:net_contents")])
+replicated_properties = Array[NodePath]([NodePath(".:net_searched"), NodePath(".:net_contents"), NodePath(".:net_active_searchers")])

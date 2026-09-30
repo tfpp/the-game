@@ -1,0 +1,79 @@
+{
+  "atlas_size": 128,
+  "islands": [
+    {
+      "name": "SIDE_PANEL",
+      "rect_px": [
+        50,
+        52,
+        52,
+        52
+      ],
+      "rotated": false
+    },
+    {
+      "name": "UNDERSIDE",
+      "rect_px": [
+        105,
+        108,
+        9,
+        17
+      ],
+      "rotated": true
+    },
+    {
+      "name": "GREEN_BODY",
+      "rect_px": [
+        2,
+        2,
+        84,
+        46
+      ],
+      "rotated": false
+    },
+    {
+      "name": "LID_EDGE",
+      "rect_px": [
+        50,
+        108,
+        51,
+        4
+      ],
+      "rotated": false
+    },
+    {
+      "name": "RIBBED_LID",
+      "rect_px": [
+        2,
+        52,
+        44,
+        72
+      ],
+      "rotated": true
+    },
+    {
+      "name": "DARK_METAL",
+      "rect_px": [
+        106,
+        2,
+        18,
+        3
+      ],
+      "rotated": false
+    },
+    {
+      "name": "RUBBER",
+      "rect_px": [
+        50,
+        116,
+        10,
+        10
+      ],
+      "rotated": false
+    }
+  ],
+  "model": "dumpster",
+  "occupied_fraction": 0.62542724609375,
+  "padding": 2,
+  "pixels_per_metre": 35.0
+}

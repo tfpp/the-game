@@ -1,21 +1,36 @@
 class_name InventoryIcon
 extends Control
-## Compact silhouettes drawn from the same clothing colors as the world models.
+## Cached model renders for catalog items; lightweight money glyph remains a UI symbol.
 
 var _item := ""
+var _texture: Texture2D
+var _renderer: ModelIconRenderer
 
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_request_model()
 
 
 func set_item(id: String) -> void:
 	if id != _item:
 		_item = id
+		_texture = null
+		if is_inside_tree():
+			_request_model()
 		queue_redraw()
 
 
 func _draw() -> void:
+	if _texture != null:
+		var side := minf(size.x, size.y)
+		draw_texture_rect(
+			_texture, Rect2((size - Vector2.ONE * side) * .5, Vector2.ONE * side), false
+		)
+		return
+	if _renderer != null and ItemCatalog.find(_item) != null:
+		return
 	var kind := ClothingCatalog.slot(_item)
 	var color := ClothingCatalog.color(_item)
 	if _item == "wallet":
@@ -60,3 +75,19 @@ func _draw() -> void:
 			draw_rect(Rect2(35, 12, 24, 4), metal)
 		if _item == "awp":
 			draw_rect(Rect2(20, 3, 22, 4), metal)
+
+
+func _request_model() -> void:
+	if DisplayServer.get_name() == "headless" or ItemCatalog.find(_item) == null:
+		return
+	if _renderer == null:
+		_renderer = ModelIconRenderer.for_control(self)
+		_renderer.rendered.connect(_model_ready)
+	_texture = _renderer.request_item(_item)
+	queue_redraw()
+
+
+func _model_ready(key: String, texture: Texture2D) -> void:
+	if key == "item:" + _item:
+		_texture = texture
+		queue_redraw()

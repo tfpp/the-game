@@ -1,0 +1,5 @@
+{
+  "title": "Inventory icons from item models",
+  "summary": "Backpack and stash slots show icons rendered from their actual item models.",
+  "notes": ["Render transparent 128×128 item thumbnails with automatic framing.", "Cache thumbnails across inventory controls and stop rendering between requests."]
+}

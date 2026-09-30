@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://features/holdables/model_tools/preview_dumpster_search.gd" id="1"]
+[node name="DumpsterSearchPreview" type="Node3D"]
+script = ExtResource("1")

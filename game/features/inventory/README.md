@@ -16,6 +16,15 @@ Searching a car or dumpster opens its shared stash beside your backpack. Drag
 an item to an empty slot, or tap it to fill the next empty slot. Other players
 see items disappear as they are claimed.
 
+Backpack and stash icons render the actual item view from `ItemCatalog`, including
+procedural clothing. `ModelIconRenderer` automatically frames mesh bounds in a
+private transparent 128×128 viewport. Each item renders once, then shares a cached
+texture across controls; the viewport stops updating between jobs. The cache is
+limited to 128 textures and headless servers allocate no rendering viewport.
+`ItemDefinition.icon_view_direction` controls the viewing angle. The money balance
+keeps its separate coin symbol. [`loot-models.md`](../../../docs/design/loot-models.md)
+includes actual inventory screenshots and a capture command.
+
 Shirts and pants have fixed colors. Find other colors to change your outfit;
 there are no dye controls. Two clothing pickups sit near spawn, two to the west,
 and two to the east. Clothes keep their color through swaps, drops and pickups.

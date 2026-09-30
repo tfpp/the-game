@@ -1,0 +1,5 @@
+# dumpster albedo
+
+Built-in imagegen edit against uv_template.png. Runtime albedo is 128×128.
+
+Use case: precise-object-edit. Asset: flat UV albedo for low-poly dumpster. Edit attached colored UV template, preserving EXACT rectangles, positions, gutters and empty background. Runtime is 128x128; author coarse GoldSrc 1998 painted pixels, flat unlit diffuse only. Top-left wide rectangle GREEN_BODY: faded dark green painted steel, rust at edges, simple stamped horizontal reinforcement line near bottom. Middle square SIDE_PANEL at x50,y52 in128 grid: same green steel with restrained dents and grime. Lower-left tall rectangle RIBBED_LID at x2,y52 size44x72: charcoal black ribbed plastic dumpster lid, horizontal ribs and one horizontal center divider; height represents dumpster width. Small bottom horizontal strip LID_EDGE is black plastic; top-right tiny strip DARK_METAL is dark worn handle metal; lower small square RUBBER is black rubber; small far lower-right UNDERSIDE is dark green metal. Broad readable painted texture, matching palette across green panels, no perspective, no rendered dumpster, no labels, no words, no logos. Retain exact shapes.

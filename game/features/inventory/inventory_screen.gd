@@ -33,6 +33,7 @@ var _stash_box: VBoxContainer
 var _stash_items: VBoxContainer
 var _stash_status: Label
 var _stash_buttons: Array[Button] = []
+var _search_keepalive_in := 0.0
 
 
 func _ready() -> void:
@@ -49,12 +50,21 @@ func _ready() -> void:
 	Network.mode_changed.connect(_on_mode_changed)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if not _panel.visible:
 		return
 	if _stash != null and not is_instance_valid(_stash):
 		_close(false)
 		return
+	if _stash != null:
+		var player := get_tree().get_first_node_in_group(&"local_player") as Player
+		if player != null and not _stash.can_use(player):
+			_close(true)
+			return
+		_search_keepalive_in -= delta
+		if _search_keepalive_in <= 0:
+			_search_keepalive_in = .75
+			_stash.request_keep_searching()
 	_refresh_wallet()
 	var hand := Hand.for_peer(get_tree(), multiplayer.get_unique_id())
 	var next := hand.inventory() if hand != null else null
@@ -103,13 +113,18 @@ func esc_menu_icon() -> Texture2D:
 
 
 func esc_menu_open() -> void:
-	_stash = null
+	_release_stash()
 	_show_inventory()
 
 
 func open_stash(stash: LootContainer) -> void:
+	if _stash != stash:
+		_release_stash()
 	_stash = stash
+	_search_keepalive_in = 0.0
 	_show_inventory()
+	if not _panel.visible:
+		_release_stash()
 
 
 func _show_inventory() -> void:
@@ -132,7 +147,7 @@ func _close(resume: bool = true) -> void:
 	if _panel.visible and resume:
 		GameAudio.play_ui(self, &"close")
 	_panel.hide()
-	_stash = null
+	_release_stash()
 	_stash_box.hide()
 	_character.show()
 	if is_in_group(&"modal_ui"):
@@ -141,6 +156,16 @@ func _close(resume: bool = true) -> void:
 	get_viewport().set_input_as_handled()
 	if resume:
 		Controls.start()
+
+
+func _release_stash() -> void:
+	if is_instance_valid(_stash) and _stash.is_inside_tree():
+		_stash.request_stop_searching()
+	_stash = null
+
+
+func _exit_tree() -> void:
+	_release_stash()
 
 
 func _select(slot: int) -> void:
@@ -216,6 +241,13 @@ func _refresh_stash() -> void:
 		var id := _stash.net_contents[index]
 		var button := _button(_stash_items, _item_name(id), _take_stash_item.bind(index))
 		button.custom_minimum_size.y = 52
+		button.text = "          " + _item_name(id)
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		var icon := InventoryIcon.new()
+		icon.position = Vector2(8, 8)
+		icon.size = Vector2(36, 36)
+		icon.set_item(id)
+		button.add_child(icon)
 		button.set_drag_forwarding(_drag_stash.bind(index), Callable(), Callable())
 		_stash_buttons.append(button)
 

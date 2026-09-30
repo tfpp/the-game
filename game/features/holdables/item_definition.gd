@@ -18,6 +18,8 @@ enum Category {
 @export var category: Category = Category.PROP
 ## Purely visual: instanced under the pickup and under whichever hand holds it.
 @export var view_scene: PackedScene
+## Direction from model centre toward the orthographic inventory thumbnail camera.
+@export var icon_view_direction := Vector3(1, .9, 1)
 ## Height of the model origin above a floor when dropped.
 @export var ground_clearance := 0.10
 ## Camera-relative primary grip. Long stocks need more room behind the grip.

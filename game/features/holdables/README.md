@@ -17,6 +17,8 @@ Generic items players can pick up and hold: `pistol`, `smg`, `shotgun` and `awp`
    `pellet_count` and `spread_degrees`. `first_person_offset` places the primary
    grip relative to the camera; allow room for stocks. `ground_clearance` keeps
    dropped meshes above the floor.
+   Inventory thumbnails render this same view scene. Set `icon_view_direction`
+   when a top or side view makes an item more readable; framing is automatic.
 3. List it in `item_catalog.gd`'s `DEFINITIONS`.
 4. Place an `ItemPickup` instance somewhere in `feature.tscn` with that `item_id`.
 
@@ -70,3 +72,7 @@ consumption, drops, grip positioning and replication use the ordinary food path.
 
 The `poke_bowl` FOOD item is sold by `features/food_court/poke_stand.gd` and uses
 that same collection, consumption and drop path, with a two-hand bowl view.
+
+Scrap Metal and Wallet use painted low-poly meshes with shared UV islands and
+128×128 atlases. Their sources, rebuild commands and model icon preview are in
+[`docs/design/loot-models.md`](../../../docs/design/loot-models.md).

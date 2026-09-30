@@ -1,0 +1,29 @@
+{
+  "atlas_size": 128,
+  "islands": [
+    {
+      "name": "RUSTED_SHEET",
+      "rect_px": [
+        2,
+        2,
+        124,
+        75
+      ],
+      "rotated": false
+    },
+    {
+      "name": "BOLTED_STEEL",
+      "rect_px": [
+        2,
+        81,
+        52,
+        14
+      ],
+      "rotated": false
+    }
+  ],
+  "model": "scrap",
+  "occupied_fraction": 0.612060546875,
+  "padding": 2,
+  "pixels_per_metre": 688.0
+}

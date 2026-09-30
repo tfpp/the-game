@@ -7,6 +7,7 @@ extends Node3D
 ## search roll fresh loot.
 
 const GROUP := &"loot_containers"
+const SEARCH_LEASE_MSEC := 3000
 
 @export var loot_table: LootTable
 ## Shown in the prompt: "Search <noun>".
@@ -16,9 +17,13 @@ const GROUP := &"loot_containers"
 ## Replicated (server -> everyone).
 @export var net_searched := false
 @export var net_contents := PackedStringArray()
+## Current stash viewers, independent of whether loot was rolled previously.
+@export var net_active_searchers := 0
 
 ## Server-only randomness; tests may replace it with a seeded generator.
 var rng := RandomNumberGenerator.new()
+var _searchers: Dictionary[int, int] = {}
+var _prune_in := 0.0
 
 @onready var _entity: NetworkedInteraction = $NetworkedEntity
 
@@ -29,6 +34,25 @@ func _ready() -> void:
 	_entity.interaction_range = search_range
 	_entity.register_use(can_use, _search)
 	_entity.register_action(&"take", _validate_take, _take)
+	_entity.register_action(&"search_keepalive", _validate_keepalive, _keepalive)
+	_entity.register_action(&"search_end", _validate_end, _end)
+	_entity.session_reset.connect(_reset_search_session)
+	multiplayer.peer_disconnected.connect(_forget_searcher)
+
+
+func _physics_process(delta: float) -> void:
+	if not multiplayer.is_server() or _searchers.is_empty():
+		return
+	_prune_in -= delta
+	if _prune_in > 0:
+		return
+	_prune_in = .25
+	for peer: int in _searchers.keys():
+		if (
+			Time.get_ticks_msec() - _searchers[peer] > SEARCH_LEASE_MSEC
+			or not _entity.in_range(_entity.player_for_peer(peer))
+		):
+			_forget_searcher(peer)
 
 
 ## Server-only: every container under `tree` becomes unsearched, so the next
@@ -44,6 +68,7 @@ func reset() -> void:
 		return
 	net_searched = false
 	net_contents = PackedStringArray()
+	_clear_searchers()
 
 
 ## Server-only: rolls new contents right away and marks the container searched.
@@ -78,10 +103,63 @@ func request_search() -> void:
 	_entity.request_use()
 
 
-func _search(_player: Player) -> bool:
+func _search(player: Player) -> bool:
 	if not net_searched:
 		regenerate()
+	var peer := player.get_multiplayer_authority()
+	# A player can only actively view one stash at a time.
+	for node: Node in get_tree().get_nodes_in_group(GROUP):
+		if node != self:
+			(node as LootContainer)._forget_searcher(peer)
+	_searchers[peer] = Time.get_ticks_msec()
+	net_active_searchers = _searchers.size()
 	return true
+
+
+func request_keep_searching() -> void:
+	_entity.request_action(&"search_keepalive")
+
+
+func request_stop_searching() -> void:
+	_entity.request_action(&"search_end")
+
+
+func _validate_keepalive(peer: int, payload: Dictionary) -> bool:
+	return (
+		payload.is_empty()
+		and _searchers.has(peer)
+		and _entity.in_range(_entity.player_for_peer(peer))
+	)
+
+
+func _keepalive(peer: int, _payload: Dictionary) -> bool:
+	_searchers[peer] = Time.get_ticks_msec()
+	return true
+
+
+func _validate_end(_peer: int, payload: Dictionary) -> bool:
+	return payload.is_empty()
+
+
+func _end(peer: int, _payload: Dictionary) -> bool:
+	_forget_searcher(peer)
+	return true
+
+
+func _forget_searcher(peer: int) -> void:
+	if not multiplayer.is_server():
+		return
+	_searchers.erase(peer)
+	net_active_searchers = _searchers.size()
+
+
+func _clear_searchers() -> void:
+	_searchers.clear()
+	net_active_searchers = 0
+
+
+func _reset_search_session(_mode: Network.Mode) -> void:
+	_clear_searchers()
 
 
 ## The expected ID prevents a stale drag index from taking a different item

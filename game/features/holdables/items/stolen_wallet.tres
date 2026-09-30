@@ -13,3 +13,4 @@ weight = 0.2
 sale_value_cents = 300
 ground_clearance = 0.02
 first_person_offset = Vector3(0.24, -0.23, -0.55)
+icon_view_direction = Vector3(1, 1.7, 1)
