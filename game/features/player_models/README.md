@@ -67,6 +67,11 @@ and white underwear keep their own colors.
 - Jump takeoff and falling poses, followed by a brief landing compression.
 - Seated (legs forward, hands towards the table) while the `seating` group's
   `is_seated(peer)` says so (food court booths).
+- Crouched and crouch walking while the `crouching` group's `is_crouching(peer)`
+  says so (`features/crouch`): thighs forward, knees bent back through the skinned
+  calf bones, torso leaning forward and the rig lowered so the feet stay planted;
+  moving adds a short alternating step. The crouched collision capsule is 72% as
+  tall, anchored at the feet.
 
 Stride phase advances with horizontal speed, with reversed steps when backing up
 and side lean when strafing. The model blends pose transitions and turns its head

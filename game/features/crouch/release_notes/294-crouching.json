@@ -1,0 +1,9 @@
+{
+  "title": "Crouching",
+  "summary": "Press C to crouch, sneak under low gaps and slip closer to garage enemies.",
+  "notes": [
+    "Toggle crouching with C or right-stick click.",
+    "Animate crouching and crouch walking on the player rig for everyone to see.",
+    "Halve the distance at which garage enemies notice crouched players."
+  ]
+}

@@ -102,6 +102,10 @@ func _apply_collider(player: Player) -> void:
 	var girl := type_for(player.get_multiplayer_authority()) == "girl"
 	var radius := player.movement.hull_radius_m() * (GIRL_RADIUS_SCALE if girl else 1.0)
 	var height := player.movement.hull_height_m() * (GIRL_HEIGHT_SCALE if girl else 1.0)
+	# Crouching (features/crouch) shortens the capsule; its bottom stays at the feet.
+	var crouch := get_tree().get_first_node_in_group(&"crouching")
+	if crouch != null and bool(crouch.call("is_crouching", player.get_multiplayer_authority())):
+		height *= Crouch.HEIGHT_SCALE
 	var offset := (height - player.movement.hull_height_m()) * 0.5
 	if is_equal_approx(capsule.radius, radius) and is_equal_approx(capsule.height, height):
 		return

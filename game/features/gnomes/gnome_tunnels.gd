@@ -4,7 +4,6 @@ extends Node3D
 const SPEED_MULTIPLIER := 4.0
 var tunnel: StreamedRoom
 var _boosted: Player
-var _original_speed := 0.0
 
 
 func _ready() -> void:
@@ -83,13 +82,13 @@ func _physics_process(_delta: float) -> void:
 		_boosted = player
 		# Each player must own its resource; never modify the scene's shared default.
 		player.movement = player.movement.duplicate() as MovementConfig
-		_original_speed = player.movement.max_speed
-		player.movement.max_speed = _original_speed * SPEED_MULTIPLIER
+		# Ratios compose with other speed changes such as crouching (features/crouch).
+		player.movement.max_speed *= SPEED_MULTIPLIER
 
 
 func _restore_speed() -> void:
 	if is_instance_valid(_boosted):
-		_boosted.movement.max_speed = _original_speed
+		_boosted.movement.max_speed /= SPEED_MULTIPLIER
 	_boosted = null
 
 

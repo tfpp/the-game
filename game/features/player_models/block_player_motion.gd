@@ -5,6 +5,12 @@ extends RefCounted
 
 const RUN_FRACTION := 0.55
 const IDLE_SPEED := 0.12
+## Crouch pose (radians): thigh forward, knee bent back, torso lean forward.
+const CROUCH_THIGH := 1.5
+const CROUCH_KNEE := -2.6
+const CROUCH_LEAN := -0.45
+## How far the crouched rig sinks, in metres at default height.
+const CROUCH_DROP := 0.42
 
 
 static func state(velocity: Vector3, grounded: bool, max_speed: float) -> StringName:
@@ -66,4 +72,29 @@ static func seated_pose() -> Dictionary:
 		"lean": 0.0,
 		"roll": 0.0,
 		"bob": 0.0,
+	}
+
+
+## Crouching (features/crouch): thighs forward, knees bent back and the rig lowered
+## by `drop` metres so the feet stay on the floor. Moving turns it into a short,
+## careful crouch walk around the same bent-knee base.
+static func crouch_pose(phase: float, velocity: Vector3, max_speed: float) -> Dictionary:
+	var speed := Vector2(velocity.x, velocity.z).length()
+	var moving := speed >= IDLE_SPEED
+	var amount := clampf(speed / maxf(max_speed * 0.34, 0.1), 0.0, 1.0) if moving else 0.0
+	var swing := sin(phase) * 0.35 * amount
+	if velocity.z > 0.1:
+		swing = -swing
+	return {
+		"state": &"crouch_walk" if moving else &"crouch",
+		"left_leg": CROUCH_THIGH + swing,
+		"right_leg": CROUCH_THIGH - swing,
+		"left_shin": CROUCH_KNEE - swing * 0.6,
+		"right_shin": CROUCH_KNEE + swing * 0.6,
+		"left_arm": 0.35 - swing * 0.6,
+		"right_arm": 0.35 + swing * 0.6,
+		"lean": CROUCH_LEAN,
+		"roll": clampf(-velocity.x / maxf(max_speed, 0.1), -1.0, 1.0) * 0.05,
+		"bob": absf(sin(phase * 2.0)) * amount * 0.015,
+		"drop": CROUCH_DROP,
 	}

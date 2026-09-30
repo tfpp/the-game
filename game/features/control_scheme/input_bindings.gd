@@ -21,6 +21,7 @@ const SECTIONS: Array[Dictionary] = [
 			[&"move_left", "Strafe left"],
 			[&"move_right", "Strafe right"],
 			[&"jump", "Jump"],
+			[&"crouch", "Crouch (toggle)"],
 		],
 	},
 	{

@@ -18,7 +18,8 @@ three-level garage):
 
 - The server simulates each `GarageEnemy` (`garage_enemy.gd`). Every 0.2 s it
   looks for the nearest visible player on its own floor within its aggro radius
-  and leash, walks towards them (gunmen stop at half range), raises its arms for
+  and leash (half the aggro radius for crouched players, see `features/crouch`;
+  a target already being chased stays noticed), walks towards them (gunmen stop at half range), raises its arms for
   a short wind-up and then strikes. Melee needs the target still in reach; a
   gunman's shot needs line of sight and misses fast-moving targets more often.
   Enemies never follow players off their floor area, and idle enemies skip

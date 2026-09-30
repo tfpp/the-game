@@ -131,10 +131,19 @@ func _find_target() -> Player:
 		if player.get_multiplayer_authority() == target_peer:
 			if GarageEnemyTiers.same_floor(global_position, point):
 				return player
+		# Crouching players are noticed at half the usual distance (features/crouch).
+		var aggro := GarageEnemyTiers.notice_radius(float(_info["aggro"]), _crouching(player))
+		if GarageEnemyTiers.flat_distance(global_position, point) > aggro:
+			continue
 		players.append(player)
 		points.append(point)
 	var index := GarageEnemyTiers.nearest(global_position, points, float(_info["aggro"]))
 	return players[index] if index >= 0 else null
+
+
+func _crouching(player: Player) -> bool:
+	var crouch := get_tree().get_first_node_in_group(&"crouching")
+	return crouch != null and bool(crouch.call("is_crouching", player.get_multiplayer_authority()))
 
 
 func can_see(player: Player) -> bool:

@@ -3,11 +3,11 @@
 The client supports keyboard/mouse, touch, and standard gamepads (including browser
 controllers such as Backbone). Online and offline play use the same inputs.
 
-| Input | Move | Look | Jump | Use | Menu |
-| --- | --- | --- | --- | --- | --- |
-| Desktop | WASD / arrows | Mouse | Space | E | Escape |
-| Controller | Left stick | Right stick | A / Cross (bottom face button) | B / Circle | Start |
-| Touch | Drag left side | Drag right side | JUMP button | USE button | II button |
+| Input | Move | Look | Jump | Crouch (toggle) | Use | Menu |
+| --- | --- | --- | --- | --- | --- | --- |
+| Desktop | WASD / arrows | Mouse | Space | C | E | Escape |
+| Controller | Left stick | Right stick | A / Cross (bottom face button) | Right-stick click | B / Circle | Start |
+| Touch | Drag left side | Drag right side | JUMP button | — | USE button | II button |
 
 Use works while looking at a nearby interactable. A prompt identifies the target;
 menus and chat suppress interaction. The slot machine is near the initial spawn area.
