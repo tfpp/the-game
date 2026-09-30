@@ -268,10 +268,22 @@ func test_seated_players_spectate_and_open_the_bet_view_on_request() -> void:
 		_table.to_global(RouletteBets.pixel_to_local(RouletteBets.anchor("14")))
 	)
 	assert_eq(view.screen.spot_at_screen(center), "14", "clicks map onto the layout")
+	view.screen._hover("14")
+	var empty_height := view.screen._preview.position.y
+	assert_true(view.screen._preview.visible, "the next chip previews under the cursor")
+	assert_not_null(view.screen._ghost.material_overlay, "and glows")
 	state = _table.state.duplicate(true)
 	state["bets"] = {multiplayer.get_unique_id(): [["14", 500], ["14", 100]]}
 	_table.state = state
 	view._process(0.0)
+	assert_almost_eq(
+		view.screen._preview.position.y - empty_height,
+		2 * RouletteTableView.CHIP_HEIGHT_M,
+		0.0001,
+		"the preview rises onto the stack without moving the cursor"
+	)
+	var top_chip := view.chips.get_child(1) as Node3D
+	assert_almost_eq(view.screen._preview.position.x, top_chip.position.x, 0.0001, "and sits on it")
 	assert_eq(view.chips.get_child_count(), 2, "chips are drawn on the felt")
 	var top := view.chips.get_child(1) as MeshInstance3D
 	assert_eq(top.mesh, view.chip_meshes[RouletteBets.DENOMINATIONS.find(100)])

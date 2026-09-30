@@ -45,7 +45,7 @@ func _run() -> void:
 	await _capture("/tmp/roulette/seated.png")
 	view.open_betting()
 	var screen := view.screen
-	screen._hover("20-23")
+	screen._hover("17")
 	await _capture("/tmp/roulette/overview.png")
 	table._elapsed = RouletteTable.BETTING_S - 0.1
 	await get_tree().create_timer(1.0).timeout

@@ -23,6 +23,9 @@ const WHEEL_V_OFFSET := -0.12
 const WHEEL_HOLD_S := 2.0
 ## Exponential pan rate; ~95% of the way in one second.
 const PAN_RATE := 3.0
+## Preview chip pulse (radians per second) and how far it bobs above its landing spot.
+const PREVIEW_PULSE_SPEED := 5.0
+const PREVIEW_BOB_M := 0.006
 ## Controller cursor speed, layout pixels per second.
 const CURSOR_SPEED := 110.0
 
@@ -33,7 +36,12 @@ var selected := 0
 ## Spot under the mouse or controller cursor.
 var hovered := ""
 
+## The chip about to be placed: a see-through chip that pulses brass, ringed on the felt.
+var _preview: Node3D
 var _ghost: MeshInstance3D
+var _glow: StandardMaterial3D
+var _ring: Sprite3D
+var _pulse := 0.0
 var _cursor := Vector2(127, 83)
 var _using_pad := false
 var _heading: Label
@@ -73,12 +81,7 @@ func _ready() -> void:
 	))
 	camera.transform = _layout_shot
 	camera.make_current()
-	_ghost = MeshInstance3D.new()
-	_ghost.name = "HoverChip"
-	_ghost.scale = Vector3.ONE * RouletteTableView.CHIP_SCALE
-	_ghost.transparency = 0.45
-	_ghost.visible = false
-	view.add_child(_ghost)
+	_build_preview()
 	_build()
 	table.entity.request_finished.connect(_on_request_finished)
 	refresh()
@@ -90,8 +93,8 @@ func close() -> void:
 	_open = false
 	if is_instance_valid(camera):
 		camera.queue_free()
-	if is_instance_valid(_ghost):
-		_ghost.queue_free()
+	if is_instance_valid(_preview):
+		_preview.queue_free()
 	remove_from_group(&"modal_ui")
 	var player := get_tree().get_first_node_in_group(&"local_player") as Player
 	var player_camera := player.get_node_or_null("Camera") as Camera3D if player != null else null
@@ -109,6 +112,7 @@ func seated() -> bool:
 
 func _process(delta: float) -> void:
 	pan(delta)
+	_animate_preview(delta)
 	# Another menu may resume play (capturing the mouse) while we are still seated.
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -256,15 +260,15 @@ func refresh() -> void:
 	_again.visible = seat < 0
 	_again.disabled = not _can_play_again()
 	if seat < 0:
-		_ghost.visible = false
+		_preview.visible = false
 		_hover_label.text = ""
 		_leave.text = "Back to game"
 		_leave.disabled = false
 		_hint.text = _hint_text()
 		return
 	var betting := table.phase() == RouletteTable.PHASE_BETTING
-	if not betting:
-		_hover("")
+	# Placements changed: lift (or drop) the preview onto the new top of its stack.
+	_hover(hovered if betting else "")
 	var mine := not table.placements_for(peer).is_empty()
 	_undo.disabled = not betting or not mine
 	_clear.disabled = not betting or not mine
@@ -346,18 +350,60 @@ func _hover(spot: String) -> void:
 	if _using_pad and text.is_empty():
 		text = "Move the cursor onto the layout"
 	_hover_label.text = text
-	_ghost.visible = (
+	_preview.visible = (
 		not spot.is_empty() and seated() and table.phase() == RouletteTable.PHASE_BETTING
 	)
-	if _ghost.visible:
+	if _preview.visible:
 		_ghost.mesh = view.chip_meshes[selected]
-		var stacks := RouletteBets.stacks(table.placements_for(multiplayer.get_unique_id()))
-		var mine: Array = stacks.get(spot, [])
-		var height := mini(mine.size(), RouletteTableView.MAX_STACK)
-		_ghost.position = (
-			RouletteBets.pixel_to_local(RouletteBets.anchor(spot))
-			+ Vector3.UP * (height * RouletteTableView.CHIP_HEIGHT_M + 0.001)
-		)
+		_preview.position = preview_position(spot)
+
+
+## Where the next chip on `spot` will land: on top of this player's stack there,
+## including the per-seat offset the table view gives real chips.
+func preview_position(spot: String) -> Vector3:
+	var peer := multiplayer.get_unique_id()
+	var mine: Array = RouletteBets.stacks(table.placements_for(peer)).get(spot, [])
+	var height := mini(mine.size(), RouletteTableView.MAX_STACK - 1)
+	var base := RouletteBets.pixel_to_local(RouletteBets.anchor(spot))
+	base.x += (maxi(0, table.seat_of(peer)) - 1) * RouletteTableView.SEAT_OFFSET_M
+	return base + Vector3.UP * (height * RouletteTableView.CHIP_HEIGHT_M + 0.0005)
+
+
+func _build_preview() -> void:
+	_preview = Node3D.new()
+	_preview.name = "HoverChip"
+	_preview.visible = false
+	view.add_child(_preview)
+	_ghost = MeshInstance3D.new()
+	_ghost.scale = Vector3.ONE * RouletteTableView.CHIP_SCALE
+	_ghost.transparency = 0.2
+	_ghost.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_glow = StandardMaterial3D.new()
+	_glow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_glow.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	_glow.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_glow.albedo_color = Color(RouletteUiTheme.BRASS, 0.4)
+	_ghost.material_overlay = _glow
+	_preview.add_child(_ghost)
+	_ring = Sprite3D.new()
+	_ring.texture = RouletteUiTheme.CHIP_RING
+	# 64 px -> 0.11 m, just wider than the 0.08 m chip.
+	_ring.pixel_size = 0.0017
+	_ring.rotation.x = -PI / 2.0
+	_ring.position.y = RouletteTableView.CHIP_HEIGHT_M * 0.5
+	_ring.shaded = false
+	_ring.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_preview.add_child(_ring)
+
+
+## Pulses the preview so it reads as "not placed yet" against the real chips.
+func _animate_preview(delta: float) -> void:
+	_pulse = fmod(_pulse + delta, TAU)
+	var wave := 0.5 + 0.5 * sin(_pulse * PREVIEW_PULSE_SPEED)
+	_glow.albedo_color.a = lerpf(0.2, 0.65, wave)
+	_ring.modulate = Color(1.0, 1.0, 1.0, lerpf(0.55, 1.0, wave))
+	_ghost.position.y = wave * PREVIEW_BOB_M
 
 
 func _place(spot: String) -> void:
