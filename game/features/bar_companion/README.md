@@ -10,6 +10,8 @@ facing the counter. Everything uses Use (E, Circle / B, or mobile **USE**).
   one per drink for the first three drinks. Each drink past three costs 2 points, so
   getting drunk also eats into charisma from wins.
 - **Vivienne** (Use near her): costs $50, minus 7% per charisma point (at least $15).
+  Replies appear in on-screen subtitles as well as her overhead bubble, so room
+  requirements and payment failures remain readable when standing close in either view.
   You need a Lily Apartments unit first (`features/apartments`). After paying she
   follows you (catching up through doors and elevators) and asks you to lead her to
   your room. Walk into your own unit with her there and you get a **lucky night**:

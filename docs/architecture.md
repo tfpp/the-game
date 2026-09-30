@@ -194,6 +194,10 @@ $10–$30 for triples, with an 80% expected return. Charges, prizes, and spin re
 commit in one transaction. See [player money](../game/features/money/README.md) for
 protocol, income timing, offline behavior and deployment order.
 
+`POST /api/game/inventory` stores one JSON inventory document per account for
+the game server (separate `game-inventory-v1` signature domain). See
+[inventory](../game/features/inventory/README.md#persistence).
+
 ## Agent pipeline
 
 1. `/feature request:<text> [harness:<pi|claude|codex>] [model:<pi model>]

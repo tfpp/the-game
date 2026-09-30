@@ -44,6 +44,16 @@ query again to read the authoritative value. World settings reset per server ses
 
 Tests: `godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests/features/console -gexit`.
 
+## Local frame profiling
+
+`profiler 1` enables a passive frametime graph; `profiler 0` stops sampling.
+`profiler_budget <milliseconds>` changes the default 60 FPS budget (1–1000 ms),
+and `profiler_clear` clears retained data. Close the console and open
+**Esc → Profiler** to click/tap or controller-select missed frames and inspect their
+measured phase traces. Commands query their values when given no argument.
+This is local, session-only diagnostics, not server control or per-script call stacks.
+See `features/profiler/README.md` for timing semantics and bounded retention.
+
 ## Read-only Git
 
 Type `git help` for the fixed command list. `git log` (or `git log --oneline`)

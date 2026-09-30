@@ -1,0 +1,8 @@
+{
+  "title": "Console frame profiler",
+  "summary": "Graph local frame times and inspect traces of frames over budget.",
+  "notes": [
+    "Enable local profiling with profiler 1 in the console and disable it with profiler 0.",
+    "Inspect retained missed-frame phase traces from Esc → Profiler and configure the budget with profiler_budget."
+  ]
+}

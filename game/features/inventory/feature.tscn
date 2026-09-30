@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://features/inventory/inventory_screen.gd" id="1"]
 [ext_resource type="PackedScene" path="res://features/holdables/item_pickup.tscn" id="2"]
+[ext_resource type="Script" path="res://features/inventory/inventory_persistence.gd" id="3"]
+[ext_resource type="PackedScene" path="res://features/inventory/garbage_can.tscn" id="4"]
 
 [node name="Inventory" type="Node3D"]
 
@@ -31,3 +33,9 @@ item_id = "shirt:5"
 [node name="MossPants" parent="." instance=ExtResource("2")]
 position = Vector3(14.0, 1.0, 17)
 item_id = "pants:6"
+
+[node name="Persistence" type="Node" parent="."]
+script = ExtResource("3")
+
+[node name="GarbageCan" parent="." instance=ExtResource("4")]
+position = Vector3(17.3, 0, 17)

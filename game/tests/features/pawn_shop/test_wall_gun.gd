@@ -134,3 +134,17 @@ func _slow_wallet() -> SlowWallet:
 	slow.balances = {1: 10000}
 	_wallet = slow
 	return slow
+
+
+func test_top_hat_sells_for_ten_thousand_and_goes_on_the_head() -> void:
+	_gun.item_id = ClothingCatalog.TOP_HAT
+	_gun.price_cents = 1000000
+	_wallet.balances = {1: 1000000}
+	assert_eq(_gun.interaction_text(), "Buy Top hat — %s" % PlayerMoney.format_money(1000000))
+	assert_eq(_request(1), NetworkedEntity.Result.ACCEPTED)
+	assert_eq(_wallet.balances[1], 0)
+	assert_eq(_hand.inventory().hat, ClothingCatalog.TOP_HAT)
+	assert_eq(_hand.net_item_id, "")
+	assert_eq(_request(1), NetworkedEntity.Result.ACCEPTED)
+	assert_eq(_wallet.balances[1], 0, "Can't afford a second hat")
+	assert_false(_hand.inventory().backpack.has(ClothingCatalog.TOP_HAT))
