@@ -182,6 +182,7 @@ func _say(peer: int, text: String) -> void:
 
 func _on_event(event: StringName, payload: Dictionary) -> void:
 	if event == &"say":
+		Subtitles.say(get_tree(), CompanionModel.NAME, str(payload.get("text", "")))
 		_speech.text = str(payload.get("text", ""))
 		_speech.visible = true
 		_speech_left = 4.0

@@ -6,6 +6,13 @@ var item_id := "shirt:2"
 
 
 func _ready() -> void:
+	if ClothingCatalog.slot(item_id) == "hat":
+		var hat := TopHat.new()
+		hat.name = "Hat"
+		hat.band_color = ClothingCatalog.color(item_id)
+		hat.position.y = -0.05
+		add_child(hat)
+		return
 	var material := StandardMaterial3D.new()
 	material.albedo_color = ClothingCatalog.color(item_id)
 	material.roughness = 0.95

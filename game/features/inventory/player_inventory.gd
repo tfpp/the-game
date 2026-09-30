@@ -1,13 +1,14 @@
 class_name PlayerInventory
 extends Node
 ## Lives on each server-spawned Hand. Only the owner may request mutations.
-## Eight backpack slots plus hand, shirt and pants. New players own no items.
+## Eight backpack slots plus hand, shirt, pants and hat. New players own no items.
 
 const CAPACITY := 8
 
 @export var backpack := PackedStringArray(["", "", "", "", "", "", "", ""])
 @export var shirt := ""
 @export var pants := ""
+@export var hat := ""
 @export var keys := PackedStringArray()
 
 
@@ -23,6 +24,8 @@ func item_at(slot: int) -> String:
 			return shirt
 		-3:
 			return pants
+		-4:
+			return hat
 	return backpack[slot] if slot >= 0 and slot < CAPACITY else ""
 
 
@@ -127,7 +130,7 @@ func request_equip(index: int) -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func request_stow(slot: int) -> void:
-	if not _authorized() or slot not in [-1, -2, -3]:
+	if not _authorized() or slot not in [-1, -2, -3, -4]:
 		return
 	var empty := backpack.find("")
 	if empty == -1 or item_at(slot).is_empty():
@@ -139,7 +142,7 @@ func request_stow(slot: int) -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func request_drop(slot: int) -> void:
-	if not _authorized() or slot < -3 or slot >= CAPACITY:
+	if not _authorized() or slot < -4 or slot >= CAPACITY:
 		return
 	var id := item_at(slot)
 	if id.is_empty() or not hand().drop_inventory_item(id):
@@ -195,6 +198,8 @@ func _equipment_slot(id: String) -> int:
 			return -2
 		"pants":
 			return -3
+		"hat":
+			return -4
 	return -1
 
 
@@ -206,6 +211,8 @@ func _set_item(slot: int, id: String) -> void:
 			shirt = id
 		-3:
 			pants = id
+		-4:
+			hat = id
 		_:
 			var next := backpack.duplicate()
 			next[slot] = id

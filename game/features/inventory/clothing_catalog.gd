@@ -1,6 +1,10 @@
 class_name ClothingCatalog
 extends RefCounted
 ## Clothing IDs include their fixed color so storing, swapping and dropping preserve color.
+## Hats use the color for their band; the crown is always black silk (see `TopHat`).
+
+## The pawn shop's tall top hat: black silk with a midnight band.
+const TOP_HAT := "hat:1"
 
 const COLORS: Array[Color] = [
 	Color("f0eee5"),
@@ -34,7 +38,7 @@ const COLOR_NAMES: Array[String] = [
 
 static func slot(id: String) -> String:
 	var parts := id.split(":")
-	if parts.size() != 2 or parts[0] not in ["shirt", "pants"]:
+	if parts.size() != 2 or parts[0] not in ["shirt", "pants", "hat"]:
 		return ""
 	if not parts[1].is_valid_int():
 		return ""
@@ -56,4 +60,6 @@ static func title(id: String) -> String:
 	var kind := slot(id)
 	if kind.is_empty():
 		return ""
+	if kind == "hat":
+		return "Top hat" if id == TOP_HAT else "%s-banded top hat" % COLOR_NAMES[color_index(id)]
 	return "%s %s" % [COLOR_NAMES[color_index(id)], "shirt" if kind == "shirt" else "pants"]

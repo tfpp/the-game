@@ -52,3 +52,12 @@ so a reserved consumable cannot be stowed, swapped or dropped. New pickups can s
 fill free backpack slots. Both items have distinct inventory silhouettes.
 Each lasts three uses; partially used items retain their remaining count through
 storage, swaps and drops, and display it in their item names.
+
+## Hats
+
+The equipment column has a fourth **HAT** slot (`PlayerInventory.hat`, slot -4,
+replicated like shirt and pants). Hat IDs are `hat:<color>` clothing; the color is
+the band, the crown is always black silk (`top_hat.gd`). The only hat in the world
+is the pawn shop's `ClothingCatalog.TOP_HAT` ("Top hat", $10,000). `BlockPlayerModel`
+wears it on the human head bone, or on the frog, bird or penguin head pivot, so
+everyone sees it; it is hidden with the rest of your body in first person.
