@@ -271,7 +271,15 @@ func test_seated_players_spectate_and_open_the_bet_view_on_request() -> void:
 	view.screen._hover("14")
 	var empty_height := view.screen._preview.position.y
 	assert_true(view.screen._preview.visible, "the next chip previews under the cursor")
-	assert_not_null(view.screen._ghost.material_overlay, "and glows")
+	var ghost := view.screen._ghost
+	view.screen._pulse = 0.0
+	view.screen._animate_preview(PI / 2.0 / RouletteBettingScreen.PREVIEW_PULSE_SPEED)
+	assert_almost_eq(ghost.transparency, RouletteBettingScreen.PREVIEW_MAX_TRANSPARENCY, 0.01)
+	var faded := view.screen._shade.albedo_color
+	assert_almost_eq(faded.r, RouletteBettingScreen.PREVIEW_DARKEST, 0.01, "darkened when faded")
+	view.screen._animate_preview(PI / RouletteBettingScreen.PREVIEW_PULSE_SPEED)
+	assert_almost_eq(ghost.transparency, 0.0, 0.01, "then solid")
+	assert_almost_eq(view.screen._shade.albedo_color.r, 1.0, 0.01, "at full brightness")
 	state = _table.state.duplicate(true)
 	state["bets"] = {multiplayer.get_unique_id(): [["14", 500], ["14", 100]]}
 	_table.state = state

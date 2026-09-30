@@ -26,6 +26,9 @@ const PAN_RATE := 3.0
 ## Preview chip pulse (radians per second) and how far it bobs above its landing spot.
 const PREVIEW_PULSE_SPEED := 5.0
 const PREVIEW_BOB_M := 0.006
+## At the faded end of the pulse: how see-through, and how bright (1 = unchanged).
+const PREVIEW_MAX_TRANSPARENCY := 0.6
+const PREVIEW_DARKEST := 0.4
 ## Controller cursor speed, layout pixels per second.
 const CURSOR_SPEED := 110.0
 
@@ -36,10 +39,10 @@ var selected := 0
 ## Spot under the mouse or controller cursor.
 var hovered := ""
 
-## The chip about to be placed: a slightly see-through chip that pulses brass.
+## The chip about to be placed: it fades from solid to see-through and darker and back.
 var _preview: Node3D
 var _ghost: MeshInstance3D
-var _glow: StandardMaterial3D
+var _shade: StandardMaterial3D
 var _pulse := 0.0
 var _cursor := Vector2(127, 83)
 var _using_pad := false
@@ -375,22 +378,23 @@ func _build_preview() -> void:
 	view.add_child(_preview)
 	_ghost = MeshInstance3D.new()
 	_ghost.scale = Vector3.ONE * RouletteTableView.CHIP_SCALE
-	_ghost.transparency = 0.2
 	_ghost.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	_glow = StandardMaterial3D.new()
-	_glow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_glow.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
-	_glow.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	_glow.albedo_color = Color(RouletteUiTheme.BRASS, 0.4)
-	_ghost.material_overlay = _glow
+	# Multiplies the chip's colour: white leaves it as is, grey darkens it.
+	_shade = StandardMaterial3D.new()
+	_shade.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_shade.blend_mode = BaseMaterial3D.BLEND_MODE_MUL
+	_ghost.material_overlay = _shade
 	_preview.add_child(_ghost)
 
 
-## Pulses the preview so it reads as "not placed yet" against the real chips.
+## Pulses the preview between solid and see-through-and-darkened so it reads as
+## "not placed yet" against the real chips.
 func _animate_preview(delta: float) -> void:
 	_pulse = fmod(_pulse + delta, TAU)
 	var wave := 0.5 + 0.5 * sin(_pulse * PREVIEW_PULSE_SPEED)
-	_glow.albedo_color.a = lerpf(0.2, 0.65, wave)
+	_ghost.transparency = lerpf(0.0, PREVIEW_MAX_TRANSPARENCY, wave)
+	var shade := lerpf(1.0, PREVIEW_DARKEST, wave)
+	_shade.albedo_color = Color(shade, shade, shade)
 	_ghost.position.y = wave * PREVIEW_BOB_M
 
 
