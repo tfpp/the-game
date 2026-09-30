@@ -351,10 +351,9 @@ func _hover(spot: String) -> void:
 	)
 	if _ghost.visible:
 		_ghost.mesh = view.chip_meshes[selected]
-		var mine := int(
-			RouletteBets.by_spot(table.placements_for(multiplayer.get_unique_id())).get(spot, 0)
-		)
-		var height := mini(RouletteBets.chips_for(mine).size(), RouletteTableView.MAX_STACK)
+		var stacks := RouletteBets.stacks(table.placements_for(multiplayer.get_unique_id()))
+		var mine: Array = stacks.get(spot, [])
+		var height := mini(mine.size(), RouletteTableView.MAX_STACK)
 		_ghost.position = (
 			RouletteBets.pixel_to_local(RouletteBets.anchor(spot))
 			+ Vector3.UP * (height * RouletteTableView.CHIP_HEIGHT_M + 0.001)

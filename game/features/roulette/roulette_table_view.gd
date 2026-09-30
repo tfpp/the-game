@@ -234,19 +234,20 @@ func _update_chips(snapshot: Dictionary) -> void:
 	var bets := snapshot["bets"] as Dictionary
 	for peer: int in bets:
 		var seat := maxi(0, (snapshot["seats"] as Array).find(peer))
-		var spots := RouletteBets.by_spot(bets[peer])
-		for key: String in spots:
+		var stacks := RouletteBets.stacks(bets[peer])
+		for key: String in stacks:
 			if result_phase and not RouletteBets.numbers(key).has(number):
 				continue
 			var base := RouletteBets.pixel_to_local(RouletteBets.anchor(key))
 			base.x += (seat - 1) * SEAT_OFFSET_M
-			_stack(base, int(spots[key]))
+			_stack(base, stacks[key])
 
 
-func _stack(base: Vector3, cents: int) -> void:
-	var values := RouletteBets.chips_for(cents)
-	var count := mini(values.size(), MAX_STACK)
-	for index: int in count:
+## Chips in placement order, so the latest chip is always on top. Past MAX_STACK only
+## the most recent chips are drawn.
+func _stack(base: Vector3, placed: Array[int]) -> void:
+	var values := placed.slice(maxi(0, placed.size() - MAX_STACK))
+	for index: int in values.size():
 		var chip := MeshInstance3D.new()
 		chip.mesh = chip_meshes[RouletteBets.DENOMINATIONS.find(values[index])]
 		chip.scale = Vector3.ONE * CHIP_SCALE

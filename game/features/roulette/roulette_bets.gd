@@ -129,6 +129,18 @@ static func by_spot(placements: Array) -> Dictionary:
 	return result
 
 
+## Each spot's chips in the order they were placed, bottom of the stack first:
+## key -> Array[int] of chip values.
+static func stacks(placements: Array) -> Dictionary:
+	var result := {}
+	for placement: Array in placements:
+		var key := str(placement[0])
+		if not result.has(key):
+			result[key] = [] as Array[int]
+		(result[key] as Array[int]).append(int(placement[1]))
+	return result
+
+
 ## Largest chips first, e.g. 5600 -> [5000, 500, 100].
 static func chips_for(cents: int) -> Array[int]:
 	var result: Array[int] = []

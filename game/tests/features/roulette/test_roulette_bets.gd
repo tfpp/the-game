@@ -101,6 +101,11 @@ func test_settle_totals_stake_and_winnings() -> void:
 	assert_eq(RouletteBets.by_spot(placements), {"17": 600, "red": 500, "black": 500})
 
 
+func test_stacks_keep_placement_order() -> void:
+	var placements := [["17", 100], ["red", 5000], ["17", 50000], ["17", 500]]
+	assert_eq(RouletteBets.stacks(placements), {"17": [100, 50000, 500], "red": [5000]})
+
+
 func test_amounts_break_into_the_largest_chips() -> void:
 	assert_eq(RouletteBets.chips_for(5600), [5000, 500, 100])
 	assert_eq(RouletteBets.chips_for(2600000), [2500000, 100000])
