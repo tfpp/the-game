@@ -30,7 +30,7 @@ on:
         default: implement
       agent:
         type: choice
-        options: [claude, codex]
+        options: [claude, codex, pi]
         default: claude
       instructions:
         description: Extra instructions for the agent
@@ -109,6 +109,25 @@ jobs:
       - name: Install Codex
         if: needs.gate.outputs.agent == 'codex'
         run: npm install --prefix "$RUNNER_TEMP/codex-cli" @openai/codex && echo "$RUNNER_TEMP/codex-cli/node_modules/.bin" >> "$GITHUB_PATH"
+      - uses: actions/setup-node@v6
+        if: needs.gate.outputs.agent == 'pi'
+        with:
+          node-version: '24'
+      - uses: oven-sh/setup-bun@v2
+        if: needs.gate.outputs.agent == 'pi'
+        with:
+          bun-version: 1.4.2
+      # The anthropic-omp runtime pulls a ~100 MB native addon; keep bun's download cache.
+      - uses: actions/cache@v6
+        if: needs.gate.outputs.agent == 'pi'
+        with:
+          path: ~/.bun/install/cache
+          key: pi-bun-${{ runner.os }}-${{ hashFiles('harness/pi/extensions/anthropic-omp/runtime/bun.lock') }}
+      - name: Install pi
+        if: needs.gate.outputs.agent == 'pi'
+        env:
+          PI_VERSION: ${{ vars.PI_VERSION || '0.99.1' }}
+        run: npm install --prefix "$RUNNER_TEMP/pi-cli" "@earendil-works/pi-coding-agent@$PI_VERSION" && echo "$RUNNER_TEMP/pi-cli/node_modules/.bin" >> "$GITHUB_PATH"
       - name: Configure git
         env:
           NAME: ${{ vars.AGENT_GIT_NAME || 'claude[bot]' }}
@@ -130,9 +149,11 @@ jobs:
           cat "$RUNNER_TEMP/task.md"
       - name: Run agent
         env:
-          CLAUDE_CODE_OAUTH_TOKEN: ${{ needs.gate.outputs.agent == 'claude' && secrets.CLAUDE_CODE_OAUTH_TOKEN || '' }}
-          CODEX_AUTH_JSON: ${{ needs.gate.outputs.agent == 'codex' && secrets.CODEX_AUTH_JSON || '' }}
+          # pi uses both logins: Claude for its model, ChatGPT for imagegen and web search.
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ (needs.gate.outputs.agent == 'claude' || needs.gate.outputs.agent == 'pi') && secrets.CLAUDE_CODE_OAUTH_TOKEN || '' }}
+          CODEX_AUTH_JSON: ${{ (needs.gate.outputs.agent == 'codex' || needs.gate.outputs.agent == 'pi') && secrets.CODEX_AUTH_JSON || '' }}
           CODEX_MODEL: ${{ vars.CODEX_MODEL }}
+          PI_MODEL: ${{ vars.PI_MODEL }}
           HARNESS_MODEL: ${{ vars.AGENT_MODEL }}
           HARNESS_REASONING_EFFORT: ${{ vars.AGENT_REASONING_EFFORT || 'low' }}
           HARNESS_MAX_TURNS: ${{ vars.AGENT_MAX_TURNS }}
@@ -147,12 +168,24 @@ jobs:
             trap 'rm -rf -- "$CODEX_HOME"' EXIT
             harness/codex-auth.sh
             unset CODEX_AUTH_JSON
+          elif [[ "$AGENT" == pi ]]; then
+            export PI_CODING_AGENT_DIR="$RUNNER_TEMP/pi-agent"
+            export HARNESS_MODEL="$PI_MODEL" PI_SKIP_VERSION_CHECK=1 PI_TELEMETRY=0
+            trap 'rm -rf -- "$PI_CODING_AGENT_DIR"' EXIT
+            harness/pi-setup.sh
+            unset CODEX_AUTH_JSON
+            # The anthropic-omp backend reads the setup token from here; its store stays empty.
+            if [[ -n "$CLAUDE_CODE_OAUTH_TOKEN" ]]; then export ANTHROPIC_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN"; fi
+            unset CLAUDE_CODE_OAUTH_TOKEN
           fi
           harness/run.sh --agent "$AGENT" --mode "$MODE" --branch "$BRANCH" \
             --task "$RUNNER_TEMP/task.md" --out "$RUNNER_TEMP/harness-out" --attempts "$ATTEMPTS"
       - name: Remove Codex credentials
         if: always() && needs.gate.outputs.agent == 'codex'
         run: rm -rf -- "$RUNNER_TEMP/codex-home"
+      - name: Remove pi credentials
+        if: always() && needs.gate.outputs.agent == 'pi'
+        run: rm -rf -- "$RUNNER_TEMP/pi-agent"
       - uses: actions/upload-artifact@v7
         if: always()
         with:

@@ -13,6 +13,8 @@ definition of done for agents and humans alike.
 | `context.sh` | Writes the task, current PR, sibling PRs and paths, recent merges, and feedback from GitHub |
 | `check-summary.sh` | Requires integration review notes before agent-written work can be bundled |
 | `publish.sh` | Pushes the bundle, opens the PR or comments, reports failures |
+| `pi-setup.sh` | Builds a temporary pi agent directory (auth, extensions, `pi-web-access`) on Actions |
+| `pi/extensions/` | Vendored pi extensions: `anthropic-omp` (Claude subscription provider) and `image-generation` |
 | `claude-app-token.sh` | Fallback push token from the Claude GitHub App |
 | `tests/` | Offline tests with a fake agent, `gh` and remote |
 
@@ -30,8 +32,9 @@ Only people with write access (or bots in `AGENT_TRUSTED_BOTS`) can start a run.
 | Run the workflow by hand (`workflow_dispatch`) | Any mode, by issue or PR number (the bot will use this) |
 
 The label is removed when the run ends, so adding it again starts another run.
-Labels and comments use Claude. To use Codex, select `codex` in the workflow's
-`agent` input (or dispatch with `-f agent=codex`); all three modes are supported.
+Labels and comments use Claude. To use Codex or pi, select `codex` or `pi` in the
+workflow's `agent` input (or dispatch with `-f agent=codex` / `-f agent=pi`); all three
+modes are supported. The Discord bot does not offer pi yet.
 Discord's `/feature request:<text> harness:<claude|codex>` requires a harness choice
 and saves it for that feature's later revisions and conflict resolution. `BOT_AGENT`
 is only a fallback for legacy features with no saved selection.
@@ -151,6 +154,20 @@ bounds numeric values and validates model IDs before rendering them. The human P
      sharing one login may also require reauthentication. Discord `/usage` needs a
      separate mount of that account's `auth.json` on the bot via `BOT_CODEX_AUTH_FILE`;
      GitHub Secrets are not available to the bot. See [bot setup](../bot/README.md).
+   - **pi:** no new secrets. It reuses both logins above: `CLAUDE_CODE_OAUTH_TOKEN`
+     drives the model through the vendored `anthropic-omp` provider, and
+     `CODEX_AUTH_JSON` becomes pi's `openai-codex` login for `imagegen` and Codex-backed
+     web search (`pi-web-access` otherwise falls back to zero-config Exa). Either secret
+     alone is enough to start; the default model needs the Claude token.
+     `harness/pi-setup.sh` builds a private `PI_CODING_AGENT_DIR` in `$RUNNER_TEMP`,
+     copies `pi/extensions/` there, installs the extension's Bun runtime (and its Linux
+     native addon) plus `pi-web-access`, and writes `auth.json`. The Claude token is
+     **not** written there: the job exports it as `ANTHROPIC_OAUTH_TOKEN`, which the
+     extension's backend reads while its own credential store is empty. The directory is
+     deleted after the run. As with Codex, pi may refresh the ChatGPT token in its
+     temporary copy; that refresh is not persisted, and a rotated refresh token can
+     invalidate `CODEX_AUTH_JSON` for later runs. The `anthropic-omp` provider is an
+     unofficial Claude subscription client (see its README's policy caveat).
 3. **Push identity:** pick one. Pushes made with either identity trigger CI, which
    `GITHUB_TOKEN` pushes don't.
    - **Own GitHub App (preferred; the v0.5 bot needs it anyway).** Create an App with
@@ -168,8 +185,9 @@ bounds numeric values and validates model IDs before rendering them. The human P
      as `anthropics/claude-code-action`. That endpoint is internal to the action and
      could change. Commits and PRs appear as `claude[bot]`.
 4. **Optional variables:** `AGENT_MODEL` (Claude; defaults to `claude-opus-5-5`, Opus
-   5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6-astra`, GPT-6 Astra),
-   `AGENT_REASONING_EFFORT` (both; defaults to `low`), `AGENT_MAX_TURNS`,
+   5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6-astra`, GPT-6 Astra), `PI_MODEL`
+   (pi, as `provider/id`; defaults to `anthropic-omp/claude-opus-5-5`), `PI_VERSION`
+   (defaults to `0.99.1`), `AGENT_REASONING_EFFORT` (all three; defaults to `low`), `AGENT_MAX_TURNS`,
    `AGENT_ATTEMPTS` (default 3), `AGENT_TRUSTED_BOTS` (comma-separated logins, such as
    the bot App's `<slug>[bot]`). Existing model variables override these defaults;
    remove or update old overrides to use the new defaults.
@@ -178,10 +196,11 @@ For example, after the workflow change is merged:
 
 ```bash
 gh workflow run agent.yml -f number=123 -f mode=implement -f agent=codex
+gh workflow run agent.yml -f number=123 -f mode=implement -f agent=pi
 ```
 
-The same gate, verification/retry loop, and isolated App-token publisher apply to both
-agents. Codex still needs one of the push identities above; its ChatGPT login does not
+The same gate, verification/retry loop, and isolated App-token publisher apply to every
+agent. Codex and pi still need one of the push identities above; their model logins do not
 provide GitHub permissions.
 
 ## Local runs
@@ -191,10 +210,11 @@ echo "Add a jump pad that launches players upward" > /tmp/task.md
 harness/run.sh --agent claude --mode implement --branch agent/0-jump-pad --task /tmp/task.md --out /tmp/run
 ```
 
-The Claude and Codex adapters use the same model/low-reasoning defaults locally and
-on retries/resumes. Override with `HARNESS_MODEL` and `HARNESS_REASONING_EFFORT`.
-`result.json` records the effort as `reasoning_effort` (null for pi), and publish shows it
-in the PR's Agent Usage section and the 🤖 comments.
+All three adapters use the same model/low-reasoning defaults locally and on
+retries/resumes. Override with `HARNESS_MODEL` and `HARNESS_REASONING_EFFORT` (pi's
+`--thinking` level). `result.json` records the effort as `reasoning_effort`, and publish
+shows it in the PR's Agent Usage section and the 🤖 comments. Locally, pi uses your own
+`~/.pi/agent` login and extensions unless `PI_CODING_AGENT_DIR` points elsewhere.
 
 This needs a clean tree. It leaves you on the new branch, and `/tmp/run` holds the logs
 and `summary.md`. Nothing is pushed.

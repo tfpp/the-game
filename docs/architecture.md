@@ -227,14 +227,17 @@ protocol, income timing, offline behavior and deployment order.
    run. `/agent resolve-conflicts` merges `main` in and resolves any conflicts.
    `/close` in the thread closes the PR and the issue without merging.
 
-**Agents:** Claude Code and Codex run on GitHub-hosted runners. Claude uses
+**Agents:** Claude Code, Codex and pi run on GitHub-hosted runners. Claude uses
 `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`); Codex restores a ChatGPT subscription
 login from `CODEX_AUTH_JSON` into a temporary `CODEX_HOME`, removed after the run. Refreshed
 Codex tokens are not persisted back to the secret; operators must replace it when login
 expires. Select Codex through Discord's required `harness` option or the workflow
 dispatch's `agent` input. Claude defaults to Opus 5.5 (`claude-opus-5-5`) with low effort;
-Codex defaults to GPT-6 Astra (`gpt-6-astra`) with low reasoning. Pi remains local-only
-until its runner and authentication are wired up.
+Codex defaults to GPT-6 Astra (`gpt-6-astra`) with low reasoning. Pi reuses both secrets in
+a temporary agent directory (`harness/pi-setup.sh`), with the vendored `anthropic-omp` and
+`image-generation` extensions plus `pi-web-access`; it defaults to
+`anthropic-omp/claude-opus-5-5` with low thinking and is selectable only through the
+workflow dispatch's `agent` input for now.
 
 **Subscription usage:** Discord `/usage` privately reports Claude and Codex limits,
 independently cached for one minute. Claude probes rate-limit headers; Codex reads the

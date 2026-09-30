@@ -75,6 +75,7 @@ expect_eq "$(grep '^model_reasoning_effort=' "$HARNESS_OUT/args")" 'model_reason
 
 echo "- pi: only the messages this call added to the session"
 fake pi <<'EOF'
+printf '%s\n' "$@" >"$HARNESS_OUT/args"
 dir=""
 while [[ $# -gt 0 ]]; do [[ "$1" == --session-dir ]] && dir="$2"; shift; done
 mkdir -p "$dir"
@@ -86,6 +87,14 @@ expect_eq "$(call pi 0)" \
   '{"input_tokens":4,"output_tokens":4,"cache_read_tokens":0,"cache_write_tokens":21902,"cost_usd":0.175312}' "pi first call"
 expect_eq "$(call pi 1)" \
   '{"input_tokens":4,"output_tokens":4,"cache_read_tokens":0,"cache_write_tokens":21902,"cost_usd":0.175312}' "pi continued"
+expect_eq "$(jq -c .models "$HARNESS_OUT/usage.json")" '["anthropic-omp/claude-opus-5-5"]' "pi reported model"
+expect_eq "$(grep -c '^--continue$' "$HARNESS_OUT/args")" 1 "pi continue"
+expect_eq "$(grep -c '^--no-approve$' "$HARNESS_OUT/args")" 1 "pi ignores project-local resources"
+expect_eq "$(grep -A1 '^--model$' "$HARNESS_OUT/args" | tail -1)" anthropic-omp/claude-opus-5-5 "pi default model"
+expect_eq "$(grep -A1 '^--thinking$' "$HARNESS_OUT/args" | tail -1)" low "pi default thinking"
+HARNESS_MODEL=openai-codex/gpt-6-astra HARNESS_REASONING_EFFORT=high call pi 0 >/dev/null
+expect_eq "$(grep -A1 '^--model$' "$HARNESS_OUT/args" | tail -1)" openai-codex/gpt-6-astra "pi model override"
+expect_eq "$(grep -A1 '^--thinking$' "$HARNESS_OUT/args" | tail -1)" high "pi thinking override"
 
 if [[ "$failures" -gt 0 ]]; then
   echo "adapter tests: $failures failure(s)"
