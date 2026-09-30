@@ -18,6 +18,10 @@ const WAVE_AMPLITUDE := 0.9
 const BOUNCE_FREQUENCY := 2.6
 const BOUNCE_HEIGHT := 0.22
 
+## How close (meters) the two penguin NPCs must be for the happy couple reaction
+## (hop and wave) — see `Penguin._near_spouse` in penguin.gd.
+const COUPLE_RADIUS := 2.0
+
 
 ## Position on the patrol circle of the given `radius` around `home`, at `angle`
 ## radians (0 at +Z, increasing toward +X).

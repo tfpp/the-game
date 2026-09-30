@@ -18,7 +18,7 @@ hint = "Slots and roulette in the sunken middle of the casino"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0, 0)
 script = ExtResource("2_dest")
 label = "Petting Parlor"
-hint = "Frogs, their pond and the penguin (west)"
+hint = "Frogs, their pond and the penguin couple (west)"
 
 [node name="HarborRoom" type="Marker3D" parent="Destinations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, 0)

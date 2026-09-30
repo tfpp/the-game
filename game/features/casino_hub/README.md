@@ -9,7 +9,8 @@ not a second copy loaded by the feature loader. Collision-bearing architecture r
   slots and the original roulette table. Two 6m-wide, 1:4 ramps connect the floor
   to the continuous promenade at y 0; brass rails mark the remaining edges.
 - West petting parlor: x -34…-18, z -21…21. All six frogs, their pond, and the
-  penguin; benches, low paddock rails, tiled floor and plastic plants.
+  penguin couple (`features/penguin`); benches, low paddock rails, tiled floor
+  and plastic plants.
 - East harbor room: x 18…34, z -21…21. The original ferry travels its full 30m
   route along x 26, from z -15 to 15. Both end landings clear its 9m hull.
   Solid shallow flooring prevents players from falling into the basin.

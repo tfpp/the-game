@@ -1,138 +1,14 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://features/penguin/penguin.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://features/penguin/penguin.tscn" id="1_penguin"]
 
-[sub_resource type="SceneReplicationConfig" id="Replication"]
-properties/0/path = NodePath(".:net_position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:net_yaw")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:net_alive")
-properties/2/spawn = true
-properties/2/replication_mode = 2
+[node name="Penguins" type="Node3D"]
 
-[sub_resource type="CapsuleShape3D" id="ColliderShape"]
-radius = 0.3
-height = 0.9
-
-[sub_resource type="CapsuleMesh" id="TorsoMesh"]
-radius = 0.28
-height = 0.75
-
-[sub_resource type="StandardMaterial3D" id="TorsoMat"]
-albedo_color = Color(0.08, 0.08, 0.1, 1)
-
-[sub_resource type="SphereMesh" id="BellyMesh"]
-radius = 0.22
-height = 0.4
-
-[sub_resource type="StandardMaterial3D" id="BellyMat"]
-albedo_color = Color(0.95, 0.95, 0.92, 1)
-
-[sub_resource type="BoxMesh" id="BeakMesh"]
-size = Vector3(0.09, 0.07, 0.18)
-
-[sub_resource type="StandardMaterial3D" id="BeakMat"]
-albedo_color = Color(0.95, 0.55, 0.1, 1)
-
-[sub_resource type="SphereMesh" id="EyeMesh"]
-radius = 0.05
-height = 0.08
-
-[sub_resource type="StandardMaterial3D" id="EyeMat"]
-albedo_color = Color(0.95, 0.95, 0.9, 1)
-
-[sub_resource type="SphereMesh" id="PupilMesh"]
-radius = 0.02
-height = 0.03
-
-[sub_resource type="StandardMaterial3D" id="PupilMat"]
-albedo_color = Color(0.05, 0.05, 0.05, 1)
-
-[sub_resource type="BoxMesh" id="FootMesh"]
-size = Vector3(0.12, 0.05, 0.22)
-
-[sub_resource type="StandardMaterial3D" id="FootMat"]
-albedo_color = Color(0.95, 0.55, 0.1, 1)
-
-[sub_resource type="BoxMesh" id="FlipperMesh"]
-size = Vector3(0.08, 0.32, 0.14)
-
-[sub_resource type="StandardMaterial3D" id="FlipperMat"]
-albedo_color = Color(0.08, 0.08, 0.1, 1)
-
-[node name="Penguin" type="AnimatableBody3D"]
+[node name="Penguin" parent="." instance=ExtResource("1_penguin")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0.4, 8)
-script = ExtResource("1_script")
 
-[node name="Collider" type="CollisionShape3D" parent="."]
-shape = SubResource("ColliderShape")
-
-[node name="Body" type="Node3D" parent="."]
-
-[node name="Torso" type="MeshInstance3D" parent="Body"]
-mesh = SubResource("TorsoMesh")
-surface_material_override/0 = SubResource("TorsoMat")
-
-[node name="Belly" type="MeshInstance3D" parent="Body/Torso"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.55, 0, -0.02, 0.13)
-mesh = SubResource("BellyMesh")
-surface_material_override/0 = SubResource("BellyMat")
-
-[node name="Beak" type="MeshInstance3D" parent="Body/Torso"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, 0.28)
-mesh = SubResource("BeakMesh")
-surface_material_override/0 = SubResource("BeakMat")
-
-[node name="EyeLeft" type="MeshInstance3D" parent="Body/Torso"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.3, 0.2)
-mesh = SubResource("EyeMesh")
-surface_material_override/0 = SubResource("EyeMat")
-
-[node name="PupilLeft" type="MeshInstance3D" parent="Body/Torso/EyeLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02, 0, 0.045)
-mesh = SubResource("PupilMesh")
-surface_material_override/0 = SubResource("PupilMat")
-
-[node name="EyeRight" type="MeshInstance3D" parent="Body/Torso"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.3, 0.2)
-mesh = SubResource("EyeMesh")
-surface_material_override/0 = SubResource("EyeMat")
-
-[node name="PupilRight" type="MeshInstance3D" parent="Body/Torso/EyeRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.02, 0, 0.045)
-mesh = SubResource("PupilMesh")
-surface_material_override/0 = SubResource("PupilMat")
-
-[node name="LeftFlipper" type="Node3D" parent="Body/Torso"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.27, 0.18, 0)
-
-[node name="Mesh" type="MeshInstance3D" parent="Body/Torso/LeftFlipper"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.16, 0)
-mesh = SubResource("FlipperMesh")
-surface_material_override/0 = SubResource("FlipperMat")
-
-[node name="RightFlipper" type="Node3D" parent="Body/Torso"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27, 0.18, 0)
-
-[node name="Mesh" type="MeshInstance3D" parent="Body/Torso/RightFlipper"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.16, 0)
-mesh = SubResource("FlipperMesh")
-surface_material_override/0 = SubResource("FlipperMat")
-
-[node name="FootLeft" type="MeshInstance3D" parent="Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, -0.38, 0.05)
-mesh = SubResource("FootMesh")
-surface_material_override/0 = SubResource("FootMat")
-
-[node name="FootRight" type="MeshInstance3D" parent="Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12, -0.38, 0.05)
-mesh = SubResource("FootMesh")
-surface_material_override/0 = SubResource("FootMat")
-
-[node name="Sync" type="MultiplayerSynchronizer" parent="."]
-root_path = NodePath("..")
-replication_interval = 0.04
-replication_config = SubResource("Replication")
+[node name="Wife" parent="." instance=ExtResource("1_penguin")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, -23.8, 0.4, 12.3)
+display_name = "Penguin's wife"
+is_wife = true
+start_angle = 3.14159

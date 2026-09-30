@@ -1,6 +1,7 @@
 class_name GpsCatalog
 extends Node
 ## Local adapters over existing replicated entities. Never writes to their state.
+## Penguin labels come from the penguin's own `display_name` (husband vs wife).
 
 var _markers: Dictionary[int, GpsDestination] = {}
 
@@ -86,7 +87,7 @@ static func label_for(node: Node) -> String:
 	if node is Celeste:
 		return "Celeste"
 	if node is Penguin:
-		return "Penguin"
+		return (node as Penguin).display_name
 	if node is Bird:
 		return "Bird"
 	if node is Gnome:

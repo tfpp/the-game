@@ -11,8 +11,13 @@ var _penguin: Penguin
 
 
 func before_each() -> void:
-	_penguin = PenguinScene.instantiate() as Penguin
-	add_child_autofree(_penguin)
+	var feature := PenguinScene.instantiate() as Node3D
+	add_child_autofree(feature)
+	_penguin = feature.get_node("Penguin") as Penguin
+	# Drive physics through manual `_physics_process` calls: AnimatableBody3D
+	# transform sets outside the physics step are unreliable in headless runs.
+	_penguin.set_physics_process(false)
+	(feature.get_node("Wife") as Penguin).set_physics_process(false)
 	await get_tree().physics_frame
 
 

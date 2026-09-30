@@ -27,7 +27,16 @@ extends AnimatableBody3D
 const REMOTE_SMOOTHING := 12.0
 const RESPAWN_DELAY_S := 4.0
 
-## Replicated state (server -> everyone). See the synchronizer config in feature.tscn.
+## What GPS (features/gps) calls this penguin. The wife instance overrides it.
+@export var display_name := "Penguin"
+## The wife wears a pink bow and blush (the Bow node in penguin.tscn).
+@export var is_wife := false
+## Patrol phase (radians) at spawn and respawn. The wife starts half a lap out of
+## phase with her husband, so their same-sized circles bring them beak-to-beak and
+## apart again instead of keeping a constant distance.
+@export var start_angle := 0.0
+
+## Replicated state (server -> everyone). See the synchronizer config in penguin.tscn.
 @export var net_position := Vector3.ZERO
 @export var net_yaw := 0.0
 @export var net_alive := true
@@ -40,12 +49,16 @@ var _respawn_timer := 0.0
 @onready var _body: Node3D = $Body
 @onready var _collider: CollisionShape3D = $Collider
 @onready var _wave_flipper: Node3D = $Body/Torso/RightFlipper
+@onready var _bow: Node3D = $Body/Torso/Bow
 
 
 func _ready() -> void:
 	_home = position
 	net_position = position
+	_angle = start_angle
+	_bow.visible = is_wife
 	add_to_group(&"killable")
+	add_to_group(&"penguins")
 	if not multiplayer.is_server():
 		set_physics_process(false)
 
@@ -59,8 +72,9 @@ func _physics_process(delta: float) -> void:
 	_angle += (
 		PenguinWaddle.angular_speed(PenguinWaddle.PATROL_RADIUS, PenguinWaddle.WALK_SPEED) * delta
 	)
-	position = PenguinWaddle.position_on_circle(_home, PenguinWaddle.PATROL_RADIUS, _angle)
-	net_position = position
+	var next := PenguinWaddle.position_on_circle(_home, PenguinWaddle.PATROL_RADIUS, _angle)
+	position = next
+	net_position = next
 	net_yaw = PenguinWaddle.facing_yaw(_angle)
 
 
@@ -77,7 +91,7 @@ func _process(delta: float) -> void:
 	_body.rotation.z = PenguinWaddle.waddle_rock(
 		_elapsed, PenguinWaddle.WADDLE_FREQUENCY, PenguinWaddle.WADDLE_AMPLITUDE
 	)
-	var reacting := _reacting_to_nearby_penguin_player()
+	var reacting := _reacting_to_nearby_penguin_player() or _near_spouse()
 	_body.position.y = (
 		PenguinWaddle.react_bounce(
 			_elapsed, PenguinWaddle.BOUNCE_FREQUENCY, PenguinWaddle.BOUNCE_HEIGHT
@@ -116,6 +130,21 @@ func _reacting_to_nearby_penguin_player() -> bool:
 	return false
 
 
+## True while the other penguin NPC (the spouse) is within COUPLE_RADIUS. Same
+## cosmetic-only pattern as the player reaction: every peer already knows both
+## penguins' replicated positions, so no extra networking is needed. Compares the
+## replicated `net_position` (what every peer agrees on) rather than the smoothed
+## local transform.
+func _near_spouse() -> bool:
+	for node: Node in get_tree().get_nodes_in_group(&"penguins"):
+		var other := node as Penguin
+		if other == null or other == self or not other.net_alive:
+			continue
+		if net_position.distance_to(other.net_position) <= PenguinWaddle.COUPLE_RADIUS:
+			return true
+	return false
+
+
 ## Server-only: any weapon's hitscan calls this on a hit (see hand.gd's `_fire`,
 ## which routes to this instead of features/combat's `apply_damage` because she has
 ## no player peer id). One hit is always fatal, regardless of the weapon's damage
@@ -130,10 +159,10 @@ func take_hit(_attacker_peer: int) -> void:
 
 func _respawn() -> void:
 	net_alive = true
-	_angle = 0.0
+	_angle = start_angle
 	position = _home
 	net_position = _home
-	net_yaw = 0.0
+	net_yaw = PenguinWaddle.facing_yaw(start_angle)
 
 
 ## Cosmetic only — every peer plays its own explosion locally, same as the waddle
