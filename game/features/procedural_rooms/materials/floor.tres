@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/procedural_rooms/dev_textures/floor.png" id="1"]
+
+[resource]
+resource_name = "Dev floor"
+albedo_texture = ExtResource("1")
+roughness = 1.0
+metallic_specular = 0.0
+texture_filter = 2
+texture_repeat = true
+uv1_scale = Vector3(0.615157, 0.615157, 0.615157)
+uv1_triplanar = true
+uv1_world_triplanar = true
+uv1_triplanar_sharpness = 16.0

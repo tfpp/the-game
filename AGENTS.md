@@ -36,6 +36,7 @@ After the required reading, follow the documents relevant to the task:
 | [docs/design/lore.md](docs/design/lore.md) | World premise, Golden Crown, slums, elevator, tone and canon. Required for every task. |
 | [docs/design/gameplay.md](docs/design/gameplay.md) | Intended player loop and system behavior. Required for every task. |
 | [docs/design/art-style.md](docs/design/art-style.md) | Visual direction, geometry, textures, materials and lighting. Read before visual or asset work. |
+| [docs/design/model-workflow.md](docs/design/model-workflow.md) | Model authoring, UV maps, generated texture templates, validation and the 128px texture limit. |
 | [docs/design/concept-art/](docs/design/concept-art/) | Visual references. Open relevant images before modeling or scene design: `dealer.png` and `dealer-side.png` for the character, `casino.png` for the casino, and `elevator-parking-garage.png` / `loot-parking-garage.png` for garage scenes. |
 | [docs/design/zones/](docs/design/zones/) | Location-specific design, grouped by zone type. Read the relevant zone document before changing its layout, encounters or atmosphere. |
 | [docs/design/zones/slums/parking-garage.md](docs/design/zones/slums/parking-garage.md) | Garage layout, vertical progression, combat, loot and atmosphere. |
@@ -52,6 +53,10 @@ files before editing the corresponding code.
 
 ## Rules
 
+- Model and world textures must be no larger than **128×128 pixels**. Follow the
+  GoldSrc-inspired art direction and UV workflow in `docs/design/model-workflow.md`.
+  Keep larger painting sources and UV guides outside `game/`; they are authoring
+  documents, not runtime textures.
 - Never introduce Python code, scripts, tooling or runtime/build dependencies. Use
   GDScript, Go, shell or the repository's existing native systems instead.
 - Never commit to or push `main` directly. Before starting work, run

@@ -1,0 +1,9 @@
+{
+  "title": "Reusable garage prop kit",
+  "summary": "Garage sets now use painted low-poly barrels, wooden crates and abandoned cars.",
+  "notes": [
+    "Add reusable floor-centred barrel, crate and sedan prefabs with fitted static collision.",
+    "Give each model a padded polygon UV unwrap and generated GoldSrc-style 128x128 textures.",
+    "Replace garage and storage placeholders, add barrels to pump sets and supply GLBs, templates and a checker workshop."
+  ]
+}

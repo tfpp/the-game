@@ -91,8 +91,14 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 
 - Never introduce Python scripts, tooling or dependencies. Use GDScript and the
   existing native toolchain for game features, asset work and build utilities.
-- Use small textures by default for visible 3D model surfaces, typically 64×64 or
-  128×128 with nearest mipmap filtering. Vertex colours can tint the artwork.
+- Model and world textures have a hard **128×128 maximum** on both dimensions.
+  Use 64×64 or 128×128 power-of-two textures with nearest mipmap filtering and
+  GoldSrc-inspired coarse painted detail. See `../docs/design/model-workflow.md`.
+  Author explicit UV1 islands with padding; stack or mirror repeated surfaces to
+  reuse pixels. Allocate texel density by visibility and detail importance, pack with
+  rotation, and avoid giving hidden faces equal texture budgets. Export a UV template, then
+  check the applied result on the actual model. Keep larger painting sources and
+  authoring guides outside `game/`. Vertex colours can tint the artwork.
   Keep cards, chips, text and interaction targets readable.
 
 - Use static typing everywhere. Untyped declarations are errors (see `project.godot`

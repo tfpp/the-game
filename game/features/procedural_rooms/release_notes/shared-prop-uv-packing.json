@@ -1,0 +1,9 @@
+{
+  "title": "Smarter shared prop textures",
+  "summary": "Garage props reuse repeated surfaces and give visible details more texture space.",
+  "notes": [
+    "Stack crate panels, barrel facets, tyre tread and hub faces instead of allocating duplicate islands.",
+    "Combine the car body and all wheels into one 128x128 atlas and material with mirrored sides and shared glass.",
+    "Pack rotated islands, shrink underside budgets and repack retained high-resolution paintings for sharper visible details."
+  ]
+}

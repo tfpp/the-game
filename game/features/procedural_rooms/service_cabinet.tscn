@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="ArrayMesh" path="res://assets/procedural_rooms/models/service_cabinet/mesh.tres" id="1"]
+[ext_resource type="Material" path="res://features/procedural_rooms/materials/service_cabinet.tres" id="2"]
+[sub_resource type="BoxShape3D" id="Collision"]
+size = Vector3(0.6, 2.5, 1)
+[node name="ServiceCabinet" type="Node3D"]
+[node name="Cabinet" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1")
+material_override = ExtResource("2")
+[node name="Collision" type="StaticBody3D" parent="."]
+[node name="Shape" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0, 1.25, 0)
+shape = SubResource("Collision")

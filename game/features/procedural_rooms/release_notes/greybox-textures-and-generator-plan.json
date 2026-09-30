@@ -1,0 +1,9 @@
+{
+  "title": "Developer textures for procedural room prototyping",
+  "summary": "Prepare a measurement-grid texture kit for testing future slum layouts.",
+  "notes": [
+    "Add twelve original developer textures and ready-to-use Godot materials.",
+    "Document a new socket-based 3D room generator, primitive kit and gameplay validation plan.",
+    "Require seamless socket attachments with shared boundary profiles and validated physical joins."
+  ]
+}

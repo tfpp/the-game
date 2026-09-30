@@ -1,0 +1,9 @@
+{
+  "title": "Connected five-floor garage prototype",
+  "summary": "Explore a cohesive developer-textured garage with elevator stops, ramps, stairs and a sewer pump station.",
+  "notes": [
+    "Connect five parking decks around a central shaft with 47 validated socket joins.",
+    "Add elevator cabs with sliding doors and validated floor transfer interactions.",
+    "Populate garage bays from seeded room rules with allowed sets, weights, density, rotation and reserved walking lanes."
+  ]
+}

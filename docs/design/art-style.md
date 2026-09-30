@@ -79,6 +79,22 @@ Textures should be **simple, low-resolution, and slightly coarse**.
 
 They should support the form rather than hide it.
 
+### Hard texture limit and GoldSrc direction
+
+Runtime textures for models and world surfaces must be **128×128 pixels or smaller
+on both dimensions**. Prefer 64×64 or 128×128 power-of-two images. Use nearest
+filtering with mipmaps, broad painted colour, simple seams and vents, restrained
+grime, and readable silhouettes: a GoldSrc-inspired appearance. Avoid photographic
+surface detail and high-resolution normal/roughness texture stacks.
+
+Props need deliberate UV1 maps with named, padded islands. Stack or mirror repeated
+surfaces such as tyres, hubs, crate panels and barrel facets; keep distinct islands
+separate. Pack with rotation and allocate pixels by visibility and detail importance,
+with smaller budgets for undersides and hidden faces. Generate artwork against the exported UV template,
+process the final atlas down to the runtime limit, and review checker and painted
+renders before accepting it. Large source artwork and enlarged guides belong
+outside `game/`. See [the model workflow](model-workflow.md).
+
 ### Preferred
 
 - Broad patches of color.
