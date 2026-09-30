@@ -1,5 +1,6 @@
 // Command bot is the Discord bot: /feature and /revise start agent runs through the
-// GitHub App, and GitHub webhooks report their progress back to Discord threads.
+// GitHub App, and GitHub webhooks report their progress back to Discord threads. With a
+// progress secret, running agents also stream their reasoning to /bot/progress.
 // /usage shows the agent's Claude and Codex subscription usage limits.
 //
 // Configuration comes from the environment (see bot/README.md). Secrets are read from
@@ -222,6 +223,13 @@ func run(log *slog.Logger) error {
 	hooks.Start(ctx)
 	mux := http.NewServeMux()
 	mux.Handle("/bot/github", hooks)
+	// Optional: live agent progress in feature threads (harness/progress.sh).
+	if progressSecret, err := secret(env("BOT_PROGRESS_SECRET_FILE", "/run/secrets/bot/progress-secret")); err == nil {
+		progress := core.NewProgress(svc, dc, []byte(progressSecret))
+		mux.Handle("/bot/progress", &webhook.ProgressHandler{Progress: progress, Logger: log})
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("progress secret: %w", err)
+	}
 	mux.HandleFunc("GET /bot/health", func(w http.ResponseWriter, r *http.Request) {
 		ok := st.Ping(r.Context()) == nil
 		w.Header().Set("Content-Type", "application/json")

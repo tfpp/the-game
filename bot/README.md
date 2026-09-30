@@ -11,7 +11,7 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
 | `internal/core` | Commands, limits, GitHub event handling, reconcile, merge coordinator (no Discord or HTTP) |
 | `internal/discordbot` | disgo gateway client: registers the guild commands, posts to threads |
 | `internal/github` | GitHub App auth (JWT, installation token), the REST calls used, webhook checks |
-| `internal/webhook` | `POST /bot/github`: signature, deduplication, one-at-a-time processing |
+| `internal/webhook` | `POST /bot/github`: signature, deduplication, one-at-a-time processing. `POST /bot/progress`: live agent progress |
 | `internal/store` | SQLite (`/data/bot.db`): jobs, runs, the merge queue, handled deliveries and comments |
 
 ## How it works
@@ -55,6 +55,15 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
      `preview.yml` deploys there (run name `preview #<pr> deploy`) post the preview link
      (`BOT_PREVIEW_URL`).
    - `pull_request`: merged or closed.
+   - **Live progress** (`/bot/progress`, optional): while a run is active, the agent job
+     streams its reasoning and tool calls ([harness/progress.sh](../harness/README.md#live-progress)).
+     Each run gets one 🧠 message in the thread, edited at most every 3 seconds with the
+     latest steps (oldest trimmed to fit), the attempt, and counts of thoughts and tool
+     calls. It turns grey ("Agent run finished") when the workflow run completes. The
+     message ID is saved, so a restarted bot keeps editing the same message. Requests must
+     carry the run's token: hex HMAC-SHA256 of `agent-progress:bot-<run>`, keyed with the
+     progress secret. Unknown, finished or threadless runs get 410, and the runner stops
+     sending. Model text can't ping anyone (no allowed mentions) or form masked links.
    If the agent declines an `implement` run (the harness's "🤖 … (`implement`) made no
    changes" comment on the issue, before any PR exists), the bot closes the issue as not
    planned and marks the job closed; the requester asks again with a new `/feature`.
@@ -174,7 +183,7 @@ Environment variables; secrets are files.
 
 | Variable | Default | |
 |---|---|---|
-| `BOT_ADDR` | `:8081` | HTTP listen address (`/bot/github`, `/bot/health`) |
+| `BOT_ADDR` | `:8081` | HTTP listen address (`/bot/github`, `/bot/progress`, `/bot/health`) |
 | `BOT_DB` | `/data/bot.db` | SQLite database |
 | `BOT_REPO` | `tfpp/the-game` | Repository the App is installed on |
 | `BOT_GITHUB_CLIENT_ID` | required | GitHub App client ID |
@@ -183,6 +192,7 @@ Environment variables; secrets are files.
 | `BOT_DISCORD_TOKEN_FILE` | `/run/secrets/bot/discord-token` | Discord bot token |
 | `BOT_CLAUDE_TOKEN_FILE` | `/run/secrets/bot/claude-token` | The agent's `CLAUDE_CODE_OAUTH_TOKEN`, for `/usage`; optional |
 | `BOT_CODEX_AUTH_FILE` | `/run/secrets/bot/codex-auth.json` | File-backed Codex ChatGPT login for `/usage`; optional, reread on cache misses |
+| `BOT_PROGRESS_SECRET_FILE` | `/run/secrets/bot/progress-secret` | The workflow's `AGENT_PROGRESS_SECRET`; enables `/bot/progress`. Optional |
 | `BOT_GUILD_ID` | required | The Discord server |
 | `BOT_REQUESTER_ROLE_ID` | required | Role allowed to use `/feature`, `/revise` and `/close` |
 | `BOT_APPROVER_ROLE_ID` | none | Role allowed to approve merges; without it nobody can |
@@ -241,10 +251,13 @@ starts.
 
 The image is `ghcr.io/tfpp/the-game-bot`, built by `bot-image.yml` on pushes to `main`
 that touch `bot/`. It runs as UID 10040 with a read-only root filesystem. State goes in
-`/data`, and the secret files in `/run/secrets/bot/` (the Claude token and Codex auth file are optional). For automatic server and API deploys,
+`/data`, and the secret files in `/run/secrets/bot/` (the Claude token, Codex auth file and progress secret are optional). For automatic server and API deploys,
 mount a directory the host's deploy service watches and set `BOT_DEPLOY_DIR` to it. Add a Cloudflare Tunnel route
 for exactly `game.chrisbox.dev` path `^/bot/github$` → `http://bot:8081`, placed before
-the catch-all game-server rule. Don't route `/bot/health` publicly.
+the catch-all game-server rule. For live agent progress, mount the secret from
+[the harness setup](../harness/README.md#live-progress) at
+`/run/secrets/bot/progress-secret` and add a second route, `^/bot/progress$` →
+`http://bot:8081`, also before the catch-all. Don't route `/bot/health` publicly.
 
 ## Local run
 

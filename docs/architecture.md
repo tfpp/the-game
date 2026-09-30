@@ -226,6 +226,10 @@ protocol, income timing, offline behavior and deployment order.
    The App's webhooks (`issue_comment`, `workflow_run`, `pull_request`) bring those
    comments, CI results on the agent branch, and the merge or close back to the thread.
    A reconcile loop polls while runs are active, in case a webhook is missed.
+   While the agent works, `harness/progress.sh` streams its reasoning and tool calls to the
+   bot's `/bot/progress`, which keeps one live message per run in the thread. Each run
+   authenticates with an HMAC of its `request_id`, derived from a shared secret in a step
+   the agent can't see (details in `harness/README.md`).
 5. `/revise <changes>` in the thread (or `/agent <feedback>` on the PR) starts a `revise`
    run. `/agent resolve-conflicts` merges `main` in and resolves any conflicts.
    `/close` in the thread closes the PR and the issue without merging.
