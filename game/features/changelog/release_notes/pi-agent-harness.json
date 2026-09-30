@@ -1,0 +1,11 @@
+{
+  "title": "Pi agent harness",
+  "summary": "Feature requests are now built by the pi agent by default, with a choice of models and reasoning levels.",
+  "notes": [
+    "Make pi the default harness for Discord /feature requests, agent labels and /agent comments.",
+    "Let /feature pick pi's model from GPT-6.1 Sol, GPT-6 Astra, GPT-6 Luna, Claude Opus 5.5, Claude Fable 5.1 and six OpenRouter models.",
+    "Add an optional /feature reasoning level from low to max for any harness.",
+    "Default Codex to GPT-6.1 Sol with medium reasoning.",
+    "Give pi image generation, web search, and chrome-devtools, Playwright and Godot MCP tools on the agent runner."
+  ]
+}
