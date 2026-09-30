@@ -145,6 +145,11 @@ var migrations = []string{
 		payout INTEGER NOT NULL,
 		balance INTEGER NOT NULL
 	);`,
+	`CREATE TABLE inventories (
+		account_id INTEGER PRIMARY KEY REFERENCES accounts(id),
+		items TEXT NOT NULL,
+		updated_at INTEGER NOT NULL
+	);`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {

@@ -1,0 +1,73 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://features/inventory/garbage_can.gd" id="1_script"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="entity"]
+
+[sub_resource type="StandardMaterial3D" id="Tin"]
+albedo_color = Color(0.18, 0.27, 0.2, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="Brass"]
+albedo_color = Color(0.62, 0.48, 0.2, 1)
+roughness = 0.6
+
+[sub_resource type="CylinderMesh" id="Body"]
+material = SubResource("Tin")
+top_radius = 0.3
+bottom_radius = 0.26
+height = 0.86
+radial_segments = 10
+rings = 1
+
+[sub_resource type="CylinderMesh" id="Rim"]
+material = SubResource("Brass")
+top_radius = 0.32
+bottom_radius = 0.32
+height = 0.05
+radial_segments = 10
+rings = 1
+
+[sub_resource type="CylinderMesh" id="Lid"]
+material = SubResource("Brass")
+top_radius = 0.12
+bottom_radius = 0.33
+height = 0.12
+radial_segments = 10
+rings = 1
+
+[sub_resource type="BoxMesh" id="Handle"]
+material = SubResource("Brass")
+size = Vector3(0.16, 0.04, 0.04)
+
+[sub_resource type="CylinderShape3D" id="Shape"]
+height = 1.0
+radius = 0.32
+
+[node name="GarbageCan" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.43, 0)
+mesh = SubResource("Body")
+
+[node name="Rim" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
+mesh = SubResource("Rim")
+
+[node name="Lid" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.955, 0)
+mesh = SubResource("Lid")
+
+[node name="Handle" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.035, 0)
+mesh = SubResource("Handle")
+
+[node name="Collision" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("Shape")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")
+interaction_offset = Vector3(0, 0.5, 0)
