@@ -30,3 +30,27 @@ route should end. Rooms built as `StreamedRoom`s with `RoomDoor`s route automati
 for another closed-off area reached by a `GarageDoor`, also set `area` to its world
 extent. `tests/features/gps/test_gps.gd` fails if a streamed room in its `ROOM_SCENES`
 list has no destination inside; add new room feature scenes to that list.
+
+## People, animals and objects
+
+The list now has **Places**, **People**, **Animals**, and **Objects** headings.
+Search matches names, hints and section names. Scroll the list with the mouse wheel
+while the phone is open (including over its other screen), or use its scrollbar,
+touch drag and controller list navigation. Headers cannot start a route.
+
+`gps_catalog.gd` builds local `GpsDestination` adapters when the phone opens from
+existing `players`, `killable` and `interactables` groups. Other players use their
+replicated display names; patrons, companions and gnomes are People; frogs, the
+penguin and bird are Animals; usable objects and other props are Objects. Only
+currently instantiated entities are listed: streamed-out props appear after their
+room loads. Existing area markers remain available to navigate to those rooms.
+The local player is omitted. Dead animals/NPCs and burrowed gnomes are unavailable.
+Reopen the phone to refresh newly spawned entities. A stale row cannot be selected.
+
+`GpsDestination.category` defaults to Places, preserving existing markers and
+region consumers. `destination_position()` reads a tracked entity's current global
+position. `available()` checks its lifetime and existing replicated alive state.
+Active routes clear on death/despawn/disconnect; reopened lists include respawns.
+Moving targets replan on the existing distance/time budget and cancel the arrival
+countdown if they move away. No new RPCs, shared state, persistence, keys or world
+placements are introduced; entity owners retain all simulation and replication.

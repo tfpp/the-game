@@ -13,6 +13,7 @@ const ARRIVED_HOLD_SEC := 4.0
 const REPLAN_DISTANCE := 2.0
 const REPLAN_SEC := 3.0
 
+var _catalog: GpsCatalog
 var _phone: GpsPhone
 var _target: GpsDestination
 var _path := PackedVector2Array()
@@ -29,6 +30,8 @@ func _ready() -> void:
 	if Network.mode == Network.Mode.SERVER:
 		set_process(false)
 		return
+	_catalog = GpsCatalog.new()
+	add_child(_catalog)
 	var key := InputEventKey.new()
 	key.physical_keycode = KEY_P
 	Controls.ensure_action(ACTION, [key])
@@ -61,20 +64,26 @@ func esc_menu_icon() -> Texture2D:
 
 
 func esc_menu_open() -> void:
-	_phone.open(destinations(), _target)
+	var entries := destinations()
+	if not is_instance_valid(_target) or not _target.available():
+		clear_route()
+	_phone.open(entries, _target)
 
 
 ## Every GPS destination in the world, sorted by label.
 func destinations() -> Array[GpsDestination]:
+	_catalog.refresh()
 	var result: Array[GpsDestination] = []
 	for node: Node in get_tree().get_nodes_in_group(GpsDestination.GROUP):
-		if node is GpsDestination and (node as GpsDestination).label != "":
+		if node is GpsDestination and node.label != "" and node.available():
 			result.append(node)
 	result.sort_custom(func(a: GpsDestination, b: GpsDestination) -> bool: return a.label < b.label)
 	return result
 
 
 func start_route(destination: GpsDestination) -> void:
+	if not is_instance_valid(destination) or not destination.available():
+		return
 	_target = destination
 	_arrived_left = 0.0
 	_refresh = 0.0
@@ -99,13 +108,16 @@ func route() -> PackedVector2Array:
 
 
 func _process(delta: float) -> void:
-	if _target != null and not is_instance_valid(_target):
+	if not is_instance_valid(_target) or not _target.available():
 		clear_route()
 	if _target == null:
 		return
 	var player := get_tree().get_first_node_in_group(&"local_player") as Node3D
 	if player == null:
 		return
+	if _arrived_left > 0.0 and _target.tracks_source:
+		if not GpsRoute.arrived(player.global_position, _target.destination_position()):
+			_arrived_left = 0.0
 	if _arrived_left > 0.0:
 		_arrived_left -= delta
 		if _arrived_left <= 0.0:
@@ -121,27 +133,27 @@ func _process(delta: float) -> void:
 
 func _update_route(player: Node3D) -> void:
 	var from := player.global_position
-	var hop := GpsRoute.next_hop(regions(), links(), from, _target.global_position)
+	var hop := GpsRoute.next_hop(regions(), links(), from, _target.destination_position())
 	_door = hop["door"]
 	var goal: Vector3 = hop["position"]
 	var start := Vector2(from.x, from.z)
 	var end := Vector2(goal.x, goal.z)
 	if (
 		_path.size() >= 2
-		and end == _planned_goal
+		and end.distance_to(_planned_goal) < REPLAN_DISTANCE
 		and start.distance_to(_planned_at) < REPLAN_DISTANCE
 		and _planned_age < REPLAN_SEC
 	):
 		_path[0] = start
 	else:
 		_plan(start, end)
-	if _door == "" and GpsRoute.arrived(from, _target.global_position):
+	if _door == "" and GpsRoute.arrived(from, _target.destination_position()):
 		_text = "Arrived at %s" % _target.label
 		_arrived_left = ARRIVED_HOLD_SEC
 		_phone.set_guidance(_text, 0.0, _target.label)
 		return
 	_text = GpsRoute.instruction(_path, _door, _target.label)
-	var rise := _target.global_position.y - from.y
+	var rise := _target.destination_position().y - from.y
 	if _door == "" and absf(rise) > 2.5 and start.distance_to(end) < 12.0:
 		_text = "Go %s to %s" % ["upstairs" if rise > 0.0 else "downstairs", _target.label]
 

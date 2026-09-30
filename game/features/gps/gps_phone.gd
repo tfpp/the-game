@@ -7,6 +7,8 @@ extends CanvasLayer
 signal destination_chosen(destination: GpsDestination)
 signal route_cleared
 
+const CATEGORIES: Array[String] = ["Places", "People", "Animals", "Objects"]
+
 const MODAL_GROUP := &"modal_ui"
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const SCREEN := Vector2(230, 380)
@@ -39,6 +41,13 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if not is_open():
 		return
+	if event is InputEventMouseButton and event.pressed:
+		var wheel := event as InputEventMouseButton
+		if wheel.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
+			var direction := 1.0 if wheel.button_index == MOUSE_BUTTON_WHEEL_DOWN else -1.0
+			_list.get_v_scroll_bar().value += direction * 48.0 * maxf(wheel.factor, 1.0)
+			get_viewport().set_input_as_handled()
+			return
 	if event.is_action_pressed(&"release_mouse") or event.is_action_pressed(&"ui_cancel"):
 		get_viewport().set_input_as_handled()
 		close()
@@ -87,7 +96,8 @@ static func matches(destination: GpsDestination, query: String) -> bool:
 	if needle == "":
 		return true
 	return (
-		destination.label.to_lower().contains(needle)
+		destination.category.to_lower().contains(needle)
+		or destination.label.to_lower().contains(needle)
 		or destination.hint.to_lower().contains(needle)
 	)
 
@@ -110,6 +120,9 @@ func shown() -> Array[GpsDestination]:
 func choose(index: int) -> void:
 	if index < 0 or index >= _shown.size():
 		return
+	if not is_instance_valid(_shown[index]) or not _shown[index].available():
+		_filter(_search.text)
+		return
 	destination_chosen.emit(_shown[index])
 	_route_title.text = _shown[index].label
 	_route_text.text = "Routing..."
@@ -119,18 +132,41 @@ func choose(index: int) -> void:
 func _filter(query: String) -> void:
 	_list.clear()
 	_shown.clear()
-	for destination: GpsDestination in _entries:
-		if matches(destination, query):
-			_shown.append(destination)
-			var index := _list.add_item(destination.label)
+	for category: String in CATEGORIES:
+		var header := -1
+		for destination: GpsDestination in _entries:
+			if not is_instance_valid(destination) or not destination.available():
+				continue
+			if destination.category != category or not matches(destination, query):
+				continue
+			if header < 0:
+				header = _list.add_item(category)
+				_list.set_item_selectable(header, false)
+				_list.set_item_custom_fg_color(header, ACCENT)
+				_list.set_item_metadata(header, -1)
+			var caption := destination.label
+			var player := get_tree().get_first_node_in_group(&"local_player") as Node3D
+			if player != null and destination.tracks_source:
+				var distance := player.global_position.distance_to(
+					destination.destination_position()
+				)
+				caption += " · %d m" % roundi(distance)
+			var index := _list.add_item(caption)
+			_list.set_item_metadata(index, _shown.size())
 			_list.set_item_tooltip(index, destination.hint)
+			_shown.append(destination)
 	if not _shown.is_empty():
-		_list.select(0)
+		_list.select(1)
 
 
 func _submit(_text: String) -> void:
 	var selected := _list.get_selected_items()
-	choose(selected[0] if not selected.is_empty() else 0)
+	if not selected.is_empty():
+		_choose_row(selected[0])
+
+
+func _choose_row(index: int) -> void:
+	choose(int(_list.get_item_metadata(index)))
 
 
 func _rest_y() -> float:
@@ -166,15 +202,19 @@ func _build_phone() -> void:
 	var right := _screen(Vector2(BEZEL * 3.0 + SCREEN.x + HINGE, BEZEL))
 	left.add_child(_heading("Maps"))
 	_search = LineEdit.new()
-	_search.placeholder_text = "Search places"
+	_search.placeholder_text = "Search destinations"
 	_search.clear_button_enabled = true
 	_search.text_changed.connect(_filter)
 	_search.text_submitted.connect(_submit)
 	left.add_child(_search)
 	_list = ItemList.new()
 	_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_list.item_clicked.connect(func(index: int, _at: Vector2, _button: int) -> void: choose(index))
-	_list.item_activated.connect(choose)
+	_list.item_clicked.connect(
+		func(index: int, _at: Vector2, button: int) -> void:
+			if button == MOUSE_BUTTON_LEFT:
+				_choose_row(index)
+	)
+	_list.item_activated.connect(_choose_row)
 	left.add_child(_list)
 	right.add_child(_heading("Route"))
 	_route_title = Label.new()
