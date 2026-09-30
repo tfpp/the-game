@@ -172,6 +172,19 @@ jobs:
           [[ -n "$PR" ]] && args+=(--pr "$PR")
           harness/context.sh "${args[@]}" > "$RUNNER_TEMP/task.md"
           cat "$RUNNER_TEMP/task.md"
+      # Live progress for the Discord bot's runs. The run's token is HMAC-SHA256 of
+      # "agent-progress:<request_id>" keyed with AGENT_PROGRESS_SECRET, which the bot also
+      # holds. Only this step sees the secret; the agent gets the one run's token.
+      - name: Prepare progress stream
+        if: inputs.request_id && vars.AGENT_PROGRESS_URL
+        env:
+          SECRET: ${{ secrets.AGENT_PROGRESS_SECRET }}
+          REQUEST_ID: ${{ inputs.request_id }}
+        run: |
+          if [[ -z "$SECRET" ]]; then echo "AGENT_PROGRESS_SECRET is not set; not streaming"; exit 0; fi
+          token="$(printf 'agent-progress:%s' "$REQUEST_ID" | openssl dgst -sha256 -hmac "$SECRET" -r | cut -d' ' -f1)"
+          echo "::add-mask::$token"
+          (umask 077 && printf '%s' "$token" >"$RUNNER_TEMP/progress-token")
       - name: Run agent
         env:
           # pi uses ChatGPT for its default model, imagegen and web search; OpenRouter for
@@ -188,6 +201,9 @@ jobs:
           MODE: ${{ needs.gate.outputs.mode }}
           BRANCH: ${{ needs.gate.outputs.branch }}
           ATTEMPTS: ${{ vars.AGENT_ATTEMPTS || 3 }}
+          AGENT_PROGRESS_URL: ${{ vars.AGENT_PROGRESS_URL }}
+          AGENT_PROGRESS_ID: ${{ inputs.request_id }}
+          AGENT_PROGRESS_TOKEN_FILE: ${{ runner.temp }}/progress-token
         run: |
           if [[ "$AGENT" == codex ]]; then
             export CODEX_HOME="$RUNNER_TEMP/codex-home"
@@ -213,6 +229,9 @@ jobs:
       - name: Remove pi credentials
         if: always() && needs.gate.outputs.agent == 'pi'
         run: rm -rf -- "$RUNNER_TEMP/pi-agent"
+      - name: Remove progress token
+        if: always()
+        run: rm -f -- "$RUNNER_TEMP/progress-token"
       - uses: actions/upload-artifact@v7
         if: always()
         with:

@@ -19,6 +19,7 @@
 # across calls. Without reported models, the configured model is recorded, and
 # reasoning_effort is the effort given to the adapter (null if it takes none).
 # Env: HARNESS_MODEL, HARNESS_REASONING_EFFORT, HARNESS_MAX_TURNS (passed to adapters),
+#      AGENT_PROGRESS_* (the adapters' live progress stream; see progress.sh),
 #      HARNESS_REMOTE (origin),
 #      HARNESS_VERIFY and HARNESS_ADAPTERS (overrides, for tests).
 # Exit: 0 for success or no_changes, 2 when the agent failed, 1 on harness errors.
@@ -236,7 +237,8 @@ while [[ "$status" != success && "$attempt" -lt "$attempts" ]]; do
   log "agent attempt $attempt/$attempts"
   rm -f "$out/usage.json"
   agent_ok=1
-  "$adapters/$agent.sh" "$prompt" "$out/agent-$attempt.log" "$cont" || agent_ok=0
+  HARNESS_ATTEMPT="$attempt" HARNESS_ATTEMPTS="$attempts" \
+    "$adapters/$agent.sh" "$prompt" "$out/agent-$attempt.log" "$cont" || agent_ok=0
   add_usage
   if [[ "$agent_ok" == 0 ]]; then
     log "agent exited with an error"
