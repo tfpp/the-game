@@ -1,70 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Script" path="res://features/parking_garage/garage_door.gd" id="3_door"]
-[ext_resource type="Material" path="res://world/materials/proto_dark.tres" id="7_floor"]
-[ext_resource type="Material" path="res://world/materials/proto_wall.tres" id="8_wall"]
 [ext_resource type="PackedScene" path="res://features/parking_garage/garage.tscn" id="15_garage"]
 
 [node name="ParkingGarage" type="Node3D"]
-
-[node name="Entrance" type="Node3D" parent="."]
-position = Vector3(12, 0, 31)
-
-[node name="Floor" type="CSGBox3D" parent="Entrance"]
-position = Vector3(0, -0.1, 0)
-size = Vector3(2.4, 0.2, 2.4)
-material = ExtResource("7_floor")
-use_collision = true
-
-[node name="Ceiling" type="CSGBox3D" parent="Entrance"]
-position = Vector3(0, 2.6, 0)
-size = Vector3(2.4, 0.2, 2.4)
-material = ExtResource("8_wall")
-use_collision = true
-
-[node name="BackWall" type="CSGBox3D" parent="Entrance"]
-position = Vector3(0, 1.3, 1.3)
-size = Vector3(2.4, 2.6, 0.2)
-material = ExtResource("8_wall")
-use_collision = true
-
-[node name="LeftWall" type="CSGBox3D" parent="Entrance"]
-position = Vector3(-1.3, 1.3, 0)
-size = Vector3(0.2, 2.6, 2.4)
-material = ExtResource("8_wall")
-use_collision = true
-
-[node name="RightWall" type="CSGBox3D" parent="Entrance"]
-position = Vector3(1.3, 1.3, 0)
-size = Vector3(0.2, 2.6, 2.4)
-material = ExtResource("8_wall")
-use_collision = true
-
-[node name="Door" type="CSGBox3D" parent="Entrance"]
-position = Vector3(0, 1.1, 1.15)
-size = Vector3(1.1, 2.1, 0.08)
-material = ExtResource("8_wall")
-use_collision = true
-script = ExtResource("3_door")
-destination = NodePath("../../Garage/GarageArrival")
-door_label = "Enter the parking garage"
-
-[node name="EntranceArrival" type="Marker3D" parent="Entrance"]
-position = Vector3(0, 1.2, -1)
-
-[node name="Sign" type="Label3D" parent="Entrance"]
-position = Vector3(0, 2.3, 1.15)
-billboard = 1
-text = "STAFF ONLY
-PARKING GARAGE ACCESS"
-font_size = 20
-outline_size = 6
-
-[node name="Light" type="OmniLight3D" parent="Entrance"]
-position = Vector3(0, 2.2, 0)
-light_color = Color(0.8, 0.85, 0.9, 1)
-light_energy = 0.8
-omni_range = 4.0
 
 [node name="Garage" parent="." instance=ExtResource("15_garage")]
 position = Vector3(0, 0, 600)

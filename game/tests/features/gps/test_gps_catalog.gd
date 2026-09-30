@@ -43,9 +43,9 @@ func test_existing_entities_are_categorized_without_duplicates() -> void:
 			assert_eq(destination.category, "People")
 			assert_eq(destination.label, "Guest Ada")
 	assert_eq(frogs, 1, "Multiple discovery groups still produce one destination")
-	assert_eq(destinations.size(), 18)
+	assert_eq(destinations.size(), 17)
 	player.add_to_group(&"local_player")
-	assert_eq(_gps.destinations().size(), 17, "Never list yourself")
+	assert_eq(_gps.destinations().size(), 16, "Never list yourself")
 
 
 func test_target_tracks_world_position_and_clears_on_death_and_despawn() -> void:
