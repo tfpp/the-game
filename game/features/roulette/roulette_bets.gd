@@ -73,6 +73,11 @@ static func payout_to_one(key: String) -> int:
 	return 36 / count - 1 if count > 0 else 0
 
 
+## Winnings (stake not included) if `cents` on `key` wins: cents × payout.
+static func winnings(key: String, cents: int) -> int:
+	return cents * payout_to_one(key)
+
+
 ## Chance that `key` wins one spin: covered pockets / 38.
 static func probability(key: String) -> float:
 	return numbers(key).size() / float(RouletteWheel.POCKET_COUNT)
@@ -152,7 +157,7 @@ static func chips_for(cents: int) -> Array[int]:
 	return result
 
 
-## Player-facing description, e.g. "Split 17 / 20 — pays 17 to 1".
+## Player-facing description, e.g. "Split 17 / 20 — pays 17:1".
 static func describe(key: String) -> String:
 	if not is_valid(key):
 		return ""
@@ -177,7 +182,7 @@ static func describe(key: String) -> String:
 			pockets.append(RouletteWheel.label_for(number))
 		var kinds := {1: "Straight", 2: "Split", 3: "Street", 4: "Corner", 5: "Top line", 6: "Line"}
 		label = "%s %s" % [kinds.get(pockets.size(), "Bet"), " / ".join(pockets)]
-	return "%s — wins %s, pays %d to 1" % [label, odds_text(key), payout_to_one(key)]
+	return "%s — pays %d:1" % [label, payout_to_one(key)]
 
 
 ## The spot under texture pixel `pixel`, or "" for none.

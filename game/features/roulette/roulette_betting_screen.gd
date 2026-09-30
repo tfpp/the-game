@@ -349,6 +349,17 @@ func _refresh_wallet() -> void:
 func _hover(spot: String) -> void:
 	hovered = spot
 	var text := RouletteBets.describe(spot)
+	var staked := int(
+		RouletteBets.by_spot(table.placements_for(multiplayer.get_unique_id())).get(spot, 0)
+	)
+	if staked > 0:
+		text += (
+			"  ·  your %s wins %s"
+			% [
+				PlayerMoney.format_money(staked),
+				PlayerMoney.format_money(RouletteBets.winnings(spot, staked))
+			]
+		)
 	if _using_pad and text.is_empty():
 		text = "Move the cursor onto the layout"
 	_hover_label.text = text

@@ -64,10 +64,7 @@ func test_odds_match_the_published_american_table() -> void:
 func test_top_line_pays_six_to_one_with_the_larger_edge() -> void:
 	var key := "0-1-2-3-37"
 	assert_eq(RouletteBets.spot_at(RouletteBets.anchor(key)), key)
-	assert_eq(
-		RouletteBets.describe(key),
-		"Top line 0 / 1 / 2 / 3 / 00 — wins 13.15% (6.6 : 1), pays 6 to 1"
-	)
+	assert_eq(RouletteBets.describe(key), "Top line 0 / 1 / 2 / 3 / 00 — pays 6:1")
 	assert_almost_eq(RouletteBets.expected_return(key), -3.0 / 38.0, 0.000001)
 	assert_eq(RouletteBets.settle([[key, 100]], RouletteWheel.DOUBLE_ZERO)["payout"], 700)
 
@@ -136,7 +133,10 @@ func test_pixels_round_trip_through_table_space() -> void:
 
 
 func test_descriptions_name_the_bet_and_its_odds() -> void:
-	assert_eq(RouletteBets.describe("17-20"), "Split 17 / 20 — wins 5.26% (18 : 1), pays 17 to 1")
-	assert_eq(RouletteBets.describe("0-37"), "Split 0 / 00 — wins 5.26% (18 : 1), pays 17 to 1")
-	assert_eq(RouletteBets.describe("red"), "Red — wins 47.36% (1.1 : 1), pays 1 to 1")
+	assert_eq(RouletteBets.describe("17-20"), "Split 17 / 20 — pays 17:1")
+	assert_eq(RouletteBets.describe("0-37"), "Split 0 / 00 — pays 17:1")
+	assert_eq(RouletteBets.describe("red"), "Red — pays 1:1")
+	assert_eq(RouletteBets.describe("low"), "1 to 18 — pays 1:1")
+	assert_eq(RouletteBets.winnings("17", 600), 21000, "35:1 on $6")
+	assert_eq(RouletteBets.winnings("dozen2", 500), 1000)
 	assert_eq(RouletteBets.describe(""), "")

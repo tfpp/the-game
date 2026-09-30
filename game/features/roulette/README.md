@@ -43,9 +43,9 @@ columns and dozens 2:1, red/black/odd/even/high/low 1:1. Every one of these has 
 same expected return of −2/38 (−5.26%). The page's tables leave out the American
 five-number top line (0-00-1-2-3): its formula payout, 36/5 − 1 = 6.2, is not a whole
 number, so it pays the standard casino 6:1 here, winning 5/38 (13.15%, 6.6 : 1) with an
-expected return of −3/38 (−7.89%), the one worse bet on the layout. Hovering a spot shows its probability and odds
-against as the page prints them, e.g. "5.26% (18 : 1)". Slot machine luck buffs do not
-apply.
+expected return of −3/38 (−7.89%), the one worse bet on the layout. Hovering a spot shows its payout, e.g. "Split 17 / 20 — pays 17:1",
+plus what your chips there would win if you have any, e.g. "your $6.00 wins $102.00"
+(winnings on top of the returned stake). Slot machine luck buffs do not apply.
 
 ## Money
 
