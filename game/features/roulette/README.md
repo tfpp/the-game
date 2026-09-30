@@ -82,7 +82,7 @@ not learn the winning pocket until the spin ends.
 - `roulette_betting_screen.gd` is the local overview camera, chip rack and controls.
 - `roulette_ui_theme.gd` skins both screens with the Golden Crown table furniture in
   `assets/roulette/ui/` (mahogany-and-felt panel, velvet plaque, cream-and-brass
-  buttons, brass ring on the selected chip); see its `GENERATED_ASSETS.md`.
+  buttons, brass pointer over the selected chip); see its `GENERATED_ASSETS.md`.
 - `tools/bake_chip_icons.gd` rebuilds the round chip icons from the chip textures.
 - `../interaction/` supplies the shared Use binding and proximity prompt.
 

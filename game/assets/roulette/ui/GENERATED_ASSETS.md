@@ -1,12 +1,12 @@
 # Roulette UI artwork
 
-`panel.png`, `plaque.png`, `button.png` and `chip_ring.png` are original project artwork
+`panel.png`, `plaque.png`, `button.png` and `chip_pointer.png` are original project artwork
 generated with the built-in ImageGen tool, September 2026, for the roulette betting and
 seat screens (`features/roulette/roulette_ui_theme.gd`).
 
 Each source (about 1250–2170 px wide) was cropped to its solid pixels (alpha ≥ 0.5),
 downscaled with Lanczos, and given hard alpha edges: panel 128×128, plaque 192×36,
-button 144×34, chip ring 64×64. They are drawn as nine-slices with nearest filtering
+button 144×34, chip pointer 24×17. They are drawn as nine-slices with nearest filtering
 (margins: panel 12, plaque 10, button 8 pixels). Button hover/pressed/disabled states
 are tints of the one button texture.
 
@@ -45,8 +45,11 @@ ratio: flat cream/ivory enamel centre with a uniform aged-brass bevelled border 
 thin dark outline, slight raised look. Centre must be plain and uniform. Isolated on
 transparent background.
 
-## chip_ring
+## chip_pointer
 
-A single circular aged-brass selection ring, like the gold rim of a casino chip holder:
-a thick faceted brass ring with a hollow fully transparent centre, slightly glowing warm
-highlight, low-poly octagon-ish facets. Isolated on transparent background.
+Replaced an earlier brass selection ring. Chosen over a warm lamplight pool and a velvet
+cushion tile generated at the same time.
+
+A small brass casino dealer's win marker used as a UI selection pointer: a short
+downward-pointing faceted brass chevron/arrowhead with a cream enamel inlay, chunky and
+readable at small size. Isolated on transparent background.

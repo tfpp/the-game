@@ -26,3 +26,12 @@ func test_theme_skins_panels_buttons_and_chips() -> void:
 	var root := RouletteUiTheme.root()
 	assert_eq(root.texture_filter, CanvasItem.TEXTURE_FILTER_NEAREST, "pixel-crisp")
 	root.free()
+
+
+func test_selected_chip_gets_a_pointer_above_it() -> void:
+	var pointer := RouletteUiTheme.chip_pointer()
+	assert_eq(pointer.texture, RouletteUiTheme.CHIP_POINTER)
+	assert_lt(pointer.position.y + pointer.size.y, 0.0, "above the chip, not over it")
+	assert_almost_eq(pointer.position.x + pointer.size.x / 2.0, 32.0, 0.5, "centred on it")
+	assert_false(pointer.visible, "hidden until its chip is selected")
+	pointer.free()

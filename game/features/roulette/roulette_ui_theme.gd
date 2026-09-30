@@ -2,13 +2,15 @@ class_name RouletteUiTheme
 extends RefCounted
 ## Golden Crown table furniture for the roulette screens: a mahogany-and-brass panel
 ## over green felt, a burgundy velvet title plaque, cream enamel buttons with brass
-## rims and a brass ring that marks the selected chip. The textures in
+## rims and a brass pointer over the selected chip. The textures in
 ## assets/roulette/ui/ are small pixel-art 9-slices; draw them with nearest filtering.
 
 const PANEL := preload("res://assets/roulette/ui/panel.png")
 const PLAQUE := preload("res://assets/roulette/ui/plaque.png")
 const BUTTON := preload("res://assets/roulette/ui/button.png")
-const CHIP_RING := preload("res://assets/roulette/ui/chip_ring.png")
+const CHIP_POINTER := preload("res://assets/roulette/ui/chip_pointer.png")
+## Where the pointer sits above a 64-pixel chip icon at the top of its button.
+const POINTER_RECT := Rect2(20, -18, 24, 17)
 ## Round chip faces baked by tools/bake_chip_icons.gd, in RouletteBets.DENOMINATIONS order.
 const CHIP_ICONS: Array[Texture2D] = [
 	preload("res://assets/roulette/ui/chip_1_icon.png"),
@@ -95,15 +97,18 @@ static func root() -> Control:
 	return control
 
 
-## A brass ring drawn over a chip button while it is the selected denomination.
-static func chip_ring() -> TextureRect:
-	var ring := TextureRect.new()
-	ring.name = "SelectedRing"
-	ring.texture = CHIP_RING
-	ring.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	ring.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return ring
+## A brass pointer shown above the selected chip in the rack; add it to the chip's button.
+static func chip_pointer() -> TextureRect:
+	var pointer := TextureRect.new()
+	pointer.name = "Selection"
+	pointer.texture = CHIP_POINTER
+	pointer.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pointer.stretch_mode = TextureRect.STRETCH_SCALE
+	pointer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pointer.position = POINTER_RECT.position
+	pointer.size = POINTER_RECT.size
+	pointer.visible = false
+	return pointer
 
 
 ## Nine-slice box: `margin` texture pixels of border, `content` (left, top, right,

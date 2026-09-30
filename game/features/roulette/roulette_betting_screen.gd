@@ -343,7 +343,7 @@ func _refresh_wallet() -> void:
 		var value := RouletteBets.DENOMINATIONS[index]
 		_chip_buttons[index].disabled = not betting or value > available
 		_chip_buttons[index].button_pressed = index == selected
-		(_chip_buttons[index].get_node("SelectedRing") as Control).visible = index == selected
+		(_chip_buttons[index].get_node("Selection") as Control).visible = index == selected
 
 
 func _hover(spot: String) -> void:
@@ -470,10 +470,14 @@ func _build() -> void:
 	box.add_theme_constant_override("separation", 4)
 	bottom.add_child(box)
 	_hover_label = _label(box, "", 16)
+	# Headroom above the chips for the selected chip's pointer.
+	var rack_space := MarginContainer.new()
+	rack_space.add_theme_constant_override("margin_top", 16)
+	box.add_child(rack_space)
 	var rack := HFlowContainer.new()
 	rack.alignment = FlowContainer.ALIGNMENT_CENTER
-	box.add_child(rack)
-	_rack = rack
+	rack_space.add_child(rack)
+	_rack = rack_space
 	for index: int in RouletteBets.DENOMINATIONS.size():
 		var button := _button(
 			rack, _chip_label(RouletteBets.DENOMINATIONS[index]), _select.bind(index)
@@ -486,14 +490,7 @@ func _build() -> void:
 		button.toggle_mode = true
 		button.custom_minimum_size = Vector2(64, 84)
 		button.tooltip_text = PlayerMoney.format_money(RouletteBets.DENOMINATIONS[index]) + " chip"
-		var ring := RouletteUiTheme.chip_ring()
-		ring.set_anchors_preset(Control.PRESET_TOP_WIDE)
-		ring.offset_left = -4
-		ring.offset_right = 4
-		ring.offset_top = -4
-		ring.offset_bottom = 64
-		ring.visible = false
-		button.add_child(ring)
+		button.add_child(RouletteUiTheme.chip_pointer())
 		_chip_buttons.append(button)
 	_wallet = _label(box, "", 15)
 	_notice = _label(box, "", 14)

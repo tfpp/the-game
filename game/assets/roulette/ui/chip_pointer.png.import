@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://djnou8ysbhdsp"
-path="res://.godot/imported/chip_ring.png-d91351c9c8aee9ded4e051f893133839.ctex"
+uid="uid://t6j67fot23g2"
+path="res://.godot/imported/chip_pointer.png-9e1112bec5840ce8d70ddab4437fbcb0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/roulette/ui/chip_ring.png"
-dest_files=["res://.godot/imported/chip_ring.png-d91351c9c8aee9ded4e051f893133839.ctex"]
+source_file="res://assets/roulette/ui/chip_pointer.png"
+dest_files=["res://.godot/imported/chip_pointer.png-9e1112bec5840ce8d70ddab4437fbcb0.ctex"]
 
 [params]
 
