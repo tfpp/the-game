@@ -18,6 +18,8 @@ func test_late_join_stopped_reels_immediately_show_authoritative_symbols() -> vo
 	_view._process(0.016)
 	assert_eq(_view._positions, [4.0, 2.0, 1.0])
 	assert_eq(_view._status.text, "WON $30.00")
+	assert_eq(_machine._last_sound_spin, 0, "A result snapshot does not replay a win event")
+	assert_false((_machine.get_node("Celebration") as SlotCelebration).is_processing())
 
 
 func test_stop_order_settles_correct_symbols_while_remaining_reels_keep_moving() -> void:
