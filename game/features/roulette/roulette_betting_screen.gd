@@ -36,11 +36,10 @@ var selected := 0
 ## Spot under the mouse or controller cursor.
 var hovered := ""
 
-## The chip about to be placed: a see-through chip that pulses brass, ringed on the felt.
+## The chip about to be placed: a slightly see-through chip that pulses brass.
 var _preview: Node3D
 var _ghost: MeshInstance3D
 var _glow: StandardMaterial3D
-var _ring: Sprite3D
 var _pulse := 0.0
 var _cursor := Vector2(127, 83)
 var _using_pad := false
@@ -385,16 +384,6 @@ func _build_preview() -> void:
 	_glow.albedo_color = Color(RouletteUiTheme.BRASS, 0.4)
 	_ghost.material_overlay = _glow
 	_preview.add_child(_ghost)
-	_ring = Sprite3D.new()
-	_ring.texture = RouletteUiTheme.CHIP_RING
-	# 64 px -> 0.11 m, just wider than the 0.08 m chip.
-	_ring.pixel_size = 0.0017
-	_ring.rotation.x = -PI / 2.0
-	_ring.position.y = RouletteTableView.CHIP_HEIGHT_M * 0.5
-	_ring.shaded = false
-	_ring.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	_preview.add_child(_ring)
 
 
 ## Pulses the preview so it reads as "not placed yet" against the real chips.
@@ -402,7 +391,6 @@ func _animate_preview(delta: float) -> void:
 	_pulse = fmod(_pulse + delta, TAU)
 	var wave := 0.5 + 0.5 * sin(_pulse * PREVIEW_PULSE_SPEED)
 	_glow.albedo_color.a = lerpf(0.2, 0.65, wave)
-	_ring.modulate = Color(1.0, 1.0, 1.0, lerpf(0.55, 1.0, wave))
 	_ghost.position.y = wave * PREVIEW_BOB_M
 
 
