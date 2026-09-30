@@ -57,12 +57,12 @@ func test_a_power_punch_ragdolls_and_they_walk_back_after_getting_up() -> void:
 	_step(1.0)
 	assert_gt(_patron.position.x, 0.3, "knocked sideways")
 	var body := _patron.get_node("Body") as Node3D
-	var head := body.get_node("Hips/Torso/Head") as Node3D
+	var head := body.get_node("Avatar/Rig/Torso/Head") as Node3D
 	assert_lt(head.global_position.y - _patron.global_position.y, 0.6, "lying down")
 	assert_gt(head.global_position.x, _patron.global_position.x + 1.0, "fell along the punch")
 	_step(HumanoidTarget.RAGDOLL_S + CasinoPatron.STAGGER_S + 1.5)
 	assert_false(_patron.net_ragdoll)
-	assert_gt(head.global_position.y - _patron.global_position.y, 1.4, "standing again")
+	assert_gt(head.global_position.y - _patron.global_position.y, 1.3, "standing again")
 	_step(2.0)
 	assert_almost_eq(_patron.position.x, 0.0, 0.1, "back on the route")
 

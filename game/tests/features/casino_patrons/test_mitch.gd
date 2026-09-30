@@ -32,37 +32,38 @@ func test_spawns_on_his_route_with_wheelchair_and_intern() -> void:
 	assert_not_null(_mitch.find_child("Wheelchair", true, false))
 	var intern := _mitch.get_node("Body/Intern") as PatronModel
 	assert_gt(intern.position.z, 0.5, "The intern pushes from behind (+Z)")
-	assert_not_null(intern.find_child("LongHair", true, false))
+	assert_eq(intern.avatar.hair_style, "long")
+	assert_eq(intern.avatar.body_type, &"girl")
 	assert_null(intern.find_child("NameTag", true, false))
 
 
 func test_sits_in_the_chair_and_intern_holds_handles() -> void:
 	_mitch._process(0.1)
 	var model := _mitch.get_node("Body") as MitchModel
-	var hips := model.get_node("Hips") as Node3D
-	assert_almost_eq(hips.position.y, MitchModel.SEAT_Y + 0.08, 0.01)
-	var hand := model.get_node("Intern").find_child("HandR", true, false) as Node3D
+	assert_eq(model.avatar.locomotion, &"seated")
+	var rig := model.avatar.get_node("Rig") as Node3D
+	assert_almost_eq(rig.position.y, MitchModel.SEATED_HIP - PatronModel.HIP_HEIGHT, 0.01)
+	var intern := model.get_node("Intern") as PatronModel
 	var handle := model.find_child("HandleR", true, false) as Node3D
-	var local_hand := model.to_local(hand.global_position)
+	var local_hand := model.to_local(intern.hand_position(true))
 	var local_handle := model.to_local(handle.global_position)
 	assert_lt(local_hand.distance_to(local_handle), 0.25, "%s vs %s" % [local_hand, local_handle])
 
 
 func test_peace_sign_raises_the_hand_for_everyone() -> void:
 	var model := _mitch.get_node("Body") as MitchModel
-	var fingers := model.find_child("PeaceSign", true, false) as Node3D
 	_mitch._process(0.1)
-	assert_false(fingers.visible)
-	var resting := (model.find_child("HandR", true, false) as Node3D).global_position.y
+	assert_false(model.is_throwing_peace())
+	var resting := model.hand_position(true).y
 	_mitch._throw_peace_sign()
 	for i: int in 10:
 		_mitch._process(0.05)
 	assert_true(_mitch.is_throwing_peace_sign())
-	assert_true(fingers.visible)
-	assert_gt((model.find_child("HandR", true, false) as Node3D).global_position.y, resting + 0.4)
+	assert_true(model.is_throwing_peace())
+	assert_gt(model.hand_position(true).y, resting + 0.4)
 	for i: int in 80:
 		_mitch._process(0.05)
-	assert_false(fingers.visible)
+	assert_false(model.is_throwing_peace())
 
 
 func test_server_throws_peace_sign_on_a_timer() -> void:

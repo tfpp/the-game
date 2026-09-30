@@ -59,13 +59,15 @@ func test_texture_respects_size_limit() -> void:
 	assert_lte(texture.get_height(), 128)
 
 
-func test_salon_card_dealers_use_new_model_and_others_keep_theirs() -> void:
+func test_salon_card_dealers_use_new_model_and_staff_share_the_tux() -> void:
 	var salon := SALON.instantiate()
 	add_child_autofree(salon)
 	for index: int in 3:
 		var dealer := salon.get_node("Dealer%d" % index)
 		assert_is(dealer.get_node("Body"), CardDealerModel)
-	assert_false(salon.get_node("Bartender").get_node("Body") is CardDealerModel)
+	var bartender := salon.get_node("Bartender/Body") as CardDealerModel
+	assert_not_null(bartender, "the bartender wears the same tux")
+	assert_false(bartender.dealing, "the bartender stands at ease")
 	var phases := {}
 	for index: int in 3:
 		phases[(salon.get_node("Dealer%d/Body" % index) as CardDealerModel).seed_phase] = true

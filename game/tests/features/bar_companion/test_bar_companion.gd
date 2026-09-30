@@ -184,13 +184,14 @@ func test_stats_and_escort_are_replicated_for_late_joiners() -> void:
 func test_seated_on_the_stool_clear_of_the_counter() -> void:
 	var stool := _bar.get_node("Stool/Seat") as MeshInstance3D
 	var seat_top := stool.global_position.y + (stool.mesh as CylinderMesh).height / 2.0
-	var pelvis := _vivienne.find_child("Pelvis", true, false) as MeshInstance3D
-	var pelvis_bottom := pelvis.global_position.y - pelvis.scale.y / 2.0
-	assert_almost_eq(pelvis_bottom, seat_top, 0.03, "sits on the seat, not above or in it")
+	var model := _vivienne.get_node("Body") as CompanionModel
+	assert_eq(model.avatar.locomotion, &"seated")
+	var hip := model.bone_position("ThighL").y
+	assert_almost_eq(hip - seat_top, 0.07, 0.03, "sits on the seat, not above or in it")
+	assert_gt(model.bone_position("FootL").y, -1.5, "feet stay above the floor")
 	assert_almost_eq(seat_top, -1.5 + 0.74, 0.01)
 	# The bar counter's front face is at z -9.4 (salon.tscn BarCounter).
-	for part: String in ["ShoeL", "ShoeR", "ShinL", "ShinR"]:
-		var mesh := _vivienne.find_child(part, true, false) as MeshInstance3D
-		assert_gt(mesh.global_position.z - 0.15, -9.4, part + " stays in front of the counter")
+	for bone: String in ["FootL", "FootR", "CalfL", "CalfR"]:
+		assert_gt(model.bone_position(bone).z - 0.15, -9.4, bone + " stays in front of the counter")
 	# Facing the bar (-Z) like the counter's other guests.
 	assert_almost_eq((_vivienne.global_basis * Vector3.FORWARD).z, -1.0, 0.01)

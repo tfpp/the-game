@@ -17,7 +17,6 @@ const STAGGER_PUSH_SPEED := 4.5
 const FALL_SPEED := 4.0
 const GET_UP_SPEED := 1.5
 const LYING_LIFT := 0.14
-const STRIDE_PER_M := 4.2
 const TALK_RANGE := 2.5
 
 ## Replicated (server -> everyone), see patron.tscn's synchronizer.
@@ -47,7 +46,6 @@ var _return_to: Variant = null
 var _fallen := 0.0
 var _flinch := 0.0
 var _flinch_dir := Vector3.FORWARD
-var _phase := 0.0
 var _walk := 0.0
 var _idle := 0.0
 var _last_position := Vector3.ZERO
@@ -147,7 +145,6 @@ func _process(delta: float) -> void:
 	_flinch = maxf(_flinch - delta * 3.0, 0.0)
 	var walking := 1.0 if delta > 0.0 and moved / delta > 0.3 and goal == 0.0 else 0.0
 	_walk = move_toward(_walk, walking, delta * 5.0)
-	_phase = fmod(_phase + moved * STRIDE_PER_M, TAU)
 	_idle += delta
 	var yaw := Basis(Vector3.UP, net_yaw)
 	var pose := Transform3D(
@@ -159,7 +156,7 @@ func _process(delta: float) -> void:
 		Vector3.UP * LYING_LIFT * _fallen
 	)
 	_body.transform = pose
-	_body.pose(_phase, _walk, _fallen, _flinch, _idle)
+	_body.pose(delta, _walk, _fallen, _flinch, _idle)
 	_collider.transform = pose * _collider_rest
 
 

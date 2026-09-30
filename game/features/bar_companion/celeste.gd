@@ -30,7 +30,6 @@ var _trail: Array[Vector3] = []
 var _visit_left := 0.0
 var _remark_left := REMARK_S
 var _line := 0
-var _phase := 0.0
 var _idle := 0.0
 var _previous := Vector3.ZERO
 
@@ -111,9 +110,8 @@ func _physics_process(delta: float) -> void:
 	rotation.y = lerp_angle(rotation.y, net_yaw, minf(delta * 12.0, 1.0))
 	var moved := global_position.distance_to(_previous)
 	_previous = global_position
-	_phase += minf(moved, SPEED * delta) * 4.0
 	_idle += delta
-	_body.pose(_phase, clampf(moved / maxf(delta * SPEED, 0.001), 0.0, 1.0), 0, 0, _idle)
+	_body.pose(delta, clampf(moved / maxf(delta * SPEED, 0.001), 0.0, 1.0), 0, 0, _idle)
 
 
 func _advance(delta: float) -> void:

@@ -141,8 +141,11 @@ func test_models_keep_vivienne_identity_and_give_celeste_a_distinct_look() -> vo
 	add_child_autofree(original)
 	original.build_vivienne()
 	assert_eq((original.get_node("NameTag") as Label3D).text, "Vivienne")
-	var chest := original.find_child("Chest", true, false) as MeshInstance3D
-	assert_eq((chest.material_override as StandardMaterial3D).albedo_color, CompanionModel.DRESS)
+	assert_eq(original.avatar.shirt_color, ClothingCatalog.COLORS[CompanionModel.DRESS])
+	assert_eq(original.avatar.body_type, &"girl")
+	var celeste := _npc.get_node("Body") as CompanionModel
+	assert_ne(celeste.avatar.shirt_color, original.avatar.shirt_color)
+	assert_eq(celeste.avatar.hair_style, "swept")
 	assert_eq((_npc.get_node("Body/NameTag") as Label3D).text, "Celeste")
-	assert_not_null(_npc.find_child("Fringe", true, false))
+	assert_not_null(_npc.find_child("Brooch", true, false))
 	assert_eq(_npc.collision_layer, 0, "never blocks a player's route")

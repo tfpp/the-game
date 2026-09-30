@@ -29,10 +29,13 @@ walk back in from the start of their route 6 s later.
 - Replicated: `net_position`, `net_yaw`, `net_alive`, `net_ragdoll`, `net_fall_dir`
   (all on spawn, so late joiners see downed patrons). The flinch and death effects
   are cosmetic RPCs.
-- `patron_model.gd` (`PatronModel`): a jointed body (hips, torso, neck, shoulders,
-  elbows, legs, knees) posed locally each frame: a walk cycle from the distance
-  moved, idle head turns, and a sprawled pose for the ragdoll while the whole body
-  topples toward the punch.
+- `patron_model.gd` (`PatronModel`): the player avatar rig (`BlockPlayerModel` from
+  `features/player_models`), posed locally each frame with the players' own walk
+  cycle, idle head turns, a seated pose (`sit()`) and a sprawled pose for the ragdoll
+  while the whole body topples toward the punch. Looks (`LOOKS`) pick an existing
+  `PlayerSkin` tone, `PlayerAppearance` hair and `ClothingCatalog` shirt/pants colors,
+  so no new textures are needed; ties, beards, glasses and badges are small boxes on
+  the rig's torso and head pivots.
 - Routes stay on the clear aisles of the gaming floor (y −1.5);
   `tests/features/casino_patrons/test_patron_routes.gd` sweeps every leg against the
   real room, slots and roulette.
@@ -41,8 +44,14 @@ Nothing is persisted.
 
 ## Stationary characters
 
-`stationary_patron.gd` wraps the existing salon dealer, guest and seated models in
-layer-2 hitboxes fitted to their imported poses. Salon guests, dealers, bartender
+`stationary_patron.gd` wraps the salon characters in layer-2 hitboxes fitted to their
+mesh bounds, or to a body's posed `hitbox_bounds()`. The salon guests
+(`stationary_guest/seated/lady.tscn`, `salon_guest_model.gd`) are `PatronModel` rigs
+turned to face +Z: standing guests idle and look around; seated guests and ladies sit
+on the card-table chairs (0.48 m seats, thighs dipping so the feet reach the floor)
+with both hands resting on the felt. Each picks a dinner suit or evening dress from
+its position, and is re-posed about ten times a second only while visible. The old
+imported salon character meshes were removed. Salon guests, dealers, bartender
 and the Lily Apartments clerk now implement the same `killable` / `take_hit(peer)`
 contract as roaming patrons. A direct hit from any gun kills them; repeated hits
 while dead do nothing. They respawn in place after six seconds. Power punches also
@@ -118,6 +127,7 @@ reuse the existing pants tint. `CardDealerModel` reaches both hands (arm IK via
 small out-of-phase loops (`hand_target()`), each dealer offset by `seed_phase`.
 The motion is local and cosmetic, runs only while visible, and needs no network
 state; dying, respawning and hitboxes still come from `StationaryPatron`.
-The bartender, apartment clerk and roulette croupier keep the old model.
+The bartender, apartment clerk and roulette croupier (`stationary_dealer.tscn`) wear
+the same tux with `dealing = false`: they stand at ease and glance around.
 `tests/features/casino_patrons/dealer_probe.tscn` renders a close-up
 (`-- --dealer-capture=/tmp/dealer.png`, add `--dealer-back` for the back).

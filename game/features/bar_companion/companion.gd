@@ -23,7 +23,6 @@ var _seat := Vector3.ZERO
 var _escort_left := 0.0
 var _linger_left := 0.0
 var _pending := false
-var _phase := 0.0
 var _idle := 0.0
 var _speech_left := 0.0
 
@@ -38,7 +37,7 @@ func _ready() -> void:
 	_seat = position
 	net_position = global_position
 	_body.build_vivienne()
-	_body.sit(0.0)
+	_body.sit(0.0, CompanionModel.SEATED_HIP, 0.0, 0.5, -0.9)
 	_talk.interaction_range = TALK_RANGE
 	_talk.register_use(can_use, _apply_use, 0.5)
 	_talk.event_received.connect(_on_event)
@@ -167,11 +166,10 @@ func _present(delta: float) -> void:
 	rotation.y = lerp_angle(rotation.y, net_yaw, minf(delta * 10.0, 1.0))
 	_idle += delta
 	if net_escort == 0:
-		_body.sit(_idle)
+		_body.sit(delta, CompanionModel.SEATED_HIP, _idle, 0.5, -0.9)
 	else:
 		var speed := moved / maxf(delta, 0.001)
-		_phase += moved * 4.0
-		_body.pose(_phase, clampf(speed / 2.0, 0.0, 1.0), 0.0, 0.0, _idle)
+		_body.pose(delta, clampf(speed / 2.0, 0.0, 1.0), 0.0, 0.0, _idle)
 	if _speech.visible:
 		_speech_left -= delta
 		_speech.visible = _speech_left > 0.0

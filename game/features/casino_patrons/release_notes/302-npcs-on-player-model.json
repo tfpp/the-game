@@ -1,0 +1,10 @@
+{
+  "title": "Casino NPCs on the player model",
+  "summary": "Every casino NPC now uses the player model, with real walk cycles for the strollers and natural seated poses at the card tables and bar.",
+  "notes": [
+    "Rebuild the roaming patrons, Mamdani, Trump, Mitch and his intern on the player avatar rig with its walk cycle.",
+    "Seat the salon card players on their chairs with their hands resting on the felt, and seat Mitch in his wheelchair.",
+    "Dress the salon guests, bar companions and staff in existing skin, hair and clothing colors.",
+    "Remove the unused imported salon character models."
+  ]
+}

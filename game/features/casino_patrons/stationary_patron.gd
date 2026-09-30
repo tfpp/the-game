@@ -1,6 +1,7 @@
 class_name StationaryPatron
 extends StaticBody3D
-## Existing posed casino characters, using the same weapon contract as roaming patrons.
+## Posed casino characters on the player avatar rig, with the roaming patrons'
+## weapon contract.
 
 const RESPAWN_DELAY_S := 6.0
 const FINISHES := preload("res://features/casino_hub/model_materials.gd")
@@ -26,6 +27,8 @@ func _ready() -> void:
 	_collider = CollisionShape3D.new()
 	_collider.name = "Hitbox"
 	var bounds := _model_bounds(_body, Transform3D.IDENTITY)
+	if _body.has_method(&"hitbox_bounds"):
+		bounds = _body.transform * (_body.call(&"hitbox_bounds") as AABB)
 	var shape := BoxShape3D.new()
 	shape.size = bounds.size
 	_collider.shape = shape
@@ -72,7 +75,7 @@ func _reset_session(_mode: Network.Mode) -> void:
 	net_alive = true
 
 
-## Imported poses differ (standing, leaning and seated); fit their actual mesh bounds.
+## Fits the actual mesh bounds unless the body supplies a posed `hitbox_bounds()`.
 static func _model_bounds(node: Node3D, parent_transform: Transform3D) -> AABB:
 	var transform := parent_transform * node.transform
 	var bounds := AABB()

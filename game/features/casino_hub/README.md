@@ -75,12 +75,11 @@ clearance, landings have floors, and the main rooms have solid ceilings.
 formal clothing, posed hands, readable cards and chip stacks. Card tables remain
 scenery: they do not advertise blackjack, add players or award money.
 Characters use `casino_patrons/stationary_patron.gd` for synchronized gun deaths
-and six-second respawns, keeping their existing models and poses. Existing slots
+and six-second respawns, on the player avatar rig (`casino_patrons/README.md`). Existing slots
 and roulette retain their authoritative interactions and payouts.
 
 The modelled table and its three chairs total 6,230 triangles across three shared
-materials (felt, walnut, textured palette). Each shaped patron is 1,250–1,306
-triangles and one material. The entire bar,
+materials (felt, walnut, textured palette). The entire bar,
 including 68 bottles, is 5,012 triangles/two materials; gallery architecture is
 3,576 triangles/two materials. Stationary patrons replicate only alive state and
 a transient death effect.

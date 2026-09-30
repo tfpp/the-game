@@ -39,8 +39,8 @@ Tests: `tests/features/apartments/` covers allocation thresholds, repeated reque
 invalid peers/range, reconnects, guest reuse, late snapshots, preloading and return
 travel, and actual collision support/capsule clearance through all ten rooms.
 
-The receptionist reuses `casino_patrons/stationary_dealer.tscn`, preserving the
-casino model and finishes. It lives on the persistent Lobby anchor outside Content;
+The receptionist reuses `casino_patrons/stationary_dealer.tscn`, now on the player
+avatar rig in the staff tux. It lives on the persistent Lobby anchor outside Content;
 gun hits kill it for six seconds through the existing killable contract. The desk
 continues to allocate apartments while the clerk respawns.
 No new textures, dynamic lights or frame-by-frame geometry rebuilding are added.

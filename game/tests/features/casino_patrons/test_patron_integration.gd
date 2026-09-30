@@ -37,8 +37,12 @@ func test_patrons_are_punchable_humanoids_with_articulated_limbs() -> void:
 	patron.route = [Vector3.ZERO, Vector3(0, 0, -5)] as Array[Vector3]
 	add_child_autofree(patron)
 	assert_true(patron.is_in_group(&"killable"))
-	for joint: String in ["Head", "ShoulderL/ElbowL", "ShoulderR", "LegL/KneeL", "LegR/KneeR"]:
-		var path := "Body/Hips/" + ("" if joint.begins_with("Leg") else "Torso/") + joint
+	assert_is(patron.get_node("Body/Avatar"), BlockPlayerModel, "wears the player avatar rig")
+	assert_is(patron.get_node("Body/Avatar/Rig/Human"), SkinnedHuman)
+	for joint: String in [
+		"Torso/Head", "Torso/LeftArm/Forearm", "Torso/RightArm", "LeftLeg/Shin", "RightLeg/Shin"
+	]:
+		var path := "Body/Avatar/Rig/" + joint
 		assert_not_null(patron.get_node_or_null(path), path)
 
 

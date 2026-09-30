@@ -29,8 +29,8 @@ facing the counter. Everything uses Use (E, Circle / B, or mobile **USE**).
 - `bartender.gd` and `companion.gd` (`Vivienne`) use `NetworkedInteraction`: the server
   checks the sender, range and state, then charges the wallet asynchronously. Vivienne
   replicates `net_escort` on change and `net_position` / `net_yaw` continuously.
-- `companion_model.gd` restyles `casino_patrons`' `PatronModel` (dress, long hair) and
-  adds a seated pose. `charm_math.gd` holds the pure rules.
+- `companion_model.gd` dresses `casino_patrons`' `PatronModel` (the player avatar rig)
+  in a one-color evening dress with long hair and seats her with `PatronModel.sit()`. `charm_math.gd` holds the pure rules.
 - `features/slot_machine` adds `rerolls_for()` to its spin rerolls and calls
   `note_win()` when the reels stop on a win (not earlier, so charisma can't spoil the
   result). `features/apartments` gained `unit_bounds()` and `in_unit()`.
@@ -43,8 +43,8 @@ Tests: `tests/features/bar_companion/`.
 
 ## Celeste: an uncertain ally
 
-Celeste stands beside the bar at **(-6.6, -1.5, -7.8)**, in a dark green evening
-dress with black opera gloves, a swept fringe and a brass brooch. Use **E**, **B /
+Celeste stands beside the bar at **(-6.6, -1.5, -7.8)**, in a moss green evening
+dress with a swept fringe and a gold brooch. Use **E**, **B /
 Circle**, or touch **USE** to invite her along for free; Use her again to part ways.
 She accompanies one player at a time around the gaming floor for up to five minutes,
 sharing quiet tips and suspicious asides every 22 seconds through `Subtitles`.
@@ -62,8 +62,8 @@ obstacles; she cannot jump over them. She stays within the main gaming floor
 18 metres ahead, dying, disconnecting, replacing the player, timing out or changing
 sessions returns her to the bar. State resets on restart; no persistence or rewards.
 
-`CompanionModel.build_evening_guest(name, dress_color, hair_color)` shares the
-existing dress silhouette; `build_vivienne()` preserves the original appearance.
+`CompanionModel.build_evening_guest(name, dress, hair_color, hair)` shares the
+dress silhouette (ClothingCatalog and PlayerAppearance indices); `build_vivienne()` preserves the original appearance.
 Celeste adds only cosmetic accessories and reuses `PatronModel.pose()`.
 Tests: `test_celeste.gd` (requests, lifecycle, subtitles and appearance) and
 `test_celeste_layout.gd` (actual casino floor, clearance, following and collision).

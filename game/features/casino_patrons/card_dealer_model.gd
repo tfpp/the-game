@@ -18,9 +18,13 @@ const PERIOD_S := 2.2
 @export var seed_phase := 0.0
 @export var skin_index := 3
 @export var hair_style := "crop"
+## Off for the bartender, apartment clerk and roulette croupier: they stand at ease,
+## glancing around, posed ~10 times a second instead of every frame.
+@export var dealing := true
 
 var model := BlockPlayerModel.new()
 var _time := 0.0
+var _since := 0.0
 
 
 func _ready() -> void:
@@ -45,11 +49,21 @@ func _process(delta: float) -> void:
 	if not is_visible_in_tree():
 		return
 	_time += delta
-	_pose(delta)
+	if dealing:
+		_pose(delta)
+		return
+	_since += delta
+	if _since >= 0.1:
+		_pose(_since)
+		_since = 0.0
 
 
 func _pose(delta: float) -> void:
 	model.animate(delta, Vector3.ZERO, true, 1.0)
+	if not dealing:
+		model._head.rotation.y = sin(_time * 0.45) * 0.45
+		model.human.pose(model, false, false)
+		return
 	for right: bool in [false, true]:
 		model.human.reach_grip(right, to_global(hand_target(_time, right)))
 		model.human.set_finger_curl(right, 0.35)
