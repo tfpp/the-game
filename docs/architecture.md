@@ -218,6 +218,9 @@ protocol, income timing, offline behavior and deployment order.
    it and sends failures back (3 attempts by default), then commits and bundles the result.
    `publish.sh` pushes the bundle without force and opens the PR with the App token, so CI
    triggers.
+   - The agent declines requests that aren't in English or that would reveal secrets,
+     override its rules, add malicious code or expose personal data ("Safety" in
+     `harness/prompts/rules.md`). The bot closes a declined request's issue.
    - The App has no Workflows permission, so agents can't change `.github/workflows/`.
    - PRs touching `CODEOWNERS` paths are flagged.
    - Without our own App, publish falls back to the installed Claude GitHub App's token,
