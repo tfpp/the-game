@@ -1,0 +1,9 @@
+{
+  "title": "Cigarettes and bottled beer",
+  "summary": "Buy cigarettes and beer at the casino bar and watch your character smoke or drink.",
+  "notes": [
+    "Sell $2 cigarettes and $5 bottled beers through the existing bar shop and inventory.",
+    "Animate smoking and drinking with the player rig for everyone, including late joiners.",
+    "Apply existing intoxication rules when drinking beer and retain the immediate bar drink option."
+  ]
+}

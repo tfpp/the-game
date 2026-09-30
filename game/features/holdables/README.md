@@ -70,3 +70,40 @@ consumption, drops, grip positioning and replication use the ordinary food path.
 
 The `poke_bowl` FOOD item is sold by `features/food_court/poke_stand.gd` and uses
 that same collection, consumption and drop path, with a two-hand bowl view.
+
+## Cigarettes and bottled beer
+
+Buy these at the salon bartender's **Bar shop** using E / B / Circle / touch USE.
+A cigarette costs $2 and a bottled beer costs $5. They collect into an empty hand
+or the backpack; equip stored items through Inventory (I / View / Esc → Inventory).
+Left click, right bumper/trigger or touch FIRE starts a three-second smoke or drink.
+The right arm uses the existing skinned rig and grip IK, in first person, F3 and
+on remote players. Cigarettes emit eight lightweight smoke particles while used;
+beer tilts the bottle to the mouth. Creature heads and the penguin costume use their
+own mouth contact positions. There are no new key bindings or dynamic lights.
+
+`consumable_use.gd` is a child of the existing server-spawned Hand, not another
+inventory. The primary-action RPC delegates consumables to its NetworkedEntity
+validator, which checks sender ownership, an existing player, supported held item,
+empty payload and idle state. The item is reserved in the hand while playing;
+repeated actions, drops and inventory mutations are denied until it is consumed.
+Pickups may still fill free backpack slots. Beer calls `BarCompanion.add_drink`
+once at the start; smoking is cosmetic, with no combat/healing bonus.
+
+A single continuously replicated `{item, left}` snapshot includes spawn state, so
+late joiners resume the current phase instead of replaying the whole action.
+Clients interpolate presentation only. Completion or combat death consumes the
+reserved item; despawning the player finishes it, and disconnect/session reset
+removes the Hand as usual. Unused items retain normal in-session respawn behavior,
+but inventory is not persisted across sessions. Ordinary food remains instant,
+and weapons, props and drops keep their existing behavior.
+
+Tests: `tests/features/holdables/test_consumables.gd`, existing holdables/inventory
+suites and `tests/features/bar_companion/test_bar_shop.gd`. Run actual purchases,
+foreign requests, late joins and disconnects from `game/` with
+`tests/features/holdables/consumable_network_test.sh`. Render the actual rig with
+`tests/features/holdables/consumable_probe.tscn -- --item=beer --capture=/tmp/beer.png`;
+use `--item=cigarette`, `--first-person` or `--body=penguin` for other views.
+The two consumable views also define a `Mouth` marker at the bottle lip or cigarette
+filter. Playback aligns this contact independently of the hand's `Grip` marker;
+cigarettes relax the index/middle finger bones and other items restore their grip.

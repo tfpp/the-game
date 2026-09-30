@@ -181,6 +181,8 @@ func _holster_gun_rig_if_weapon(id: String) -> void:
 
 
 func _authorized() -> bool:
+	if hand().consumption.active():
+		return false
 	if not multiplayer.is_server():
 		return false
 	var sender := multiplayer.get_remote_sender_id()

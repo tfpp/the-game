@@ -36,3 +36,8 @@ saved between sessions. World pickups follow the existing one-use pickup system.
 
 Run `harness/verify.sh` from the repo root. Feature tests cover capacity, swaps, consumption, fixed
 colors, invalid and foreign requests, drops, pickups and underwear visuals.
+
+Cigarettes and bottled beer from the bar shop use the ordinary hand/backpack slots.
+During their three-second use animation, inventory mutations are temporarily denied
+so a reserved consumable cannot be stowed, swapped or dropped. New pickups can still
+fill free backpack slots. Both items have distinct inventory silhouettes.

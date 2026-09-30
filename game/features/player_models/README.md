@@ -167,3 +167,8 @@ python3 game/tests/features/player_models/network_check.py --emotes --godot /pat
 saves a screenshot. GUT coverage includes invalid/forged requests, ownership,
 independent cooldowns, clock-snapshot ordering, expiry/disconnect/despawn/reset,
 finger articulation, camera switching, and weapon/costume restoration.
+
+`BlockPlayerModel.mouth_transform()` supplies a world-space mouth contact for held
+consumables, following the animated head and costume scale. Holdables moves its
+existing grip toward that contact; the existing skinned arm IK performs the smoking
+and drinking gesture without a second avatar or movement authority change.
