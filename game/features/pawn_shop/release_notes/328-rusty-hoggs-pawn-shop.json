@@ -1,0 +1,11 @@
+{
+  "title": "Rusty Hogg's pawn shop",
+  "summary": "The pawn shop is now a real store off the south corridor, run by Rusty Hogg, with guns for sale on the wall.",
+  "notes": [
+    "Add a pawn shop room west of the south corridor with a GPS destination.",
+    "Add Rusty Hogg behind the pawn counter.",
+    "Sell the pistol, SMG, shotgun and AWP from the shop wall.",
+    "Move the Gun-O-Matic and its trash can into the pawn shop and shrink its sign to normal size.",
+    "Remove the free guns from the casino lobby counter."
+  ]
+}

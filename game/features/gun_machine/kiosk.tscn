@@ -24,9 +24,8 @@ mesh = SubResource("CabinetMesh")
 material_override = SubResource("CabinetMaterial")
 
 [node name="Sign" type="Label3D" parent="."]
-position = Vector3(0, 2.2, 0)
+position = Vector3(0, 2.3, 0)
 billboard = 1
-fixed_size = true
-pixel_size = 0.003
-outline_size = 10
+font_size = 32
+outline_size = 6
 text = "GUN-O-MATIC"
