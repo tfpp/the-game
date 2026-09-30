@@ -1,0 +1,5 @@
+{
+  "title": "Hold-to-select emote wheel",
+  "summary": "Hold B to choose Flip off, Wave, Salute or Cheer from an emote wheel.",
+  "notes": ["Add a radial emote selector on B or controller left-stick hold, with a touch-accessible Emotes menu link.", "Add networked Wave, Salute and Cheer gestures visible in first and third person."]
+}

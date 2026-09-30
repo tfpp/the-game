@@ -117,9 +117,9 @@ materials so held items, camera visibility and creature combinations still work.
 Disconnects clear all choices for that peer; local saved appearance is requested
 again in a new session. These preferences are per device, not account storage.
 
-Run `python3 game/tests/features/player_models/network_check.py --godot /path/to/godot`
-for real server/client appearance, sender identity, invalid payload and late-join
-checks. Run `game/tests/features/player_models/visual_probe.tscn` in Godot for a
+Run `game/tests/features/player_models/network_test.sh` for real server/client
+appearance and all four selectable emotes, sender identity, invalid payload and
+late-join checks (Godot and bash only). Run `game/tests/features/player_models/visual_probe.tscn` in Godot for a
 four-avatar contact sheet, optionally passing `-- --avatar-capture=/tmp/avatars.png`.
 
 
@@ -143,8 +143,20 @@ heads, tails and the penguin costume retain their existing appearance.
 
 ## Networked emotes
 
-Press **B** (controller left-stick click) to **Flip off**. Rebind it under
-**Esc → Settings → Controls → View → Emote: flip off**. The three-second gesture
+Hold **B** (controller left-stick click) to open the radial emote wheel. Move the
+mouse or left stick toward a slice, then release to perform **Flip off**, **Wave**,
+**Salute** or **Cheer**. The center, Esc or right-click cancels. The wheel pauses local
+movement/look/actions, not the server. On touch, open **Pause → Emotes** and tap a
+slice; this menu entry also supports mouse click or left-stick selection + A.
+Rebind under **Settings → Controls → View → Emote wheel (hold)**. The action ID
+`emote_flip_off` is retained so saved bindings still work. Focus loss, session
+changes and player replacement dismiss the wheel without sending a request.
+
+All gestures last three seconds with the existing 3.5-second per-player cooldown;
+requests during cooldown are ignored. Wave swings an open hand, Salute holds flat
+fingers to the brow, and Cheer pumps a raised fist. They use only the left hand,
+leaving the equipped right-hand item in place. Emotes are transient session state,
+not saved preferences. The original Flip off gesture
 raises the left hand, curls the thumb/index/ring/little fingers, holds the middle
 finger straight, then lowers the arm. It overlays walking and running without
 changing movement. The first-person hand follows the camera; third-person
@@ -167,7 +179,7 @@ its left flipper with the rigged gesture hand for the animation.
 Run the real server/client/late-join regression:
 
 ```sh
-python3 game/tests/features/player_models/network_check.py --emotes --godot /path/to/godot
+game/tests/features/player_models/network_test.sh
 ```
 
 `tests/features/player_models/emote_probe.tscn` renders third person; add

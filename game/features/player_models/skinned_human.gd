@@ -192,6 +192,13 @@ func set_digit_curl(right: bool, digit: String, amount: float) -> void:
 
 ## Layer the gesture over locomotion or item poses. The middle finger stays straight.
 func flip_off(world_wrist: Vector3, facing: Basis, weight: float) -> void:
+	left_gesture(world_wrist, facing, weight, 1.0, true)
+
+
+## Shared left-hand overlay; new gestures retain the right-hand item grip.
+func left_gesture(
+	world_wrist: Vector3, facing: Basis, weight: float, curl: float, middle_only: bool = false
+) -> void:
 	var blend := clampf(weight, 0.0, 1.0)
 	if blend <= 0.0:
 		return
@@ -214,8 +221,9 @@ func flip_off(world_wrist: Vector3, facing: Basis, weight: float) -> void:
 	skeleton.set_bone_pose_rotation(
 		hand, (parent.inverse() * orientation).get_rotation_quaternion()
 	)
-	set_finger_curl(false, 1.0)
-	set_digit_curl(false, "Middle", 0.0)
+	set_finger_curl(false, curl)
+	if middle_only:
+		set_digit_curl(false, "Middle", 0.0)
 	for index: int in rotations:
 		var target := skeleton.get_bone_pose_rotation(index)
 		skeleton.set_bone_pose_rotation(index, rotations[index].slerp(target, blend))

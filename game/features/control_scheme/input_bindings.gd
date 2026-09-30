@@ -52,7 +52,7 @@ const SECTIONS: Array[Dictionary] = [
 			[&"toggle_noclip", "Noclip (requires sv_cheats)"],
 			[&"toggle_console", "Developer console"],
 			[&"spray", "Spray"],
-			[&"emote_flip_off", "Emote: flip off"],
+			[&"emote_flip_off", "Emote wheel (hold)"],
 			[&"toggle_changelog", "Release notes"],
 			[&"gps", "GPS phone"],
 		],

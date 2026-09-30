@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://features/player_models/player_models.gd" id="1"]
 [ext_resource type="Script" path="res://features/player_models/model_picker.gd" id="2"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://core/net/networked_entity.gd" id="3"]
 
 [ext_resource type="Script" path="res://features/player_models/emote_view.gd" id="4"]
+
+[ext_resource type="Script" path="res://features/player_models/emote_wheel.gd" id="5"]
 
 [node name="PlayerModels" type="Node"]
 script = ExtResource("1")
@@ -20,3 +22,15 @@ script = ExtResource("2")
 
 [node name="EmoteView" type="Node3D" parent="."]
 script = ExtResource("4")
+
+[node name="EmoteUI" type="CanvasLayer" parent="."]
+layer = 30
+
+[node name="Wheel" type="Control" parent="EmoteUI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5")

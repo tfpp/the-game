@@ -14,6 +14,8 @@ const EMOTE_SECONDS := 3.0
 const EMOTE_COOLDOWN := 3.5
 const EMOTE_ACTION := &"emote_flip_off"
 const SIX_SEVEN := "six_seven"
+const SELECTABLE_EMOTES: Array[String] = ["flip_off", "wave", "salute", "cheer"]
+const EMOTE_LABELS: Array[String] = ["Flip off", "Wave", "Salute", "Cheer"]
 const GIRL_RADIUS_SCALE := 0.6
 const GIRL_HEIGHT_SCALE := 0.75
 
@@ -55,19 +57,6 @@ func _ready() -> void:
 	Controls.ensure_action(EMOTE_ACTION, [key, pad])
 	entity.session_reset.connect(_reset_session)
 	multiplayer.peer_disconnected.connect(_remove_peer)
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if (
-		not Controls.gameplay_active()
-		or not event.is_action_pressed(EMOTE_ACTION)
-		or event.is_echo()
-	):
-		return
-	if not _emote_player_exists(multiplayer.get_unique_id()):
-		return
-	entity.request_action(&"emote", {"name": "flip_off"})
-	get_viewport().set_input_as_handled()
 
 
 func _process(delta: float) -> void:
@@ -237,14 +226,18 @@ func _reset_session(_mode: Network.Mode) -> void:
 
 
 func _valid_emote(_peer: int, payload: Dictionary) -> bool:
-	return payload.size() == 1 and payload.get("name") is String and payload["name"] == "flip_off"
+	return (
+		payload.size() == 1
+		and payload.get("name") is String
+		and payload["name"] in SELECTABLE_EMOTES
+	)
 
 
-func _apply_emote(peer: int, _payload: Dictionary) -> bool:
+func _apply_emote(peer: int, payload: Dictionary) -> bool:
 	if not _emote_player_exists(peer) or emote_clock < _emote_ready.get(peer, 0.0):
 		return false
 	var next := emotes.duplicate(true)
-	next[peer] = {"name": "flip_off", "started": emote_clock}
+	next[peer] = {"name": payload["name"], "started": emote_clock}
 	emotes = next
 	_emote_ready[peer] = emote_clock + EMOTE_COOLDOWN
 	return true
