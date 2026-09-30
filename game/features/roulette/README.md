@@ -21,6 +21,11 @@ mobile **USE**. Menus and chat suppress interaction.
   (X) removes a spot, and Undo (D-pad down) / Clear edit your bets. Any combination is
   allowed as long as the total stays within your wallet balance. Esc, C or B/Y returns
   to the seat view.
+- Each seat has a colour (1 gold, 2 teal, 3 plum), shown as a swatch on your screens
+  and as a rim under each of your stacks. When players share a spot their stacks
+  shrink a little and spread out inside the box: side by side for two, a triangle for
+  three, in seat order so each leans toward its owner. Hovering a shared spot lists
+  everyone's bets there ("You $6.00 · Bob $55.00 · Cara $102.00").
 - Leaving before the spin cancels your bets for free; once betting closes, a player
   with chips on the table stays until the ball lands. Players without bets may always
   stand up.

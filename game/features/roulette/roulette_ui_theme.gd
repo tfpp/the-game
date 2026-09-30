@@ -111,6 +111,24 @@ static func chip_pointer() -> TextureRect:
 	return pointer
 
 
+## A small brass-rimmed square showing a seat's colour; set it with `color_swatch`.
+static func seat_swatch() -> Panel:
+	var swatch := Panel.new()
+	swatch.name = "SeatSwatch"
+	swatch.custom_minimum_size = Vector2(16, 16)
+	swatch.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return swatch
+
+
+static func color_swatch(swatch: Control, color: Color) -> void:
+	var box := StyleBoxFlat.new()
+	box.bg_color = color
+	box.border_color = BRASS
+	box.set_border_width_all(2)
+	swatch.add_theme_stylebox_override(&"panel", box)
+
+
 ## Nine-slice box: `margin` texture pixels of border, `content` (left, top, right,
 ## bottom) padding inside it.
 static func _slice(texture: Texture2D, margin: int, content: Vector4) -> StyleBoxTexture:

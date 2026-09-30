@@ -106,3 +106,74 @@ func test_a_refused_seat_request_explains_why() -> void:
 	_table._on_request_finished(&"use", NetworkedEntity.Result.ACCEPTED)
 	_table._on_request_finished(&"bet", NetworkedEntity.Result.DENIED)
 	assert_eq(chat.lines.size(), 2, "only refused seat requests")
+
+
+func test_players_sharing_a_spot_get_separate_coloured_stacks() -> void:
+	var view := _table.get_node("View") as RouletteTableView
+	var state := _table.state.duplicate(true)
+	state["phase"] = RouletteTable.PHASE_BETTING
+	state["seats"] = [2, 3, 4]
+	state["bets"] = {2: [["17", 500]], 3: [["17", 100], ["17", 100]], 4: [["red", 100]]}
+	_table.state = state
+	view._update_chips(state)
+	var discs: Array[MeshInstance3D] = []
+	for child: Node in view.chips.get_children():
+		if (child as MeshInstance3D).mesh is CylinderMesh:
+			discs.append(child)
+	assert_eq(discs.size(), 3, "one seat-colour base per stack")
+	var colors: Array[Color] = []
+	for disc: MeshInstance3D in discs:
+		colors.append(((disc.mesh as CylinderMesh).material as StandardMaterial3D).albedo_color)
+	assert_true(colors.has(RouletteTableView.SEAT_COLORS[0]))
+	assert_true(colors.has(RouletteTableView.SEAT_COLORS[1]))
+	assert_true(colors.has(RouletteTableView.SEAT_COLORS[2]))
+
+
+func test_shared_stacks_lean_apart_but_a_lone_stack_stays_centred() -> void:
+	var anchor := RouletteBets.pixel_to_local(RouletteBets.anchor("17"))
+	var shared: Array[int] = [0, 2]
+	var alone: Array[int] = [1]
+	assert_almost_eq(RouletteTableView.stack_origin("17", 1, alone), anchor, Vector3.ONE * 0.0001)
+	var low := RouletteTableView.stack_origin("17", 0, shared)
+	var high := RouletteTableView.stack_origin("17", 2, shared)
+	assert_lt(low.x, high.x, "each leans toward its owner's end of the table")
+	assert_eq(RouletteTableView.stack_scale(alone), 1.0)
+	assert_eq(RouletteTableView.stack_scale(shared), RouletteTableView.SHARED_SCALE)
+	var all: Array[int] = [0, 1, 2]
+	# A number box is 208/12 by 21 texture pixels of the 1.6 x 0.8 m layout.
+	var half_box := Vector2((208.0 / 12.0) * 1.6 / 256.0, 21.0 * 0.8 / 128.0) * 0.5
+	var chip_radius := 0.018 * RouletteTableView.CHIP_SCALE * RouletteTableView.SHARED_SCALE
+	var origins: Array[Vector3] = []
+	for seat: int in 3:
+		var origin := RouletteTableView.stack_origin("17", seat, all)
+		origins.append(origin)
+		assert_lt(absf(origin.x - anchor.x) + chip_radius, half_box.x + 0.002, "inside the box")
+		assert_lt(absf(origin.z - anchor.z) + chip_radius, half_box.y + 0.002, "inside the box")
+	for a: int in 3:
+		for b: int in range(a + 1, 3):
+			assert_gt(origins[a].distance_to(origins[b]), chip_radius, "each top stays visible")
+
+
+func test_hovering_a_shared_spot_lists_everyones_bets() -> void:
+	var view := _table.get_node("View") as RouletteTableView
+	var local := _players[2] as Player
+	local.set_multiplayer_authority(multiplayer.get_unique_id())
+	local.add_to_group(&"local_player")
+	var me := multiplayer.get_unique_id()
+	var state := _table.state.duplicate(true)
+	state["phase"] = RouletteTable.PHASE_BETTING
+	state["seats"] = [me, 3, 4]
+	state["names"] = ["Me", "Bob", "Cara"]
+	state["bets"] = {me: [["17", 500], ["17", 100]], 3: [["17", 5000]], 4: [["red", 100]]}
+	_table.state = state
+	view._process(0.0)
+	view.open_betting()
+	var screen := view.screen
+	assert_eq(screen.spot_breakdown("17"), "You $6.00 · Bob $50.00")
+	assert_eq(screen.spot_breakdown("red"), "", "one player, no breakdown")
+	screen._hover("17")
+	assert_string_contains(screen._hover_label.text, "\nYou $6.00 · Bob $50.00")
+	var expected := RouletteTableView.stack_origin("17", 0, [0, 1] as Array[int])
+	assert_almost_eq(screen._preview.position.x, expected.x, 0.0001, "preview on your stack")
+	screen.close()
+	Controls.pause()

@@ -13,6 +13,7 @@ var view: RouletteTableView
 var _player: Player
 var _panel: PanelContainer
 var _status: Label
+var _swatch: Control
 var _hint: Label
 var _bets_button: Button
 var _leave_button: Button
@@ -95,7 +96,9 @@ func refresh() -> void:
 	visible = view.screen == null
 	var peer := multiplayer.get_unique_id()
 	var on_table := RouletteBets.total(table.placements_for(peer))
-	var parts := PackedStringArray(["ROULETTE · SEAT %d" % (table.seat_of(peer) + 1)])
+	var seat := maxi(0, table.seat_of(peer))
+	RouletteUiTheme.color_swatch(_swatch, RouletteTableView.SEAT_COLORS[seat])
+	var parts := PackedStringArray(["ROULETTE · SEAT %d" % (seat + 1)])
 	match table.phase():
 		RouletteTable.PHASE_BETTING:
 			parts.append("Bets close in %s" % RouletteTableView.clock_text(table.net_seconds_left))
@@ -136,7 +139,12 @@ func _build() -> void:
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
 	_panel.add_child(box)
-	_status = _label(box, "", 16)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_child(row)
+	_swatch = RouletteUiTheme.seat_swatch()
+	row.add_child(_swatch)
+	_status = _label(row, "", 16)
 	_hint = _label(box, "", 14)
 	var actions := HBoxContainer.new()
 	actions.alignment = BoxContainer.ALIGNMENT_CENTER

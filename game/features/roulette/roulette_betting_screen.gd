@@ -47,6 +47,7 @@ var _pulse := 0.0
 var _cursor := Vector2(127, 83)
 var _using_pad := false
 var _heading: Label
+var _swatch: Control
 var _timer: Label
 var _hover_label: Label
 var _wallet: Label
@@ -242,6 +243,9 @@ func refresh() -> void:
 		close()
 		return
 	_heading.text = "ROULETTE  ·  SEAT %d" % (seat + 1) if seat >= 0 else "ROULETTE"
+	_swatch.visible = seat >= 0
+	if seat >= 0:
+		RouletteUiTheme.color_swatch(_swatch, RouletteTableView.SEAT_COLORS[seat])
 	_timer.visible = true
 	match table.phase():
 		RouletteTable.PHASE_BETTING:
@@ -362,6 +366,9 @@ func _hover(spot: String) -> void:
 				PlayerMoney.format_money(RouletteBets.winnings(spot, staked))
 			]
 		)
+	var shared := spot_breakdown(spot)
+	if not shared.is_empty():
+		text += "\n" + shared
 	if _using_pad and text.is_empty():
 		text = "Move the cursor onto the layout"
 	_hover_label.text = text
@@ -370,7 +377,27 @@ func _hover(spot: String) -> void:
 	)
 	if _preview.visible:
 		_ghost.mesh = view.chip_meshes[selected]
+		_ghost.scale = Vector3.ONE * RouletteTableView.CHIP_SCALE * preview_scale(spot)
 		_preview.position = preview_position(spot)
+
+
+## "You $6.00 · Bob $50.00 · Cara $102.00" in seat order when more than one player
+## has chips on `spot`, otherwise "".
+func spot_breakdown(spot: String) -> String:
+	var parts := PackedStringArray()
+	var seats := table.state["seats"] as Array
+	for seat: int in seats.size():
+		var peer := int(seats[seat])
+		var cents := int(RouletteBets.by_spot(table.placements_for(peer)).get(spot, 0))
+		if peer == 0 or cents <= 0:
+			continue
+		var name := (
+			"You"
+			if peer == multiplayer.get_unique_id()
+			else str(table.state["names"][seat]).left(14)
+		)
+		parts.append("%s %s" % [name, PlayerMoney.format_money(cents)])
+	return " · ".join(parts) if parts.size() > 1 else ""
 
 
 ## Where the next chip on `spot` will land: on top of this player's stack there,
@@ -379,9 +406,19 @@ func preview_position(spot: String) -> Vector3:
 	var peer := multiplayer.get_unique_id()
 	var mine: Array = RouletteBets.stacks(table.placements_for(peer)).get(spot, [])
 	var height := mini(mine.size(), RouletteTableView.MAX_STACK - 1)
-	var base := RouletteBets.pixel_to_local(RouletteBets.anchor(spot))
-	base.x += (maxi(0, table.seat_of(peer)) - 1) * RouletteTableView.SEAT_OFFSET_M
-	return base + Vector3.UP * (height * RouletteTableView.CHIP_HEIGHT_M + 0.0005)
+	var seat := maxi(0, table.seat_of(peer))
+	var sharing := RouletteTableView.seats_on_spot(table.state, spot)
+	var factor := preview_scale(spot)
+	var base := RouletteTableView.stack_origin(spot, seat, sharing)
+	var lift := height * RouletteTableView.CHIP_HEIGHT_M * factor
+	return base + Vector3.UP * (RouletteTableView.BASE_HEIGHT_M + lift + 0.0005)
+
+
+## Chip size for the next chip on `spot`: smaller once the spot is shared.
+func preview_scale(spot: String) -> float:
+	var seat := maxi(0, table.seat_of(multiplayer.get_unique_id()))
+	var sharing := RouletteTableView.seats_on_spot(table.state, spot)
+	return RouletteTableView.stack_scale(RouletteTableView.seat_set(sharing, seat))
 
 
 func _build_preview() -> void:
@@ -469,6 +506,8 @@ func _build() -> void:
 	var top_box := HBoxContainer.new()
 	top_box.add_theme_constant_override("separation", 18)
 	top.add_child(top_box)
+	_swatch = RouletteUiTheme.seat_swatch()
+	top_box.add_child(_swatch)
 	_heading = _label(top_box, "ROULETTE", 18)
 	_heading.theme_type_variation = &"HeadingLabel"
 	_timer = _label(top_box, "", 18)

@@ -236,12 +236,12 @@ func test_seated_players_spectate_and_open_the_bet_view_on_request() -> void:
 	view.screen._hover("15")
 	assert_eq(view.screen._hover_label.text, "Straight 15 — pays 35:1", "no chips, no amount")
 	view.screen._hover("14")
-	var top_chip := view.chips.get_child(1) as Node3D
+	var top_chip := view.chips.get_child(2) as Node3D
 	assert_almost_eq(view.screen._preview.position.x, top_chip.position.x, 0.0001, "and sits on it")
-	assert_eq(view.chips.get_child_count(), 2, "chips are drawn on the felt")
-	var top := view.chips.get_child(1) as MeshInstance3D
+	assert_eq(view.chips.get_child_count(), 3, "a seat-colour base and two chips")
+	var top := view.chips.get_child(2) as MeshInstance3D
 	assert_eq(top.mesh, view.chip_meshes[RouletteBets.DENOMINATIONS.find(100)])
-	assert_gt(top.position.y, (view.chips.get_child(0) as Node3D).position.y, "last chip on top")
+	assert_gt(top.position.y, (view.chips.get_child(1) as Node3D).position.y, "last chip on top")
 	state = _table.state.duplicate(true)
 	var many: Array = []
 	for _chip: int in RouletteTableView.MAX_STACK + 3:
@@ -250,8 +250,8 @@ func test_seated_players_spectate_and_open_the_bet_view_on_request() -> void:
 	state["bets"] = {multiplayer.get_unique_id(): many}
 	_table.state = state
 	view._process(0.0)
-	assert_eq(view.chips.get_child_count(), RouletteTableView.MAX_STACK, "tall stacks are capped")
-	var last := view.chips.get_child(RouletteTableView.MAX_STACK - 1) as MeshInstance3D
+	assert_eq(view.chips.get_child_count(), RouletteTableView.MAX_STACK + 1, "stacks are capped")
+	var last := view.chips.get_child(RouletteTableView.MAX_STACK) as MeshInstance3D
 	assert_eq(last.mesh, view.chip_meshes[0], "the newest chip stays on top past the cap")
 	var wheel := _table.to_global(Vector3(-0.98, 0.9, 0))
 	var layout := _table.to_global(RouletteBets.pixel_to_local(RouletteBets.anchor("14")))

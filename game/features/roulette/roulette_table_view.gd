@@ -27,8 +27,22 @@ const CHIP_MODELS: Array[PackedScene] = [
 const CHIP_SCALE := 2.2
 const CHIP_HEIGHT_M := 0.0033 * CHIP_SCALE
 const MAX_STACK := 12
-## Each seat's chips sit slightly apart so shared spots stay readable.
-const SEAT_OFFSET_M := 0.014
+## Each seat's colour: a thin disc of it sits under that player's stacks, and it marks
+## their seat on screen. Chips keep their denomination colours.
+## Warm gold rather than ivory for seat 1: ivory vanished against white chip edges.
+const SEAT_COLORS: Array[Color] = [Color("e0a526"), Color("2fb3a8"), Color("b04aa8")]
+## Shared spots: stacks shrink to this fraction and spread out, in seat order (so each
+## leans toward its owner's end of the table), staying inside the box so they don't
+## read as line bets. Two sit side by side; three form a triangle whose outer stacks
+## sit nearer the players and the middle one nearer the dealer.
+const SHARED_SCALE := 0.72
+const SHARED_LAYOUTS := {
+	2: [Vector2(-0.018, 0.0), Vector2(0.018, 0.0)],
+	3: [Vector2(-0.024, -0.014), Vector2(0.0, 0.016), Vector2(0.024, -0.014)],
+}
+## The seat-colour disc under a stack: a rim clearly wider than the chips.
+const BASE_RADIUS_M := 0.018 * CHIP_SCALE + 0.008
+const BASE_HEIGHT_M := 0.002
 
 ## Wheel-local geometry of the model, in metres (see assets/roulette/models).
 const BALL_RADIUS_M := 0.015
@@ -55,6 +69,7 @@ var marker: MeshInstance3D
 var screen: RouletteBettingScreen
 var seat_view: RouletteSeatView
 var chip_meshes: Array[Mesh] = []
+var _base_meshes: Array[Mesh] = []
 
 var _status: Label3D
 var _caption: Label3D
@@ -231,6 +246,8 @@ func _update_chips(snapshot: Dictionary) -> void:
 		child.queue_free()
 	var result_phase := str(snapshot["phase"]) == RouletteTable.PHASE_RESULT
 	var number := int(snapshot["number"])
+	# key -> seat -> that seat's chips there, in placement order.
+	var spots := {}
 	var bets := snapshot["bets"] as Dictionary
 	for peer: int in bets:
 		var seat := maxi(0, (snapshot["seats"] as Array).find(peer))
@@ -238,20 +255,72 @@ func _update_chips(snapshot: Dictionary) -> void:
 		for key: String in stacks:
 			if result_phase and not RouletteBets.numbers(key).has(number):
 				continue
-			var base := RouletteBets.pixel_to_local(RouletteBets.anchor(key))
-			base.x += (seat - 1) * SEAT_OFFSET_M
-			_stack(base, stacks[key])
+			if not spots.has(key):
+				spots[key] = {}
+			spots[key][seat] = stacks[key]
+	for key: String in spots:
+		var sharing: Array[int] = []
+		sharing.assign((spots[key] as Dictionary).keys())
+		var factor := stack_scale(seat_set(sharing, -1))
+		for seat: int in sharing:
+			_stack(stack_origin(key, seat, sharing), seat, spots[key][seat], factor)
 
 
-## Chips in placement order, so the latest chip is always on top. Past MAX_STACK only
-## the most recent chips are drawn.
-func _stack(base: Vector3, placed: Array[int]) -> void:
+## Where `seat`'s stack on `key` stands, given every seat with chips there: centred
+## when alone, spread in seat order when shared (see SHARED_LAYOUTS).
+static func stack_origin(key: String, seat: int, sharing: Array[int]) -> Vector3:
+	var seats := seat_set(sharing, seat)
+	var origin := RouletteBets.pixel_to_local(RouletteBets.anchor(key))
+	if seats.size() > 1:
+		var layout: Array = SHARED_LAYOUTS[mini(seats.size(), 3)]
+		var offset: Vector2 = layout[seats.find(seat)]
+		origin += Vector3(offset.x, 0.0, offset.y)
+	return origin
+
+
+## Chip size multiplier for a spot shared by `seats`.
+static func stack_scale(seats: Array[int]) -> float:
+	return SHARED_SCALE if seats.size() > 1 else 1.0
+
+
+## `sharing` plus `seat` (if >= 0), sorted, without duplicates.
+static func seat_set(sharing: Array[int], seat: int) -> Array[int]:
+	var seats: Array[int] = []
+	for other: int in sharing:
+		if not seats.has(other):
+			seats.append(other)
+	if seat >= 0 and not seats.has(seat):
+		seats.append(seat)
+	seats.sort()
+	return seats
+
+
+## Seats with chips on `key` in a bets dictionary (peer -> placements).
+static func seats_on_spot(snapshot: Dictionary, key: String) -> Array[int]:
+	var result: Array[int] = []
+	var bets := snapshot["bets"] as Dictionary
+	for peer: int in bets:
+		if RouletteBets.by_spot(bets[peer]).has(key):
+			result.append(maxi(0, (snapshot["seats"] as Array).find(peer)))
+	return result
+
+
+## A seat-colour disc, then chips in placement order so the latest chip is on top.
+## Past MAX_STACK only the most recent chips are drawn.
+func _stack(base: Vector3, seat: int, placed: Array[int], factor: float = 1.0) -> void:
+	var disc := MeshInstance3D.new()
+	disc.mesh = _base_mesh(seat)
+	disc.scale = Vector3(factor, 1.0, factor)
+	disc.position = base + Vector3.UP * (BASE_HEIGHT_M * 0.5 + 0.0003)
+	disc.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	chips.add_child(disc)
+	base.y += BASE_HEIGHT_M
 	var values := placed.slice(maxi(0, placed.size() - MAX_STACK))
 	for index: int in values.size():
 		var chip := MeshInstance3D.new()
 		chip.mesh = chip_meshes[RouletteBets.DENOMINATIONS.find(values[index])]
-		chip.scale = Vector3.ONE * CHIP_SCALE
-		chip.position = base + Vector3.UP * (index * CHIP_HEIGHT_M + 0.0005)
+		chip.scale = Vector3.ONE * CHIP_SCALE * factor
+		chip.position = base + Vector3.UP * (index * CHIP_HEIGHT_M * factor + 0.0005)
 		chip.rotation.y = index * 0.7
 		chip.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		chips.add_child(chip)
@@ -311,6 +380,23 @@ func _on_screen_closed() -> void:
 	_show_labels()
 	if seat_view != null:
 		seat_view.refresh()
+
+
+func _base_mesh(seat: int) -> Mesh:
+	if _base_meshes.is_empty():
+		for color: Color in SEAT_COLORS:
+			var mesh := CylinderMesh.new()
+			mesh.top_radius = BASE_RADIUS_M
+			mesh.bottom_radius = BASE_RADIUS_M
+			mesh.height = BASE_HEIGHT_M
+			mesh.radial_segments = 16
+			mesh.rings = 1
+			var material := StandardMaterial3D.new()
+			material.albedo_color = color
+			material.roughness = 0.9
+			mesh.material = material
+			_base_meshes.append(mesh)
+	return _base_meshes[clampi(seat, 0, SEAT_COLORS.size() - 1)]
 
 
 func _winning_marker() -> MeshInstance3D:
