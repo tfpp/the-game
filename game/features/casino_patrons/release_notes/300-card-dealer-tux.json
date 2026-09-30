@@ -1,0 +1,9 @@
+{
+  "title": "Card dealers in vests and bow ties",
+  "summary": "Salon card dealers now use the player model, wear a black vest, white shirt and red bow tie, and deal with their hands over the table.",
+  "notes": [
+    "Rebuild the salon card dealers on the player avatar rig.",
+    "Dress the dealers in a black vest, white shirt, red bow tie and black trousers.",
+    "Animate the dealers' hands in a subtle dealing motion above the card tables."
+  ]
+}

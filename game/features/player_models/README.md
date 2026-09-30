@@ -177,3 +177,7 @@ finger articulation, camera switching, and weapon/costume restoration.
 consumables, following the animated head and costume scale. Holdables moves its
 existing grip toward that contact; the existing skinned arm IK performs the smoking
 and drinking gesture without a second avatar or movement authority change.
+
+The surface shader's `tuxedo` / `tux_texture` parameters (off for players) paint a
+vest texture on the torso and white sleeves; see the card dealers in
+`features/casino_patrons/README.md`.

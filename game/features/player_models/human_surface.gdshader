@@ -8,6 +8,7 @@ uniform sampler2D trousers_texture : source_color, filter_nearest_mipmap, repeat
 uniform sampler2D hair_texture : source_color, filter_nearest_mipmap, repeat_enable;
 uniform sampler2D gear_texture : source_color, filter_nearest_mipmap, repeat_enable;
 uniform sampler2D leather_texture : source_color, filter_nearest_mipmap, repeat_enable;
+uniform sampler2D tux_texture : source_color, filter_nearest_mipmap, repeat_enable;
 uniform vec4 skin_tint : source_color = vec4(0.8, 0.6, 0.4, 1.0);
 uniform vec4 shirt_tint : source_color = vec4(0.5, 0.5, 0.5, 1.0);
 uniform vec4 pants_tint : source_color = vec4(0.3, 0.3, 0.3, 1.0);
@@ -16,6 +17,7 @@ uniform vec4 eye_tint : source_color = vec4(0.15, 0.1, 0.05, 1.0);
 uniform bool shirt_equipped = false;
 uniform bool pants_equipped = false;
 uniform bool tactical = false;
+uniform bool tuxedo = false;
 uniform bool hair_enabled = true;
 uniform bool hide_head = false;
 uniform bool hide_left_arm = false;
@@ -23,10 +25,12 @@ uniform bool hide_right_arm = false;
 uniform bool arms_only = false;
 varying vec4 tags;
 varying vec2 rest_xy;
+varying float front;
 
 void vertex() {
 	tags = COLOR;
 	rest_xy = vec2(UV2.x, 1.0 - UV2.y);
+	front = -NORMAL.z;
 }
 
 void fragment() {
@@ -54,6 +58,12 @@ void fragment() {
 		if (tactical || shirt_equipped) {
 			artwork = texture(fabric_texture, painted_uv).rgb;
 			tint = shirt_tint.rgb;
+		}
+		if (tuxedo) {
+			// The back UV seam interpolates through the white front; keep the back vest black.
+			vec2 tux_uv = front > 0.0 ? painted_uv : vec2(0.0, painted_uv.y);
+			artwork = arm ? texture(fabric_texture, painted_uv).rgb : textureLod(tux_texture, tux_uv, 0.0).rgb;
+			tint = arm ? vec3(0.95) : vec3(1.0);
 		}
 		if (role == 5 && tactical) {
 			artwork = texture(gear_texture, painted_uv).rgb;

@@ -1,10 +1,12 @@
-[gd_scene load_steps=80 format=3]
+[gd_scene load_steps=81 format=3]
 
 [ext_resource type="Script" path="res://features/casino_hub/model_materials.gd" id="finishes"]
 
 [ext_resource type="PackedScene" path="res://assets/casino_hub/models/salon_card_table.glb" id="card_table"]
 
 [ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_dealer.tscn" id="dealer"]
+
+[ext_resource type="PackedScene" path="res://features/casino_patrons/card_dealer.tscn" id="card_dealer"]
 
 [ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_guest.tscn" id="guest"]
 
@@ -411,9 +413,12 @@ rotation = Vector3(0, 0, 0)
 [node name="Shape" type="CollisionShape3D" parent="TableBody0" groups=["radar_geometry"]]
 shape = SubResource("shape21")
 
-[node name="Dealer0" parent="." instance=ExtResource("dealer")]
+[node name="Dealer0" parent="." instance=ExtResource("card_dealer")]
 position = Vector3(-4.0, -1.5, -6.65)
 rotation = Vector3(0, 0, 0)
+
+[node name="Body" parent="Dealer0" index="0"]
+seed_phase = 0.0
 
 [node name="ChairBody0_0" type="StaticBody3D" parent="."]
 position = Vector3(-2.338299, -0.9, -5.103984)
@@ -459,9 +464,12 @@ rotation = Vector3(0, 0, 0)
 [node name="Shape" type="CollisionShape3D" parent="TableBody1" groups=["radar_geometry"]]
 shape = SubResource("shape25")
 
-[node name="Dealer1" parent="." instance=ExtResource("dealer")]
+[node name="Dealer1" parent="." instance=ExtResource("card_dealer")]
 position = Vector3(-4.0, -1.5, -1.65)
 rotation = Vector3(0, 0, 0)
+
+[node name="Body" parent="Dealer1" index="0"]
+seed_phase = 0.7
 
 [node name="ChairBody1_0" type="StaticBody3D" parent="."]
 position = Vector3(-2.338299, -0.9, -0.103984)
@@ -507,9 +515,12 @@ rotation = Vector3(0, 0, 0)
 [node name="Shape" type="CollisionShape3D" parent="TableBody2" groups=["radar_geometry"]]
 shape = SubResource("shape29")
 
-[node name="Dealer2" parent="." instance=ExtResource("dealer")]
+[node name="Dealer2" parent="." instance=ExtResource("card_dealer")]
 position = Vector3(-4.0, -1.5, 2.95)
 rotation = Vector3(0, 0, 0)
+
+[node name="Body" parent="Dealer2" index="0"]
+seed_phase = 1.4
 
 [node name="ChairBody2_0" type="StaticBody3D" parent="."]
 position = Vector3(-2.338299, -0.9, 4.496016)

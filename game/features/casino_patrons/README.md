@@ -104,3 +104,20 @@ raises his right hand in a peace sign for 2.5 s. When Trump comes within 0.9 m
 reaches out and pats him, a "Good boy." bubble floats over Trump for everyone,
 and players within 10 m also get it as a subtitle. Pats have a 15 s cooldown.
 Gestures are transient, so late joiners just see the next one.
+
+## Card dealers
+
+The three salon card dealers (`card_dealer.tscn`) use the player avatar rig
+(`BlockPlayerModel` from `features/player_models`) instead of the imported salon
+pose. They wear a black vest, white shirt and red bow tie: `human_surface.gdshader`
+gained a `tuxedo` switch that paints the torso with
+`assets/casino_patrons/textures/dealer_tux.png` (64×64, painted by
+`assets/casino_patrons/source/paint_tux.gd`) and the sleeves white; black trousers
+reuse the existing pants tint. `CardDealerModel` reaches both hands (arm IK via
+`SkinnedHuman.reach_grip`) to points about 20 cm over the felt and drifts them in
+small out-of-phase loops (`hand_target()`), each dealer offset by `seed_phase`.
+The motion is local and cosmetic, runs only while visible, and needs no network
+state; dying, respawning and hitboxes still come from `StationaryPatron`.
+The bartender, apartment clerk and roulette croupier keep the old model.
+`tests/features/casino_patrons/dealer_probe.tscn` renders a close-up
+(`-- --dealer-capture=/tmp/dealer.png`, add `--dealer-back` for the back).
