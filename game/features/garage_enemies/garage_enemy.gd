@@ -15,6 +15,8 @@ const EYE_HEIGHT := 1.4
 ## Players farther than this from home aren't sensed at all, so idle enemies
 ## cost almost nothing while nobody is in the garage.
 const WAKE_RADIUS := 30.0
+## Cameras farther than this skip posing the rig; the enemy is barely visible.
+const ANIMATE_RADIUS := 45.0
 
 @export var tier := GarageEnemyTiers.Tier.LURKER
 
@@ -35,7 +37,6 @@ var _windup_timer := 0.0
 var _respawn_timer := 0.0
 var _target_position := Vector3.INF
 var _target_speed := 0.0
-var _stride := 0.0
 var _remote_ready := false
 
 @onready var entity: NetworkedEntity = $NetworkedEntity
@@ -48,7 +49,7 @@ func _ready() -> void:
 	_home = position
 	net_position = position
 	health = int(_info["hits"])
-	_model.build(tier)
+	_model.equip(tier, absi(String(name).hash()))
 	_collider.shape = _collider.shape.duplicate()
 	var capsule := _collider.shape as CapsuleShape3D
 	capsule.height = 1.7 * float(_info["scale"])
@@ -172,7 +173,7 @@ func _move(delta: float) -> void:
 	velocity.y = 0.0 if is_on_floor() else velocity.y - GRAVITY * delta
 	move_and_slide()
 	if distance > 0.01 and (advance or chasing):
-		net_yaw = GarageEnemyTiers.facing_yaw(to_goal)
+		net_yaw = GarageEnemyTiers.facing_yaw(_parent_direction(to_goal))
 
 
 ## Server-only: the wind-up finished. Melee needs the target still in reach; a
@@ -249,12 +250,12 @@ func _process(delta: float) -> void:
 	if not net_alive:
 		return
 	_model.rotation.y = lerp_angle(_model.rotation.y, net_yaw, minf(delta * 10.0, 1.0))
-	var moved := Vector2(position.x - before.x, position.z - before.z).length()
-	var server_moving := multiplayer.is_server() and Vector2(velocity.x, velocity.z).length() > 0.1
-	var walking := server_moving or moved > 0.2 * delta
-	if walking:
-		_stride = fmod(_stride + delta * float(_info["speed"]) * 0.45, 1.0)
-	_model.animate(delta, _stride, walking, net_windup)
+	if not _near_camera():
+		return
+	var speed := Vector2(position.x - before.x, position.z - before.z).length() / maxf(delta, 0.001)
+	if multiplayer.is_server():
+		speed = Vector2(velocity.x, velocity.z).length()
+	_model.animate(delta, speed, net_windup)
 
 
 func _on_event(event: StringName, payload: Dictionary) -> void:
@@ -267,6 +268,7 @@ func _on_event(event: StringName, payload: Dictionary) -> void:
 		&"die":
 			MeshExplosion.spawn(self, _model)
 		&"attack":
+			_model.strike()
 			_play_attack(payload)
 
 
@@ -296,3 +298,16 @@ func _player(peer: int) -> Player:
 		if player != null and player.get_multiplayer_authority() == peer:
 			return player
 	return null
+
+
+## Turns a global direction into the parent's space, so `net_yaw` (applied to the
+## model locally) faces the right way under a rotated parent like the basement.
+func _parent_direction(direction: Vector3) -> Vector3:
+	var parent := get_parent() as Node3D
+	return parent.global_basis.inverse() * direction if parent != null else direction
+
+
+## Only pose the skinned rig for cameras close enough to see it.
+func _near_camera() -> bool:
+	var camera := get_viewport().get_camera_3d()
+	return camera == null or camera.global_position.distance_to(global_position) < ANIMATE_RADIUS

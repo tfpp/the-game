@@ -142,7 +142,9 @@ rooms with marked garage entrances; perimeter walls fill the full storey height.
 The standalone scene remains available. The normal game uses `playable_world.gd`
 to build the same kit without spawning a preview player, changing controls or
 overriding the casino environment. The portal provides a shared test area;
-encounters, loot and private excursion instances remain future integration work.
+Hostile brawlers, knifers and gunmen from `features/garage_enemies` (its `Basement`
+node) patrol B1–B5, deadliest on the lowest floors; loot and private excursion
+instances remain future integration work.
 
 The scene exposes `layout_seed` and `floor_population` in the Godot inspector.
 Population entries are ordered bottom (B5) to top (B1). Create/duplicate a

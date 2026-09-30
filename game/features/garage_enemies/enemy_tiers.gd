@@ -1,14 +1,17 @@
 class_name GarageEnemyTiers
 extends RefCounted
-## Pure data and rules for the parking garage's hostiles, kept separate from the
+## Pure data and rules for the parking garages' hostiles, kept separate from the
 ## node so the tuning and the targeting math are unit-testable on their own.
 ##
-## Players arrive on P1 (ground) and climb, so danger grows with distance from
-## the employee entrance: P1 holds lone lurkers, P2 adds gunmen and P3 (the
-## darkest floor) adds fast stalkers. Tougher tiers mainly move faster, hit
-## harder and attack from range instead of simply soaking more hits.
+## Every tier wears the player avatar rig (`enemy_model.gd`). From weakest to
+## strongest: ragged brawlers (LURKER) shamble up and punch, knifers (STALKER)
+## sprint in with a blade, and gunmen (GUNMAN) shoot from range. The enum keeps
+## its original order so existing scenes keep their tiers; use `STRENGTH` to rank.
 
 enum Tier { LURKER, GUNMAN, STALKER }
+
+## Weakest to strongest.
+const STRENGTH: Array[int] = [Tier.LURKER, Tier.STALKER, Tier.GUNMAN]
 
 ## How far above or below an enemy's feet a player still counts as on its floor.
 ## Floors are 3.3m apart and a player's origin sits ~0.9m above their feet.
@@ -20,53 +23,50 @@ const MIN_HIT_CHANCE := 0.3
 const PROFILES := {
 	Tier.LURKER:
 	{
-		"name": "Lurker",
+		"name": "Ragged brawler",
+		"weapon": "fists",
 		"hits": 1,
-		"speed": 3.2,
-		"damage": 10.0,
-		"range": 1.6,
-		"cooldown": 1.1,
-		"windup": 0.35,
+		"speed": 2.6,
+		"damage": 8.0,
+		"range": 1.5,
+		"cooldown": 1.2,
+		"windup": 0.4,
 		"ranged": false,
 		"aggro": 10.0,
 		"leash": 12.0,
-		"scale": 0.85,
-		"skin": Color(0.36, 0.33, 0.28),
-		"eyes": Color(1.0, 0.75, 0.2),
+		"scale": 1.0,
 		"respawn": 25.0,
+	},
+	Tier.STALKER:
+	{
+		"name": "Knifer",
+		"weapon": "knife",
+		"hits": 2,
+		"speed": 6.4,
+		"damage": 18.0,
+		"range": 1.7,
+		"cooldown": 0.8,
+		"windup": 0.25,
+		"ranged": false,
+		"aggro": 16.0,
+		"leash": 18.0,
+		"scale": 1.0,
+		"respawn": 30.0,
 	},
 	Tier.GUNMAN:
 	{
 		"name": "Gunman",
-		"hits": 2,
+		"weapon": "gun",
+		"hits": 3,
 		"speed": 3.8,
-		"damage": 12.0,
-		"range": 14.0,
-		"cooldown": 1.8,
+		"damage": 15.0,
+		"range": 16.0,
+		"cooldown": 1.6,
 		"windup": 0.6,
 		"ranged": true,
-		"aggro": 16.0,
-		"leash": 14.0,
-		"scale": 1.0,
-		"skin": Color(0.22, 0.27, 0.3),
-		"eyes": Color(0.3, 0.9, 1.0),
-		"respawn": 30.0,
-	},
-	Tier.STALKER:
-	{
-		"name": "Stalker",
-		"hits": 3,
-		"speed": 6.2,
-		"damage": 20.0,
-		"range": 1.8,
-		"cooldown": 0.8,
-		"windup": 0.25,
-		"ranged": false,
 		"aggro": 18.0,
 		"leash": 18.0,
-		"scale": 1.15,
-		"skin": Color(0.3, 0.12, 0.12),
-		"eyes": Color(1.0, 0.15, 0.1),
+		"scale": 1.0,
 		"respawn": 35.0,
 	},
 }
@@ -123,3 +123,8 @@ static func wants_to_advance(tier: int, distance: float) -> bool:
 	if info["ranged"]:
 		return distance > float(info["range"]) * 0.5
 	return distance > float(info["range"]) * 0.8
+
+
+## 0 for the weakest tier, rising with strength.
+static func rank(tier: int) -> int:
+	return STRENGTH.find(tier)
