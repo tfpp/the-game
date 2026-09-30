@@ -9,8 +9,13 @@ for cli in pi bun; do
   printf '#!/usr/bin/env bash\nprintf "%%s\\n" "%s $*" >>"%s/calls"\n' "$cli" "$work" >"$work/bin/$cli"
   chmod +x "$work/bin/$cli"
 done
+# A failing `pi mcp list` must not fail the setup.
+printf '[[ "$1" == mcp && -n "${FAKE_MCP_FAIL:-}" ]] && exit 1\nexit 0\n' >>"$work/bin/pi"
+printf '#!/usr/bin/env bash\n' >"$work/bin/fake-godot"
+chmod +x "$work/bin/fake-godot"
+export GODOT_PATH="$work/bin/fake-godot"
 export PATH="$work/bin:$PATH"
-unset CLAUDE_CODE_OAUTH_TOKEN CODEX_AUTH_JSON OPENROUTER_API_KEY PI_WEB_ACCESS
+unset CLAUDE_CODE_OAUTH_TOKEN CODEX_AUTH_JSON OPENROUTER_API_KEY PI_WEB_ACCESS FAKE_MCP_FAIL
 export PI_CODING_AGENT_DIR="$work/agent"
 auth="$PI_CODING_AGENT_DIR/auth.json"
 
@@ -64,6 +69,9 @@ done
 called 'bun install --frozen-lockfile --ignore-scripts'
 called "bun $PI_CODING_AGENT_DIR/extensions/anthropic-omp/scripts/link-native.ts"
 called 'pi install npm:pi-web-access@0.34.0'
+called 'pi mcp list'
+expect_eq "$(jq -c '.mcpServers | keys' "$PI_CODING_AGENT_DIR/mcp.json")" '["chrome-devtools","godot","playwright"]' 'MCP servers'
+expect_eq "$(jq -r .mcpServers.godot.env.GODOT_PATH "$PI_CODING_AGENT_DIR/mcp.json")" "$GODOT_PATH" 'Godot path for the godot MCP server'
 
 echo "- Codex alone; auth.json's account_id wins over the JWT claim"
 unset CLAUDE_CODE_OAUTH_TOKEN
@@ -78,4 +86,10 @@ rm -rf "$PI_CODING_AGENT_DIR"
 OPENROUTER_API_KEY='sk-or-secret-marker' "$root/harness/pi-setup.sh" >"$work/log" 2>&1 || fail 'OpenRouter-only setup failed'
 no_secret "$work/log" "$auth"
 expect_eq "$(jq -c . "$auth")" '{}' 'no stored credentials'
+echo "- no Godot and failing MCP servers: skip godot, keep going"
+rm -rf "$PI_CODING_AGENT_DIR"
+GODOT_PATH="$work/missing-godot" FAKE_MCP_FAIL=1 OPENROUTER_API_KEY='sk-or-x' \
+  "$root/harness/pi-setup.sh" >"$work/log" 2>&1 || fail "setup failed: $(cat "$work/log")"
+expect_eq "$(jq -c '.mcpServers | keys' "$PI_CODING_AGENT_DIR/mcp.json")" '["chrome-devtools","playwright"]' 'MCP servers without Godot'
+grep -q 'some MCP servers failed' "$work/log" || fail 'MCP failure not reported'
 echo 'pi setup tests passed'

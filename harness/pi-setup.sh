@@ -12,9 +12,11 @@
 #   OPENROUTER_API_KEY       enables the openrouter provider; pi reads it from the env, so
 #                            it is only checked here, never written
 #   PI_WEB_ACCESS            npm spec of the web-access package (pinned default below)
+#   GODOT_PATH               Godot binary for the godot MCP server (default: godot on PATH)
 #
 # Installs harness/pi/extensions (anthropic-omp, image-generation) and pi-web-access into
-# the agent directory and writes auth.json and settings.json there. Needs pi and bun on PATH.
+# the agent directory and writes auth.json, settings.json and mcp.json (harness/pi/mcp.json)
+# there. Needs pi, bun and npx on PATH.
 set -euo pipefail
 # shellcheck source=lib.sh source-path=SCRIPTDIR
 source "$(dirname "$0")/lib.sh"
@@ -86,3 +88,18 @@ log "installing the anthropic-omp runtime"
 bun "$omp/scripts/link-native.ts" >&2
 log "installing $web_access"
 pi install "$web_access" >&2
+
+# MCP servers (harness/pi/mcp.json). godot-mcp needs the Godot binary; on Actions,
+# setup-toolchain puts it on PATH. Without one, skip that server rather than the run.
+godot="${GODOT_PATH:-$(command -v godot || true)}"
+if [[ -n "$godot" && -x "$godot" ]]; then
+  jq --arg godot "$godot" '.mcpServers.godot.env.GODOT_PATH = $godot' \
+    "$HARNESS_DIR/pi/mcp.json" >"$dir/mcp.json"
+else
+  log "no Godot binary found; leaving out the godot MCP server"
+  jq 'del(.mcpServers.godot)' "$HARNESS_DIR/pi/mcp.json" >"$dir/mcp.json"
+fi
+# Connects to every server once: fills the npx cache so the agent's first prompt doesn't
+# wait on downloads, and logs startup errors. A broken server doesn't block the run.
+log "checking MCP servers"
+pi mcp list >&2 || log "warning: some MCP servers failed to start (see above)"

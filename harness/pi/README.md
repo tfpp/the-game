@@ -13,6 +13,14 @@ from npm at a pinned version instead of being vendored.
 with `--thinking` (and records it in the PR) unless `AGENT_REASONING_EFFORT` is set;
 `pi-setup.sh` writes it to the runner's `settings.json` as `modelThinkingLevels`.
 
+`mcp.json` lists the MCP servers pi gets on the runner, with pinned versions: chrome-devtools
+and Playwright (headless, isolated profiles, using the runner's Chrome) and Godot.
+`pi-setup.sh` fills in the Godot server's `GODOT_PATH` from `godot` on `PATH` (Actions
+installs it at `~/.local/bin/godot` via `setup-toolchain`; `GODOT_PATH` overrides it) and
+drops that server when there is no binary. It then runs `pi mcp list` once, which warms the
+`npx` cache and logs startup errors without failing the run. pi exposes the tools through
+`codemode` as `mcp__<server>__<tool>`. Claude and Codex runs don't get these servers.
+
 Changes from the personal copies, needed on Linux runners:
 
 - `anthropic-omp/runtime/package.json` lists `@oh-my-pi/pi-utils` (the worker imports it

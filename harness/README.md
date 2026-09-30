@@ -173,7 +173,9 @@ bounds numeric values and validates model IDs before rendering them. The human P
      OpenRouter key from the job environment; it is never written to disk.
      `harness/pi-setup.sh` builds a private `PI_CODING_AGENT_DIR` in `$RUNNER_TEMP`,
      copies `pi/extensions/` there, installs the extension's Bun runtime (and its Linux
-     native addon) plus `pi-web-access`, and writes `auth.json`. The Claude token is
+     native addon) plus `pi-web-access`, writes `auth.json`, and installs the MCP servers
+     from `pi/mcp.json` (chrome-devtools, Playwright and Godot, all headless; see
+     [pi/README.md](pi/README.md)). The Claude token is
      **not** written there: the job exports it as `ANTHROPIC_OAUTH_TOKEN`, which the
      extension's backend reads while its own credential store is empty. The directory is
      deleted after the run. As with Codex, pi may refresh the ChatGPT token in its
