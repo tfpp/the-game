@@ -12,6 +12,7 @@ const DOOR := preload("res://features/procedural_rooms/sliding_door.tscn")
 const CAB_MODEL := preload("res://features/procedural_rooms/elevator_cab_model.tscn")
 const BUTTON := preload("res://features/procedural_rooms/lift_stop.tscn")
 const Showcase := preload("res://features/procedural_rooms/showcase.gd")
+const AUDIO := preload("res://features/procedural_rooms/lift_audio.gd")
 
 @export var net_height := 16.0
 @export var net_floor := 4
@@ -22,6 +23,7 @@ var cab: AnimatableBody3D
 var indicator: Label3D
 var cab_door: ProceduralSlidingDoor
 var gates: Array[ProceduralSlidingDoor] = []
+var audio: ProceduralLiftAudio
 var _received_snapshot := false
 @onready var entity: NetworkedEntity = $NetworkedEntity
 
@@ -29,6 +31,10 @@ var _received_snapshot := false
 func _ready() -> void:
 	process_physics_priority = -100
 	_build_cab()
+	audio = AUDIO.new()
+	audio.position.y = 2
+	cab.add_child(audio)
+	audio.initialize(net_phase)
 	entity.session_reset.connect(_reset)
 	entity._sync.synchronized.connect(_snapshot)
 
@@ -89,6 +95,7 @@ func _physics_process(delta: float) -> void:
 	elif _received_snapshot:
 		cab.position.y = move_toward(cab.position.y, net_height, (SPEED + 1.0) * delta)
 	_update_doors()
+	audio.update(net_phase, delta)
 	indicator.text = (
 		("B%d → B%d" % [5 - roundi(cab.position.y / 4.0), 5 - net_target])
 		if net_phase == Phase.MOVING
@@ -100,6 +107,7 @@ func _snapshot() -> void:
 	if not _received_snapshot:
 		cab.position.y = net_height
 		_received_snapshot = true
+		audio.initialize(net_phase)
 	_update_doors()
 
 
@@ -159,3 +167,4 @@ func _reset(_mode: Network.Mode) -> void:
 	net_aperture = 1
 	cab.position.y = net_height
 	_update_doors()
+	audio.initialize(net_phase)

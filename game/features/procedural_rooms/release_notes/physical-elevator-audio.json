@@ -1,0 +1,5 @@
+{
+  "title": "Service elevator sounds",
+  "summary": "Hear the elevator motor, sliding doors and arrival bell.",
+  "notes": ["Add positional motor and door loops that follow the moving cab, with metal latch cues and an arrival chime.", "Respect game sound volume, skip dedicated-server playback and avoid replaying arrival bells on late joins."]
+}

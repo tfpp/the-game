@@ -2,12 +2,20 @@
 
 This directory contains original developer materials, a socket attachment prototype
 and standalone playable examples. `feature.tscn` now adds a shared in-game copy of
-the five-floor garage at z=1800. Use the cyan **PROCEDURAL GARAGE** portal inside
-the east-side **Teleport Room** (entrance x=34, z=-10), or locate **Teleport Room** in GPS. E / controller
+the five-floor garage at z=1800. Use the standalone cyan **PROCEDURAL GARAGE**
+teleporter beside the Golden Crown sign on the north promenade (x=12, z=-15.5),
+or locate **Garage Teleporter** in GPS. E / controller
 Use / touch Use teleports to B1. Its **RETURN TO CASINO** portal is beside arrival.
 The kit uses a fixed seed on every peer; there is no live reroll control, general random
 layout solver or automatic map mutation. The proposed complete system is described in
 [the plan](../../../docs/design/procedural-rooms.md).
+
+The physical elevator has cab-attached motor and door-drive loops, metal latch
+cues and a dock-arrival chime. Playback follows replicated phases on each client,
+uses the existing GameSFX volume bus, and skips dedicated servers. First snapshots
+restore continuous sounds without replaying a past arrival. The existing native
+garage audio synthesizer supplies cached motor/door hums; GameAudio owns the short
+Kenney metal and chime cues.
 
 Every proposed room/module owns socket attachments built from shared boundary
 profiles. Exact attachment transforms, flush floors/openings, one owned seam and

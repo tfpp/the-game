@@ -1,27 +1,11 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=6 format=3]
 [ext_resource type="Script" path="res://features/procedural_rooms/playable_world.gd" id="1_world"]
 [ext_resource type="Script" path="res://features/procedural_rooms/portal.gd" id="2_portal"]
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="3_net"]
 [ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="4_gps"]
 [ext_resource type="Material" path="res://features/procedural_rooms/materials/elevator.tres" id="5_paint"]
 
-[ext_resource type="Script" path="res://features/procedural_rooms/teleport_room.gd" id="6_room"]
-
 [node name="ProceduralRooms" type="Node3D"]
-
-[node name="TeleportRoom" type="Node3D" parent="."]
-position = Vector3(34, 0, -10)
-rotation = Vector3(0, 1.5707963, 0)
-script = ExtResource("6_room")
-
-[node name="Sign" type="Label3D" parent="TeleportRoom"]
-position = Vector3(0, 2.5, -0.05)
-rotation = Vector3(0, 3.1415927, 0)
-text = "TELEPORT ROOM
-PROCEDURAL GARAGE"
-font_size = 40
-pixel_size = 0.005
-modulate = Color(1, 0.85, 0.55, 1)
 
 [node name="Garage" type="Node3D" parent="."]
 position = Vector3(0, 0, 1800)
@@ -31,11 +15,11 @@ script = ExtResource("1_world")
 position = Vector3(0, 17, 5)
 
 [node name="CasinoArrival" type="Marker3D" parent="."]
-position = Vector3(39, 0.2, -10)
-rotation = Vector3(0, 1.5707963, 0)
+position = Vector3(12, 0.2, -13.5)
 
 [node name="Entrance" type="CSGBox3D" parent="."]
-position = Vector3(41.7, 1.1, -10)
+position = Vector3(12, 1.1, -15.5)
+rotation = Vector3(0, 1.5707963, 0)
 size = Vector3(0.2, 2.2, 1.4)
 material = ExtResource("5_paint")
 use_collision = true
@@ -78,10 +62,10 @@ pixel_size = 0.004
 [node name="Destinations" type="Node3D" parent="."]
 
 [node name="Portal" type="Marker3D" parent="Destinations"]
-position = Vector3(38, 0, -10)
+position = Vector3(12, 0, -13.5)
 script = ExtResource("4_gps")
-label = "Teleport Room"
-hint = "East side of the casino. Walk into the signed room and use the garage portal."
+label = "Garage Teleporter"
+hint = "Beside the Golden Crown sign on the north promenade. Use the cyan teleporter."
 
 [node name="Garage" type="Marker3D" parent="Destinations"]
 position = Vector3(0, 16, 1805)

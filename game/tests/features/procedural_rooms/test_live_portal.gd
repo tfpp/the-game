@@ -78,20 +78,25 @@ func test_gps_routes_through_portal_and_arrival_has_clear_supported_floor() -> v
 			assert_true(node.has_method("can_use") and node.has_method("interaction_text"))
 
 
-func test_teleport_room_has_open_socket_and_supported_return() -> void:
+func test_standalone_teleporter_beside_crown_has_clear_approach_and_supported_return() -> void:
+	var interior := preload("res://features/casino_hub/interior.tscn").instantiate() as Node3D
+	add_child_autofree(interior)
 	await wait_physics_frames(2)
-	var room := _feature.get_node("TeleportRoom") as Node3D
-	var socket := room.get_node("Lobby/In") as ProceduralSocketAttachment
-	assert_null(socket.cap)
-	assert_eq(socket.join_id, "casino-east-doorway")
-	var space := room.get_world_3d().direct_space_state
+	assert_false(_feature.has_node("TeleportRoom"))
+	var entrance := _feature.get_node("Entrance") as GarageDoor
+	var sign := interior.get_node("CasinoName") as Label3D
+	assert_lt(entrance.global_position.distance_to(sign.global_position), 13.0)
+	assert_eq(
+		(_feature.get_node("Destinations/Portal") as GpsDestination).label, "Garage Teleporter"
+	)
+	var space := _feature.get_world_3d().direct_space_state
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = .4064
 	capsule.height = 1.8288
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.shape = capsule
-	query.transform.origin = Vector3(34.1, .95, -10)
-	query.motion = Vector3(5, 0, 0)
+	query.transform.origin = Vector3(12, .95, -12.7)
+	query.motion = Vector3(0, 0, -1.8)
 	assert_eq(space.cast_motion(query)[0], 1.0)
 	var arrival := _feature.get_node("CasinoArrival") as Marker3D
 	var ray := PhysicsRayQueryParameters3D.create(

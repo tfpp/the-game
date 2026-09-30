@@ -15,9 +15,11 @@ func _ready() -> void:
 	Controls.start()
 	var kit := $Game/Features/procedural_rooms
 	var entrance := kit.get_node("Entrance") as GarageDoor
-	player.server_teleport.rpc_id(1, Vector3(30, .2, -10), -PI / 2)
+	player.server_teleport.rpc_id(1, Vector3(16, .95, -12.8), 1.05)
+	player.pitch = .18
 	await get_tree().create_timer(.3).timeout
-	await _save("teleport-room-entrance.png")
+	await _save("crown-teleporter.png")
+	assert(not kit.has_node("TeleportRoom"))
 	var space := player.get_world_3d().direct_space_state
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = .4064
@@ -25,13 +27,14 @@ func _ready() -> void:
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.shape = capsule
 	query.exclude = [player.get_rid()]
-	query.transform.origin = Vector3(31, .95, -10)
-	query.motion = Vector3(8, 0, 0)
-	assert(space.cast_motion(query)[0] == 1.0, "Casino-to-room passage blocked")
-	for x: float in [33.8, 34.0, 34.2, 36.0, 39.0]:
-		var ray := PhysicsRayQueryParameters3D.create(Vector3(x, .5, -10), Vector3(x, -.5, -10))
-		assert(not space.intersect_ray(ray).is_empty(), "Teleport room floor gap")
-	player.server_teleport.rpc_id(1, entrance.global_position - Vector3(2, .9, 0), -PI / 2)
+	query.transform.origin = Vector3(12, .95, -12.7)
+	query.motion = Vector3(0, 0, -1.8)
+	assert(space.cast_motion(query)[0] == 1.0, "Teleporter approach blocked")
+	for z: float in [-12.7, -13.5, -14.5]:
+		var ray := PhysicsRayQueryParameters3D.create(Vector3(12, .5, z), Vector3(12, -.5, z))
+		assert(not space.intersect_ray(ray).is_empty(), "Teleporter approach floor gap")
+	player.server_teleport.rpc_id(1, entrance.global_position + Vector3(0, -.9, 2), 0)
+	player.pitch = 0
 	await get_tree().create_timer(.3).timeout
 	await _save("casino-portal.png")
 	var interaction := get_tree().get_first_node_in_group(&"interaction")
