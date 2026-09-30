@@ -1,0 +1,11 @@
+{
+  "title": "Faster agent checks",
+  "summary": "Feature requests finish sooner because the game's checks now take a fraction of the time.",
+  "notes": [
+    "Run the game's unit tests at a fixed frame rate, cutting them from about three minutes to under half a minute.",
+    "Stop running every test when an agent checks a single test file.",
+    "Skip the harness's final check when the agent already passed it on the same files.",
+    "Skip the harness and release script self-tests on branches that don't touch them.",
+    "Reuse imported game assets from the last main build in CI."
+  ]
+}

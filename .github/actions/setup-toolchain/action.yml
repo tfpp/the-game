@@ -4,6 +4,10 @@ inputs:
   godot-version:
     description: Godot release to install
     default: 4.7.2
+outputs:
+  import-cache-key:
+    description: Cache key for game/.godot/imported; save it only from trusted main builds
+    value: ${{ steps.import-key.outputs.key }}
 runs:
   using: composite
   steps:
@@ -32,3 +36,16 @@ runs:
         chmod +x ~/.local/bin/godot
     - shell: bash
       run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+    # Imported assets from the last main build. Godot re-imports anything whose source
+    # changed, so the newest main build saves most of the ~35 s import. Restore only: game-ci
+    # saves it from main pushes, never from jobs that run agent-written code.
+    - name: Import cache key
+      id: import-key
+      shell: bash
+      run: echo "key=godot-import-${{ inputs.godot-version }}-${{ github.sha }}" >> "$GITHUB_OUTPUT"
+    - name: Restore Godot imports
+      uses: actions/cache/restore@v6
+      with:
+        path: game/.godot/imported
+        key: ${{ steps.import-key.outputs.key }}
+        restore-keys: godot-import-${{ inputs.godot-version }}-
