@@ -1,0 +1,5 @@
+{
+  "title": "Lighter radar refreshes",
+  "summary": "Reduce recurring CPU spikes from desktop radar map refreshes.",
+  "notes": ["Cache radar geometry discovery instead of scanning every scene node once a second."]
+}

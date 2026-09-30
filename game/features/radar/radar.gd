@@ -25,6 +25,10 @@ var _floor_mesh: ArrayMesh
 var _build_center := Vector2(INF, INF)
 var _build_height := INF
 var _roots: Array[Node3D] = []
+# Index only possible map geometry; do not rediscover all props/avatars every second.
+var _sources: Dictionary[int, Node3D] = {}
+var _source_root: Node
+var _source_tree: SceneTree
 
 
 func _ready() -> void:
@@ -42,6 +46,8 @@ func _ready() -> void:
 	visible = false
 	if _mobile or Network.mode == Network.Mode.SERVER:
 		set_process(false)
+	else:
+		_watch_geometry.call_deferred()
 
 
 static func desktop_visible(mobile: bool, touch: bool, server: bool) -> bool:
@@ -82,9 +88,62 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
+func _watch_geometry() -> void:
+	if is_inside_tree():
+		_index_geometry(get_tree().current_scene)
+
+
+func _index_geometry(root: Node) -> void:
+	if root == null:
+		return
+	_source_root = root
+	_sources.clear()
+	if _source_tree == null:
+		_source_tree = root.get_tree()
+		_source_tree.node_added.connect(_source_added)
+		_source_tree.node_removed.connect(_source_removed)
+	_index_branch(root)
+
+
+func _index_branch(node: Node) -> void:
+	_source_added(node)
+	for child: Node in node.get_children():
+		_index_branch(child)
+
+
+func _source_added(node: Node) -> void:
+	if not (node is CSGShape3D or node is CollisionShape3D):
+		return
+	if (
+		is_instance_valid(_source_root)
+		and (node == _source_root or _source_root.is_ancestor_of(node))
+	):
+		_sources[node.get_instance_id()] = node as Node3D
+
+
+func _source_removed(node: Node) -> void:
+	_sources.erase(node.get_instance_id())
+
+
 func _collect(node: Node, result: Array[Node3D]) -> void:
 	if node == null:
 		return
+	if not is_instance_valid(_source_root) or node != _source_root:
+		_index_geometry(node)
+	for source: Node3D in _sources.values():
+		# A CSG subtree is represented by its root's combined mesh only.
+		var parent := source.get_parent()
+		var nested := false
+		while parent != null:
+			if parent is CSGShape3D:
+				nested = true
+				break
+			parent = parent.get_parent()
+		if not nested:
+			_append_source(source, result)
+
+
+func _append_source(node: Node3D, result: Array[Node3D]) -> void:
 	var bounds := AABB()
 	var candidate := false
 	if node is CSGShape3D:
@@ -114,8 +173,6 @@ func _collect(node: Node, result: Array[Node3D]) -> void:
 		):
 			result.append(node as Node3D)
 		return
-	for child: Node in node.get_children():
-		_collect(child, result)
 
 
 func _build_step() -> void:
@@ -123,7 +180,7 @@ func _build_step() -> void:
 		return
 	for index: int in mini(ROOTS_PER_FRAME, _pending.size()):
 		var shape: Node3D = _pending.pop_back()
-		if not is_instance_valid(shape):
+		if not is_instance_valid(shape) or not shape.is_inside_tree():
 			continue
 		if shape is CollisionShape3D:
 			# Generated worlds mark their structural collision, omitting decorative
