@@ -1,6 +1,6 @@
 # Local frame profiler
 
-Open the existing console with backtick / **Esc → Console**:
+Open the existing console with backtick / **Esc → More → Console**:
 - `profiler 1`: enable the passive frametime graph.
 - `profiler 0`: disconnect capture and hide the graph (retained traces remain).
 - `profiler`: query enabled state.
@@ -8,7 +8,7 @@ Open the existing console with backtick / **Esc → Console**:
   Default is exactly 1000/60 ms, independent of monitor refresh rate or FPS cap.
 - `profiler_clear`: discard the graph, missed frames and selected trace.
 
-Close the console and choose **Esc → Profiler** to inspect misses. Click/tap a row,
+Close the console and choose **Esc → More → Profiler** to inspect misses. Click/tap a row,
 or select it with controller navigation, to display its trace. Esc, controller B,
 Close or the menu button dismiss the inspector using the shared modal lifecycle.
 Touch uses the console's existing software keyboard; controllers need a keyboard

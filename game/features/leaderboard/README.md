@@ -1,6 +1,6 @@
 # Leaderboard
 
-Open **Leaderboard** in the Esc menu for Money, Jumps and Kills rankings. Everyone
+Open **Esc → Activities → Leaderboard** for Money, Jumps and Kills rankings. Everyone
 seen by this server remains listed after leaving, marked **(offline)**. Money is
 the last observed wallet balance; jumps and kills accumulate across connections
 for signed-in accounts. New players appear even with zero scores. Equal scores

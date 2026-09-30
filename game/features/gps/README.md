@@ -1,6 +1,6 @@
 # GPS phone
 
-Press **P** (or pick **GPS** in the Esc menu, which is how touch and controller players
+Press **P** (or pick **Esc → Activities → GPS**, which is how touch and controller players
 open it) to raise a dual-screen phone. Search the place list on the left screen and
 pick one. The phone goes away and a purple route appears on the radar, with a direction
 arrow and a turn-by-turn line ("Turn left in 12 m", "Enter the lounge in 20 m") at the

@@ -84,14 +84,14 @@ func test_leave_stops_a_pending_reconnect() -> void:
 	assert_true(menu._reconnect_timer.is_stopped())
 
 
-func test_offline_menu_adds_a_link_for_each_registered_esc_menu_entry() -> void:
+func test_more_menu_adds_a_link_for_each_registered_esc_menu_entry() -> void:
 	var menu := Login.new()
 	add_child_autofree(menu)
 	var entry := _EscMenuLinkStub.new()
 	entry.label = "Controls"
 	add_child_autofree(entry)
 	entry.add_to_group(&"esc_menu_links")
-	menu._show_offline_menu()
+	menu._show_menu_section("More")
 	var found := false
 	for child: Node in menu._box.get_children():
 		if child is Button and (child as Button).text == "Controls":
@@ -110,7 +110,7 @@ func test_esc_menu_links_are_sorted_alphabetically_by_label() -> void:
 	controls.label = "Controls"
 	add_child_autofree(controls)
 	controls.add_to_group(&"esc_menu_links")
-	menu._show_offline_menu()
+	menu._show_menu_section("More")
 	var labels: Array[String] = []
 	for child: Node in menu._box.get_children():
 		if child is Button and (child as Button).text in ["Controls", "Release notes"]:

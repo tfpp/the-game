@@ -80,7 +80,7 @@ that same collection, consumption and drop path, with a two-hand bowl view.
 
 Buy these at the salon bartender's **Bar shop** using E / B / Circle / touch USE.
 A cigarette costs $2 and a bottled beer costs $5. They collect into an empty hand
-or the backpack; equip stored items through Inventory (I / View / Esc → Inventory).
+or the backpack; equip stored items through Inventory (I / View / Esc → Activities → Inventory).
 Left click, right bumper/trigger or touch FIRE starts one three-second puff or sip.
 Each cigarette and bottle lasts three separate uses, disappearing after the third.
 Partially used items show their remaining puffs/sips in inventory and pickup labels.

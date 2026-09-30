@@ -1,6 +1,6 @@
 # Inventory and clothing
 
-Press **I**, the controller **View/Back** button, or **Inventory** in the Esc menu.
+Press **I**, the controller **View/Back** button, or **Esc → Activities → Inventory**.
 The screen uses the project's Kenney panel and button assets. It shows a live
 character preview, equipment and an eight-slot backpack. The top-right coin and
 balance read the existing wallet and never occupy a slot. Select an item to equip,
