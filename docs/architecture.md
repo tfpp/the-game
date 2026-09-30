@@ -239,8 +239,9 @@ Codex defaults to GPT-6.1 Sol (`gpt-6.1-sol`) with medium reasoning. Pi reuses b
 a temporary agent directory (`harness/pi-setup.sh`), with the vendored `anthropic-omp` and
 `image-generation` extensions plus `pi-web-access`; it defaults to
 `openai-codex/gpt-6.1-sol`, with a per-model thinking level (`harness/pi/thinking-levels.json`:
-medium for GPT-6.1 Sol, low for Claude, max for the OpenRouter models). Discord's `/feature`
-offers it with an optional `model`; the workflow dispatch takes `agent=pi` and `pi_model`.
+medium for GPT-6.1 Sol, low for Astra and Claude, max for Luna and the OpenRouter models).
+Discord's `/feature` offers it with an optional `model`; the workflow dispatch takes
+`agent=pi` and `pi_model`.
 
 **Subscription usage:** Discord `/usage` privately reports Claude and Codex limits,
 independently cached for one minute. Claude probes rate-limit headers; Codex reads the

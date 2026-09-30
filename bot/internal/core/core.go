@@ -166,7 +166,10 @@ type PiModel struct {
 // default (PI_MODEL, else GPT-6.1 Sol) runs.
 var PiModels = []PiModel{
 	{"openai-codex/gpt-6.1-sol", "GPT-6.1 Sol"},
+	{"openai-codex/gpt-6-astra", "GPT-6 Astra"},
+	{"openai-codex/gpt-6-luna", "GPT-6 Luna"},
 	{"anthropic-omp/claude-opus-5-5", "Claude Opus 5.5"},
+	{"anthropic-omp/claude-fable-5-1", "Claude Fable 5.1"},
 	{"openrouter/deepseek/deepseek-v4.1-flash", "DeepSeek V4.1 Flash"},
 	{"openrouter/z-ai/glm-5.3", "GLM-5.3"},
 	{"openrouter/z-ai/glm-5.3-flash", "GLM-5.3 Flash"},

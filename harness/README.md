@@ -163,7 +163,8 @@ bounds numeric values and validates model IDs before rendering them. The human P
      models. Any one credential is enough to start, but the selected model needs its own:
      the default needs the Codex login. Pick a model with the dispatch's `pi_model` input
      (`-f pi_model=openrouter/z-ai/glm-5.3`) or the `PI_MODEL` variable. The input offers
-     `openai-codex/gpt-6.1-sol`, `anthropic-omp/claude-opus-5-5`, and on OpenRouter
+     `openai-codex/gpt-6.1-sol`, `gpt-6-astra` and `gpt-6-luna`;
+     `anthropic-omp/claude-opus-5-5` and `claude-fable-5-1`; and on OpenRouter
      `deepseek/deepseek-v4.1-flash`, `z-ai/glm-5.3`, `z-ai/glm-5.3-flash`,
      `qwen/qwen3.8-max-0902`, `qwen/qwen3.8-flash` and `moonshotai/kimi-k3`. pi reads the
      OpenRouter key from the job environment; it is never written to disk.

@@ -38,7 +38,10 @@ on:
         options:
           - default
           - openai-codex/gpt-6.1-sol
+          - openai-codex/gpt-6-astra
+          - openai-codex/gpt-6-luna
           - anthropic-omp/claude-opus-5-5
+          - anthropic-omp/claude-fable-5-1
           - openrouter/deepseek/deepseek-v4.1-flash
           - openrouter/z-ai/glm-5.3
           - openrouter/z-ai/glm-5.3-flash
