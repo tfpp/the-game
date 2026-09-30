@@ -29,6 +29,8 @@ jobs:
           mkdir -p ~/.local/share/godot/export_templates
           ln -sfn /root/.local/share/godot/export_templates/4.7.2.stable \
             ~/.local/share/godot/export_templates/4.7.2.stable || true
+      - name: Test native release-note collection
+        run: scripts/release_notes_test.sh
       - name: Export web
         env:
           BUILD_VERSION: ${{ github.sha }}

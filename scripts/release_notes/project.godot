@@ -1,0 +1,8 @@
+; Standalone release tooling: no game autoloads or imported assets required.
+config_version=5
+
+[application]
+config/name="Release note collection"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"

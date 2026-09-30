@@ -127,7 +127,12 @@ window.getGameSafeArea = function () {
 window.addEventListener('keydown', function (evt) {
 	const isR = evt.code === 'KeyR' || (evt.key || '').toLowerCase() === 'r';
 	const reload = evt.key === 'F5' || (isR && (evt.metaKey || evt.ctrlKey) && !evt.altKey);
-	if (reload) {
+	// Keep native Mac screenshots out of Godot's preventDefault(), with or without
+	// Control (copy to clipboard). Command itself still reaches the input helper,
+	// which releases pointer lock before macOS consumes the final digit.
+	const screenshot = /^Mac/.test(navigator.platform) && evt.metaKey && evt.shiftKey
+		&& !evt.altKey && ['Digit3', 'Digit4', 'Digit5'].includes(evt.code);
+	if (reload || screenshot) {
 		evt.stopImmediatePropagation();
 	}
 }, true);

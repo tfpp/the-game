@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://features/garage_enemies/garage_enemy.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://features/garage_enemies/enemy_model.gd" id="2_model"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="3_entity"]
+
+[sub_resource type="CapsuleShape3D" id="Capsule"]
+radius = 0.35
+height = 1.7
+
+[node name="GarageEnemy" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 1
+floor_snap_length = 0.3
+script = ExtResource("1_enemy")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Capsule")
+
+[node name="Model" type="Node3D" parent="."]
+script = ExtResource("2_model")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("3_entity")
+replicated_properties = Array[NodePath]([NodePath(".:net_alive"), NodePath(".:net_windup")])
+continuous_properties = Array[NodePath]([NodePath(".:net_position"), NodePath(".:net_yaw")])

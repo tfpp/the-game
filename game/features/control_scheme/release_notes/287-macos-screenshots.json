@@ -1,0 +1,5 @@
+{
+  "title": "Native macOS screenshots",
+  "summary": "Use macOS screenshot shortcuts during play, then click back into the game to resume.",
+  "notes": ["Release the pointer on Command without opening the menu on macOS.", "Allow native Mac screenshot shortcuts through the browser canvas."]
+}

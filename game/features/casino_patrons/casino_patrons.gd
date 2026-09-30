@@ -4,6 +4,7 @@ extends Node3D
 ## carries each patron's index, so every peer builds the same look and route.
 
 const TRUMP_SCENE := preload("res://features/casino_patrons/trump.tscn")
+const MITCH_SCENE := preload("res://features/casino_patrons/mitch.tscn")
 
 const PATRON_SCENE := preload("res://features/casino_patrons/patron.tscn")
 
@@ -24,12 +25,17 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 		for index: int in PatronMath.ROUTES.size():
 			_spawner.spawn({"index": index})
 		_spawner.spawn({"index": PatronModel.TRUMP_LOOK})
+		_spawner.spawn({"index": PatronModel.MITCH_LOOK})
 
 
 ## Runs on every peer (spawn_function).
 func _spawn_patron(data: Variant) -> Node:
 	var index := int((data as Dictionary)["index"])
-	var scene := TRUMP_SCENE if index == PatronModel.TRUMP_LOOK else PATRON_SCENE
+	var scene := PATRON_SCENE
+	if index == PatronModel.TRUMP_LOOK:
+		scene = TRUMP_SCENE
+	elif index == PatronModel.MITCH_LOOK:
+		scene = MITCH_SCENE
 	var patron := scene.instantiate() as CasinoPatron
 	patron.name = "Patron%d" % index
 	patron.look = index
@@ -40,5 +46,8 @@ func _spawn_patron(data: Variant) -> Node:
 	if index == PatronModel.TRUMP_LOOK:
 		patron.position += Vector3(0, 0, -0.7)
 		patron.route = [patron.position]
+	elif index == PatronModel.MITCH_LOOK:
+		patron.route.assign(PatronMath.MITCH_ROUTE)
+		patron.position = patron.route[0]
 	patron.net_position = patron.position
 	return patron

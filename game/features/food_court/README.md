@@ -31,3 +31,31 @@ the player, it lets go and asks to stand. `is_seated(peer)` (group `seating`) le
 `BlockPlayerModel` show the seated pose on every peer, including late joiners.
 
 Nothing is persisted. Tests: `tests/features/food_court/`.
+
+## Poke bowls
+
+The small **POKE BOWLS** stand at (30, 0, 37.5) faces west, beside the kebab
+shop. Follow the existing Food Court GPS marker, then continue toward the east
+counters. Use (E / B / Circle / touch USE) opens a menu with six tip buttons:
+15%, 20%, 25%, 30%, 35%, 40%. Each button buys one $29 salmon, rice and avocado
+bowl, showing the complete total ($33.35–$40.60). Close without choosing to cancel.
+Use primary action (left click / right shoulder / touch FIRE) to eat the equipped
+bowl. Like kebabs, it has no extra healing or buff; inventory can store/drop it.
+A fresh $20 wallet needs more money before ordering.
+
+`poke_stand.gd` uses NetworkedInteraction for Use and the `order {tip: int}` action.
+The server resolves the sender, checks the customer side/range, allowed tip,
+inventory capacity and one outstanding payment per buyer. It computes the total
+in cents and calls PlayerMoney.charge. Other players can order independently.
+The synchronous apply callback starts asynchronous wallet work without yielding.
+Successful payment collects the FOOD item through PlayerInventory; if the bag
+fills or the buyer disconnects during payment, the normal holdables spawner leaves
+one public bowl pickup beside the counter. A respawn keeps normal inventory delivery;
+a session reset ignores stale completions. Purchases have a one-second per-peer
+cooldown, and menu buttons disable after choosing to avoid accidental repeats.
+
+The counter is static on every peer. Held/backpack bowls and fallback pickups
+use existing server-owned replication, including late joins. Authenticated money
+persists normally; bowls have ordinary session inventory/pickup lifetime. No new
+persistent state, bindings, lights or NPC simulation. `poke_menu.gd` is local modal
+UI with keyboard/controller focus, touch-sized buttons and Esc/Close dismissal.

@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://features/casino_patrons/patron.tscn" id="1"]
+[ext_resource type="Script" path="res://features/casino_patrons/mitch.gd" id="2"]
+[ext_resource type="Script" path="res://features/casino_patrons/mitch_model.gd" id="3"]
+
+[node name="Mitch" instance=ExtResource("1")]
+script = ExtResource("2")
+
+[node name="Body" parent="." index="1"]
+script = ExtResource("3")

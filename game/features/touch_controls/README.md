@@ -7,3 +7,7 @@ the right, JUMP, USE, FIRE and a pause button. Shown only while `Controls.touch_
 does) via `send_attack()`. The FIRE button holds them while touched, and the controller
 right trigger (`JOY_AXIS_TRIGGER_RIGHT`) presses them once past 0.5 and releases below
 0.3. The right bumper stays bound too. Desktop bindings are unchanged.
+
+The shared web `shell.html` preserves browser reload and native macOS screenshot
+shortcuts before Godot's canvas handler can prevent their defaults. Mac pointer
+release and click-to-resume are owned by `features/control_scheme/system_shortcuts.gd`.

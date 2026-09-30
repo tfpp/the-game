@@ -8,6 +8,7 @@
 
 # Godot
 game/.godot/
+scripts/release_notes/.godot/
 game/*.translation
 game/export_credentials.cfg
 game/build_info.gd

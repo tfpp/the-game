@@ -52,6 +52,8 @@ files before editing the corresponding code.
 
 ## Rules
 
+- Never introduce Python code, scripts, tooling or runtime/build dependencies. Use
+  GDScript, Go, shell or the repository's existing native systems instead.
 - Never commit to or push `main` directly. Before starting work, run
   `git switch main && git pull --ff-only`, then create a new branch from it
   (`git switch -c <type>/<short-description>`).
