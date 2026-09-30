@@ -1,0 +1,5 @@
+# wallet albedo
+
+Built-in imagegen edit against uv_template.png. Runtime albedo is 128×128.
+
+Use case: precise-object-edit. Asset: flat UV albedo atlas for a small folded leather wallet. Preserve EXACT attached UV template rectangles and empty dark background. Large top-left green rectangle STITCHED_LEATHER x2,y2 size104x68 in128 grid: worn dark warm brown leather with pale coarse stitching inset around all four edges, subtle simple grain, no logos. Lower-left blue rectangle BACK_LEATHER x2,y74 size58x43: matching brown leather with a stitched edge and darker fold seam. Tall narrow far-right red rectangle FOLDED_EDGES x110,y2 size16x73: layered brown leather seams, vertical long axis, no stitching on outer crop. Lower middle gold tall rectangle STRAP_LEATHER x64,y74 size16x51: brown leather closure strap with two long stitched edges. Tiny purple square BRASS_SNAP x84,y74 size7x7: simple tarnished brass metal round snap center. Flat unlit GoldSrc 1998 coarse painted pixel artwork for128x128 runtime. No perspective, no 3D wallet render, no labels, no words.

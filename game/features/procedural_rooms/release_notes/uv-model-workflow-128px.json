@@ -1,0 +1,10 @@
+{
+  "title": "UV-mapped models and a 128px texture standard",
+  "summary": "Add a repeatable model-to-UV-to-texture workflow with a GoldSrc-inspired 128px texture limit.",
+  "notes": [
+    "Document a hard 128x128 maximum for model and world textures in the project guidance.",
+    "Build the garage service cabinet with named UV islands, consistent texel density and padded edges.",
+    "Generate and apply a 128px painted cabinet atlas, export a GLB, and add checker and textured model previews.",
+    "Validate UVs, collision footprint, texture padding and runtime texture dimensions."
+  ]
+}

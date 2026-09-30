@@ -1,0 +1,128 @@
+{
+  "atlas_size": 128,
+  "bounds_m": [
+    0.6,
+    2.5,
+    1.0
+  ],
+  "front_normal": [
+    1,
+    0,
+    0
+  ],
+  "generation_size": 1024,
+  "islands": [
+    {
+      "name": "FRONT",
+      "normal": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "rect_px": [
+        4,
+        4,
+        30,
+        75
+      ],
+      "uv_top_left": [
+        0.03125,
+        0.03125
+      ]
+    },
+    {
+      "name": "BACK",
+      "normal": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "rect_px": [
+        38,
+        4,
+        30,
+        75
+      ],
+      "uv_top_left": [
+        0.296875,
+        0.03125
+      ]
+    },
+    {
+      "name": "LEFT",
+      "normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "rect_px": [
+        72,
+        4,
+        18,
+        75
+      ],
+      "uv_top_left": [
+        0.5625,
+        0.03125
+      ]
+    },
+    {
+      "name": "RIGHT",
+      "normal": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "rect_px": [
+        94,
+        4,
+        18,
+        75
+      ],
+      "uv_top_left": [
+        0.734375,
+        0.03125
+      ]
+    },
+    {
+      "name": "TOP",
+      "normal": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "rect_px": [
+        4,
+        87,
+        30,
+        18
+      ],
+      "uv_top_left": [
+        0.03125,
+        0.6796875
+      ]
+    },
+    {
+      "name": "BOTTOM",
+      "normal": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "rect_px": [
+        38,
+        87,
+        30,
+        18
+      ],
+      "uv_top_left": [
+        0.296875,
+        0.6796875
+      ]
+    }
+  ],
+  "model": "service_cabinet",
+  "padding": 2,
+  "pivot": "floor_center",
+  "pixels_per_metre": 30
+}

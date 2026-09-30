@@ -1,0 +1,5 @@
+{
+  "title": "Painted service elevator",
+  "summary": "The garage lift now has a proper wood-and-brass cab, matching sliding doors and floor buttons.",
+  "notes": ["Replace the lift's developer-grid visuals with reusable cab, door and control models.", "Share one painted 128×128 atlas across repeated walls, door leaves and trim.", "Preserve the moving platform, floor selection, doorway clearance and landing interlocks.", "Keep moving elevator and door textures attached to their meshes instead of scrolling through world projection."]
+}

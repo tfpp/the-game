@@ -57,6 +57,16 @@ func apply_damage(target_peer: int, amount: float, attacker_peer: int) -> void:
 		player.server_teleport.rpc_id(target_peer, _respawn_position())
 
 
+## Server-only: restores up to `amount` health to `peer_id`, never above
+## MAX_HEALTH. Food items call this when eaten (features/holdables/hand.gd).
+func heal(peer_id: int, amount: float) -> void:
+	if not multiplayer.is_server() or amount <= 0.0:
+		return
+	var current := health_for(peer_id)
+	if current < MAX_HEALTH:
+		_set_health(peer_id, minf(current + amount, MAX_HEALTH))
+
+
 @rpc("authority", "call_local", "reliable")
 func _announce_death(victim_peer: int, attacker_peer: int) -> void:
 	player_died.emit(victim_peer, attacker_peer)

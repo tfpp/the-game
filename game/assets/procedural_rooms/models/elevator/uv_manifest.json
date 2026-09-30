@@ -1,0 +1,584 @@
+{
+  "atlas_size": 128,
+  "density": 21.0,
+  "face_bindings": [
+    {
+      "island": "WOOD",
+      "part": "cab"
+    },
+    {
+      "island": "WOOD",
+      "part": "cab"
+    },
+    {
+      "island": "WOOD",
+      "part": "cab"
+    },
+    {
+      "island": "FLOOR",
+      "part": "cab"
+    },
+    {
+      "island": "CEILING",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "cab"
+    },
+    {
+      "island": "LIGHT",
+      "part": "cab"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "BRASS",
+      "part": "frame"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "STEEL",
+      "part": "cab"
+    },
+    {
+      "island": "DOOR",
+      "part": "leaf"
+    },
+    {
+      "island": "DOOR",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "leaf"
+    },
+    {
+      "island": "STEEL",
+      "part": "button"
+    },
+    {
+      "island": "STEEL",
+      "part": "button"
+    },
+    {
+      "island": "STEEL",
+      "part": "button"
+    },
+    {
+      "island": "STEEL",
+      "part": "button"
+    },
+    {
+      "island": "STEEL",
+      "part": "button"
+    },
+    {
+      "island": "STEEL",
+      "part": "button"
+    },
+    {
+      "island": "CONTROL",
+      "part": "button"
+    }
+  ],
+  "islands": [
+    {
+      "name": "WOOD",
+      "rect_px": [
+        2,
+        2,
+        63,
+        63
+      ],
+      "rotated": false
+    },
+    {
+      "name": "FLOOR",
+      "rect_px": [
+        2,
+        69,
+        48,
+        48
+      ],
+      "rotated": false
+    },
+    {
+      "name": "CEILING",
+      "rect_px": [
+        54,
+        85,
+        38,
+        38
+      ],
+      "rotated": false
+    },
+    {
+      "name": "BRASS",
+      "rect_px": [
+        2,
+        121,
+        4,
+        4
+      ],
+      "rotated": false
+    },
+    {
+      "name": "STEEL",
+      "rect_px": [
+        18,
+        121,
+        4,
+        4
+      ],
+      "rotated": false
+    },
+    {
+      "name": "LIGHT",
+      "rect_px": [
+        10,
+        121,
+        4,
+        4
+      ],
+      "rotated": false
+    },
+    {
+      "name": "DOOR",
+      "rect_px": [
+        69,
+        2,
+        40,
+        79
+      ],
+      "rotated": false
+    },
+    {
+      "name": "CONTROL",
+      "rect_px": [
+        96,
+        85,
+        21,
+        15
+      ],
+      "rotated": true
+    }
+  ],
+  "occupied_fraction": 0.68603515625,
+  "padding": 2,
+  "parts": {
+    "button": {
+      "bounds": "[P: (0.215, 1.15, -0.175), S: (0.105, 0.5, 0.35)]",
+      "triangles": 14
+    },
+    "cab": {
+      "bounds": "[P: (-1.5, 0.0, -1.5), S: (3.0, 3.0, 2.78)]",
+      "triangles": 156
+    },
+    "frame": {
+      "bounds": "[P: (-1.66, 0.0, -0.12), S: (3.32, 3.16, 0.24)]",
+      "triangles": 36
+    },
+    "leaf": {
+      "bounds": "[P: (-0.745, 0.0, -0.07), S: (1.49, 2.98, 0.14)]",
+      "triangles": 32
+    }
+  }
+}

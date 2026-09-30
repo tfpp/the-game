@@ -1,0 +1,5 @@
+{
+  "title": "Painted scrap and wallet models",
+  "summary": "Scrap Metal and Wallet now have textured models for pickups and held items.",
+  "notes": ["Add bent scrap with a nut and bolt, and a stitched leather wallet with a brass snap.", "Use compact shared UV islands and 128×128 textures for both loot models."]
+}

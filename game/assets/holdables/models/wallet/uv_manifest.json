@@ -1,0 +1,59 @@
+{
+  "atlas_size": 128,
+  "islands": [
+    {
+      "name": "FOLDED_EDGES",
+      "rect_px": [
+        110,
+        2,
+        16,
+        73
+      ],
+      "rotated": true
+    },
+    {
+      "name": "BACK_LEATHER",
+      "rect_px": [
+        2,
+        74,
+        58,
+        43
+      ],
+      "rotated": false
+    },
+    {
+      "name": "STITCHED_LEATHER",
+      "rect_px": [
+        2,
+        2,
+        104,
+        68
+      ],
+      "rotated": false
+    },
+    {
+      "name": "STRAP_LEATHER",
+      "rect_px": [
+        64,
+        74,
+        16,
+        51
+      ],
+      "rotated": true
+    },
+    {
+      "name": "BRASS_SNAP",
+      "rect_px": [
+        84,
+        74,
+        7,
+        7
+      ],
+      "rotated": false
+    }
+  ],
+  "model": "wallet",
+  "occupied_fraction": 0.70794677734375,
+  "padding": 2,
+  "pixels_per_metre": 866.0
+}

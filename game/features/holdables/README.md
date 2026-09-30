@@ -17,6 +17,8 @@ Generic items players can pick up and hold: `pistol`, `smg`, `shotgun` and `awp`
    `pellet_count` and `spread_degrees`. `first_person_offset` places the primary
    grip relative to the camera; allow room for stocks. `ground_clearance` keeps
    dropped meshes above the floor.
+   Inventory thumbnails render this same view scene. Set `icon_view_direction`
+   when a top or side view makes an item more readable; framing is automatic.
 3. List it in `item_catalog.gd`'s `DEFINITIONS`.
 4. Place an `ItemPickup` instance somewhere in `feature.tscn` with that `item_id`.
 
@@ -51,7 +53,8 @@ action all key off the category.
     `take_hit` on it, so non-player targets can handle being shot on their own
     terms. `fire_cooldown_s` caps the rate of fire, so an SMG just needs a short
     cooldown to feel automatic even though every shot is still its own click.
-  - `FOOD`: eaten once and gone.
+  - `FOOD`: eaten once and gone, restoring its `heal_amount` of health through
+    `features/combat`'s `heal()` (kebab and poke bowl: full health; banana: 25).
   - `PROP`: thrown.
   - Any held item can also be dropped with G / left shoulder button
     (`request_drop_item`), regardless of category. The inventory can also store
@@ -115,3 +118,7 @@ use `--item=cigarette`, `--first-person` or `--body=penguin` for other views.
 The two consumable views also define a `Mouth` marker at the bottle lip or cigarette
 filter. Playback aligns this contact independently of the hand's `Grip` marker;
 cigarettes relax the index/middle finger bones and other items restore their grip.
+
+Scrap Metal and Wallet use painted low-poly meshes with shared UV islands and
+128×128 atlases. Their sources, rebuild commands and model icon preview are in
+[`docs/design/loot-models.md`](../../../docs/design/loot-models.md).

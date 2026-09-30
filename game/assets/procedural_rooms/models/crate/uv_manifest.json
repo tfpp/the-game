@@ -1,0 +1,55 @@
+{
+  "atlas_size": 128,
+  "face_bindings": [
+    {
+      "face": "WOOD_LEFT",
+      "flip_x": false,
+      "island": "WOOD_FACE"
+    },
+    {
+      "face": "WOOD_RIGHT",
+      "flip_x": false,
+      "island": "WOOD_FACE"
+    },
+    {
+      "face": "WOOD_0",
+      "flip_x": false,
+      "island": "WOOD_FACE"
+    },
+    {
+      "face": "WOOD_1",
+      "flip_x": false,
+      "island": "WOOD_FACE"
+    },
+    {
+      "face": "WOOD_2",
+      "flip_x": false,
+      "island": "WOOD_FACE"
+    },
+    {
+      "face": "WOOD_3",
+      "flip_x": false,
+      "island": "WOOD_FACE"
+    }
+  ],
+  "islands": [
+    {
+      "density_multiplier": 1.0,
+      "name": "WOOD_FACE",
+      "rect_px": [
+        2,
+        2,
+        124,
+        124
+      ],
+      "rotated": false,
+      "source_face": "WOOD_LEFT"
+    }
+  ],
+  "kind": "crate",
+  "layout_version": 2,
+  "occupied_fraction": 0.9384765625,
+  "padding": 2,
+  "pivot": "floor_center",
+  "pixels_per_metre": 124.0
+}

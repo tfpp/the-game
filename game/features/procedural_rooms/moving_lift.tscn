@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="Script" path="res://features/procedural_rooms/moving_lift.gd" id="1"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="2"]
+[node name="Lift" type="Node3D"]
+script = ExtResource("1")
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("2")
+replicated_properties = Array[NodePath]([NodePath(".:net_floor"), NodePath(".:net_target"), NodePath(".:net_phase")])
+continuous_properties = Array[NodePath]([NodePath(".:net_height"), NodePath(".:net_aperture")])
+replication_interval = 0.015625

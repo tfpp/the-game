@@ -1,0 +1,5 @@
+{
+  "title": "Opening dumpster lids",
+  "summary": "Dumpster lids open while someone searches and close when the last searcher leaves.",
+  "notes": ["Animate hinged dumpster lids on every peer from shared active search state.", "Add hollow dumpster interiors while preserving the existing 128×128 painted atlas and cover collision."]
+}

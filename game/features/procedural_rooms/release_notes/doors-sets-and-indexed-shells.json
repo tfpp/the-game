@@ -1,0 +1,9 @@
+{
+  "title": "Doors and modular sets in the socket lab",
+  "summary": "Explore distinct garage, utility and pump sets with working doors and visible attachment guides.",
+  "notes": [
+    "Add sliding doors with validated interaction, occupancy protection and open passage clearance.",
+    "Add garage, utility, pump and storage set pieces plus a labelled exploded assembly gallery.",
+    "Build structural interiors from indexed faces with canonical shared vertices instead of wall boxes."
+  ]
+}

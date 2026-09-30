@@ -1,0 +1,5 @@
+{
+  "title": "Shared active container searches",
+  "summary": "Containers now track who is actively viewing their stash.",
+  "notes": ["Track active searchers on the server and replicate current presence to all players and late joiners.", "Release search presence on menu close, range exit, disconnect, timeout and excursion reset."]
+}

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://features/parking_garage/garage_door.gd" id="1_door"]
 [ext_resource type="Script" path="res://features/dev_elevator/slum_arrival_point.gd" id="2_arrival"]
@@ -12,10 +12,13 @@
 [ext_resource type="PackedScene" path="res://features/parking_garage/fluorescent_fixture.tscn" id="10_light"]
 [ext_resource type="Script" path="res://features/parking_garage/garage_ambience.gd" id="11_ambience"]
 [ext_resource type="Script" path="res://features/slum_alley/rain.gd" id="12_rain"]
-[ext_resource type="Mesh" path="res://assets/slum_alley/models/dumpster.obj" id="13_dumpster"]
+[ext_resource type="PackedScene" path="res://features/slum_alley/dumpster_model.tscn" id="13_dumpster"]
 [ext_resource type="Mesh" path="res://assets/slum_alley/models/street_details.obj" id="14_streets"]
 
+[sub_resource type="BoxShape3D" id="DumpsterShape"]
+size = Vector3(2.47, 1.6, 1.46)
 [sub_resource type="BoxMesh" id="PuddleMesh"]
+
 size = Vector3(1, 0.02, 1)
 
 [node name="SlumAlley" type="Node3D"]
@@ -153,56 +156,56 @@ position = Vector3(17, 2.1, 6.85)
 size = Vector3(3, 1.8, 0.12)
 material = ExtResource("8_board")
 
-[node name="DumpsterNorth" type="CSGBox3D" parent="District"]
+[node name="DumpsterNorth" type="StaticBody3D" parent="District"]
 position = Vector3(-3.2, 0.8, -11)
-size = Vector3(2.4, 1.6, 1.4)
-material = ExtResource("7_rust")
-use_collision = true
 
-[node name="Model" type="MeshInstance3D" parent="District/DumpsterNorth"]
-mesh = ExtResource("13_dumpster")
+[node name="Shape" type="CollisionShape3D" parent="District/DumpsterNorth"]
+shape = SubResource("DumpsterShape")
+
+[node name="Model" parent="District/DumpsterNorth" instance=ExtResource("13_dumpster")]
+position = Vector3(0, -0.8, 0)
 
 [node name="Loot" parent="District/DumpsterNorth" instance=ExtResource("3_loot")]
 position = Vector3(0, 0.1, 1.1)
 loot_table = ExtResource("4_table")
 noun = "dumpster"
 
-[node name="DumpsterSouth" type="CSGBox3D" parent="District"]
+[node name="DumpsterSouth" type="StaticBody3D" parent="District"]
 position = Vector3(3, 0.8, 11)
-size = Vector3(2.4, 1.6, 1.4)
-material = ExtResource("7_rust")
-use_collision = true
 
-[node name="Model" type="MeshInstance3D" parent="District/DumpsterSouth"]
-mesh = ExtResource("13_dumpster")
+[node name="Shape" type="CollisionShape3D" parent="District/DumpsterSouth"]
+shape = SubResource("DumpsterShape")
+
+[node name="Model" parent="District/DumpsterSouth" instance=ExtResource("13_dumpster")]
+position = Vector3(0, -0.8, 0)
 
 [node name="Loot" parent="District/DumpsterSouth" instance=ExtResource("3_loot")]
 position = Vector3(0, 0.1, -1.1)
 loot_table = ExtResource("4_table")
 noun = "dumpster"
 
-[node name="DumpsterWest" type="CSGBox3D" parent="District"]
+[node name="DumpsterWest" type="StaticBody3D" parent="District"]
 position = Vector3(-12, 0.8, 2.5)
-size = Vector3(2.4, 1.6, 1.4)
-material = ExtResource("7_rust")
-use_collision = true
 
-[node name="Model" type="MeshInstance3D" parent="District/DumpsterWest"]
-mesh = ExtResource("13_dumpster")
+[node name="Shape" type="CollisionShape3D" parent="District/DumpsterWest"]
+shape = SubResource("DumpsterShape")
+
+[node name="Model" parent="District/DumpsterWest" instance=ExtResource("13_dumpster")]
+position = Vector3(0, -0.8, 0)
 
 [node name="Loot" parent="District/DumpsterWest" instance=ExtResource("3_loot")]
 position = Vector3(0, 0.1, -1.1)
 loot_table = ExtResource("4_table")
 noun = "dumpster"
 
-[node name="DumpsterEast" type="CSGBox3D" parent="District"]
+[node name="DumpsterEast" type="StaticBody3D" parent="District"]
 position = Vector3(12, 0.8, -2.5)
-size = Vector3(2.4, 1.6, 1.4)
-material = ExtResource("7_rust")
-use_collision = true
 
-[node name="Model" type="MeshInstance3D" parent="District/DumpsterEast"]
-mesh = ExtResource("13_dumpster")
+[node name="Shape" type="CollisionShape3D" parent="District/DumpsterEast"]
+shape = SubResource("DumpsterShape")
+
+[node name="Model" parent="District/DumpsterEast" instance=ExtResource("13_dumpster")]
+position = Vector3(0, -0.8, 0)
 
 [node name="Loot" parent="District/DumpsterEast" instance=ExtResource("3_loot")]
 position = Vector3(0, 0.1, 1.1)

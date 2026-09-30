@@ -1,0 +1,9 @@
+{
+  "title": "Grounded garage and visible elevator entrances",
+  "summary": "Add concrete decks, an asphalt surround and an overcast sky to the connected garage preview.",
+  "notes": [
+    "Start facing a large illuminated elevator sign and clearly marked cab entrance.",
+    "Add coarse concrete materials while retaining subtle developer scale guides.",
+    "Ground the structure on a collidable asphalt plane beneath a cloudy sky."
+  ]
+}

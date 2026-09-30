@@ -1,0 +1,99 @@
+{
+  "atlas_size": 128,
+  "islands": [
+    {
+      "name": "DRUM_TOP",
+      "rect_px": [
+        2,
+        2,
+        20,
+        20
+      ]
+    },
+    {
+      "name": "DRUM_BOTTOM",
+      "rect_px": [
+        26,
+        2,
+        20,
+        20
+      ]
+    },
+    {
+      "name": "DRUM_0",
+      "rect_px": [
+        50,
+        2,
+        29,
+        8
+      ]
+    },
+    {
+      "name": "DRUM_1",
+      "rect_px": [
+        83,
+        2,
+        29,
+        8
+      ]
+    },
+    {
+      "name": "DRUM_2",
+      "rect_px": [
+        2,
+        26,
+        29,
+        8
+      ]
+    },
+    {
+      "name": "DRUM_3",
+      "rect_px": [
+        35,
+        26,
+        29,
+        8
+      ]
+    },
+    {
+      "name": "DRUM_4",
+      "rect_px": [
+        68,
+        26,
+        29,
+        8
+      ]
+    },
+    {
+      "name": "DRUM_5",
+      "rect_px": [
+        2,
+        38,
+        29,
+        8
+      ]
+    },
+    {
+      "name": "DRUM_6",
+      "rect_px": [
+        35,
+        38,
+        29,
+        8
+      ]
+    },
+    {
+      "name": "DRUM_7",
+      "rect_px": [
+        68,
+        38,
+        29,
+        8
+      ]
+    }
+  ],
+  "kind": "barrel",
+  "padding": 2,
+  "pivot": "floor_center",
+  "pixels_per_metre": 24.0
+}

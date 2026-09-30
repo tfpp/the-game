@@ -1,0 +1,5 @@
+{
+  "title": "Service elevator floor panel",
+  "summary": "Aim at a labelled floor button to select B1–B5.",
+  "notes": ["Replace scattered cab buttons with one textured brass panel with current and requested floor lights.", "Make floor selection follow the aimed button and keep B1 clear of the doorway obstruction zone.", "Clarify that 128×128 is a texture maximum and smaller models should use smaller texture budgets."]
+}

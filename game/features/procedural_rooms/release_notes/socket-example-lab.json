@@ -1,0 +1,9 @@
+{
+  "title": "Playable seamless socket examples",
+  "summary": "Explore a development lab with connected rooms, ramps, stairs and sewer tunnels.",
+  "notes": [
+    "Add an independent socket attachment prototype with matching opening boundaries and validated joins.",
+    "Add a standalone first-person lab with three examples and eight physical room connections.",
+    "Verify join clearance and actual-player ramp and stair traversal, and capture rendered examples."
+  ]
+}
