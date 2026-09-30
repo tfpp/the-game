@@ -240,7 +240,8 @@ workflow dispatch's `agent` input. Claude defaults to Opus 5.5 (`claude-opus-5-5
 effort; Codex defaults to GPT-6.1 Sol (`gpt-6.1-sol`) with medium reasoning. Pi reuses both
 secrets, plus `OPENROUTER_API_KEY` for OpenRouter models (chosen with the dispatch's
 `pi_model` input), in a temporary agent directory (`harness/pi-setup.sh`), with the
-vendored `anthropic-omp` and `image-generation` extensions plus `pi-web-access`. It
+vendored `image-generation` extension plus `pi-web-access`, and the vendored
+`anthropic-omp` extension (with its Bun runtime) only for `anthropic-omp/*` models. It
 defaults to `openai-codex/gpt-6.1-sol`, with a per-model thinking level
 (`harness/pi/thinking-levels.json`: medium for GPT-6.1 Sol, low for Astra and Claude, max
 for Luna and the OpenRouter models). Discord's `/feature` offers it with an optional

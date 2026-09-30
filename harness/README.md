@@ -13,7 +13,7 @@ definition of done for agents and humans alike.
 | `context.sh` | Writes the task, current PR, sibling PRs and paths, recent merges, and feedback from GitHub |
 | `check-summary.sh` | Requires integration review notes before agent-written work can be bundled |
 | `publish.sh` | Pushes the bundle, opens the PR or comments, reports failures |
-| `pi-setup.sh` | Builds a temporary pi agent directory (auth, extensions, `pi-web-access`) on Actions |
+| `pi-setup.sh` | Builds a temporary pi agent directory (auth, extensions, `pi-web-access`) on Actions; installs `anthropic-omp` only for its models |
 | `pi/extensions/` | Vendored pi extensions: `anthropic-omp` (Claude subscription provider) and `image-generation` |
 | `claude-app-token.sh` | Fallback push token from the Claude GitHub App |
 | `tests/` | Offline tests with a fake agent, `gh` and remote |
@@ -161,10 +161,12 @@ bounds numeric values and validates model IDs before rendering them. The human P
      GitHub Secrets are not available to the bot. See [bot setup](../bot/README.md).
    - **pi:** reuses both logins above and adds OpenRouter. `CODEX_AUTH_JSON` becomes
      pi's `openai-codex` login for the default model, `imagegen` and Codex-backed web
-     search; `CLAUDE_CODE_OAUTH_TOKEN` enables the vendored `anthropic-omp` provider; and
-     `OPENROUTER_API_KEY` (`gh secret set OPENROUTER_API_KEY`) enables the `openrouter/*`
-     models. Any one credential is enough to start, but the selected model needs its own:
-     the default needs the Codex login. Pick a model with the dispatch's `pi_model` input
+     search; `CLAUDE_CODE_OAUTH_TOKEN` enables the vendored `anthropic-omp` provider (the
+     workflow passes it to pi only for `anthropic-omp/*` models); and `OPENROUTER_API_KEY`
+     (`gh secret set OPENROUTER_API_KEY`) enables the `openrouter/*` models. The selected
+     model needs its own credential: the default needs the Codex login, `anthropic-omp/*`
+     the Claude token and `openrouter/*` the OpenRouter key. Pick a model with the
+     dispatch's `pi_model` input
      (`-f pi_model=openrouter/z-ai/glm-5.3`) or the `PI_MODEL` variable. The input offers
      `openai-codex/gpt-6.1-sol`, `gpt-6-astra` and `gpt-6-luna`;
      `anthropic-omp/claude-opus-5-5` and `claude-fable-5-1`; and on OpenRouter
@@ -172,8 +174,9 @@ bounds numeric values and validates model IDs before rendering them. The human P
      `qwen/qwen3.8-max-0902`, `qwen/qwen3.8-flash` and `moonshotai/kimi-k3`. pi reads the
      OpenRouter key from the job environment; it is never written to disk.
      `harness/pi-setup.sh` builds a private `PI_CODING_AGENT_DIR` in `$RUNNER_TEMP`,
-     copies `pi/extensions/` there, installs the extension's Bun runtime (and its Linux
-     native addon) plus `pi-web-access`, writes `auth.json`, and installs the MCP servers
+     copies `pi/extensions/` there, installs `pi-web-access` and, only when the model is
+     `anthropic-omp/*`, the extension's Bun runtime and Linux native addon (Bun itself is
+     only set up for those runs), writes `auth.json`, and installs the MCP servers
      from `pi/mcp.json` (chrome-devtools, Playwright and Godot, all headless; see
      [pi/README.md](pi/README.md)). The Claude token is
      **not** written there: the job exports it as `ANTHROPIC_OAUTH_TOKEN`, which the

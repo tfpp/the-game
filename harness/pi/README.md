@@ -6,7 +6,7 @@ from npm at a pinned version instead of being vendored.
 
 | Extension | Purpose |
 |---|---|
-| `anthropic-omp/` | Claude subscription provider backed by a pinned oh-my-pi snapshot, run in Bun. See its README |
+| `anthropic-omp/` | Claude subscription provider backed by a pinned oh-my-pi snapshot, run in Bun. Installed, with its Bun runtime, only when the run's model is `anthropic-omp/*`. See its README |
 | `image-generation/` | `imagegen` tool through pi's `openai-codex` login, or `OPENAI_API_KEY` |
 
 `thinking-levels.json` maps each pi model to its default thinking level. `run.sh` passes it
@@ -37,4 +37,5 @@ Changes from the personal copies, needed on Linux runners:
 On Actions, the extension's own credential store stays empty and its backend authenticates
 with `ANTHROPIC_OAUTH_TOKEN` (the `claude setup-token` secret). pi's `auth.json` only holds the
 extension's non-secret marker. Update these copies deliberately, then rerun
-`harness/tests/test_pi_setup.sh` and a dispatch with `-f agent=pi`.
+`harness/tests/test_pi_setup.sh` and a dispatch with `-f agent=pi`
+(`-f pi_model=anthropic-omp/claude-opus-5-5` to exercise `anthropic-omp`).
