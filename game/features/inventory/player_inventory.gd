@@ -10,6 +10,10 @@ const CAPACITY := 8
 @export var pants := ""
 @export var keys := PackedStringArray()
 
+## Server-only: true while features/inventory/inventory_persistence.gd loads this
+## player's saved items, so nothing can change until they are merged in.
+var loading := false
+
 
 func hand() -> Hand:
 	return get_parent() as Hand
@@ -27,6 +31,8 @@ func item_at(slot: int) -> String:
 
 
 func can_collect(id: String) -> bool:
+	if loading:
+		return false
 	var definition := ItemCatalog.find(id)
 	if definition != null and definition.category == ItemDefinition.Category.KEY:
 		return not has_key(id)
@@ -181,6 +187,8 @@ func _holster_gun_rig_if_weapon(id: String) -> void:
 
 
 func _authorized() -> bool:
+	if loading:
+		return false
 	if hand().consumption.active():
 		return false
 	if not multiplayer.is_server():
@@ -210,3 +218,73 @@ func _set_item(slot: int, id: String) -> void:
 			var next := backpack.duplicate()
 			next[slot] = id
 			backpack = next
+
+
+## Everything this player carries, as plain strings for the accounts database.
+func snapshot() -> Dictionary:
+	return {
+		"hand": hand().net_item_id,
+		"shirt": shirt,
+		"pants": pants,
+		"backpack": Array(backpack),
+		"keys": Array(keys),
+	}
+
+
+## Server-only: merges a saved snapshot into this inventory. Unknown or misplaced
+## IDs are skipped. A saved item whose slot is already taken moves to a free
+## backpack slot, or is dropped at the player if the backpack is full.
+func restore(saved: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+	for id: Variant in _array(saved.get("keys")):
+		var definition := ItemCatalog.find(str(id))
+		if definition != null and definition.category == ItemDefinition.Category.KEY:
+			if not has_key(str(id)):
+				var next := keys.duplicate()
+				next.append(str(id))
+				keys = next
+	# Backpack slots first, so displaced equipment never takes a saved slot.
+	var wanted := {}
+	var bag := _array(saved.get("backpack"))
+	for slot: int in CAPACITY:
+		wanted[slot] = bag[slot] if slot < bag.size() else ""
+	wanted[-1] = saved.get("hand")
+	wanted[-2] = saved.get("shirt")
+	wanted[-3] = saved.get("pants")
+	for slot: int in wanted:
+		var id := str(wanted[slot]) if wanted[slot] is String else ""
+		if not _restorable(id, slot):
+			continue
+		if item_at(slot).is_empty():
+			_set_item(slot, id)
+			if slot == -1:
+				_holster_gun_rig_if_weapon(id)
+		elif backpack.has(""):
+			_set_item(backpack.find(""), id)
+		else:
+			hand().drop_inventory_item(id)
+
+
+## Server-only: throws away the held item and every backpack item, for
+## features/inventory/garbage_can.gd. Worn clothes and keys stay. Returns the count.
+func clear_carried() -> int:
+	if not multiplayer.is_server() or loading or hand().consumption.active():
+		return 0
+	var count := 0
+	for slot: int in [-1, 0, 1, 2, 3, 4, 5, 6, 7]:
+		if not item_at(slot).is_empty():
+			_set_item(slot, "")
+			count += 1
+	return count
+
+
+func _restorable(id: String, slot: int) -> bool:
+	var definition := ItemCatalog.find(id)
+	if definition == null or definition.category == ItemDefinition.Category.KEY:
+		return false
+	return slot >= 0 or _equipment_slot(id) == slot
+
+
+static func _array(value: Variant) -> Array:
+	return value if value is Array else []

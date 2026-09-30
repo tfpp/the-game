@@ -1,0 +1,8 @@
+{
+  "title": "Saved inventories and a lobby trash can",
+  "summary": "Signed-in players keep their items across disconnects and server restarts, and a trash can by the wardrobe empties your bag.",
+  "notes": [
+    "Save signed-in players' held items, clothes, backpack and keys to the accounts database.",
+    "Add a garbage can beside the lobby wardrobe counter that empties your held item and backpack after you confirm."
+  ]
+}
