@@ -14,6 +14,9 @@ The fractional minute and last heartbeat persist in SQLite. Gaps over 15 seconds
 pause accrual rather than granting offline income; short gaps between heartbeats
 are counted. API downtime pauses income and blocks paid spins.
 
+A wallet landing on $67 (whole dollars) makes everyone do the 6-7 emote; see
+`features/player_models/README.md`.
+
 Every peer also ranks connected wallets from poorest to richest (`PlayerMoney.poorest_peers`,
 ties broken by peer ID) and shows a small buzzing swarm of flies (`poverty_flies.gd`) over
 the poorest 80% of players, rounded down. A lone connected player is never flagged, since

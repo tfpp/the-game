@@ -13,6 +13,7 @@ const VALID_TAIL_TYPES: Array[String] = ["none", "lizard", "fin", "fluffy"]
 const EMOTE_SECONDS := 3.0
 const EMOTE_COOLDOWN := 3.5
 const EMOTE_ACTION := &"emote_flip_off"
+const SIX_SEVEN := "six_seven"
 const GIRL_RADIUS_SCALE := 0.6
 const GIRL_HEIGHT_SCALE := 0.75
 
@@ -247,6 +248,26 @@ func _apply_emote(peer: int, _payload: Dictionary) -> bool:
 	emotes = next
 	_emote_ready[peer] = emote_clock + EMOTE_COOLDOWN
 	return true
+
+
+## Server-only: every connected player performs the 6-7 emote at once, e.g. when
+## a wallet lands on $67 (`features/money`). Returns how many players started it.
+func emote_everyone(emote: String = SIX_SEVEN) -> int:
+	if not multiplayer.is_server():
+		return 0
+	var next := emotes.duplicate(true)
+	for player: Node in get_tree().get_nodes_in_group(&"players"):
+		if player.is_queued_for_deletion():
+			continue
+		var peer := player.get_multiplayer_authority()
+		next[peer] = {"name": emote, "started": emote_clock}
+		_emote_ready[peer] = emote_clock + EMOTE_COOLDOWN
+	emotes = next
+	return next.size()
+
+
+func emote_name(peer: int) -> String:
+	return str(emotes[peer].get("name", "flip_off")) if emotes.has(peer) else ""
 
 
 func _emote_player_exists(peer: int) -> bool:
