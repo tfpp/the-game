@@ -11,7 +11,7 @@ split boundaries instead of wall boxes. They do not
 implement the general random layout solver. The normal game now provides a labelled
 portal inside the casino’s east-side teleport room to a shared copy at z=1800, with a return portal on B1
 and GPS routing. The garage adds
-47 physical joins, elevator cabs with instant validated floor transfers, and seeded
+52 physical joins, a single physically moving elevator with guarded landings, and seeded
 set-piece population rules. Designers specify allowed sets, weights, density, local
 placement zones, rotations and reserved walking lanes. The same seed reproduces the
 same arrangement; invalid, overlapping or forbidden placements are rejected. See the

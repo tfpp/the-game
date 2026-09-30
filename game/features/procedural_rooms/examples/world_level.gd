@@ -74,13 +74,13 @@ func _process(_delta: float) -> void:
 		+ "R: new garage population / Seed %d" % layout_seed
 	)
 	if stop != null:
-		_hud.text += "\n[E] Elevator to B%d" % (5 - int(stop.call("destination_index")))
+		_hud.text += "\n[E] " + str(stop.call("interaction_text"))
 	elif nearby_door() != null:
 		_hud.text += "\n[E] Open / close door"
 
 
 func nearby_lift() -> Node3D:
-	for stop: Node3D in get_tree().get_nodes_in_group(&"world_lift_stops"):
+	for stop: Node3D in get_tree().get_nodes_in_group(&"world_lift_controls"):
 		if (stop.global_position + Vector3.UP).distance_to(player.global_position) < 2.5:
 			return stop
 	return null

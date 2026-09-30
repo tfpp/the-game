@@ -9,21 +9,21 @@ const WATER := preload("res://features/procedural_rooms/materials/water.tres")
 const COVER := preload("res://features/procedural_rooms/materials/cover.tres")
 
 
-static func room(id: String, turn: bool = false) -> Node3D:
+static func room(id: String, turn: bool = false, wall_height: float = 3.5) -> Node3D:
 	var root := Node3D.new()
 	root.name = id
 	root.set_meta("length", 8.0)
 	root.set_meta("rise", 0.0)
 	_plane(root, 8, 8, 0, "floor", Vector3.UP)
 	_plane(root, 8, 8, 3.5, "roof", Vector3.DOWN)
-	_end(root, "In", Vector3.ZERO, PI, 8, 3.5)
+	_end(root, "In", Vector3.ZERO, PI, 8, wall_height)
 	if turn:
-		_end(root, "Out", Vector3(4, 0, 4), PI * 0.5, 8, 3.5)
-		_end_wall(root, Vector3(0, 0, 8), 0, -4, 4, 0, 3.5)
+		_end(root, "Out", Vector3(4, 0, 4), PI * 0.5, 8, wall_height)
+		_end_wall(root, Vector3(0, 0, 8), 0, -4, 4, 0, wall_height)
 	else:
-		_end(root, "Out", Vector3(0, 0, 8), 0, 8, 3.5)
-		_side(root, 4, Vector2(0, 0), Vector2(8, 0), 3.5, "wall")
-	_side(root, -4, Vector2(0, 0), Vector2(8, 0), 3.5, "wall")
+		_end(root, "Out", Vector3(0, 0, 8), 0, 8, wall_height)
+		_side(root, 4, Vector2(0, 0), Vector2(8, 0), wall_height, "wall")
+	_side(root, -4, Vector2(0, 0), Vector2(8, 0), wall_height, "wall")
 	return root
 
 

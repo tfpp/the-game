@@ -7,6 +7,7 @@ const STEEL := preload("res://features/procedural_rooms/materials/grey.tres")
 const HAZARD := preload("res://features/procedural_rooms/materials/hazard.tres")
 const LIFT := preload("res://features/procedural_rooms/materials/elevator.tres")
 @export var net_open := false
+@export var managed_by_lift := false
 var _amount := 0.0
 var _leaves: Array[Node3D] = []
 @onready var entity: NetworkedInteraction = $NetworkedEntity
@@ -36,7 +37,14 @@ func _ready() -> void:
 	_update_leaves()
 
 
+func drive(amount: float) -> void:
+	_amount = clampf(amount, 0, 1)
+	_update_leaves()
+
+
 func _physics_process(delta: float) -> void:
+	if managed_by_lift:
+		return
 	if not net_open and _amount > 0 and multiplayer.is_server() and occupied():
 		net_open = true
 	_amount = move_toward(_amount, 1.0 if net_open else 0.0, delta / 0.35)
@@ -60,7 +68,7 @@ func occupied() -> bool:
 
 
 func _can_use(player: Player) -> bool:
-	return entity.in_range(player) and (not net_open or not occupied())
+	return not managed_by_lift and entity.in_range(player) and (not net_open or not occupied())
 
 
 func _toggle(_player: Player) -> bool:

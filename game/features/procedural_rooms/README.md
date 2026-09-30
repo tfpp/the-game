@@ -115,9 +115,12 @@ godot --path game res://features/procedural_rooms/examples/world_level.tscn
 Start on B1 facing the elevator cab. Explore the five-floor garage around the
 central open shaft. West passages are ramps; east passages are stairs. Both connect
 B1 through B5 without teleporting. B5 leads through the sewer to the pump station.
-E operates nearby sliding doors or the elevator control. The lift cycles B1 → B5 →
-B4 → B3 → B2 → B1, using validated server-to-player floor transfers. This is a
-functional prototype lift with instant travel, not an animated moving platform.
+E operates nearby sliding doors or the elevator buttons. Call the elevator from a
+landing, board the single moving cab, and approach a labelled B1–B5 button to choose
+a floor. The physical platform carries freely moving riders up and down a continuous
+shaft. Cab and landing doors interlock: only the aligned landing opens, and an
+occupied doorway prevents departure. Top/bottom terminal rooms are furnished service
+rooms with marked garage entrances; perimeter walls fill the full storey height.
 The standalone scene remains available. The normal game uses `playable_world.gd`
 to build the same kit without spawning a preview player, changing controls or
 overriding the casino environment. The portal provides a shared test area;
@@ -149,25 +152,24 @@ godot --path game res://features/procedural_rooms/tools/capture_world.tscn -- \
   "$PWD/docs/design/previews/world-level"
 ```
 
-The existing `ElevatorCab` owns timed, fixed-size casino cabs with older specialized
-networking and CSG geometry. This prototype uses the existing `NetworkedInteraction`
-and `Player.server_teleport` services for validated transport, with a 3 m indexed
-cab shell matching the new kit. It does not duplicate shared movement or account
-state. The elevator transport itself has no new replicated state; sliding doors
-retain their tested replicated open state.
+The existing `ElevatorCab` transfers occupants between fixed casino cabs; it cannot
+serve a continuous garage shaft. The garage lift reuses `NetworkedEntity` and
+`NetworkedInteraction` for authority and replication, and the existing
+`CharacterBody3D`/`AnimatableBody3D` platform behavior used by the ferry for rider
+motion. Riders retain their own movement and are never teleported by the lift.
 
 Compare `world-level/garage-seed-a.png` and `garage-seed-b.png`: the same deck and
 walking lanes contain different seeded sets and orientations. The world tests check
-all 47 joins, capsule clearance, floor support, the real controller leaving the cab,
-and range-validated transfer through all five stops. Population tests check
+all 52 joins, capsule clearance, floor support, the real controller leaving the cab,
+physical ascent/descent, guarded empty landings and blocked-departure handling. Population tests check
 repeatability, variation, permitted types, density, bounds, overlaps and rotations.
 
 The preview now starts on B1 facing the elevator entrance at the front of the deck.
 Follow the large warm-lit ELEVATOR sign, walk into the cab, then press E near the
 control panel. The floor uses coarse concrete with subtle measurement lines; a
 collidable asphalt plane surrounds the structure. A procedural overcast sky is
-visible through the central shaft. The exterior screenshot shows the interior shell
-from outside, so its one-sided walls read as a cutaway.
+visible through the central shaft. Wall faces render from both sides without
+duplicated geometry; only the overview capture hides roofs for a cutaway.
 
 ## UV model authoring
 

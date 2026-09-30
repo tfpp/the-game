@@ -40,6 +40,25 @@ func _ready() -> void:
 	await get_tree().create_timer(.5).timeout
 	assert(player.net_position == (kit.get_node("Garage/Arrival") as Marker3D).global_position)
 	await _save("portal-garage-arrival.png")
+	var lift := kit.get_node("Garage/CrownGarage/Lift") as ProceduralMovingLift
+	player.server_teleport.rpc_id(1, lift.cab.global_position + Vector3.UP * .95, PI)
+	player.set_physics_process(true)
+	await get_tree().create_timer(.5).timeout
+	await _save("physical-lift-b1.png")
+	var button := lift.cab.get_node("Floor0") as Node3D
+	player.global_position.x += .35
+	player.net_position = player.global_position
+	button.call("use")
+	assert(lift.net_phase == ProceduralMovingLift.Phase.CLOSING)
+	await get_tree().create_timer(4.5).timeout
+	assert(lift.net_height > 0 and lift.net_height < 16)
+	assert(absf(player.global_position.y - lift.cab.global_position.y - .9144) < .08)
+	await _save("physical-lift-moving.png")
+	await get_tree().create_timer(6).timeout
+	assert(lift.net_phase == ProceduralMovingLift.Phase.DOCKED and lift.net_floor == 0)
+	assert(absf(player.global_position.y - kit.global_position.y - .9144) < .08)
+	await _save("physical-lift-b5.png")
+	player.set_physics_process(false)
 	var returning := kit.get_node("Garage/Return") as GarageDoor
 	player.server_teleport.rpc_id(1, returning.global_position - Vector3(2, 0, 0), -PI / 2)
 	returning.use()

@@ -5,6 +5,7 @@ const Kit := preload("res://features/procedural_rooms/example_kit.gd")
 const Shell := preload("res://features/procedural_rooms/shell_mesh.gd")
 const Showcase := preload("res://features/procedural_rooms/showcase.gd")
 const LIFT := preload("res://features/procedural_rooms/lift_stop.tscn")
+const MOVING_LIFT := preload("res://features/procedural_rooms/moving_lift.tscn")
 const GPS := preload("res://features/gps/gps_destination.gd")
 const DOOR := preload("res://features/procedural_rooms/sliding_door.tscn")
 const Population := preload("res://features/procedural_rooms/room_population.gd")
@@ -17,6 +18,10 @@ static func build(
 	var world := Node3D.new()
 	world.name = "CrownGarage"
 	parent.add_child(world)
+	var lift := MOVING_LIFT.instantiate() as ProceduralMovingLift
+	world.add_child(lift)
+	var shaft := _shaft()
+	world.add_child(shaft)
 	var decks: Array[Node3D] = []
 	var west: Array[Node3D] = []
 	var east: Array[Node3D] = []
@@ -32,12 +37,12 @@ static func build(
 		for side: int in [-1, 1]:
 			for end: int in 2:
 				var landing := Kit.room(
-					"%s%d_%d" % ["West" if side < 0 else "East", floor_index, end]
+					"%s%d_%d" % ["West" if side < 0 else "East", floor_index, end], false, 4.0
 				)
 				# Replace the original solid side face with a socket split.
 				var faces: Array = landing.get_meta("shell_faces")
 				faces.remove_at(10 if side < 0 else 11)
-				Kit._end(landing, "Deck", Vector3(-side * 4, 0, 4), -side * PI / 2, 8, 3.5)
+				Kit._end(landing, "Deck", Vector3(-side * 4, 0, 4), -side * PI / 2, 8, 4.0)
 				world.add_child(landing)
 				landing.position = Vector3(side * 25, floor_index * 4, end * 34)
 				_join(
@@ -45,17 +50,40 @@ static func build(
 					landing.get_node("Deck")
 				)
 				(west if side < 0 else east).append(landing)
-				Showcase.placard(landing, "RAMP" if side < 0 else "STAIRS", Vector3(0, 2.7, 4))
-		var cab := Kit.room("LiftLobby%d" % floor_index)
+				var terminal := (floor_index == 0 and end == 1) or (floor_index == 4 and end == 0)
+				Showcase.placard(
+					landing,
+					"SERVICE ROOM" if terminal else ("RAMP" if side < 0 else "STAIRS"),
+					Vector3(0, 2.7, 4)
+				)
+				Showcase.portal(
+					landing.get_node("Deck"), "GARAGE / B%d" % (5 - floor_index), Color("ffe2a2")
+				)
+				if terminal:
+					Showcase.set_piece(landing, "utility" if side > 0 else "storage")
+					var props := landing.get_node("SetPieces") as Node3D
+					props.rotation.y = PI / 2
+					props.position = Vector3(-4, 0, 4)  # Keep the side-wall garage entrance clear.
+					_destination(
+						landing,
+						"Service room B%d / %s" % [5 - floor_index, "west" if side < 0 else "east"],
+						Vector3(0, 0, 4)
+					)
+		var cab := Kit.room("LiftLobby%d" % floor_index, false, 4.0)
 		world.add_child(cab)
 		socket_attach(deck.get_node("Lift"), cab.get_node("In"))
-		_door(deck, deck.get_node("Lift"), "ElevatorDoors")
 		Showcase.set_piece(cab, "utility")
-		_cabin(cab)
+		_join(cab.get_node("Out"), shaft.get_node("Floor%d" % floor_index))
+		var gate := DOOR.instantiate() as ProceduralSlidingDoor
+		gate.name = "ShaftGate%d" % floor_index
+		gate.managed_by_lift = true
+		world.add_child(gate)
+		gate.global_transform = cab.get_node("Out").global_transform
+		lift.gates.append(gate)
 		var stop := LIFT.instantiate() as Node3D
 		stop.set("floor_index", floor_index)
 		cab.add_child(stop)
-		stop.position = Vector3(0, 0, 4)
+		stop.position = Vector3(-2, 0, 7.5)
 		_destination(cab, "Elevator B%d" % (5 - floor_index), Vector3(0, 0, 4))
 		Population.populate(deck, _rule(floor_index, rules), seed_value + floor_index * 104729)
 		_decorate(deck, floor_index)
@@ -75,7 +103,7 @@ static func build(
 	world.add_child(sewer)
 	socket_attach(decks[0].get_node("Sewer"), sewer.get_node("In"))
 	_door(decks[0], decks[0].get_node("Sewer"), "SewerDoor")
-	var pump := Kit.room("PumpRoom")
+	var pump := Kit.room("PumpRoom", false, 4.0)
 	world.add_child(pump)
 	socket_attach(sewer.get_node("Out"), pump.get_node("In"))
 	Showcase.set_piece(pump, "pump")
@@ -84,6 +112,12 @@ static func build(
 	Shell.rebuild(world)
 	var collision := world.get_node("Structure/ShellCollision").get_child(0) as CollisionShape3D
 	(collision.shape as ConcavePolygonShape3D).backface_collision = true
+	# The same wall face is visible from either side, including outside terminal rooms.
+	# Keep a single joined mesh rather than duplicating outward faces or wall blocks.
+	var walls := world.get_node("Structure/Wall") as MeshInstance3D
+	var wall_material := walls.material_override.duplicate() as StandardMaterial3D
+	wall_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	walls.material_override = wall_material
 	var rail_mesh := world.get_node("Structure/Grey") as MeshInstance3D
 	var rail_material := rail_mesh.material_override.duplicate() as StandardMaterial3D
 	rail_material.cull_mode = BaseMaterial3D.CULL_DISABLED
@@ -118,18 +152,25 @@ static func _door(parent: Node3D, socket: Node3D, id: String) -> void:
 	door.global_transform = socket.global_transform
 
 
-static func _cabin(lobby: Node3D) -> void:
-	var cabin := Node3D.new()
-	cabin.name = "ElevatorCab"
-	lobby.add_child(cabin)
-	cabin.position.z = 2.5
-	Kit._side(cabin, -1.5, Vector2.ZERO, Vector2(3, 0), 3, "grey")
-	Kit._side(cabin, 1.5, Vector2.ZERO, Vector2(3, 0), 3, "grey")
-	Kit._end_wall(cabin, Vector3(0, 0, 3), 0, -1.5, 1.5, 0, 3)
-	Kit._plane(cabin, 3, 3, 3, "roof", Vector3.DOWN)
-	var opening := Node3D.new()
-	cabin.add_child(opening)
-	_door(cabin, opening, "CabDoors")
+static func _shaft() -> Node3D:
+	var shaft := Node3D.new()
+	shaft.name = "LiftShaft"
+	# Enclose the continuous shaft; openings are guarded by interlocked landing doors.
+	for index: int in 5:
+		Kit._end(shaft, "Floor%d" % index, Vector3(0, index * 4, -8), 0, 4, 4)
+	Kit._side(shaft, -2, Vector2(-12, 0), Vector2(-8, 0), 20, "grey")
+	Kit._side(shaft, 2, Vector2(-12, 0), Vector2(-8, 0), 20, "grey")
+	Kit._end_wall(shaft, Vector3(0, 0, -12), PI, -2, 2, 0, 20)
+	for y: float in [-.2, 20]:
+		Shell.face(
+			shaft,
+			PackedVector3Array(
+				[Vector3(-2, y, -12), Vector3(2, y, -12), Vector3(2, y, -8), Vector3(-2, y, -8)]
+			),
+			Vector3.UP if y < 0 else Vector3.DOWN,
+			"floor" if y < 0 else "roof"
+		)
+	return shaft
 
 
 static func socket_attach(from: ProceduralSocketAttachment, to: ProceduralSocketAttachment) -> void:
@@ -164,8 +205,8 @@ static func _deck(id: String) -> Node3D:
 		for index: int in points.size():
 			points[index].y = 3.5
 		Shell.face(deck, points, Vector3.DOWN, "roof")
-	Kit._end(deck, "Lift", Vector3.ZERO, PI, 42, 3.5)
-	Kit._end(deck, "Sewer", Vector3(0, 0, 42), 0, 42, 3.5)
+	Kit._end(deck, "Lift", Vector3.ZERO, PI, 42, 4.0)
+	Kit._end(deck, "Sewer", Vector3(0, 0, 42), 0, 42, 4.0)
 	for side: int in [-1, 1]:
 		for end: int in 2:
 			Kit._end(
@@ -174,9 +215,9 @@ static func _deck(id: String) -> Node3D:
 				Vector3(side * 21, 0, 4 + end * 34),
 				side * PI / 2,
 				8,
-				3.5
+				4.0
 			)
-		Kit._side(deck, side * 21, Vector2(8, 0), Vector2(34, 0), 3.5, "wall")
+		Kit._side(deck, side * 21, Vector2(8, 0), Vector2(34, 0), 4.0, "wall")
 	# Rails are two-sided planar collision faces, not blocks or hidden boxes.
 	for pair: Array in [
 		[Vector3(-10, 0, 12), Vector3(10, 0, 12)],
