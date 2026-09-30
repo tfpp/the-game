@@ -53,8 +53,10 @@ files before editing the corresponding code.
 
 ## Rules
 
-- Model and world textures must be no larger than **128×128 pixels**. Follow the
-  GoldSrc-inspired art direction and UV workflow in `docs/design/model-workflow.md`.
+- Model and world textures must be no larger than **128×128 pixels**. Treat the
+  limit as a maximum, not a default: scale texture size to physical size and visible
+  detail (small simple pickups can use 16×16 or 32×32; modest props 32×32 or 64×64).
+  Follow the GoldSrc-inspired art direction and UV workflow in `docs/design/model-workflow.md`.
   Keep larger painting sources and UV guides outside `game/`; they are authoring
   documents, not runtime textures.
 - Never introduce Python code, scripts, tooling or runtime/build dependencies. Use

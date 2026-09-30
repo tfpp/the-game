@@ -17,6 +17,12 @@ restore continuous sounds without replaying a past arrival. The existing native
 garage audio synthesizer supplies cached motor/door hums; GameAudio owns the short
 Kenney metal and chime cues.
 
+The cab uses a single brass floor panel on the right wall, clear of the door zone.
+Aim at its B1–B5 rows and press Use. Green marks the current floor and amber the
+requested floor; the current-floor prompt says "Already at B1" (or its equivalent).
+Its exact bitmap lettering and worn plate are generated as a 128×128 local-UV
+texture by `model_tools/build_lift_panel.gd`. Landing call plates stay unchanged.
+
 Every proposed room/module owns socket attachments built from shared boundary
 profiles. Exact attachment transforms, flush floors/openings, one owned seam and
 continuous collision are required. A pairwise join gallery must pass before the

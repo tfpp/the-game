@@ -1,0 +1,5 @@
+{
+  "title": "Flush elevator thresholds",
+  "summary": "Elevator floors and ceilings stay behind the closed doors.",
+  "notes": ["Trim the cab shell to the inner door plane and stop lobby slabs before the landing gates.", "Bridge docked doorways with narrow fixed sills while keeping the moving cab interior clear."]
+}

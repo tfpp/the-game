@@ -1,7 +1,12 @@
 # Model and texture workflow
 
 World and model textures have a hard **128×128 maximum on both dimensions**.
-Use 64×64 or 128×128 power-of-two images, nearest mipmap filtering, and a
+Choose power-of-two sizes by physical size, visibility and detail: for example
+16×16 or 32×32 for a banana or small simple pickup, 32×32 or 64×64 for modest
+props, and up to 128×128 for larger or more detailed models. 128×128 is a ceiling,
+not the default. Shared atlases should budget pixels per surface at a consistent
+visible texel density instead of allocating a full atlas to each small object.
+Use nearest mipmap filtering and a
 GoldSrc-inspired look: simple low-poly silhouettes, broad painted colour,
 readable vents/seams, restrained rust and grime. Detail must survive at the
 actual runtime resolution. Keep high-resolution painting drafts and enlarged

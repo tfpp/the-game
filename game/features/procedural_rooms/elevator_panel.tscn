@@ -1,0 +1,28 @@
+[gd_scene load_steps=7 format=3]
+[ext_resource type="Texture2D" path="res://assets/procedural_rooms/models/elevator/panel.png" id="1"]
+[sub_resource type="StandardMaterial3D" id="face"]
+albedo_texture = ExtResource("1")
+texture_filter = 2
+texture_repeat = false
+roughness = 0.85
+[sub_resource type="StandardMaterial3D" id="edge"]
+albedo_color = Color(0.25, 0.2, 0.12, 1)
+roughness = 0.9
+[sub_resource type="BoxMesh" id="back"]
+size = Vector3(0.06, 1, 0.6)
+[sub_resource type="QuadMesh" id="quad"]
+size = Vector2(0.6, 1)
+[sub_resource type="BoxShape3D" id="collision"]
+size = Vector3(0.06, 1, 0.6)
+[node name="ElevatorPanel" type="Node3D"]
+[node name="Back" type="MeshInstance3D" parent="."]
+mesh = SubResource("back")
+material_override = SubResource("edge")
+[node name="Face" type="MeshInstance3D" parent="."]
+position = Vector3(-0.031, 0, 0)
+rotation = Vector3(0, -1.5707963, 0)
+mesh = SubResource("quad")
+material_override = SubResource("face")
+[node name="Body" type="StaticBody3D" parent="."]
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+shape = SubResource("collision")

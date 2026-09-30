@@ -13,6 +13,7 @@ const CAB_MODEL := preload("res://features/procedural_rooms/elevator_cab_model.t
 const BUTTON := preload("res://features/procedural_rooms/lift_stop.tscn")
 const Showcase := preload("res://features/procedural_rooms/showcase.gd")
 const AUDIO := preload("res://features/procedural_rooms/lift_audio.gd")
+const PANEL := preload("res://features/procedural_rooms/elevator_panel.tscn")
 
 @export var net_height := 16.0
 @export var net_floor := 4
@@ -49,10 +50,10 @@ func _build_cab() -> void:
 	shell.name = "Interior"
 	shell.position.z = -1.5
 	cab.add_child(shell)
-	Kit._plane(shell, 3, 3, 0, "floor", Vector3.UP)
-	Kit._plane(shell, 3, 3, 3, "roof", Vector3.DOWN)
-	Kit._side(shell, -1.5, Vector2.ZERO, Vector2(3, 0), 3, "grey")
-	Kit._side(shell, 1.5, Vector2.ZERO, Vector2(3, 0), 3, "grey")
+	Kit._plane(shell, 3, 2.78, 0, "floor", Vector3.UP)
+	Kit._plane(shell, 3, 2.78, 3, "roof", Vector3.DOWN)
+	Kit._side(shell, -1.5, Vector2.ZERO, Vector2(2.78, 0), 3, "grey")
+	Kit._side(shell, 1.5, Vector2.ZERO, Vector2(2.78, 0), 3, "grey")
 	Kit._end_wall(shell, Vector3.ZERO, PI, -1.5, 1.5, 0, 3)
 	Shell.rebuild(cab)
 	shell.remove_meta("shell_faces")  # Never bake the moving cab into the static world shell.
@@ -67,13 +68,16 @@ func _build_cab() -> void:
 	cab_door.managed_by_lift = true
 	cab_door.position = model.get_node("DoorSocket").position
 	cab.add_child(cab_door)
+	var panel := PANEL.instantiate() as Node3D
+	panel.position = Vector3(1.45, 1.62, -.65)
+	cab.add_child(panel)
 	for floor_index: int in 5:
 		var button := BUTTON.instantiate() as Node3D
 		button.name = "Floor%d" % floor_index
 		button.set("floor_index", floor_index)
 		button.set("ride_button", true)
 		button.set("lift_path", NodePath("../.."))
-		button.position = Vector3(1.15, 0, -1.0 + floor_index * .5)
+		button.position = Vector3(1.412, 2.12 - (39 + (4 - floor_index) * 17) / 128.0, -.65)
 		cab.add_child(button)
 	var lamp := OmniLight3D.new()
 	lamp.position = Vector3(0, 2.7, 0)

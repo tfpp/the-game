@@ -48,7 +48,7 @@ func test_prefabs_preserve_the_three_metre_cab_and_door_collision() -> void:
 	var cab := CAB.instantiate() as Node3D
 	var visual := cab.get_node("Visual") as MeshInstance3D
 	assert_eq(visual.mesh.get_aabb().position, Vector3(-1.5, 0, -1.5))
-	assert_eq(visual.mesh.get_aabb().size, Vector3(3, 3, 3))
+	assert_lt(visual.mesh.get_aabb().size.distance_to(Vector3(3, 3, 2.78)), .001)
 	var material := visual.material_override as StandardMaterial3D
 	assert_eq(material.albedo_texture.get_size(), Vector2(128, 128))
 	assert_false(material.uv1_triplanar)
@@ -65,15 +65,18 @@ func test_prefabs_preserve_the_three_metre_cab_and_door_collision() -> void:
 	door.free()
 
 
-func test_glb_contains_cab_two_leaves_frame_and_five_shared_controls() -> void:
+func test_glb_contains_cab_two_leaves_frame_and_compact_floor_panel() -> void:
 	var model := EXPORT.instantiate()
 	var meshes := model.find_children("*", "MeshInstance3D", true, false)
-	assert_eq(meshes.size(), 9)
+	assert_eq(meshes.size(), 6)
 	for mesh: MeshInstance3D in meshes:
 		var material := mesh.get_active_material(0) as StandardMaterial3D
-		assert_eq(material.albedo_texture.get_size(), Vector2(128, 128))
+		if material.albedo_texture != null:
+			assert_lte(material.albedo_texture.get_width(), 128)
+			assert_lte(material.albedo_texture.get_height(), 128)
 	assert_not_null(model.find_child("LeftLeaf", true, false))
 	assert_not_null(model.find_child("RightLeaf", true, false))
+	assert_not_null(model.find_child("ElevatorPanel", true, false))
 	model.free()
 
 

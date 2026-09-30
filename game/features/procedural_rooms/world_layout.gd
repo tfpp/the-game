@@ -70,6 +70,14 @@ static func build(
 						Vector3(0, 0, 4)
 					)
 		var cab := Kit.room("LiftLobby%d" % floor_index, false, 4.0)
+		# Landing slabs stop before the gate; only the narrow sill bridges to the cab.
+		for face: Dictionary in cab.get_meta("shell_faces"):
+			if face["material"] not in ["floor", "roof"]:
+				continue
+			var points: PackedVector3Array = face["points"]
+			for point: int in points.size():
+				points[point].z = minf(points[point].z, 7.88)
+			face["points"] = points
 		world.add_child(cab)
 		socket_attach(deck.get_node("Lift"), cab.get_node("In"))
 		Showcase.set_piece(cab, "utility")
@@ -158,6 +166,19 @@ static func _shaft() -> Node3D:
 	# Enclose the continuous shaft; openings are guarded by interlocked landing doors.
 	for index: int in 5:
 		Kit._end(shaft, "Floor%d" % index, Vector3(0, index * 4, -8), 0, 4, 4)
+		Shell.face(
+			shaft,
+			PackedVector3Array(
+				[
+					Vector3(-1.5, index * 4, -8.22),
+					Vector3(1.5, index * 4, -8.22),
+					Vector3(1.5, index * 4, -7.88),
+					Vector3(-1.5, index * 4, -7.88)
+				]
+			),
+			Vector3.UP,
+			"floor"
+		)
 	Kit._side(shaft, -2, Vector2(-12, 0), Vector2(-8, 0), 20, "grey")
 	Kit._side(shaft, 2, Vector2(-12, 0), Vector2(-8, 0), 20, "grey")
 	Kit._end_wall(shaft, Vector3(0, 0, -12), PI, -2, 2, 0, 20)

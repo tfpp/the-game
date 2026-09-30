@@ -1,10 +1,12 @@
 # Service elevator authoring
 
 The working garage lift instances reusable native cab, paired sliding-door and
-button models. The cab has three paneled walls, carpet, ceiling, handrails, a
+landing-button models and a compact cab floor panel. The cab has three paneled walls, carpet, ceiling, handrails, a
 lamp, a recessed door attachment and a backed floor indicator. Landing doors use
-the same frame/leaves. The authored interior stays within the existing 3×3×3 m
-cab; collision and movement remain owned by the physical lift and door systems.
+the same frame/leaves. The cab shell stops at z=1.28, the closed door's inner face,
+within its existing 3×3×3 m envelope. Fixed landing sills meet that edge; broad
+lobby slabs stop before their gates. Collision and movement remain owned by the
+physical lift and door systems.
 
 Geometry and UV1 share `elevator_model.gd` and the existing prop atlas packer.
 Eight padded islands occupy 68.6% of the atlas. Three walls stack `WOOD`, both door
@@ -12,7 +14,14 @@ faces/leaves share `DOOR`, and all brass/steel trim uses small shared swatches.
 The control plate gets twice wall density; low-detail floor and ceiling get less.
 The tiny trim islands are deliberate uniform material swatches. Runtime textures
 are 128×128 with nearest mipmaps. The cab, frame, leaf and button contain 156, 36,
-32 and 14 triangles respectively; the assembled model is 326 triangles.
+32 and 14 triangles respectively. The current assembled GLB uses a 14-triangle
+cab panel instead of five separate call plates, for 270 triangles total.
+
+The panel has one explicit full-face UV rectangle, a shallow backing and a
+128×128 bitmap face with exact B1–B5 lettering. `build_lift_panel.gd` draws the
+painted brass plate and letters natively; no external font or image dependency is
+needed. Current/requested indicator lamps overlay their corresponding texture
+windows. This panel replaces only in-cab controls; landing call plates remain.
 
 The retained guide and painting source here are authoring images. `texture_prompt.md`
 records the built-in imagegen prompt; `generated_albedo_source.png` is its output.

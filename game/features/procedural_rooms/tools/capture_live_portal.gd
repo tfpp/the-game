@@ -51,6 +51,10 @@ func _ready() -> void:
 	player.pitch = -.12
 	await get_tree().create_timer(.3).timeout
 	await _save("elevator-model-interior.png")
+	player.server_teleport.rpc_id(1, lift.cab.global_position + Vector3(0, .95, -.65), -PI / 2)
+	player.pitch = -.05
+	await get_tree().create_timer(.3).timeout
+	await _save("elevator-floor-panel.png")
 	var visual := lift.cab.get_node("ElevatorCabModel/Visual") as MeshInstance3D
 	var painting := visual.material_override
 	var checker := painting.duplicate() as StandardMaterial3D
@@ -78,6 +82,25 @@ func _ready() -> void:
 	assert(lift.net_phase == ProceduralMovingLift.Phase.DOCKED and lift.net_floor == 0)
 	assert(absf(player.global_position.y - kit.global_position.y - .9144) < .08)
 	await _save("physical-lift-b5.png")
+	var b1 := lift.cab.get_node("Floor4") as Node3D
+	player.global_position = lift.cab.global_position + Vector3(0, .95, -.65)
+	player.net_position = player.global_position
+	player.set_physics_process(false)
+	var eye := (
+		player.global_position
+		+ Vector3.UP * (player.movement.eye_height_m() - player.movement.hull_height_m() * .5)
+	)
+	var direction := (b1.global_position - eye).normalized()
+	player.yaw = atan2(-direction.x, -direction.z)
+	player.pitch = asin(direction.y)
+	Controls.start()
+	assert(b1.call("can_use", player), "B1 button must be eligible when aimed from inside cab")
+	assert(interaction.call("_find_target") == b1)
+	interaction.call("use")
+	assert(lift.net_target == 4 and lift.net_phase == ProceduralMovingLift.Phase.CLOSING)
+	player.set_physics_process(true)
+	await get_tree().create_timer(9.5).timeout
+	assert(lift.net_floor == 4 and lift.net_phase == ProceduralMovingLift.Phase.DOCKED)
 	player.set_physics_process(false)
 	var returning := kit.get_node("Garage/Return") as GarageDoor
 	player.server_teleport.rpc_id(1, returning.global_position - Vector3(2, 0, 0), -PI / 2)

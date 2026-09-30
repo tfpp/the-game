@@ -62,7 +62,7 @@ static func definition() -> Dictionary:
 		_box(faces, "cab", "BRASS", Vector3(2.92, .06, .08), Vector3(0, y, -1.44))
 		for side: float in [-1, 1]:
 			_box(faces, "cab", "BRASS", Vector3(.08, .06, 2.92), Vector3(side * 1.44, y, 0))
-	_box(faces, "cab", "STEEL", Vector3(3, .04, .22), Vector3(0, .02, 1.39))
+	_box(faces, "cab", "STEEL", Vector3(3, .04, .22), Vector3(0, .02, 1.17))
 	_box(faces, "cab", "BRASS", Vector3(.9, .12, .9), Vector3(0, 2.93, 0))
 	_quad(
 		faces,
@@ -115,6 +115,14 @@ static func definition() -> Dictionary:
 		],
 		2.0
 	)
+	# Keep the painted UV layout while trimming physical faces to the closed door's inner plane.
+	for face: Dictionary in faces:
+		if face["part"] != "cab":
+			continue
+		var points: PackedVector3Array = face["points"]
+		for index: int in points.size():
+			points[index].z = minf(points[index].z, 1.28)
+		face["points"] = points
 	var data := Prop.pack_faces(faces, 64)
 	return data
 

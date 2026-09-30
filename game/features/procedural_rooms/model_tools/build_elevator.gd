@@ -70,14 +70,6 @@ func _export() -> void:
 		{"part": "leaf", "name": "LeftLeaf", "at": Vector3(-.75, 0, 1.35)},
 		{"part": "leaf", "name": "RightLeaf", "at": Vector3(.75, 0, 1.35)}
 	]
-	for index: int in 5:
-		parts.append(
-			{
-				"part": "button",
-				"name": "ButtonB%d" % (5 - index),
-				"at": Vector3(1.15, 0, -1.0 + index * .5)
-			}
-		)
 	for part: Dictionary in parts:
 		var mesh := MeshInstance3D.new()
 		mesh.mesh = load(ASSETS + part["part"] + ".tres")
@@ -86,6 +78,12 @@ func _export() -> void:
 		mesh.position = part["at"]
 		root.add_child(mesh)
 		mesh.owner = root
+	var panel := load("res://features/procedural_rooms/elevator_panel.tscn").instantiate() as Node3D
+	panel.position = Vector3(1.45, 1.62, -.65)
+	root.add_child(panel)
+	panel.owner = root
+	for child: Node in panel.find_children("*", "", true, false):
+		child.owner = root
 	var document := GLTFDocument.new()
 	var state := GLTFState.new()
 	assert(document.append_from_scene(root, state) == OK)

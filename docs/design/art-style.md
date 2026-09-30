@@ -82,7 +82,10 @@ They should support the form rather than hide it.
 ### Hard texture limit and GoldSrc direction
 
 Runtime textures for models and world surfaces must be **128×128 pixels or smaller
-on both dimensions**. Prefer 64×64 or 128×128 power-of-two images. Use nearest
+on both dimensions**. Scale power-of-two texture size to the model's physical size
+and visible detail: small pickups can use 16×16 or 32×32, modest props 32×32 or
+64×64, and larger/detail-heavy models up to 128×128. Do not use 128×128 as a default.
+Use nearest
 filtering with mipmaps, broad painted colour, simple seams and vents, restrained
 grime, and readable silhouettes: a GoldSrc-inspired appearance. Avoid photographic
 surface detail and high-resolution normal/roughness texture stacks.
