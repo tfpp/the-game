@@ -14,7 +14,7 @@ var _last_state: Dictionary = {}
 
 func _ready() -> void:
 	entity.register_action(&"consume", _may_consume, _consume)
-	entity.session_reset.connect(func(_mode: Network.Mode) -> void: _finish())
+	entity.session_reset.connect(func(_mode: Network.Mode) -> void: _finish(true))
 	var combat := get_tree().get_first_node_in_group(&"combat")
 	if combat != null:
 		combat.player_died.connect(_died)
@@ -25,7 +25,9 @@ func active() -> bool:
 
 
 func view_id() -> String:
-	return str(state.get("item", "")) if active() else hand.net_item_id
+	var id := str(state.get("item", "")) if active() else hand.net_item_id
+	var kind := ItemCatalog.consumable_kind(id)
+	return kind if not kind.is_empty() else id
 
 
 func _may_consume(peer: int, payload: Dictionary) -> bool:
@@ -34,7 +36,7 @@ func _may_consume(peer: int, payload: Dictionary) -> bool:
 		and peer == hand.peer_id
 		and hand._player() != null
 		and not active()
-		and hand.net_item_id in ["cigarette", "beer"]
+		and ItemCatalog.uses_remaining(hand.net_item_id) > 0
 	)
 
 
@@ -54,7 +56,7 @@ func advance(delta: float) -> void:
 		if left > 0.0 and hand._player() != null:
 			state = {"item": state["item"], "left": left}
 		else:
-			_finish()
+			_finish(hand._player() == null)
 	if state != _last_state:
 		_last_state = state.duplicate()
 		_visual_left = float(state.get("left", 0.0))
@@ -87,16 +89,16 @@ func pose(player: Player, resting: Transform3D) -> Transform3D:
 	return resting.interpolate_with(target, weight)
 
 
-func _finish() -> void:
+func _finish(discard := false) -> void:
 	if multiplayer.is_server() and active():
 		if hand.net_item_id == state["item"]:
-			hand.net_item_id = ""
+			hand.net_item_id = "" if discard else ItemCatalog.after_use(hand.net_item_id)
 		state = {}
 
 
 func _died(victim: int, _attacker: int) -> void:
 	if victim == hand.peer_id:
-		_finish()
+		_finish(true)
 
 
 func pose_fingers(player: Player) -> void:

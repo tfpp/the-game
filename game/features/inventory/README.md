@@ -41,3 +41,5 @@ Cigarettes and bottled beer from the bar shop use the ordinary hand/backpack slo
 During their three-second use animation, inventory mutations are temporarily denied
 so a reserved consumable cannot be stowed, swapped or dropped. New pickups can still
 fill free backpack slots. Both items have distinct inventory silhouettes.
+Each lasts three uses; partially used items retain their remaining count through
+storage, swaps and drops, and display it in their item names.

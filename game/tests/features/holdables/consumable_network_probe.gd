@@ -32,12 +32,16 @@ func _drive() -> void:
 	entity.request_action(&"order", {"item": "cigarette"})
 	while hand.net_item_id != "cigarette":
 		await get_tree().process_frame
-	hand.request_primary_action.rpc_id(1)
-	while not hand.consumption.active():
-		await get_tree().process_frame
-	print("CONSUMABLE_STARTED")
-	while hand.consumption.active():
-		await get_tree().process_frame
+	for remaining: int in [3, 2, 1]:
+		_check(ItemCatalog.uses_remaining(hand.net_item_id) == remaining, "Wrong puff count")
+		hand.request_primary_action.rpc_id(1)
+		while not hand.consumption.active():
+			await get_tree().process_frame
+		if remaining == 2:
+			print("CONSUMABLE_STARTED")
+		while hand.consumption.active():
+			await get_tree().process_frame
+		await get_tree().create_timer(0.1).timeout
 	_check(hand.net_item_id == "", "Consumed cigarette retained")
 	entity.request_action(&"order", {"item": "beer"})
 	while hand.net_item_id != "beer":
@@ -61,6 +65,7 @@ func _observe() -> void:
 			if hand.peer_id != multiplayer.get_unique_id() and hand.consumption.active():
 				remote = hand
 	_check(remote.consumption.view_id() == "cigarette", "Late join missed active cigarette")
+	_check(remote.net_item_id == "cigarette:2", "Late join lost remaining puffs")
 	_check(float(remote.consumption.state["left"]) < ConsumableUse.DURATION, "Animation restarted")
 	remote.consumption.entity.request_action(&"consume")
 	remote.inventory().request_drop.rpc_id(1, -1)

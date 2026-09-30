@@ -104,7 +104,7 @@ func request_primary_action() -> void:
 		return
 	if consumption.active():
 		return
-	if net_item_id in ["cigarette", "beer"]:
+	if ItemCatalog.uses_remaining(net_item_id) > 0:
 		consumption.entity.receive_legacy_action(&"consume")
 		return
 	var def := ItemCatalog.find(net_item_id)

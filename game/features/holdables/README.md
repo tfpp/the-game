@@ -76,7 +76,9 @@ that same collection, consumption and drop path, with a two-hand bowl view.
 Buy these at the salon bartender's **Bar shop** using E / B / Circle / touch USE.
 A cigarette costs $2 and a bottled beer costs $5. They collect into an empty hand
 or the backpack; equip stored items through Inventory (I / View / Esc → Inventory).
-Left click, right bumper/trigger or touch FIRE starts a three-second smoke or drink.
+Left click, right bumper/trigger or touch FIRE starts one three-second puff or sip.
+Each cigarette and bottle lasts three separate uses, disappearing after the third.
+Partially used items show their remaining puffs/sips in inventory and pickup labels.
 The right arm uses the existing skinned rig and grip IK, in first person, F3 and
 on remote players. Cigarettes emit eight lightweight smoke particles while used;
 beer tilts the bottle to the mouth. Creature heads and the penguin costume use their
@@ -86,14 +88,20 @@ own mouth contact positions. There are no new key bindings or dynamic lights.
 inventory. The primary-action RPC delegates consumables to its NetworkedEntity
 validator, which checks sender ownership, an existing player, supported held item,
 empty payload and idle state. The item is reserved in the hand while playing;
-repeated actions, drops and inventory mutations are denied until it is consumed.
+repeated actions, drops and inventory mutations are denied until that puff/sip ends.
 Pickups may still fill free backpack slots. Beer calls `BarCompanion.add_drink`
-once at the start; smoking is cosmetic, with no combat/healing bonus.
+once on the first sip per bottle; smoking is cosmetic, with no combat/healing bonus.
+
+The catalog recognizes `beer:2`, `beer:1`, `cigarette:2` and `cigarette:1` as
+partially consumed versions of the original items, sharing their models and properties.
+Completion advances the held ID to the next stage. Existing inventory, stash, drop,
+pickup and replication paths carry those IDs unchanged, so transfers cannot refill
+an item or mix up two bottles' remaining uses. The shop only sells fresh items.
 
 A single continuously replicated `{item, left}` snapshot includes spawn state, so
 late joiners resume the current phase instead of replaying the whole action.
-Clients interpolate presentation only. Completion or combat death consumes the
-reserved item; despawning the player finishes it, and disconnect/session reset
+Clients interpolate presentation only. Completion spends one use; combat death
+discards the active item as before. Despawning the player discards it, and disconnect/session reset
 removes the Hand as usual. Unused items retain normal in-session respawn behavior,
 but inventory is not persisted across sessions. Ordinary food remains instant,
 and weapons, props and drops keep their existing behavior.

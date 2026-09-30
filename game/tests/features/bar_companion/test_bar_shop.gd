@@ -64,9 +64,12 @@ func test_order_charges_price_and_beer_can_be_drunk() -> void:
 	assert_eq(_request("beer"), NetworkedEntity.Result.ACCEPTED)
 	assert_eq(_wallet.balances[1], 9500)
 	assert_eq(_hand.net_item_id, "beer")
-	_hand.request_primary_action()
-	_hand._process(3.1)
+	for remaining: int in [3, 2, 1]:
+		assert_eq(ItemCatalog.uses_remaining(_hand.net_item_id), remaining)
+		_hand.request_primary_action()
+		_hand._process(3.1)
 	assert_eq(_hand.net_item_id, "")
+	assert_eq(_wallet.balances[1], 9500, "One purchase pays for all three sips")
 	assert_true(_drops.items.is_empty())
 
 
@@ -96,6 +99,7 @@ func test_rejects_forged_stock_price_peer_and_range() -> void:
 	for payload: Dictionary in [
 		{},
 		{"item": "unknown"},
+		{"item": "beer:2"},
 		{"item": 1},
 		{"item": "beer", "price": 1},
 		{"item": "beer", "peer": 1}

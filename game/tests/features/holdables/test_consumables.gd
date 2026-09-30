@@ -37,10 +37,11 @@ func test_primary_reserves_one_item_then_consumes_without_touching_backpack() ->
 	assert_eq(_hand.inventory().backpack[0], "beer")
 	_hand._process(3.1)
 	assert_false(_hand.consumption.active())
-	assert_eq(_hand.net_item_id, "")
+	assert_eq(_hand.net_item_id, "cigarette:2")
 	assert_eq(_hand.inventory().backpack[0], "beer")
 	_hand.inventory().request_equip(0)
 	assert_eq(_hand.net_item_id, "beer")
+	assert_eq(_hand.inventory().backpack[0], "cigarette:2")
 
 
 func test_foreign_payload_missing_player_and_non_authority_requests_fail() -> void:
@@ -65,6 +66,13 @@ func test_beer_uses_bar_stats_once_and_cigarettes_do_not_change_them() -> void:
 	_hand.request_primary_action()
 	assert_eq(bar.intoxication_for(1), 1)
 	_hand._process(3.1)
+	for remaining: int in [2, 1]:
+		assert_eq(ItemCatalog.uses_remaining(_hand.net_item_id), remaining)
+		_hand.request_primary_action()
+		_hand.request_primary_action()
+		_hand._process(3.1)
+		assert_eq(bar.intoxication_for(1), 1, "A bottle adds only one drink across three sips")
+	assert_eq(_hand.net_item_id, "")
 	_hand.net_item_id = "cigarette"
 	_hand.request_primary_action()
 	assert_eq(bar.intoxication_for(1), 1)
@@ -92,7 +100,8 @@ func test_smoke_only_runs_while_using_and_snapshot_resumes_in_progress() -> void
 	assert_eq(sync.get_multiplayer_authority(), 1)
 	assert_true(sync.replication_config.property_get_spawn(NodePath(".:state")))
 	late._process(2.0)
-	assert_null(late.held_view())
+	assert_eq(late.net_item_id, "cigarette:2")
+	assert_false((late.held_view().get_node("Smoke") as CPUParticles3D).emitting)
 
 
 func test_original_food_still_consumes_instantly_and_unstarted_items_can_stow() -> void:
@@ -137,7 +146,7 @@ func test_two_players_consume_independently() -> void:
 	_hand._process(3.1)
 	assert_true(other.consumption.active())
 	other._process(3.1)
-	assert_eq(other.net_item_id, "")
+	assert_eq(other.net_item_id, "cigarette:2")
 
 
 func test_rig_reaches_mouth_in_both_views_and_all_creature_bodies() -> void:
@@ -151,7 +160,9 @@ func test_rig_reaches_mouth_in_both_views_and_all_creature_bodies() -> void:
 			avatar.set_head_type(head_type)
 			for first_person: bool in [false, true]:
 				(_player.get_node("Body") as Node3D).visible = not first_person
-				for id: String in ["beer", "cigarette"]:
+				for id: String in [
+					"beer", "beer:2", "beer:1", "cigarette", "cigarette:2", "cigarette:1"
+				]:
 					_hand.net_item_id = id
 					_hand.consumption.state = {"item": id, "left": 1.5}
 					_hand._process(0)

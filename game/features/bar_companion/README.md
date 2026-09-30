@@ -93,7 +93,8 @@ on the existing customer-side floor at (-6.5, -1.5, -8.35), as a normal shared
 pickup. Session generations discard stale callbacks after a mode change.
 
 Bottled beer applies the same intoxication/charisma rules as the original drink,
-but only when consumed; cigarettes have no stat effects. Shop UI uses the existing
+once on the first of three sips; cigarettes last three puffs and have no stat effects.
+Each primary action takes one sip/puff. Shop UI uses the existing
 modal pause/resume contract, gamepad focus and phone-sized buttons. Stock is
 unlimited and has no persistent state; purchases follow ordinary inventory lifetime.
 `test_bar_shop.gd` covers purchase authority, stock/range validation, balances,
