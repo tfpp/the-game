@@ -30,13 +30,17 @@ func test_strength_updates_pass_and_persists_across_instances() -> void:
 	var effect := _new_effect()
 	_ensure_pass(effect)
 	assert_false(effect._effect.visible)
+	assert_eq(effect._copy.copy_mode, BackBufferCopy.COPY_MODE_DISABLED)
 	effect.set_strength(0.5)
 	assert_true(effect._effect.visible)
+	assert_eq(effect._copy.copy_mode, BackBufferCopy.COPY_MODE_VIEWPORT)
+	assert_lt(effect._copy.get_index(), effect._effect.get_index(), "Copy before sampling")
 	assert_eq(effect._material.get_shader_parameter("levels"), 32.0)
 	var reloaded := _new_effect()
 	assert_eq(reloaded.strength, 0.5)
 	effect.set_strength(0.0)
 	assert_false(effect._effect.visible)
+	assert_eq(effect._copy.copy_mode, BackBufferCopy.COPY_MODE_DISABLED)
 	assert_eq(SettingsStore.load_data(Posterization.STORE_NAME)["strength"], 0.0)
 
 
@@ -67,10 +71,12 @@ func test_color_steps_get_coarser_without_crushing_black_and_white() -> void:
 		previous = levels
 
 
-func test_pass_is_before_ui_mouse_transparent_and_fills_resizing_viewport() -> void:
+func test_final_pass_is_after_ui_mouse_transparent_and_fills_resizing_viewport() -> void:
 	var effect := _new_effect()
 	_ensure_pass(effect)
-	assert_eq(effect.layer, -1)
+	assert_eq(effect.layer, Posterization.PRESENTATION_LAYER)
+	assert_gt(effect.layer, 30, "After HUD, settings, touch controls and emote wheel")
+	assert_eq(effect._effect.focus_mode, Control.FOCUS_NONE)
 	assert_eq(effect._effect.mouse_filter, Control.MOUSE_FILTER_IGNORE)
 	assert_eq(effect._effect.anchor_right, 1.0)
 	assert_eq(effect._effect.anchor_bottom, 1.0)

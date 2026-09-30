@@ -8,5 +8,5 @@
 script = ExtResource("1")
 
 [node name="Posterization" type="CanvasLayer" parent="."]
-layer = -1
+layer = 128
 script = ExtResource("2")

@@ -1,0 +1,5 @@
+{
+  "title": "Full-viewport posterization",
+  "summary": "Posterization now reduces colors across the entire viewport, including HUD and menus.",
+  "notes": ["Apply the existing Graphics posterization strength to the final composed viewport, including lighting, equipped items, HUD and menus.", "Keep the default Off setting and saved local strength unchanged."]
+}

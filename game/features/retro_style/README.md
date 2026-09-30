@@ -63,9 +63,14 @@ reduced-color approximation, not an exact historical indexed or RGB565 palette.
 `posterization.gd` is a child of this feature's existing scene and implements the
 existing `settings_pages` interface; `set_strength(float)` clamps and persists the
 local preference. A single nearest-sampled, no-mipmap screen read in a CanvasLayer
-at -1 quantizes the completed 3D viewport before HUD/menu canvases. This includes
-transparent world surfaces, streamed rooms, arms, holdables and generated guns,
-which already render as 3D in that viewport, in first person and F3 alike.
+at 128 quantizes the **completed viewport**, after all current UI layers (0–30).
+A viewport-wide BackBufferCopy immediately before the draw refreshes the screen
+texture, including any UI drawn after earlier screen-reading effects. Both copy
+and draw are disabled at zero strength. Lighting, sky, transparent world surfaces,
+streamed rooms, arms, holdables and generated guns are included in first person
+and F3 alike, as are the HUD, menus, emote wheel and touch controls. The pass ignores
+mouse input and cannot take focus; UI remains interactive. New UI should stay below
+this reserved final-presentation layer.
 No materials, camera masks, physics, networking, resolution or shared state change.
 The same local choice survives respawn, reconnect and new rooms; other players
 choose independently. Headless/dedicated servers do not allocate the effect.
@@ -75,8 +80,8 @@ inside VR (the saved choice resumes on exit).
 
 Tests: `tests/features/retro_style/test_posterization.gd` plus existing retro and
 settings suites. A real Compatibility-renderer pixel probe checks 3D world and
-equipped-item-layer coverage, authored shader surfaces, HUD exclusion, Off identity
-and resize:
+equipped-item-layer coverage, lighting gradients, transparent composition, authored
+shader surfaces, HUD/menu inclusion, earlier screen reads, Off identity and resize:
 `xvfb-run -a godot --path game res://tests/features/retro_style/posterization_probe.tscn`.
 
 WebXR owns render scale while immersive and restores the prior scale on exit.
