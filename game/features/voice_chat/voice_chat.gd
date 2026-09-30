@@ -1,5 +1,5 @@
 extends Node
-## Push-to-talk voice chat: hold V to transmit microphone audio to everyone else.
+## Push-to-talk voice chat: hold H to transmit microphone audio to everyone else.
 ##
 ## Server-authoritative relay: a client only asks to relay a chunk it captured
 ## (`request_voice_chunk`); the server re-stamps it with the real sender's peer id and
@@ -34,7 +34,7 @@ var _voices: Dictionary = {}  ## peer_id (int) -> _VoicePeer
 
 
 func _ready() -> void:
-	Controls.ensure_action(TALK_ACTION, [_key_event(KEY_V)])
+	Controls.ensure_action(TALK_ACTION, [_key_event(KEY_H)])
 	_emitters = Node3D.new()
 	_emitters.name = "Emitters"
 	add_child(_emitters)

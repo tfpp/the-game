@@ -7,9 +7,13 @@ var _feature: Feature
 var _player: Player
 var _previous_device: int
 var _previous_playing: bool
+var _previous_events: Array[InputEvent] = []
 
 
 func before_each() -> void:
+	if InputMap.has_action(Feature.ACTION):
+		_previous_events = InputMap.action_get_events(Feature.ACTION)
+		InputMap.action_erase_events(Feature.ACTION)
 	_previous_device = Controls.device
 	_previous_playing = Controls.playing
 	Controls.device = Controls.Device.GAMEPAD
@@ -22,19 +26,23 @@ func before_each() -> void:
 
 
 func after_each() -> void:
+	InputMap.action_erase_events(Feature.ACTION)
+	for event: InputEvent in _previous_events:
+		InputMap.action_add_event(Feature.ACTION, event)
+	_previous_events = []
 	Controls.device = _previous_device
 	Controls.playing = _previous_playing
 
 
-func _press(echo: bool = false, pressed: bool = true) -> void:
+func _press(echo: bool = false, pressed: bool = true, code: Key = KEY_V) -> void:
 	var key := InputEventKey.new()
-	key.physical_keycode = KEY_F3
+	key.physical_keycode = code
 	key.pressed = pressed
 	key.echo = echo
 	_feature._unhandled_input(key)
 
 
-func test_f3_toggles_camera_and_body_and_preserves_look() -> void:
+func test_v_toggles_camera_and_body_and_preserves_look() -> void:
 	_player.yaw = 0.6
 	_player.pitch = -0.2
 	_player._process(0.0)
@@ -54,6 +62,47 @@ func test_f3_toggles_camera_and_body_and_preserves_look() -> void:
 	_feature._process(0.0)
 	assert_false(body.visible)
 	assert_eq(camera.global_position, eye)
+
+
+func test_legacy_f3_still_toggles() -> void:
+	_press(false, true, KEY_F3)
+	assert_true(_feature.enabled)
+	_press()
+	assert_false(_feature.enabled)
+
+
+func test_v_is_not_shared_with_default_voice_or_noclip() -> void:
+	var voice := preload("res://features/voice_chat/voice_chat.gd").new()
+	var noclip := preload("res://features/noclip/noclip.gd").new()
+	add_child_autofree(voice)
+	add_child_autofree(noclip)
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_V
+	key.pressed = true
+	assert_true(key.is_action_pressed(Feature.ACTION))
+	assert_false(key.is_action_pressed(voice.TALK_ACTION))
+	assert_false(key.is_action_pressed(noclip.TOGGLE_ACTION))
+	key.physical_keycode = KEY_H
+	assert_true(key.is_action_pressed(voice.TALK_ACTION))
+	key.physical_keycode = KEY_N
+	assert_true(key.is_action_pressed(noclip.TOGGLE_ACTION))
+
+
+func test_rebinding_primary_camera_key_keeps_legacy_alias() -> void:
+	var Bindings := preload("res://features/control_scheme/input_bindings.gd")
+	var events := InputMap.action_get_events(Feature.ACTION)
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_J
+	key.pressed = true
+	Bindings.bind(Feature.ACTION, false, key)
+	assert_true(key.is_action_pressed(Feature.ACTION))
+	key = InputEventKey.new()
+	key.pressed = true
+	key.physical_keycode = KEY_V
+	assert_false(key.is_action_pressed(Feature.ACTION))
+	key.physical_keycode = KEY_F3
+	assert_true(key.is_action_pressed(Feature.ACTION))
+	Bindings.set_events(Feature.ACTION, events)
 
 
 func test_echo_release_and_paused_input_do_not_toggle() -> void:

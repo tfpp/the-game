@@ -14,7 +14,7 @@ var _last_position := Vector3.ZERO
 
 
 func _ready() -> void:
-	Controls.ensure_action(TOGGLE_ACTION, [_key_event(KEY_V)])
+	Controls.ensure_action(TOGGLE_ACTION, [_key_event(KEY_N)])
 	add_to_group(&"noclip")
 	Network.mode_changed.connect(_reset)
 

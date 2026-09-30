@@ -35,6 +35,11 @@ Implementation: shared state in `game/core/input/controls.gd`, touch overlay and
 shell in `game/features/touch_controls/`, with player and menu integration. The core
 changes require human review under the repository's normal review rules.
 
+V toggles first/third-person view; F3 remains an alternate. Hold H for voice chat,
+and use N for noclip (requires `sv_cheats 1`). Saved custom bindings are unchanged;
+Settings > Controls supports keyboard and controller rebinding. Touch-only play has
+no camera toggle button.
+
 ## Validation
 
 Run `harness/verify.sh` for automated regression tests and multiplayer smoke tests.

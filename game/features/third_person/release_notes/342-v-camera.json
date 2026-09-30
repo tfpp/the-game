@@ -1,0 +1,5 @@
+{
+  "title": "V camera toggle",
+  "summary": "Press V to switch between first and third person.",
+  "notes": ["Add V as the primary camera toggle while keeping F3.", "Move default push-to-talk to H and noclip to N to free V; retain saved custom bindings."]
+}

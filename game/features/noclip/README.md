@@ -1,8 +1,8 @@
 # Noclip
 
-Enable flight access with `sv_cheats 1` in the ~ console, then use **V** or the
-`noclip` command to toggle flight. Look up/down and move to fly. V retains its
-existing binding (also shared with push-to-talk; rebind either in Controls).
+Enable flight access with `sv_cheats 1` in the ~ console, then use **N** or the
+`noclip` command to toggle flight. Look up/down and move to fly. Rebind the action
+in Settings > Controls if desired; saved custom bindings are retained.
 
 This feature owns `cheats_enabled`, a server-owned synchronizer property included
 in spawn snapshots for late joiners. `request_cheats(int)` accepts only 0/1 from

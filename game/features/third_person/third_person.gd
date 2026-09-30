@@ -13,8 +13,10 @@ func _ready() -> void:
 	process_priority = 10
 	_shape.radius = CAMERA_RADIUS
 	var key := InputEventKey.new()
-	key.physical_keycode = KEY_F3
-	Controls.ensure_action(ACTION, [key])
+	key.physical_keycode = KEY_V
+	var legacy_key := InputEventKey.new()
+	legacy_key.physical_keycode = KEY_F3
+	Controls.ensure_action(ACTION, [key, legacy_key])
 
 
 func _unhandled_input(event: InputEvent) -> void:
