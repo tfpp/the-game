@@ -49,6 +49,11 @@ on:
           - openrouter/qwen/qwen3.8-flash
           - openrouter/moonshotai/kimi-k3
         default: default
+      reasoning:
+        description: Reasoning effort for any agent (default uses AGENT_REASONING_EFFORT, else the agent's own default)
+        type: choice
+        options: [default, low, medium, high, xhigh, max]
+        default: default
       instructions:
         description: Extra instructions for the agent
         required: false
@@ -174,8 +179,8 @@ jobs:
           OPENROUTER_API_KEY: ${{ needs.gate.outputs.agent == 'pi' && secrets.OPENROUTER_API_KEY || '' }}
           PI_MODEL: ${{ inputs.pi_model != 'default' && inputs.pi_model || vars.PI_MODEL }}
           HARNESS_MODEL: ${{ vars.AGENT_MODEL }}
-          # Empty: run.sh's per-agent default (Claude low, Codex and pi medium).
-          HARNESS_REASONING_EFFORT: ${{ vars.AGENT_REASONING_EFFORT }}
+          # Empty: run.sh's per-agent default (Claude low, Codex medium, pi per model).
+          HARNESS_REASONING_EFFORT: ${{ inputs.reasoning != 'default' && inputs.reasoning || vars.AGENT_REASONING_EFFORT }}
           HARNESS_MAX_TURNS: ${{ vars.AGENT_MAX_TURNS }}
           AGENT: ${{ needs.gate.outputs.agent }}
           MODE: ${{ needs.gate.outputs.mode }}

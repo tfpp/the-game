@@ -50,3 +50,18 @@ func TestFeatureOffersOptionalPiModels(t *testing.T) {
 		}
 	}
 }
+
+func TestFeatureOffersOptionalReasoning(t *testing.T) {
+	opt := featureOption(t, "reasoning")
+	if opt.Required || len(opt.Choices) != len(core.ReasoningLevels) {
+		t.Fatalf("reasoning must be optional with every level: %+v", opt)
+	}
+	for i, level := range core.ReasoningLevels {
+		if c := opt.Choices[i]; c.Value != level || c.Name != level {
+			t.Fatalf("choice %d = %+v; want %s", i, c, level)
+		}
+	}
+	if len(opt.Description) > 100 {
+		t.Fatalf("description too long for Discord: %d", len(opt.Description))
+	}
+}

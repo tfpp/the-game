@@ -53,6 +53,7 @@ type Job struct {
 	State         string
 	Harness       string // empty for legacy jobs, which use Config.Agent
 	Model         string // pi only; empty uses the workflow's default model
+	Reasoning     string // effort override for every run; empty uses the workflow's default
 	ConflictSHA   string // head SHA last found to conflict with the base branch
 	ResolveSHA    string // head SHA a resolve-conflicts run was started for
 	CreatedAt     time.Time
@@ -195,6 +196,9 @@ var migrations = []string{
 	DROP TABLE jobs;
 	ALTER TABLE jobs_new RENAME TO jobs;
 	CREATE UNIQUE INDEX jobs_pr ON jobs(pr) WHERE pr IS NOT NULL;`,
+	// 6: an optional reasoning effort chosen with /feature; empty uses the workflow default.
+	`ALTER TABLE jobs ADD COLUMN reasoning TEXT NOT NULL DEFAULT ''
+		CHECK(reasoning IN ('', 'low', 'medium', 'high', 'xhigh', 'max'));`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {
@@ -370,9 +374,9 @@ func (s *Store) CreateJob(ctx context.Context, j Job, runID int64, now time.Time
 	}
 	defer tx.Rollback()
 	res, err := tx.ExecContext(ctx,
-		`INSERT INTO jobs (issue, title, channel_id, requester_id, requester_name, state, harness, model, created_at, updated_at)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		j.Issue, j.Title, j.ChannelID, j.RequesterID, j.RequesterName, JobOpen, j.Harness, j.Model, now.Unix(), now.Unix())
+		`INSERT INTO jobs (issue, title, channel_id, requester_id, requester_name, state, harness, model, reasoning, created_at, updated_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		j.Issue, j.Title, j.ChannelID, j.RequesterID, j.RequesterName, JobOpen, j.Harness, j.Model, j.Reasoning, now.Unix(), now.Unix())
 	if err != nil {
 		return Job{}, err
 	}
@@ -387,13 +391,13 @@ func (s *Store) CreateJob(ctx context.Context, j Job, runID int64, now time.Time
 }
 
 const jobCols = `id, issue, COALESCE(pr, 0), title, channel_id, COALESCE(thread_id, ''), requester_id,
-	requester_name, state, harness, model, conflict_sha, resolve_sha, created_at`
+	requester_name, state, harness, model, reasoning, conflict_sha, resolve_sha, created_at`
 
 func scanJob(row interface{ Scan(...any) error }) (Job, error) {
 	var j Job
 	var created int64
 	err := row.Scan(&j.ID, &j.Issue, &j.PR, &j.Title, &j.ChannelID, &j.ThreadID, &j.RequesterID,
-		&j.RequesterName, &j.State, &j.Harness, &j.Model, &j.ConflictSHA, &j.ResolveSHA, &created)
+		&j.RequesterName, &j.State, &j.Harness, &j.Model, &j.Reasoning, &j.ConflictSHA, &j.ResolveSHA, &created)
 	if errors.Is(err, sql.ErrNoRows) {
 		return Job{}, ErrNotFound
 	}

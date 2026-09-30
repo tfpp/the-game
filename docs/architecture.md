@@ -196,10 +196,11 @@ protocol, income timing, offline behavior and deployment order.
 
 ## Agent pipeline
 
-1. `/feature request:<text> harness:<claude|codex|pi> [model:<pi model>]` in Discord.
-   `request` and `harness` are required; `model` applies only to pi. The bot (`bot/`,
+1. `/feature request:<text> harness:<claude|codex|pi> [model:<pi model>] [reasoning:<level>]`
+   in Discord. `request` and `harness` are required; `model` applies only to pi, and
+   `reasoning` (low to max) overrides the effort for any harness. The bot (`bot/`,
    details in `bot/README.md`) checks the requester role and the per-user limit, and
-   persists the harness and model choice with the feature for queued runs, revisions and
+   persists the harness, model and reasoning choices with the feature for queued runs, revisions and
    conflict resolution. Legacy jobs without a choice use `BOT_AGENT`.
    It then creates a GitHub issue through its GitHub App, ending in a `Requested-by:`
    trailer, and opens a thread. If the concurrency cap is

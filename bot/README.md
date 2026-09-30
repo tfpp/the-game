@@ -16,15 +16,16 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
 
 ## How it works
 
-1. **`/feature request:<text> harness:<claude|codex|pi> [model:<pi model>]`** in a text
-   channel (optionally only `BOT_FEATURE_CHANNEL_ID`). `request` and `harness` are
-   required. `model` is for pi only and offers GPT-6.1 Sol, GPT-6 Astra, GPT-6 Luna,
+1. **`/feature request:<text> harness:<claude|codex|pi> [model:<pi model>]
+   [reasoning:<low|medium|high|xhigh|max>]`** in a text channel (optionally only
+   `BOT_FEATURE_CHANNEL_ID`). `request` and `harness` are required. `model` is for pi only and offers GPT-6.1 Sol, GPT-6 Astra, GPT-6 Luna,
    Claude Opus 5.5, Claude Fable 5.1 and the OpenRouter models (DeepSeek V4.1 Flash,
    GLM-5.3, GLM-5.3 Flash, Qwen3.8 Max, Qwen3.8 Flash, Kimi K3); `core.PiModels` must
-   match `agent.yml`'s `pi_model` choices.
-   The selected harness and model are saved with the feature and used for its initial
-   run, queued runs, `/revise`, and automatic conflict resolution, including after bot
-   restarts; the bot sends `pi_model` only for pi runs with a chosen model. Claude
+   match `agent.yml`'s `pi_model` choices. `reasoning` overrides the effort for any
+   harness (`core.ReasoningLevels`, matching `agent.yml`'s `reasoning` input).
+   The selected harness, model and reasoning are saved with the feature and used for its
+   initial run, queued runs, `/revise`, and automatic conflict resolution, including after bot
+   restarts; the bot sends `pi_model` and `reasoning` only when chosen. Claude
    defaults to **Opus 5.5** with low effort; Codex defaults to **GPT-6.1 Sol** with medium
    reasoning; pi defaults to `openai-codex/gpt-6.1-sol` with medium thinking (each
    pi model has its own level in `harness/pi/thinking-levels.json`). Configure the

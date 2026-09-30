@@ -187,8 +187,10 @@ func TestPiModelIsOptionalAndOnlySentForPi(t *testing.T) {
 	}
 }
 
-// The bot must only offer models the agent workflow accepts.
-func TestPiModelsMatchWorkflowChoices(t *testing.T) {
+// workflowChoices reads the options of a workflow_dispatch choice input in agent.yml,
+// written either as a block list or inline ([a, b]).
+func workflowChoices(t *testing.T, input string) []string {
+	t.Helper()
 	data, err := os.ReadFile(filepath.Join("..", "..", "..", ".github", "workflows", "agent.yml"))
 	must(t, err)
 	var choices []string
@@ -196,21 +198,87 @@ func TestPiModelsMatchWorkflowChoices(t *testing.T) {
 	for _, line := range strings.Split(string(data), "\n") {
 		trimmed := strings.TrimSpace(line)
 		switch {
-		case trimmed == "pi_model:":
+		case trimmed == input+":":
 			in = true
+		case in && strings.HasPrefix(trimmed, "options: ["):
+			for _, c := range strings.Split(strings.TrimSuffix(strings.TrimPrefix(trimmed, "options: ["), "]"), ",") {
+				choices = append(choices, strings.TrimSpace(c))
+			}
+			return choices
 		case in && trimmed == "options:":
 			options = true
 		case in && options && strings.HasPrefix(trimmed, "- "):
 			choices = append(choices, strings.TrimPrefix(trimmed, "- "))
 		case in && options:
-			in, options = false, false
+			return choices
 		}
 	}
-	var want []string
+	return choices
+}
+
+// The bot must only offer models and levels the agent workflow accepts.
+func TestChoicesMatchWorkflowInputs(t *testing.T) {
+	var models []string
 	for _, m := range PiModels {
-		want = append(want, m.ID)
+		models = append(models, m.ID)
 	}
-	if len(choices) == 0 || choices[0] != "default" || !slices.Equal(choices[1:], want) {
-		t.Fatalf("agent.yml pi_model choices %v; bot offers %v", choices, want)
+	for input, want := range map[string][]string{"pi_model": models, "reasoning": ReasoningLevels} {
+		got := workflowChoices(t, input)
+		if len(got) == 0 || got[0] != "default" || !slices.Equal(got[1:], want) {
+			t.Errorf("agent.yml %s choices %v; bot offers %v", input, got, want)
+		}
+	}
+}
+
+func TestFeatureRejectsUnknownReasoning(t *testing.T) {
+	e := newEnv(t)
+	r := &fakeResponder{counter: &e.nth}
+	must(t, e.svc.Feature(context.Background(), FeatureRequest{
+		UserID: "42", UserName: "A", HasRole: true, ChannelID: "c1", Text: "add jump pads please",
+		Harness: "codex", Reasoning: "minimal",
+	}, r))
+	if !strings.Contains(r.rejected, "Choose a reasoning level") || r.deferred {
+		t.Fatalf("unknown reasoning accepted: %+v", r)
+	}
+	if len(e.gh.issues) != 0 || len(e.gh.dispatches) != 0 {
+		t.Fatal("unknown reasoning created a GitHub issue or dispatch")
+	}
+}
+
+func TestReasoningIsSavedAndDispatchedOnEveryRun(t *testing.T) {
+	for _, harness := range []string{"claude", "codex", "pi"} {
+		t.Run(harness, func(t *testing.T) {
+			e := newEnv(t)
+			ctx := context.Background()
+			r := &fakeResponder{counter: &e.nth}
+			must(t, e.svc.Feature(ctx, FeatureRequest{
+				UserID: "42", UserName: "A", HasRole: true, ChannelID: "c1", Text: "add jump pads please",
+				Harness: harness, Reasoning: "xhigh",
+			}, r))
+			if r.rejected != "" || len(e.gh.dispatches) != 1 || e.gh.dispatches[0]["reasoning"] != "xhigh" {
+				t.Fatalf("feature %+v dispatches %v", r, e.gh.dispatches)
+			}
+			if !strings.Contains(r.response, "harness: `"+harness+"` · reasoning: `xhigh`") {
+				t.Fatalf("reasoning not announced: %s", r.response)
+			}
+			job, err := e.st.JobByThread(ctx, "thread1")
+			must(t, err)
+			// A revision after a restart keeps the chosen level.
+			e.svc = New(e.svc.cfg, e.st, e.gh, e.chat)
+			run, err := e.svc.reserve(ctx, "42", job.ID, "revise", "tweak it")
+			must(t, err)
+			must(t, e.svc.dispatch(ctx, run, job.Issue, "tweak it"))
+			if d := e.gh.dispatches[len(e.gh.dispatches)-1]; d["reasoning"] != "xhigh" || d["agent"] != harness {
+				t.Fatalf("revision dispatch %v", d)
+			}
+		})
+	}
+}
+
+func TestReasoningIsOmittedWhenNotChosen(t *testing.T) {
+	e := newEnv(t)
+	r := e.feature(t, "42", "add jump pads please", "claude")
+	if _, ok := e.gh.dispatches[0]["reasoning"]; ok || strings.Contains(r.response, "reasoning:") {
+		t.Fatalf("unchosen reasoning sent or announced: %v %s", e.gh.dispatches[0], r.response)
 	}
 }

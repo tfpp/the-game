@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log/slog"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -153,7 +154,13 @@ type FeatureRequest struct {
 	Text      string
 	Harness   string // required: claude, codex or pi; kept for the feature's later runs
 	Model     string // optional, pi only: one of PiModels; kept like the harness
+	Reasoning string // optional: one of ReasoningLevels; kept like the harness
 }
+
+// ReasoningLevels are the efforts /feature offers: the ones Claude (--effort), Codex
+// (GPT-6.1 Sol) and pi (--thinking) all accept. Keep in sync with agent.yml's reasoning
+// input (a test checks this). Without a choice, the workflow's default applies.
+var ReasoningLevels = []string{"low", "medium", "high", "xhigh", "max"}
 
 // PiModel is a model the pi harness can run, matching agent.yml's pi_model choices.
 type PiModel struct {
@@ -205,6 +212,9 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	if req.Model != "" && !knownPiModel(req.Model) {
 		return r.Reject(ctx, "Choose one of the offered pi models.")
 	}
+	if req.Reasoning != "" && !slices.Contains(ReasoningLevels, req.Reasoning) {
+		return r.Reject(ctx, "Choose a reasoning level: "+strings.Join(ReasoningLevels, ", ")+".")
+	}
 	run, err := s.reserve(ctx, req.UserID, 0, "implement", "")
 	if err != nil {
 		return s.rejectLimit(ctx, r, err)
@@ -226,6 +236,7 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	job, err := s.st.CreateJob(ctx, store.Job{
 		Issue: issue.Number, Title: title, ChannelID: req.ChannelID,
 		RequesterID: req.UserID, RequesterName: name, Harness: req.Harness, Model: req.Model,
+		Reasoning: req.Reasoning,
 	}, run.ID, s.cfg.Now())
 	if err != nil {
 		s.failRun(ctx, run.ID)
@@ -236,6 +247,9 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	harness := "`" + job.Harness + "`"
 	if job.Model != "" {
 		harness += " · model: `" + job.Model + "`"
+	}
+	if job.Reasoning != "" {
+		harness += " · reasoning: `" + job.Reasoning + "`"
 	}
 	announce := fmt.Sprintf("**%s**\nRequested by <@%s> · [issue #%d](<%s>) · harness: %s\n%s",
 		escape(title), req.UserID, issue.Number, issue.HTMLURL, harness, quote(text, 300))
@@ -532,6 +546,10 @@ func (s *Service) dispatch(ctx context.Context, run store.Run, number int, instr
 	// without that input.
 	if harness == "pi" && job.Model != "" {
 		inputs["pi_model"] = job.Model
+	}
+	// Likewise only sent when chosen, so older workflows keep accepting other runs.
+	if job.Reasoning != "" {
+		inputs["reasoning"] = job.Reasoning
 	}
 	err = s.gh.Dispatch(ctx, s.cfg.Workflow, s.cfg.Ref, inputs)
 	if err != nil {

@@ -148,8 +148,8 @@ func TestJobHarnessRoundTrip(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			j, err := s.CreateJob(ctx, Job{Issue: 3, Title: "t", ChannelID: "c", RequesterID: "u", RequesterName: "U", Harness: harness, Model: model}, r.ID, now)
-			if err != nil || j.Harness != harness || j.Model != model {
+			j, err := s.CreateJob(ctx, Job{Issue: 3, Title: "t", ChannelID: "c", RequesterID: "u", RequesterName: "U", Harness: harness, Model: model, Reasoning: "xhigh"}, r.ID, now)
+			if err != nil || j.Harness != harness || j.Model != model || j.Reasoning != "xhigh" {
 				t.Fatalf("CreateJob = %+v, %v", j, err)
 			}
 			if err := s.SetThread(ctx, j.ID, "th", now); err != nil {
@@ -218,6 +218,9 @@ func TestJobHarnessConstraints(t *testing.T) {
 	}
 	if _, err := s.CreateJob(ctx, Job{Issue: 2, Harness: "pi", Model: "openrouter/z-ai/glm-5.3"}, 0, now); err != nil {
 		t.Fatalf("pi job: %v", err)
+	}
+	if _, err := s.CreateJob(ctx, Job{Issue: 3, Harness: "claude", Reasoning: "extreme"}, 0, now); err == nil || !strings.Contains(err.Error(), "CHECK constraint failed") {
+		t.Fatalf("invalid reasoning: %v", err)
 	}
 }
 

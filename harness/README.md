@@ -35,9 +35,11 @@ The label is removed when the run ends, so adding it again starts another run.
 Labels and comments use Claude. To use Codex or pi, select `codex` or `pi` in the
 workflow's `agent` input (or dispatch with `-f agent=codex` / `-f agent=pi`); all three
 modes are supported.
-Discord's `/feature request:<text> harness:<claude|codex|pi> [model:<pi model>]` requires a
-harness choice and saves it, and pi's optional model, for that feature's later revisions
-and conflict resolution; the bot sends `pi_model` only for pi runs with a chosen model. `BOT_AGENT`
+Discord's `/feature request:<text> harness:<claude|codex|pi> [model:<pi model>]
+[reasoning:<level>]` requires a harness choice and saves it, pi's optional model and the
+optional reasoning level for that feature's later revisions and conflict resolution; the
+bot sends `pi_model` and `reasoning` only when chosen. The workflow's `reasoning` input
+(`low` to `max`) overrides `AGENT_REASONING_EFFORT` and each agent's default. `BOT_AGENT`
 is only a fallback for legacy features with no saved selection.
 
 ## Keeping PRs aligned
@@ -196,7 +198,8 @@ bounds numeric values and validates model IDs before rendering them. The human P
 4. **Optional variables:** `AGENT_MODEL` (Claude; defaults to `claude-opus-5-5`, Opus
    5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6.1-sol`, GPT-6.1 Sol), `PI_MODEL`
    (pi, as `provider/id`; defaults to `openai-codex/gpt-6.1-sol`; the `pi_model` input wins), `PI_VERSION`
-   (defaults to `0.99.1`), `AGENT_REASONING_EFFORT` (overrides every agent; unset, Claude
+   (defaults to `0.99.1`), `AGENT_REASONING_EFFORT` (overrides every agent unless the dispatch's `reasoning` input
+   is set; unset, Claude
    uses `low`, Codex `medium`, and pi the level for its model in `pi/thinking-levels.json`,
    else `medium`), `AGENT_MAX_TURNS`,
    `AGENT_ATTEMPTS` (default 3), `AGENT_TRUSTED_BOTS` (comma-separated logins, such as
