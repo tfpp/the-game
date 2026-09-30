@@ -39,7 +39,30 @@ facing the counter. Everything uses Use (E, Circle / B, or mobile **USE**).
 
 Limitation: extra rolls only change the odds on temporary (offline / dev) wallets;
 Kaaba blessings also apply to authenticated accounts, through a separate bonus.
-Nothing is persisted: charisma, drinks and luck reset on disconnect and server restart.
+## Stats menu and persistence (#343)
+
+Open **Player stats** from the Esc/pause menu (also available through the touch menu
+and controller focus). It always shows charisma and intoxication, including zero,
+explains tipsy/too-drunk effects and Vivienne's price, and shows the lucky-night timer
+and existing Kaaba blessing count. It is read-only and refreshes from replicated state.
+The compact HUD remains unchanged. No new key binding is required.
+
+`BarCompanion` still owns all gameplay state. `CharmStore` saves the precise win-charisma,
+intoxication and lucky-night components by immutable authenticated account ID, never
+by display name or client-supplied identity. Reconnecting or renaming restores the same
+stats; guest/offline/dev-auth stats remain session-only. Escort progress is not saved.
+Respawns retain stats as before. Timers continue while signed out or the server is down,
+using elapsed wall-clock time at restore; active sessions retain the existing decay rules.
+
+Server snapshots are atomically replaced at `user://bar_stats.json` on each drink,
+win or luck grant, every five seconds during decay, on disconnect and feature shutdown.
+Pass `-- --bar-stats-save-path=/persistent-volume/bar_stats.json` to override this.
+The parent directory must exist; operators must mount persistent storage to retain the
+file across container replacements (the same deployment requirement as leaderboard).
+Sign-ins and browser refreshes do not require any deployment changes. A crash can lose
+up to five seconds of decay; invalid rows are skipped and valid values are bounded.
+Clients never read/write saves, and account IDs are not added to replicated summaries.
+Old sessions have no saved stats to backfill. Wallet/inventory persistence is unchanged.
 
 Tests: `tests/features/bar_companion/`.
 
