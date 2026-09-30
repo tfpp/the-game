@@ -26,16 +26,16 @@ font_size = 20
 outline_size = 6
 
 [node name="Fence" type="CSGBox3D" parent="."]
-position = Vector3(-2.8, 0.75, 30.7)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -11.5, 0.75, 39.5)
 size = Vector3(1.5, 1.5, 0.6)
 material = ExtResource("4_dark")
 use_collision = true
 script = ExtResource("3_fence")
 
 [node name="FenceSign" type="Label3D" parent="."]
-position = Vector3(-2.8, 3.25, 30.35)
+position = Vector3(-11.3, 3.35, 39.5)
 billboard = 1
 modulate = Color(1, 0.8, 0.3, 1)
-text = "PAWN SHOP\nWE BUY VALUABLES"
+text = "RUSTY HOGG'S PAWN SHOP\nWE BUY VALUABLES"
 font_size = 17
 outline_size = 6

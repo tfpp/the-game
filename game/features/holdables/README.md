@@ -21,6 +21,8 @@ Generic items players can pick up and hold: `pistol`, `smg`, `shotgun` and `awp`
    when a top or side view makes an item more readable; framing is automatic.
 3. List it in `item_catalog.gd`'s `DEFINITIONS`.
 4. Place an `ItemPickup` instance somewhere in `feature.tscn` with that `item_id`.
+   Weapons are not given away: the lobby counter only holds the banana and ball, and
+   guns are sold on the pawn shop wall (`features/pawn_shop`).
 
 No other code changes are needed — pickup, holding, replication and the primary
 action all key off the category.

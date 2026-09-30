@@ -81,6 +81,9 @@ const SPOTS: Array[Vector4] = [
 	Vector4(24, 35, 0, 1),
 	Vector4(10, 51, 0, -1),
 	Vector4(26, 51, 0, -1),
+	# Pawn shop (features/pawn_shop), west of the south corridor.
+	Vector4(-14.5, 37, 1, 0),
+	Vector4(-10, 44.5, 0, -1),
 ]
 
 var _lights: Array[OmniLight3D] = []

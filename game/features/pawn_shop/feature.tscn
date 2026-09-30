@@ -1,0 +1,86 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="1_wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="2_wall"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/ceiling.tres" id="3_ceiling"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="4_brass"]
+[ext_resource type="PackedScene" path="res://features/pawn_shop/wall_gun.tscn" id="6_gun"]
+[ext_resource type="PackedScene" path="res://features/pawn_shop/rusty_hogg.tscn" id="7_rusty"]
+
+[node name="PawnShop" type="Node3D"]
+
+[node name="Hall" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Floor" type="CSGBox3D" parent="Hall"]
+position = Vector3(-9, -0.5, 39.75)
+size = Vector3(12, 1, 9.5)
+material = ExtResource("1_wood")
+
+[node name="WallWest" type="CSGBox3D" parent="Hall"]
+position = Vector3(-15, 3, 38)
+size = Vector3(1, 6, 6)
+material = ExtResource("2_wall")
+
+[node name="Ceiling" type="CSGBox3D" parent="Hall"]
+position = Vector3(-9, 6, 39.75)
+size = Vector3(12, 1, 9.5)
+material = ExtResource("3_ceiling")
+
+[node name="GunBoard" type="CSGBox3D" parent="Hall"]
+position = Vector3(-9, 1.75, 35.05)
+size = Vector3(7, 1.5, 0.1)
+material = ExtResource("1_wood")
+
+[node name="EntranceSign" type="Label3D" parent="."]
+position = Vector3(-2.44, 3.75, 41.5)
+rotation = Vector3(0, 1.5707964, 0)
+pixel_size = 0.01
+double_sided = false
+modulate = Color(1, 0.84, 0.4, 1)
+outline_modulate = Color(0.16, 0.04, 0.02, 1)
+text = "PAWN SHOP"
+font_size = 72
+outline_size = 18
+
+[node name="GunWallSign" type="Label3D" parent="."]
+position = Vector3(-9, 2.9, 35.03)
+pixel_size = 0.01
+double_sided = false
+modulate = Color(1, 0.84, 0.4, 1)
+outline_modulate = Color(0.16, 0.04, 0.02, 1)
+text = "GUNS — CASH ONLY"
+font_size = 40
+outline_size = 12
+
+[node name="SignRail" type="CSGBox3D" parent="."]
+position = Vector3(-9, 2.6, 35.03)
+size = Vector3(6, 0.06, 0.04)
+material = ExtResource("4_brass")
+
+[node name="GunWall" type="Node3D" parent="."]
+position = Vector3(-9, 1.85, 35.25)
+
+[node name="Pistol" parent="GunWall" instance=ExtResource("6_gun")]
+position = Vector3(-2.25, 0, 0)
+item_id = "pistol"
+price_cents = 1000
+
+[node name="Smg" parent="GunWall" instance=ExtResource("6_gun")]
+position = Vector3(-0.75, 0, 0)
+item_id = "smg"
+price_cents = 2500
+
+[node name="Shotgun" parent="GunWall" instance=ExtResource("6_gun")]
+position = Vector3(0.75, 0, 0)
+item_id = "shotgun"
+price_cents = 3000
+
+[node name="Awp" parent="GunWall" instance=ExtResource("6_gun")]
+position = Vector3(2.25, 0, 0)
+item_id = "awp"
+price_cents = 5000
+
+[node name="RustyHogg" parent="." instance=ExtResource("7_rusty")]
+position = Vector3(-12.7, 0, 40.2)
+rotation = Vector3(0, 1.5707964, 0)

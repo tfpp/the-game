@@ -32,11 +32,12 @@ func _driver() -> void:
 		hand = Hand.for_peer(get_tree(), multiplayer.get_unique_id())
 		player = get_tree().get_first_node_in_group(&"local_player") as Player
 	player.set_physics_process(false)
-	var pickup := $Game/Features/holdables/Pickups/Pistol as ItemPickup
-	player.position = pickup.position + Vector3.UP * 0.8
+	# The pistol now hangs on the pawn shop wall; a fresh wallet can afford it.
+	var rack := $Game/Features/pawn_shop/GunWall/Pistol as WallGun
+	player.position = rack.global_position + Vector3(0, -0.9, 1.2)
 	player.net_position = player.position
 	await get_tree().create_timer(0.3).timeout
-	pickup.request_pickup.rpc_id(1)
+	rack.use()
 	while hand.net_item_id != "pistol" or _pickups == 0:
 		await get_tree().process_frame
 	hand.request_primary_action.rpc_id(1)

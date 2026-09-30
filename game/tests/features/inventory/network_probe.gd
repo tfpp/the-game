@@ -41,9 +41,19 @@ func _drive() -> void:
 	for path: String in [
 		"inventory/TealShirt",
 		"inventory/BluePants",
-		"holdables/Pickups/Pistol",
+		"pawn_shop/GunWall/Pistol",
 		"holdables/Pickups/Banana"
 	]:
+		var rack := get_node("Game/Features/" + path) as WallGun
+		if rack != null:
+			# Bought from the pawn shop wall rather than picked up for free.
+			player.position = rack.global_position + Vector3(0, -0.9, 1.2)
+			player.net_position = player.position
+			await get_tree().create_timer(0.4).timeout
+			rack.use()
+			while hand.net_item_id != "pistol":
+				await get_tree().process_frame
+			continue
 		var pickup := get_node("Game/Features/" + path) as ItemPickup
 		player.position = pickup.position + Vector3.UP * 0.8
 		player.net_position = player.position

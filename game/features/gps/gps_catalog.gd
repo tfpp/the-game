@@ -62,6 +62,8 @@ static func label_for(node: Node) -> String:
 		return (node as LootContainer).noun.capitalize()
 	if node is SlotMachine:
 		return "Slot machine — %s" % node.name
+	if node is WallGun:
+		return "%s (pawn shop wall)" % ItemCatalog.find((node as WallGun).item_id).display_name
 	if node is GunMachineKiosk:
 		return "Gun machine"
 	if node is SoccerBall:
