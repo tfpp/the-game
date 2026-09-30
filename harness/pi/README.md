@@ -29,6 +29,10 @@ Changes from the personal copies, needed on Linux runners:
   either platform.
 - `anthropic-omp/scripts/link-native.ts` links every addon variant the platform package
   ships (Linux x64 has `-modern` and `-baseline` builds).
+- The vendored catalog's Google Gemini CLI and Antigravity logins have empty OAuth client
+  credentials (`rules/auth/google-*.kdl` and the compiled `rules.json`), because GitHub push
+  protection rejects them. Only the Anthropic provider runs here. `runtime/snapshot.json`
+  records the edited files' hashes, so `bun run verify:snapshot` still passes.
 
 On Actions, the extension's own credential store stays empty and its backend authenticates
 with `ANTHROPIC_OAUTH_TOKEN` (the `claude setup-token` secret). pi's `auth.json` only holds the
