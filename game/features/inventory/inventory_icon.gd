@@ -56,6 +56,10 @@ func _draw() -> void:
 			]
 		)
 		draw_colored_polygon(points, color)
+	elif kind == "hat":
+		draw_rect(Rect2(14, 28, 36, 5), TopHat.SILK)
+		draw_rect(Rect2(21, 3, 22, 26), TopHat.SILK)
+		draw_rect(Rect2(21, 22, 22, 5), color.darkened(0.25))
 	elif kind == "pants":
 		draw_rect(Rect2(19, 2, 26, 10), color)
 		draw_rect(Rect2(19, 10, 11, 24), color)

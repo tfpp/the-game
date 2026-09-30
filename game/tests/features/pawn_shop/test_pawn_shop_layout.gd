@@ -87,6 +87,21 @@ func test_guns_hang_on_the_wall_within_reach() -> void:
 		assert_true(gun.entity.in_range(_player_at(customer)), "%s reachable" % gun.name)
 
 
+func test_top_hat_sits_on_its_stand_within_reach() -> void:
+	var stand := _shop.get_node("HatStand") as CSGBox3D
+	var hat := stand.get_node("TopHat") as WallGun
+	assert_eq(hat.item_id, ClothingCatalog.TOP_HAT)
+	assert_eq(hat.price_cents, 1000000, "$10,000")
+	var cap := stand.get_node("HatStandCap") as CSGBox3D
+	var cap_top := cap.global_position.y + cap.size.y * 0.5
+	var brim := hat.get_node("View/Hat") as Node3D
+	assert_almost_eq(brim.global_position.y, cap_top, 0.005, "Brim rests on the stand")
+	var customer := stand.global_position + Vector3(1.0, 0.4, 0)
+	customer.y = 0.95
+	_assert_clear(customer)
+	assert_true(hat.entity.in_range(_player_at(customer)))
+
+
 func test_gun_o_matic_moved_in_with_a_normal_sign() -> void:
 	var kiosk := _guns.get_node("Kiosk") as Node3D
 	var can := _guns.get_node("TrashCan") as Node3D

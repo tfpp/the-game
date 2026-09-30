@@ -8,6 +8,10 @@ extends Node3D
 ## via `height_scale()`, the first-person view model in features/holdables/hand.gd)
 ## reads as short as the penguin NPC (features/penguin), not human-height in a suit.
 const PENGUIN_HEIGHT_SCALE := 0.58
+## Worn hat seat in the human head bone's space: just into the hair on the crown.
+const HUMAN_HAT_OFFSET := Vector3(0, 0.31, 0.02)
+## Top of each box-built head above the head pivot, where a worn hat sits.
+const HEAD_TOPS := {&"frog": 0.34, &"bird": 0.38, &"penguin": 0.36}
 
 var player: Player
 var skin_color := PlayerSkin.TONES[0]
@@ -15,6 +19,7 @@ var shirt_color := skin_color
 var pants_color := skin_color
 var shirt_id := ""
 var pants_id := ""
+var hat_id := ""
 var body_type: StringName = &"default"
 var head_type: StringName = &"human"
 var tail_type: StringName = &"none"
@@ -46,6 +51,7 @@ var _was_grounded := true
 var _rig := Node3D.new()
 var _torso := Node3D.new()
 var _head := Node3D.new()
+var _hat_mount: BoneAttachment3D
 var _left_arm := Node3D.new()
 var _right_arm := Node3D.new()
 var _left_leg := Node3D.new()
@@ -72,6 +78,7 @@ func _process(delta: float) -> void:
 	if hand != null:
 		set_skin_index(hand.skin_tone_index())
 		set_clothing(hand.inventory().shirt, hand.inventory().pants)
+		set_hat(hand.inventory().hat)
 	var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
 	if models != null:
 		var peer_id := player.get_multiplayer_authority()
@@ -239,6 +246,7 @@ func _decorate() -> void:
 		_decorate_humanoid()
 	_decorate_tail()
 	_apply_clothing()
+	_apply_hat()
 
 
 func _decorate_humanoid() -> void:
@@ -414,6 +422,41 @@ func set_clothing(new_shirt: String, new_pants: String) -> void:
 	pants_id = new_pants if ClothingCatalog.slot(new_pants) == "pants" else ""
 	if _shirt_material != null:
 		_apply_clothing()
+
+
+## Wears `id` (a ClothingCatalog "hat" item) on top of the head, or nothing if empty.
+func set_hat(id: String) -> void:
+	var next := id if ClothingCatalog.slot(id) == "hat" else ""
+	if next == hat_id:
+		return
+	hat_id = next
+	if _skin_material != null:
+		_apply_hat()
+
+
+## Seats the worn hat on whichever head is showing: the human head bone, a creature
+## head pivot or the penguin costume. Rebuilt on body/head changes (`_decorate`).
+func _apply_hat() -> void:
+	for old: Node in [get_node_or_null("Rig/Torso/Head/Hat"), _hat_mount]:
+		if old != null:
+			old.free()
+	_hat_mount = null
+	if hat_id.is_empty():
+		return
+	var hat := TopHat.new()
+	hat.name = "Hat"
+	hat.band_color = ClothingCatalog.color(hat_id)
+	if body_type != &"penguin" and head_type == &"human" and human.skeleton != null:
+		_hat_mount = BoneAttachment3D.new()
+		_hat_mount.name = "HatMount"
+		human.skeleton.add_child(_hat_mount)
+		_hat_mount.bone_name = "Head"
+		hat.position = HUMAN_HAT_OFFSET
+		_hat_mount.add_child(hat)
+		return
+	var top: float = HEAD_TOPS.get(&"penguin" if body_type == &"penguin" else head_type, 0.36)
+	hat.position = Vector3(0, top - 0.02, 0.0)
+	_head.add_child(hat)
 
 
 func _apply_clothing() -> void:
