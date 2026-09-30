@@ -37,7 +37,8 @@ becomes the PR description, and the players who asked read it in Discord.
   otherwise, and say why in the summary.
 - Don't bump the release version.
 - `harness/verify.sh` is the definition of done. Run it and make it pass before you
-  finish. The harness runs it again after you, and a failure sends you back to fix it.
+  finish. The harness runs it again after you only if the files changed since your last
+  passing run, and a failure sends you back to fix it. Finish with that passing run.
 - Commit your work in logical commits that follow `docs/conventional-commits.md`.
   If a merge is in progress, stage changes and leave the commit to the harness after
   verification. Otherwise, uncommitted leftovers get committed with your PR title.

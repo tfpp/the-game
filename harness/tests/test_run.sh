@@ -67,6 +67,22 @@ case_ "lib: slugify, branch names and protected paths"
   exit "$failures"
 ) || failures=$((failures + $?))
 
+case_ "lib: changed_paths compares with the base, or fails without one"
+new_repo
+(
+  source "$src/harness/lib.sh"
+  cd "$repo"
+  VERIFY_BASE=origin/nope changed_paths >/dev/null && fail "missing base"
+  git fetch -q origin
+  changed_paths >/dev/null && fail "clean checkout of the base has nothing to compare"
+  git switch -q -c topic
+  echo x >harness/new.sh && git add harness/new.sh && git commit -qm x
+  echo y >game/untracked.txt
+  echo z >>game/greeting.txt
+  expect_eq "$(changed_paths | tr '\n' ' ')" "game/greeting.txt game/untracked.txt harness/new.sh " changed_paths
+  exit "$failures"
+) || failures=$((failures + $?))
+
 case_ "implement: agent commits, verify passes, bundle holds the commits"
 new_repo
 verify 'exit 0'
@@ -96,6 +112,37 @@ expect_eq "$(field status)" success status
 expect_eq "$(field attempts)" 2 attempts
 expect_eq "$(git -C "$repo" log -1 --format=%s)" "feat: add new file" "leftover commit subject"
 expect_eq "$(git -C "$repo" status --porcelain)" "" "clean tree"
+
+case_ "verify: skipped on a tree the agent verified, rerun once the tree changes"
+new_repo
+verify "echo run >>'$work/verify-calls'"
+rm -f "$work/verify-calls"
+agent <<'EOF'
+echo "jump" >game/jump.txt
+(source harness/lib.sh && worktree_id >"$(verified_stamp)")
+EOF
+run --mode implement --branch agent/30-x
+expect_eq "$(field status)" success status
+[[ -f "$work/verify-calls" ]] && fail "verify ran on a tree the agent already verified"
+grep -q '^Skipped' "$out/verify-1.log" || fail "verify log records the skip"
+expect_eq "$(git -C "$repo" show HEAD:game/jump.txt)" jump "verified leftovers committed"
+new_repo
+agent <<'EOF'
+(source harness/lib.sh && worktree_id >"$(verified_stamp)")
+echo "late" >game/late.txt
+EOF
+run --mode implement --branch agent/31-x
+expect_eq "$(field status)" success status
+expect_eq "$(wc -l <"$work/verify-calls" | tr -d ' ')" 1 "verify runs after later edits"
+rm -f "$work/verify-calls"
+new_repo
+agent <<'EOF'
+echo "jump" >game/jump.txt
+(source harness/lib.sh && worktree_id >"$(verified_stamp)")
+EOF
+HARNESS_REVERIFY=1 run --mode implement --branch agent/32-x
+expect_eq "$(wc -l <"$work/verify-calls" | tr -d ' ')" 1 "HARNESS_REVERIFY forces verify"
+rm -f "$work/verify-calls"
 
 case_ "usage: summed over attempts; one unknown cost makes the total's unknown"
 new_repo

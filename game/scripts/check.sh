@@ -12,8 +12,13 @@ step() { printf '\n==> %s\n' "$*"; }
 
 step "feature release notes"
 (cd .. && scripts/feature_notes.sh validate WORKTREE)
-../scripts/release_test.sh
-../scripts/release_notes_test.sh
+# harness/verify.sh sets this when the branch doesn't touch scripts/.
+if [[ -z "${CHECK_SKIP_RELEASE_TESTS:-}" ]]; then
+  ../scripts/release_test.sh
+  ../scripts/release_notes_test.sh
+else
+  echo "skipped release script tests: no changes under scripts/"
+fi
 
 step "gdformat --check"
 ${GDTOOLKIT}gdformat --check "${SRC[@]}"
