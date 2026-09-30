@@ -2,18 +2,18 @@ extends "res://tests/features/roulette/roulette_round_fixture.gd"
 ## Server-side round flow: seats, bets, lock-in, spin, settlement and release.
 
 
-func test_first_player_opens_a_thirty_second_round_and_takes_a_seat() -> void:
+func test_first_player_opens_a_twenty_second_round_and_takes_a_seat() -> void:
 	assert_eq(_table.phase(), RouletteTable.PHASE_IDLE)
 	_sit(2)
 	assert_eq(_table.phase(), RouletteTable.PHASE_BETTING)
 	assert_eq(_table.seat_of(2), 0)
 	assert_eq(_table.state["names"][0], "P2")
-	assert_eq(_table.net_seconds_left, 30)
-	_run(15.0)
+	assert_eq(_table.net_seconds_left, 20)
+	_run(10.0)
 	assert_eq(_table.phase(), RouletteTable.PHASE_BETTING, "joining does not restart the clock")
 	_sit(3)
 	assert_eq(_table.seat_of(3), 1)
-	assert_eq(_table.net_seconds_left, 15)
+	assert_eq(_table.net_seconds_left, 10)
 
 
 func test_only_three_players_fit_and_nobody_sits_twice() -> void:

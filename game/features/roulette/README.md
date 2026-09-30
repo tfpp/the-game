@@ -9,7 +9,7 @@ mobile **USE**. Menus and chat suppress interaction.
 
 - Up to three players sit at fixed seats along the south side (`RouletteTable.SEATS`).
   Sitting teleports you there facing the layout; the first player to sit at an idle
-  table opens a **30-second** betting round (`betting_seconds`). Others may join
+  table opens a **20-second** betting round (`betting_seconds`). Others may join
   while seats and betting remain.
 - Seated players spectate from their seat (`roulette_seat_view.gd`): they keep their
   own first-person view and can look around, but cannot walk. A panel shows the clock

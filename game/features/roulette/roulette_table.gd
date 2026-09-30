@@ -1,7 +1,7 @@
 class_name RouletteTable
 extends StaticBody3D
 ## Server-authoritative multiplayer roulette. Up to three players take fixed seats;
-## the first one to sit opens a 30-second betting round. Seated players place chips
+## the first one to sit opens a 20-second betting round. Seated players place chips
 ## on the layout (any mix, up to their balance), then the wheel spins and every bet
 ## settles in one atomic wallet operation per player. Clients only send requests
 ## through the NetworkedInteraction component; the replicated `state` is the truth.
@@ -9,7 +9,7 @@ extends StaticBody3D
 const USE_RANGE := 3.5
 const SEAT_COUNT := 3
 ## Default betting window: the first player to sit starts this clock.
-const BETTING_S := 30.0
+const BETTING_S := 20.0
 const SPIN_DURATION_S := 3.0
 ## How long the result stays up before seated players are released.
 const RESULT_S := 5.0
