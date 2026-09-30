@@ -7,6 +7,12 @@ const COIN_CREDIT_CENTS := 1000
 const DEFAULT_INCOME_CENTS := 500
 const GIRL_INCOME_CENTS := 425
 const INCOME_REASON := "Income for time connected"
+## Temporary (offline / dev-auth) wallets start with this: $20.
+const STARTING_CENTS := 2000
+## Local development only: $100,000 when running the project from the Godot editor
+## binary with a window (see `local_dev()`). Exported builds and headless checks
+## keep STARTING_CENTS; real accounts are never affected.
+const DEV_STARTING_CENTS := 100_000_00
 
 @export var balances: Dictionary = {}
 var _busy: Dictionary = {}
@@ -15,6 +21,7 @@ var _poll_elapsed := 5.0
 var _unresolved: Dictionary = {}
 var _temporary_seconds: Dictionary = {}
 var _temporary_income_units: Dictionary = {}
+var _starting_cents := DEV_STARTING_CENTS if local_dev() else STARTING_CENTS
 
 
 func _ready() -> void:
@@ -41,7 +48,7 @@ func _process(delta: float) -> void:
 			var seconds := float(_temporary_seconds.get(peer, 0.0)) + delta
 			var units := float(_temporary_income_units.get(peer, 0.0)) + delta * _income_cents(peer)
 			if seconds >= 60.0:
-				_set_balance(peer, int(balances.get(peer, 2000)) + int(units / 60.0))
+				_set_balance(peer, int(balances.get(peer, _starting_cents)) + int(units / 60.0))
 				announce_gain(peer, int(units / 60.0), INCOME_REASON)
 				seconds = fmod(seconds, 60.0)
 				units = fmod(units, 60.0)
@@ -107,8 +114,15 @@ static func gain_text(cents: int, reason: String) -> String:
 	return "+%s: %s" % [format_money(cents), reason]
 
 
+## "$1,234,567.89", "-$5.00". Integer maths, so large balances never round.
 static func format_money(cents: int) -> String:
-	return "$%.2f" % (float(cents) / 100.0)
+	var whole := str(absi(cents) / 100)
+	var grouped := ""
+	while whole.length() > 3:
+		grouped = "," + whole.right(3) + grouped
+		whole = whole.left(whole.length() - 3)
+	var sign := "-" if cents < 0 else ""
+	return "%s$%s%s.%02d" % [sign, whole, grouped, absi(cents) % 100]
 
 
 ## Peers in the poorest 80% by wallet balance (rounded down), poorest first. A lone
@@ -128,6 +142,17 @@ static func poorest_peers(all_balances: Dictionary) -> Dictionary:
 	for i in (peers.size() * 4) / 5:
 		result[peers[i]] = true
 	return result
+
+
+## Server-only: the accounts API ID behind `peer`, or 0 for temporary wallets.
+func account_for(peer: int) -> int:
+	return _account(peer)
+
+
+## True when running the project locally from the editor binary with a window. Exported
+## web/server builds lack the "editor" feature; GUT and the smoke tests run headless.
+static func local_dev() -> bool:
+	return OS.has_feature("editor") and DisplayServer.get_name() != "headless"
 
 
 func _account(peer: int) -> int:
@@ -154,7 +179,7 @@ func _refresh(peer: int) -> void:
 	var account := _account(peer)
 	if _temporary() and account <= 0:
 		if not balances.has(peer):
-			_set_balance(peer, 2000)
+			_set_balance(peer, _starting_cents)
 	else:
 		var result: Dictionary = await _request(
 			account, "balance", "", {"income_cents": _income_cents(peer)}
@@ -184,7 +209,7 @@ func spin(
 	var account := _account(peer)
 	var result: Dictionary
 	if _temporary() and account <= 0:
-		var balance := int(balances.get(peer, 2000))
+		var balance := int(balances.get(peer, _starting_cents))
 		if balance < wager_cents:
 			result = {"error": "You need %s to spin" % format_money(wager_cents)}
 		else:
@@ -226,7 +251,7 @@ func credit_coin(peer: int, id: String, reason: String) -> Dictionary:
 	var account := _account(peer)
 	var result: Dictionary
 	if _temporary() and account <= 0:
-		var balance := int(balances.get(peer, 2000)) + COIN_CREDIT_CENTS
+		var balance := int(balances.get(peer, _starting_cents)) + COIN_CREDIT_CENTS
 		result = {"balance": balance}
 	else:
 		if not _unresolved.has(account):
@@ -254,7 +279,7 @@ func sell_loot(peer: int, id: String, amount_cents: int, reason: String) -> Dict
 	var account := _account(peer)
 	var result: Dictionary
 	if _temporary() and account <= 0:
-		result = {"balance": int(balances.get(peer, 2000)) + amount_cents}
+		result = {"balance": int(balances.get(peer, _starting_cents)) + amount_cents}
 	else:
 		result = await _request(account, "sell", id, {"amount_cents": amount_cents})
 	if generation != _generation:
@@ -278,7 +303,7 @@ func charge(peer: int, id: String, amount_cents: int) -> Dictionary:
 	var account := _account(peer)
 	var result: Dictionary
 	if _temporary() and account <= 0:
-		var balance := int(balances.get(peer, 2000))
+		var balance := int(balances.get(peer, _starting_cents))
 		if balance < amount_cents:
 			result = {"error": "You can't afford that"}
 		else:
@@ -293,6 +318,39 @@ func charge(peer: int, id: String, amount_cents: int) -> Dictionary:
 			_unresolved.erase(account)
 	if generation != _generation:
 		return {"error": "Session changed"}
+	if _account(peer) == account and result.has("balance"):
+		_set_balance(peer, int(result["balance"]))
+	_busy.erase(peer)
+	return result
+
+
+## Server-only: settles one player's whole roulette round in a single atomic,
+## idempotent operation: deducts `wager_cents` and pays `payout_cents` (winnings plus
+## returned stakes). `account` is the account captured when the bets locked, so a
+## disconnect mid-spin still settles the bet. Rejects everything, including a win,
+## if the wallet can't cover the wager. Retry with the same `id` after an error.
+func settle_roulette(
+	peer: int, account: int, id: String, wager_cents: int, payout_cents: int
+) -> Dictionary:
+	if not multiplayer.is_server() or _busy.has(peer) or wager_cents <= 0 or payout_cents < 0:
+		return {"error": "Wallet loading — try again"}
+	_busy[peer] = true
+	var generation := _generation
+	var result: Dictionary
+	if account <= 0:
+		var balance := int(balances.get(peer, -1))
+		if not _temporary() or balance < 0:
+			result = {"error": "Wallet unavailable", "rejected": true}
+		elif balance < wager_cents:
+			result = {"error": "You can't cover that bet", "rejected": true}
+		else:
+			result = {"balance": balance - wager_cents + payout_cents}
+	else:
+		result = await _request(
+			account, "roulette", id, {"wager_cents": wager_cents, "payout_cents": payout_cents}
+		)
+	if generation != _generation:
+		return {"error": "Session changed", "rejected": true}
 	if _account(peer) == account and result.has("balance"):
 		_set_balance(peer, int(result["balance"]))
 	_busy.erase(peer)

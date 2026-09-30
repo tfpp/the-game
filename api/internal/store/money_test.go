@@ -321,3 +321,37 @@ func TestIncomeUsesRateAcrossModelChanges(t *testing.T) {
 		}
 	}
 }
+
+func TestSettleRouletteIsAtomicAndIdempotent(t *testing.T) {
+	s, err := Open(":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	ctx := context.Background()
+	a, _ := s.CreateEmailAccount(ctx, "roulette@example.com", "hash", "Alice", time.Now())
+	balance, err := s.SettleRoulette(ctx, a.ID, "one", 2000, 0)
+	if err != nil || balance != 0 {
+		t.Fatalf("losing bet: %d %v", balance, err)
+	}
+	if replay, err := s.SettleRoulette(ctx, a.ID, "one", 2000, 0); err != nil || replay != 0 {
+		t.Fatalf("retry settled again: %d %v", replay, err)
+	}
+	if _, err = s.SettleRoulette(ctx, a.ID, "one", 2000, 4000); !errors.Is(err, ErrRouletteConflict) {
+		t.Fatalf("altered retry: %v", err)
+	}
+	// A would-be win cannot cover a wager the balance lacks.
+	if _, err = s.SettleRoulette(ctx, a.ID, "two", 100, 3600); !errors.Is(err, ErrInsufficientMoney) {
+		t.Fatal(err)
+	}
+	if balance, _ = s.Money(ctx, a.ID); balance != 0 {
+		t.Fatalf("rejected bet touched balance: %d", balance)
+	}
+	b, _ := s.CreateEmailAccount(ctx, "roulette-b@example.com", "hash", "Bob", time.Now())
+	if _, err = s.SettleRoulette(ctx, b.ID, "one", 2000, 0); !errors.Is(err, ErrRouletteConflict) {
+		t.Fatal(err)
+	}
+	if balance, err = s.SettleRoulette(ctx, b.ID, "three", 500, 1000); err != nil || balance != 2500 {
+		t.Fatalf("winning bet: %d %v", balance, err)
+	}
+}

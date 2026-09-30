@@ -1,0 +1,8 @@
+{
+  "title": "Food heals",
+  "summary": "Eating food now restores health; kebabs and poke bowls heal you to full.",
+  "notes": [
+    "Restore full health when eating a kebab or poke bowl.",
+    "Restore 25 health when eating a banana."
+  ]
+}

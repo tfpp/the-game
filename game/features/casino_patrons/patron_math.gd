@@ -41,6 +41,16 @@ const ROUTES: Array[Array] = [
 	[Vector3(8.5, FLOOR_Y, -11), Vector3(8.5, FLOOR_Y, 2)],
 ]
 
+## Mitch McConnell's loop (PatronModel.MITCH_LOOK): up the east aisle, across
+## and back down the slot aisle, where he meets Trump following the mayor.
+## Kept out of ROUTES because spawn indices past it are special looks.
+const MITCH_ROUTE: Array[Vector3] = [
+	Vector3(12, FLOOR_Y, -10.5),
+	Vector3(12, FLOOR_Y, 2),
+	Vector3(8.5, FLOOR_Y, 2),
+	Vector3(8.5, FLOOR_Y, -10.5),
+]
+
 
 static func route(index: int) -> Array[Vector3]:
 	var points: Array[Vector3] = []

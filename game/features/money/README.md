@@ -28,11 +28,23 @@ set balances or submit payouts. Your own balance shows in the bottom-right corne
 interaction prompt. Offline and dev-auth play use temporary $20 wallets and the same income
 and payout rules; these never transfer to a real account.
 
+**Local dev:** running the project from the Godot editor binary with a window (the
+editor's Play button, or `godot --path game`) starts temporary wallets at **$100,000**
+instead of $20 (`PlayerMoney.local_dev()`), so gambling can be tested without grinding.
+Exported web/server builds and the headless GUT/smoke checks keep $20, and accounts
+API balances are never touched.
+
 `PlayerMoney.charge(peer, id, amount_cents)` deducts a flat, feature-chosen price the
 same idempotent way `credit_coin()` pays one out, rejecting (without spending anything)
 if the wallet can't cover it. It's the `charge` action on `POST /api/game/money`
 (`amount_cents`, capped server-side well above any planned price) — added for
 `features/gun_machine`'s machine; see that feature's README for how it's spent.
+
+`PlayerMoney.settle_roulette(peer, account, id, wager_cents, payout_cents)` settles a
+whole roulette round in one idempotent operation: it deducts the wager and pays the
+payout together, rejecting both if the wallet can't cover the wager. It's the `roulette`
+action (`wager_cents` up to the slot cap, `payout_cents` at most 36 times the wager); see
+`features/roulette/README.md`.
 
 ## Server connection
 

@@ -39,3 +39,5 @@ enum Category {
 @export var pellet_count := 1
 ## WEAPON only: random aim jitter applied to each pellet, in degrees.
 @export var spread_degrees := 0.0
+## FOOD only: health restored when eaten, capped at features/combat's maximum.
+@export var heal_amount := 0.0

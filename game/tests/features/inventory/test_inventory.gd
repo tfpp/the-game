@@ -279,7 +279,9 @@ func test_narrow_inventory_keeps_wallet_and_close_button_inside_viewport() -> vo
 		assert_gte(rect.position.x, 0.0)
 		assert_lte(rect.end.x, window.get_visible_rect().size.x)
 	assert_eq(screen._wallet.text, "$1.23M", "Compact balances must keep a magnitude suffix")
-	assert_eq(screen._wallet.tooltip_text, "Wallet: $1234567.89", "The full amount stays available")
+	assert_eq(
+		screen._wallet.tooltip_text, "Wallet: $1,234,567.89", "The full amount stays available"
+	)
 	screen._close(false)
 
 

@@ -89,3 +89,18 @@ charge. Its synchronous callback launches `PlayerMoney.charge` asynchronously;
 wallet idempotency and balance replication remain owned by PlayerMoney. Delayed
 replies are discarded if the requester disconnects. Session changes rebuild all
 patrons through the existing spawner. NPC state is not persisted.
+
+## Mitch McConnell
+
+Mitch (`PatronModel.MITCH_LOOK`, `mitch.tscn` / `mitch.gd`) sits in a wheelchair
+pushed by a blond intern, looping `PatronMath.MITCH_ROUTE`: up the east aisle
+(x 12), across at z 2 and back down the mayor's slot aisle (x 8.5). The intern and
+wheelchair are part of `MitchModel` (`mitch_model.gd`), so the group is one
+networked patron with the usual punches, gibbing and six-second respawn.
+
+Every 7–14 s the server sends a cosmetic `_throw_peace_sign` RPC and every peer
+raises his right hand in a peace sign for 2.5 s. When Trump comes within 0.9 m
+(`Trump.can_pat()`), the server stops both for 2 s and sends `_pat_head`: Trump
+reaches out and pats him, a "Good boy." bubble floats over Trump for everyone,
+and players within 10 m also get it as a subtitle. Pats have a 15 s cooldown.
+Gestures are transient, so late joiners just see the next one.

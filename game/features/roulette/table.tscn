@@ -1,27 +1,36 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://features/roulette/roulette_table.gd" id="1"]
 [ext_resource type="Script" path="res://features/roulette/roulette_table_view.gd" id="2"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="3"]
+[ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_dealer.tscn" id="4"]
 
-[sub_resource type="CylinderShape3D" id="Hull"]
-radius = 1.15
-height = 0.95
+[sub_resource type="BoxShape3D" id="Body"]
+size = Vector3(3.05, 0.96, 1.24)
 
-[sub_resource type="SceneReplicationConfig" id="Replication"]
-properties/0/path = NodePath(".:state")
-properties/0/spawn = true
-properties/0/replication_mode = 2
+[sub_resource type="BoxShape3D" id="Head"]
+size = Vector3(1.5, 0.96, 0.38)
 
 [node name="RouletteTable" type="StaticBody3D"]
 script = ExtResource("1")
 
 [node name="Collider" type="CollisionShape3D" parent="."]
-position = Vector3(0, 0.475, 0)
-shape = SubResource("Hull")
+position = Vector3(-0.025, 0.48, 0)
+shape = SubResource("Body")
+
+[node name="HeadCollider" type="CollisionShape3D" parent="."]
+position = Vector3(-0.8, 0.48, 0.81)
+shape = SubResource("Head")
 
 [node name="View" type="Node3D" parent="."]
 script = ExtResource("2")
 
-[node name="Sync" type="MultiplayerSynchronizer" parent="."]
-root_path = NodePath("..")
-replication_config = SubResource("Replication")
+[node name="Dealer" parent="." instance=ExtResource("4")]
+position = Vector3(-0.45, 0, 1.3)
+rotation = Vector3(0, 3.14159, 0)
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("3")
+interaction_range = 4.5
+interaction_offset = Vector3(0, 0.9, 0)
+replicated_properties = Array[NodePath]([NodePath(".:state"), NodePath(".:net_seconds_left")])

@@ -31,6 +31,7 @@ const SECTIONS: Array[Dictionary] = [
 			[&"use", "Interact"],
 			[&"drop_item", "Drop item"],
 			[&"inventory", "Inventory"],
+			[&"roulette_bets", "Roulette: bet view (while seated)"],
 		],
 	},
 	{

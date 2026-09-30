@@ -212,6 +212,9 @@ func _play_inventory(cue: StringName) -> void:
 
 func _eat(def: ItemDefinition) -> void:
 	net_item_id = ""
+	var combat := get_tree().get_first_node_in_group(&"combat")
+	if combat != null and def.heal_amount > 0.0:
+		combat.call("heal", peer_id, def.heal_amount)
 	_play_eaten.rpc(def.id)
 
 

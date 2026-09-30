@@ -138,6 +138,13 @@ var migrations = []string{
 		amount INTEGER NOT NULL,
 		balance INTEGER NOT NULL
 	);`,
+	`CREATE TABLE roulette_bets (
+		id TEXT PRIMARY KEY,
+		account_id INTEGER NOT NULL REFERENCES accounts(id),
+		wager INTEGER NOT NULL,
+		payout INTEGER NOT NULL,
+		balance INTEGER NOT NULL
+	);`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {

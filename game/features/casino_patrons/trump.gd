@@ -10,8 +10,19 @@ const MAX_BRIBES := 5
 const FAVOR_PER_BRIBE := 0.2
 const FOLLOW_DISTANCE := 1.5
 const FOLLOW_SPEED := 1.8
+## Trump pats Mitch McConnell on the head when they come this close.
+const PAT_RANGE := 0.9
+const PAT_COOLDOWN_S := 15.0
+const PAT_HOLD_S := 2.0
+const PAT_LINE := "Good boy."
+## Players within this distance also get the line as a subtitle.
+const PAT_HEARING_M := 10.0
 
 var _leader: CasinoPatron
+var _mitch: CasinoPatron
+var _pat_cooldown := 0.0
+var _patting := 0.0
+var _bubble: Label3D
 var _charging: Dictionary[int, bool] = {}
 ## Server: peer id -> accepted bribes. Session-only, forgotten on disconnect.
 var _bribes: Dictionary[int, int] = {}
@@ -27,6 +38,17 @@ func _ready() -> void:
 	_talk.event_received.connect(_on_bribe_event)
 	multiplayer.peer_disconnected.connect(func(peer: int) -> void: _bribes.erase(peer))
 	_talk.session_reset.connect(func(_mode: Network.Mode) -> void: _bribes.clear())
+	_bubble = Label3D.new()
+	_bubble.name = "SpeechBubble"
+	_bubble.text = PAT_LINE
+	_bubble.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_bubble.font_size = 48
+	_bubble.outline_size = 12
+	_bubble.pixel_size = 0.004
+	_bubble.modulate = Color(1, 0.85, 0.4)
+	_bubble.position = Vector3(0, 2.35, 0)
+	_bubble.visible = false
+	add_child(_bubble)
 
 
 ## Cost of a peer's next bribe: $100, $200, $400, $800, $1,600.
@@ -46,6 +68,61 @@ func bribes_for(peer: int) -> int:
 ## Server-only: extra slot rerolls (0 or 1) granted by this peer's bribes.
 func favor_rerolls(peer: int) -> int:
 	return 1 if _rng.randf() < favor_chance(bribes_for(peer)) else 0
+
+
+## True when Trump at `from` is close enough to pat a head at `to`.
+static func can_pat(from: Vector3, to: Vector3) -> bool:
+	return Vector2(to.x - from.x, to.z - from.z).length() <= PAT_RANGE
+
+
+func _physics_process(delta: float) -> void:
+	super._physics_process(delta)
+	if multiplayer.is_server():
+		_pat_cooldown = maxf(_pat_cooldown - delta, 0.0)
+		_try_pat()
+
+
+## Server-only: pats Mitch McConnell when both are up and close together.
+func _try_pat() -> void:
+	if _pat_cooldown > 0.0 or not net_alive or net_ragdoll:
+		return
+	if not is_instance_valid(_mitch):
+		for node: Node in get_parent().get_children():
+			if node is Mitch:
+				_mitch = node as Mitch
+				break
+	if not is_instance_valid(_mitch) or not _mitch.net_alive or _mitch.net_ragdoll:
+		return
+	if not can_pat(global_position, _mitch.global_position):
+		return
+	_pat_cooldown = PAT_COOLDOWN_S
+	_stagger = PAT_HOLD_S
+	(_mitch as Mitch).hold(PAT_HOLD_S)
+	net_yaw = PatronMath.facing_yaw(_mitch.global_position - global_position)
+	_pat_head.rpc()
+
+
+func _process(delta: float) -> void:
+	super._process(delta)
+	_patting = maxf(_patting - delta, 0.0)
+	_bubble.visible = _patting > 0.0 and net_alive
+	_body.reach(clampf(_patting * 2.0, 0.0, 1.0) * (0.8 + 0.2 * sin(_patting * 18.0)))
+
+
+func is_patting() -> bool:
+	return _patting > 0.0
+
+
+@rpc("authority", "call_local", "reliable")
+func _pat_head() -> void:
+	_patting = PAT_HOLD_S
+	for node: Node in get_tree().get_nodes_in_group(&"players"):
+		var player := node as Node3D
+		if player == null or player.get_multiplayer_authority() != multiplayer.get_unique_id():
+			continue
+		if player.global_position.distance_to(global_position) <= PAT_HEARING_M:
+			Subtitles.say(get_tree(), speaker_name(), PAT_LINE)
+		return
 
 
 func _walk_on(delta: float) -> void:

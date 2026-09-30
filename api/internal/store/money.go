@@ -12,6 +12,7 @@ var ErrSpinConflict = errors.New("spin belongs to another account")
 var ErrCreditConflict = errors.New("credit belongs to another account")
 var ErrChargeConflict = errors.New("charge belongs to another account")
 var ErrLootSaleConflict = errors.New("loot sale does not match its original account and amount")
+var ErrRouletteConflict = errors.New("roulette bet does not match its original account and amounts")
 
 // CoinCreditCents is the flat reward for collecting a map coin pickup.
 const CoinCreditCents = 1000
@@ -165,6 +166,40 @@ func (s *Store) ChargeAccount(ctx context.Context, accountID int64, id string, a
 		return 0, err
 	}
 	if _, err = tx.ExecContext(ctx, "INSERT INTO charges VALUES (?, ?, ?, ?)", id, accountID, amountCents, balance); err != nil {
+		return 0, err
+	}
+	return balance, tx.Commit()
+}
+
+// SettleRoulette atomically deducts a player's total roulette wager and pays
+// their winnings (stake included) for one spin, rejecting the whole bet if the
+// balance cannot cover the wager. The game server resolves the wheel; a retry
+// must repeat the same account and amounts so an operation ID cannot be reused.
+func (s *Store) SettleRoulette(ctx context.Context, accountID int64, id string, wagerCents, payoutCents int64) (int64, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
+	var owner, wager, payout, balance int64
+	err = tx.QueryRowContext(ctx, "SELECT account_id, wager, payout, balance FROM roulette_bets WHERE id = ?", id).Scan(&owner, &wager, &payout, &balance)
+	if err == nil {
+		if owner != accountID || wager != wagerCents || payout != payoutCents {
+			return 0, ErrRouletteConflict
+		}
+		return balance, nil
+	}
+	if !errors.Is(err, sql.ErrNoRows) {
+		return 0, err
+	}
+	err = tx.QueryRowContext(ctx, "UPDATE accounts SET money = money - ? + ? WHERE id = ? AND money >= ? RETURNING money", wagerCents, payoutCents, accountID, wagerCents).Scan(&balance)
+	if errors.Is(err, sql.ErrNoRows) {
+		return 0, ErrInsufficientMoney
+	}
+	if err != nil {
+		return 0, err
+	}
+	if _, err = tx.ExecContext(ctx, "INSERT INTO roulette_bets VALUES (?, ?, ?, ?, ?)", id, accountID, wagerCents, payoutCents, balance); err != nil {
 		return 0, err
 	}
 	return balance, tx.Commit()
