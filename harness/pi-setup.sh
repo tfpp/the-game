@@ -9,6 +9,8 @@
 #                            the extension's backend reads when its own store is empty
 #   CODEX_AUTH_JSON          Codex ChatGPT auth.json; enables openai-codex (the default
 #                            model, imagegen and web search)
+#   OPENROUTER_API_KEY       enables the openrouter provider; pi reads it from the env, so
+#                            it is only checked here, never written
 #   PI_WEB_ACCESS            npm spec of the web-access package (pinned default below)
 #
 # Installs harness/pi/extensions (anthropic-omp, image-generation) and pi-web-access into
@@ -63,7 +65,11 @@ if [[ -n "${CODEX_AUTH_JSON:-}" ]]; then
     '.["openai-codex"] = {type: "oauth", access: $codex.tokens.access_token,
       refresh: $codex.tokens.refresh_token, expires: $expires, accountId: $account}' <<<"$auth")"
 fi
-[[ "$auth" != '{}' ]] || die 'Pi needs CLAUDE_CODE_OAUTH_TOKEN or CODEX_AUTH_JSON; see harness/README.md.'
+if [[ -n "${OPENROUTER_API_KEY:-}" && "$OPENROUTER_API_KEY" =~ [[:space:]] ]]; then
+  die 'OPENROUTER_API_KEY must be a single-line API key.'
+fi
+[[ "$auth" != '{}' || -n "${OPENROUTER_API_KEY:-}" ]] ||
+  die 'Pi needs CODEX_AUTH_JSON, CLAUDE_CODE_OAUTH_TOKEN or OPENROUTER_API_KEY; see harness/README.md.'
 printf '%s\n' "$auth" >"$dir/auth.json"
 chmod 600 "$dir/auth.json"
 

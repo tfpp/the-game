@@ -10,7 +10,7 @@ for cli in pi bun; do
   chmod +x "$work/bin/$cli"
 done
 export PATH="$work/bin:$PATH"
-unset CLAUDE_CODE_OAUTH_TOKEN CODEX_AUTH_JSON PI_WEB_ACCESS
+unset CLAUDE_CODE_OAUTH_TOKEN CODEX_AUTH_JSON OPENROUTER_API_KEY PI_WEB_ACCESS
 export PI_CODING_AGENT_DIR="$work/agent"
 auth="$PI_CODING_AGENT_DIR/auth.json"
 
@@ -35,6 +35,7 @@ reject() { # reject NAME: pi-setup.sh must fail without writing or printing a se
 reject 'no credentials'
 CLAUDE_CODE_OAUTH_TOKEN='secret-marker' reject 'API key instead of an OAuth token'
 CODEX_AUTH_JSON='secret-marker invalid json' reject 'invalid Codex JSON'
+OPENROUTER_API_KEY=$'sk-or-secret-marker\n' reject 'OpenRouter key with a newline'
 CODEX_AUTH_JSON='{"tokens":{"access_token":"secret-marker"}}' reject 'Codex login without refresh token'
 CODEX_AUTH_JSON='{"tokens":{"access_token":"secret-marker","refresh_token":"r"}}' \
   reject 'Codex login without an account id'
@@ -70,4 +71,10 @@ rm -rf "$PI_CODING_AGENT_DIR"
 "$root/harness/pi-setup.sh" >/dev/null 2>&1 || fail 'Codex-only setup failed'
 expect_eq "$(jq -r '.["openai-codex"].accountId' "$auth")" acct-file 'account id from auth.json'
 expect_eq "$(jq -r 'has("anthropic-omp")' "$auth")" false 'no Anthropic marker without a token'
+echo "- OpenRouter alone: the key stays in the environment"
+unset CODEX_AUTH_JSON
+rm -rf "$PI_CODING_AGENT_DIR"
+OPENROUTER_API_KEY='sk-or-secret-marker' "$root/harness/pi-setup.sh" >"$work/log" 2>&1 || fail 'OpenRouter-only setup failed'
+no_secret "$work/log" "$auth"
+expect_eq "$(jq -c . "$auth")" '{}' 'no stored credentials'
 echo 'pi setup tests passed'

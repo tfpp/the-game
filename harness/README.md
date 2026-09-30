@@ -155,11 +155,17 @@ bounds numeric values and validates model IDs before rendering them. The human P
      sharing one login may also require reauthentication. Discord `/usage` needs a
      separate mount of that account's `auth.json` on the bot via `BOT_CODEX_AUTH_FILE`;
      GitHub Secrets are not available to the bot. See [bot setup](../bot/README.md).
-   - **pi:** no new secrets. It reuses both logins above: `CODEX_AUTH_JSON` becomes
+   - **pi:** reuses both logins above and adds OpenRouter. `CODEX_AUTH_JSON` becomes
      pi's `openai-codex` login for the default model, `imagegen` and Codex-backed web
-     search, and `CLAUDE_CODE_OAUTH_TOKEN` enables the vendored `anthropic-omp` provider
-     (for example `PI_MODEL=anthropic-omp/claude-opus-5-5`). Either secret alone is
-     enough to start; the default model needs the Codex login.
+     search; `CLAUDE_CODE_OAUTH_TOKEN` enables the vendored `anthropic-omp` provider; and
+     `OPENROUTER_API_KEY` (`gh secret set OPENROUTER_API_KEY`) enables the `openrouter/*`
+     models. Any one credential is enough to start, but the selected model needs its own:
+     the default needs the Codex login. Pick a model with the dispatch's `pi_model` input
+     (`-f pi_model=openrouter/z-ai/glm-5.3`) or the `PI_MODEL` variable. The input offers
+     `openai-codex/gpt-6.1-sol`, `anthropic-omp/claude-opus-5-5`, and on OpenRouter
+     `deepseek/deepseek-v4.1-flash`, `z-ai/glm-5.3`, `z-ai/glm-5.3-flash`,
+     `qwen/qwen3.8-max-0902`, `qwen/qwen3.8-flash` and `moonshotai/kimi-k3`. pi reads the
+     OpenRouter key from the job environment; it is never written to disk.
      `harness/pi-setup.sh` builds a private `PI_CODING_AGENT_DIR` in `$RUNNER_TEMP`,
      copies `pi/extensions/` there, installs the extension's Bun runtime (and its Linux
      native addon) plus `pi-web-access`, and writes `auth.json`. The Claude token is
@@ -187,7 +193,7 @@ bounds numeric values and validates model IDs before rendering them. The human P
      could change. Commits and PRs appear as `claude[bot]`.
 4. **Optional variables:** `AGENT_MODEL` (Claude; defaults to `claude-opus-5-5`, Opus
    5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6.1-sol`, GPT-6.1 Sol), `PI_MODEL`
-   (pi, as `provider/id`; defaults to `openai-codex/gpt-6.1-sol`), `PI_VERSION`
+   (pi, as `provider/id`; defaults to `openai-codex/gpt-6.1-sol`; the `pi_model` input wins), `PI_VERSION`
    (defaults to `0.99.1`), `AGENT_REASONING_EFFORT` (overrides every agent; unset, Claude
    uses `low` and Codex and pi use `medium`), `AGENT_MAX_TURNS`,
    `AGENT_ATTEMPTS` (default 3), `AGENT_TRUSTED_BOTS` (comma-separated logins, such as
@@ -199,6 +205,7 @@ For example, after the workflow change is merged:
 ```bash
 gh workflow run agent.yml -f number=123 -f mode=implement -f agent=codex
 gh workflow run agent.yml -f number=123 -f mode=implement -f agent=pi
+gh workflow run agent.yml -f number=123 -f mode=implement -f agent=pi -f pi_model=openrouter/moonshotai/kimi-k3
 ```
 
 The same gate, verification/retry loop, and isolated App-token publisher apply to every

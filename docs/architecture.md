@@ -233,7 +233,8 @@ login from `CODEX_AUTH_JSON` into a temporary `CODEX_HOME`, removed after the ru
 Codex tokens are not persisted back to the secret; operators must replace it when login
 expires. Select Codex through Discord's required `harness` option or the workflow
 dispatch's `agent` input. Claude defaults to Opus 5.5 (`claude-opus-5-5`) with low effort;
-Codex defaults to GPT-6.1 Sol (`gpt-6.1-sol`) with medium reasoning. Pi reuses both secrets in
+Codex defaults to GPT-6.1 Sol (`gpt-6.1-sol`) with medium reasoning. Pi reuses both secrets, plus
+`OPENROUTER_API_KEY` for OpenRouter models (chosen with the dispatch's `pi_model` input), in
 a temporary agent directory (`harness/pi-setup.sh`), with the vendored `anthropic-omp` and
 `image-generation` extensions plus `pi-web-access`; it defaults to
 `openai-codex/gpt-6.1-sol` with medium thinking and is selectable only through the
