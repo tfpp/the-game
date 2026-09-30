@@ -1,0 +1,6 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="ArrayMesh" path="res://assets/procedural_rooms/models/elevator/button.tres" id="1"]
+[ext_resource type="Material" path="res://features/procedural_rooms/materials/elevator_model.tres" id="2"]
+[node name="ElevatorButtonModel" type="MeshInstance3D"]
+mesh = ExtResource("1")
+material_override = ExtResource("2")

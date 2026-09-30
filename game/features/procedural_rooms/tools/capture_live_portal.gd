@@ -41,7 +41,24 @@ func _ready() -> void:
 	assert(player.net_position == (kit.get_node("Garage/Arrival") as Marker3D).global_position)
 	await _save("portal-garage-arrival.png")
 	var lift := kit.get_node("Garage/CrownGarage/Lift") as ProceduralMovingLift
-	player.server_teleport.rpc_id(1, lift.cab.global_position + Vector3.UP * .95, PI)
+	player.server_teleport.rpc_id(1, lift.global_position + Vector3(1.8, 16.95, -4.2), .327)
+	await get_tree().create_timer(.3).timeout
+	await _save("elevator-model-entrance.png")
+	player.server_teleport.rpc_id(1, lift.cab.global_position + Vector3.UP * .95, 0)
+	player.pitch = -.12
+	await get_tree().create_timer(.3).timeout
+	await _save("elevator-model-interior.png")
+	var visual := lift.cab.get_node("ElevatorCabModel/Visual") as MeshInstance3D
+	var painting := visual.material_override
+	var checker := painting.duplicate() as StandardMaterial3D
+	checker.albedo_texture = load("res://assets/procedural_rooms/models/elevator/uv_checker.png")
+	visual.material_override = checker
+	await get_tree().create_timer(.2).timeout
+	await _save("elevator-model-checker.png")
+	visual.material_override = painting
+	player.pitch = 0
+	player.yaw = PI
+	player.net_yaw = PI
 	player.set_physics_process(true)
 	await get_tree().create_timer(.5).timeout
 	await _save("physical-lift-b1.png")

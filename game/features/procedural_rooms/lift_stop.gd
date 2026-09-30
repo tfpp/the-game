@@ -1,9 +1,8 @@
 extends Node3D
 ## Validated landing calls and in-cab floor buttons for one physical elevator.
 
-const Kit := preload("res://features/procedural_rooms/example_kit.gd")
 const Showcase := preload("res://features/procedural_rooms/showcase.gd")
-const MATERIAL := preload("res://features/procedural_rooms/materials/elevator.tres")
+const BUTTON_MODEL := preload("res://features/procedural_rooms/elevator_button_model.tscn")
 @export var floor_index := 4
 @export var ride_button := false
 @export var lift_path := NodePath("../../Lift")
@@ -15,8 +14,19 @@ func _ready() -> void:
 	if not ride_button:
 		add_to_group(&"world_lift_stops")
 	add_to_group(&"interactables")
-	Kit.box(self, "ControlPanel", Vector3(.16, .45, .35), Vector3(0, 1.4, 0), MATERIAL)
-	Showcase.placard(self, "B%d" % (5 - floor_index), Vector3(0, 1.85, 0))
+	var model := BUTTON_MODEL.instantiate() as MeshInstance3D
+	if not ride_button:
+		model.rotation.y = -PI / 2
+		model.position.z = -.27
+	add_child(model)
+	var label := Showcase.placard(
+		self,
+		"B%d" % (5 - floor_index),
+		Vector3(.18 if ride_button else 0, 1.6, 0 if ride_button else -.07)
+	)
+	label.font_size = 20
+	label.billboard = BaseMaterial3D.BILLBOARD_DISABLED
+	label.rotation.y = -PI / 2 if ride_button else PI
 	entity.interaction_range = 1.6 if ride_button else 2.5
 	entity.register_use(_can_use, _travel, .4)
 

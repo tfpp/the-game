@@ -102,3 +102,10 @@ builds preserve current paint. Templates and manifests record the shared layout.
 The [loot model kit](loot-models.md) applies the same packer to dumpster, scrap
 and wallet meshes. Inventory and stash thumbnails render directly from these
 models, with automatic camera framing and a shared 128×128 texture cache.
+
+The [service elevator model](model-sources/elevator/README.md) shares eight islands
+across three walls, both door leaves, trim and floor controls in one 128×128 atlas.
+The moving platform and guarded landing behavior stay in their existing owners;
+visual prefabs reuse the original collision footprint. Moving surfaces use mesh
+UV1 or local triplanar projection, never world triplanar projection, so their
+textures move with them.

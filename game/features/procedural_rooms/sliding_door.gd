@@ -5,6 +5,7 @@ extends Node3D
 const Kit := preload("res://features/procedural_rooms/example_kit.gd")
 const STEEL := preload("res://features/procedural_rooms/materials/grey.tres")
 const HAZARD := preload("res://features/procedural_rooms/materials/hazard.tres")
+const ELEVATOR_MODEL := preload("res://features/procedural_rooms/elevator_door_model.tscn")
 const LIFT := preload("res://features/procedural_rooms/materials/elevator.tres")
 @export var net_open := false
 @export var managed_by_lift := false
@@ -16,25 +17,43 @@ var _leaves: Array[Node3D] = []
 func _ready() -> void:
 	add_to_group(&"prototype_doors")
 	add_to_group(&"interactables")
-	for side: float in [-1.0, 1.0]:
-		Kit.box(
-			self,
-			"Frame%s" % side,
-			Vector3(0.16, 3.15, 0.24),
-			Vector3(side * 1.58, 1.575, 0),
-			HAZARD
-		)
-		var leaf := Node3D.new()
-		leaf.name = "Leaf%s" % side
-		add_child(leaf)
-		Kit.box(leaf, "Panel", Vector3(1.49, 2.98, 0.14), Vector3(0, 1.49, 0), STEEL)
-		Kit.box(leaf, "Stripe", Vector3(1.49, 0.18, 0.015), Vector3(0, 0.75, -0.08), HAZARD, false)
-		Kit.box(leaf, "Window", Vector3(0.68, 0.5, 0.015), Vector3(0, 2.25, -0.08), LIFT, false)
-		_leaves.append(leaf)
-	Kit.box(self, "Track", Vector3(3.32, 0.16, 0.24), Vector3(0, 3.08, 0), HAZARD)
+	if managed_by_lift:
+		var model := ELEVATOR_MODEL.instantiate() as Node3D
+		add_child(model)
+		_leaves = [model.get_node("LeftLeaf"), model.get_node("RightLeaf")]
+	else:
+		var steel := _attached_material(STEEL)
+		var hazard := _attached_material(HAZARD)
+		var glass := _attached_material(LIFT)
+		for side: float in [-1.0, 1.0]:
+			Kit.box(
+				self,
+				"Frame%s" % side,
+				Vector3(0.16, 3.15, 0.24),
+				Vector3(side * 1.58, 1.575, 0),
+				HAZARD
+			)
+			var leaf := Node3D.new()
+			leaf.name = "Leaf%s" % side
+			add_child(leaf)
+			Kit.box(leaf, "Panel", Vector3(1.49, 2.98, 0.14), Vector3(0, 1.49, 0), steel)
+			Kit.box(
+				leaf, "Stripe", Vector3(1.49, 0.18, 0.015), Vector3(0, 0.75, -0.08), hazard, false
+			)
+			Kit.box(
+				leaf, "Window", Vector3(0.68, 0.5, 0.015), Vector3(0, 2.25, -0.08), glass, false
+			)
+			_leaves.append(leaf)
+		Kit.box(self, "Track", Vector3(3.32, 0.16, 0.24), Vector3(0, 3.08, 0), HAZARD)
 	entity.register_use(_can_use, _toggle, 0.45)
 	entity.session_reset.connect(_reset)
 	_update_leaves()
+
+
+static func _attached_material(source: StandardMaterial3D) -> StandardMaterial3D:
+	var local := source.duplicate() as StandardMaterial3D
+	local.uv1_world_triplanar = false
+	return local
 
 
 func drive(amount: float) -> void:

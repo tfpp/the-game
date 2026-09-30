@@ -184,3 +184,15 @@ The [reusable prop kit](props/README.md) adds barrel, crate and car prefabs, inc
 fitted collision, explicit polygon UVs and 128px generated albedos. Garage, storage
 and pump sets now instantiate these scenes. Open `model_tools/preview_props.tscn`
 for the actual model gallery and UV checker controls.
+
+## Painted service elevator
+
+The physical lift now uses reusable `elevator_cab_model.tscn`,
+`elevator_door_model.tscn` and `elevator_button_model.tscn` prefabs. Its wood/brass
+interior, carpet, rails, lamp and matching doors share one 128×128 atlas. The cab
+floor and doorway collision retain their original dimensions. Authored UV1 keeps
+the painting attached during travel; developer sliding-door leaves use local
+triplanar projection rather than sampling stationary world coordinates.
+
+See [the elevator authoring notes](../../../docs/design/model-sources/elevator/README.md)
+for the packed UV guide, generated source/prompt, native builder and exported GLB.

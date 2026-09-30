@@ -9,6 +9,7 @@ const SLIDE_SECONDS := .65
 const Kit := preload("res://features/procedural_rooms/example_kit.gd")
 const Shell := preload("res://features/procedural_rooms/shell_mesh.gd")
 const DOOR := preload("res://features/procedural_rooms/sliding_door.tscn")
+const CAB_MODEL := preload("res://features/procedural_rooms/elevator_cab_model.tscn")
 const BUTTON := preload("res://features/procedural_rooms/lift_stop.tscn")
 const Showcase := preload("res://features/procedural_rooms/showcase.gd")
 
@@ -52,10 +53,13 @@ func _build_cab() -> void:
 	var body := cab.get_node("Structure/ShellCollision") as StaticBody3D
 	body.get_child(0).reparent(cab)
 	body.free()
+	(cab.get_node("Structure") as Node3D).visible = false
+	var model := CAB_MODEL.instantiate() as Node3D
+	cab.add_child(model)
 	cab_door = DOOR.instantiate() as ProceduralSlidingDoor
 	cab_door.name = "CabDoor"
 	cab_door.managed_by_lift = true
-	cab_door.position.z = 1.5
+	cab_door.position = model.get_node("DoorSocket").position
 	cab.add_child(cab_door)
 	for floor_index: int in 5:
 		var button := BUTTON.instantiate() as Node3D
@@ -70,8 +74,11 @@ func _build_cab() -> void:
 	lamp.omni_range = 5
 	lamp.light_color = Color(1, .82, .58)
 	cab.add_child(lamp)
-	Showcase.placard(cab, "SERVICE LIFT\nSELECT B1–B5", Vector3(0, 2.5, -1.4))
-	indicator = Showcase.placard(cab, "B1", Vector3(0, 2.65, 1.25))
+	var instruction := Showcase.placard(cab, "SELECT FLOOR ON RIGHT", Vector3(0, 2.3, -1.38))
+	instruction.billboard = BaseMaterial3D.BILLBOARD_DISABLED
+	instruction.font_size = 20
+	indicator = Showcase.placard(cab, "B1", model.get_node("DisplaySocket").position)
+	indicator.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 	indicator.font_size = 40
 
 
