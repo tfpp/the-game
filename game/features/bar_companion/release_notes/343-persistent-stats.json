@@ -1,0 +1,5 @@
+{
+  "title": "Persistent bar stats and player stats menu",
+  "summary": "Keep charisma and intoxication across sign-ins and check your effects in Player stats.",
+  "notes": ["Save signed-in players’ charisma, intoxication and lucky-night timers across reconnects.", "Continue bar stat decay while signed out instead of resetting on refresh.", "Add a read-only Player stats pause-menu page showing bar effects and Kaaba blessings."]
+}

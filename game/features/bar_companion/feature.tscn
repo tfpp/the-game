@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" path="res://features/bar_companion/celeste.tscn" id="celeste"]
 
 [ext_resource type="Script" path="res://features/bar_companion/bar_shop_menu.gd" id="shop_menu"]
+[ext_resource type="Script" path="res://features/bar_companion/stats_menu.gd" id="stats_menu"]
 
 [sub_resource type="CylinderMesh" id="seat"]
 top_radius = 0.2
@@ -132,6 +133,9 @@ theme_override_constants/outline_size = 6
 theme_override_fonts/font = ExtResource("hud_font")
 theme_override_font_sizes/font_size = 16
 horizontal_alignment = 2
+
+[node name="StatsMenu" type="CanvasLayer" parent="."]
+script = ExtResource("stats_menu")
 
 [node name="ShopMenu" type="CanvasLayer" parent="Bartender"]
 script = ExtResource("shop_menu")
