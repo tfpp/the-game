@@ -8,7 +8,8 @@
 [node name="ProceduralRooms" type="Node3D"]
 
 [node name="Garage" type="Node3D" parent="."]
-position = Vector3(0, 0, 1800)
+position = Vector3(26, -22, -25)
+rotation = Vector3(0, -1.5707963, 0)
 script = ExtResource("1_world")
 
 [node name="Arrival" type="Marker3D" parent="Garage"]
@@ -68,8 +69,8 @@ label = "Garage Teleporter"
 hint = "Beside the Golden Crown sign on the north promenade. Use the cyan teleporter."
 
 [node name="Garage" type="Marker3D" parent="Destinations"]
-position = Vector3(0, 16, 1805)
+position = Vector3(32, 0, -25)
 script = ExtResource("4_gps")
 label = "Procedural Garage"
-hint = "Five floors, ramps, stairs, lift and sewer. Return portal on B1."
-area = AABB(-115, -1, 1675, 230, 30, 250)
+hint = "Service elevator at the east doorway. C is the casino; B1–B5 are basement garages."
+area = AABB(-100, -23, -125, 250, 21, 230)

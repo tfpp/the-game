@@ -56,7 +56,7 @@ func test_gps_routes_through_portal_and_arrival_has_clear_supported_floor() -> v
 			"label": entrance.door_label
 		}
 	]
-	var next := GpsRoute.next_hop(regions, links, Vector3(2, .2, 5), goal.global_position)
+	var next := GpsRoute.next_hop(regions, links, Vector3(2, .2, 5), arrival.global_position)
 	assert_eq(next["position"], entrance.global_position)
 	await wait_physics_frames(2)
 	var query := PhysicsRayQueryParameters3D.create(
@@ -64,7 +64,7 @@ func test_gps_routes_through_portal_and_arrival_has_clear_supported_floor() -> v
 	)
 	var hit := _feature.get_world_3d().direct_space_state.intersect_ray(query)
 	assert_false(hit.is_empty())
-	assert_almost_eq((hit["position"] as Vector3).y, 16.0, .001)
+	assert_almost_eq((hit["position"] as Vector3).y, -6.0, .001)
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = .4064
 	capsule.height = 1.8288

@@ -32,7 +32,9 @@ func _ready() -> void:
 		model.rotation.y = -PI / 2
 		model.position.z = -.27
 		add_child(model)
-		var label := Showcase.placard(self, "B%d" % (5 - floor_index), Vector3(0, 1.6, -.07))
+		var label := Showcase.placard(
+			self, ProceduralMovingLift.floor_label(floor_index), Vector3(0, 1.6, -.07)
+		)
 		label.font_size = 20
 		label.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 		label.rotation.y = PI
@@ -48,6 +50,7 @@ func _can_use(player: Player) -> bool:
 	var owner := lift()
 	return (
 		owner != null
+		and floor_index < owner.gates.size()
 		and entity.in_range(player)
 		and owner.net_phase == ProceduralMovingLift.Phase.DOCKED
 		and (ride_button or owner.net_floor != floor_index)
@@ -82,7 +85,7 @@ func aimed_at(player: Player) -> bool:
 		return false
 	var distance := -origin.x / direction.x
 	var hit := origin + direction * distance
-	return distance > 0 and absf(hit.y) <= .064 and absf(hit.z) <= .25
+	return distance > 0 and absf(hit.y) <= .055 and absf(hit.z) <= .25
 
 
 func _process(_delta: float) -> void:
@@ -98,5 +101,8 @@ func _process(_delta: float) -> void:
 
 func interaction_text() -> String:
 	if ride_button and lift().net_floor == floor_index:
-		return "Already at B%d" % (5 - floor_index)
-	return ("Ride to B%d" if ride_button else "Call elevator to B%d") % (5 - floor_index)
+		return "Already at %s" % ProceduralMovingLift.floor_label(floor_index)
+	return (
+		("Ride to %s" if ride_button else "Call elevator to %s")
+		% ProceduralMovingLift.floor_label(floor_index)
+	)

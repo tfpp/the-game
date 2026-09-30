@@ -2,6 +2,7 @@ extends SceneTree
 ## Deterministic 128px painted control face; readable bitmap lettering stays exact.
 
 const FONT := {
+	"C": [15, 16, 16, 16, 16, 16, 15],
 	"B": [30, 17, 17, 30, 17, 17, 30],
 	"1": [4, 12, 4, 4, 4, 4, 14],
 	"2": [14, 17, 1, 2, 4, 8, 31],
@@ -27,11 +28,11 @@ func _initialize() -> void:
 	image.fill_rect(Rect2i(4, 4, 120, 120), Color("8b7045"))
 	image.fill_rect(Rect2i(8, 8, 112, 18), Color("341e18"))
 	_text(image, "FLOORS", Vector2i(46, 13), Color("ebd39a"))
-	for index: int in 5:
-		var y := 39 + index * 17
+	for index: int in 6:
+		var y := 34 + index * 15
 		image.fill_rect(Rect2i(14, y - 7, 100, 15), Color("302c25"))
 		image.fill_rect(Rect2i(17, y - 5, 94, 11), Color("6c6656"))
-		_text(image, "B%d" % (index + 1), Vector2i(32, y - 3), Color("f4e7bd"))
+		_text(image, "C" if index == 0 else "B%d" % index, Vector2i(32, y - 3), Color("f4e7bd"))
 		image.fill_rect(Rect2i(85, y - 4, 14, 9), Color("29271f"))
 		image.fill_rect(Rect2i(88, y - 2, 8, 5), Color("ac9c68"))
 	for x: int in [8, 119]:

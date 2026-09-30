@@ -20,6 +20,7 @@ const PANEL := preload("res://features/procedural_rooms/elevator_panel.tscn")
 @export var net_target := 4
 @export var net_phase: Phase = Phase.DOCKED
 @export var net_aperture := 1.0
+@export var casino_connection := false
 var cab: AnimatableBody3D
 var indicator: Label3D
 var cab_door: ProceduralSlidingDoor
@@ -31,6 +32,10 @@ var _received_snapshot := false
 
 func _ready() -> void:
 	process_physics_priority = -100
+	if casino_connection:
+		net_floor = 5
+		net_target = 5
+		net_height = floor_height(5)
 	_build_cab()
 	audio = AUDIO.new()
 	audio.position.y = 2
@@ -71,13 +76,13 @@ func _build_cab() -> void:
 	var panel := PANEL.instantiate() as Node3D
 	panel.position = Vector3(1.45, 1.62, -.65)
 	cab.add_child(panel)
-	for floor_index: int in 5:
+	for floor_index: int in 6:
 		var button := BUTTON.instantiate() as Node3D
 		button.name = "Floor%d" % floor_index
 		button.set("floor_index", floor_index)
 		button.set("ride_button", true)
 		button.set("lift_path", NodePath("../.."))
-		button.position = Vector3(1.412, 2.12 - (39 + (4 - floor_index) * 17) / 128.0, -.65)
+		button.position = Vector3(1.412, button_height(floor_index), -.65)
 		cab.add_child(button)
 	var lamp := OmniLight3D.new()
 	lamp.position = Vector3(0, 2.7, 0)
@@ -101,9 +106,9 @@ func _physics_process(delta: float) -> void:
 	_update_doors()
 	audio.update(net_phase, delta)
 	indicator.text = (
-		("B%d → B%d" % [5 - roundi(cab.position.y / 4.0), 5 - net_target])
+		("%s → %s" % [floor_label(net_floor), floor_label(net_target)])
 		if net_phase == Phase.MOVING
-		else "B%d" % (5 - net_floor)
+		else floor_label(net_floor)
 	)
 
 
@@ -116,7 +121,7 @@ func _snapshot() -> void:
 
 
 func request_floor(index: int) -> bool:
-	if not multiplayer.is_server() or net_phase != Phase.DOCKED or index not in range(5):
+	if not multiplayer.is_server() or net_phase != Phase.DOCKED or index not in range(gates.size()):
 		return false
 	if index == net_floor or doorway_occupied():
 		return false
@@ -136,8 +141,8 @@ func _advance(delta: float) -> void:
 				if net_aperture == 0:
 					net_phase = Phase.MOVING
 		Phase.MOVING:
-			net_height = move_toward(net_height, net_target * 4.0, SPEED * delta)
-			if net_height == net_target * 4.0:
+			net_height = move_toward(net_height, floor_height(net_target), SPEED * delta)
+			if net_height == floor_height(net_target):
 				net_floor = net_target
 				net_phase = Phase.OPENING
 		Phase.OPENING:
@@ -156,7 +161,9 @@ func doorway_occupied() -> bool:
 
 
 func _update_doors() -> void:
-	var aligned := absf(cab.position.y - net_floor * 4.0) < .025 and net_phase != Phase.MOVING
+	var aligned := (
+		absf(cab.position.y - floor_height(net_floor)) < .025 and net_phase != Phase.MOVING
+	)
 	var aperture := net_aperture if aligned else 0.0
 	cab_door.drive(aperture)
 	for index: int in gates.size():
@@ -164,11 +171,23 @@ func _update_doors() -> void:
 
 
 func _reset(_mode: Network.Mode) -> void:
-	net_height = 16
-	net_floor = 4
-	net_target = 4
+	net_floor = 5 if casino_connection else 4
+	net_height = floor_height(net_floor)
+	net_target = net_floor
 	net_phase = Phase.DOCKED
 	net_aperture = 1
 	cab.position.y = net_height
 	_update_doors()
 	audio.initialize(net_phase)
+
+
+static func floor_height(index: int) -> float:
+	return 22.0 if index == 5 else index * 4.0
+
+
+static func floor_label(index: int) -> String:
+	return "C / CASINO" if index == 5 else "B%d" % (5 - index)
+
+
+static func button_height(index: int) -> float:
+	return 2.12 - (34 + (5 - index) * 15) / 128.0

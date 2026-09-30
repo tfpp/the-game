@@ -18,7 +18,7 @@ are 128×128 with nearest mipmaps. The cab, frame, leaf and button contain 156, 
 cab panel instead of five separate call plates, for 270 triangles total.
 
 The panel has one explicit full-face UV rectangle, a shallow backing and a
-128×128 bitmap face with exact B1–B5 lettering. `build_lift_panel.gd` draws the
+128×128 bitmap face with exact C / B1–B5 lettering. `build_lift_panel.gd` draws the
 painted brass plate and letters natively; no external font or image dependency is
 needed. Current/requested indicator lamps overlay their corresponding texture
 windows. This panel replaces only in-cab controls; landing call plates remain.

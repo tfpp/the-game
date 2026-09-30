@@ -8,7 +8,7 @@ const ASPHALT := preload("res://features/procedural_rooms/materials/asphalt.tres
 
 
 func _ready() -> void:
-	var level := Layout.build(self, layout_seed)
+	var level := Layout.build(self, layout_seed, [], true)
 	(level.get_node("Structure/Floor") as MeshInstance3D).material_override = CONCRETE
 	var ground := MeshInstance3D.new()
 	ground.name = "Ground"

@@ -2,7 +2,11 @@
 
 This directory contains original developer materials, a socket attachment prototype
 and standalone playable examples. `feature.tscn` now adds a shared in-game copy of
-the five-floor garage at z=1800. Use the standalone cyan **PROCEDURAL GARAGE**
+five basement garages beneath the casino. The service elevator at the east doorway
+(x=34, z=-25) physically carries players from **C / CASINO** at y=0 to **B1–B5**
+at y=-6, -10, -14, -18 and -22. The first basement has extra clearance beneath the
+sunken gaming floor. Find **Procedural Garage** in GPS to reach the casino landing.
+The standalone cyan **PROCEDURAL GARAGE**
 teleporter beside the Golden Crown sign on the north promenade (x=12, z=-15.5),
 or locate **Garage Teleporter** in GPS. E / controller
 Use / touch Use teleports to B1. Its **RETURN TO CASINO** portal is beside arrival.
@@ -18,7 +22,7 @@ garage audio synthesizer supplies cached motor/door hums; GameAudio owns the sho
 Kenney metal and chime cues.
 
 The cab uses a single brass floor panel on the right wall, clear of the door zone.
-Aim at its B1–B5 rows and press Use. Green marks the current floor and amber the
+Aim at its C / B1–B5 rows and press Use. Green marks the current floor and amber the
 requested floor; the current-floor prompt says "Already at B1" (or its equivalent).
 Its exact bitmap lettering and worn plate are generated as a 128×128 local-UV
 texture by `model_tools/build_lift_panel.gd`. Landing call plates stay unchanged.

@@ -13,14 +13,18 @@ const RULE := preload("res://features/procedural_rooms/garage_population.tres")
 
 
 static func build(
-	parent: Node3D, seed_value: int = 73021, rules: Array[ProceduralPopulationRule] = []
+	parent: Node3D,
+	seed_value: int = 73021,
+	rules: Array[ProceduralPopulationRule] = [],
+	casino_connection: bool = false
 ) -> Node3D:
 	var world := Node3D.new()
 	world.name = "CrownGarage"
 	parent.add_child(world)
 	var lift := MOVING_LIFT.instantiate() as ProceduralMovingLift
+	lift.casino_connection = casino_connection
 	world.add_child(lift)
-	var shaft := _shaft()
+	var shaft := _shaft(casino_connection)
 	world.add_child(shaft)
 	var decks: Array[Node3D] = []
 	var west: Array[Node3D] = []
@@ -117,6 +121,25 @@ static func build(
 	Showcase.set_piece(pump, "pump")
 	_destination(pump, "Sewer pump station", Vector3(0, 0, 4))
 	Showcase.placard(decks[0], "SEWER / PUMP STATION →", Vector3(0, 2.6, 39))
+	if casino_connection:
+		(shaft.get_node("Floor5") as ProceduralSocketAttachment).open("casino-east-doorway")
+		var gate := DOOR.instantiate() as ProceduralSlidingDoor
+		gate.name = "CasinoGate"
+		gate.managed_by_lift = true
+		world.add_child(gate)
+		gate.position = Vector3(0, 22, -8)
+		lift.gates.append(gate)
+		var stop := LIFT.instantiate() as Node3D
+		stop.name = "CasinoCall"
+		stop.set("floor_index", 5)
+		stop.set("lift_path", NodePath("../Lift"))
+		world.add_child(stop)
+		stop.position = Vector3(-2.1, 22, -7.95)
+		stop.rotation.y = PI
+		var sign := Showcase.placard(
+			world, "SERVICE ELEVATOR\nC / CASINO  •  B1–B5", Vector3(0, 25.25, -7.85)
+		)
+		sign.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 	Shell.rebuild(world)
 	var collision := world.get_node("Structure/ShellCollision").get_child(0) as CollisionShape3D
 	(collision.shape as ConcavePolygonShape3D).backface_collision = true
@@ -160,29 +183,33 @@ static func _door(parent: Node3D, socket: Node3D, id: String) -> void:
 	door.global_transform = socket.global_transform
 
 
-static func _shaft() -> Node3D:
+static func _shaft(casino_connection: bool = false) -> Node3D:
 	var shaft := Node3D.new()
 	shaft.name = "LiftShaft"
 	# Enclose the continuous shaft; openings are guarded by interlocked landing doors.
-	for index: int in 5:
-		Kit._end(shaft, "Floor%d" % index, Vector3(0, index * 4, -8), 0, 4, 4)
+	for index: int in 6 if casino_connection else 5:
+		var height := ProceduralMovingLift.floor_height(index)
+		Kit._end(shaft, "Floor%d" % index, Vector3(0, height, -8), 0, 4, 4)
 		Shell.face(
 			shaft,
 			PackedVector3Array(
 				[
-					Vector3(-1.5, index * 4, -8.22),
-					Vector3(1.5, index * 4, -8.22),
-					Vector3(1.5, index * 4, -7.88),
-					Vector3(-1.5, index * 4, -7.88)
+					Vector3(-1.5, height, -8.22),
+					Vector3(1.5, height, -8.22),
+					Vector3(1.5, height, -7.88),
+					Vector3(-1.5, height, -7.88)
 				]
 			),
 			Vector3.UP,
 			"floor"
 		)
-	Kit._side(shaft, -2, Vector2(-12, 0), Vector2(-8, 0), 20, "grey")
-	Kit._side(shaft, 2, Vector2(-12, 0), Vector2(-8, 0), 20, "grey")
-	Kit._end_wall(shaft, Vector3(0, 0, -12), PI, -2, 2, 0, 20)
-	for y: float in [-.2, 20]:
+	var top := 26.0 if casino_connection else 20.0
+	if casino_connection:
+		Kit._end_wall(shaft, Vector3(0, 20, -8), 0, -2, 2, 0, 2)
+	Kit._side(shaft, -2, Vector2(-12, 0), Vector2(-8, 0), top, "grey")
+	Kit._side(shaft, 2, Vector2(-12, 0), Vector2(-8, 0), top, "grey")
+	Kit._end_wall(shaft, Vector3(0, 0, -12), PI, -2, 2, 0, top)
+	for y: float in [-.2, top]:
 		Shell.face(
 			shaft,
 			PackedVector3Array(
