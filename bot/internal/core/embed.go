@@ -67,6 +67,18 @@ func (s *Service) card(ctx context.Context, job store.Job, e Embed, ping ...stri
 	s.postEmbed(ctx, job.ThreadID, job.Issue, e, nil, ping...)
 }
 
+// closeThread closes (archives) a job's thread once its work is over: the issue or PR
+// was closed, or the PR was merged and deployed. Anyone posting in it, including the
+// bot, reopens it. Errors are logged.
+func (s *Service) closeThread(ctx context.Context, job store.Job) {
+	if job.ThreadID == "" {
+		return
+	}
+	if err := s.chat.CloseThread(ctx, job.ThreadID); err != nil {
+		s.log.Error("close thread", "err", err, "issue", job.Issue)
+	}
+}
+
 // resolvingCard says the agent has started resolving a PR's conflicts.
 func (s *Service) resolvingCard(ctx context.Context, job store.Job) {
 	s.card(ctx, job, Embed{Title: "🔧 Resolving conflicts", URL: s.pullURL(job.PR), Color: colorInfo, Description: fmt.Sprintf(
@@ -75,6 +87,10 @@ func (s *Service) resolvingCard(ctx context.Context, job store.Job) {
 
 func (s *Service) pullURL(n int) string {
 	return fmt.Sprintf("https://github.com/%s/pull/%d", s.cfg.Repo, n)
+}
+
+func (s *Service) issueURL(n int) string {
+	return fmt.Sprintf("https://github.com/%s/issues/%d", s.cfg.Repo, n)
 }
 
 // prLabel names PR n in an embed's description; the embed's title links to it.
