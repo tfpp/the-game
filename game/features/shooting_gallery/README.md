@@ -11,8 +11,8 @@ its own entrance, not by walking there.
   Use calls `player.server_teleport.rpc_id(...)` — the same RPC
   `features/elevator/elevator_cab.gd` and `features/combat/combat.gd` use to move a
   player from server code — straight to `destination`, no boarding animation. One
-  instance sits in the main room (`Entrance`, near the map's empty northeast
-  interior) and a second sits inside the arena (`Arena/Exit`) pointed back at it.
+  instance sits in the [dev room](../dev_room/README.md) (`Entrance`, on its north
+  wall) and a second sits inside the arena (`Arena/Exit`) pointed back at it.
 - `Arena`: a fully enclosed room built entirely from this feature's own
   `CSGBox3D` floor/walls (no `world/` changes), positioned far from the main room
   (`x = 80`) so it can't overlap any existing feature, plus two low cover blocks

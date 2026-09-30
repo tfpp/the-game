@@ -1,6 +1,6 @@
 # Lily Apartments
 
-Enter the signed door at **(-10, 0, 31)** in the casino's south lobby, next to
+Enter the signed door in the [dev room](../dev_room/README.md), next to
 (the west of) the lounge. Use at the reception counter speaks to the clerk and
 claims a free furnished unit. The prompt replies with your unit and floor. Use
 the brass **express elevator** on reception's right to reach your assigned floor;

@@ -3,8 +3,8 @@
 The Golden Crown's south lobby gate starts a shared excursion. The first player
 through chooses a registered slum arrival point; later players join that same
 map until everyone returns, dies or disconnects. A new excursion resets
-searchable containers. The old parking garage staff door remains a direct way
-to enter that map and participates in the same run tracking.
+searchable containers. The old parking garage no longer has a casino staff
+door; only this gate reaches it.
 
 Each slum has a return door. Surviving players bring valuables back in their
 inventory. The pawn shop counter (`Fence`, `loot_fence.gd`) beside the Crown

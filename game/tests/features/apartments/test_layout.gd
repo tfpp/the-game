@@ -60,7 +60,7 @@ func test_casino_entrance_is_supported_and_approachable() -> void:
 		var point := Vector3(-10, 1, 24 + step * 0.5)
 		_assert_supported(point, 0)
 		_assert_capsule_clear(point)
-	assert_eq(_home.get_node("Entrance").position, Vector3(-10, 1.2, 31))
+	assert_eq(_home.get_node("Entrance").position, Vector3(290, 1.2, -291.75))
 
 
 func _assert_supported(point: Vector3, height: float) -> void:

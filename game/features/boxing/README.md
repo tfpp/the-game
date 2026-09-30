@@ -31,6 +31,9 @@ Touch players punch with the Attack button (hold and release for power punches).
 `Boxing.arm_pose(peer)` exposes only the current accepted cosmetic swing (power
 and reach), or an empty dictionary at rest. The player avatar layers the swing
 over locomotion, bends both arms and closes its fingers; penguin flippers use the
-same pivots. The floating fist feedback is now first-person only. No extra RPCs
+same pivots. First-person feedback uses the same skinned human asset and finger
+bones as held items, matching skin, build and sleeves (including costume sleeve
+color). Camera-space shoulder and wrist IK keeps the arms connected during jabs,
+power swings and charge draw-back; the non-arm surface is masked out. No extra RPCs
 or persistence are needed: accepted swings already broadcast to every peer, and
 late joiners start at rest rather than replaying old punches.

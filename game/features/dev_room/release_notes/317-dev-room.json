@@ -1,0 +1,9 @@
+{
+  "title": "Dev room for warp doors",
+  "summary": "Every warp door now lives in one dev room behind a single DEV ROOM booth in the south lobby.",
+  "notes": [
+    "Add a dev room reached from a DEV ROOM booth in the casino's south lobby.",
+    "Move the apartments, lounge, hotel wing, procedural garage and shooting gallery doors into the dev room.",
+    "Remove the staff door teleport to the old parking garage mock-up."
+  ]
+}

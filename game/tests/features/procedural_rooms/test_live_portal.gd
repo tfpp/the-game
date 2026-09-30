@@ -78,14 +78,14 @@ func test_gps_routes_through_portal_and_arrival_has_clear_supported_floor() -> v
 			assert_true(node.has_method("can_use") and node.has_method("interaction_text"))
 
 
-func test_standalone_teleporter_beside_crown_has_clear_approach_and_supported_return() -> void:
-	var interior := preload("res://features/casino_hub/interior.tscn").instantiate() as Node3D
-	add_child_autofree(interior)
+func test_standalone_teleporter_in_dev_room_has_clear_approach_and_supported_return() -> void:
+	var dev_room := preload("res://features/dev_room/feature.tscn").instantiate() as Node3D
+	add_child_autofree(dev_room)
 	await wait_physics_frames(2)
 	assert_false(_feature.has_node("TeleportRoom"))
 	var entrance := _feature.get_node("Entrance") as GarageDoor
-	var sign := interior.get_node("CasinoName") as Label3D
-	assert_lt(entrance.global_position.distance_to(sign.global_position), 13.0)
+	var room := dev_room.get_node("Destination") as GpsDestination
+	assert_true(room.area.has_point(entrance.global_position))
 	assert_eq(
 		(_feature.get_node("Destinations/Portal") as GpsDestination).label, "Garage Teleporter"
 	)
@@ -95,7 +95,7 @@ func test_standalone_teleporter_beside_crown_has_clear_approach_and_supported_re
 	capsule.height = 1.8288
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.shape = capsule
-	query.transform.origin = Vector3(12, .95, -12.7)
+	query.transform.origin = Vector3(294, .95, -305.1)
 	query.motion = Vector3(0, 0, -1.8)
 	assert_eq(space.cast_motion(query)[0], 1.0)
 	var arrival := _feature.get_node("CasinoArrival") as Marker3D

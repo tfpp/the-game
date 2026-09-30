@@ -3,6 +3,6 @@
   "summary": "See players swing their arms and close their fists when punching.",
   "notes": [
     "Animate avatar arms for jabs and power punches, including penguin flippers.",
-    "Keep floating fist feedback in first person only."
+    "Use the player's rigged hands and matching sleeves for first-person punches and wind-ups."
   ]
 }

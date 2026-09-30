@@ -70,6 +70,31 @@ func test_cooldown_does_not_restart_swing_and_world_has_no_extra_fists() -> void
 	assert_true(boxing._fists._views[1].visible)
 
 
+func test_first_person_uses_matching_rig_and_camera_space_wrists() -> void:
+	(player.get_node("Body") as Node3D).hide()
+	avatar.set_body_type("girl")
+	avatar.set_skin_index(3)
+	avatar.set_clothing("", "")
+	player.get_node("Camera").rotation = Vector3(0.3, 0.7, 0.0)
+	boxing._fists.swing(1, false)
+	boxing._fists._process(BoxingFists.SWING_S * 0.35)
+	var view := boxing._fists._views[1]
+	var hands := view.get_node("Hands") as SkinnedHuman
+	assert_true(bool(hands.material.get_shader_parameter("arms_only")))
+	assert_eq(hands.material.get_shader_parameter("skin_tint"), avatar.skin_color)
+	assert_eq(hands.shape_weight("Feminine"), 1.0)
+	for right: bool in [false, true]:
+		var bone := hands.skeleton.find_bone("HandR" if right else "HandL")
+		var wrist := view.to_local(
+			hands.skeleton.to_global(hands.skeleton.get_bone_global_pose(bone).origin)
+		)
+		assert_almost_eq(wrist.x, 0.2 if right else -0.2, 0.01)
+		assert_almost_eq(wrist.y, -0.2, 0.01)
+		assert_almost_eq(wrist.z, -0.4 if right else -0.85, 0.01)
+	boxing._fists._process(1.0)
+	assert_false(view.visible)
+
+
 func test_disconnect_and_session_change_clear_cosmetics() -> void:
 	boxing.punch(1, 0.0)
 	boxing._forget_peer(1)

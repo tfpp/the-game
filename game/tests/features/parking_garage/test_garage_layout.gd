@@ -60,10 +60,10 @@ func test_the_south_face_is_open_above_the_knee_wall() -> void:
 	assert_true(hit.is_empty(), "Open facade must let a standing player see outside")
 
 
-func test_the_entrance_door_and_garage_door_are_solid() -> void:
-	for pos: Vector3 in [Vector3(12, 1.1, 32.15), Vector3(-10, 1.1, -5.6) + OFFSET]:
-		var hit := _ray(pos + Vector3(0, 0, -0.5), pos + Vector3(0, 0, 0.5))
-		assert_false(hit.is_empty(), "Door panel at %s must be solid" % pos)
+func test_the_garage_door_is_solid() -> void:
+	var pos := Vector3(-10, 1.1, -5.6) + OFFSET
+	var hit := _ray(pos + Vector3(0, 0, -0.5), pos + Vector3(0, 0, 0.5))
+	assert_false(hit.is_empty(), "Door panel at %s must be solid" % pos)
 
 
 func test_wreck_models_keep_their_paint_collision_and_damaged_variant() -> void:

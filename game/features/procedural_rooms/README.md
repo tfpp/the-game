@@ -7,7 +7,7 @@ five basement garages beneath the casino. The service elevator at the east doorw
 at y=-6, -10, -14, -18 and -22. The first basement has extra clearance beneath the
 sunken gaming floor. Find **Procedural Garage** in GPS to reach the casino landing.
 The standalone cyan **PROCEDURAL GARAGE**
-teleporter beside the Golden Crown sign on the north promenade (x=12, z=-15.5),
+teleporter stands on the north wall of the [dev room](../dev_room/README.md),
 or locate **Garage Teleporter** in GPS. E / controller
 Use / touch Use teleports to B1. Its **RETURN TO CASINO** portal is beside arrival.
 The kit uses a fixed seed on every peer; there is no live reroll control, general random

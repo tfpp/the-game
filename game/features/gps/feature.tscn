@@ -74,13 +74,6 @@ script = ExtResource("2_dest")
 label = "Lily Apartments"
 hint = "Reception desk and elevator to your unit"
 
-[node name="ParkingGarage" type="Marker3D" parent="Destinations"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 597)
-script = ExtResource("2_dest")
-label = "Parking Garage"
-hint = "Three dark levels behind the staff door"
-area = AABB(-19, -1, 585, 38, 12, 30)
-
 [node name="RainAlleys" type="Marker3D" parent="Destinations"]
 position = Vector3(0, 0, 900)
 script = ExtResource("2_dest")

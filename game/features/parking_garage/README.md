@@ -1,8 +1,8 @@
 # Parking garage
 
 The playable P1–P3 structure is now `garage.tscn`, instanced at the unchanged
-`Garage` path and world origin by `feature.tscn`; the employee entrance stays
-in the casino. The garage root is a `RenderZone` on reserved visual layer 19.
+`Garage` path and world origin by `feature.tscn`; it has no casino entrance
+anymore. The garage root is a `RenderZone` on reserved visual layer 19.
 Only its scene and in-zone players/enemies/effects are rendered while the local
 camera is inside, and it is excluded outside. Geometry, searchable boots,
 collision and networking remain present on all peers; this is render isolation,
@@ -12,13 +12,11 @@ The newer B1–B5 garage has its own scene under `features/procedural_rooms/`.
 
 
 A dark, three-story concrete parking structure outside The Golden Crown. The
-casino's south lobby has a plain steel employee door (near the trampolines'
-side of the room, at world `(12, 0, 31)`) with a sign reading "STAFF ONLY —
-PARKING GARAGE ACCESS". Press **E** to step through; the garage itself is
-built far from the rest of the map (`Garage` sits at world `(0, 0, 600)`) so
-it's only reachable through that door, the same way `features/elevator/`
-keeps its back room isolated. A matching door just inside the garage's P1
-level sends you back.
+casino no longer has a door into it: the old staff-door teleport was removed
+(issue #317) and the scene is kept only until its cleanup (see
+`docs/code-cleanup.md`). `Garage` sits at world `(0, 0, 600)`, far from the rest
+of the map. The door just inside P1 returns you to the Golden Crown at
+`slum_runs/CasinoArrival`, like the alley.
 
 Each of the three levels (P1–P3) shares the same 36×28m footprint — columns,
 abandoned cars and low ceilings break every floor into short sightlines
@@ -47,14 +45,13 @@ arrival marker. `procedural_audio.gd` synthesizes every ambient sound
 (rain-and-wind bed, tube hum, drips, structural creaks) at runtime as raw
 PCM, so the feature ships with no new audio assets.
 
-`tests/features/parking_garage/` covers the door teleport (like
+`tests/features/parking_garage/` covers the return door (like
 `test_elevator_cab.gd`), the fixture failure states, the synthesized audio
 buffers, and the baked collision — floors, both ramps' slopes, and both
 stair flights — the same way `test_casino_layout.gd` checks the casino.
 
 `Garage/GarageArrival` carries `features/dev_elevator/slum_arrival_point.gd`,
-which registers it for the Golden Crown's shared slum gate. Players can also
-enter directly through the casino staff door.
+which registers it for the Golden Crown's shared slum gate.
 
 Nine of the wrecked cars carry a `features/loot/` `LootContainer` named `Loot`
 using `car_loot.tres`: walk up and press Use to open the boot and search its

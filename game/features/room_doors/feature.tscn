@@ -9,7 +9,7 @@
 [node name="RoomDoors" type="Node3D"]
 
 [node name="Lobby" type="Node3D" parent="."]
-position = Vector3(-6, 0, 31)
+position = Vector3(295, 0, -293)
 
 [node name="Floor" type="CSGBox3D" parent="Lobby"]
 position = Vector3(0, -0.1, 0)

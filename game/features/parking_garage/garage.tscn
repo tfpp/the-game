@@ -34,7 +34,7 @@ size = Vector3(1.1, 2.1, 0.08)
 material = ExtResource("8_wall")
 use_collision = true
 script = ExtResource("3_door")
-destination = NodePath("../../Entrance/EntranceArrival")
+destination = NodePath("../../../slum_runs/CasinoArrival")
 door_label = "Back to the casino"
 
 [node name="GarageDoorSign" type="Label3D" parent="."]

@@ -1,7 +1,7 @@
 # Room doors
 
 Doors that link rooms, where each room is its own scene that a peer builds only while
-its local player is inside. A booth in the casino's south lobby at `(-6, 0, 31)` leads
+its local player is inside. A booth in the [dev room](../dev_room/README.md) leads
 to the Lounge, and a door in the Lounge leads to the Wine Cellar. Every door goes
 both ways. Press **E** (or Use) at a door.
 
