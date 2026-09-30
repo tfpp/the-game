@@ -1,74 +1,37 @@
 [gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://features/elevator/elevator_cab.tscn" id="1_cab"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/tile.tres" id="2_tile"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="3_wall"]
+[ext_resource type="Script" path="res://features/room_visibility/render_zone.gd" id="2_zone"]
+[ext_resource type="Material" path="res://features/procedural_rooms/materials/garage_wall.tres" id="3_garage_wall"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="4_gps"]
 
 [node name="Elevator" type="Node3D"]
 
-[node name="LobbyCab" parent="." instance=ExtResource("1_cab")]
-position = Vector3(30, 0, 29)
-rotation = Vector3(0, 1.5707963267948966, 0)
-destination = NodePath("../RoomCab")
+[node name="CasinoCab" parent="." instance=ExtResource("1_cab")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -9.7, 0, 32.3)
+destination = NodePath("../GarageZone/GarageCab")
+sign_text = "ELEVATOR
+TO THE PARKING GARAGE"
 
-[node name="RoomCab" parent="." instance=ExtResource("1_cab")]
-position = Vector3(0, 0, 303.5)
-destination = NodePath("../LobbyCab")
+[node name="GarageZone" type="Node3D" parent="."]
+position = Vector3(26, -22, -25)
+rotation = Vector3(0, -1.5707963, 0)
+script = ExtResource("2_zone")
+render_layer = 20
+render_bounds = AABB(-14, 15.5, -0.5, 8, 4.5, 6)
 
-[node name="BackRoom" type="Node3D" parent="."]
-position = Vector3(0, 0, 300)
+[node name="GarageCab" parent="GarageZone" instance=ExtResource("1_cab")]
+position = Vector3(-10, 16, 1.7)
+destination = NodePath("../../CasinoCab")
+shell_material = ExtResource("3_garage_wall")
+sign_text = "ELEVATOR
+TO THE GOLDEN CROWN"
+shell_height = 3.48
 
-[node name="Floor" type="CSGBox3D" parent="BackRoom"]
-position = Vector3(0, -0.1, 0)
-size = Vector3(10, 0.2, 10)
-material = ExtResource("2_tile")
-use_collision = true
+[node name="Destinations" type="Node3D" parent="."]
 
-[node name="Ceiling" type="CSGBox3D" parent="BackRoom"]
-position = Vector3(0, 4.1, 0)
-size = Vector3(10, 0.2, 10)
-material = ExtResource("3_wall")
-use_collision = true
-
-[node name="NorthWall" type="CSGBox3D" parent="BackRoom"]
-position = Vector3(0, 2, 5)
-size = Vector3(10, 4, 0.2)
-material = ExtResource("3_wall")
-use_collision = true
-
-[node name="SouthWall" type="CSGBox3D" parent="BackRoom"]
-position = Vector3(0, 2, -5)
-size = Vector3(10, 4, 0.2)
-material = ExtResource("3_wall")
-use_collision = true
-
-[node name="EastWall" type="CSGBox3D" parent="BackRoom"]
-position = Vector3(5, 2, 0)
-size = Vector3(0.2, 4, 10)
-material = ExtResource("3_wall")
-use_collision = true
-
-[node name="WestWall" type="CSGBox3D" parent="BackRoom"]
-position = Vector3(-5, 2, 0)
-size = Vector3(0.2, 4, 10)
-material = ExtResource("3_wall")
-use_collision = true
-
-[node name="RoomLight" type="OmniLight3D" parent="BackRoom"]
-position = Vector3(0, 3.3, 0)
-light_energy = 1.2
-omni_range = 12.0
-
-[node name="Sign" type="Label3D" parent="BackRoom"]
-position = Vector3(0, 3, -4.85)
-billboard = 1
-text = "BACK ROOM No. 1"
-font_size = 36
-outline_size = 6
-
-[node name="Notice" type="Label3D" parent="BackRoom"]
-position = Vector3(0, 2.2, -4.85)
-billboard = 1
-text = "Ride the elevator back to the casino."
-font_size = 20
-outline_size = 6
+[node name="CasinoElevator" type="Marker3D" parent="Destinations"]
+position = Vector3(-9.7, 0, 29.5)
+script = ExtResource("4_gps")
+label = "Garage Elevator"
+hint = "Built into the south lobby wall, west of the main exit. Ride it down to the parking garage."
