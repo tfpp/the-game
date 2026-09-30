@@ -16,6 +16,10 @@ at (-3, 0, 41.5). No teleports or streamed rooms. The GPS lists **Pawn Shop**.
 - **Gun wall** on the north wall: `wall_gun.tscn` (`WallGun`) instances hang the
   holdables pistol ($10), SMG ($25), shotgun ($30) and AWP ($50) with price tags.
   Use one to buy a copy; stock is unlimited.
+- **Top hat stand** in the north-west corner at (-13.6, 0, 36.4): a wood plinth with a
+  brass cap holding the tall black silk top hat (`ClothingCatalog.TOP_HAT`) for
+  $10,000. It is another `WallGun` instance (`tag_position` lifts its price tag above
+  the hat); buying it puts the hat straight on your head via the inventory hat slot.
 - **Gun-O-Matic** and its trash can (`features/gun_machine`) stand by the south wall.
 
 ## Buying a gun

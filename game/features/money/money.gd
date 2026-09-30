@@ -96,8 +96,22 @@ func _process(delta: float) -> void:
 
 
 func _set_balance(peer: int, cents: int) -> void:
+	var previous: Variant = balances.get(peer)
 	balances = balances.duplicate()
 	balances[peer] = cents
+	if multiplayer.is_server() and lands_on_six_seven(previous, cents):
+		var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
+		if models != null:
+			models.emote_everyone()
+
+
+## True when a wallet newly reads $67 in whole dollars (cents ignored: $67.00-$67.99).
+static func lands_on_six_seven(previous: Variant, cents: int) -> bool:
+	return _is_six_seven(cents) and not (previous is int and _is_six_seven(previous))
+
+
+static func _is_six_seven(cents: int) -> bool:
+	return cents >= 6700 and cents < 6800
 
 
 ## Server-only: tells `peer` in their chat log that they received `cents` and why.

@@ -79,6 +79,7 @@ func _process(delta: float) -> void:
 			_inventory.backpack,
 			_inventory.shirt,
 			_inventory.pants,
+			_inventory.hat,
 			_inventory.keys,
 			hand.net_item_id,
 			_stash.net_searched if _stash != null else false,
@@ -176,8 +177,8 @@ func _select(slot: int) -> void:
 func _refresh() -> void:
 	if not is_instance_valid(_inventory):
 		return
-	var labels: Array[String] = ["HAND", "SHIRT", "PANTS"]
-	for index: int in 3:
+	var labels: Array[String] = ["HAND", "SHIRT", "PANTS", "HAT"]
+	for index: int in 4:
 		var slot := -1 - index
 		_equipment[index].text = "%s\n%s" % [labels[index], _item_name(_inventory.item_at(slot))]
 		_equipment[index].button_pressed = _selected == slot
@@ -217,7 +218,7 @@ func _refresh() -> void:
 		_preview.model.set_head_type(models.type_for_head(peer))
 		_preview.model.set_tail_type(models.type_for_tail(peer))
 		_preview.model.set_appearance(models.appearance_for(peer))
-	_preview.show_clothing(_inventory.shirt, _inventory.pants)
+	_preview.show_clothing(_inventory.shirt, _inventory.pants, _inventory.hat)
 	_refresh_stash()
 
 
@@ -379,7 +380,7 @@ func _build() -> void:
 	outfit_hint.add_theme_font_size_override("font_size", 14)
 	outfit_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
-	for index: int in 3:
+	for index: int in 4:
 		var button := _button(character, "", _select.bind(-1 - index))
 		button.toggle_mode = true
 		button.custom_minimum_size.y = 54

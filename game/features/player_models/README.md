@@ -185,3 +185,15 @@ and drinking gesture without a second avatar or movement authority change.
 The surface shader's `tuxedo` / `tux_texture` parameters (off for players) paint a
 vest texture on the torso and white sleeves; see the card dealers in
 `features/casino_patrons/README.md`.
+
+### 6-7 emote
+
+Whenever any wallet lands on **$67** in whole dollars (cents are ignored, so $67.00
+through $67.99 count), every connected player performs the "6-7" emote for three
+seconds: both hands held out palms-up, see-sawing up and down like scales. It is
+server-triggered only: `PlayerMoney._set_balance()` calls
+`PlayerModels.emote_everyone()`, which writes a `six_seven` entry for each player
+into the same replicated `emotes` state (so late joiners, expiry and disconnect
+cleanup behave like flip-off). Clients can't request it. A wallet that stays within
+$67 doesn't retrigger; it has to leave and come back. Render it with
+`emote_probe.tscn -- --emote-name=six_seven`.

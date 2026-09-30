@@ -1,14 +1,17 @@
 class_name WallGun
 extends Node3D
-## One gun hanging on the pawn shop wall. Use buys a copy of it through the shared
-## wallet (`PlayerMoney.charge`) and hands it over with `PlayerInventory.collect`;
-## the wall keeps unlimited stock, so nothing about the rack itself is replicated.
+## One gun hanging on the pawn shop wall (or the top hat on its stand). Use buys a
+## copy of it through the shared wallet (`PlayerMoney.charge`) and hands it over with
+## `PlayerInventory.collect`; the wall keeps unlimited stock, so nothing about the rack
+## itself is replicated.
 
 const SPEAKER := "Rusty Hogg"
 
 ## Which holdables ItemCatalog weapon hangs here.
 @export var item_id := "pistol"
 @export var price_cents := 1000
+## Where the price tag hangs relative to the item (the hat stand puts it above the hat).
+@export var tag_position := Vector3(0, -0.32, 0.05)
 
 var _busy: Dictionary[int, bool] = {}
 var _generation := 0
@@ -32,7 +35,7 @@ func _ready() -> void:
 	tag.pixel_size = 0.005
 	tag.modulate = Color(1, 0.84, 0.4)
 	tag.double_sided = false
-	tag.position = Vector3(0, -0.32, 0.05)
+	tag.position = tag_position
 	add_child(tag)
 	entity.register_use(can_use, _buy)
 	entity.event_received.connect(_on_event)
