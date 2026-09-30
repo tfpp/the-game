@@ -16,12 +16,17 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
 
 ## How it works
 
-1. **`/feature request:<text> harness:<claude|codex>`** in a text channel (optionally only
-   `BOT_FEATURE_CHANNEL_ID`). Both parameters are required. The selected harness is
-   saved with the feature and used for its initial run, queued runs, `/revise`, and
-   automatic conflict resolution, including after bot restarts. Claude defaults to
-   **Opus 5.5** with low effort; Codex defaults to **GPT-6.1 Sol** with medium reasoning.
-   Configure both credentials in [the harness setup](../harness/README.md#setup).
+1. **`/feature request:<text> harness:<claude|codex|pi> [model:<pi model>]`** in a text
+   channel (optionally only `BOT_FEATURE_CHANNEL_ID`). `request` and `harness` are
+   required. `model` is for pi only and offers GPT-6.1 Sol, Claude Opus 5.5 and the
+   OpenRouter models (DeepSeek V4.1 Flash, GLM-5.3, GLM-5.3 Flash, Qwen3.8 Max,
+   Qwen3.8 Flash, Kimi K3); `core.PiModels` must match `agent.yml`'s `pi_model` choices.
+   The selected harness and model are saved with the feature and used for its initial
+   run, queued runs, `/revise`, and automatic conflict resolution, including after bot
+   restarts; the bot sends `pi_model` only for pi runs with a chosen model. Claude
+   defaults to **Opus 5.5** with low effort; Codex defaults to **GPT-6.1 Sol** with medium
+   reasoning; pi defaults to `openai-codex/gpt-6.1-sol` with medium thinking. Configure
+   the credentials in [the harness setup](../harness/README.md#setup).
    The user needs `BOT_REQUESTER_ROLE_ID`. The bot reserves a run against the limits,
    opens an issue whose body ends in `Requested-by: <name> <discord:<id>>` (the harness
    credits that person in the PR), answers publicly, opens a thread on the answer, and

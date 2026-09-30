@@ -151,7 +151,37 @@ type FeatureRequest struct {
 	HasRole   bool
 	ChannelID string
 	Text      string
-	Harness   string // required: claude or codex; kept for the feature's later runs
+	Harness   string // required: claude, codex or pi; kept for the feature's later runs
+	Model     string // optional, pi only: one of PiModels; kept like the harness
+}
+
+// PiModel is a model the pi harness can run, matching agent.yml's pi_model choices.
+type PiModel struct {
+	ID   string // provider/model, as agent.yml's pi_model input expects
+	Name string // shown in Discord
+}
+
+// PiModels are the models /feature offers for pi. Keep in sync with the pi_model input
+// of .github/workflows/agent.yml (a test checks this). Without a choice, the workflow's
+// default (PI_MODEL, else GPT-6.1 Sol) runs.
+var PiModels = []PiModel{
+	{"openai-codex/gpt-6.1-sol", "GPT-6.1 Sol"},
+	{"anthropic-omp/claude-opus-5-5", "Claude Opus 5.5"},
+	{"openrouter/deepseek/deepseek-v4.1-flash", "DeepSeek V4.1 Flash"},
+	{"openrouter/z-ai/glm-5.3", "GLM-5.3"},
+	{"openrouter/z-ai/glm-5.3-flash", "GLM-5.3 Flash"},
+	{"openrouter/qwen/qwen3.8-max-0902", "Qwen3.8 Max"},
+	{"openrouter/qwen/qwen3.8-flash", "Qwen3.8 Flash"},
+	{"openrouter/moonshotai/kimi-k3", "Kimi K3"},
+}
+
+func knownPiModel(id string) bool {
+	for _, m := range PiModels {
+		if m.ID == id {
+			return true
+		}
+	}
+	return false
 }
 
 // Feature handles /feature: checks, issue, thread, dispatch.
@@ -163,8 +193,14 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	if n := utf8.RuneCountInString(text); n < minRequest || n > maxRequest {
 		return r.Reject(ctx, fmt.Sprintf("Describe the feature in %d to %d characters.", minRequest, maxRequest))
 	}
-	if req.Harness != "claude" && req.Harness != "codex" {
-		return r.Reject(ctx, "Choose a harness: claude or codex.")
+	if req.Harness != "claude" && req.Harness != "codex" && req.Harness != "pi" {
+		return r.Reject(ctx, "Choose a harness: claude, codex or pi.")
+	}
+	if req.Model != "" && req.Harness != "pi" {
+		return r.Reject(ctx, "Only the pi harness takes a model. Leave `model` empty for claude and codex.")
+	}
+	if req.Model != "" && !knownPiModel(req.Model) {
+		return r.Reject(ctx, "Choose one of the offered pi models.")
 	}
 	run, err := s.reserve(ctx, req.UserID, 0, "implement", "")
 	if err != nil {
@@ -186,7 +222,7 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	}
 	job, err := s.st.CreateJob(ctx, store.Job{
 		Issue: issue.Number, Title: title, ChannelID: req.ChannelID,
-		RequesterID: req.UserID, RequesterName: name, Harness: req.Harness,
+		RequesterID: req.UserID, RequesterName: name, Harness: req.Harness, Model: req.Model,
 	}, run.ID, s.cfg.Now())
 	if err != nil {
 		s.failRun(ctx, run.ID)
@@ -194,8 +230,12 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	}
 	run.JobID = job.ID
 
-	announce := fmt.Sprintf("**%s**\nRequested by <@%s> · [issue #%d](<%s>) · harness: `%s`\n%s",
-		escape(title), req.UserID, issue.Number, issue.HTMLURL, job.Harness, quote(text, 300))
+	harness := "`" + job.Harness + "`"
+	if job.Model != "" {
+		harness += " · model: `" + job.Model + "`"
+	}
+	announce := fmt.Sprintf("**%s**\nRequested by <@%s> · [issue #%d](<%s>) · harness: %s\n%s",
+		escape(title), req.UserID, issue.Number, issue.HTMLURL, harness, quote(text, 300))
 	if err := r.Respond(ctx, announce); err != nil {
 		s.log.Error("respond to /feature", "err", err, "issue", issue.Number)
 	}
@@ -478,13 +518,19 @@ func (s *Service) dispatch(ctx context.Context, run store.Run, number int, instr
 			harness = "claude"
 		}
 	}
-	err = s.gh.Dispatch(ctx, s.cfg.Workflow, s.cfg.Ref, map[string]string{
+	inputs := map[string]string{
 		"number":       strconv.Itoa(number),
 		"mode":         run.Mode,
 		"agent":        harness,
 		"instructions": instructions,
 		"request_id":   requestID(run.ID),
-	})
+	}
+	// Only pi runs send pi_model, so other harnesses keep working against a workflow
+	// without that input.
+	if harness == "pi" && job.Model != "" {
+		inputs["pi_model"] = job.Model
+	}
+	err = s.gh.Dispatch(ctx, s.cfg.Workflow, s.cfg.Ref, inputs)
 	if err != nil {
 		s.log.Error("dispatch", "err", err, "run", run.ID, "number", number)
 		s.failRun(ctx, run.ID)

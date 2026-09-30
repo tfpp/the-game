@@ -34,9 +34,10 @@ Only people with write access (or bots in `AGENT_TRUSTED_BOTS`) can start a run.
 The label is removed when the run ends, so adding it again starts another run.
 Labels and comments use Claude. To use Codex or pi, select `codex` or `pi` in the
 workflow's `agent` input (or dispatch with `-f agent=codex` / `-f agent=pi`); all three
-modes are supported. The Discord bot does not offer pi yet.
-Discord's `/feature request:<text> harness:<claude|codex>` requires a harness choice
-and saves it for that feature's later revisions and conflict resolution. `BOT_AGENT`
+modes are supported.
+Discord's `/feature request:<text> harness:<claude|codex|pi> [model:<pi model>]` requires a
+harness choice and saves it, and pi's optional model, for that feature's later revisions
+and conflict resolution; the bot sends `pi_model` only for pi runs with a chosen model. `BOT_AGENT`
 is only a fallback for legacy features with no saved selection.
 
 ## Keeping PRs aligned

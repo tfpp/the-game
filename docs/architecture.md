@@ -196,10 +196,11 @@ protocol, income timing, offline behavior and deployment order.
 
 ## Agent pipeline
 
-1. `/feature request:<text> harness:<claude|codex>` in Discord. Both parameters are
-   required. The bot (`bot/`, details in `bot/README.md`) checks the requester role and
-   the per-user limit, and persists the harness choice with the feature for queued
-   runs, revisions and conflict resolution. Legacy jobs without a choice use `BOT_AGENT`.
+1. `/feature request:<text> harness:<claude|codex|pi> [model:<pi model>]` in Discord.
+   `request` and `harness` are required; `model` applies only to pi. The bot (`bot/`,
+   details in `bot/README.md`) checks the requester role and the per-user limit, and
+   persists the harness and model choice with the feature for queued runs, revisions and
+   conflict resolution. Legacy jobs without a choice use `BOT_AGENT`.
    It then creates a GitHub issue through its GitHub App, ending in a `Requested-by:`
    trailer, and opens a thread. If the concurrency cap is
    reached, the request waits in line and starts when a run finishes.
@@ -237,8 +238,8 @@ Codex defaults to GPT-6.1 Sol (`gpt-6.1-sol`) with medium reasoning. Pi reuses b
 `OPENROUTER_API_KEY` for OpenRouter models (chosen with the dispatch's `pi_model` input), in
 a temporary agent directory (`harness/pi-setup.sh`), with the vendored `anthropic-omp` and
 `image-generation` extensions plus `pi-web-access`; it defaults to
-`openai-codex/gpt-6.1-sol` with medium thinking and is selectable only through the
-workflow dispatch's `agent` input for now.
+`openai-codex/gpt-6.1-sol` with medium thinking. Discord's `/feature` offers it with an optional `model`; the
+workflow dispatch takes `agent=pi` and `pi_model`.
 
 **Subscription usage:** Discord `/usage` privately reports Claude and Codex limits,
 independently cached for one minute. Claude probes rate-limit headers; Codex reads the

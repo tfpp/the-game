@@ -2,6 +2,9 @@ package core
 
 import (
 	"context"
+	"os"
+	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 
@@ -9,7 +12,7 @@ import (
 )
 
 func TestFeatureRequiresSupportedHarness(t *testing.T) {
-	for _, harness := range []string{"", "pi", "Codex", "unknown"} {
+	for _, harness := range []string{"", "Pi", "Codex", "unknown"} {
 		t.Run(harness, func(t *testing.T) {
 			e := newEnv(t)
 			r := e.feature(t, "42", "add jump pads please", harness)
@@ -29,7 +32,7 @@ func TestFeatureRequiresSupportedHarness(t *testing.T) {
 }
 
 func TestFeatureDispatchesSelectedHarness(t *testing.T) {
-	for _, harness := range []string{"claude", "codex"} {
+	for _, harness := range []string{"claude", "codex", "pi"} {
 		t.Run(harness, func(t *testing.T) {
 			e := newEnv(t)
 			e.svc.cfg.Agent = "codex"
@@ -99,5 +102,115 @@ func TestLegacyJobUsesConfiguredHarness(t *testing.T) {
 				t.Fatalf("legacy dispatch %v", e.gh.dispatches[0])
 			}
 		})
+	}
+}
+
+func (e *env) featureWithModel(t *testing.T, user, text, harness, model string) *fakeResponder {
+	t.Helper()
+	r := &fakeResponder{counter: &e.nth}
+	err := e.svc.Feature(context.Background(), FeatureRequest{
+		UserID: user, UserName: "Al@ice*", HasRole: true, ChannelID: "c1", Text: text,
+		Harness: harness, Model: model,
+	}, r)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return r
+}
+
+func TestFeatureRejectsInvalidModel(t *testing.T) {
+	cases := []struct{ harness, model, reason string }{
+		{"claude", "openrouter/z-ai/glm-5.3", "Only the pi harness takes a model"},
+		{"codex", "openai-codex/gpt-6.1-sol", "Only the pi harness takes a model"},
+		{"pi", "openrouter/unknown/model", "Choose one of the offered pi models"},
+	}
+	for _, c := range cases {
+		t.Run(c.harness+" "+c.model, func(t *testing.T) {
+			e := newEnv(t)
+			r := e.featureWithModel(t, "42", "add jump pads please", c.harness, c.model)
+			if !strings.Contains(r.rejected, c.reason) || r.deferred {
+				t.Fatalf("invalid model accepted: %+v", r)
+			}
+			if len(e.gh.issues) != 0 || len(e.gh.dispatches) != 0 {
+				t.Fatal("invalid model created a GitHub issue or dispatch")
+			}
+		})
+	}
+}
+
+func TestPiModelIsSavedAndDispatchedOnEveryRun(t *testing.T) {
+	e := newEnv(t)
+	ctx := context.Background()
+	model := "openrouter/moonshotai/kimi-k3"
+	r := e.featureWithModel(t, "42", "add jump pads please", "pi", model)
+	if r.rejected != "" || len(e.gh.dispatches) != 1 {
+		t.Fatalf("feature failed: %+v", r)
+	}
+	if d := e.gh.dispatches[0]; d["agent"] != "pi" || d["pi_model"] != model {
+		t.Fatalf("dispatch %v", d)
+	}
+	if !strings.Contains(r.response, "harness: `pi` · model: `"+model+"`") {
+		t.Fatalf("model not announced: %s", r.response)
+	}
+	job, err := e.st.JobByThread(ctx, "thread1")
+	must(t, err)
+	if job.Harness != "pi" || job.Model != model {
+		t.Fatalf("job %+v", job)
+	}
+	// A later run (a revision after a restart, say) resolves the model from the job.
+	e.svc = New(e.svc.cfg, e.st, e.gh, e.chat)
+	run, err := e.svc.reserve(ctx, "42", job.ID, "revise", "tweak it")
+	must(t, err)
+	must(t, e.svc.dispatch(ctx, run, job.Issue, "tweak it"))
+	if d := e.gh.dispatches[len(e.gh.dispatches)-1]; d["agent"] != "pi" || d["pi_model"] != model || d["mode"] != "revise" {
+		t.Fatalf("revision dispatch %v", d)
+	}
+}
+
+func TestPiModelIsOptionalAndOnlySentForPi(t *testing.T) {
+	for _, harness := range []string{"pi", "claude", "codex"} {
+		t.Run(harness, func(t *testing.T) {
+			e := newEnv(t)
+			r := e.featureWithModel(t, "42", "add jump pads please", harness, "")
+			if r.rejected != "" || len(e.gh.dispatches) != 1 {
+				t.Fatalf("feature failed: %+v", r)
+			}
+			// No pi_model: the workflow picks its default, and older workflows without
+			// the input keep accepting claude and codex dispatches.
+			if _, ok := e.gh.dispatches[0]["pi_model"]; ok {
+				t.Fatalf("unexpected pi_model: %v", e.gh.dispatches[0])
+			}
+			if strings.Contains(r.response, "model:") {
+				t.Fatalf("empty model announced: %s", r.response)
+			}
+		})
+	}
+}
+
+// The bot must only offer models the agent workflow accepts.
+func TestPiModelsMatchWorkflowChoices(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "..", ".github", "workflows", "agent.yml"))
+	must(t, err)
+	var choices []string
+	in, options := false, false
+	for _, line := range strings.Split(string(data), "\n") {
+		trimmed := strings.TrimSpace(line)
+		switch {
+		case trimmed == "pi_model:":
+			in = true
+		case in && trimmed == "options:":
+			options = true
+		case in && options && strings.HasPrefix(trimmed, "- "):
+			choices = append(choices, strings.TrimPrefix(trimmed, "- "))
+		case in && options:
+			in, options = false, false
+		}
+	}
+	var want []string
+	for _, m := range PiModels {
+		want = append(want, m.ID)
+	}
+	if len(choices) == 0 || choices[0] != "default" || !slices.Equal(choices[1:], want) {
+		t.Fatalf("agent.yml pi_model choices %v; bot offers %v", choices, want)
 	}
 }
