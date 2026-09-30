@@ -194,6 +194,18 @@ func (b *Bot) PostEmbed(ctx context.Context, threadID, content string, embed cor
 	return err
 }
 
+// CloseThread implements core.Chat. It needs the Manage Threads permission. It archives
+// without locking, so a later post (Discord unarchives on send) reopens the thread.
+func (b *Bot) CloseThread(ctx context.Context, threadID string) error {
+	id, err := snowflake.Parse(threadID)
+	if err != nil {
+		return err
+	}
+	archived := true
+	_, err = b.client.Rest.UpdateChannel(id, discord.GuildThreadUpdate{Archived: &archived}, rest.WithCtx(ctx))
+	return err
+}
+
 // PostLive implements core.LiveChat: a message without pings, edited later by EditLive.
 func (b *Bot) PostLive(ctx context.Context, threadID string, embed core.Embed) (string, error) {
 	ch, err := snowflake.Parse(threadID)

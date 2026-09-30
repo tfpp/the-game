@@ -42,13 +42,23 @@ type PullRequestEvent struct {
 	Action      string `json:"action"`
 	Number      int    `json:"number"`
 	PullRequest struct {
-		HTMLURL string `json:"html_url"`
-		Merged  bool   `json:"merged"`
-		Head    struct {
+		HTMLURL        string `json:"html_url"`
+		Merged         bool   `json:"merged"`
+		MergeCommitSHA string `json:"merge_commit_sha"`
+		Head           struct {
 			Ref string `json:"ref"`
 			SHA string `json:"sha"`
 		} `json:"head"`
 	} `json:"pull_request"`
+	Repository Repository `json:"repository"`
+}
+
+// IssuesEvent is the issues webhook payload.
+type IssuesEvent struct {
+	Action string `json:"action"` // opened, closed, reopened, ...
+	Issue  struct {
+		Number int `json:"number"`
+	} `json:"issue"`
 	Repository Repository `json:"repository"`
 }
 

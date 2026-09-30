@@ -1,0 +1,7 @@
+{
+  "title": "Finished feature threads close themselves",
+  "summary": "Discord feature threads now close once their request is closed or its change is live.",
+  "notes": [
+    "Close a Discord feature thread when its PR or issue is closed, or once its merged PR is deployed."
+  ]
+}
