@@ -66,6 +66,7 @@ expect "$(out ok)" true ok
 expect "$(out mode)" implement mode
 expect "$(out branch)" agent/5-add-jump-pads branch
 expect "$(out target)" 5 target
+expect "$(out agent)" pi "labels use the default harness"
 grep -q "Starting" "$work/comments" || expect "no comment" "started comment" comment
 
 echo "- other labels and untrusted senders are ignored"
@@ -109,6 +110,8 @@ gate workflow_dispatch "{$alice,\"inputs\":{\"number\":\"9\",\"mode\":\"revise\"
 expect "$(out mode)" revise mode
 expect "$(instructions)" hi instructions
 expect "$(out agent)" claude agent
+gate workflow_dispatch "{$alice,\"inputs\":{\"number\":\"9\",\"mode\":\"revise\"}}"
+expect "$(out agent)" pi "dispatch without an agent"
 
 echo "- Codex dispatch supports each mode"
 for mode in implement revise resolve-conflicts; do

@@ -12,7 +12,7 @@ import (
 )
 
 func TestFeatureRequiresSupportedHarness(t *testing.T) {
-	for _, harness := range []string{"", "Pi", "Codex", "unknown"} {
+	for _, harness := range []string{"Pi", "Codex", "unknown"} {
 		t.Run(harness, func(t *testing.T) {
 			e := newEnv(t)
 			r := e.feature(t, "42", "add jump pads please", harness)
@@ -280,5 +280,19 @@ func TestReasoningIsOmittedWhenNotChosen(t *testing.T) {
 	r := e.feature(t, "42", "add jump pads please", "claude")
 	if _, ok := e.gh.dispatches[0]["reasoning"]; ok || strings.Contains(r.response, "reasoning:") {
 		t.Fatalf("unchosen reasoning sent or announced: %v %s", e.gh.dispatches[0], r.response)
+	}
+}
+
+func TestFeatureWithoutHarnessUsesPi(t *testing.T) {
+	e := newEnv(t)
+	e.svc.cfg.Agent = "claude" // the legacy fallback must not leak into new features
+	r := e.feature(t, "42", "add jump pads please", "")
+	if r.rejected != "" || len(e.gh.dispatches) != 1 || e.gh.dispatches[0]["agent"] != "pi" {
+		t.Fatalf("feature %+v dispatches %v", r, e.gh.dispatches)
+	}
+	job, err := e.st.JobByThread(context.Background(), "thread1")
+	must(t, err)
+	if job.Harness != "pi" || !strings.Contains(r.response, "harness: `pi`") {
+		t.Fatalf("default harness not saved/shown: job=%+v response=%s", job, r.response)
 	}
 }

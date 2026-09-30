@@ -44,7 +44,7 @@ else
 fi
 
 # --- what -----------------------------------------------------------------------------
-agent="claude" mode="" number="" instructions=""
+agent="pi" mode="" number="" instructions=""
 case "$event" in
   issues)
     [[ "$(ev .label.name)" == "$label" ]] || reject "label is not $label"
@@ -71,7 +71,7 @@ case "$event" in
   workflow_dispatch)
     mode="$(ev .inputs.mode)" number="$(ev .inputs.number)"
     agent="$(ev .inputs.agent)" instructions="$(ev .inputs.instructions)"
-    agent="${agent:-claude}"
+    agent="${agent:-pi}"
     ;;
   *) reject "unsupported event $event" ;;
 esac

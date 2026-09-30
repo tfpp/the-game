@@ -152,7 +152,7 @@ type FeatureRequest struct {
 	HasRole   bool
 	ChannelID string
 	Text      string
-	Harness   string // required: claude, codex or pi; kept for the feature's later runs
+	Harness   string // claude, codex or pi (DefaultHarness when empty); kept for later runs
 	Model     string // optional, pi only: one of PiModels; kept like the harness
 	Reasoning string // optional: one of ReasoningLevels; kept like the harness
 }
@@ -161,6 +161,10 @@ type FeatureRequest struct {
 // (GPT-6.1 Sol) and pi (--thinking) all accept. Keep in sync with agent.yml's reasoning
 // input (a test checks this). Without a choice, the workflow's default applies.
 var ReasoningLevels = []string{"low", "medium", "high", "xhigh", "max"}
+
+// DefaultHarness builds features whose /feature leaves harness empty. Config.Agent is
+// separate: it only covers legacy jobs saved before harnesses were chosen.
+const DefaultHarness = "pi"
 
 // PiModel is a model the pi harness can run, matching agent.yml's pi_model choices.
 type PiModel struct {
@@ -202,6 +206,9 @@ func (s *Service) Feature(ctx context.Context, req FeatureRequest, r Responder) 
 	}
 	if n := utf8.RuneCountInString(text); n < minRequest || n > maxRequest {
 		return r.Reject(ctx, fmt.Sprintf("Describe the feature in %d to %d characters.", minRequest, maxRequest))
+	}
+	if req.Harness == "" {
+		req.Harness = DefaultHarness
 	}
 	if req.Harness != "claude" && req.Harness != "codex" && req.Harness != "pi" {
 		return r.Reject(ctx, "Choose a harness: claude, codex or pi.")

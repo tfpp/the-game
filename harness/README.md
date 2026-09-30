@@ -32,11 +32,12 @@ Only people with write access (or bots in `AGENT_TRUSTED_BOTS`) can start a run.
 | Run the workflow by hand (`workflow_dispatch`) | Any mode, by issue or PR number (the bot will use this) |
 
 The label is removed when the run ends, so adding it again starts another run.
-Labels and comments use Claude. To use Codex or pi, select `codex` or `pi` in the
-workflow's `agent` input (or dispatch with `-f agent=codex` / `-f agent=pi`); all three
-modes are supported.
-Discord's `/feature request:<text> harness:<claude|codex|pi> [model:<pi model>]
-[reasoning:<level>]` requires a harness choice and saves it, pi's optional model and the
+**pi is the default harness**: labels, `/agent` comments, dispatches without `agent`, and
+`/feature` without `harness` all use it. To use Claude or Codex, select `claude` or `codex`
+in the workflow's `agent` input (or dispatch with `-f agent=claude` / `-f agent=codex`);
+all three modes are supported.
+Discord's `/feature request:<text> [harness:<pi|claude|codex>] [model:<pi model>]
+[reasoning:<level>]` saves the harness (pi when omitted), pi's optional model and the
 optional reasoning level for that feature's later revisions and conflict resolution; the
 bot sends `pi_model` and `reasoning` only when chosen. The workflow's `reasoning` input
 (`low` to `max`) overrides `AGENT_REASONING_EFFORT` and each agent's default. `BOT_AGENT`
@@ -196,15 +197,15 @@ bounds numeric values and validates model IDs before rendering them. The human P
      as `anthropics/claude-code-action`. That endpoint is internal to the action and
      could change. Commits and PRs appear as `claude[bot]`.
 4. **Optional variables:** `AGENT_MODEL` (Claude; defaults to `claude-opus-5-5`, Opus
-   5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6.1-sol`, GPT-6.1 Sol), `PI_MODEL`
-   (pi, as `provider/id`; defaults to `openai-codex/gpt-6.1-sol`; the `pi_model` input wins), `PI_VERSION`
-   (defaults to `0.99.1`), `AGENT_REASONING_EFFORT` (overrides every agent unless the dispatch's `reasoning` input
-   is set; unset, Claude
-   uses `low`, Codex `medium`, and pi the level for its model in `pi/thinking-levels.json`,
-   else `medium`), `AGENT_MAX_TURNS`,
-   `AGENT_ATTEMPTS` (default 3), `AGENT_TRUSTED_BOTS` (comma-separated logins, such as
-   the bot App's `<slug>[bot]`). Existing model variables override these defaults;
-   remove or update old overrides to use the new defaults.
+   5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6.1-sol`, GPT-6.1 Sol), `PI_MODEL` (pi,
+   as `provider/id`; defaults to `openai-codex/gpt-6.1-sol`; the `pi_model` input wins),
+   `PI_VERSION` (defaults to `0.99.1`), `AGENT_REASONING_EFFORT` (overrides every agent
+   unless the dispatch's `reasoning` input is set; unset, Claude uses `low`, Codex
+   `medium`, and pi the level for its model in `pi/thinking-levels.json`, else `medium`),
+   `AGENT_MAX_TURNS`, `AGENT_ATTEMPTS` (default 3), `AGENT_TRUSTED_BOTS`
+   (comma-separated logins, such as the bot App's `<slug>[bot]`). Existing model
+   variables override these defaults; remove or update old overrides to use the new
+   defaults.
 
 For example, after the workflow change is merged:
 
@@ -226,14 +227,15 @@ harness/run.sh --agent claude --mode implement --branch agent/0-jump-pad --task 
 ```
 
 All three adapters use the same model and reasoning defaults locally and on
-retries/resumes: Claude `claude-opus-5-5` with low effort, Codex `gpt-6.1-sol` with medium effort, and pi
-`openai-codex/gpt-6.1-sol` with its per-model thinking level from `pi/thinking-levels.json`
-(for example `max` for the OpenRouter models, `low` for Claude; `medium` for unlisted
-models). `pi-setup.sh` also writes that map to the runner's pi `settings.json` as
-`modelThinkingLevels`. Override with `HARNESS_MODEL` and `HARNESS_REASONING_EFFORT`
-(pi's `--thinking` level). `result.json` records the effort as `reasoning_effort`, and publish
-shows it in the PR's Agent Usage section and the 🤖 comments. Locally, pi uses your own
-`~/.pi/agent` login and extensions unless `PI_CODING_AGENT_DIR` points elsewhere.
+retries/resumes: Claude `claude-opus-5-5` with low effort, Codex `gpt-6.1-sol` with
+medium effort, and pi `openai-codex/gpt-6.1-sol` with its per-model thinking level from
+`pi/thinking-levels.json` (for example `max` for the OpenRouter models, `low` for Claude;
+`medium` for unlisted models). `pi-setup.sh` also writes that map to the runner's pi
+`settings.json` as `modelThinkingLevels`. Override with `HARNESS_MODEL` and
+`HARNESS_REASONING_EFFORT` (pi's `--thinking` level). `result.json` records the effort as
+`reasoning_effort`, and publish shows it in the PR's Agent Usage section and the 🤖
+comments. Locally, pi uses your own `~/.pi/agent` login and extensions unless
+`PI_CODING_AGENT_DIR` points elsewhere.
 
 This needs a clean tree. It leaves you on the new branch, and `/tmp/run` holds the logs
 and `summary.md`. Nothing is pushed.

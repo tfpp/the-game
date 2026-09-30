@@ -30,8 +30,8 @@ on:
         default: implement
       agent:
         type: choice
-        options: [claude, codex, pi]
-        default: claude
+        options: [pi, claude, codex]
+        default: pi
       pi_model:
         description: Model for the pi agent (default uses PI_MODEL, else openai-codex/gpt-6.1-sol)
         type: choice

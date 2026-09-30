@@ -78,11 +78,11 @@ var (
 					MinLength: &minLen, MaxLength: &maxLen,
 				},
 				discord.ApplicationCommandOptionString{
-					Name: "harness", Description: "Which coding harness should build and revise this feature?", Required: true,
+					Name: "harness", Description: "Which coding harness should build and revise this feature? (default: pi)",
 					Choices: []discord.ApplicationCommandOptionChoiceString{
+						{Name: "pi", Value: "pi"},
 						{Name: "claude", Value: "claude"},
 						{Name: "codex", Value: "codex"},
-						{Name: "pi", Value: "pi"},
 					},
 				},
 				discord.ApplicationCommandOptionString{

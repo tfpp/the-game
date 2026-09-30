@@ -25,11 +25,11 @@ func featureOption(t *testing.T, name string) discord.ApplicationCommandOptionSt
 	return discord.ApplicationCommandOptionString{}
 }
 
-func TestFeatureRequiresHarnessChoice(t *testing.T) {
+func TestFeatureOffersHarnessesWithPiFirst(t *testing.T) {
 	opt := featureOption(t, "harness")
-	want := []string{"claude", "codex", "pi"}
-	if !opt.Required || len(opt.Choices) != len(want) {
-		t.Fatalf("harness must be required with %d choices: %+v", len(want), opt)
+	want := []string{core.DefaultHarness, "claude", "codex"}
+	if opt.Required || len(opt.Choices) != len(want) {
+		t.Fatalf("harness must be optional (pi by default) with %d choices: %+v", len(want), opt)
 	}
 	for i, value := range want {
 		if opt.Choices[i].Value != value || opt.Choices[i].Name != value {
