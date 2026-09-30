@@ -36,8 +36,20 @@ material = ExtResource("wallpaper")
 use_collision = true
 
 [node name="WallNorth1" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 4, -34.5)
-size = Vector3(18, 8, 1)
+position = Vector3(-5.75, 4, -34.5)
+size = Vector3(8.5, 8, 1)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="WallNorthWingEast" type="CSGBox3D" parent="."]
+position = Vector3(4.75, 4, -34.5)
+size = Vector3(6.5, 8, 1)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="WallNorthWingHeader" type="CSGBox3D" parent="."]
+position = Vector3(0, 5.5, -34.5)
+size = Vector3(3, 5, 1)
 material = ExtResource("wallpaper")
 use_collision = true
 

@@ -32,7 +32,7 @@ static func face(
 	root.set_meta("shell_faces", faces)
 
 
-static func rebuild(world: Node3D) -> void:
+static func rebuild(world: Node3D, materials: Dictionary[String, Material] = {}) -> void:
 	var old := world.get_node_or_null("Structure")
 	if old != null:
 		old.free()
@@ -95,7 +95,7 @@ static func rebuild(world: Node3D) -> void:
 				for vertex: int in triangle:
 					collision.append(vertices[vertex])
 	for group: String in groups:
-		_surface(structure, group, vertices, groups[group])
+		_surface(structure, group, vertices, groups[group], materials)
 	var body := StaticBody3D.new()
 	body.name = "ShellCollision"
 	var collider := CollisionShape3D.new()
@@ -140,7 +140,11 @@ static func _split_edges(
 
 
 static func _surface(
-	root: Node3D, group: String, vertices: PackedVector3Array, indices: PackedInt32Array
+	root: Node3D,
+	group: String,
+	vertices: PackedVector3Array,
+	indices: PackedInt32Array,
+	materials: Dictionary[String, Material]
 ) -> void:
 	var normals := PackedVector3Array()
 	normals.resize(vertices.size())
@@ -163,7 +167,9 @@ static func _surface(
 	var node := MeshInstance3D.new()
 	node.name = group.capitalize()
 	node.mesh = mesh
-	node.material_override = {"floor": FLOOR, "wall": WALL, "grey": GREY, "roof": ROOF}[group]
+	node.material_override = materials.get(
+		group, {"floor": FLOOR, "wall": WALL, "grey": GREY, "roof": ROOF}.get(group, GREY)
+	)
 	root.add_child(node)
 	if group == "roof":
 		node.add_to_group(&"lab_roofs")

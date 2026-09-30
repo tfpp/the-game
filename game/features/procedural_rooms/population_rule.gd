@@ -22,3 +22,7 @@ extends Resource
 	AABB(Vector3(-21, -0.1, 0), Vector3(2, 4, 42)),
 	AABB(Vector3(19, -0.1, 0), Vector3(2, 4, 42))
 ]
+
+## Optional catalogue. Empty retains the existing garage set contract.
+@export var set_definitions: Array[ProceduralSetDefinition] = []
+@export var room_tag := ""

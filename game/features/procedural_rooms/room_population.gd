@@ -7,6 +7,8 @@ const FOOTPRINT := Vector3(8, 3.5, 8)
 
 
 static func plan(rule: ProceduralPopulationRule, seed_value: int) -> Array[Dictionary]:
+	if not rule.set_definitions.is_empty():
+		return _catalogue_plan(rule, seed_value)
 	var result: Array[Dictionary] = []
 	if rule.allowed_yaws.is_empty() or rule.allowed_sets.is_empty():
 		return result
@@ -65,5 +67,76 @@ static func populate(room: Node3D, rule: ProceduralPopulationRule, seed_value: i
 		anchor.name = "Slot%d_%s" % [index, value["kind"]]
 		root.add_child(anchor)
 		anchor.rotation.y = value["yaw"]
-		anchor.position = value["center"] - anchor.basis * Vector3(0, 0, 4)
-		Showcase.set_piece(anchor, value["kind"])
+		if value.has("scene"):
+			anchor.position = value["center"]
+			anchor.add_child((value["scene"] as PackedScene).instantiate())
+		else:
+			anchor.position = value["center"] - anchor.basis * Vector3(0, 0, 4)
+			Showcase.set_piece(anchor, value["kind"])
+
+
+static func _catalogue_plan(rule: ProceduralPopulationRule, seed_value: int) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var random := RandomNumberGenerator.new()
+	random.seed = seed_value
+	var occupied: Array[AABB] = []
+	for slot: Vector3 in rule.slots:
+		if random.randf() > clampf(rule.density, 0, 1):
+			continue
+		var candidates: Array[Dictionary] = []
+		var total := 0.0
+		for definition: ProceduralSetDefinition in rule.set_definitions:
+			var index := rule.allowed_sets.find(definition.id)
+			if index < 0 or definition.scene == null:
+				continue
+			if (
+				not definition.allowed_rooms.is_empty()
+				and rule.room_tag not in definition.allowed_rooms
+			):
+				continue
+			var weight := rule.weights[index] if index < rule.weights.size() else 1.0
+			if (
+				weight <= 0
+				or definition.footprint.x <= 0
+				or definition.footprint.y <= 0
+				or definition.footprint.z <= 0
+			):
+				continue
+			var options: Array[Dictionary] = []
+			for yaw: float in rule.allowed_yaws:
+				if not is_finite(yaw) or absf(wrapf(yaw, -PI / 4, PI / 4)) > .0001:
+					continue
+				var size := definition.footprint
+				if absi(roundi(yaw / (PI * .5))) % 2 == 1:
+					size = Vector3(size.z, size.y, size.x)
+				var bounds := AABB(slot - Vector3(size.x * .5, 0, size.z * .5), size)
+				var blocked := not rule.placement_bounds.encloses(bounds)
+				for reserved: AABB in rule.forbidden_volumes + occupied:
+					blocked = blocked or bounds.intersects(reserved)
+				if not blocked:
+					options.append(
+						{
+							"kind": definition.id,
+							"center": slot,
+							"yaw": yaw,
+							"bounds": bounds,
+							"scene": definition.scene
+						}
+					)
+			if not options.is_empty():
+				candidates.append({"options": options, "weight": weight})
+				total += weight
+		if candidates.is_empty():
+			continue
+		var roll := random.randf() * total
+		var selected: Dictionary = candidates.back()
+		for candidate: Dictionary in candidates:
+			roll -= candidate["weight"]
+			if roll < 0:
+				selected = candidate
+				break
+		var options: Array = selected["options"]
+		var placement: Dictionary = options[random.randi_range(0, options.size() - 1)]
+		result.append(placement)
+		occupied.append(placement["bounds"])
+	return result

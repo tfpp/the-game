@@ -7,6 +7,10 @@ const STEEL := preload("res://features/procedural_rooms/materials/grey.tres")
 const HAZARD := preload("res://features/procedural_rooms/materials/hazard.tres")
 const ELEVATOR_MODEL := preload("res://features/procedural_rooms/elevator_door_model.tscn")
 const LIFT := preload("res://features/procedural_rooms/materials/elevator.tres")
+@export var door_label := "garage door"
+@export var panel_material: StandardMaterial3D
+@export var frame_material: StandardMaterial3D
+@export var panel_depth := .14
 @export var net_open := false
 @export var managed_by_lift := false
 var _amount := 0.0
@@ -22,8 +26,8 @@ func _ready() -> void:
 		add_child(model)
 		_leaves = [model.get_node("LeftLeaf"), model.get_node("RightLeaf")]
 	else:
-		var steel := _attached_material(STEEL)
-		var hazard := _attached_material(HAZARD)
+		var steel := _attached_material(panel_material if panel_material != null else STEEL)
+		var hazard := _attached_material(frame_material if frame_material != null else HAZARD)
 		var glass := _attached_material(LIFT)
 		for side: float in [-1.0, 1.0]:
 			Kit.box(
@@ -31,20 +35,30 @@ func _ready() -> void:
 				"Frame%s" % side,
 				Vector3(0.16, 3.15, 0.24),
 				Vector3(side * 1.58, 1.575, 0),
-				HAZARD
+				hazard
 			)
 			var leaf := Node3D.new()
 			leaf.name = "Leaf%s" % side
 			add_child(leaf)
-			Kit.box(leaf, "Panel", Vector3(1.49, 2.98, 0.14), Vector3(0, 1.49, 0), steel)
+			Kit.box(leaf, "Panel", Vector3(1.49, 2.98, panel_depth), Vector3(0, 1.49, 0), steel)
 			Kit.box(
-				leaf, "Stripe", Vector3(1.49, 0.18, 0.015), Vector3(0, 0.75, -0.08), hazard, false
+				leaf,
+				"Stripe",
+				Vector3(1.49, 0.18, 0.015),
+				Vector3(0, 0.75, -panel_depth * .5 - .01),
+				hazard,
+				false
 			)
 			Kit.box(
-				leaf, "Window", Vector3(0.68, 0.5, 0.015), Vector3(0, 2.25, -0.08), glass, false
+				leaf,
+				"Window",
+				Vector3(0.68, 0.5, 0.015),
+				Vector3(0, 2.25, -panel_depth * .5 - .01),
+				glass,
+				false
 			)
 			_leaves.append(leaf)
-		Kit.box(self, "Track", Vector3(3.32, 0.16, 0.24), Vector3(0, 3.08, 0), HAZARD)
+		Kit.box(self, "Track", Vector3(3.32, 0.16, 0.24), Vector3(0, 3.08, 0), hazard)
 	entity.register_use(_can_use, _toggle, 0.45)
 	entity.session_reset.connect(_reset)
 	_update_leaves()
@@ -104,7 +118,7 @@ func can_use(player: Player) -> bool:
 
 
 func interaction_text() -> String:
-	return "Close garage door" if net_open else "Open garage door"
+	return ("Close " if net_open else "Open ") + door_label
 
 
 func _reset(_mode: Network.Mode) -> void:
