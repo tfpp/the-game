@@ -9,7 +9,7 @@
 script = ExtResource("1_script")
 
 [node name="Entrance" parent="." instance=ExtResource("2_portal")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -29)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 306, 0, -306.5)
 label = "Enter the Shooting Gallery"
 destination = Vector3(80, 1.2, 6)
 destination_yaw = 0.0
@@ -65,7 +65,7 @@ use_collision = true
 [node name="Exit" parent="Arena" instance=ExtResource("2_portal")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11)
 label = "Exit to the casino"
-destination = Vector3(16, 1.2, -25)
+destination = Vector3(306, 1.2, -303.5)
 destination_yaw = 3.14159
 
 [node name="Sign" parent="Arena/Exit"]

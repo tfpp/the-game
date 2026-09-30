@@ -5,7 +5,7 @@ const ROOM_SCENES: Array[String] = [
 	"res://features/room_doors/feature.tscn",
 	"res://features/hotel_annex/feature.tscn",
 	"res://features/apartments/feature.tscn",
-	"res://features/parking_garage/feature.tscn",
+	"res://features/dev_room/feature.tscn",
 ]
 
 var _gps: Gps
@@ -90,16 +90,12 @@ func test_real_doors_route_from_the_casino_to_the_wine_cellar() -> void:
 	var hop := GpsRoute.next_hop(
 		_gps.regions(), _gps.links(), Vector3(0, -1.5, 0), cellar.global_position
 	)
+	assert_eq(hop["door"], "Enter the dev room")
+	hop = GpsRoute.next_hop(
+		_gps.regions(), _gps.links(), _find("Dev Room").global_position, cellar.global_position
+	)
 	assert_eq(hop["door"], "Enter the lounge")
-	var garage := _find("Parking Garage")
-	hop = GpsRoute.next_hop(
-		_gps.regions(), _gps.links(), Vector3(0, -1.5, 0), garage.global_position
-	)
-	assert_eq(hop["door"], "Enter the parking garage")
-	hop = GpsRoute.next_hop(
-		_gps.regions(), _gps.links(), garage.global_position, _find("Kaaba").global_position
-	)
-	assert_eq(hop["door"], "Back to the casino")
+	assert_null(_find("Parking Garage"), "The old garage mock-up has no door any more")
 
 
 func test_heading_is_clockwise_from_facing() -> void:

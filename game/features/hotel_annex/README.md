@@ -1,6 +1,6 @@
 # Hotel wing
 
-Use **HOTEL WING** in the casino's south lobby to enter, and **CASINO** inside to return.
+Use **HOTEL WING** in the [dev room](../dev_room/README.md) to enter, and **CASINO** inside to return to it.
 Use is E, controller B/Circle, or the mobile Use button.
 
 Eight rooms connect through seven swinging doors. Anyone can open and close them;

@@ -13,10 +13,10 @@ position = Vector3(26, -22, -25)
 rotation = Vector3(0, -1.5707963, 0)
 
 [node name="CasinoArrival" type="Marker3D" parent="."]
-position = Vector3(12, 0.2, -13.5)
+position = Vector3(294, 0.2, -305.9)
 
 [node name="Entrance" type="CSGBox3D" parent="."]
-position = Vector3(12, 1.1, -15.5)
+position = Vector3(294, 1.1, -307.8)
 rotation = Vector3(0, 1.5707963, 0)
 size = Vector3(0.2, 2.2, 1.4)
 material = ExtResource("5_paint")
@@ -40,10 +40,10 @@ modulate = Color(0.6, 1, 1, 1)
 [node name="Destinations" type="Node3D" parent="."]
 
 [node name="Portal" type="Marker3D" parent="Destinations"]
-position = Vector3(12, 0, -13.5)
+position = Vector3(294, 0, -305.9)
 script = ExtResource("4_gps")
 label = "Garage Teleporter"
-hint = "Beside the Golden Crown sign on the north promenade. Use the cyan teleporter."
+hint = "In the dev room, behind the DEV ROOM booth in the south lobby. Use the cyan teleporter."
 
 [node name="Garage" type="Marker3D" parent="Destinations"]
 position = Vector3(32, 0, -25)

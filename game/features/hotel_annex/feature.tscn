@@ -21,7 +21,7 @@ albedo_color = Color(0.2, 0.12, 0.065, 1)
 script = ExtResource("lighting")
 
 [node name="CasinoArrival" type="Marker3D" parent="."]
-position = Vector3(5, 1, 27)
+position = Vector3(306, 1, -293.8)
 
 [node name="Hotel" type="Node3D" parent="."]
 position = Vector3(0, 0, -1400)
@@ -65,7 +65,7 @@ destination = NodePath("../../CasinoArrival")
 door_label = "Return to the casino"
 
 [node name="EntranceModel" parent="." instance=ExtResource("model")]
-position = Vector3(5, 0, 29)
+position = Vector3(306, 0, -291.8)
 rotation = Vector3(0, 3.14159265, 0)
 
 [node name="Sign" type="Label3D" parent="EntranceModel"]
@@ -78,7 +78,7 @@ outline_size = 4
 
 [node name="Entrance" type="CSGBox3D" parent="."]
 visible = false
-position = Vector3(5, 1.35, 29)
+position = Vector3(306, 1.35, -291.8)
 script = ExtResource("door")
 destination = NodePath("../Hotel/Arrival")
 door_label = "Visit the hotel wing"

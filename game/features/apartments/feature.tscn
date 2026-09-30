@@ -19,7 +19,7 @@ properties/0/replication_mode = 2
 script = ExtResource("apartments")
 
 [node name="Entrance" type="CSGBox3D" parent="."]
-position = Vector3(-10, 1.2, 31)
+position = Vector3(290, 1.2, -291.75)
 size = Vector3(2, 2.4, 0.3)
 material = ExtResource("wood")
 use_collision = true
@@ -35,7 +35,7 @@ pixel_size = 0.006
 billboard = 1
 
 [node name="CasinoArrival" type="Marker3D" parent="."]
-position = Vector3(-10, 1.2, 29)
+position = Vector3(290, 1.2, -293.75)
 
 [node name="Lobby" type="Node3D" parent="."]
 position = Vector3(200, 0, 1200)
