@@ -9,7 +9,6 @@ extends StaticBody3D
 @onready var _body: MeshInstance3D = $BodyPaint
 @onready var _hood: MeshInstance3D = $HoodPaint
 @onready var _boot: MeshInstance3D = $BootLid
-@onready var _loot: LootContainer = get_node_or_null("Loot") as LootContainer
 
 
 func _ready() -> void:
@@ -21,11 +20,3 @@ func _ready() -> void:
 	_boot.set_surface_override_material(0, paint)
 	if damaged:
 		_hood.visible = false
-	set_process(_loot != null)
-
-
-func _process(delta: float) -> void:
-	if not is_instance_valid(_loot):
-		return
-	var target := -68.0 if _loot.net_searched else 0.0
-	_boot.rotation_degrees.z = move_toward(_boot.rotation_degrees.z, target, 150.0 * delta)

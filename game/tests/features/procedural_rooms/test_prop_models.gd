@@ -1,5 +1,6 @@
 extends GutTest
 
+const BOOT := preload("res://features/procedural_rooms/model_tools/car_boot_parts.gd")
 const PROP := preload("res://features/procedural_rooms/model_tools/prop_model.gd")
 const SCENES := [
 	preload("res://features/procedural_rooms/props/crate.tscn"),
@@ -92,11 +93,16 @@ func test_exported_glbs_include_all_parts_and_preserve_uv_associations() -> void
 	for index: int in exports.size():
 		var model := exports[index].instantiate() as Node3D
 		var meshes := model.find_children("*", "MeshInstance3D", true, false)
-		assert_eq(meshes.size(), 5 if kinds[index] == "car" else 1)
+		assert_eq(meshes.size(), 7 if kinds[index] == "car" else 1)
 		var arrays := (model.get_node("Visual") as MeshInstance3D).mesh.surface_get_arrays(0)
 		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 		var uv: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
-		var native := PROP.mesh(PROP.definition(kinds[index])).surface_get_arrays(0)
+		var native_mesh: ArrayMesh = (
+			BOOT.meshes()["body"]
+			if kinds[index] == "car"
+			else PROP.mesh(PROP.definition(kinds[index]))
+		)
+		var native := native_mesh.surface_get_arrays(0)
 		var expected: PackedVector2Array = native[Mesh.ARRAY_TEX_UV]
 		var positions: PackedVector3Array = native[Mesh.ARRAY_VERTEX]
 		for corner: int in expected.size():
@@ -149,3 +155,17 @@ func test_repeated_surfaces_share_islands_and_raise_visible_texture_quality() ->
 					"All wheels share body atlas and material"
 				)
 		model.free()
+
+
+func test_boot_parts_have_visible_faces_with_matching_winding_and_normals() -> void:
+	for mesh: ArrayMesh in BOOT.meshes().values():
+		var arrays := mesh.surface_get_arrays(0)
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+		for index: int in range(0, indices.size(), 3):
+			var a := indices[index]
+			var b := indices[index + 1]
+			var c := indices[index + 2]
+			var normal := -(vertices[b] - vertices[a]).cross(vertices[c] - vertices[a]).normalized()
+			assert_gt(normal.dot(normals[a]), .999)

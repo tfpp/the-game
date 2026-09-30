@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://features/parking_garage/car_wreck.gd" id="1_script"]
 [ext_resource type="Mesh" path="res://assets/parking_garage/models/wreck_body.obj" id="2_body"]
@@ -6,6 +6,8 @@
 [ext_resource type="Mesh" path="res://assets/parking_garage/models/wreck_trim.obj" id="4_trim"]
 [ext_resource type="Mesh" path="res://assets/parking_garage/models/wreck_boot.obj" id="5_boot"]
 [ext_resource type="Mesh" path="res://assets/parking_garage/models/wreck_cavity.obj" id="6_cavity"]
+
+[ext_resource type="PackedScene" path="res://features/parking_garage/car_boot.tscn" id="7_loot"]
 
 [sub_resource type="BoxShape3D" id="CarShape"]
 size = Vector3(4.25, 1.65, 1.9)
@@ -32,3 +34,6 @@ mesh = ExtResource("6_cavity")
 [node name="BootLid" type="MeshInstance3D" parent="."]
 position = Vector3(-1.1, 1, 0)
 mesh = ExtResource("5_boot")
+
+[node name="Loot" parent="." instance=ExtResource("7_loot")]
+position = Vector3(-1.65, 0.9, 0)

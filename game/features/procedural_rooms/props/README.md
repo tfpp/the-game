@@ -2,13 +2,13 @@
 
 Drag `barrel.tscn`, `crate.tscn` or `car.tscn` into any room. Each root is at floor
 centre, +Z is the car rear, and transforms place the entire visual/collision prefab.
-They are static cover props. Resources are shared across instances.
+They retain static cover collision. Cars have a hinged searchable boot. Resources are shared across instances.
 
 | Prefab | Bounds (metres) | Triangles | Materials | Texture density |
 | --- | --- | --- | --- | --- |
 | Crate | 1 × 1 × 1 | 12 | 1 | 124 px/m |
 | Barrel | .86 × 1.2 × .86 | 28 | 1 | 103 px/m |
-| Car | 1.74 × 1.45 × 4 | 140 | 1 | 28 px/m body, 56 wheels, 5.6 underside |
+| Car | 1.74 × 1.45 × 4 | 152 | 1 | 28 px/m body, 56 wheels, 5.6 underside |
 
 Runtime uses three 128×128 atlases, with mipmaps and nearest mipmap filtering. The
 crate's six faces share one panel. Barrel facets share one strip, and its caps share
@@ -54,3 +54,16 @@ Original prompts describe layout-v1; `uv_template.png` now shows the packed layo
 `--repack` uses the original source with `painting_layout_v1.json`; a direct source image
 argument must match the current layout instead. Higher-resolution sources remain outside
 `game/`. Assets and GLBs are under `game/assets/procedural_rooms/models/`.
+
+## Searchable boots
+
+Every car prefab includes `parking_garage/car_boot.tscn`, extending the existing
+server-owned `LootContainer`. Nearby rear-facing gaze opens its lid without
+rolling loot; normal Use searches the shared stash. Looking away closes it once
+the last active viewer leaves. Walls block gaze; the car cover hull stays fixed.
+The server derives opening from replicated player position/aim and replicates
+`net_boot_open` through `NetworkedInteraction`, including late arrivals.
+
+`car_boot_parts.gd` splits the original rear-deck face into a hinged lid, adds
+an underside and an inward-facing cavity, and reuses the existing atlas islands.
+The texture and wheel packing remain unchanged. The car GLB exports these parts.

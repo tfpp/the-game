@@ -1,0 +1,9 @@
+{
+  "title": "Searchable car boots",
+  "summary": "Look at a nearby car boot to open it, then search its shared stash.",
+  "notes": [
+    "Make every garage and basement car searchable through its boot.",
+    "Open boots when nearby players aim at them and keep them open while anyone searches.",
+    "Share boot animation and remaining loot across players, including late arrivals."
+  ]
+}

@@ -83,11 +83,11 @@ func test_wreck_models_keep_their_paint_collision_and_damaged_variant() -> void:
 	var boot := car.get_node("BootLid") as MeshInstance3D
 	var loot := car.get_node("Loot") as LootContainer
 	assert_almost_eq(boot.rotation_degrees.z, 0.0, 0.001)
-	loot.net_searched = true
-	car._process(0.5)
+	loot.set("net_boot_open", true)
+	loot._process(0.5)
 	assert_almost_eq(boot.rotation_degrees.z, -68.0, 0.001)
-	loot.reset()
-	car._process(0.5)
+	loot.set("net_boot_open", false)
+	loot._process(0.5)
 	assert_almost_eq(boot.rotation_degrees.z, 0.0, 0.001)
 
 

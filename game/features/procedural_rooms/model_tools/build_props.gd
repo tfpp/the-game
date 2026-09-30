@@ -2,6 +2,7 @@ extends SceneTree
 ## Build native meshes, UV guides and GLBs. Args: optional model kind and source atlas.
 
 const PROP := preload("res://features/procedural_rooms/model_tools/prop_model.gd")
+const BOOT := preload("res://features/procedural_rooms/model_tools/car_boot_parts.gd")
 const UV := preload("res://features/procedural_rooms/model_tools/uv_model.gd")
 
 
@@ -90,6 +91,19 @@ func _initialize() -> void:
 		model.add_child(visual)
 		visual.owner = model
 		if kind == "car":
+			var parts := BOOT.meshes()
+			for part: String in parts:
+				ResourceSaver.save(parts[part], path + "/boot_" + part + ".tres")
+			visual.mesh = parts["body"]
+			for part: String in ["lid", "interior"]:
+				var piece := MeshInstance3D.new()
+				piece.name = "BootLid" if part == "lid" else "BootInterior"
+				piece.mesh = parts[part]
+				piece.material_override = material
+				if part == "lid":
+					piece.position = BOOT.PIVOT
+				model.add_child(piece)
+				piece.owner = model
 			_add_wheels(model, material)
 		var document := GLTFDocument.new()
 		var state := GLTFState.new()
