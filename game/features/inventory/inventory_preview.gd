@@ -38,8 +38,9 @@ func _ready() -> void:
 	world.add_child(environment)
 
 
-func show_clothing(shirt: String, pants: String) -> void:
+func show_clothing(shirt: String, pants: String, hat := "") -> void:
 	model.set_clothing(shirt, pants)
+	model.set_hat(hat)
 	_redraw()
 
 
