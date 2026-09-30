@@ -214,3 +214,24 @@ triplanar projection rather than sampling stationary world coordinates.
 
 See [the elevator authoring notes](../../../docs/design/model-sources/elevator/README.md)
 for the packed UV guide, generated source/prompt, native builder and exported GLB.
+
+## Garage atmosphere
+
+`garage_lights.gd` hangs 12 seeded fluorescent tubes under each deck ceiling (never
+over the atrium). `plan()` picks steady, flickering or dead tubes from the layout seed;
+B1 loses few tubes and B5 the most. Two tubes per deck carry the only deck lights
+(range 12) and a 120 Hz hum, and never die, so every floor keeps readable pools of
+light. `flicker_level()` gives short stutters every few seconds. Flicker, hum and all
+atmosphere are local presentation computed from the seed and clock on each client;
+nothing is replicated, and it only updates within 36 m of the deck.
+
+`garage_atmosphere.gd` (live game only, added by `playable_world.gd`) swaps the
+camera to a dark, foggy copy of the environment and hides the unshadowed sun while
+the camera is inside the garage, restoring both on exit, like the annex's interior
+lighting. It also runs CPU rain, rain audio and a wet pool in the central atrium.
+The live structure uses the weathered 128×128 textures in
+`res://assets/procedural_rooms/garage_textures/`; regenerate them with:
+
+```sh
+godot --headless --path game -s res://features/procedural_rooms/tools/build_garage_textures.gd
+```

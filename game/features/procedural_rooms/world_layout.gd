@@ -10,6 +10,7 @@ const GPS := preload("res://features/gps/gps_destination.gd")
 const DOOR := preload("res://features/procedural_rooms/sliding_door.tscn")
 const Population := preload("res://features/procedural_rooms/room_population.gd")
 const RULE := preload("res://features/procedural_rooms/garage_population.tres")
+const Lights := preload("res://features/procedural_rooms/garage_lights.gd")
 
 
 static func build(
@@ -98,7 +99,7 @@ static func build(
 		stop.position = Vector3(-2, 0, 7.5)
 		_destination(cab, "Elevator B%d" % (5 - floor_index), Vector3(0, 0, 4))
 		Population.populate(deck, _rule(floor_index, rules), seed_value + floor_index * 104729)
-		_decorate(deck, floor_index)
+		_decorate(deck, floor_index, seed_value)
 	for floor_index: int in 4:
 		var ramp := Kit.connector("Ramp%d" % floor_index, "ramp")
 		world.add_child(ramp)
@@ -283,7 +284,7 @@ static func _deck(id: String) -> Node3D:
 	return deck
 
 
-static func _decorate(deck: Node3D, index: int) -> void:
+static func _decorate(deck: Node3D, index: int, seed_value: int) -> void:
 	var titles: Array[String] = [
 		"PUMPS / SERVICE STORAGE",
 		"MAINTENANCE",
@@ -306,12 +307,10 @@ static func _decorate(deck: Node3D, index: int) -> void:
 	beacon.light_energy = 1.8
 	beacon.omni_range = 8
 	deck.add_child(beacon)
-	var light := OmniLight3D.new()
-	light.position = Vector3(0, 2.8, 6)
-	light.omni_range = 24
-	light.light_color = Color("f4c886") if index == 4 else Color("89cbd5")
-	light.light_energy = 1.2
-	deck.add_child(light)
+	var fluorescents := Lights.new()
+	fluorescents.name = "Fluorescents"
+	deck.add_child(fluorescents)
+	fluorescents.build(index, seed_value)
 
 
 static func _destination(module: Node3D, label: String, at: Vector3) -> void:

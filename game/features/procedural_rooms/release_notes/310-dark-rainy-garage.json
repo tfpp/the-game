@@ -1,0 +1,10 @@
+{
+  "title": "Dark, rainy basement garage",
+  "summary": "The basement garage is now dark and foggy, lit by humming fluorescent tubes that flicker, with rain falling through the central opening.",
+  "notes": [
+    "Darken the basement garage with local fog and dim ambient light while you are inside.",
+    "Generate humming fluorescent ceiling tubes on every floor; lower floors have more dead and flickering tubes.",
+    "Replace the developer grid textures with weathered concrete, ceiling and hazard-rail textures.",
+    "Add rain, rain sound and a wet pool to the central atrium."
+  ]
+}
