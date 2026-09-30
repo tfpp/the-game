@@ -32,6 +32,31 @@ func set_local_charge(charge: float) -> void:
 	_local_charge = charge
 
 
+## Read-only presentation shared with the avatar; only accepted server swings enter here.
+func arm_pose(peer: int) -> Dictionary:
+	if not _swing_left.has(peer):
+		return {}
+	var power := _swing_power[peer]
+	var total := POWER_SWING_S if power else SWING_S
+	return {"power": power, "reach": swing_reach(1.0 - _swing_left[peer] / total)}
+
+
+func forget_peer(peer: int) -> void:
+	_swing_left.erase(peer)
+	_swing_power.erase(peer)
+	if _views.has(peer):
+		_views[peer].queue_free()
+		_views.erase(peer)
+
+
+func reset() -> void:
+	for peer: int in _views.keys():
+		forget_peer(peer)
+	_swing_left.clear()
+	_swing_power.clear()
+	_local_charge = -1.0
+
+
 func swing(peer: int, power: bool) -> void:
 	_swing_left[peer] = POWER_SWING_S if power else SWING_S
 	_swing_power[peer] = power
@@ -72,7 +97,8 @@ func _pose(peer: int, reach: float, power: bool) -> void:
 	if player == null:
 		view.visible = false
 		return
-	view.visible = true
+	# The world avatar supplies the arms; floating cubes are first-person feedback only.
+	view.visible = player.is_local() and not (player.get_node("Body") as Node3D).visible
 	var eye := (
 		player.global_position
 		+ Vector3.UP * (player.movement.eye_height_m() - player.movement.hull_height_m() * 0.5)

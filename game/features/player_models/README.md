@@ -75,7 +75,11 @@ and white underwear keep their own colors.
 
 Stride phase advances with horizontal speed, with reversed steps when backing up
 and side lean when strafing. The model blends pose transitions and turns its head
-with view pitch. This adds no sprint binding or gameplay speed changes.
+with view pitch. This adds no sprint binding or gameplay speed changes. Accepted boxing swings
+layer a lead-arm extension and bent guard arm over locomotion, closing both fists
+on the skinned mesh. Jabs lead left; power punches lead right. Penguin flippers
+use the same arm pivots. `Boxing.arm_pose(peer)` is the read-only source; held
+items retain priority and the arms blend back to locomotion after the swing.
 
 Local models use the player's velocity and floor contact. Remote models use
 existing replicated velocity and a short floor ray to distinguish standing from
