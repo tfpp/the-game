@@ -53,7 +53,7 @@ expect_eq "$(jq -c '.["anthropic-omp"]' "$auth")" \
   '{"type":"oauth","access":"omp-managed-oauth-v1","refresh":"omp-managed-oauth-v1","expires":9007199254740991}' 'anthropic-omp marker'
 expect_eq "$(jq -c '.["openai-codex"]' "$auth")" \
   "{\"type\":\"oauth\",\"access\":\"$jwt\",\"refresh\":\"refresh\",\"expires\":1800000000000,\"accountId\":\"acct-jwt\"}" 'openai-codex login'
-expect_eq "$(jq -r .defaultProvider "$PI_CODING_AGENT_DIR/settings.json")" anthropic-omp 'default provider'
+expect_eq "$(jq -c '[.defaultProvider, .defaultModel, .defaultThinkingLevel]' "$PI_CODING_AGENT_DIR/settings.json")" '["openai-codex","gpt-6.1-sol","medium"]' 'default model'
 expect_eq "$(mode "$PI_CODING_AGENT_DIR")" 700 'agent dir mode'
 expect_eq "$(mode "$auth")" 600 'auth.json mode'
 for ext in anthropic-omp image-generation; do

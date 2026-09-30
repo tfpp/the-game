@@ -7,7 +7,8 @@
 #   CLAUDE_CODE_OAUTH_TOKEN  `claude setup-token` token; enables the anthropic-omp provider.
 #                            The caller exports it to pi as ANTHROPIC_OAUTH_TOKEN, which
 #                            the extension's backend reads when its own store is empty
-#   CODEX_AUTH_JSON          Codex ChatGPT auth.json; enables openai-codex (imagegen, search)
+#   CODEX_AUTH_JSON          Codex ChatGPT auth.json; enables openai-codex (the default
+#                            model, imagegen and web search)
 #   PI_WEB_ACCESS            npm spec of the web-access package (pinned default below)
 #
 # Installs harness/pi/extensions (anthropic-omp, image-generation) and pi-web-access into
@@ -66,8 +67,8 @@ fi
 printf '%s\n' "$auth" >"$dir/auth.json"
 chmod 600 "$dir/auth.json"
 
-jq -n '{defaultProvider: "anthropic-omp", defaultModel: "claude-opus-5-5",
-  defaultThinkingLevel: "low", quietStartup: true, packages: []}' >"$dir/settings.json"
+jq -n '{defaultProvider: "openai-codex", defaultModel: "gpt-6.1-sol",
+  defaultThinkingLevel: "medium", quietStartup: true, packages: []}' >"$dir/settings.json"
 
 mkdir -p "$dir/extensions"
 cp -R "$HARNESS_DIR/pi/extensions/." "$dir/extensions/"

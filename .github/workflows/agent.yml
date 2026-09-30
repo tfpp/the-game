@@ -149,13 +149,15 @@ jobs:
           cat "$RUNNER_TEMP/task.md"
       - name: Run agent
         env:
-          # pi uses both logins: Claude for its model, ChatGPT for imagegen and web search.
+          # pi uses both logins: ChatGPT for its default model, imagegen and web search;
+          # Claude for the anthropic-omp provider.
           CLAUDE_CODE_OAUTH_TOKEN: ${{ (needs.gate.outputs.agent == 'claude' || needs.gate.outputs.agent == 'pi') && secrets.CLAUDE_CODE_OAUTH_TOKEN || '' }}
           CODEX_AUTH_JSON: ${{ (needs.gate.outputs.agent == 'codex' || needs.gate.outputs.agent == 'pi') && secrets.CODEX_AUTH_JSON || '' }}
           CODEX_MODEL: ${{ vars.CODEX_MODEL }}
           PI_MODEL: ${{ vars.PI_MODEL }}
           HARNESS_MODEL: ${{ vars.AGENT_MODEL }}
-          HARNESS_REASONING_EFFORT: ${{ vars.AGENT_REASONING_EFFORT || 'low' }}
+          # Empty: run.sh's per-agent default (Claude low, Codex and pi medium).
+          HARNESS_REASONING_EFFORT: ${{ vars.AGENT_REASONING_EFFORT }}
           HARNESS_MAX_TURNS: ${{ vars.AGENT_MAX_TURNS }}
           AGENT: ${{ needs.gate.outputs.agent }}
           MODE: ${{ needs.gate.outputs.mode }}

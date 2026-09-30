@@ -20,7 +20,7 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    `BOT_FEATURE_CHANNEL_ID`). Both parameters are required. The selected harness is
    saved with the feature and used for its initial run, queued runs, `/revise`, and
    automatic conflict resolution, including after bot restarts. Claude defaults to
-   **Opus 5.5** with low effort; Codex defaults to **GPT-6 Astra** with low reasoning.
+   **Opus 5.5** with low effort; Codex defaults to **GPT-6.1 Sol** with medium reasoning.
    Configure both credentials in [the harness setup](../harness/README.md#setup).
    The user needs `BOT_REQUESTER_ROLE_ID`. The bot reserves a run against the limits,
    opens an issue whose body ends in `Requested-by: <name> <discord:<id>>` (the harness

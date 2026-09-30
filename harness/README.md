@@ -121,13 +121,14 @@ pricing is shown as unavailable, never silently replaced with zero. An automatic
 merge that does not invoke an agent reports no model, zero tokens and zero cost.
 
 Costs are **API-equivalent estimates, not subscription charges**. Claude and pi supply
-API-price estimates. Codex's `gpt-6-astra` estimate uses standard short-context rates
-per million tokens: $10 uncached input, $1 cached input, $12.50 cache writes and $50
-output ([OpenAI pricing](https://developers.openai.com/api/docs/pricing), checked
-2026-09-28). It excludes separate tool fees, fast-mode pricing and long-context premiums.
+API-price estimates. Codex estimates use standard short-context rates per million tokens
+([OpenAI pricing](https://developers.openai.com/api/docs/pricing), checked 2026-09-30):
+`gpt-6.1-sol` (the default) $2 uncached input, $0.10 cached input, $2.50 cache writes and
+$10 output; `gpt-6-astra` $10, $1, $12.50 and $50. They exclude separate tool fees,
+fast-mode pricing and long-context premiums.
 Turn-level telemetry aggregates multiple requests, so the adapter cannot determine
 which requests crossed the 272K-input long-context threshold. Unsupported model
-overrides report unavailable cost rather than using Astra's rates.
+overrides report unavailable cost rather than borrowing another model's rates.
 
 These fields come from the untrusted agent job and are informational: the publisher
 bounds numeric values and validates model IDs before rendering them. The human PR
@@ -154,11 +155,11 @@ bounds numeric values and validates model IDs before rendering them. The human P
      sharing one login may also require reauthentication. Discord `/usage` needs a
      separate mount of that account's `auth.json` on the bot via `BOT_CODEX_AUTH_FILE`;
      GitHub Secrets are not available to the bot. See [bot setup](../bot/README.md).
-   - **pi:** no new secrets. It reuses both logins above: `CLAUDE_CODE_OAUTH_TOKEN`
-     drives the model through the vendored `anthropic-omp` provider, and
-     `CODEX_AUTH_JSON` becomes pi's `openai-codex` login for `imagegen` and Codex-backed
-     web search (`pi-web-access` otherwise falls back to zero-config Exa). Either secret
-     alone is enough to start; the default model needs the Claude token.
+   - **pi:** no new secrets. It reuses both logins above: `CODEX_AUTH_JSON` becomes
+     pi's `openai-codex` login for the default model, `imagegen` and Codex-backed web
+     search, and `CLAUDE_CODE_OAUTH_TOKEN` enables the vendored `anthropic-omp` provider
+     (for example `PI_MODEL=anthropic-omp/claude-opus-5-5`). Either secret alone is
+     enough to start; the default model needs the Codex login.
      `harness/pi-setup.sh` builds a private `PI_CODING_AGENT_DIR` in `$RUNNER_TEMP`,
      copies `pi/extensions/` there, installs the extension's Bun runtime (and its Linux
      native addon) plus `pi-web-access`, and writes `auth.json`. The Claude token is
@@ -185,9 +186,10 @@ bounds numeric values and validates model IDs before rendering them. The human P
      as `anthropics/claude-code-action`. That endpoint is internal to the action and
      could change. Commits and PRs appear as `claude[bot]`.
 4. **Optional variables:** `AGENT_MODEL` (Claude; defaults to `claude-opus-5-5`, Opus
-   5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6-astra`, GPT-6 Astra), `PI_MODEL`
-   (pi, as `provider/id`; defaults to `anthropic-omp/claude-opus-5-5`), `PI_VERSION`
-   (defaults to `0.99.1`), `AGENT_REASONING_EFFORT` (all three; defaults to `low`), `AGENT_MAX_TURNS`,
+   5.5), `CODEX_MODEL` (Codex; defaults to `gpt-6.1-sol`, GPT-6.1 Sol), `PI_MODEL`
+   (pi, as `provider/id`; defaults to `openai-codex/gpt-6.1-sol`), `PI_VERSION`
+   (defaults to `0.99.1`), `AGENT_REASONING_EFFORT` (overrides every agent; unset, Claude
+   uses `low` and Codex and pi use `medium`), `AGENT_MAX_TURNS`,
    `AGENT_ATTEMPTS` (default 3), `AGENT_TRUSTED_BOTS` (comma-separated logins, such as
    the bot App's `<slug>[bot]`). Existing model variables override these defaults;
    remove or update old overrides to use the new defaults.
@@ -210,8 +212,9 @@ echo "Add a jump pad that launches players upward" > /tmp/task.md
 harness/run.sh --agent claude --mode implement --branch agent/0-jump-pad --task /tmp/task.md --out /tmp/run
 ```
 
-All three adapters use the same model/low-reasoning defaults locally and on
-retries/resumes. Override with `HARNESS_MODEL` and `HARNESS_REASONING_EFFORT` (pi's
+All three adapters use the same model and reasoning defaults locally and on
+retries/resumes: Claude `claude-opus-5-5` with low effort, Codex `gpt-6.1-sol` and pi
+`openai-codex/gpt-6.1-sol` with medium effort. Override with `HARNESS_MODEL` and `HARNESS_REASONING_EFFORT` (pi's
 `--thinking` level). `result.json` records the effort as `reasoning_effort`, and publish
 shows it in the PR's Agent Usage section and the 🤖 comments. Locally, pi uses your own
 `~/.pi/agent` login and extensions unless `PI_CODING_AGENT_DIR` points elsewhere.

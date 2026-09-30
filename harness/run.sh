@@ -154,15 +154,17 @@ cost_basis='[]'
 model="${HARNESS_MODEL:-}"
 case "$agent" in
   claude) model="${model:-claude-opus-5-5}" ;;
-  codex) model="${model:-gpt-6-astra}" ;;
-  pi) model="${model:-anthropic-omp/claude-opus-5-5}" ;;
+  codex) model="${model:-gpt-6.1-sol}" ;;
+  pi) model="${model:-openai-codex/gpt-6.1-sol}" ;;
 esac
 export HARNESS_MODEL="$model"
-# Record the reasoning effort the adapter is given (null for adapters that take none).
+# Pin and record the reasoning effort the adapter is given (null for adapters that take none).
 effort="${HARNESS_REASONING_EFFORT:-}"
 case "$agent" in
-  claude | codex | pi) effort="${effort:-low}" ;;
+  claude) effort="${effort:-low}" ;;
+  codex | pi) effort="${effort:-medium}" ;;
 esac
+[[ -n "$effort" ]] && export HARNESS_REASONING_EFFORT="$effort"
 # add_usage: adds the last adapter call's usage.json to $usage. A missing cost makes the
 # total's cost unknown.
 add_usage() {
