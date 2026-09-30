@@ -1,0 +1,7 @@
+{
+  "title": "Everyone does the 6-7",
+  "summary": "When anyone's wallet hits $67, every player in the casino does the 6-7 emote.",
+  "notes": [
+    "Make every player do the 6-7 hand emote whenever a wallet lands on $67, ignoring cents."
+  ]
+}

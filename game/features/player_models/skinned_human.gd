@@ -13,6 +13,8 @@ const HAIR := preload("res://assets/player_models/textures/hair.png")
 const GEAR := preload("res://assets/player_models/textures/gear.png")
 const LEATHER := preload("res://assets/player_models/textures/leather.png")
 const DIGITS: Array[String] = ["Thumb", "Index", "Middle", "Ring", "Little"]
+## Hand rotation for the 6-7 pose: fingers forward, palm facing the sky.
+const PALM_UP := Basis(Vector3.RIGHT, PI / 2.0)
 
 var skeleton: Skeleton3D
 var surface: MeshInstance3D
@@ -217,6 +219,29 @@ func flip_off(world_wrist: Vector3, facing: Basis, weight: float) -> void:
 	for index: int in rotations:
 		var target := skeleton.get_bone_pose_rotation(index)
 		skeleton.set_bone_pose_rotation(index, rotations[index].slerp(target, blend))
+
+
+## The "6-7" meme: both palms up in front of the chest, see-sawing like scales.
+## `left_wrist`/`right_wrist` are world targets; `facing` is the body basis.
+func six_seven(left_wrist: Vector3, right_wrist: Vector3, facing: Basis, weight: float) -> void:
+	var blend := clampf(weight, 0.0, 1.0)
+	if blend <= 0.0:
+		return
+	for right: bool in [false, true]:
+		var hand := skeleton.find_bone("HandR" if right else "HandL")
+		var current := skeleton.get_bone_global_pose(hand)
+		var target := right_wrist if right else left_wrist
+		reach_grip(right, skeleton.to_global(current.origin).lerp(target, blend), true)
+		var rest := skeleton.get_bone_global_rest(hand).basis.orthonormalized()
+		var desired := skeleton.global_basis.orthonormalized().inverse() * facing * PALM_UP * rest
+		var orientation := current.basis.orthonormalized().slerp(desired, blend)
+		var parent := (
+			skeleton.get_bone_global_pose(skeleton.get_bone_parent(hand)).basis.orthonormalized()
+		)
+		skeleton.set_bone_pose_rotation(
+			hand, (parent.inverse() * orientation).get_rotation_quaternion()
+		)
+		set_finger_curl(right, 0.1 * blend)
 
 
 func orient_grip(right: bool, world_basis: Basis) -> void:

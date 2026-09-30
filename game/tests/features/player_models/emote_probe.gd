@@ -12,7 +12,7 @@ func _ready() -> void:
 	add_child(models)
 	models.set_process(false)
 	models._process(0)
-	models.emotes = {1: {"name": "flip_off", "started": 0.0}}
+	models.emotes = {1: {"name": str(Network.args.get("emote-name", "flip_off")), "started": 0.0}}
 	models.emote_clock = float(Network.args.get("emote-elapsed", "1.0"))
 	var avatar := player.get_node("Body/Avatar") as BlockPlayerModel
 	avatar.set_process(false)
