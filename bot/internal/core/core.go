@@ -57,6 +57,8 @@ type Chat interface {
 	// nil, a button whose custom ID reaches the Discord adapter when pressed. content may
 	// mention only the users in ping.
 	PostEmbed(ctx context.Context, threadID, content string, embed Embed, button *Button, ping ...string) error
+	// CloseThread archives a thread. A later post in it reopens it.
+	CloseThread(ctx context.Context, threadID string) error
 }
 
 // Deployer asks the host to deploy game server and accounts API builds. Nil turns
@@ -511,7 +513,11 @@ func (s *Service) Close(ctx context.Context, req CloseRequest, r Responder) erro
 		}
 		msg += fmt.Sprintf(" I couldn't close issue #%d on GitHub; a maintainer can close it there.", job.Issue)
 	}
-	return r.Respond(ctx, msg)
+	if err := r.Respond(ctx, msg); err != nil {
+		return err
+	}
+	s.closeThread(ctx, job)
+	return nil
 }
 
 func (s *Service) reserve(ctx context.Context, userID string, jobID int64, mode, instructions string) (store.Run, error) {
@@ -784,6 +790,54 @@ func (s *Service) closeDeclined(ctx context.Context, job store.Job) {
 	}
 	s.card(ctx, job, Embed{Title: "🔒 Issue closed", Color: colorNeutral, Description: fmt.Sprintf(
 		"I closed issue #%d since the agent made no changes. Use `/feature` to ask again with more detail.", job.Issue)})
+	s.closeThread(ctx, job)
+}
+
+// Issue handles issues events. A feature's issue closed on GitHub before any PR exists
+// ends the feature and closes its thread; reopening it reopens the feature. Once a PR
+// exists, the PR decides (merging it closes the issue too).
+func (s *Service) Issue(ctx context.Context, action string, number int) error {
+	if action != "closed" && action != "reopened" {
+		return nil
+	}
+	job, err := s.st.JobByIssue(ctx, number)
+	if errors.Is(err, store.ErrNotFound) {
+		return nil
+	} else if err != nil {
+		return err
+	}
+	if job.PR != 0 {
+		return nil
+	}
+	now := s.cfg.Now()
+	if action == "reopened" {
+		if job.State != store.JobClosed {
+			return nil
+		}
+		s.card(ctx, job, Embed{Title: "↩️ Issue reopened", URL: s.issueURL(number), Color: colorInfo,
+			Description: fmt.Sprintf("Issue #%d was reopened.", number)})
+		return s.st.SetJobState(ctx, job.ID, store.JobOpen, now)
+	}
+	if job.State != store.JobOpen {
+		return nil // closed by /close or the bot, which said so
+	}
+	if run, err := s.st.ActiveRunForJob(ctx, job.ID); err == nil {
+		if run.Status != store.RunWaiting {
+			// The agent is working on it; its result (a PR, or none) decides.
+			s.log.Info("issue closed during an agent run", "issue", number, "run", run.ID)
+			return nil
+		}
+		s.failRun(ctx, run.ID)
+	} else if !errors.Is(err, store.ErrNotFound) {
+		return err
+	}
+	if err := s.st.SetJobState(ctx, job.ID, store.JobClosed, now); err != nil {
+		return err
+	}
+	s.card(ctx, job, Embed{Title: "🔒 Issue closed", URL: s.issueURL(number), Color: colorNeutral,
+		Description: fmt.Sprintf("Issue #%d was closed on GitHub.", number)})
+	s.closeThread(ctx, job)
+	return nil
 }
 
 // PullRequest handles pull_request events for agent branches.
@@ -816,20 +870,37 @@ func (s *Service) PullRequest(ctx context.Context, ev github.PullRequestEvent) e
 		}
 	case "closed":
 		defer s.Kick()
+		// Wait out a coordinator step or /close in progress, then look again: either may
+		// have just merged or closed this PR and said so.
+		s.mergeMu.Lock()
+		defer s.mergeMu.Unlock()
+		if job, err = s.st.JobByID(ctx, job.ID); err != nil {
+			return err
+		}
 		if ev.PullRequest.Merged {
 			if job.State == store.JobMerged {
 				return nil // the merge coordinator merged it and said so
 			}
+			if err := s.st.SetJobState(ctx, job.ID, store.JobMerged, now); err != nil {
+				return err
+			}
+			// Announce the deploy containing it, and close the thread then.
+			if err := s.st.RecordMerge(ctx, job.ID, ev.Number, ev.PullRequest.MergeCommitSHA, now); err != nil {
+				return err
+			}
 			s.card(ctx, job, Embed{Title: "🎉 PR merged", URL: s.pullURL(ev.Number), Color: colorSuccess,
 				Description: fmt.Sprintf("%s was merged. It ships with the next deploy.", s.prLabel(ev.Number))}, job.RequesterID)
-			return s.st.SetJobState(ctx, job.ID, store.JobMerged, now)
+			return nil
 		}
 		if job.State == store.JobClosed {
 			return nil // closed with /close, which said so
 		}
+		if err := s.st.SetJobState(ctx, job.ID, store.JobClosed, now); err != nil {
+			return err
+		}
 		s.card(ctx, job, Embed{Title: "🔒 PR closed", URL: s.pullURL(ev.Number), Color: colorNeutral,
 			Description: fmt.Sprintf("%s was closed without merging.", s.prLabel(ev.Number))})
-		return s.st.SetJobState(ctx, job.ID, store.JobClosed, now)
+		s.closeThread(ctx, job)
 	}
 	return nil
 }

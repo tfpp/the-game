@@ -592,6 +592,15 @@ func (s *Store) Enqueue(ctx context.Context, m Merge, now time.Time) (Merge, err
 	return m, nil
 }
 
+// RecordMerge records a PR merged outside the queue (on GitHub) as sha, so the deploy
+// that contains it is announced like a queued merge.
+func (s *Store) RecordMerge(ctx context.Context, jobID int64, pr int, sha string, now time.Time) error {
+	return s.exec(ctx,
+		`INSERT INTO merges (job_id, pr, approved_sha, head_sha, approver_id, approver_name, status, merged_sha,
+			created_at, updated_at) VALUES (?, ?, '', '', '', 'GitHub', ?, ?, ?, ?)`,
+		jobID, pr, MergeMerged, sha, now.Unix(), now.Unix())
+}
+
 const mergeCols = `id, job_id, pr, approved_sha, head_sha, approver_id, approver_name, status, detail,
 	merged_sha, announced, created_at, updated_at`
 

@@ -1,7 +1,7 @@
 # Quest 3 / WebXR
 
 Open the game's HTTPS URL in Quest Browser, join normally (or choose **Play
-offline**), then open the menu → **Quest / WebXR** → **Enter VR**. Accept the
+offline**), then open the menu → **More** → **Quest / WebXR** → **Enter VR**. Accept the
 browser's immersive-session permission. Desktop and unsupported browsers show an
 explanation and keep ordinary play available. Entry must be a button press; it
 never starts automatically.

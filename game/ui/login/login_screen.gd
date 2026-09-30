@@ -16,7 +16,7 @@ extends CanvasLayer
 ## Styled with Kenney's UI Pack (ui/theme/ui_theme.tres).
 
 const MODAL_GROUP := &"modal_ui"
-## Feature panels that want an entry here (e.g. Controls, Release notes) join this group
+## Feature panels that want an entry here (e.g. Settings, Release notes) join this group
 ## and implement `esc_menu_label() -> String` and `esc_menu_open() -> void`, and
 ## optionally `esc_menu_icon() -> Texture2D` (a white icon, tinted by the theme).
 const ESC_MENU_LINKS_GROUP := &"esc_menu_links"
@@ -40,6 +40,11 @@ var _api: AccountApi
 var _account := {}
 var _server_url := ""
 var _box: VBoxContainer
+var _panel: PanelContainer
+var _scroll: ScrollContainer
+var _submenu := false
+var _theme: Theme
+var _ui_scale := 1.0
 ## The in-game menu is showing (Esc closes it on native builds).
 var _menu_open := false
 ## How long the mouse has been free with no screen up.
@@ -94,19 +99,22 @@ func _other_modal_ui_open() -> bool:
 
 
 func _input(event: InputEvent) -> void:
-	# Browsers only lock the pointer from a click, never from Esc, so on the web Esc
-	# leaves the menu up and Resume is the way back.
-	if OS.has_feature("web"):
+	if not _menu_open or not visible:
 		return
-	if _menu_open and visible and event.is_action_pressed("release_mouse"):
-		get_viewport().set_input_as_handled()
-		_resume()
+	if not (event.is_action_pressed("release_mouse") or event.is_action_pressed("ui_cancel")):
+		return
+	# Web Esc cannot re-lock the pointer, but can go Back without starting play.
+	# Controller cancel does not need pointer lock and works in web builds too.
+	if OS.has_feature("web") and not _submenu and not event is InputEventJoypadButton:
+		return
+	get_viewport().set_input_as_handled()
+	_menu_back()
 
 
 func _on_menu_requested() -> void:
 	if visible:
 		if _menu_open:
-			_resume()
+			_menu_back()
 	else:
 		open_menu()
 
@@ -313,14 +321,7 @@ func _show_game_menu(message: String) -> void:
 	_clear("Signed in as %s" % display_name if display_name else "Menu", message)
 	_menu_open = true
 	_resume_button()
-	if _api != null and _api.has_session():
-		if OS.has_feature("web") and not _account.get("discord_linked", false):
-			_link("Link your Discord account", _start_discord.bind(true))
-		_link("Change display name", _show_pick_name.bind(""))
-	_add_esc_menu_links()
-	_game_button("Leave and play offline", _leave, false)
-	if _api != null and _api.has_session():
-		_link("Sign out", _sign_out)
+	_add_menu_sections()
 
 
 ## Menu when no server is configured (native builds default to offline).
@@ -329,9 +330,7 @@ func _show_offline_menu() -> void:
 	_label("The Golden Crown is open. Gamble inside, or leave the gate to find your fortune.")
 	_menu_open = true
 	_resume_button()
-	_add_esc_menu_links()
-	if not OS.has_feature("web"):
-		_link("Quit", get_tree().quit)
+	_add_menu_sections()
 
 
 func _back_to_menu() -> void:
@@ -411,13 +410,53 @@ func _resume_button() -> void:
 	_game_button("Resume", _close, true)
 
 
-## Adds a link for every feature panel registered in ESC_MENU_LINKS_GROUP (Controls,
-## Release notes, ...), alphabetically by label so the order doesn't depend on feature
-## load order.
-func _add_esc_menu_links() -> void:
+## Keep Settings direct; gameplay panels and less-used utilities live one level down.
+func _add_menu_sections() -> void:
+	_add_esc_menu_links("Settings")
+	_link("Activities", _show_menu_section.bind("Activities"))
+	_link("More", _show_menu_section.bind("More"))
+
+
+func _show_menu_section(section: String) -> void:
+	_clear(section, "")
+	_menu_open = true
+	_submenu = true
+	_link("Back to menu", open_menu)
+	_add_esc_menu_links(section)
+	if section == "More":
+		if _api != null and _api.has_session():
+			if OS.has_feature("web") and not _account.get("discord_linked", false):
+				_link("Link your Discord account", _start_discord.bind(true))
+			_link("Change display name", _show_pick_name.bind(""))
+			_link("Sign out", _sign_out)
+		if Network.mode == Network.Mode.CLIENT:
+			_game_button("Leave and play offline", _leave, false)
+		elif not OS.has_feature("web"):
+			_link("Quit", get_tree().quit)
+
+
+func _menu_back() -> void:
+	if _submenu:
+		open_menu()
+	else:
+		_resume()
+
+
+static func _menu_section(label: String) -> String:
+	if label == "Settings":
+		return "Settings"
+	if label in ["Inventory", "GPS", "Leaderboard"]:
+		return "Activities"
+	return "More"
+
+
+## Sorted within each section. Unknown/future links remain reachable under More.
+func _add_esc_menu_links(section: String) -> void:
 	var entries := get_tree().get_nodes_in_group(ESC_MENU_LINKS_GROUP)
 	entries.sort_custom(_esc_menu_label_is_before)
 	for entry: Node in entries:
+		if _menu_section(entry.esc_menu_label()) != section:
+			continue
 		var link := _link(entry.esc_menu_label(), _open_esc_menu_link.bind(entry))
 		if entry.has_method(&"esc_menu_icon"):
 			link.icon = entry.esc_menu_icon()
@@ -520,21 +559,56 @@ func _build() -> void:
 	var backdrop := ColorRect.new()
 	backdrop.color = Color(0.05, 0.06, 0.08, 0.6)
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	backdrop.theme = UI_THEME
+	_theme = UI_THEME.duplicate()
+	backdrop.theme = _theme
 	add_child(backdrop)
 	var center := CenterContainer.new()
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	backdrop.add_child(center)
-	var panel := PanelContainer.new()
-	panel.custom_minimum_size.x = PANEL_WIDTH
-	center.add_child(panel)
+	_panel = PanelContainer.new()
+	center.add_child(_panel)
+	_scroll = ScrollContainer.new()
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_scroll.follow_focus = true
+	_panel.add_child(_scroll)
 	_box = VBoxContainer.new()
+	_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_box.add_theme_constant_override("separation", 12)
-	panel.add_child(_box)
+	_scroll.add_child(_box)
+	get_viewport().size_changed.connect(_resize_panel)
+	_resize_panel()
+
+
+## Bound the entire form, not just its buttons, so short landscape phones can scroll.
+func _resize_panel() -> void:
+	if not is_inside_tree():
+		return
+	# canvas_items stretches a 1280x720 design canvas down on phones. Compensate
+	# fonts and hit targets so 48 canvas units still render as at least 48 pixels.
+	_ui_scale = clampf(get_viewport().get_stretch_transform().get_scale().x, 0.1, 1.0)
+	_theme.default_font_size = roundi(UI_THEME.default_font_size / _ui_scale)
+	for type: StringName in UI_THEME.get_type_list():
+		for font_size: StringName in UI_THEME.get_font_size_list(type):
+			_theme.set_font_size(
+				font_size, type, roundi(UI_THEME.get_font_size(font_size, type) / _ui_scale)
+			)
+	var available := get_viewport().get_visible_rect().size - Vector2(24, 24) / _ui_scale
+	_panel.custom_minimum_size = Vector2(
+		minf(PANEL_WIDTH / _ui_scale, maxf(available.x, 0)),
+		minf(560 / _ui_scale, maxf(available.y, 0))
+	)
+	_box.add_theme_constant_override("separation", roundi(12 / _ui_scale))
+	for child: Node in _box.get_children():
+		if child is Button:
+			(child as Button).custom_minimum_size.y = 48 / _ui_scale
+		elif child is LineEdit:
+			(child as LineEdit).custom_minimum_size.y = 48 / _ui_scale
 
 
 func _clear(title: String, message: String) -> void:
 	_menu_open = false
+	_submenu = false
+	_scroll.scroll_vertical = 0
 	for child: Node in _box.get_children():
 		_box.remove_child(child)
 		child.queue_free()
@@ -586,7 +660,7 @@ func _field(placeholder: String, secret: bool = false) -> LineEdit:
 	var edit := LineEdit.new()
 	edit.placeholder_text = placeholder
 	edit.secret = secret
-	edit.custom_minimum_size.y = 44
+	edit.custom_minimum_size.y = 48 / _ui_scale
 	_box.add_child(edit)
 	return edit
 
@@ -594,7 +668,8 @@ func _field(placeholder: String, secret: bool = false) -> LineEdit:
 func _button(text: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size.y = 48
+	button.custom_minimum_size.y = 48 / _ui_scale
+	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.pressed.connect(action)
 	_box.add_child(button)
 	return button
@@ -603,7 +678,6 @@ func _button(text: String, action: Callable) -> Button:
 func _link(text: String, action: Callable) -> Button:
 	var button := _button(text, action)
 	button.theme_type_variation = &"SecondaryButton"
-	button.custom_minimum_size.y = 40
 	return button
 
 

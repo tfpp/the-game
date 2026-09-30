@@ -1,0 +1,8 @@
+{
+  "title": "A simpler mobile-friendly main menu",
+  "summary": "Find panels under Activities or More, with readable buttons and scrolling on small screens.",
+  "notes": [
+    "Keep Resume and Settings on the main menu and group other links under Activities and More.",
+    "Fit login and menu screens to small windows with scrolling, readable text and larger touch targets."
+  ]
+}

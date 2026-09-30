@@ -30,6 +30,8 @@ func (c chat) PostEmbed(_ context.Context, _, content string, e core.Embed, _ *c
 	return nil
 }
 
+func (c chat) CloseThread(context.Context, string) error { return nil }
+
 func sign(secret, body string) string {
 	m := hmac.New(sha256.New, []byte(secret))
 	m.Write([]byte(body))

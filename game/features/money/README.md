@@ -49,6 +49,19 @@ payout together, rejecting both if the wallet can't cover the wager. It's the `r
 action (`wager_cents` up to the slot cap, `payout_cents` at most 36 times the wager); see
 `features/roulette/README.md`.
 
+## Animated slot payouts
+
+`spin()` keeps its existing immediate-settlement behavior. Slots use the server-only
+`spin_animated(peer, id, wager_cents, rerolls, blessings)` wrapper instead: it commits
+the same atomic API operation but withholds the prize from replicated balances and
+keeps that wallet busy. `reveal_spin(peer, id)` adds the held prize exactly once when
+the cabinet finishes; wrong/stale IDs do nothing. The hold belongs to PlayerMoney,
+not a second cabinet balance. Refreshes, purchases and other spins cannot expose or
+spend the prize while held. Temporary income remains additive. Reveal checks the
+original account; session reset clears holds and a removed cabinet releases its hold.
+Authenticated prizes survive disconnect/server crashes in the existing database;
+temporary offline wallets still reset with the session.
+
 ## Server connection
 
 Deploy the updated **API first**, then the matching game server and web client. The bot

@@ -101,7 +101,15 @@ type post struct {
 	embed                         *Embed
 }
 
-type fakeChat struct{ posts []post }
+type fakeChat struct {
+	posts  []post
+	closed []string // threads closed, in order
+}
+
+func (c *fakeChat) CloseThread(_ context.Context, thread string) error {
+	c.closed = append(c.closed, thread)
+	return nil
+}
 
 // PostEmbed records the embed, and renders it into content so tests can search it.
 func (c *fakeChat) PostEmbed(_ context.Context, thread, content string, e Embed, b *Button, ping ...string) error {

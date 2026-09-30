@@ -70,10 +70,11 @@ func test_slot_passes_only_operators_blessings_and_consumes_only_on_win() -> voi
 	assert_eq(prayer.blessings_for(1), 0, "a settled win spends the operator's blessings")
 	assert_eq(prayer.blessings_for(2), 5, "another player's blessings remain")
 	assert_eq(int(machine.state["spin"]), 2, "the failed request did not spin")
-	assert_eq(int(wallet.balances[1]), 2800, "the account result owns the balance")
+	assert_eq(int(wallet.balances[1]), 1800, "the prize waits for the reels")
 	assert_eq(bar.charisma_for(1), 0, "charisma waits for the reels")
 	machine._advance(4.0)
 	machine._advance(4.0)
+	assert_eq(int(wallet.balances[1]), 2800, "reveal the committed account result once")
 	assert_eq(bar.charisma_for(1), int(CharmMath.WIN_CHARISMA), "reward the win once")
 	assert_eq(bar.rerolls_for(1), CharmMath.LUCK_REROLLS, "wins keep lucky night")
 
