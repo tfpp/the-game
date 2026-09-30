@@ -1,0 +1,5 @@
+{
+  "title": "Teleport to the procedural garage",
+  "summary": "Visit the five-floor procedural garage from a portal beside casino spawn.",
+  "notes": ["Add a labelled, range-validated multiplayer portal to B1 and a return portal to the casino.", "Load the existing room kit in the game and add portal and garage GPS destinations."]
+}

@@ -1,7 +1,11 @@
 # Procedural rooms development
 
 This directory contains original developer materials, a socket attachment prototype
-and three standalone playable examples. There is no `feature.tscn`, general random
+and standalone playable examples. `feature.tscn` now adds a shared in-game copy of
+the five-floor garage at z=1800. Use the cyan **PROCEDURAL GARAGE** portal beside
+casino spawn (x=5, z=5), or locate **Procedural Garage Portal** in GPS. E / controller
+Use / touch Use teleports to B1. Its **RETURN TO CASINO** portal is beside arrival.
+The kit uses a fixed seed on every peer; there is no live reroll control, general random
 layout solver or automatic map mutation. The proposed complete system is described in
 [the plan](../../../docs/design/procedural-rooms.md).
 
@@ -114,8 +118,10 @@ B1 through B5 without teleporting. B5 leads through the sewer to the pump statio
 E operates nearby sliding doors or the elevator control. The lift cycles B1 → B5 →
 B4 → B3 → B2 → B1, using validated server-to-player floor transfers. This is a
 functional prototype lift with instant travel, not an animated moving platform.
-The casino hub, encounters, loot and live multiplayer world instancing remain future
-integration work. This standalone scene does not load into the live casino.
+The standalone scene remains available. The normal game uses `playable_world.gd`
+to build the same kit without spawning a preview player, changing controls or
+overriding the casino environment. The portal provides a shared test area;
+encounters, loot and private excursion instances remain future integration work.
 
 The scene exposes `layout_seed` and `floor_population` in the Godot inspector.
 Population entries are ordered bottom (B5) to top (B1). Create/duplicate a

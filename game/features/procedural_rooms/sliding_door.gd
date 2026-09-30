@@ -14,6 +14,7 @@ var _leaves: Array[Node3D] = []
 
 func _ready() -> void:
 	add_to_group(&"prototype_doors")
+	add_to_group(&"interactables")
 	for side: float in [-1.0, 1.0]:
 		Kit.box(
 			self,
@@ -69,6 +70,14 @@ func _toggle(_player: Player) -> bool:
 
 func use() -> void:
 	entity.request_use()
+
+
+func can_use(player: Player) -> bool:
+	return _can_use(player)
+
+
+func interaction_text() -> String:
+	return "Close garage door" if net_open else "Open garage door"
 
 
 func _reset(_mode: Network.Mode) -> void:

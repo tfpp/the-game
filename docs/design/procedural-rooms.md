@@ -8,7 +8,9 @@ eight physical joins, ramps, stairs, sideways sewer connections, sliding doors a
 distinct garage/utility/pump/storage sets. An exploded gallery shows the W03 mating
 faces. Structural shells use indexed inward faces with a canonical vertex pool and
 split boundaries instead of wall boxes. They do not
-implement the general random layout solver or alter the live casino. The garage adds
+implement the general random layout solver. The normal game now provides a labelled
+portal beside casino spawn to a shared copy at z=1800, with a return portal on B1
+and GPS routing. The garage adds
 47 physical joins, elevator cabs with instant validated floor transfers, and seeded
 set-piece population rules. Designers specify allowed sets, weights, density, local
 placement zones, rotations and reserved walking lanes. The same seed reproduces the

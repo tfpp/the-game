@@ -10,6 +10,7 @@ const MATERIAL := preload("res://features/procedural_rooms/materials/elevator.tr
 
 func _ready() -> void:
 	add_to_group(&"world_lift_stops")
+	add_to_group(&"interactables")
 	Kit.box(self, "ControlPanel", Vector3(0.7, 1, 0.12), Vector3(0.95, 1.4, 0), MATERIAL)
 	Showcase.placard(self, "ELEVATOR\n[E] TO B%d" % (5 - destination_index()), Vector3(0, 2.5, 0))
 	entity.register_use(_can_use, _travel, 1.0)
@@ -35,3 +36,11 @@ func _travel(player: Player) -> bool:
 
 func use() -> void:
 	entity.request_use()
+
+
+func can_use(player: Player) -> bool:
+	return _can_use(player)
+
+
+func interaction_text() -> String:
+	return "Take elevator to B%d" % (5 - destination_index())
