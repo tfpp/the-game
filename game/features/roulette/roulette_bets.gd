@@ -6,7 +6,12 @@ extends RefCounted
 ## Positions are texture pixels of `roulette_layout_albedo.png` (256x128), which the
 ## model maps across the table-local rectangle LAYOUT_MIN..LAYOUT_MAX at LAYOUT_Y.
 ## Spot keys are the covered pockets, sorted and joined with "-" (00 is 37), e.g.
-## "17", "17-20", "0-1-2-3-37"; outside bets use names such as "red" or "dozen2".
+## "17", "17-20", "0-2-37"; outside bets use names such as "red" or "dozen2".
+##
+## Odds follow Barboianu's model (https://probability.infarom.ro/roulette.html): a
+## simple bet covering n of the 38 pockets wins with probability n/38 and pays
+## 36/n - 1 to 1, so every bet carries the same 2/38 house edge. The five-number
+## top line (0-00-1-2-3, 6 to 1) breaks that rule and is not offered.
 
 ## Chip values in cents, matching assets/casino_chips/models/chip_<dollars>.glb.
 const DENOMINATIONS: Array[int] = [100, 500, 5000, 10000, 50000, 100000, 500000, 2500000]
@@ -59,10 +64,35 @@ static func numbers(key: String) -> Array[int]:
 	return result
 
 
-## "x to 1" winnings for a winning bet on `key` (stake returned on top).
+## "x to 1" winnings for a winning bet on `key` (stake returned on top): 36/n - 1.
 static func payout_to_one(key: String) -> int:
 	var count := numbers(key).size()
 	return 36 / count - 1 if count > 0 else 0
+
+
+## Chance that `key` wins one spin: covered pockets / 38.
+static func probability(key: String) -> float:
+	return numbers(key).size() / float(RouletteWheel.POCKET_COUNT)
+
+
+## Odds against `key` winning, (38 - n) : n, as losses per win.
+static func odds_against(key: String) -> float:
+	var count := numbers(key).size()
+	return (RouletteWheel.POCKET_COUNT - count) / float(count) if count > 0 else 0.0
+
+
+## Expected profit per unit staked; -2/38 for every bet on the layout.
+static func expected_return(key: String) -> float:
+	var win := probability(key)
+	return win * payout_to_one(key) - (1.0 - win)
+
+
+## "5.26% (18 : 1)", truncated the way the source tables print them.
+static func odds_text(key: String) -> String:
+	var percent := floorf(probability(key) * 10000.0) / 100.0
+	var odds := floorf(odds_against(key) * 10.0) / 10.0
+	var odds_label := str(int(odds)) if is_equal_approx(odds, roundf(odds)) else "%.1f" % odds
+	return "%.2f%% (%s : 1)" % [percent, odds_label]
 
 
 ## Returned to the player when `number` wins: stake plus winnings, or 0.
@@ -130,9 +160,9 @@ static func describe(key: String) -> String:
 		var pockets := PackedStringArray()
 		for number: int in numbers(key):
 			pockets.append(RouletteWheel.label_for(number))
-		var kinds := {1: "Straight", 2: "Split", 3: "Street", 4: "Corner", 5: "Top line", 6: "Line"}
+		var kinds := {1: "Straight", 2: "Split", 3: "Street", 4: "Corner", 6: "Line"}
 		label = "%s %s" % [kinds.get(pockets.size(), "Bet"), " / ".join(pockets)]
-	return "%s — pays %d to 1" % [label, payout_to_one(key)]
+	return "%s — wins %s, pays %d to 1" % [label, odds_text(key), payout_to_one(key)]
 
 
 ## The spot under texture pixel `pixel`, or "" for none.
@@ -233,7 +263,6 @@ static func _build() -> Dictionary:
 	_add(result, [zero, 3], Vector2(GRID_LEFT, _row_y(2.5)))
 	_add(result, [0, 1, 2], Vector2(GRID_LEFT, _row_y(1)))
 	_add(result, [zero, 2, 3], Vector2(GRID_LEFT, _row_y(2)))
-	_add(result, [0, zero, 1, 2, 3], Vector2(GRID_LEFT, GRID_TOP))
 	for column: int in 12:
 		var middle := (_column_x(column) + _column_x(column + 1)) * 0.5
 		var street: Array[int] = [_number(column, 0), _number(column, 1), _number(column, 2)]

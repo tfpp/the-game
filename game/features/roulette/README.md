@@ -9,7 +9,7 @@ mobile **USE**. Menus and chat suppress interaction.
 
 - Up to three players sit at fixed seats along the south side (`RouletteTable.SEATS`).
   Sitting teleports you there facing the layout; the first player to sit at an idle
-  table opens a **one-minute** betting round (`betting_seconds`). Others may join
+  table opens a **30-second** betting round (`betting_seconds`). Others may join
   while seats and betting remain.
 - Seated players get the betting screen (`roulette_betting_screen.gd`): an overhead
   camera over the layout and a rack of chips ($1, $5, $50, $100, $500, $1K, $5K, $25K).
@@ -19,18 +19,24 @@ mobile **USE**. Menus and chat suppress interaction.
 - The screen is modal, so seated players cannot move. Leaving before the spin cancels
   your bets for free; once betting closes, a player with chips on the table stays until
   the ball lands. Players without bets may always stand up.
-- When the clock runs out the bets lock and the wheel spins (3 s). With no bets the
-  round simply ends. After the ball lands, losing chips are swept, a gold marker shows
-  the winning pocket and each player's bets settle; five seconds later every seat is
-  released. The result stays on the local screen until you continue or play again.
+- When the clock runs out the bets lock and the wheel spins (3 s), and every seated
+  player's camera pans over the wheel to watch the ball. With no bets the round simply
+  ends. After the ball lands, losing chips are swept, the camera pans back to the
+  layout, a gold marker shows the winning pocket and each player's bets settle; five
+  seconds later every seat is released. The result stays on the local screen until you continue or play again.
 - A seated player who disconnects or ends up away from their seat (respawn, elevator)
   loses it. Unlocked bets are dropped; locked bets still settle against the account
   captured when betting closed.
 
-Bets and payouts are American roulette (`roulette_bets.gd`): straight 35:1, split 17:1,
-street and the 0-1-2 / 00-2-3 trios 11:1, corner 8:1, top line (0-00-1-2-3) 6:1, six
-line 5:1, columns and dozens 2:1, red/black/odd/even/high/low 1:1. Each spin is an
-independent, uniformly random pocket; luck buffs for the slot machine do not apply.
+Odds follow the American column of [Barboianu's roulette model](https://probability.infarom.ro/roulette.html)
+(`roulette_bets.gd`). Each spin is an independent, uniform draw of the 38 pockets, so a
+bet covering n pockets wins with probability n/38 and pays 36/n − 1 to 1: straight
+35:1, split 17:1, street (and the 0-1-2 / 00-2-3 trios) 11:1, corner 8:1, six line 5:1,
+columns and dozens 2:1, red/black/odd/even/high/low 1:1. Every bet therefore has the
+same expected return of −2/38 (−5.26%). The five-number top line (0-00-1-2-3, 6:1) is
+not in that model and is not offered. Hovering a spot shows its probability and odds
+against as the page prints them, e.g. "5.26% (18 : 1)". Slot machine luck buffs do not
+apply.
 
 ## Money
 

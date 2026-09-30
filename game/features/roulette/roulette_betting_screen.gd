@@ -26,6 +26,15 @@ const CAMERA_TARGET := Vector3(0.5, 0.86, 0.0)
 const CAMERA_FOV := 50.0
 ## Raises the layout on screen, clear of the chip rack along the bottom.
 const CAMERA_V_OFFSET := -0.24
+## While the ball spins the camera pans over the wheel (wheel centre is at
+## table-local (-0.98, 0.86, 0)), then back to the layout once the ball has settled.
+const WHEEL_CAMERA_POSITION := Vector3(-0.98, 1.72, -0.5)
+const WHEEL_CAMERA_TARGET := Vector3(-0.98, 0.9, 0.02)
+const WHEEL_V_OFFSET := -0.12
+## Seconds into the result the camera stays on the wheel (the ball settles in 0.9 s).
+const WHEEL_HOLD_S := 2.0
+## Exponential pan rate; ~95% of the way in one second.
+const PAN_RATE := 3.0
 ## Controller cursor speed, layout pixels per second.
 const CURSOR_SPEED := 110.0
 
@@ -54,6 +63,9 @@ var _rack: Control
 ## The local player asked to leave, so close as soon as the seat is released.
 var _leaving := false
 var _open := true
+var _layout_shot: Transform3D
+var _wheel_shot: Transform3D
+var _result_elapsed := 0.0
 
 
 func _ready() -> void:
@@ -66,8 +78,11 @@ func _ready() -> void:
 	camera.fov = CAMERA_FOV
 	camera.v_offset = CAMERA_V_OFFSET
 	view.add_child(camera)
-	camera.position = CAMERA_POSITION
-	camera.look_at(view.to_global(CAMERA_TARGET), Vector3.UP)
+	_layout_shot = Transform3D(Basis(), CAMERA_POSITION).looking_at(CAMERA_TARGET, Vector3.UP)
+	_wheel_shot = (Transform3D(Basis(), WHEEL_CAMERA_POSITION).looking_at(
+		WHEEL_CAMERA_TARGET, Vector3.UP
+	))
+	camera.transform = _layout_shot
 	camera.make_current()
 	_ghost = MeshInstance3D.new()
 	_ghost.name = "HoverChip"
@@ -104,6 +119,7 @@ func seated() -> bool:
 
 
 func _process(delta: float) -> void:
+	pan(delta)
 	# Another menu may resume play (capturing the mouse) while we are still seated.
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -176,6 +192,28 @@ func _pad_button(button: JoyButton) -> void:
 			_select(maxi(0, selected - 1))
 		JOY_BUTTON_RIGHT_SHOULDER:
 			_select(mini(RouletteBets.DENOMINATIONS.size() - 1, selected + 1))
+
+
+## True while the camera should frame the wheel rather than the layout.
+func watching_wheel() -> bool:
+	match table.phase():
+		RouletteTable.PHASE_SPINNING:
+			return true
+		RouletteTable.PHASE_RESULT:
+			return _result_elapsed < WHEEL_HOLD_S
+	return false
+
+
+## Eases the camera towards the wheel or layout shot for the current phase.
+func pan(delta: float) -> void:
+	if table.phase() == RouletteTable.PHASE_RESULT:
+		_result_elapsed += delta
+	else:
+		_result_elapsed = 0.0
+	var wheel := watching_wheel()
+	var t := 1.0 - exp(-PAN_RATE * delta)
+	camera.transform = camera.transform.interpolate_with(_wheel_shot if wheel else _layout_shot, t)
+	camera.v_offset = lerpf(camera.v_offset, WHEEL_V_OFFSET if wheel else CAMERA_V_OFFSET, t)
 
 
 ## The betting spot under a viewport position, or "".

@@ -55,18 +55,18 @@ func _run(seconds: float) -> void:
 		elapsed += step
 
 
-func test_first_player_opens_a_one_minute_round_and_takes_a_seat() -> void:
+func test_first_player_opens_a_thirty_second_round_and_takes_a_seat() -> void:
 	assert_eq(_table.phase(), RouletteTable.PHASE_IDLE)
 	_sit(2)
 	assert_eq(_table.phase(), RouletteTable.PHASE_BETTING)
 	assert_eq(_table.seat_of(2), 0)
 	assert_eq(_table.state["names"][0], "P2")
-	assert_eq(_table.net_seconds_left, 60)
-	_run(30.0)
+	assert_eq(_table.net_seconds_left, 30)
+	_run(15.0)
 	assert_eq(_table.phase(), RouletteTable.PHASE_BETTING, "joining does not restart the clock")
 	_sit(3)
 	assert_eq(_table.seat_of(3), 1)
-	assert_eq(_table.net_seconds_left, 30)
+	assert_eq(_table.net_seconds_left, 15)
 
 
 func test_only_three_players_fit_and_nobody_sits_twice() -> void:
@@ -260,6 +260,30 @@ func test_betting_screen_opens_for_the_local_seated_player() -> void:
 	_table.state = state
 	view._process(0.0)
 	assert_eq(view.chips.get_child_count(), 2, "chips are drawn on the felt")
+	var wheel := _table.to_global(Vector3(-0.98, 0.9, 0))
+	var layout := _table.to_global(RouletteBets.pixel_to_local(RouletteBets.anchor("14")))
+	var screen := view.screen
+	state = _table.state.duplicate(true)
+	state["phase"] = RouletteTable.PHASE_SPINNING
+	_table.state = state
+	assert_true(screen.watching_wheel())
+	for _frame: int in 90:
+		screen.pan(1.0 / 30.0)
+	var look := -screen.camera.global_basis.z
+	assert_gt(look.dot((wheel - screen.camera.global_position).normalized()), 0.99, "on the wheel")
+	state = _table.state.duplicate(true)
+	state["phase"] = RouletteTable.PHASE_RESULT
+	_table.state = state
+	screen.pan(1.0)
+	assert_true(screen.watching_wheel(), "holds on the wheel while the ball settles")
+	for _frame: int in 90:
+		screen.pan(1.0 / 30.0)
+	assert_false(screen.watching_wheel())
+	look = -screen.camera.global_basis.z
+	assert_lt(
+		look.dot((wheel - screen.camera.global_position).normalized()), 0.9, "back over the layout"
+	)
+	assert_eq(screen.spot_at_screen(screen.camera.unproject_position(layout)), "14")
 	_table.state = RouletteTable.initial_state()
 	view._process(0.0)
 	assert_not_null(view.screen, "the result stays up after release")
