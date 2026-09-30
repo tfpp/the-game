@@ -76,3 +76,27 @@ func test_gps_routes_through_portal_and_arrival_has_clear_supported_floor() -> v
 		if node.is_in_group(&"world_lift_stops") or node.is_in_group(&"prototype_doors"):
 			assert_true(node.is_in_group(&"interactables"))
 			assert_true(node.has_method("can_use") and node.has_method("interaction_text"))
+
+
+func test_teleport_room_has_open_socket_and_supported_return() -> void:
+	await wait_physics_frames(2)
+	var room := _feature.get_node("TeleportRoom") as Node3D
+	var socket := room.get_node("Lobby/In") as ProceduralSocketAttachment
+	assert_null(socket.cap)
+	assert_eq(socket.join_id, "casino-east-doorway")
+	var space := room.get_world_3d().direct_space_state
+	var capsule := CapsuleShape3D.new()
+	capsule.radius = .4064
+	capsule.height = 1.8288
+	var query := PhysicsShapeQueryParameters3D.new()
+	query.shape = capsule
+	query.transform.origin = Vector3(34.1, .95, -10)
+	query.motion = Vector3(5, 0, 0)
+	assert_eq(space.cast_motion(query)[0], 1.0)
+	var arrival := _feature.get_node("CasinoArrival") as Marker3D
+	var ray := PhysicsRayQueryParameters3D.create(
+		arrival.global_position, arrival.global_position - Vector3.UP
+	)
+	var hit := space.intersect_ray(ray)
+	assert_false(hit.is_empty())
+	assert_almost_eq((hit["position"] as Vector3).y, 0.0, .001)

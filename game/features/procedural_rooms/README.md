@@ -2,8 +2,8 @@
 
 This directory contains original developer materials, a socket attachment prototype
 and standalone playable examples. `feature.tscn` now adds a shared in-game copy of
-the five-floor garage at z=1800. Use the cyan **PROCEDURAL GARAGE** portal beside
-casino spawn (x=5, z=5), or locate **Procedural Garage Portal** in GPS. E / controller
+the five-floor garage at z=1800. Use the cyan **PROCEDURAL GARAGE** portal inside
+the east-side **Teleport Room** (entrance x=34, z=-10), or locate **Teleport Room** in GPS. E / controller
 Use / touch Use teleports to B1. Its **RETURN TO CASINO** portal is beside arrival.
 The kit uses a fixed seed on every peer; there is no live reroll control, general random
 layout solver or automatic map mutation. The proposed complete system is described in
