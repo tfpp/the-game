@@ -10,6 +10,7 @@
 [ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
 [ext_resource type="FontFile" path="res://assets/fonts/orbitron/Orbitron-Bold.ttf" id="hud_font"]
+[ext_resource type="PackedScene" path="res://features/bar_companion/celeste.tscn" id="celeste"]
 
 [sub_resource type="CylinderMesh" id="seat"]
 top_radius = 0.2
@@ -37,6 +38,9 @@ ring_segments = 4
 
 [node name="BarCompanion" type="Node3D"]
 script = ExtResource("root")
+
+[node name="Celeste" parent="." instance=ExtResource("celeste")]
+position = Vector3(-6.6, -1.5, -7.8)
 
 [node name="NetworkedEntity" type="Node" parent="."]
 script = ExtResource("entity")
