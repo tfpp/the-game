@@ -1,17 +1,23 @@
 extends GutTest
 
 
-func test_deeper_tiers_are_faster_and_hit_harder() -> void:
-	var lurker := GarageEnemyTiers.profile(GarageEnemyTiers.Tier.LURKER)
+func test_brawlers_punch_knifers_run_and_gunmen_are_strongest() -> void:
+	var brawler := GarageEnemyTiers.profile(GarageEnemyTiers.Tier.LURKER)
 	var gunman := GarageEnemyTiers.profile(GarageEnemyTiers.Tier.GUNMAN)
-	var stalker := GarageEnemyTiers.profile(GarageEnemyTiers.Tier.STALKER)
-	assert_lt(float(lurker["speed"]), float(stalker["speed"]))
-	assert_lt(float(lurker["damage"]), float(gunman["damage"]))
-	assert_lt(float(gunman["damage"]), float(stalker["damage"]))
+	var knifer := GarageEnemyTiers.profile(GarageEnemyTiers.Tier.STALKER)
+	assert_eq(brawler["weapon"], "fists")
+	assert_eq(knifer["weapon"], "knife")
+	assert_eq(gunman["weapon"], "gun")
+	assert_lt(float(brawler["speed"]), PatronModel.RIG_MAX_SPEED * 0.55, "brawlers walk")
+	assert_gt(float(knifer["speed"]), PatronModel.RIG_MAX_SPEED * 0.55, "knifers run")
+	assert_gt(float(knifer["speed"]), float(gunman["speed"]))
+	assert_lt(float(brawler["damage"]), float(knifer["damage"]))
 	assert_true(gunman["ranged"])
-	assert_false(stalker["ranged"])
-	# Toughness grows modestly; difficulty isn't just more health.
-	assert_lte(int(stalker["hits"]), 3)
+	assert_false(knifer["ranged"])
+	assert_lt(int(brawler["hits"]), int(knifer["hits"]))
+	assert_lt(int(knifer["hits"]), int(gunman["hits"]))
+	assert_eq(GarageEnemyTiers.rank(GarageEnemyTiers.Tier.GUNMAN), 2)
+	assert_eq(GarageEnemyTiers.rank(GarageEnemyTiers.Tier.LURKER), 0)
 
 
 func test_same_floor_uses_player_capsule_center() -> void:

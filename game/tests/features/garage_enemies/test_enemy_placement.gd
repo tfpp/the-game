@@ -29,7 +29,8 @@ func after_all() -> void:
 func _list() -> Array[GarageEnemy]:
 	var out: Array[GarageEnemy] = []
 	for child: Node in _enemies.get_children():
-		out.append(child as GarageEnemy)
+		if child is GarageEnemy:
+			out.append(child as GarageEnemy)
 	return out
 
 

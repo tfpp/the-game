@@ -86,7 +86,6 @@ func test_tiers_take_their_number_of_hits_then_respawn_at_home() -> void:
 	_enemy.position = Vector3(3, 0, 0)
 	add_child_autofree(_enemy)
 	_enemy.take_hit(5)
-	_enemy.take_hit(5)
 	assert_true(_enemy.net_alive)
 	assert_eq(_enemy.target_peer, 5, "being shot draws aggro")
 	_enemy.take_hit(5)
@@ -96,7 +95,7 @@ func test_tiers_take_their_number_of_hits_then_respawn_at_home() -> void:
 	_enemy._physics_process(float(_enemy.profile()["respawn"]) + 0.1)
 	assert_true(_enemy.net_alive)
 	assert_eq(_enemy.position, Vector3(3, 0, 0))
-	assert_eq(_enemy.health, 3)
+	assert_eq(_enemy.health, int(_enemy.profile()["hits"]))
 
 
 func test_session_reset_restores_every_enemy() -> void:

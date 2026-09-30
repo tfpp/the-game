@@ -1,5 +1,34 @@
 # Garage enemies
 
+Every enemy wears the player avatar rig (`enemy_model.gd`, a `PatronModel` from
+`features/casino_patrons`), dressed per tier: **ragged brawlers** (`Tier.LURKER`:
+torn, patched clothes, walk up and punch), **knifers** (`Tier.STALKER`: dark hoodie,
+red bandana, sprint in and slash) and **gunmen** (`Tier.GUNMAN`: tactical gear,
+balaclava, pistol; the toughest at 3 hits). The enum keeps its original order for
+existing scenes; `GarageEnemyTiers.STRENGTH` / `rank()` order tiers weakest to
+strongest. Arms are posed with the rig's own IK (`SkinnedHuman.reach_grip`), and
+the rig is only posed for cameras within 45 m.
+
+## Basement garage (B1–B5)
+
+`GarageEnemies/Basement` copies the transform of `features/procedural_rooms`'
+`Garage` node, so its children use `CrownGarage` deck coordinates (deck `i` floor at
+`y = 4i`, B5 at the bottom). Enemies stand in the front (z < 8) and back (z > 34)
+lanes that population rules keep free of set pieces:
+
+| Floor | Enemies |
+| --- | --- |
+| B1 (elevator arrival) | 2 brawlers, far from the arrival |
+| B2 | 3 brawlers |
+| B3 | 2 brawlers, 2 knifers |
+| B4 | 1 brawler, 2 knifers, 1 gunman |
+| B5 | 1 knifer, 3 gunmen |
+
+`net_yaw` is stored in the parent's space (`_parent_direction`) so enemies under
+the rotated basement face where they walk.
+
+## Parking garage (P1–P3)
+
 Hostile scavengers that haunt `features/parking_garage/`. `feature.tscn` sits at
 world `(0, 0, 600)`, the same origin as the garage's `Garage` node, so every
 enemy's position is in garage-local coordinates.
@@ -10,9 +39,9 @@ three-level garage):
 
 | Floor | Enemies | Tier traits (`enemy_tiers.gd`) |
 | --- | --- | --- |
-| P1 | 3 lurkers | 1 hit, slow melee claw (10 dmg) |
-| P2 | 2 lurkers, 2 gunmen | gunman: 2 hits, fires from 14 m (12 dmg), keeps its distance |
-| P3 | 2 gunmen, 3 stalkers | stalker: 3 hits, fast melee (20 dmg) |
+| P1 | 3 brawlers | 1 hit, slow walking punch (8 dmg) |
+| P2 | 2 brawlers, 2 gunmen | gunman: 3 hits, fires from 16 m (15 dmg), keeps its distance |
+| P3 | 2 gunmen, 3 knifers | knifer: 2 hits, runs, knife slash (18 dmg) |
 
 ## How it works
 
