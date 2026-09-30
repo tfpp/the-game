@@ -2,6 +2,7 @@ extends GutTest
 
 const PLAYER := preload("res://core/player/player.tscn")
 const HAND := preload("res://features/holdables/hand.tscn")
+const RealTime := preload("res://tests/fixtures/real_time.gd")
 
 var _audio: GameAudio
 var _player: Player
@@ -125,7 +126,7 @@ func test_finished_voices_cleanup_and_assets_are_short_non_looping_clips() -> vo
 		assert_lt(stream.get_length(), 3.0)
 	GameAudio.play_at(self, &"smg", Vector3.ZERO)
 	GameAudio.play_ui(self, &"equip")
-	await wait_seconds(1.0)
+	await RealTime.wait(get_tree(), 1.0)
 	assert_eq(_audio._world.get_child_count(), 0)
 	assert_eq(_audio._ui.get_child_count(), 0)
 
@@ -159,10 +160,10 @@ func test_door_feedback_replaces_status_text_and_only_follows_accepted_actions()
 	assert_eq(_events[3].cue, &"door_open")
 	door.use()
 	assert_eq(_events.size(), 4)
-	await wait_seconds(0.5)
+	await RealTime.wait(get_tree(), 0.5)
 	door.use()
 	assert_eq(_events[4].cue, &"door_close")
 	_player.net_position = Vector3(0, 1, -20)
-	await wait_seconds(0.5)
+	await RealTime.wait(get_tree(), 0.5)
 	door.use()
 	assert_eq(_events.size(), 5, "Out-of-range request is silent")

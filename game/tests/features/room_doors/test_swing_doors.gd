@@ -8,6 +8,7 @@ const KEY_SCRIPT := preload("res://features/room_doors/room_key_pickup.gd")
 const Layout := preload("res://features/world_builder/layout.gd")
 const Builder := preload("res://features/world_builder/mesh_builder.gd")
 const Doorways := preload("res://features/world_builder/doorways.gd")
+const RealTime := preload("res://tests/fixtures/real_time.gd")
 
 var _player: Player
 var _hand: Hand
@@ -47,10 +48,10 @@ func test_open_close_range_cooldown_and_both_swing_directions() -> void:
 	assert_eq(door.net_state, SwingDoor.State.OPEN_IN)
 	door.request_use()
 	assert_eq(door.net_state, SwingDoor.State.OPEN_IN, "Rapid repeated Use is ignored")
-	await wait_seconds(0.5)
+	await RealTime.wait(get_tree(), 0.5)
 	door.request_use()
 	assert_eq(door.net_state, SwingDoor.State.CLOSED)
-	await wait_seconds(0.5)
+	await RealTime.wait(get_tree(), 0.5)
 	_move(Vector3(0, 1, 1.5))
 	door.request_use()
 	assert_eq(door.net_state, SwingDoor.State.OPEN_OUT)
@@ -64,10 +65,10 @@ func test_locked_door_requires_key_then_stays_unlocked_for_everyone() -> void:
 	door.request_use()
 	assert_eq(door.net_state, SwingDoor.State.OPEN_IN)
 	_hand.inventory().keys = PackedStringArray()
-	await wait_seconds(0.5)
+	await RealTime.wait(get_tree(), 0.5)
 	door.request_use()
 	assert_eq(door.net_state, SwingDoor.State.CLOSED)
-	await wait_seconds(0.5)
+	await RealTime.wait(get_tree(), 0.5)
 	door.request_use()
 	assert_eq(door.net_state, SwingDoor.State.OPEN_IN, "Unlock persists without the key holder")
 

@@ -3,6 +3,7 @@ extends GutTest
 const FEATURE := preload("res://features/casino_patrons/feature.tscn")
 const SUBTITLES := preload("res://features/subtitles/feature.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
+const RealTime := preload("res://tests/fixtures/real_time.gd")
 var _subtitles: Subtitles
 var _feature: Node3D
 var _trump: CasinoPatron
@@ -122,7 +123,7 @@ func test_two_players_pay_their_own_wallet_and_missing_mayor_is_safe() -> void:
 	second.net_position = _trump.position
 	var talk := _trump.get_node("Talk") as NetworkedInteraction
 	assert_eq(talk._evaluate(1, &"use", {}), NetworkedEntity.Result.ACCEPTED)
-	await wait_seconds(0.55)
+	await RealTime.wait(get_tree(), 0.55)
 	assert_eq(talk._evaluate(2, &"use", {}), NetworkedEntity.Result.ACCEPTED)
 	assert_eq(int(_wallet.balances[1]), 15000)
 	assert_eq(int(_wallet.balances[2]), 20000)

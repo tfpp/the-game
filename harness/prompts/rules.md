@@ -66,16 +66,21 @@ Integration section of `{{OUT}}/summary.md` before editing code, then keep it cu
 
 ## Checking your work
 
-`harness/verify.sh` takes several minutes. While you iterate, run only the checks for what
+`harness/verify.sh` takes a few minutes. While you iterate, run only the checks for what
 you touched, from `game/`:
 
 ```bash
 uvx --from 'gdtoolkit==4.*' gdformat <files or dirs>  # rewrites formatting in place
 uvx --from 'gdtoolkit==4.*' gdlint <files or dirs>
 godot --headless --import  # reports parse errors, creates .gd.uid files for new scripts
-godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests/features/<name> -gexit
-godot --headless -s addons/gut/gut_cmdln.gd -gtest=res://tests/features/<name>/test_x.gd -gexit
+godot --headless --fixed-fps 64 -s addons/gut/gut_cmdln.gd -gdir=res://tests/features/<name> -gexit
+godot --headless --fixed-fps 64 -s addons/gut/gut_cmdln.gd -gdir= -gtest=res://tests/features/<name>/test_x.gd -gexit
 ```
+
+Keep the empty `-gdir=` with `-gtest`: without it GUT also runs every directory in
+`.gutconfig.json`, which is the whole suite. `--fixed-fps 64` runs frames as fast as the
+CPU allows, as `check.sh` does, so `wait_seconds()` and frame waits don't follow the wall
+clock. See "Tests and time" in `game/AGENTS.md`.
 
 Commit each new script's `.gd.uid` file with it. gdlint allows 100-character lines and 20
 public methods per class, so split a large test file by concern. When the change is

@@ -3,6 +3,7 @@ extends GutTest
 
 const BOOT := preload("res://features/parking_garage/car_boot.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
+const RealTime := preload("res://tests/fixtures/real_time.gd")
 var _roots: Array[Node] = []
 var _peers: Array[ENetMultiplayerPeer] = []
 
@@ -53,25 +54,34 @@ func test_gaze_state_replicates_without_search_and_late_join_then_closes() -> vo
 	var owner := driver_peer.get_unique_id()
 	var server := _branch("Server", server_peer, owner)
 	var driver := _branch("Driver", driver_peer, owner)
-	await wait_physics_frames(30)
+	await RealTime.wait_until(
+		get_tree(), func() -> bool: return server.net_boot_open and driver.net_boot_open, 5.0
+	)
 	assert_true(server.net_boot_open)
 	assert_true(driver.net_boot_open)
 	assert_false(server.net_searched)
 	var observer_peer := ENetMultiplayerPeer.new()
 	assert_eq(observer_peer.create_client("127.0.0.1", server_peer.host.get_local_port()), OK)
 	var observer := _branch("Observer", observer_peer, owner)
-	await wait_physics_frames(40)
+	var lid := observer.get_node("../BootLid") as Node3D
+	await RealTime.wait_until(
+		get_tree(), func() -> bool: return absf(lid.rotation_degrees.z + 68.0) < .01, 5.0
+	)
 	assert_true(observer.net_boot_open, "Late observer receives the open state")
 	assert_almost_eq(observer.get_node("../BootLid").rotation_degrees.z, -68.0, .01)
 	var entity := observer.get_node("NetworkedEntity") as NetworkedInteraction
 	assert_eq(entity._evaluate(1, &"use", {}), NetworkedEntity.Result.DENIED)
 	entity.request_action(&"open", {"open": true})
-	await wait_physics_frames(5)
+	await RealTime.wait(get_tree(), 0.1)
 	assert_false(server.net_searched, "Gaze cannot roll loot or accept spoofed open actions")
 	var player := driver.get_node("../Player") as Player
 	player.yaw += PI
 	player.net_yaw = player.yaw
-	await wait_physics_frames(50)
+	await RealTime.wait_until(
+		get_tree(),
+		func() -> bool: return not observer.net_boot_open and absf(lid.rotation_degrees.z) < .01,
+		5.0
+	)
 	assert_false(server.net_boot_open)
 	assert_false(observer.net_boot_open)
 	assert_almost_eq(observer.get_node("../BootLid").rotation_degrees.z, 0.0, .01)

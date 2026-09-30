@@ -30,7 +30,11 @@ if grep -E "SCRIPT ERROR|Parse Error|ERROR:" <<<"$out"; then
 fi
 
 step "unit tests (GUT)"
-"$GODOT" --headless -s addons/gut/gut_cmdln.gd
+# --fixed-fps steps frames as fast as the CPU allows instead of pacing them in real time,
+# which cuts the suite from minutes to seconds. 64 matches physics_ticks_per_second, so
+# every frame runs exactly one physics step. Tests that need the wall clock (cooldowns,
+# ENet, audio playback) wait with tests/fixtures/real_time.gd.
+"$GODOT" --headless --fixed-fps 64 -s addons/gut/gut_cmdln.gd
 
 step "offline smoke (run main scene)"
 out=$(timeout 20 "$GODOT" --headless --quit-after 240 2>&1 || true)
