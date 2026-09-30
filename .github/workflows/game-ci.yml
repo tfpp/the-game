@@ -18,6 +18,17 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup-toolchain
+      - id: toolchain
+        uses: ./.github/actions/setup-toolchain
       - name: Verify
+        env:
+          # The full safety net: never skip the harness or release script self-tests here.
+          VERIFY_ALL: '1'
         run: harness/verify.sh
+      # Only reviewed code on main refreshes the import cache that other jobs restore.
+      - name: Save Godot imports
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/cache/save@v6
+        with:
+          path: game/.godot/imported
+          key: ${{ steps.toolchain.outputs.import-cache-key }}

@@ -119,6 +119,8 @@ type Service struct {
 
 	mergeMu sync.Mutex    // one coordinator step at a time
 	kick    chan struct{} // wakes the coordinator
+
+	progress *Progress // live agent progress; nil when off (see NewProgress)
 }
 
 func New(cfg Config, st *store.Store, gh GitHub, chat Chat) *Service {
@@ -654,6 +656,9 @@ func (s *Service) agentRun(ctx context.Context, wr github.WorkflowRun) error {
 	}
 	if status == store.RunCompleted {
 		defer s.drain(ctx) // a slot freed up
+		if s.progress != nil {
+			s.progress.finish(run.ID, wr.Conclusion)
+		}
 	}
 	// Every run that gets past the gate ends with a harness comment. Say something if none
 	// arrived: the gate refused the dispatch (the run still succeeds), or it was cancelled.

@@ -3,8 +3,10 @@
 # Env: HARNESS_OUT (required), HARNESS_MODEL (gpt-6.1-sol), HARNESS_REASONING_EFFORT (medium).
 # Auth: a persisted auth.json login in CODEX_HOME (defaults to ~/.codex).
 # Writes the call's token usage to $HARNESS_OUT/usage.json (see run.sh).
+# harness/progress.sh prints the trace and streams progress to Discord when configured.
 set -euo pipefail
 prompt="$1" log="$2" cont="$3"
+progress="$(cd "$(dirname "$0")/.." && pwd)/progress.sh"
 session_file="$HARNESS_OUT/codex-session"
 
 opts=(--json --dangerously-bypass-approvals-and-sandbox -o "$HARNESS_OUT/last-message.md")
@@ -12,13 +14,13 @@ model="${HARNESS_MODEL:-gpt-6.1-sol}"
 opts+=(-m "$model")
 opts+=(-c "model_reasoning_effort=$(jq -cn --arg effort "${HARNESS_REASONING_EFFORT:-medium}" '$effort')")
 
+cmd=(codex exec)
+[[ "$cont" == 1 && -s "$session_file" ]] && cmd+=(resume)
+cmd+=("${opts[@]}")
+[[ "$cont" == 1 && -s "$session_file" ]] && cmd+=("$(cat "$session_file")")
 set +e
-if [[ "$cont" == 1 && -s "$session_file" ]]; then
-  codex exec resume "${opts[@]}" "$(cat "$session_file")" - <"$prompt" >"$log" 2>&1
-else
-  codex exec "${opts[@]}" - <"$prompt" >"$log" 2>&1
-fi
-status=$?
+"${cmd[@]}" - <"$prompt" 2>&1 | tee "$log" | "$progress" codex
+status="${PIPESTATUS[0]}"
 set -e
 
 jq -r 'select(.type == "thread.started") | .thread_id' "$log" 2>/dev/null | head -1 >"$session_file.new" || true
@@ -52,5 +54,4 @@ jq -cs --arg model "$model" '
   .cost_usd = ((.input_tokens * $rate[0] + .cache_read_tokens * $rate[1] +
     .cache_write_tokens * $rate[2] + .output_tokens * $rate[3]) / 1000000000)
 else . end' "$log" >"$HARNESS_OUT/usage.json" 2>/dev/null || true
-cat "$HARNESS_OUT/last-message.md" 2>/dev/null || true
 exit "$status"

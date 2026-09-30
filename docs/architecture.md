@@ -226,6 +226,10 @@ protocol, income timing, offline behavior and deployment order.
    The App's webhooks (`issue_comment`, `workflow_run`, `pull_request`) bring those
    comments, CI results on the agent branch, and the merge or close back to the thread.
    A reconcile loop polls while runs are active, in case a webhook is missed.
+   While the agent works, `harness/progress.sh` streams its reasoning and tool calls to the
+   bot's `/bot/progress`, which keeps one live message per run in the thread. Each run
+   authenticates with an HMAC of its `request_id`, derived from a shared secret in a step
+   the agent can't see (details in `harness/README.md`).
 5. `/revise <changes>` in the thread (or `/agent <feedback>` on the PR) starts a `revise`
    run. `/agent resolve-conflicts` merges `main` in and resolves any conflicts.
    `/close` in the thread closes the PR and the issue without merging.
@@ -240,7 +244,8 @@ workflow dispatch's `agent` input. Claude defaults to Opus 5.5 (`claude-opus-5-5
 effort; Codex defaults to GPT-6.1 Sol (`gpt-6.1-sol`) with medium reasoning. Pi reuses both
 secrets, plus `OPENROUTER_API_KEY` for OpenRouter models (chosen with the dispatch's
 `pi_model` input), in a temporary agent directory (`harness/pi-setup.sh`), with the
-vendored `anthropic-omp` and `image-generation` extensions plus `pi-web-access`. It
+vendored `image-generation` extension plus `pi-web-access`, and the vendored
+`anthropic-omp` extension (with its Bun runtime) only for `anthropic-omp/*` models. It
 defaults to `openai-codex/gpt-6.1-sol`, with a per-model thinking level
 (`harness/pi/thinking-levels.json`: medium for GPT-6.1 Sol, low for Astra and Claude, max
 for Luna and the OpenRouter models). Discord's `/feature` offers it with an optional

@@ -1,0 +1,8 @@
+{
+  "title": "Live agent progress in Discord",
+  "summary": "Feature threads now show what the agent is thinking and doing while it builds a request.",
+  "notes": [
+    "Stream each agent run's reasoning and tool calls into one live message in its Discord feature thread.",
+    "Only install the Claude subscription runtime on pi runs that use an anthropic-omp model."
+  ]
+}

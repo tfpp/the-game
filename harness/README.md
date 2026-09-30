@@ -7,13 +7,14 @@ definition of done for agents and humans alike.
 |---|---|
 | `verify.sh` | Harness tests, then `game/scripts/check.sh`, then Go checks |
 | `run.sh` | Sets up the branch, runs the agent, re-runs `verify.sh` and sends failures back (up to `--attempts`), commits, and bundles the new commits. Never pushes |
-| `adapters/<agent>.sh` | One per CLI (`claude`, `codex`, `pi`): `PROMPT_FILE LOG_FILE CONTINUE`. Each writes its call's token usage to `usage.json` |
+| `adapters/<agent>.sh` | One per CLI (`claude`, `codex`, `pi`): `PROMPT_FILE LOG_FILE CONTINUE`. Each writes its call's token usage to `usage.json` and pipes the CLI's JSON events through `progress.sh` |
+| `progress.sh` | Prints each agent's readable trace and streams reasoning and tool calls to the Discord bot ([Live progress](#live-progress)) |
 | `prompts/` | `rules.md` (every run), one file per mode, `fix.md` (retries) |
 | `gate.sh` | Turns a GitHub event into run inputs, or refuses it |
 | `context.sh` | Writes the task, current PR, sibling PRs and paths, recent merges, and feedback from GitHub |
 | `check-summary.sh` | Requires integration review notes before agent-written work can be bundled |
 | `publish.sh` | Pushes the bundle, opens the PR or comments, reports failures |
-| `pi-setup.sh` | Builds a temporary pi agent directory (auth, extensions, `pi-web-access`) on Actions |
+| `pi-setup.sh` | Builds a temporary pi agent directory (auth, extensions, `pi-web-access`) on Actions; installs `anthropic-omp` only for its models |
 | `pi/extensions/` | Vendored pi extensions: `anthropic-omp` (Claude subscription provider) and `image-generation` |
 | `claude-app-token.sh` | Fallback push token from the Claude GitHub App |
 | `tests/` | Offline tests with a fake agent, `gh` and remote |
@@ -109,6 +110,44 @@ person instead of the bot, and only when the issue's author is a bot account.
   `.github/workflows/` are refused and reported. Changes under `CODEOWNERS` paths are
   flagged in the PR.
 
+## Live progress
+
+Runs the Discord bot dispatched show what the agent is doing in the feature's thread: one
+message per run, edited every few seconds with its latest reasoning and tool calls, the
+attempt, and a count of both. It turns grey when the workflow run ends. The agent's replies
+and tool output are not sent; the 🤖 comments still report results.
+
+Every adapter runs its CLI in JSON mode (pi: `--mode json`; Claude: `stream-json`; Codex:
+`--json`) and pipes the events through `progress.sh`. It prints the readable trace to
+the Actions log and, when configured, posts batches to `AGENT_PROGRESS_URL` every few
+seconds. It redacts environment secrets, the agent's login files, its own token and common
+token shapes before sending. It never fails the run: it always reads the stream to the end,
+and stops posting when the bot refuses (401/410) or fails three times in a row.
+
+What appears depends on the model. OpenAI models send reasoning *summaries*, and skip them
+for short steps. Claude Code's `-p` mode currently sends empty thinking blocks, so Claude
+runs show only tool calls. OpenRouter models may send their full reasoning, clipped to
+2,000 characters per step.
+
+**Authentication.** The repo is public, so nothing secret can travel in dispatch inputs or
+step environments. A workflow step that the agent can't see derives the run's token,
+hex HMAC-SHA256 of `agent-progress:<request_id>` keyed with `AGENT_PROGRESS_SECRET`, into a
+masked file. The agent can read that token, but it only lets it post to its own run's
+thread, and only while the bot considers that run active. Runs started from GitHub (labels,
+`/agent` comments) have no `request_id` and don't stream.
+
+**Setup:** generate one secret and give it to both sides, then point the workflow at the
+bot's public endpoint (see [bot setup](../bot/README.md#deploy) for the tunnel route):
+
+```bash
+openssl rand -hex 32 > progress-secret      # also mounted as the bot's progress-secret
+gh secret set AGENT_PROGRESS_SECRET < progress-secret
+gh variable set AGENT_PROGRESS_URL --body https://game.chrisbox.dev/bot/progress
+```
+
+Without the variable, the secret, or the bot's secret file, runs don't stream and
+everything else works as before.
+
 ## Token usage
 
 `run.sh` sums the adapters' per-call `usage.json` over all attempts into `result.json`
@@ -161,10 +200,12 @@ bounds numeric values and validates model IDs before rendering them. The human P
      GitHub Secrets are not available to the bot. See [bot setup](../bot/README.md).
    - **pi:** reuses both logins above and adds OpenRouter. `CODEX_AUTH_JSON` becomes
      pi's `openai-codex` login for the default model, `imagegen` and Codex-backed web
-     search; `CLAUDE_CODE_OAUTH_TOKEN` enables the vendored `anthropic-omp` provider; and
-     `OPENROUTER_API_KEY` (`gh secret set OPENROUTER_API_KEY`) enables the `openrouter/*`
-     models. Any one credential is enough to start, but the selected model needs its own:
-     the default needs the Codex login. Pick a model with the dispatch's `pi_model` input
+     search; `CLAUDE_CODE_OAUTH_TOKEN` enables the vendored `anthropic-omp` provider (the
+     workflow passes it to pi only for `anthropic-omp/*` models); and `OPENROUTER_API_KEY`
+     (`gh secret set OPENROUTER_API_KEY`) enables the `openrouter/*` models. The selected
+     model needs its own credential: the default needs the Codex login, `anthropic-omp/*`
+     the Claude token and `openrouter/*` the OpenRouter key. Pick a model with the
+     dispatch's `pi_model` input
      (`-f pi_model=openrouter/z-ai/glm-5.3`) or the `PI_MODEL` variable. The input offers
      `openai-codex/gpt-6.1-sol`, `gpt-6-astra` and `gpt-6-luna`;
      `anthropic-omp/claude-opus-5-5` and `claude-fable-5-1`; and on OpenRouter
@@ -172,8 +213,9 @@ bounds numeric values and validates model IDs before rendering them. The human P
      `qwen/qwen3.8-max-0902`, `qwen/qwen3.8-flash` and `moonshotai/kimi-k3`. pi reads the
      OpenRouter key from the job environment; it is never written to disk.
      `harness/pi-setup.sh` builds a private `PI_CODING_AGENT_DIR` in `$RUNNER_TEMP`,
-     copies `pi/extensions/` there, installs the extension's Bun runtime (and its Linux
-     native addon) plus `pi-web-access`, writes `auth.json`, and installs the MCP servers
+     copies `pi/extensions/` there, installs `pi-web-access` and, only when the model is
+     `anthropic-omp/*`, the extension's Bun runtime and Linux native addon (Bun itself is
+     only set up for those runs), writes `auth.json`, and installs the MCP servers
      from `pi/mcp.json` (chrome-devtools, Playwright and Godot, all headless; see
      [pi/README.md](pi/README.md)). The Claude token is
      **not** written there: the job exports it as `ANTHROPIC_OAUTH_TOKEN`, which the

@@ -19,8 +19,10 @@
 # across calls. Without reported models, the configured model is recorded, and
 # reasoning_effort is the effort given to the adapter (null if it takes none).
 # Env: HARNESS_MODEL, HARNESS_REASONING_EFFORT, HARNESS_MAX_TURNS (passed to adapters),
+#      AGENT_PROGRESS_* (the adapters' live progress stream; see progress.sh),
 #      HARNESS_REMOTE (origin),
-#      HARNESS_VERIFY and HARNESS_ADAPTERS (overrides, for tests).
+#      HARNESS_VERIFY and HARNESS_ADAPTERS (overrides, for tests),
+#      HARNESS_REVERIFY (set to always run verify, even on a tree the agent verified).
 # Exit: 0 for success or no_changes, 2 when the agent failed, 1 on harness errors.
 set -euo pipefail
 # shellcheck source=lib.sh source-path=SCRIPTDIR
@@ -132,11 +134,21 @@ check_work() {
     printf 'These files contain conflict markers:\n%s\n' "$markers"
     return
   fi
-  log "verify (attempt $n)"
-  if ! "$verify" >"$out/verify-$n.log" 2>&1; then
-    printf '`harness/verify.sh` failed. The end of its output:\n\n```\n%s\n```\n' \
-      "$(tail -n 150 "$out/verify-$n.log")"
-    return
+  local tree
+  tree="$(worktree_id 2>/dev/null || true)"
+  if [[ -z "${HARNESS_REVERIFY:-}" && -n "$tree" &&
+    "$(cat "$(verified_stamp)" 2>/dev/null || true)" == "$tree" ]]; then
+    # The agent already ran verify.sh to success on exactly this content.
+    log "verify (attempt $n): skipped, already passed on tree ${tree:0:12}"
+    printf 'Skipped: harness/verify.sh already passed on this exact tree (%s).\n' "$tree" \
+      >"$out/verify-$n.log"
+  else
+    log "verify (attempt $n)"
+    if ! "$verify" >"$out/verify-$n.log" 2>&1; then
+      printf '`harness/verify.sh` failed. The end of its output:\n\n```\n%s\n```\n' \
+        "$(tail -n 150 "$out/verify-$n.log")"
+      return
+    fi
   fi
   # A clean base merge (attempt 0) has no agent design decision to report.
   if [[ "$n" -gt 0 ]] && ! "$HARNESS_DIR/check-summary.sh" "$out/summary.md" >"$out/summary-$n.log"; then
@@ -236,7 +248,8 @@ while [[ "$status" != success && "$attempt" -lt "$attempts" ]]; do
   log "agent attempt $attempt/$attempts"
   rm -f "$out/usage.json"
   agent_ok=1
-  "$adapters/$agent.sh" "$prompt" "$out/agent-$attempt.log" "$cont" || agent_ok=0
+  HARNESS_ATTEMPT="$attempt" HARNESS_ATTEMPTS="$attempts" \
+    "$adapters/$agent.sh" "$prompt" "$out/agent-$attempt.log" "$cont" || agent_ok=0
   add_usage
   if [[ "$agent_ok" == 0 ]]; then
     log "agent exited with an error"

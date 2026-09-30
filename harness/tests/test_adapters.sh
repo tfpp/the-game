@@ -81,7 +81,12 @@ while [[ $# -gt 0 ]]; do [[ "$1" == --session-dir ]] && dir="$2"; shift; done
 mkdir -p "$dir"
 echo '{"type":"message","message":{"role":"user"}}' >>"$dir/s.jsonl"
 echo '{"type":"message","message":{"role":"assistant","usage":{"input":4,"output":4,"cacheRead":0,"cacheWrite":21902,"cost":{"total":0.175312}}}}' >>"$dir/s.jsonl"
-echo hi
+echo 'Warning: an extension warning' >&2
+echo '{"type":"session","version":3}'
+echo '{"type":"tool_execution_start","toolName":"bash","args":{"command":"ls"}}'
+echo '{"type":"message_end","message":{"role":"assistant","stopReason":"toolUse","content":[{"type":"text","text":"looking"}]}}'
+echo '{"type":"message_end","message":{"role":"assistant","stopReason":"stop","content":[{"type":"thinking","thinking":"x"},{"type":"text","text":"Summary "},{"type":"text","text":"written."}]}}'
+echo '{"type":"agent_settled"}'
 EOF
 expect_eq "$(call pi 0)" \
   '{"input_tokens":4,"output_tokens":4,"cache_read_tokens":0,"cache_write_tokens":21902,"cost_usd":0.175312}' "pi first call"
@@ -95,6 +100,53 @@ expect_eq "$(grep -A1 '^--thinking$' "$HARNESS_OUT/args" | tail -1)" medium "pi 
 HARNESS_MODEL=anthropic-omp/claude-opus-5-5 HARNESS_REASONING_EFFORT=high call pi 0 >/dev/null
 expect_eq "$(grep -A1 '^--model$' "$HARNESS_OUT/args" | tail -1)" anthropic-omp/claude-opus-5-5 "pi model override"
 expect_eq "$(grep -A1 '^--thinking$' "$HARNESS_OUT/args" | tail -1)" high "pi thinking override"
+
+echo "- pi: JSON mode; the last reply becomes last-message.md, stderr its own log"
+expect_eq "$(grep -c '^--mode$' "$HARNESS_OUT/args")" 1 "pi JSON mode"
+expect_eq "$(grep -c '^-p$' "$HARNESS_OUT/args")" 0 "pi print mode is off"
+set +e
+"$adapters/pi.sh" "$work/prompt.md" "$work/agent-1.log" 0 >"$work/trace" 2>/dev/null
+expect_eq "$?" 0 "pi success"
+set -e
+expect_eq "$(cat "$HARNESS_OUT/last-message.md")" "Summary written." "pi last message"
+expect_eq "$(cat "$work/agent-1.stderr.log")" "Warning: an extension warning" "pi stderr log"
+expect_eq "$(jq -r .type "$work/agent-1.log" | tr '\n' ' ')" "session tool_execution_start message_end message_end agent_settled " "pi event log"
+grep -qx '  > bash ls' "$work/trace" || fail "pi trace"
+
+echo "- pi: a failed model call fails the adapter, although pi exits 0"
+fake pi <<'EOF'
+echo '{"type":"message_end","message":{"role":"assistant","stopReason":"error","content":[],"errorMessage":"400 out of extra usage"}}'
+EOF
+set +e
+"$adapters/pi.sh" "$work/prompt.md" "$work/agent-1.log" 0 >/dev/null 2>&1
+expect_eq "$?" 1 "pi model error"
+set -e
+expect_eq "$(cat "$HARNESS_OUT/last-message.md")" "400 out of extra usage" "pi error message"
+fake pi <<<'echo "fatal: unknown model" >&2'
+set +e
+"$adapters/pi.sh" "$work/prompt.md" "$work/agent-1.log" 0 >/dev/null 2>&1
+expect_eq "$?" 1 "pi without any reply"
+set -e
+expect_eq "$(cat "$HARNESS_OUT/last-message.md")" "fatal: unknown model" "pi stderr when there is no reply"
+
+echo "- every adapter streams through progress.sh"
+cat >"$work/bin/curl" <<EOF
+#!/usr/bin/env bash
+for a in "\$@"; do [[ "\$a" == @*body.json ]] && cat "\${a#@}" >>"$work/posts"; done
+printf 204
+EOF
+chmod +x "$work/bin/curl"
+echo token-0123456789 >"$work/token"
+fake pi <<<'echo "{\"type\":\"tool_execution_start\",\"toolName\":\"read\",\"args\":{\"path\":\"a.gd\"}}"'
+fake claude <<<'cat >/dev/null; echo "{\"type\":\"assistant\",\"message\":{\"content\":[{\"type\":\"tool_use\",\"name\":\"Read\",\"input\":{\"file_path\":\"a.gd\"}}]}}"'
+fake codex <<<'cat >/dev/null; echo "{\"type\":\"item.started\",\"item\":{\"type\":\"command_execution\",\"command\":\"cat a.gd\"}}"'
+for a in pi claude codex; do
+  rm -f "$work/posts"
+  AGENT_PROGRESS_URL=https://bot.example/bot/progress AGENT_PROGRESS_ID=bot-1 AGENT_PROGRESS_TOKEN_FILE="$work/token" \
+    HARNESS_ATTEMPT=2 "$adapters/$a.sh" "$work/prompt.md" "$work/agent-1.log" 0 >/dev/null 2>&1 || true
+  expect_eq "$(jq -sc '[.[] | .events[]] | length' "$work/posts" 2>/dev/null)" 1 "$a streamed tool call"
+  expect_eq "$(jq -s '.[0].attempt' "$work/posts" 2>/dev/null)" 2 "$a attempt"
+done
 
 if [[ "$failures" -gt 0 ]]; then
   echo "adapter tests: $failures failure(s)"

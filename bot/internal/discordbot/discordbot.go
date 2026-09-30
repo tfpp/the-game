@@ -194,6 +194,38 @@ func (b *Bot) PostEmbed(ctx context.Context, threadID, content string, embed cor
 	return err
 }
 
+// PostLive implements core.LiveChat: a message without pings, edited later by EditLive.
+func (b *Bot) PostLive(ctx context.Context, threadID string, embed core.Embed) (string, error) {
+	ch, err := snowflake.Parse(threadID)
+	if err != nil {
+		return "", err
+	}
+	msg, err := b.client.Rest.CreateMessage(ch, discord.MessageCreate{
+		AllowedMentions: &noMentions, Embeds: []discord.Embed{toEmbed(embed)},
+	}, rest.WithCtx(ctx))
+	if err != nil {
+		return "", err
+	}
+	return msg.ID.String(), nil
+}
+
+// EditLive implements core.LiveChat.
+func (b *Bot) EditLive(ctx context.Context, threadID, messageID string, embed core.Embed) error {
+	ch, err := snowflake.Parse(threadID)
+	if err != nil {
+		return err
+	}
+	id, err := snowflake.Parse(messageID)
+	if err != nil {
+		return err
+	}
+	embeds := []discord.Embed{toEmbed(embed)}
+	_, err = b.client.Rest.UpdateMessage(ch, id, discord.MessageUpdate{
+		Embeds: &embeds, AllowedMentions: &noMentions,
+	}, rest.WithCtx(ctx))
+	return err
+}
+
 func toEmbed(e core.Embed) discord.Embed {
 	out := discord.Embed{Title: e.Title, URL: e.URL, Description: e.Description, Color: e.Color}
 	for _, f := range e.Fields {

@@ -12,8 +12,13 @@ step() { printf '\n==> %s\n' "$*"; }
 
 step "feature release notes"
 (cd .. && scripts/feature_notes.sh validate WORKTREE)
-../scripts/release_test.sh
-../scripts/release_notes_test.sh
+# harness/verify.sh sets this when the branch doesn't touch scripts/.
+if [[ -z "${CHECK_SKIP_RELEASE_TESTS:-}" ]]; then
+  ../scripts/release_test.sh
+  ../scripts/release_notes_test.sh
+else
+  echo "skipped release script tests: no changes under scripts/"
+fi
 
 step "gdformat --check"
 ${GDTOOLKIT}gdformat --check "${SRC[@]}"
@@ -30,7 +35,11 @@ if grep -E "SCRIPT ERROR|Parse Error|ERROR:" <<<"$out"; then
 fi
 
 step "unit tests (GUT)"
-"$GODOT" --headless -s addons/gut/gut_cmdln.gd
+# --fixed-fps steps frames as fast as the CPU allows instead of pacing them in real time,
+# which cuts the suite from minutes to seconds. 64 matches physics_ticks_per_second, so
+# every frame runs exactly one physics step. Tests that need the wall clock (cooldowns,
+# ENet, audio playback) wait with tests/fixtures/real_time.gd.
+"$GODOT" --headless --fixed-fps 64 -s addons/gut/gut_cmdln.gd
 
 step "offline smoke (run main scene)"
 out=$(timeout 20 "$GODOT" --headless --quit-after 240 2>&1 || true)

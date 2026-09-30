@@ -4,6 +4,7 @@ const Layout := preload("res://features/procedural_rooms/example_layout.gd")
 const Showcase := preload("res://features/procedural_rooms/showcase.gd")
 const Shell := preload("res://features/procedural_rooms/shell_mesh.gd")
 const PLAYER := preload("res://core/player/player.tscn")
+const RealTime := preload("res://tests/fixtures/real_time.gd")
 var _world: Node3D
 
 
@@ -71,6 +72,8 @@ func test_door_blocks_closed_clears_open_and_validates_use() -> void:
 	await wait_physics_frames(30)
 	assert_true(door.net_open)
 	assert_false(_blocked(door))
+	# Let the wall-clock use cooldown lapse so the range checks below are what deny.
+	await RealTime.wait(get_tree(), 0.5)
 	player.position = Vector3(-20, 0.95, 8)
 	player.net_position = player.position
 	assert_eq(door.entity._evaluate(1, &"use", {}), NetworkedEntity.Result.DENIED)

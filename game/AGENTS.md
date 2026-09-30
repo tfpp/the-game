@@ -110,11 +110,33 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 - Units: Source "hammer units" in config, meters at runtime (`MovementConfig.UNIT_TO_METERS`).
 - Keep scenes (`.tscn`) small and text-diffable.
 
+## Tests and time
+
+`scripts/check.sh` runs GUT with `--fixed-fps 64`: each frame advances game time by one
+physics tick without waiting for the wall clock, so the suite takes seconds rather than
+minutes. `wait_seconds()`, `wait_physics_frames()` and timers follow game time, which is
+right for movement, animation and game-time logic.
+
+When the code under test reads the wall clock (`Time.get_ticks_msec()`, as action
+cooldowns in `NetworkedEntity` do) or waits on real I/O (ENet transport between peers,
+audio playback finishing), wait with `tests/fixtures/real_time.gd` instead:
+
+```gdscript
+const RealTime := preload("res://tests/fixtures/real_time.gd")
+await RealTime.wait(get_tree(), 0.5)  # past a 0.45 s use cooldown
+assert_true(await RealTime.wait_until(get_tree(), func() -> bool: return client.ready, 5.0))
+```
+
+Prefer `wait_until` with a condition over a fixed delay for networked state. Engine
+warnings fail tests; `tests/hooks/known_engine_warnings.gd` lists the few self-recovering
+engine warnings that are excused.
+
 ## Commands
 
 ```bash
 scripts/check.sh               # everything
-godot --headless -s addons/gut/gut_cmdln.gd   # tests only
+godot --headless --fixed-fps 64 -s addons/gut/gut_cmdln.gd   # tests only
+godot --headless --fixed-fps 64 -s addons/gut/gut_cmdln.gd -gdir= -gtest=res://tests/x/test_y.gd  # one file
 godot -- --server --port=7777  # local dedicated server (add --headless for no window)
 godot -- --connect=ws://127.0.0.1:7777       # client
 scripts/export.sh web|server|all   # needs export templates

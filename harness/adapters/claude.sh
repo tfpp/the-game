@@ -4,8 +4,10 @@
 # HARNESS_REASONING_EFFORT (low), HARNESS_MAX_TURNS.
 # Writes the call's token usage to $HARNESS_OUT/usage.json (see run.sh).
 # Auth comes from CLAUDE_CODE_OAUTH_TOKEN (claude setup-token) or ANTHROPIC_API_KEY.
+# harness/progress.sh prints the trace and streams progress to Discord when configured.
 set -euo pipefail
 prompt="$1" log="$2" cont="$3"
+progress="$(cd "$(dirname "$0")/.." && pwd)/progress.sh"
 session_file="$HARNESS_OUT/claude-session"
 
 args=(-p --output-format stream-json --verbose --dangerously-skip-permissions)
@@ -20,14 +22,7 @@ fi
 
 # Full event stream goes to the log; a readable trace goes to stdout (the Actions log).
 set +e
-claude "${args[@]}" <"$prompt" | tee "$log" | jq -rj --unbuffered '
-  if .type == "assistant" then
-    (.message.content[]? |
-      if .type == "text" then .text + "\n"
-      elif .type == "tool_use" then "  > \(.name) \(.input.command // .input.file_path // .input.pattern // "" | tostring | .[0:160])\n"
-      else empty end)
-  elif .type == "result" then "\n[result] \(.subtype) turns=\(.num_turns) cost=$\(.total_cost_usd // 0)\n"
-  else empty end' 2>/dev/null
+claude "${args[@]}" <"$prompt" | tee "$log" | "$progress" claude
 status="${PIPESTATUS[0]}"
 set -e
 

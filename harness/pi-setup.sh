@@ -4,9 +4,13 @@
 #
 # Env:
 #   PI_CODING_AGENT_DIR      required; a temporary directory outside the checkout
-#   CLAUDE_CODE_OAUTH_TOKEN  `claude setup-token` token; enables the anthropic-omp provider.
-#                            The caller exports it to pi as ANTHROPIC_OAUTH_TOKEN, which
-#                            the extension's backend reads when its own store is empty
+#   HARNESS_MODEL            the run's pi model (default openai-codex/gpt-6.1-sol). The
+#                            anthropic-omp extension and its Bun runtime are installed only
+#                            for anthropic-omp/* models
+#   CLAUDE_CODE_OAUTH_TOKEN  `claude setup-token` token; required by anthropic-omp models,
+#                            ignored otherwise. The caller exports it to pi as
+#                            ANTHROPIC_OAUTH_TOKEN, which the extension's backend reads when
+#                            its own store is empty
 #   CODEX_AUTH_JSON          Codex ChatGPT auth.json; enables openai-codex (the default
 #                            model, imagegen and web search)
 #   OPENROUTER_API_KEY       enables the openrouter provider; pi reads it from the env, so
@@ -14,15 +18,19 @@
 #   PI_WEB_ACCESS            npm spec of the web-access package (pinned default below)
 #   GODOT_PATH               Godot binary for the godot MCP server (default: godot on PATH)
 #
-# Installs harness/pi/extensions (anthropic-omp, image-generation) and pi-web-access into
-# the agent directory and writes auth.json, settings.json and mcp.json (harness/pi/mcp.json)
-# there. Needs pi, bun and npx on PATH.
+# Installs harness/pi/extensions (image-generation, plus anthropic-omp for its models) and
+# pi-web-access into the agent directory and writes auth.json, settings.json and mcp.json
+# (harness/pi/mcp.json) there. Needs pi and npx on PATH, and bun for anthropic-omp models.
 set -euo pipefail
 # shellcheck source=lib.sh source-path=SCRIPTDIR
 source "$(dirname "$0")/lib.sh"
 
 : "${PI_CODING_AGENT_DIR:?Set PI_CODING_AGENT_DIR to a temporary directory outside the checkout}"
 web_access="${PI_WEB_ACCESS:-npm:pi-web-access@0.34.0}"
+model="${HARNESS_MODEL:-openai-codex/gpt-6.1-sol}"
+# The anthropic-omp runtime is a ~100 MB Bun install; only its own models need it.
+omp=0
+[[ "$model" == anthropic-omp/* ]] && omp=1
 # Non-secret marker the anthropic-omp extension expects in pi's auth.json (src/adapter.ts).
 omp_marker="omp-managed-oauth-v1"
 
@@ -41,7 +49,8 @@ jwt_claims() {
 }
 
 auth='{}'
-if [[ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]]; then
+if [[ "$omp" == 1 ]]; then
+  [[ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]] || die "$model needs CLAUDE_CODE_OAUTH_TOKEN; see harness/README.md."
   [[ "$CLAUDE_CODE_OAUTH_TOKEN" == sk-ant-oat* ]] ||
     die 'CLAUDE_CODE_OAUTH_TOKEN must be a `claude setup-token` OAuth token (sk-ant-oat…).'
   # The real token never enters auth.json; the extension's backend reads it from the env.
@@ -71,7 +80,7 @@ if [[ -n "${OPENROUTER_API_KEY:-}" && "$OPENROUTER_API_KEY" =~ [[:space:]] ]]; t
   die 'OPENROUTER_API_KEY must be a single-line API key.'
 fi
 [[ "$auth" != '{}' || -n "${OPENROUTER_API_KEY:-}" ]] ||
-  die 'Pi needs CODEX_AUTH_JSON, CLAUDE_CODE_OAUTH_TOKEN or OPENROUTER_API_KEY; see harness/README.md.'
+  die "Pi needs CODEX_AUTH_JSON or OPENROUTER_API_KEY for $model (CLAUDE_CODE_OAUTH_TOKEN only serves anthropic-omp models); see harness/README.md."
 printf '%s\n' "$auth" >"$dir/auth.json"
 chmod 600 "$dir/auth.json"
 
@@ -81,11 +90,19 @@ jq -n --slurpfile levels "$HARNESS_DIR/pi/thinking-levels.json" \
     modelThinkingLevels: $levels[0], quietStartup: true, packages: []}' >"$dir/settings.json"
 
 mkdir -p "$dir/extensions"
-cp -R "$HARNESS_DIR/pi/extensions/." "$dir/extensions/"
-omp="$dir/extensions/anthropic-omp"
-log "installing the anthropic-omp runtime"
-(cd "$omp/runtime" && bun install --frozen-lockfile --ignore-scripts) >&2
-bun "$omp/scripts/link-native.ts" >&2
+for ext in "$HARNESS_DIR"/pi/extensions/*/; do
+  ext="$(basename "$ext")"
+  [[ "$ext" == anthropic-omp && "$omp" != 1 ]] && continue
+  cp -R "$HARNESS_DIR/pi/extensions/$ext" "$dir/extensions/"
+done
+if [[ "$omp" == 1 ]]; then
+  omp_dir="$dir/extensions/anthropic-omp"
+  log "installing the anthropic-omp runtime for $model"
+  (cd "$omp_dir/runtime" && bun install --frozen-lockfile --ignore-scripts) >&2
+  bun "$omp_dir/scripts/link-native.ts" >&2
+else
+  log "skipping the anthropic-omp extension: $model doesn't use it"
+fi
 log "installing $web_access"
 pi install "$web_access" >&2
 

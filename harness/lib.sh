@@ -69,3 +69,30 @@ def request_body: if discord_requester then [body_lines[] | select(startswith("R
 
 # valid_title "feat(game): add jump pads" -> exit 0
 valid_title() { [[ "$1" =~ $CC_TITLE_RE ]]; }
+
+# worktree_id -> the tree hash of the working tree's content: tracked and untracked
+# files, minus ignored ones, as `git add -A && git write-tree` would record it. Uses a
+# scratch index, so the real index and staging are untouched.
+worktree_id() {
+  local index id
+  index="$(mktemp)"
+  cp "$(git rev-parse --git-path index)" "$index" 2>/dev/null || rm -f "$index"
+  id="$(GIT_INDEX_FILE="$index" git add -A . && GIT_INDEX_FILE="$index" git write-tree)" || id=""
+  rm -f "$index"
+  [[ -n "$id" ]] && printf '%s' "$id"
+}
+
+# Where verify.sh records the last worktree_id it passed on (inside .git, never committed).
+verified_stamp() { printf '%s/harness-verified' "$(git rev-parse --absolute-git-dir)"; }
+
+# changed_paths -> files that differ from the merge base with $VERIFY_BASE (default
+# origin/main), including uncommitted and untracked files. Fails when there is nothing
+# to compare: no such base, or a clean checkout of the base itself.
+changed_paths() {
+  local base
+  base="$(git merge-base HEAD "${VERIFY_BASE:-origin/main}" 2>/dev/null)" || return 1
+  if [[ "$base" == "$(git rev-parse HEAD)" && -z "$(git status --porcelain)" ]]; then
+    return 1
+  fi
+  { git diff --name-only "$base" && git ls-files --others --exclude-standard; } | sort -u
+}

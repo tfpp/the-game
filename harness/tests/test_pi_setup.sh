@@ -15,7 +15,7 @@ printf '#!/usr/bin/env bash\n' >"$work/bin/fake-godot"
 chmod +x "$work/bin/fake-godot"
 export GODOT_PATH="$work/bin/fake-godot"
 export PATH="$work/bin:$PATH"
-unset CLAUDE_CODE_OAUTH_TOKEN CODEX_AUTH_JSON OPENROUTER_API_KEY PI_WEB_ACCESS FAKE_MCP_FAIL
+unset CLAUDE_CODE_OAUTH_TOKEN CODEX_AUTH_JSON OPENROUTER_API_KEY PI_WEB_ACCESS FAKE_MCP_FAIL HARNESS_MODEL
 export PI_CODING_AGENT_DIR="$work/agent"
 auth="$PI_CODING_AGENT_DIR/auth.json"
 
@@ -38,7 +38,10 @@ reject() { # reject NAME: pi-setup.sh must fail without writing or printing a se
   no_secret "$work/log"
 }
 reject 'no credentials'
-CLAUDE_CODE_OAUTH_TOKEN='secret-marker' reject 'API key instead of an OAuth token'
+omp_model=anthropic-omp/claude-opus-5-5
+HARNESS_MODEL=$omp_model CLAUDE_CODE_OAUTH_TOKEN='secret-marker' reject 'API key instead of an OAuth token'
+HARNESS_MODEL=$omp_model OPENROUTER_API_KEY='sk-or-secret-marker' reject 'anthropic-omp model without the Claude token'
+CLAUDE_CODE_OAUTH_TOKEN='sk-ant-oat01-secret-marker' reject 'only the Claude token, for a model that does not use it'
 CODEX_AUTH_JSON='secret-marker invalid json' reject 'invalid Codex JSON'
 OPENROUTER_API_KEY=$'sk-or-secret-marker\n' reject 'OpenRouter key with a newline'
 CODEX_AUTH_JSON='{"tokens":{"access_token":"secret-marker"}}' reject 'Codex login without refresh token'
@@ -49,7 +52,8 @@ CLAUDE_CODE_OAUTH_TOKEN='sk-ant-oat01-secret-marker' PI_CODING_AGENT_DIR="$root/
 [[ ! -e "$root/harness/.pi-test/auth.json" ]] || fail 'wrote credentials inside the checkout'
 rm -rf "$root/harness/.pi-test"
 
-echo "- both logins: the Anthropic token stays out of auth.json; Codex is converted"
+echo "- anthropic-omp model, both logins: the Anthropic token stays out of auth.json; Codex is converted"
+export HARNESS_MODEL=$omp_model
 export CLAUDE_CODE_OAUTH_TOKEN='sk-ant-oat01-secret-marker'
 export CODEX_AUTH_JSON="{\"auth_mode\":\"chatgpt\",\"tokens\":{\"access_token\":\"$jwt\",\"refresh_token\":\"refresh\",\"id_token\":\"id\"}}"
 rm -f "$work/calls"
@@ -72,6 +76,17 @@ called 'pi install npm:pi-web-access@0.34.0'
 called 'pi mcp list'
 expect_eq "$(jq -c '.mcpServers | keys' "$PI_CODING_AGENT_DIR/mcp.json")" '["chrome-devtools","godot","playwright"]' 'MCP servers'
 expect_eq "$(jq -r .mcpServers.godot.env.GODOT_PATH "$PI_CODING_AGENT_DIR/mcp.json")" "$GODOT_PATH" 'Godot path for the godot MCP server'
+
+echo "- default model: no anthropic-omp extension, runtime or marker"
+unset HARNESS_MODEL
+rm -rf "$PI_CODING_AGENT_DIR" "$work/calls"
+"$root/harness/pi-setup.sh" >"$work/log" 2>&1 || fail "setup failed: $(cat "$work/log")"
+no_secret "$work/log" "$auth"
+[[ ! -e "$PI_CODING_AGENT_DIR/extensions/anthropic-omp" ]] || fail "installed anthropic-omp for the default model"
+[[ -f "$PI_CODING_AGENT_DIR/extensions/image-generation/index.ts" ]] || fail "image-generation not installed"
+if grep -q "^bun " "$work/calls"; then fail "ran bun for the default model"; fi
+expect_eq "$(jq -r 'has("anthropic-omp")' "$auth")" false "no Anthropic marker for the default model"
+called 'pi install npm:pi-web-access@0.34.0'
 
 echo "- Codex alone; auth.json's account_id wins over the JWT claim"
 unset CLAUDE_CODE_OAUTH_TOKEN

@@ -2,6 +2,7 @@ extends GutTest
 ## Real transport verifies the migrated shared patron state and follower authority.
 
 const TRUMP := preload("res://features/casino_patrons/trump.tscn")
+const RealTime := preload("res://tests/fixtures/real_time.gd")
 var _roots: Array[Node] = []
 var _peers: Array[ENetMultiplayerPeer] = []
 
@@ -46,10 +47,16 @@ func test_late_join_receives_follower_state_and_clients_cannot_change_it() -> vo
 	var client_peer := ENetMultiplayerPeer.new()
 	assert_eq(client_peer.create_client("127.0.0.1", server_peer.host.get_local_port()), OK)
 	var client := _branch("Client", client_peer)
-	for frame: int in 120:
-		await get_tree().physics_frame
-		if client.net_ragdoll and client.net_position == server.net_position:
-			break
+	await RealTime.wait_until(
+		get_tree(),
+		func() -> bool:
+			return (
+				client.net_ragdoll
+				and client.net_position == server.net_position
+				and is_equal_approx(client.net_yaw, server.net_yaw)
+			),
+		5.0
+	)
 	assert_true(client.net_ragdoll, "late join sees knockdown")
 	assert_eq(client.net_position, server.net_position)
 	assert_almost_eq(client.net_yaw, server.net_yaw, 0.001)
