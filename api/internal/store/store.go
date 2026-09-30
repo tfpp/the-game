@@ -145,6 +145,13 @@ var migrations = []string{
 		payout INTEGER NOT NULL,
 		balance INTEGER NOT NULL
 	);`,
+	`CREATE TABLE timed_bomb (
+		id INTEGER PRIMARY KEY CHECK(id = 1),
+		code TEXT NOT NULL,
+		deadline INTEGER NOT NULL,
+		state TEXT NOT NULL CHECK(state IN ('armed', 'defused', 'exploded')),
+		next_attempt INTEGER NOT NULL DEFAULT 0
+	);`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {
