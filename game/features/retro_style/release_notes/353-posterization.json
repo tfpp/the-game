@@ -1,0 +1,5 @@
+{
+  "title": "Experimental world posterization",
+  "summary": "Try a reduced-color world and equipped items with a saved Graphics strength slider.",
+  "notes": ["Add an opt-in experimental posterization strength slider under Settings → Graphics.", "Keep HUD and menu colors unchanged while reducing world and equipped-item color steps."]
+}
