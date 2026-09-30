@@ -1,58 +1,5 @@
-extends GutTest
+extends "res://tests/features/roulette/roulette_round_fixture.gd"
 ## Server-side round flow: seats, bets, lock-in, spin, settlement and release.
-## Requests go through the real NetworkedInteraction evaluation with fake peers.
-
-const TableScene := preload("res://features/roulette/table.tscn")
-const PlayerScene := preload("res://core/player/player.tscn")
-const RESULT := NetworkedEntity.Result
-
-var _table: RouletteTable
-var _wallet: PlayerMoney
-var _players: Dictionary = {}
-
-
-func before_each() -> void:
-	_wallet = PlayerMoney.new()
-	add_child_autofree(_wallet)
-	_wallet.set_process(false)
-	_wallet.balances = {2: 2000, 3: 2000, 4: 2000, 5: 2000}
-	_table = TableScene.instantiate() as RouletteTable
-	add_child_autofree(_table)
-	_table.set_process(false)
-	_players.clear()
-	for peer: int in [2, 3, 4, 5]:
-		var player := PlayerScene.instantiate() as Player
-		player.set_multiplayer_authority(peer)
-		player.display_name = "P%d" % peer
-		player.position = Vector3((peer - 3) * 0.9, 0.9144, -2.4)
-		player.net_position = player.position
-		player.net_yaw = PI
-		add_child_autofree(player)
-		_players[peer] = player
-	await get_tree().physics_frame
-
-
-func _use(peer: int) -> NetworkedEntity.Result:
-	return _table.entity._evaluate(peer, &"use", {})
-
-
-func _act(peer: int, action: StringName, payload: Dictionary = {}) -> NetworkedEntity.Result:
-	return _table.entity._evaluate(peer, action, payload)
-
-
-func _sit(peer: int) -> void:
-	assert_eq(_use(peer), RESULT.ACCEPTED, "peer %d sits" % peer)
-	var player := _players[peer] as Player
-	player.net_position = _table.seat_position(_table.seat_of(peer))
-	player.global_position = player.net_position
-
-
-func _run(seconds: float) -> void:
-	var step := 0.25
-	var elapsed := 0.0
-	while elapsed < seconds:
-		_table._process(step)
-		elapsed += step
 
 
 func test_first_player_opens_a_thirty_second_round_and_takes_a_seat() -> void:
@@ -102,6 +49,7 @@ func test_bets_must_be_seated_valid_chips_and_within_the_balance() -> void:
 	# $20 wallet: $6 is down, so $14 remains; a $50 chip does not fit.
 	assert_eq(_act(2, &"bet", {"spot": "black", "cents": 5000}), RESULT.DENIED)
 	for _chip: int in 14:
+		_table._clock_s += 0.2
 		assert_eq(_act(2, &"bet", {"spot": "black", "cents": 100}), RESULT.ACCEPTED)
 	assert_eq(_act(2, &"bet", {"spot": "black", "cents": 100}), RESULT.DENIED, "balance used up")
 	assert_eq(RouletteBets.total(_table.placements_for(2)), 2000)
@@ -190,16 +138,6 @@ func test_full_round_locks_bets_spins_settles_and_releases() -> void:
 	_sit(5)
 	assert_eq(int(_table.state["round"]), 2, "the next player opens a new round")
 	assert_eq(_table.state["results"], {})
-
-
-func test_a_bet_the_wallet_can_no_longer_cover_is_void() -> void:
-	_sit(2)
-	_table._wheel = FixedWheel.new(1)
-	_act(2, &"bet", {"spot": "red", "cents": 500})
-	_wallet.balances[2] = 300
-	_run(RouletteTable.BETTING_S + RouletteTable.SPIN_DURATION_S + 0.5)
-	assert_eq(_table.state["results"][2]["status"], "void")
-	assert_eq(int(_wallet.balances[2]), 300, "a void bet neither charges nor pays")
 
 
 func test_players_who_leave_their_seat_or_disconnect_lose_it() -> void:
@@ -373,14 +311,3 @@ func test_standing_up_from_the_seat_view_leaves_the_table() -> void:
 	view._process(0.0)
 	assert_null(view.seat_view)
 	assert_null(view.screen, "released straight back to the game from the seat")
-
-
-class FixedWheel:
-	extends RouletteWheel
-	var _number := 0
-
-	func _init(number: int) -> void:
-		_number = number
-
-	func next_result() -> int:
-		return _number

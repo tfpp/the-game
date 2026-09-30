@@ -6,6 +6,7 @@
     "Press C (controller Y) at the table to open an overhead betting view with a chip rack from $1 to $25K: place any mix of chips on straight, split, street, corner, top-line, six-line, column, dozen and even-money bets, up to your wallet balance, with each spot's payout and what your chips there would win shown.",
     "Spin the wheel when betting closes with the camera panning over it, sweep losing chips, mark the winning number and settle every player's bets at American odds (n/38 to win, paying 36/n - 1 to 1, with the top line at 6 to 1) in one atomic wallet operation.",
     "Dress the roulette screens as Golden Crown table furniture: mahogany and felt panels, a velvet title plaque, cream-and-brass buttons, round chips and a brass pointer over the selected chip.",
+    "Return chips your balance no longer covers when betting closes instead of voiding the whole bet, explain in chat why you couldn't sit, and step aside anyone standing in a seat being taken.",
     "Add a dealer standing behind the roulette table, and remove the potted palm crowding its wheel end."
   ]
 }

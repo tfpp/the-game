@@ -15,8 +15,20 @@ const SPIN_DURATION_S := 3.0
 const RESULT_S := 5.0
 ## A seated player whose position drifts this far from their seat has left it.
 const SEAT_LEAVE_M := 1.2
-const SETTLE_ATTEMPTS := 20
+## Settlement retries back off from SETTLE_RETRY_S to SETTLE_RETRY_MAX_S and never
+## give up while the session lasts: the API may already have applied a bet whose
+## reply was lost, so the same operation ID is retried until it answers.
 const SETTLE_RETRY_S := 0.5
+const SETTLE_RETRY_MAX_S := 10.0
+## Per-player bet-editing allowance (bet/remove/undo/clear): bursts up to
+## EDIT_BURST requests, refilling EDIT_RATE per second. Each accepted edit resends
+## the table state to every peer, so sustained spam is refused.
+const EDIT_BURST := 10.0
+const EDIT_RATE := 8.0
+## A standing player this close (horizontally) to a seat is moved aside when
+## someone sits there, and how far back from the seat they are moved.
+const SEAT_CLEAR_M := 0.7
+const SEAT_NUDGE_M := 1.0
 const PHASE_IDLE := "idle"
 const PHASE_BETTING := "betting"
 const PHASE_SPINNING := "spinning"
@@ -44,6 +56,10 @@ var _generation := 0
 var _locked: Dictionary = {}
 ## peer -> true once the player has reached their seat after the teleport.
 var _arrived: Dictionary = {}
+## peer -> {"tokens": float, "at": float} for the bet-editing allowance.
+var _edit_budget: Dictionary = {}
+## Server clock (seconds of _process time) for the edit allowance.
+var _clock_s := 0.0
 
 @onready var entity: NetworkedInteraction = $NetworkedEntity
 
@@ -51,12 +67,13 @@ var _arrived: Dictionary = {}
 func _ready() -> void:
 	add_to_group(&"interactables")
 	entity.register_use(can_use, _seat)
-	entity.register_action(&"bet", _may_bet, _bet)
-	entity.register_action(&"remove", _may_remove, _remove)
-	entity.register_action(&"undo", _has_bets, _undo)
-	entity.register_action(&"clear", _has_bets, _clear)
+	entity.register_action(&"bet", _may_bet, _metered(_bet))
+	entity.register_action(&"remove", _may_remove, _metered(_remove))
+	entity.register_action(&"undo", _may_edit, _metered(_undo))
+	entity.register_action(&"clear", _may_edit, _metered(_clear))
 	entity.register_action(&"leave", _may_leave, _leave)
 	entity.session_reset.connect(_on_session_reset)
+	entity.request_finished.connect(_on_request_finished)
 	Network.mode_changed.connect(_on_mode_changed)
 
 
@@ -173,6 +190,7 @@ func may_leave(peer: int) -> bool:
 
 
 func _process(delta: float) -> void:
+	_clock_s += delta
 	if not entity.is_authority():
 		return
 	_watch_seats()
@@ -207,8 +225,35 @@ func _seat(player: Player) -> bool:
 	next["names"][seat] = player.display_name if player.display_name else "Player %d" % peer
 	state = next
 	_arrived.erase(peer)
+	_clear_seat(seat, player)
 	_teleport(player, seat)
 	return true
+
+
+## Moves any standing (unseated) player off `seat` so the new occupant doesn't land
+## inside them. Movement is client-owned, so the server asks their peer to move.
+## Returns peer -> target position for everyone asked to move.
+func _clear_seat(seat: int, sitter: Player) -> Dictionary:
+	var moved := {}
+	var spot := seat_position(seat)
+	var away := -global_basis.z.normalized()
+	for node: Node in get_tree().get_nodes_in_group(&"players"):
+		var other := node as Player
+		if other == null or other == sitter:
+			continue
+		var peer := other.get_multiplayer_authority()
+		if seat_of(peer) >= 0:
+			continue
+		var offset := other.net_position - spot
+		offset.y = 0.0
+		if offset.length() >= SEAT_CLEAR_M:
+			continue
+		var target := spot + away * SEAT_NUDGE_M
+		target.y = other.net_position.y
+		moved[peer] = target
+		if peer == multiplayer.get_unique_id() or multiplayer.get_peers().has(peer):
+			other.server_teleport.rpc_id(peer, target)
+	return moved
 
 
 func _open_round(from: Dictionary) -> Dictionary:
@@ -240,7 +285,7 @@ func _may_bet(peer: int, payload: Dictionary) -> bool:
 	if not RouletteBets.DENOMINATIONS.has(cents):
 		return false
 	var placements := placements_for(peer)
-	if placements.size() >= RouletteBets.MAX_PLACEMENTS:
+	if placements.size() >= RouletteBets.MAX_PLACEMENTS or not _has_edit_budget(peer):
 		return false
 	return RouletteBets.total(placements) + cents <= _balance(peer)
 
@@ -257,7 +302,7 @@ func _bet(peer: int, payload: Dictionary) -> bool:
 func _may_remove(peer: int, payload: Dictionary) -> bool:
 	if payload.size() != 1 or not payload.get("spot") is String:
 		return false
-	return _has_bets(peer, {}) and RouletteBets.by_spot(placements_for(peer)).has(payload["spot"])
+	return _may_edit(peer, {}) and RouletteBets.by_spot(placements_for(peer)).has(payload["spot"])
 
 
 func _remove(peer: int, payload: Dictionary) -> bool:
@@ -270,6 +315,32 @@ func _remove(peer: int, payload: Dictionary) -> bool:
 
 func _has_bets(peer: int, payload: Dictionary) -> bool:
 	return payload.is_empty() and phase() == PHASE_BETTING and not placements_for(peer).is_empty()
+
+
+func _may_edit(peer: int, payload: Dictionary) -> bool:
+	return _has_bets(peer, payload) and _has_edit_budget(peer)
+
+
+## True if `peer` may make another bet edit now. Read-only; `_metered` spends it.
+func _has_edit_budget(peer: int) -> bool:
+	return _edit_tokens(peer) >= 1.0
+
+
+func _edit_tokens(peer: int) -> float:
+	var budget: Dictionary = _edit_budget.get(peer, {})
+	if budget.is_empty():
+		return EDIT_BURST
+	var seconds := _clock_s - float(budget["at"])
+	return minf(EDIT_BURST, float(budget["tokens"]) + seconds * EDIT_RATE)
+
+
+## Wraps an apply callback so each accepted edit spends one unit of the allowance.
+func _metered(apply: Callable) -> Callable:
+	return func(peer: int, payload: Dictionary) -> bool:
+		if not apply.call(peer, payload):
+			return false
+		_edit_budget[peer] = {"tokens": _edit_tokens(peer) - 1.0, "at": _clock_s}
+		return true
 
 
 func _undo(peer: int, _payload: Dictionary) -> bool:
@@ -350,11 +421,33 @@ func _close_betting() -> void:
 		return
 	var wallet := _wallet()
 	_locked.clear()
+	var trimmed := state.duplicate(true)
 	for peer: int in bets:
+		var kept := affordable(bets[peer], _balance(peer))
+		var returned := RouletteBets.total(bets[peer]) - RouletteBets.total(kept)
+		if returned > 0:
+			_notify(
+				peer,
+				(
+					"Roulette: %s of chips returned, your balance no longer covers them"
+					% PlayerMoney.format_money(returned)
+				)
+			)
+		if kept.is_empty():
+			(trimmed["bets"] as Dictionary).erase(peer)
+			continue
+		trimmed["bets"][peer] = kept
 		_locked[peer] = {
 			"account": wallet.account_for(peer) if wallet != null else 0,
-			"placements": (bets[peer] as Array).duplicate(true),
+			"placements": kept.duplicate(true),
 		}
+	state = trimmed
+	if _locked.is_empty():
+		var closed := state.duplicate(true)
+		closed["message"] = "No bets placed"
+		state = closed
+		_end_round()
+		return
 	_result = _wheel.next_result()
 	_elapsed = 0.0
 	net_seconds_left = 0
@@ -394,17 +487,19 @@ func _settle(peer: int, locked: Dictionary, round_id: int, number: int) -> void:
 	var payout := int(totals["payout"])
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
 	var result := {"error": "Wallet unavailable"}
-	for attempt: int in SETTLE_ATTEMPTS:
-		if wallet == null or not is_instance_valid(wallet):
-			break
+	var delay := SETTLE_RETRY_S
+	while wallet != null and is_instance_valid(wallet):
 		result = await wallet.settle_roulette(peer, int(locked["account"]), id, wager, payout)
 		if generation != _generation or not is_inside_tree():
 			return
 		if result.has("balance") or result.has("rejected"):
 			break
-		await get_tree().create_timer(SETTLE_RETRY_S).timeout
+		# No answer (API down, reply lost, wallet busy): the bet may already be applied,
+		# so keep retrying the same ID rather than calling it void.
+		await get_tree().create_timer(delay).timeout
 		if generation != _generation or not is_inside_tree():
 			return
+		delay = minf(delay * 2.0, SETTLE_RETRY_MAX_S)
 	var status := "void"
 	if result.has("balance"):
 		status = "won" if payout > 0 else "lost"
@@ -427,6 +522,7 @@ func _end_round() -> void:
 	_elapsed = 0.0
 	_locked.clear()
 	_arrived.clear()
+	_edit_budget.clear()
 	net_seconds_left = 0
 	var next := state.duplicate(true)
 	next["phase"] = PHASE_IDLE
@@ -434,6 +530,33 @@ func _end_round() -> void:
 	next["names"] = ["", "", ""]
 	next["bets"] = {}
 	state = next
+
+
+## The oldest placements whose total fits in `balance`; later chips that no longer
+## fit are dropped rather than voiding the whole bet at settlement.
+static func affordable(placements: Array, balance: int) -> Array:
+	var kept: Array = []
+	var total := 0
+	for placement: Array in placements:
+		if total + int(placement[1]) > balance:
+			break
+		total += int(placement[1])
+		kept.append(placement.duplicate())
+	return kept
+
+
+## Client side: explain a refused request to sit (the server has already decided).
+func _on_request_finished(action: StringName, result: NetworkedEntity.Result) -> void:
+	if action != &"use" or result == NetworkedEntity.Result.ACCEPTED:
+		return
+	var text := "You can't join the roulette table from here"
+	if phase() == PHASE_SPINNING or phase() == PHASE_RESULT:
+		text = "Roulette: wait for the next round"
+	elif not (state["seats"] as Array).has(0):
+		text = "Roulette table is full"
+	var chat := get_tree().get_first_node_in_group(&"chat_box")
+	if chat != null:
+		chat.receive_notice(text)
 
 
 func _balance(peer: int) -> int:
@@ -469,3 +592,4 @@ func _reset() -> void:
 	_elapsed = 0.0
 	_locked.clear()
 	_arrived.clear()
+	_edit_budget.clear()

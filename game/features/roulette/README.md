@@ -67,6 +67,25 @@ dictionary; the countdown is `net_seconds_left`, so ticking seconds do not resen
 bets. Late joiners receive both on spawn. Every peer animates the wheel locally and does
 not learn the winning pocket until the spin ends.
 
+Edge cases:
+
+- **Rate limit.** Every accepted bet edit resends the table state to all peers, so each
+  player gets their own allowance for bet/remove/undo/clear: bursts of 10, refilling 8
+  per second. Refused edits don't affect other players; leaving is never limited. (The
+  component's built-in cooldown is shared by all players, so it isn't used here.)
+- **Lost settlement replies.** If the accounts API doesn't answer, the result shows
+  "settling" and the server retries the same operation ID with backoff (0.5 s up to
+  10 s) until it does, instead of calling the bet void when it may already have been
+  applied. Only an explicit rejection voids a bet.
+- **Balance below the bets.** Bets are checked against the balance when placed. When
+  betting closes, if the balance has since dropped, the newest chips that no longer fit
+  go back (with a chat notice) and the rest still play. The API still rejects the whole
+  settlement if the balance falls further during the spin.
+- **Seat collisions.** Sitting down moves any standing (unseated) player within 0.7 m of
+  that seat 1 m back from the table first.
+- **Refused seats.** A refused request to sit shows why in chat: the table is full, or
+  the wheel is spinning (wait for the next round).
+
 ## Layout
 
 - `feature.tscn` places the table in the world.

@@ -312,6 +312,8 @@ func _result_text(peer: int) -> String:
 	var net := int(result["payout"]) - int(result["wager"])
 	if str(result["status"]) == "void":
 		return "bet void"
+	if str(result["status"]) == "settling":
+		return "settling your bets…"
 	if net > 0:
 		return "you won %s!" % PlayerMoney.format_money(net)
 	if net == 0:
