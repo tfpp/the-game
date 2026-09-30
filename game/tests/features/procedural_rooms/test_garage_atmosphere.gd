@@ -50,6 +50,28 @@ func test_every_deck_hangs_tubes_under_its_ceiling_away_from_the_atrium() -> voi
 	root.free()
 
 
+func test_deck_lights_skip_distant_floors_and_keep_nearby_decks_readable() -> void:
+	var root := Node3D.new()
+	add_child_autofree(root)
+	var lights := Lights.new()
+	root.add_child(lights)
+	lights.position.y = 12
+	lights.build(3, 73021)
+	assert_true(lights.camera_is_near(Vector3(0, 13.7, 21)))
+	assert_true(lights.camera_is_near(Vector3(0, 17.7, 21)), "Adjacent floor remains lit")
+	assert_false(lights.camera_is_near(Vector3(0, 5.7, 21)), "Distant floors do not need lights")
+	assert_false(lights.camera_is_near(Vector3(80, 13.7, 21)), "Other districts skip flicker")
+	var camera := Camera3D.new()
+	root.add_child(camera)
+	camera.make_current()
+	camera.position = Vector3(80, 13.7, 21)
+	lights._process(0.05)
+	assert_false(lights.lights[0].visible)
+	camera.position = Vector3(0, 13.7, 21)
+	lights._process(0.05)
+	assert_true(lights.lights[0].visible)
+
+
 func test_flickering_tube_dims_its_light() -> void:
 	var root := Node3D.new()
 	add_child(root)
@@ -79,6 +101,8 @@ func test_live_garage_uses_weathered_textures_rain_and_dark_ambience() -> void:
 	var atmosphere := garage.get_node("Atmosphere")
 	var rain := atmosphere.rain as CPUParticles3D
 	assert_almost_eq(rain.position, Vector3(0, 20, 21), Vector3.ONE * 0.01)
+	assert_lte(rain.amount, 120, "Bound CPU simulation and transparent overdraw on mobile")
+	assert_eq(rain.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
 	assert_lte(rain.emission_box_extents.x, 10.0, "Rain stays inside the atrium")
 	assert_lte(rain.emission_box_extents.z, 9.0)
 	var camera := Camera3D.new()

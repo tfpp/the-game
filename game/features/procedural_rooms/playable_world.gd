@@ -1,4 +1,4 @@
-extends Node3D
+extends RenderZone
 ## Live-game instance of the deterministic kit, without preview players or global lighting.
 
 const Layout := preload("res://features/procedural_rooms/world_layout.gd")
@@ -15,11 +15,20 @@ const SURFACES := {
 
 
 func _ready() -> void:
+	render_layer = 20
+	render_bounds = Atmosphere.BOUNDS
+	# The sunken casino floor is at -1.5 m; its furniture origins must not
+	# be mistaken for basement actors. B1's ceiling is below -2.3 m.
+	render_bounds.size.y = 20.0
 	var level := Layout.build(self, layout_seed, [], true)
 	for surface: String in SURFACES:
 		var mesh := level.get_node_or_null("Structure/" + surface) as MeshInstance3D
 		if mesh != null:
 			mesh.material_override = SURFACES[surface]
+	# The cab and casino landing straddle the boundary and must remain visible
+	# from both sides. Shared networking paths are unchanged.
+	for path: String in ["Lift/Cab", "CasinoGate", "CasinoCall"]:
+		level.get_node(path).add_to_group(&"render_zone_shared")
 	var atmosphere := Atmosphere.new()
 	atmosphere.name = "Atmosphere"
 	add_child(atmosphere)

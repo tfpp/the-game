@@ -22,7 +22,9 @@ const SLOTS: Array[Vector3] = [
 ## Each deck lights its south and north rows from the tube nearest the centre line.
 const LIT_SLOTS: Array[int] = [2, 9]
 const TUBE_COLOR := Color("d8f0ff")
-const ACTIVE_RANGE := 36.0
+const ACTIVE_RANGE := 28.0
+const UPDATE_SECONDS := 0.05
+const ACTIVE_HEIGHT := 4.0
 static var _hum_stream: AudioStreamWAV
 
 var tubes: Array[MeshInstance3D] = []
@@ -31,6 +33,7 @@ var phases: Array[float] = []
 var lights: Array[OmniLight3D] = []
 var hums: Array[AudioStreamPlayer3D] = []
 var light_energy := 0.8
+var _elapsed := 0.0
 
 
 ## Deterministic tube states: "steady", "flicker" or "dead". Index 4 is B1, 0 is B5.
@@ -122,12 +125,18 @@ func _tube_material(on: bool) -> StandardMaterial3D:
 	return material
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_elapsed += delta
+	if _elapsed < UPDATE_SECONDS:
+		return
+	_elapsed = 0.0
 	var camera := get_viewport().get_camera_3d()
-	var active := (
-		camera != null
-		and camera.global_position.distance_to(to_global(Vector3(0, 2, 21))) < ACTIVE_RANGE
-	)
+	var active := camera != null and camera_is_near(camera.global_position)
+	for light: OmniLight3D in lights:
+		light.visible = active
+	var beacon := get_parent().get_node_or_null("ElevatorBeacon") as OmniLight3D
+	if beacon != null:
+		beacon.visible = active
 	for hum: AudioStreamPlayer3D in hums:
 		if active and not hum.playing:
 			hum.play()
@@ -135,6 +144,15 @@ func _process(_delta: float) -> void:
 			hum.stop()
 	if active:
 		apply_time(Time.get_ticks_msec() / 1000.0)
+
+
+## Only the current deck and its immediate vertical neighbours need dynamic lights.
+func camera_is_near(point: Vector3) -> bool:
+	var local := to_local(point)
+	return (
+		absf(local.y - 2.0) <= ACTIVE_HEIGHT
+		and Vector2(local.x, local.z - 21).length_squared() < ACTIVE_RANGE * ACTIVE_RANGE
+	)
 
 
 ## Sets every tube, light and hum to its level at time t.

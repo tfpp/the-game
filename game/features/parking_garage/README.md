@@ -1,5 +1,16 @@
 # Parking garage
 
+The playable P1–P3 structure is now `garage.tscn`, instanced at the unchanged
+`Garage` path and world origin by `feature.tscn`; the employee entrance stays
+in the casino. The garage root is a `RenderZone` on reserved visual layer 19.
+Only its scene and in-zone players/enemies/effects are rendered while the local
+camera is inside, and it is excluded outside. Geometry, searchable boots,
+collision and networking remain present on all peers; this is render isolation,
+not a separate game session or memory streaming. See
+[room visibility](../room_visibility/README.md) for the camera-mask contract.
+The newer B1–B5 garage has its own scene under `features/procedural_rooms/`.
+
+
 A dark, three-story concrete parking structure outside The Golden Crown. The
 casino's south lobby has a plain steel employee door (near the trampolines'
 side of the room, at world `(12, 0, 31)`) with a sign reading "STAFF ONLY —
