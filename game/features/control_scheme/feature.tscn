@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://features/control_scheme/control_scheme.gd" id="1_script"]
+[ext_resource type="Script" path="res://features/control_scheme/system_shortcuts.gd" id="2_shortcuts"]
 
 [node name="ControlScheme" type="Node"]
 script = ExtResource("1_script")
+
+[node name="SystemShortcuts" type="Node" parent="."]
+script = ExtResource("2_shortcuts")
