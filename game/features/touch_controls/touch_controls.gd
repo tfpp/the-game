@@ -78,6 +78,11 @@ func pause_button() -> Rect2:
 	return Rect2(safe_bounds.end.x - 100, safe_bounds.position.y + 100, 76, 64)
 
 
+## Beside the menu, outside the movement and action targets.
+func camera_button() -> Rect2:
+	return Rect2(safe_bounds.end.x - 176, safe_bounds.position.y + 52, 64, 48)
+
+
 func jump_center() -> Vector2:
 	return safe_bounds.end - Vector2(106, 150)
 
@@ -99,6 +104,8 @@ func _input(event: InputEvent) -> void:
 		var point := touch.position / ui_scale
 		if not touch.pressed or touch.canceled:
 			_release_finger(touch.index)
+		elif camera_button().has_point(point):
+			get_tree().call_group(&"third_person_camera", "toggle_camera")
 		elif pause_button().has_point(point):
 			Controls.menu_requested.emit()
 		elif point.distance_to(use_center()) <= 54 and use_finger == -1:
@@ -126,7 +133,10 @@ func _input(event: InputEvent) -> void:
 			var change := drag.position - look_position
 			look_position = drag.position
 			var screen_delta := get_viewport().get_screen_transform().basis_xform(change)
-			Controls.look_delta += screen_delta * Controls.touch_sensitivity
+			var look := screen_delta * Controls.touch_sensitivity
+			var camera := get_tree().get_first_node_in_group(&"third_person_camera")
+			if camera == null or not camera.orbit_look(look):
+				Controls.look_delta += look
 		get_viewport().set_input_as_handled()
 
 
@@ -171,6 +181,7 @@ func _draw() -> void:
 		INK
 	)
 	_button(pause_button(), "II")
+	_button(camera_button(), "CAM")
 
 
 func _draw_touch() -> void:

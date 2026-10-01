@@ -2,6 +2,8 @@
 
 `control_scheme.gd` owns the Settings > Controls page, handedness presets,
 sensitivity and saved per-action bindings. `input_bindings.gd` supplies the catalog.
+The View section includes third-person toggle (F3) and camera orbit (hold middle
+mouse); both use the existing capture, persistence, conflict warning and reset APIs.
 
 `system_shortcuts.gd` releases the captured pointer when Command is pressed during
 play on macOS (including Mac browsers). This happens before the final screenshot

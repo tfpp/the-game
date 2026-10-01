@@ -340,3 +340,10 @@ an output directory after `--` to capture the saved hotel's corners, ramp and st
 Pillars use eight sides around the shaft, base and capital; wall columns use four
 exposed sides. Sconces and pendants also use at most eight sides around each fitting.
 Their vertical profiles and curved arms remain modelled geometry.
+
+## Export-only exclusions
+
+Both web and server presets omit `examples/previews/` and
+`tools/source_atlas.png`. These screenshots and the original texture painting
+are authoring inputs, not gameplay assets. They remain available in the repository
+for review and rebuilding. Runtime textures and hotel scenes still ship normally.
