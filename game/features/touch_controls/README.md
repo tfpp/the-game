@@ -1,7 +1,12 @@
 # Touch controls
 
 Phone overlay (`touch_controls.gd`): floating move stick on the left, drag-to-look on
-the right, JUMP, USE, FIRE and a pause button. Shown only while `Controls.touch_visible()`.
+the right, JUMP, USE, FIRE, a small CAM button and a pause button. Shown only while
+`Controls.touch_visible()`. CAM calls the existing third-person camera's guarded
+`toggle_camera()` through the `third_person_camera` group. Right-side swipes call
+`orbit_look()` in third person, falling back to normal player aim in first person (or
+if the feature is absent). Camera taps do not claim the look finger; move, look and
+action fingers remain independent. See `features/third_person/README.md`.
 
 `attack_input.gd` presses `primary_action` and `gun_fire` (what the left mouse button
 does) via `send_attack()`. The FIRE button holds them while touched, and the controller
