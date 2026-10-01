@@ -28,7 +28,7 @@ func _scan() -> void:
 
 func _node_added(node: Node) -> void:
 	if node is VisualInstance3D:
-		_register.call_deferred(node, true)
+		_register_added.call_deferred(weakref(node))
 
 
 func _register(node: Node, added: bool) -> void:
@@ -136,3 +136,11 @@ func _exit_tree() -> void:
 			(entry["node"] as VisualInstance3D).layers = entry["original"]
 			if entry["node"] is Light3D:
 				(entry["node"] as Light3D).light_cull_mask = entry["light_mask"]
+
+
+func _register_added(reference: WeakRef) -> void:
+	# Socket attachment frees cap visuals synchronously during procedural builds.
+	# Resolve a weak reference after the build instead of passing a freed typed Node.
+	var node := reference.get_ref() as Node
+	if is_instance_valid(node):
+		_register(node, true)

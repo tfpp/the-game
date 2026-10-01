@@ -154,3 +154,11 @@ func test_separate_garage_scenes_keep_paths_and_exclude_each_other() -> void:
 	_renderer.update_camera(camera)
 	assert_ne(camera.cull_mask & new_mesh.layers, 0)
 	assert_eq(camera.cull_mask & old_mesh.layers, 0)
+
+
+func test_socket_cap_freed_before_deferred_registration_is_ignored() -> void:
+	var cap := _mesh(_root, Vector3.ZERO)
+	var id := cap.get_instance_id()
+	cap.free()
+	await wait_physics_frames(2)
+	assert_false(_renderer._registered.has(id), "Freed procedural cap must not enter render cache")

@@ -58,3 +58,15 @@ func test_far_plane_covers_the_selected_room_corners() -> void:
 	var asymmetric := AABB(Vector3(-6, -2, 3), Vector3(10, 7, 12))
 	var outside := RoomVisibility.far_for_bounds(asymmetric, Vector3(8, 1, -4), 0.05)
 	assert_almost_eq(outside, Vector3(-14, 4, 19).length() + 0.05, 0.001)
+
+
+func test_pending_arrival_survives_a_stale_room_assignment_then_expires() -> void:
+	var fixture := _fixture()
+	var room := fixture["room"] as StreamedRoom
+	var visibility := fixture["visibility"] as RoomVisibility
+	room.load_room(3000)
+	visibility.assign_room(NodePath(""), visibility._casino_bounds)
+	assert_true(room.is_loaded(), "Old assignment must not remove a preloaded arrival floor")
+	room.set("_hold_until_msec", Time.get_ticks_msec() - 1)
+	visibility._process(0)
+	assert_false(room.is_loaded(), "Unused denied/cancelled preload is eventually freed")

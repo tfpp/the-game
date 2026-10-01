@@ -9,6 +9,7 @@ var _elapsed := 0.0
 var _assigned: Dictionary = {}
 var _current_room := NodePath("")
 var _current_bounds := AABB()
+var _pending_unloads: Array[StreamedRoom] = []
 var _camera: Camera3D
 var _original_far := 0.0
 var _casino_bounds := AABB()
@@ -42,6 +43,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _process(_delta: float) -> void:
+	_expire_preloads()
 	if _current_bounds.size == Vector3.ZERO:
 		return
 	var camera := get_viewport().get_camera_3d()
@@ -128,8 +130,13 @@ func assign_room(path: NodePath, bounds: AABB) -> void:
 		if room == null:
 			continue
 		if room.get_path() == path:
+			_pending_unloads.erase(room)
 			room.load_room()
+		elif room.arrival_held():
+			if not _pending_unloads.has(room):
+				_pending_unloads.append(room)
 		else:
+			_pending_unloads.erase(room)
 			room.unload_room()
 
 
@@ -138,9 +145,20 @@ func _on_peer_disconnected(peer: int) -> void:
 
 
 func _on_mode_changed(_mode: Network.Mode) -> void:
+	_pending_unloads.clear()
 	_assigned.clear()
 	_current_room = NodePath("")
 	_current_bounds = AABB()
 	if is_instance_valid(_camera):
 		_camera.far = _original_far
 	_camera = null
+
+
+func _expire_preloads() -> void:
+	for i: int in range(_pending_unloads.size() - 1, -1, -1):
+		var room := _pending_unloads[i]
+		if not is_instance_valid(room):
+			_pending_unloads.remove_at(i)
+		elif not room.arrival_held():
+			room.unload_room()
+			_pending_unloads.remove_at(i)

@@ -44,3 +44,21 @@ render classifier. No authority, balance, inventory or persistence changes.
 
 Tests: `tests/features/room_visibility/test_zone_rendering.gd`, plus existing
 room assignment, garage layout, portal, lift and enemy suites.
+
+## Teleport arrival protection
+
+A RoomDoor preloads its destination for the existing arrival hold before requesting
+travel. Room assignments received while that request is in flight preserve the
+held destination instead of deleting its floor. Unused preloads expire after the
+hold; an assignment selecting the destination removes its pending eviction.
+Procedural socket caps may also disappear before deferred render registration;
+the renderer resolves a weak reference and skips those freed visuals.
+
+Street network regression (dedicated server, visitor, late join, real gravity):
+
+```sh
+bash game/tests/features/street_district/network_test.sh
+```
+
+The probe deliberately delivers a stale departure assignment after preloading,
+checks standing floor contact after teleport, then verifies return/unloading.

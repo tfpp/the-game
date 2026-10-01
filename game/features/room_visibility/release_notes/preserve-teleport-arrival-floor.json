@@ -1,0 +1,5 @@
+{
+  "title": "Keep the street floor during teleport arrival",
+  "summary": "Preserve preloaded room collision while a teleport is in flight.",
+  "notes": ["Old room assignments respect the existing arrival hold instead of deleting the destination floor before the player arrives.", "Expire unused preloads after their hold and retain normal streaming once the new room assignment arrives."]
+}
