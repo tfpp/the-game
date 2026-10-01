@@ -284,15 +284,22 @@ func _player() -> Player:
 ## (yaw *and* pitch, unlike features/holdables/hand.gd's fixed-orientation puppets),
 ## for everyone else watching one.
 func _mount_transform(player: Player) -> Transform3D:
+	var factor := PlayerHeight.eye_scale(player)
 	if player.is_local():
 		var camera := player.get_node("Camera") as Node3D
-		return camera.global_transform * LOCAL_OFFSET
+		return (
+			camera.global_transform
+			* Transform3D(
+				LOCAL_OFFSET.basis.scaled(Vector3.ONE * factor), LOCAL_OFFSET.origin * factor
+			)
+		)
 	var body := player.get_node("Body") as Node3D
 	var aim := Basis.from_euler(Vector3(player.net_pitch, player.net_yaw, 0.0))
 	var shoulder := (
 		body.global_transform.origin + body.global_transform.basis * REMOTE_SHOULDER_OFFSET
 	)
-	return Transform3D(aim, shoulder)
+	var feet := player.global_position - Vector3.UP * player.movement.hull_height_m() * 0.5
+	return Transform3D(aim.scaled(Vector3.ONE * factor), feet + (shoulder - feet) * factor)
 
 
 ## Where this rig's barrel tip is for whoever's watching it right now — the FPS

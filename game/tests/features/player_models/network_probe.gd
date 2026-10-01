@@ -58,8 +58,13 @@ func _process(_delta: float) -> void:
 			and _models.type_for(peer) == "girl"
 			and not _observed
 		):
+			if not _models.heights.has(peer):
+				continue
+			if not is_equal_approx(float(_models.heights[peer]), PlayerHeight.SOR_METERS):
+				push_error("Sor's height did not replicate")
+				get_tree().quit(1)
 			_observed = true
-			print("AVATAR_OBSERVED peer=%d" % peer)
+			print("AVATAR_OBSERVED peer=%d height=%f" % [peer, float(_models.heights[peer])])
 	var stop := str(Network.args.get("probe-stop", ""))
 	if FileAccess.file_exists(stop + ".pause") and not _paused:
 		get_tree().multiplayer_poll = false
@@ -84,12 +89,13 @@ func _run() -> void:
 	_models.entity.request_action(
 		&"appearance", {"skin": 999999, "hair": "bald", "hair_color": 0, "eyes": 0}
 	)
-	while _results.size() < 4:
+	_models.entity.request_action(&"height", {"value": 100, "peer_id": 1})
+	while _results.size() < 5:
 		await get_tree().process_frame
 	var peer := multiplayer.get_unique_id()
 	while _models.appearance_for(peer) != LOOK or _models.type_for(peer) != "girl":
 		await get_tree().process_frame
-	if _results != [0, 0, 3, 3] or _models.appearances.has(1):
+	if _results != [0, 0, 3, 3, 1] or _models.appearances.has(1):
 		push_error("Appearance request identity/validation failed: %s" % [_results])
 		get_tree().quit(1)
 		return

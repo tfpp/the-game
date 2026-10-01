@@ -5,7 +5,8 @@ Press **C** (controller: right-stick click) to toggle crouching. Rebind it under
 crouch button.
 
 While crouched you move at 34% speed, your view lowers to 46 units above your feet and
-your collision capsule shrinks to 72% of its height (its bottom stays at your feet), so
+the eye offset also composes with `PlayerHeight.eye_scale(player)` for ID/body
+heights (including Sor); your collision capsule shrinks to 72% of its height (its bottom stays at your feet), so
 you fit under low obstacles. You can't stand up while something is overhead. Crouching
 while seated in a booth is ignored. Jumping works while crouched.
 

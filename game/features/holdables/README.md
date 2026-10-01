@@ -3,6 +3,13 @@
 Generic items players can pick up and hold: `pistol`, `smg`, `shotgun` and `awp`
 (weapons), `banana` (food) and `ball` (prop), plus the framework to add more.
 
+Held views, gripping arms and first/third-person offsets compose with the avatar's
+`height_scale()`, including ID-based heights and Sor's eight-inch build. Server
+throw/drop origins use `PlayerHeight.eye_scale(player)`; damage and throw distance
+are unchanged. `HeldItemPose.world_grip()` accepts an optional fourth scale argument
+(default `1.0`) and anchors scaling at the nominal hull's feet. World pickups keep
+their ordinary size.
+
 ## Adding an item
 
 1. Drop a view scene under `items/` — just meshes, no script (see `pistol_view.tscn`,

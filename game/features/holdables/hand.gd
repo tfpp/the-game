@@ -253,7 +253,11 @@ func _toss(def: ItemDefinition, distance: float) -> void:
 		return
 	net_item_id = ""
 	var from := (
-		HeldItemPose.world_grip(player.net_position, player.net_yaw, player.net_pitch).origin
+		HeldItemPose
+		. world_grip(
+			player.net_position, player.net_yaw, player.net_pitch, PlayerHeight.eye_scale(player)
+		)
+		. origin
 	)
 	var direction := ThrowMath.aim_direction(player.net_yaw, player.net_pitch)
 	var to := _landing_point(from, direction, distance)
@@ -280,8 +284,11 @@ func _mount_transform(player: Player) -> Transform3D:
 		var camera := player.get_node("Camera") as Node3D
 		var def := ItemCatalog.find(net_item_id)
 		var offset := def.first_person_offset if def != null else HeldItemPose.FIRST_PERSON_OFFSET
-		offset.y *= _avatar_height_scale(body)
-		return camera.global_transform * Transform3D(Basis.IDENTITY, offset)
+		var factor := _avatar_height_scale(body)
+		return (
+			camera.global_transform
+			* Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * factor), offset * factor)
+		)
 	var yaw := player.yaw if player.is_local() else body.global_rotation.y
 	var pitch := player.pitch if player.is_local() else player.net_pitch
 	var origin := (
@@ -289,7 +296,7 @@ func _mount_transform(player: Player) -> Transform3D:
 		if player.is_local()
 		else player.global_position
 	)
-	return HeldItemPose.world_grip(origin, yaw, pitch)
+	return HeldItemPose.world_grip(origin, yaw, pitch, _avatar_height_scale(body))
 
 
 ## The local avatar's `height_scale()` (see features/player_models/block_player_model.gd),
@@ -352,8 +359,9 @@ func _pose_arms(player: Player) -> void:
 	var shoulders: Transform3D
 	if first_person:
 		shoulders = (player.get_node("Camera") as Node3D).global_transform
-		var drop := -0.36 * _avatar_height_scale(body)
-		shoulders.origin += shoulders.basis * Vector3(0, drop, 0.10)
+		var factor := _avatar_height_scale(body)
+		shoulders.basis = shoulders.basis.scaled(Vector3.ONE * factor)
+		shoulders.origin += shoulders.basis * Vector3(0, -0.36, 0.10)
 	else:
 		var yaw := player.yaw if player.is_local() else body.global_rotation.y
 		shoulders = Transform3D(Basis(Vector3.UP, yaw), body.global_position)
@@ -420,7 +428,11 @@ func drop_inventory_item(item_id: String) -> bool:
 	if player == null or holdables == null:
 		return false
 	var from := (
-		HeldItemPose.world_grip(player.net_position, player.net_yaw, player.net_pitch).origin
+		HeldItemPose
+		. world_grip(
+			player.net_position, player.net_yaw, player.net_pitch, PlayerHeight.eye_scale(player)
+		)
+		. origin
 	)
 	var direction := ThrowMath.aim_direction(player.net_yaw, player.net_pitch)
 	holdables.call(

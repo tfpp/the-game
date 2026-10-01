@@ -235,7 +235,7 @@ func test_new_gestures_show_in_both_views_and_restore_penguin() -> void:
 		var at := (_player.get_node("Camera") as Node3D).to_local(
 			skeleton.to_global(skeleton.get_bone_global_pose(wrist).origin)
 		)
-		assert_lt(at.z, -0.3)
+		assert_lt(at.z, -0.3 * _avatar.height_scale(), "Costume-scaled first-person gesture")
 		var digit := skeleton.find_bone("Index1L")
 		var rest := skeleton.get_bone_rest(digit).basis.get_rotation_quaternion()
 		var alignment := absf(skeleton.get_bone_pose_rotation(digit).dot(rest))

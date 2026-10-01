@@ -12,10 +12,16 @@ static func aim_basis(yaw: float, pitch: float) -> Basis:
 	return Basis(Vector3.UP, yaw) * Basis(Vector3.RIGHT, pitch)
 
 
-static func world_grip(origin: Vector3, yaw: float, pitch: float) -> Transform3D:
+static func world_grip(
+	origin: Vector3, yaw: float, pitch: float, height_scale: float = 1.0
+) -> Transform3D:
 	var facing := Basis(Vector3.UP, yaw)
 	var aim := aim_basis(yaw, pitch)
-	return Transform3D(aim, origin + facing * SHOULDER_PIVOT + aim * REACH)
+	var feet := origin - Vector3.UP * PlayerHeight.BASE_METERS * 0.5
+	var pivot := Vector3.UP * PlayerHeight.BASE_METERS * 0.5 + facing * SHOULDER_PIVOT
+	return Transform3D(
+		aim.scaled(Vector3.ONE * height_scale), feet + (pivot + aim * REACH) * height_scale
+	)
 
 
 static func align_grip(view: Node3D) -> void:

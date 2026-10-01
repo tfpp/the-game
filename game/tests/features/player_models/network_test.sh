@@ -10,7 +10,7 @@ cleanup() {
 }
 trap cleanup EXIT
 fail() {
-  tail -80 "$tmp"/*.log
+  tail -n 80 "$tmp"/*.log
   exit 1
 }
 wait_for() {
@@ -28,12 +28,13 @@ for emote in flip_off wave salute cheer; do
   pids=()
   port="$((22000 + RANDOM % 20000))"
   spawn() {
-    local role="$1"
+    local role="$1" name="$1"
+    if [[ "$role" == driver ]]; then name=Sor; fi
     local args=("--connect=ws://127.0.0.1:$port")
     if [[ "$role" == server ]]; then args=(--server "--port=$port"); fi
     touch "$tmp/$role.log"
     godot --headless --path "$game" res://tests/features/player_models/network_probe.tscn -- \
-      --dev-insecure-auth "--avatar-role=$role" "--probe-stop=$tmp/stop" "--name=$role" \
+      --dev-insecure-auth "--avatar-role=$role" "--probe-stop=$tmp/stop" "--name=$name" \
       --emote-probe "--emote-name=$emote" "${args[@]}" > "$tmp/$role.log" 2>&1 &
     pids+=("$!")
   }

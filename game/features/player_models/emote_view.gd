@@ -49,7 +49,9 @@ func _process(_delta: float) -> void:
 		if camera == null:
 			continue
 		first_person.show()
-		first_person.global_transform = camera.global_transform
+		first_person.global_transform = camera.global_transform.scaled_local(
+			Vector3.ONE * avatar.height_scale()
+		)
 		first_person.pose(avatar, false, false)
 		first_person.material.set_shader_parameter("hide_right_arm", true)
 		first_person.material.set_shader_parameter("skin_tint", avatar.skin_color)
@@ -57,8 +59,8 @@ func _process(_delta: float) -> void:
 		first_person.material.set_shader_parameter(
 			"shirt_equipped", not avatar.shirt_id.is_empty() or avatar.outfit == "tactical"
 		)
-		first_person.place_shoulder(false, camera.to_global(Vector3(-0.28, -0.36, 0.05)))
-		_left_pose(first_person, camera, name, elapsed, weight, true)
+		first_person.place_shoulder(false, first_person.to_global(Vector3(-0.28, -0.36, 0.05)))
+		_left_pose(first_person, first_person, name, elapsed, weight, true)
 
 
 ## Distinct left-hand targets, in avatar or camera space (-Z is forward).
@@ -132,18 +134,20 @@ func _six_seven(
 	if camera == null:
 		return
 	first_person.show()
-	first_person.global_transform = camera.global_transform
+	first_person.global_transform = camera.global_transform.scaled_local(
+		Vector3.ONE * avatar.height_scale()
+	)
 	first_person.pose(avatar, false, false)
 	first_person.material.set_shader_parameter("skin_tint", avatar.skin_color)
 	first_person.material.set_shader_parameter("shirt_tint", avatar.sleeve_color())
 	first_person.material.set_shader_parameter(
 		"shirt_equipped", not avatar.shirt_id.is_empty() or avatar.outfit == "tactical"
 	)
-	first_person.place_shoulder(false, camera.to_global(Vector3(-0.28, -0.36, 0.05)))
-	first_person.place_shoulder(true, camera.to_global(Vector3(0.28, -0.36, 0.05)))
+	first_person.place_shoulder(false, first_person.to_global(Vector3(-0.28, -0.36, 0.05)))
+	first_person.place_shoulder(true, first_person.to_global(Vector3(0.28, -0.36, 0.05)))
 	first_person.six_seven(
-		camera.to_global(Vector3(-0.2, -0.24 + bob * weight, -0.42)),
-		camera.to_global(Vector3(0.2, -0.24 - bob * weight, -0.42)),
+		first_person.to_global(Vector3(-0.2, -0.24 + bob * weight, -0.42)),
+		first_person.to_global(Vector3(0.2, -0.24 - bob * weight, -0.42)),
 		camera.global_basis.orthonormalized(),
 		weight
 	)

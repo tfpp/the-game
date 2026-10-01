@@ -84,6 +84,11 @@ ever in hand. See `gun_rig.gd`'s `holster`/`net_equipped` and
   stat sheet (including fire mode), the extra UI a randomly generated weapon needs
   since its specs aren't printed on a fixed item.
 
+Generated gun view mounts scale about the player's feet (or camera in first person)
+using `PlayerHeight.eye_scale(player)`, so ID-based height and Sor's tiny build do
+not leave weapons floating at normal shoulder height. Eye-based shot origins pick
+up the same per-player height; stats, damage, ammo and firing authority are unchanged.
+
 ## Ray Gun
 
 `GunGenerator.RAY_GUN_CHANCE` (1 in 30, about the Call of Duty Zombies mystery box

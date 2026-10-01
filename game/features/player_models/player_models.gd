@@ -29,6 +29,8 @@ const GIRL_HEIGHT_SCALE := 0.75
 @export var tail_types: Dictionary = {}
 @export var appearances: Dictionary = {}
 @export var emotes: Dictionary = {}
+## Server-derived standing height in metres, keyed by peer; never accepts client choices.
+@export var heights: Dictionary = {}
 @export var emote_clock := 0.0:
 	set(value):
 		emote_clock = value
@@ -69,7 +71,16 @@ func _process(delta: float) -> void:
 		var player := node as Player
 		if player == null or player.is_queued_for_deletion():
 			continue
+		var peer := player.get_multiplayer_authority()
+		if multiplayer.is_server() and not heights.has(peer):
+			_assign_height(peer)
 		_apply_collider(player)
+		PlayerHeight.apply_eyes(player, height_scale_for(peer))
+		var label := player.get_node_or_null("Nameplate") as Label3D
+		if label != null:
+			label.position.y = (
+				player.movement.hull_height_m() * (height_scale_for(peer) - 0.5) + 0.35
+			)
 		var body := player.get_node("Body") as Node3D
 		if body.has_node("Avatar"):
 			continue
@@ -90,8 +101,11 @@ func _apply_collider(player: Player) -> void:
 	var collider := player.get_node("Collider") as CollisionShape3D
 	var capsule := collider.shape as CapsuleShape3D
 	var girl := type_for(player.get_multiplayer_authority()) == "girl"
-	var radius := player.movement.hull_radius_m() * (GIRL_RADIUS_SCALE if girl else 1.0)
-	var height := player.movement.hull_height_m() * (GIRL_HEIGHT_SCALE if girl else 1.0)
+	var factor := height_scale_for(player.get_multiplayer_authority())
+	var radius := player.movement.hull_radius_m() * factor
+	if girl:
+		radius *= GIRL_RADIUS_SCALE / GIRL_HEIGHT_SCALE
+	var height := player.movement.hull_height_m() * factor
 	# Crouching (features/crouch) shortens the capsule; its bottom stays at the feet.
 	var crouch := get_tree().get_first_node_in_group(&"crouching")
 	if crouch != null and bool(crouch.call("is_crouching", player.get_multiplayer_authority())):
@@ -104,6 +118,33 @@ func _apply_collider(player: Player) -> void:
 	shape.height = height
 	collider.shape = shape
 	collider.position.y = offset
+
+
+func _assign_height(peer: int) -> void:
+	if not multiplayer.is_server():
+		return
+	var account: Dictionary = Network.peer_accounts.get(peer, {})
+	var identity := int(account.get("account_id", 0))
+	var next := heights.duplicate()
+	next[peer] = PlayerHeight.for_identity(
+		identity if identity > 0 else peer, str(account.get("name", ""))
+	)
+	heights = next
+
+
+## Final standing scale, including existing body choices. Sor's exact height
+## overrides costume multipliers rather than becoming even smaller.
+func height_scale_for(peer: int) -> float:
+	var metres := float(heights.get(peer, PlayerHeight.BASE_METERS))
+	if is_equal_approx(metres, PlayerHeight.SOR_METERS):
+		return metres / PlayerHeight.BASE_METERS
+	var body := type_for(peer)
+	var costume := 1.0
+	if body == "girl":
+		costume = GIRL_HEIGHT_SCALE
+	elif body == "penguin":
+		costume = BlockPlayerModel.PENGUIN_HEIGHT_SCALE
+	return metres / PlayerHeight.BASE_METERS * costume
 
 
 ## The body type a peer sees for themselves and everyone else. Falls back to
@@ -208,7 +249,9 @@ func _remove_peer(peer: int) -> void:
 	if not multiplayer.is_server():
 		return
 	_emote_ready.erase(peer)
-	for field: String in ["body_types", "head_types", "tail_types", "appearances", "emotes"]:
+	for field: String in [
+		"body_types", "head_types", "tail_types", "appearances", "emotes", "heights"
+	]:
 		var next: Dictionary = get(field).duplicate(true)
 		next.erase(peer)
 		set(field, next)
@@ -220,6 +263,7 @@ func _reset_session(_mode: Network.Mode) -> void:
 	tail_types = {}
 	appearances = {}
 	emotes = {}
+	heights = {}
 	emote_clock = 0.0
 	_clock_received = false
 	_emote_ready.clear()
