@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/phone_booth.tres" id="1_wp6e7"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/phone_booth.res" id="2_8g7uu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_te8xf"]
+size = Vector3(1.02, 2.3, 1.033)
+
+[node name="PhoneBooth" type="StaticBody3D" unique_id=917659668]
+metadata/prop_id = "phone_booth"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=869313008]
+material_override = ExtResource("1_wp6e7")
+mesh = ExtResource("2_8g7uu")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1945306832]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0.0065000057)
+shape = SubResource("BoxShape3D_te8xf")

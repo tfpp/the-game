@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/parking_meter.tres" id="1_6n4s3"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/parking_meter.res" id="2_llhcg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6eb7y"]
+size = Vector3(0.24, 1.5450001, 0.169)
+
+[node name="ParkingMeter" type="StaticBody3D" unique_id=1627367225]
+metadata/prop_id = "parking_meter"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1610989888]
+material_override = ExtResource("1_6n4s3")
+mesh = ExtResource("2_llhcg")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1854938642]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77250004, 0.0045000017)
+shape = SubResource("BoxShape3D_6eb7y")

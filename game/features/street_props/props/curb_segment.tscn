@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/curb_segment.tres" id="1_tqub3"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/curb_segment.res" id="2_3pju5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8paii"]
+size = Vector3(1.5, 0.22, 0.24)
+
+[node name="CurbSegment" type="StaticBody3D" unique_id=979194327]
+metadata/prop_id = "curb_segment"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1040642679]
+material_override = ExtResource("1_tqub3")
+mesh = ExtResource("2_3pju5")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1464960290]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11, 0)
+shape = SubResource("BoxShape3D_8paii")

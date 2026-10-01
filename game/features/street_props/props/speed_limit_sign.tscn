@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/speed_limit_sign.tres" id="1_bbfyc"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/speed_limit_sign.res" id="2_wdgyt"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2lemp"]
+size = Vector3(0.48, 2.5500002, 0.14)
+
+[node name="SpeedLimitSign" type="StaticBody3D" unique_id=162085492]
+metadata/prop_id = "speed_limit_sign"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1428016895]
+material_override = ExtResource("1_bbfyc")
+mesh = ExtResource("2_wdgyt")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1645190264]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2750001, 0)
+shape = SubResource("BoxShape3D_2lemp")

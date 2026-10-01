@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/cardboard_box.tres" id="1_6xfob"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/cardboard_box.res" id="2_7ep0d"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vj380"]
+size = Vector3(0.54, 0.449, 0.4335)
+
+[node name="CardboardBox" type="StaticBody3D" unique_id=1601262020]
+metadata/prop_id = "cardboard_box"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1172813016]
+material_override = ExtResource("1_6xfob")
+mesh = ExtResource("2_7ep0d")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=491490545]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2245, 0.00424999)
+shape = SubResource("BoxShape3D_vj380")

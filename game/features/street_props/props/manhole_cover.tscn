@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/manhole_cover.tres" id="1_0wbmn"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/manhole_cover.res" id="2_k1wvp"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_aekxy"]
+size = Vector3(0.74, 0.061, 0.74)
+
+[node name="ManholeCover" type="StaticBody3D" unique_id=953133971]
+metadata/prop_id = "manhole_cover"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=323210911]
+material_override = ExtResource("1_0wbmn")
+mesh = ExtResource("2_k1wvp")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=414055474]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0305, 0)
+shape = SubResource("BoxShape3D_aekxy")

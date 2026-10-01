@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/bicycle_rack.tres" id="1_xbcbo"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/bicycle_rack.res" id="2_ykheu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hsbdd"]
+size = Vector3(1.8, 0.708, 0.65)
+
+[node name="BicycleRack" type="StaticBody3D" unique_id=1918762760]
+metadata/prop_id = "bicycle_rack"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1715952303]
+material_override = ExtResource("1_xbcbo")
+mesh = ExtResource("2_ykheu")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1191690006]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.354, 0)
+shape = SubResource("BoxShape3D_hsbdd")

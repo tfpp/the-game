@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/transformer_box.tres" id="1_kv43m"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/transformer_box.res" id="2_2qi2v"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lxgd5"]
+size = Vector3(1.48, 1.35, 1.05)
+
+[node name="TransformerBox" type="StaticBody3D" unique_id=1307388845]
+metadata/prop_id = "transformer_box"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=918806103]
+material_override = ExtResource("1_kv43m")
+mesh = ExtResource("2_2qi2v")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1965926085]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.675, 0)
+shape = SubResource("BoxShape3D_lxgd5")

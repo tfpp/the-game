@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/street_props/textures/rolling_shutter.png" id="1_iiy2w"]
+
+[resource]
+cull_mode = 2
+albedo_texture = ExtResource("1_iiy2w")
+metallic_specular = 0.0
+texture_filter = 2
+texture_repeat = false

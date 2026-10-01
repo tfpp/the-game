@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/construction_barricade.tres" id="1_k3yrv"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/construction_barricade.res" id="2_oaoo4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tqm6f"]
+size = Vector3(1.6200001, 1.0697048, 0.6230814)
+
+[node name="ConstructionBarricade" type="StaticBody3D" unique_id=1723823287]
+metadata/prop_id = "construction_barricade"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=474388588]
+material_override = ExtResource("1_k3yrv")
+mesh = ExtResource("2_oaoo4")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=757377770]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9604645e-08, 0.5348524, 0)
+shape = SubResource("BoxShape3D_tqm6f")

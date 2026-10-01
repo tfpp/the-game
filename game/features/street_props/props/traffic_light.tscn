@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/traffic_light.tres" id="1_g5k3j"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/traffic_light.res" id="2_hujx0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hvvoa"]
+size = Vector3(0.32, 3.6, 0.565)
+
+[node name="TrafficLight" type="StaticBody3D" unique_id=1113835395]
+metadata/prop_id = "traffic_light"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1719294863]
+material_override = ExtResource("1_g5k3j")
+mesh = ExtResource("2_hujx0")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1384042075]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0.1525)
+shape = SubResource("BoxShape3D_hvvoa")

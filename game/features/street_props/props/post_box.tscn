@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/post_box.tres" id="1_u423k"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/post_box.res" id="2_wen0r"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_438tj"]
+size = Vector3(0.55, 1.1299999, 0.555)
+
+[node name="PostBox" type="StaticBody3D" unique_id=1428363302]
+metadata/prop_id = "post_box"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1191159518]
+material_override = ExtResource("1_u423k")
+mesh = ExtResource("2_wen0r")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1545560264]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56499994, 0.03750001)
+shape = SubResource("BoxShape3D_438tj")

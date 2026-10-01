@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/wooden_crate.tres" id="1_anl08"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/wooden_crate.res" id="2_pc2ni"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hurrw"]
+size = Vector3(0.76, 0.7975, 0.755)
+
+[node name="WoodenCrate" type="StaticBody3D" unique_id=1683462729]
+metadata/prop_id = "wooden_crate"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=524020436]
+material_override = ExtResource("1_anl08")
+mesh = ExtResource("2_pc2ni")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=808319616]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.39875, 0)
+shape = SubResource("BoxShape3D_hurrw")

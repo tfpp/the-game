@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/guardrail_segment.tres" id="1_5aj5s"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/guardrail_segment.res" id="2_uga8g"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5vfk5"]
+size = Vector3(2.5, 0.8, 0.1305)
+
+[node name="GuardrailSegment" type="StaticBody3D" unique_id=1321033036]
+metadata/prop_id = "guardrail_segment"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=256324415]
+material_override = ExtResource("1_5aj5s")
+mesh = ExtResource("2_uga8g")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1979670891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0.022750001)
+shape = SubResource("BoxShape3D_5vfk5")

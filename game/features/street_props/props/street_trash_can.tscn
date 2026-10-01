@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/street_trash_can.tres" id="1_6mj6a"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/street_trash_can.res" id="2_igwsu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lo2ay"]
+size = Vector3(0.62, 0.95, 0.62)
+
+[node name="StreetTrashCan" type="StaticBody3D" unique_id=2020543715]
+metadata/prop_id = "street_trash_can"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=2081601740]
+material_override = ExtResource("1_6mj6a")
+mesh = ExtResource("2_igwsu")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=2097036592]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.475, 0)
+shape = SubResource("BoxShape3D_lo2ay")

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/sandbag_barrier.tres" id="1_vop3n"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/sandbag_barrier.res" id="2_lw72j"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2xlxg"]
+size = Vector3(1.85, 0.73, 0.36)
+
+[node name="SandbagBarrier" type="StaticBody3D" unique_id=812945542]
+metadata/prop_id = "sandbag_barrier"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=297456817]
+material_override = ExtResource("1_vop3n")
+mesh = ExtResource("2_lw72j")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=2078291673]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.060000002, 0.365, 0)
+shape = SubResource("BoxShape3D_2xlxg")

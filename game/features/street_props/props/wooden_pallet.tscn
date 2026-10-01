@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/wooden_pallet.tres" id="1_wfupu"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/wooden_pallet.res" id="2_wdo2p"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_00nph"]
+size = Vector3(1.2, 0.1925, 1.04)
+
+[node name="WoodenPallet" type="StaticBody3D" unique_id=906212901]
+metadata/prop_id = "wooden_pallet"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1136746432]
+material_override = ExtResource("1_wfupu")
+mesh = ExtResource("2_wdo2p")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1785091479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09625, 0)
+shape = SubResource("BoxShape3D_00nph")

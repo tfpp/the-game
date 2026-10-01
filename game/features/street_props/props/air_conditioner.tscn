@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/air_conditioner.tres" id="1_j87hw"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/air_conditioner.res" id="2_77sdw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e12ir"]
+size = Vector3(0.78, 0.6, 0.46)
+
+[node name="AirConditioner" type="StaticBody3D" unique_id=903465894]
+metadata/prop_id = "air_conditioner"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1954073775]
+material_override = ExtResource("1_j87hw")
+mesh = ExtResource("2_77sdw")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1724233025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+shape = SubResource("BoxShape3D_e12ir")

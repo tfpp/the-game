@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/traffic_cone.tres" id="1_psmcn"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/traffic_cone.res" id="2_kfvm5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pkqcs"]
+size = Vector3(0.38, 0.63, 0.38)
+
+[node name="TrafficCone" type="StaticBody3D" unique_id=1900973351]
+metadata/prop_id = "traffic_cone"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=371785453]
+material_override = ExtResource("1_psmcn")
+mesh = ExtResource("2_kfvm5")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1633509034]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.315, 0)
+shape = SubResource("BoxShape3D_pkqcs")

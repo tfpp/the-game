@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/metal_gate.tres" id="1_t3iik"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/metal_gate.res" id="2_mu3y4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e27k1"]
+size = Vector3(1.6149999, 1.9, 0.104820505)
+
+[node name="MetalGate" type="StaticBody3D" unique_id=751411043]
+metadata/prop_id = "metal_gate"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1885062057]
+material_override = ExtResource("1_t3iik")
+mesh = ExtResource("2_mu3y4")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=2093585843]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9604645e-08, 0.95, 0.024910253)
+shape = SubResource("BoxShape3D_e27k1")

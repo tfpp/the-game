@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/fluorescent_fixture.tres" id="1_mtjgt"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/fluorescent_fixture.res" id="2_phpjr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o8oh8"]
+size = Vector3(1.25, 0.17, 0.22)
+
+[node name="FluorescentFixture" type="StaticBody3D" unique_id=888487330]
+metadata/prop_id = "fluorescent_fixture"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1508493185]
+material_override = ExtResource("1_mtjgt")
+mesh = ExtResource("2_phpjr")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1375922719]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, 0)
+shape = SubResource("BoxShape3D_o8oh8")

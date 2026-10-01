@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/storm_drain.tres" id="1_fbs7e"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/storm_drain.res" id="2_j2unw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oy0of"]
+size = Vector3(0.65, 0.09, 0.405)
+
+[node name="StormDrain" type="StaticBody3D" unique_id=1932734022]
+metadata/prop_id = "storm_drain"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=54096362]
+material_override = ExtResource("1_fbs7e")
+mesh = ExtResource("2_j2unw")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1934247022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.045, 0)
+shape = SubResource("BoxShape3D_oy0of")
