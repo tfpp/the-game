@@ -279,35 +279,9 @@ func _landing_point(from: Vector3, direction: Vector3, distance: float) -> Vecto
 ## Use the first-person camera only while the owner's body is hidden. F3 and
 ## remote peers use the same body-relative grip, including the aim pitch.
 func _mount_transform(player: Player) -> Transform3D:
-	var body := player.get_node("Body") as Node3D
-	if player.is_local() and not body.visible:
-		var camera := player.get_node("Camera") as Node3D
-		var def := ItemCatalog.find(net_item_id)
-		var offset := def.first_person_offset if def != null else HeldItemPose.FIRST_PERSON_OFFSET
-		var factor := _avatar_height_scale(body)
-		return (
-			camera.global_transform
-			* Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * factor), offset * factor)
-		)
-	var yaw := player.yaw if player.is_local() else body.global_rotation.y
-	var pitch := player.pitch if player.is_local() else player.net_pitch
-	var origin := (
-		player.get_global_transform_interpolated().origin
-		if player.is_local()
-		else player.global_position
-	)
-	return HeldItemPose.world_grip(origin, yaw, pitch, _avatar_height_scale(body))
-
-
-## The local avatar's `height_scale()` (see features/player_models/block_player_model.gd),
-## or 1.0 while it's missing or doesn't report one (e.g. before the avatar attaches).
-## Shortens the first-person view model to match a penguin's height without this
-## feature needing to know about player_models' body types.
-func _avatar_height_scale(body: Node3D) -> float:
-	var avatar := body.get_node_or_null("Avatar")
-	if avatar != null and avatar.has_method("height_scale"):
-		return avatar.call("height_scale")
-	return 1.0
+	var def := ItemCatalog.find(net_item_id)
+	var offset := def.first_person_offset if def != null else HeldItemPose.FIRST_PERSON_OFFSET
+	return HeldItemPose.player_mount(player, offset)
 
 
 func _aim_origin(player: Player) -> Vector3:
@@ -329,48 +303,8 @@ func held_view() -> Node3D:
 
 
 func _pose_arms(player: Player) -> void:
-	if _view == null:
-		return
-	_arms.set_skin_color(PlayerSkin.TONES[skin_tone_index()])
-	var body := player.get_node("Body") as Node3D
-	var avatar := body.get_node_or_null("Avatar")
-	if avatar != null and avatar.has_method("sleeve_color"):
-		_arms.set_sleeve_color(avatar.call("sleeve_color"))
-	else:
-		_arms.set_sleeve_color(PlayerSkin.TONES[skin_tone_index()])
-	var first_person := player.is_local() and not body.visible
-	_arms.visible = true
-	if not first_person and avatar is BlockPlayerModel and avatar.human.visible:
-		_arms.visible = false
-		avatar.human.reach_grip(true, _arms.to_global(Vector3(0.055, -0.04, 0.055)), true)
-		avatar.human.orient_grip(true, global_basis.orthonormalized())
-		var support := support_grip()
-		if support != null:
-			avatar.human.reach_grip(false, support.to_global(Vector3(-0.055, -0.04, 0.055)), true)
-			avatar.human.orient_grip(false, support.global_basis.orthonormalized())
-		return
-	if not first_person and avatar != null and avatar.has_method("shoulder_position"):
-		_arms.pose(
-			_arms.to_local(avatar.call("shoulder_position", true)),
-			_arms.to_local(avatar.call("shoulder_position", false)),
-			support_grip()
-		)
-		return
-	var shoulders: Transform3D
-	if first_person:
-		shoulders = (player.get_node("Camera") as Node3D).global_transform
-		var factor := _avatar_height_scale(body)
-		shoulders.basis = shoulders.basis.scaled(Vector3.ONE * factor)
-		shoulders.origin += shoulders.basis * Vector3(0, -0.36, 0.10)
-	else:
-		var yaw := player.yaw if player.is_local() else body.global_rotation.y
-		shoulders = Transform3D(Basis(Vector3.UP, yaw), body.global_position)
-		shoulders.origin.y += 0.30
-	_arms.pose(
-		_arms.to_local(shoulders * Vector3(0.32, 0, 0)),
-		_arms.to_local(shoulders * Vector3(-0.32, 0, 0)),
-		support_grip()
-	)
+	if _view != null:
+		_arms.pose_for_player(player, support_grip(), PlayerSkin.TONES[skin_tone_index()])
 
 
 func _player() -> Player:

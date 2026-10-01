@@ -1,0 +1,5 @@
+{
+  "title": "Spawn-side timed bomb",
+  "summary": "Try to defuse the spawn-side bomb before its 24-real-hour countdown ends.",
+  "notes": ["Add a shared four-digit defusal keypad beside spawn with a database-persisted countdown.", "Keep the casino safe with a harmless blast and a spent case when the timer expires."]
+}

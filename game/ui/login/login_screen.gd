@@ -347,6 +347,20 @@ static func should_auto_play(auto_play: bool, message: String, version_mismatch:
 	return auto_play and message.is_empty() and not version_mismatch
 
 
+## JavaScript that reloads the page with `v=<version>` in the query, keeping the other
+## parameters. The new URL bypasses a cached `index.html`, and `shell.html` adds the
+## same `v` to the engine's JS, WASM and PCK requests, so the browser fetches the
+## server's build instead of looping on the stale cached one (#371).
+static func cache_bust_reload_js(version: String) -> String:
+	return (
+		(
+			"(function(){const u=new URL(window.location.href);u.searchParams.set('v',%s);"
+			% JSON.stringify(version)
+		)
+		+ "window.location.replace(u.toString());})()"
+	)
+
+
 func _show_ready(message: String, auto_play: bool = false) -> void:
 	var version_mismatch := OS.has_feature("web") and not Network.server_version_mismatch.is_empty()
 	if should_auto_play(auto_play, message, version_mismatch):
@@ -356,7 +370,11 @@ func _show_ready(message: String, auto_play: bool = false) -> void:
 	_clear("Signed in as %s" % _account.get("display_name", ""), message)
 	_label("Make money. Lose money. Steal it back. Get lucky.")
 	if version_mismatch:
-		_button("Reload page", func() -> void: JavaScriptBridge.eval("window.location.reload()"))
+		_button(
+			"Reload page",
+			func() -> void:
+				JavaScriptBridge.eval(cache_bust_reload_js(Network.server_version_mismatch))
+		)
 		_game_button("Play", _play, false)
 	else:
 		_game_button("Play", _play, true)

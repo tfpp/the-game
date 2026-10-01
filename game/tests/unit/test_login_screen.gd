@@ -127,3 +127,15 @@ func test_opening_an_esc_menu_link_closes_the_menu_and_opens_the_entry() -> void
 	menu._open_esc_menu_link(entry)
 	assert_false(menu.visible)
 	assert_true(entry.opened)
+
+
+func test_cache_bust_reload_sets_version_query_and_replaces_location() -> void:
+	var js := Login.cache_bust_reload_js("abc123")
+	assert_string_contains(js, "searchParams.set('v',\"abc123\")")
+	assert_string_contains(js, "window.location.replace(")
+	assert_false(js.contains("location.reload()"), "A plain reload reuses the cached bundle")
+
+
+func test_cache_bust_reload_escapes_version() -> void:
+	var js := Login.cache_bust_reload_js("a\"b')")
+	assert_string_contains(js, '"a\\"b\')"')

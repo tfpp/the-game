@@ -87,7 +87,11 @@ static func _join(
 	if close_loop:
 		assert(a.errors_with(b).is_empty(), "Loop must already align before attachment")
 	var id := "%s-%s-%s-%s" % [from.name, exit, to.name, entry]
-	assert(ProceduralSocketAttachment.attach(a, b, id).is_empty(), id)
+	# Release exports strip assert expressions; placement must always execute.
+	var errors := ProceduralSocketAttachment.attach(a, b, id)
+	if not errors.is_empty():
+		push_error("Street socket join %s failed: %s" % [id, ", ".join(errors)])
+		return
 	var joins: Array = level.get_meta("joins", [])
 	joins.append({"from": a, "to": b})
 	level.set_meta("joins", joins)

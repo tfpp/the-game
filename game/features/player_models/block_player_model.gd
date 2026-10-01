@@ -91,6 +91,10 @@ func _process(delta: float) -> void:
 		)
 	var holding := hand != null and ItemCatalog.find(hand.net_item_id) != null
 	var support := holding and hand.support_grip() != null
+	var gun := GunRig.for_peer(get_tree(), player.get_multiplayer_authority())
+	if gun != null and gun.has_hand_grips():
+		holding = true
+		support = gun.support_grip() != null
 	var seating := get_tree().get_first_node_in_group(&"seating")
 	seated = seating != null and bool(seating.call("is_seated", player.get_multiplayer_authority()))
 	var crouch := get_tree().get_first_node_in_group(&"crouching")

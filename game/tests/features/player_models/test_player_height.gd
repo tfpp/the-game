@@ -168,6 +168,26 @@ func test_generated_gun_mount_and_aim_use_the_same_height_without_changing_stats
 	assert_almost_eq(mount.basis.get_scale().x, factor, 0.00001)
 	assert_lt(mount.origin.y, 0.3, "Remote gun follows the tiny player's feet")
 	assert_eq(rig.net_stats, stats)
+	# Main's authored plasma model uses the shared holdable mount and arm helpers.
+	stats["ammo_type"] = GunGenerator.AmmoType.PLASMA
+	stats["barrel_count"] = 2
+	rig.equip(stats)
+	for owner: Player in [_player, remote]:
+		var avatar := owner.get_node("Body/Avatar") as BlockPlayerModel
+		avatar._process(0)
+		rig.peer_id = owner.get_multiplayer_authority()
+		rig._process(0)
+		assert_true(rig.has_hand_grips())
+		assert_almost_eq(rig.global_basis.get_scale().x, factor, 0.00001)
+		assert_lt(rig.global_position.y, 0.3)
+		assert_eq(rig.net_stats, stats)
+		var human := rig._arms.human if rig._arms.visible else avatar.human
+		for right: bool in [true, false]:
+			var target := rig as Node3D if right else rig.support_grip()
+			var offset := Vector3(0.055 if right else -0.055, -0.04, 0.055)
+			var bone := human.skeleton.find_bone("HandR" if right else "HandL")
+			var wrist := human.skeleton.to_global(human.skeleton.get_bone_global_pose(bone).origin)
+			assert_almost_eq(wrist, target.to_global(offset), Vector3.ONE * 0.002)
 
 
 func test_snapshot_applies_to_late_avatar_and_nameplate() -> void:

@@ -1,0 +1,5 @@
+{
+  "title": "Fix street placement in the browser game",
+  "summary": "Keep street floors and their props in their correct positions in release builds.",
+  "notes": ["Execute socket placement outside assertions, which Godot removes from browser release builds.", "Report failed socket joins in release builds instead of silently leaving modules stacked at the origin."]
+}

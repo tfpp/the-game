@@ -88,3 +88,10 @@ The casino marquee is a reusable modeled sign at `props/casino_marquee.tscn`:
 raised gold letters, metal panel and frame, 46 low-poly bulbs, alternating
 chase lights and a pulsing red accent. It owns one generated 64×64 atlas,
 authored after explicit UV geometry. Animation is cosmetic and local.
+
+Socket attachment calls must execute outside `assert()`: Godot release exports
+remove assertion expressions, including any function calls inside them. Debug-only
+layout checks cannot verify browser placement. After importing the project, run
+`GODOT_RELEASE=/path/to/linux_release.x86_64 bash tests/features/street_district/release_test.sh`
+from `game/`. This regression runs with assertions disabled and checks all joins,
+nine separate junction positions, and floor collision across the district.

@@ -49,9 +49,9 @@ ever in hand. See `gun_rig.gd`'s `holster`/`net_equipped` and
   fires once per `gun_fire` press, same as before; an automatic one also polls every
   frame (`_maybe_auto_fire`, gated by the pure `should_auto_fire`) and keeps firing
   at its own fire rate for as long as the button stays held.
-- `gun_view.gd`: builds a gun's mesh straight from its rolled stats (barrel count,
-  thickness from damage, length from projectile speed, color from ammo type) — there's
-  no fixed asset, since every gun is a one-off.
+- `gun_view.gd`: selects the authored double-barrel plasma model or builds a mesh
+  from rolled stats (barrel count, thickness from damage, length from projectile
+  speed, color from ammo type) for other guns.
 - `projectile.gd` / `projectile.tscn`: a fired round in flight. Server-authoritative
   like `features/holdables/thrown_item.gd` — the server integrates position each
   physics tick (gravity scale from the ammo profile) and publishes `net_position`;
@@ -108,3 +108,19 @@ Muzzle, impact and explosion flashes are unshaded glow meshes, not `OmniLight3D`
 the web's Compatibility renderer each new light or material variant compiled a shader
 mid-game, which stuttered on buying and firing (issue #241). Clients call
 `GunFx.warm_up()` once a camera exists, drawing each variant for a few frames at load.
+
+## Double-barrel plasma model
+
+Two-barrel plasma rolls (automatic and semi-automatic) use the authored
+`double_barrel_plasma.tscn` model. Other rolls retain their procedural meshes and
+stat-driven dimensions. This visual replacement does not change rolled stats.
+See [asset source and export instructions](../../assets/gun_machine/models/README.md).
+
+`Grip` and `SupportGrip` opt the generated weapon into `HeldItemPose` and
+`HeldArms`, shared with catalog weapons. First person uses the camera-relative
+mount; third person and remote peers use the body-relative mount and aim pitch.
+Human avatars use their own skinned arms; creature bodies use the existing arm
+fallback. Skin and sleeve colors follow the player's appearance. Holstering or
+switching back to a procedural gun disables the generated weapon's hand pose.
+`Muzzle` remains the cosmetic shot origin, with separate left/right markers for
+future barrel-specific effects; authoritative projectile origins remain at the eye.
