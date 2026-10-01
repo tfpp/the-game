@@ -60,8 +60,22 @@ func _process(_delta: float) -> void:
 		):
 			if not _models.heights.has(peer):
 				continue
-			if not is_equal_approx(float(_models.heights[peer]), PlayerHeight.SOR_METERS):
-				push_error("Sor's height did not replicate")
+			var emote := str(Network.args.get("emote-name", "flip_off"))
+			var account_name := "Sor" if emote in ["flip_off", "salute"] else "driver"
+			var expected := PlayerHeight.for_identity(peer, account_name)
+			if not is_equal_approx(float(_models.heights[peer]), expected):
+				push_error("Identity height did not replicate")
+				get_tree().quit(1)
+			var player := get_node_or_null("EmotePeer%d" % peer) as Player
+			if player == null or not player.has_node("Body/Avatar"):
+				continue
+			var avatar := player.get_node("Body/Avatar") as BlockPlayerModel
+			var factor := _models.height_scale_for(peer)
+			if not is_equal_approx(avatar.height_scale(), factor):
+				continue
+			var capsule := (player.get_node("Collider") as CollisionShape3D).shape as CapsuleShape3D
+			if not is_equal_approx(capsule.height, factor * PlayerHeight.BASE_METERS):
+				push_error("Replicated height did not reach the avatar/capsule")
 				get_tree().quit(1)
 			_observed = true
 			print("AVATAR_OBSERVED peer=%d height=%f" % [peer, float(_models.heights[peer])])

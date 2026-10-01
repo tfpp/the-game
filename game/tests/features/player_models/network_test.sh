@@ -29,7 +29,7 @@ for emote in flip_off wave salute cheer; do
   port="$((22000 + RANDOM % 20000))"
   spawn() {
     local role="$1" name="$1"
-    if [[ "$role" == driver ]]; then name=Sor; fi
+    if [[ "$role" == driver && "$emote" =~ ^(flip_off|salute)$ ]]; then name=Sor; fi
     local args=("--connect=ws://127.0.0.1:$port")
     if [[ "$role" == server ]]; then args=(--server "--port=$port"); fi
     touch "$tmp/$role.log"

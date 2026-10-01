@@ -42,7 +42,7 @@ collision capsule or income.
 
 ## ID-based height
 
-Players automatically get one of eleven standing heights (1.646–2.103 m) from
+Players automatically get one of eleven standing heights (**1–3 m**, in 20 cm steps) from
 their authenticated account ID. Reconnecting, respawning and server restarts
 recompute the same height; offline/dev-auth players use their peer ID instead.
 No menu or key is needed; **F3** shows your own size. This works on desktop,
@@ -53,8 +53,11 @@ height to **eight inches / 0.2032 m**, interpreting `8"` as inches, not feet.
 There is no known account ID for Sor in this repository, so the special case uses
 the authenticated name, not a client-supplied player label. Dev-auth preview
 servers can use `--name=Sor`; an ordinary offline peer 1 keeps the original height.
-Normal girl/penguin body multipliers compose with ID height; Sor remains eight
-inches in every body. Crouching still lowers the capsule and eye further.
+Normal girl/penguin body multipliers compose with ID height, clamped to **1–3 m**
+so even the shortest normal costume is at least one metre tall. Sor remains eight
+inches in every body, preserving the deliberate exception. Crouching still lowers
+the capsule and eye further. Offline peer 1 without an account retains the original
+1.8288 m build; authenticated account ID 1 uses the same variety as other accounts.
 
 `PlayerModels.heights` replicates only derived metres via its existing
 `NetworkedEntity` (including late joins); account IDs stay server-side and no
@@ -70,8 +73,10 @@ damage, ammo, range and inventory state.
 Height is derived session state, not new persistent storage. Disconnect/session
 cleanup clears it; server identity restores it when a player returns. Tests in
 `test_player_height.gd` cover identity stability, Sor in every body, crouch/respawn,
-feet/eyes/equipment and snapshots. The real-network probe checks Sor's height on
-the server, owner and late observer and rejects attempted height requests.
+feet/eyes/equipment and snapshots. The real-network probe checks both normal and Sor heights and their applied
+avatar/capsule scales on the server, owner and late observer, and rejects attempted
+height requests. Range regressions check both endpoints, every body type, repeated
+application, camera/equipment alignment and independent late-spawned players.
 
 ## Skin tones
 

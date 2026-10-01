@@ -34,12 +34,91 @@ func test_id_math_is_stable_bounded_and_varied() -> void:
 	for identity: int in range(1, 100):
 		var height := PlayerHeight.for_identity(identity, "someone")
 		assert_eq(height, PlayerHeight.for_identity(identity, "renamed"))
-		assert_between(height, 1.6, 2.11)
+		assert_between(height, 1.0, 3.0)
 		unique[height] = true
 	assert_eq(unique.size(), 11)
-	assert_eq(PlayerHeight.for_identity(1, ""), PlayerHeight.BASE_METERS)
+	assert_true(unique.has(1.0), "The shortest standing height is reachable")
+	assert_true(unique.has(3.0), "The tallest standing height is reachable")
+	assert_almost_eq(PlayerHeight.for_identity(1, ""), 1.8, 0.00001)
 	assert_eq(PlayerHeight.for_identity(1, " Sor "), PlayerHeight.SOR_METERS)
 	assert_ne(PlayerHeight.for_identity(1, "Sorcerer"), PlayerHeight.SOR_METERS)
+
+
+func test_normal_bodies_stay_in_range_and_align_avatar_capsule_eyes_and_items() -> void:
+	_models._process(0)
+	var avatar := _player.get_node("Body/Avatar") as BlockPlayerModel
+	avatar.set_process(false)
+	var collider := _player.get_node("Collider") as CollisionShape3D
+	var hand := HAND.instantiate() as Hand
+	hand.peer_id = 1
+	add_child_autofree(hand)
+	hand.set_process(false)
+	hand.net_item_id = "banana"
+	for metres: float in [1.0, 3.0]:
+		_models.heights = {1: metres}
+		for body: String in PlayerModels.VALID_BODY_TYPES:
+			_models.body_types = {1: body}
+			for frame: int in 5:
+				_models._process(0)
+				avatar._process(0)
+			var factor := _models.height_scale_for(1)
+			var standing := factor * PlayerHeight.BASE_METERS
+			assert_between(standing, 1.0, 3.0)
+			var capsule := collider.shape as CapsuleShape3D
+			assert_almost_eq(capsule.height, standing, 0.00001)
+			assert_almost_eq(collider.global_position.y - capsule.height * 0.5, 0.0, 0.00001)
+			assert_almost_eq(avatar.height_scale(), factor, 0.00001)
+			var bounds: AABB
+			if body == "penguin":
+				var foot := avatar.get_node("Rig/LeftLeg/Foot") as MeshInstance3D
+				var face := avatar.get_node("Rig/Torso/Head/Face") as MeshInstance3D
+				bounds = foot.global_transform * foot.get_aabb()
+				bounds = bounds.merge(face.global_transform * face.get_aabb())
+			else:
+				bounds = avatar.human.surface.global_transform * avatar.human.surface.get_aabb()
+			assert_almost_eq(bounds.position.y, 0.0, 0.00001)
+			assert_almost_eq(bounds.size.y, standing, 0.00001)
+			assert_almost_eq(
+				(_player.get_node("Camera") as Camera3D).global_position.y, 1.6256 * factor, 0.00001
+			)
+			assert_almost_eq(hand._aim_origin(_player).y, 1.6256 * factor, 0.00001)
+			for third_person: bool in [false, true]:
+				(_player.get_node("Body") as Node3D).visible = third_person
+				hand._process(0)
+				assert_almost_eq(hand.global_basis.get_scale().x, factor, 0.00001)
+
+
+func test_offline_default_is_preserved_but_authenticated_id_one_gets_variety() -> void:
+	_models._process(0)
+	assert_eq(_models.heights[1], PlayerHeight.BASE_METERS)
+	Network.peer_accounts[1] = {"account_id": 1, "name": "Alice"}
+	_models._assign_height(1)
+	assert_almost_eq(_models.heights[1], 1.8, 0.00001)
+
+
+func test_range_endpoints_apply_independently_to_late_players() -> void:
+	_models._process(0)
+	for peer: int in [8, 11]:
+		var remote := PLAYER.instantiate() as Player
+		remote.name = str(peer)
+		remote.display_name = "Player%d" % peer
+		remote.position = Vector3(peer * 4, PlayerHeight.BASE_METERS * 0.5, 0)
+		remote.set_multiplayer_authority(peer)
+		add_child_autofree(remote)
+		remote.set_physics_process(false)
+		remote.set_process(false)
+		_models._process(0)
+		var expected := 3.0 if peer == 8 else 1.0
+		assert_almost_eq(_models.heights[peer], expected, 0.00001)
+		var avatar := remote.get_node("Body/Avatar") as BlockPlayerModel
+		avatar._process(0)
+		assert_almost_eq(avatar.height_scale() * PlayerHeight.BASE_METERS, expected, 0.00001)
+		assert_almost_eq(
+			remote.get_node("Nameplate").position.y,
+			expected - PlayerHeight.BASE_METERS * 0.5 + 0.35,
+			0.00001
+		)
+	assert_eq(_models.height_scale_for(1), 1.0)
 
 
 func test_server_derives_account_height_without_exposing_id_or_trusting_player_name() -> void:

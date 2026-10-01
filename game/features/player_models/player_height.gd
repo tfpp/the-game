@@ -3,6 +3,8 @@ extends RefCounted
 ## Identity math and feet-anchored presentation. Account IDs never leave the server.
 
 const BASE_METERS := 1.8288
+const MIN_METERS := 1.0
+const MAX_METERS := 3.0
 const SOR_METERS := 0.2032
 
 
@@ -10,9 +12,10 @@ static func for_identity(identity: int, account_name: String) -> float:
 	# Treat the requested double quote literally as eight inches.
 	if account_name.strip_edges().to_lower() == "sor":
 		return SOR_METERS
-	# Eleven repeatable heights from 1.64592 to 2.10312 m. Peer 1 keeps the
-	# original build in offline previews. Avoid RNG and platform-dependent hashes.
-	return BASE_METERS + float((absi(identity) % 11 * 37) % 11 - 4) * 0.04572
+	# Eleven repeatable heights spanning the full 1–3 m range in 20 cm steps.
+	# Reduce before multiplying; avoid RNG and platform-dependent hashes.
+	var bucket := (absi(identity) % 11 * 37) % 11
+	return lerpf(MIN_METERS, MAX_METERS, float(bucket) / 10.0)
 
 
 static func eye_scale(player: Player) -> float:

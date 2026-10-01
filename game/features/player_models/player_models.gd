@@ -129,6 +129,9 @@ func _assign_height(peer: int) -> void:
 	next[peer] = PlayerHeight.for_identity(
 		identity if identity > 0 else peer, str(account.get("name", ""))
 	)
+	# Keep the original build in the single-player preview, not for account ID 1.
+	if peer == 1 and account.is_empty():
+		next[peer] = PlayerHeight.BASE_METERS
 	heights = next
 
 
@@ -144,7 +147,10 @@ func height_scale_for(peer: int) -> float:
 		costume = GIRL_HEIGHT_SCALE
 	elif body == "penguin":
 		costume = BlockPlayerModel.PENGUIN_HEIGHT_SCALE
-	return metres / PlayerHeight.BASE_METERS * costume
+	return (
+		clampf(metres * costume, PlayerHeight.MIN_METERS, PlayerHeight.MAX_METERS)
+		/ PlayerHeight.BASE_METERS
+	)
 
 
 ## The body type a peer sees for themselves and everyone else. Falls back to
