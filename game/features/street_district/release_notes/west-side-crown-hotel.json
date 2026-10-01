@@ -1,0 +1,5 @@
+{
+  "title": "Crown Hotel street frontage",
+  "summary": "A ten-storey hotel now lines the west side of the street district.",
+  "notes": ["Replace five west-side background facades with one correctly sized hotel exterior, aligned with its 200-room interior envelope.", "Add a supported reception approach and extend the street render bounds to include the new roofline.", "Move the nearby searchable dumpster away from the hotel entrance."]
+}

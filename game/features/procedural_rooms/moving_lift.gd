@@ -21,6 +21,11 @@ const PANEL := preload("res://features/procedural_rooms/elevator_panel.tscn")
 @export var net_phase: Phase = Phase.DOCKED
 @export var net_aperture := 1.0
 @export var casino_connection := false
+## Optional stop schedule; empty arrays preserve the original garage layout.
+@export var stop_heights := PackedFloat32Array()
+@export var stop_labels: Array[String] = []
+@export var initial_floor := -1
+@export var control_panel: PackedScene
 var cab: AnimatableBody3D
 var indicator: Label3D
 var cab_door: ProceduralSlidingDoor
@@ -36,6 +41,10 @@ func _ready() -> void:
 		net_floor = 5
 		net_target = 5
 		net_height = floor_height(5)
+	if initial_floor >= 0:
+		net_floor = initial_floor
+		net_target = initial_floor
+		net_height = stop_height(initial_floor)
 	_build_cab()
 	audio = AUDIO.new()
 	audio.position.y = 2
@@ -73,17 +82,27 @@ func _build_cab() -> void:
 	cab_door.managed_by_lift = true
 	cab_door.position = model.get_node("DoorSocket").position
 	cab.add_child(cab_door)
-	var panel := PANEL.instantiate() as Node3D
+	var panel := (control_panel if control_panel != null else PANEL).instantiate() as Node3D
 	panel.position = Vector3(1.45, 1.62, -.65)
 	cab.add_child(panel)
-	for floor_index: int in 6:
+	for floor_index: int in stop_heights.size() if not stop_heights.is_empty() else 6:
 		var button := BUTTON.instantiate() as Node3D
 		button.name = "Floor%d" % floor_index
 		button.set("floor_index", floor_index)
 		button.set("ride_button", true)
 		button.set("lift_path", NodePath("../.."))
-		button.position = Vector3(1.412, button_height(floor_index), -.65)
+		button.position = control_position(floor_index)
+		if not stop_heights.is_empty():
+			button.set("aim_half_width", .09)
 		cab.add_child(button)
+		if not stop_heights.is_empty():
+			var label := Label3D.new()
+			label.text = stop_label(floor_index)
+			label.position = Vector3(-.005, 0, -.06)
+			label.rotation.y = -PI / 2
+			label.font_size = 24
+			label.pixel_size = .002
+			button.add_child(label)
 	var lamp := OmniLight3D.new()
 	lamp.position = Vector3(0, 2.7, 0)
 	lamp.omni_range = 5
@@ -106,9 +125,9 @@ func _physics_process(delta: float) -> void:
 	_update_doors()
 	audio.update(net_phase, delta)
 	indicator.text = (
-		("%s → %s" % [floor_label(net_floor), floor_label(net_target)])
+		("%s → %s" % [stop_label(net_floor), stop_label(net_target)])
 		if net_phase == Phase.MOVING
-		else floor_label(net_floor)
+		else stop_label(net_floor)
 	)
 
 
@@ -141,8 +160,8 @@ func _advance(delta: float) -> void:
 				if net_aperture == 0:
 					net_phase = Phase.MOVING
 		Phase.MOVING:
-			net_height = move_toward(net_height, floor_height(net_target), SPEED * delta)
-			if net_height == floor_height(net_target):
+			net_height = move_toward(net_height, stop_height(net_target), SPEED * delta)
+			if net_height == stop_height(net_target):
 				net_floor = net_target
 				net_phase = Phase.OPENING
 		Phase.OPENING:
@@ -162,7 +181,7 @@ func doorway_occupied() -> bool:
 
 func _update_doors() -> void:
 	var aligned := (
-		absf(cab.position.y - floor_height(net_floor)) < .025 and net_phase != Phase.MOVING
+		absf(cab.position.y - stop_height(net_floor)) < .025 and net_phase != Phase.MOVING
 	)
 	var aperture := net_aperture if aligned else 0.0
 	cab_door.drive(aperture)
@@ -172,13 +191,29 @@ func _update_doors() -> void:
 
 func _reset(_mode: Network.Mode) -> void:
 	net_floor = 5 if casino_connection else 4
-	net_height = floor_height(net_floor)
+	if initial_floor >= 0:
+		net_floor = initial_floor
+	net_height = stop_height(net_floor)
 	net_target = net_floor
 	net_phase = Phase.DOCKED
 	net_aperture = 1
 	cab.position.y = net_height
 	_update_doors()
 	audio.initialize(net_phase)
+
+
+func stop_height(index: int) -> float:
+	return float(stop_heights[index]) if not stop_heights.is_empty() else floor_height(index)
+
+
+func stop_label(index: int) -> String:
+	return stop_labels[index] if index < stop_labels.size() else floor_label(index)
+
+
+func control_position(index: int) -> Vector3:
+	if stop_heights.is_empty():
+		return Vector3(1.412, button_height(index), -.65)
+	return Vector3(1.412, 1.94 - (index % 5) * .16, -.77 + (index / 5) * .25)
 
 
 static func floor_height(index: int) -> float:

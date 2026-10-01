@@ -1,0 +1,20 @@
+[gd_scene format=3]
+[ext_resource type="ArrayMesh" path="res://assets/street_hotel/models/hotel_exterior.res" id="mesh"]
+[ext_resource type="Material" path="res://features/street_district/materials/hotel_facade.tres" id="paint"]
+[sub_resource type="BoxShape3D" id="body"]
+size = Vector3(19, 42, 72)
+[node name="StreetHotelExterior" type="StaticBody3D"]
+metadata/prop_id = "street_hotel"
+[node name="Model" type="MeshInstance3D" parent="."]
+mesh = ExtResource("mesh")
+material_override = ExtResource("paint")
+[node name="Collider" type="CollisionShape3D" parent="."]
+position = Vector3(0, 21, 36)
+shape = SubResource("body")
+[node name="HotelSign" type="Label3D" parent="."]
+position = Vector3(9.7, 4.3, 22)
+rotation = Vector3(0, 1.5707963, 0)
+text = "CROWN HOTEL\nRECEPTION"
+font_size = 44
+pixel_size = 0.006
+modulate = Color(1, 0.85, 0.55, 1)

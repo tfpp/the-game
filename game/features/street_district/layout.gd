@@ -9,6 +9,7 @@ const SIDEWALK := preload("res://features/street_district/materials/sidewalk.tre
 const ALLEY := preload("res://features/street_district/materials/alley.tres")
 const ROOMS := preload("res://features/casino_wing/room_kit.gd")
 const COUNTER := preload("res://features/hotel_props/props/reception_counter.tscn")
+const HOTEL := preload("res://features/street_hotel/exterior.tscn")
 const MARQUEE := preload("res://features/street_district/props/casino_marquee.tscn")
 
 
@@ -160,16 +161,25 @@ static func _outer_buildings(level: Node3D) -> void:
 	var closed := [0, 2, 3, 4, 5, 7, 8, 9]
 	for i: int in range(5):
 		for side: int in [-1, 1]:
-			var building := CATALOGUE.BUILDINGS[closed[i % 8]].instantiate() as Node3D
-			level.add_child(building)
-			building.position = Vector3(side * 39, 0, i * 14)
-			building.scale = Vector3(14.0 / 6.0, 1.0, 8.0 / 14.2)
-			building.rotation.y = -side * PI / 2
+			if side > 0:
+				var building := CATALOGUE.BUILDINGS[closed[i % 8]].instantiate() as Node3D
+				level.add_child(building)
+				building.position = Vector3(side * 39, 0, i * 14)
+				building.scale = Vector3(14.0 / 6.0, 1.0, 8.0 / 14.2)
+				building.rotation.y = -side * PI / 2
 			var frontage := CATALOGUE.BUILDINGS[closed[(i + 3) % 8]].instantiate() as Node3D
 			level.add_child(frontage)
 			frontage.position = Vector3(i * 14 - 28, 0, -14 if side < 0 else 70)
 			frontage.scale = Vector3(2.34, .8, 1.0)
 			frontage.rotation.y = 0 if side < 0 else PI
+
+	var hotel := HOTEL.instantiate() as Node3D
+	hotel.position = Vector3(-44.5, 0, -8)
+	level.add_child(hotel)
+	var apron := Node3D.new()
+	apron.name = "HotelApron"
+	level.add_child(apron)
+	KIT._floor(apron, -35, -34, 12, 16, "sidewalk")
 
 
 static func _furnish_street(street: Node3D, shelter: bool) -> void:

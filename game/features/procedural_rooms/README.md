@@ -26,6 +26,9 @@ Kenney metal and chime cues.
 The cab uses a single brass floor panel on the right wall, clear of the door zone.
 Aim at its C / B1–B5 rows and press Use. Green marks the current floor and amber the
 requested floor; the current-floor prompt says "Already at B1" (or its equivalent).
+The same cab/controller also serves the Crown Hotel through optional stop heights,
+labels and a control-panel scene. Empty configuration preserves the casino/garage
+schedule and its original six-row panel; custom buttons can narrow their aim width.
 Its exact bitmap lettering and worn plate are generated as a 128×128 local-UV
 texture by `model_tools/build_lift_panel.gd`. Landing call plates stay unchanged.
 

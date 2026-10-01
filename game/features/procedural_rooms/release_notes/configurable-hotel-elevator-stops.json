@@ -1,0 +1,5 @@
+{
+  "title": "Reuse the garage elevator for the Crown Hotel",
+  "summary": "The same physical elevator can serve a configured hotel floor schedule.",
+  "notes": ["Allow configured stop heights, floor labels and a matching control panel while preserving the garage’s original cab, audio, door interlocks, movement and network authority.", "Keep the existing casino and basement stops unchanged; the Crown Hotel configures ten stops with separate panel aiming targets."]
+}
