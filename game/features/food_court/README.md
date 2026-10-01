@@ -2,14 +2,16 @@
 
 A casino wing east of the south corridor, reached on foot: leave the gaming floor
 through the south door, walk down the corridor and turn left (east) through the
-doorway marked **FOOD COURT** at (3, 0, 40). No teleports or streamed rooms.
+doorway marked **FOOD COURT** at (3, 0, 25). No teleports or streamed rooms.
 
-- Hall: x 3.5…33, z 35…51, floor y 0, ceiling at y 5.5. The north wall is the casino's
-  south outer wall; the west wall is the annex corridor (`features/annex`, which owns
-  the `FoodCourtDoorway` cut). Four `wall_sconces` light it at night.
+- Hall: x 2…34, z 20…38, floor y 0, ceiling underside y 5. The live casino's
+  `features/casino_hub/gridmap/shops.gd` supplies tiled floors and 2 × 5 m wood panels.
+  A four-metre doorway at x 2, z 24…28 connects to the south corridor. The
+  food-court feature supplies booths, signs and the poke stand; its old CSG room
+  shell is replaced by the saved casino GridMaps. Existing warm casino lighting applies.
 - İstanbul Kebab (`features/kebab_shop`) stands against the east wall facing west,
-  its counter front at x ≈ 29.7, cashier at (29.8, 44.35).
-- Eight booths in two rows (z 37.4 and 48.6, x 7.5…22.5) leave a 6.7 m aisle from the
+  its counter front at x ≈ 29.7, cashier at (29.8, 29.35).
+- Eight booths in two rows (z 22.4 and 33.6, x 7.5…22.5) leave a 6.7 m aisle from the
   doorway to the counter. Each booth is a walnut table between two velvet benches with
   two seats each (32 seats). GPS lists **Food Court** and **İstanbul Kebab**.
 
@@ -34,7 +36,7 @@ Nothing is persisted. Tests: `tests/features/food_court/`.
 
 ## Poke bowls
 
-The small **POKE BOWLS** stand at (30, 0, 37.5) faces west, beside the kebab
+The small **POKE BOWLS** stand at (30, 0, 22.5) faces west, beside the kebab
 shop. Follow the existing Food Court GPS marker, then continue toward the east
 counters. Use (E / B / Circle / touch USE) opens a menu with six tip buttons:
 15%, 20%, 25%, 30%, 35%, 40%. Each button buys one $29 salmon, rice and avocado

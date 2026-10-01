@@ -29,7 +29,11 @@ static func find_features(base_path: String = DEFAULT_BASE_PATH) -> Array[String
 static func load_features(parent: Node, base_path: String = DEFAULT_BASE_PATH) -> Array[String]:
 	var base := base_path if base_path.ends_with("/") else base_path + "/"
 	var loaded: Array[String] = []
+	# A map may omit legacy attractions without removing their feature scenes.
+	var excluded: PackedStringArray = parent.get_meta("excluded_features", PackedStringArray())
 	for feature_name: String in find_features(base):
+		if feature_name in excluded:
+			continue
 		var node := instantiate_feature(base + feature_name + "/" + SCENE_FILE)
 		if node == null:
 			continue

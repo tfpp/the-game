@@ -1,0 +1,143 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="MeshLibrary" path="res://features/casino_hub/gridmap/casino_tiles.tres" id="tiles"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/gridmap/furnishings.tscn" id="furnishings"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/ceiling.tres" id="plaster"]
+[ext_resource type="MeshLibrary" path="res://features/casino_hub/gridmap/casino_decor.tres" id="decor"]
+[ext_resource type="Script" path="res://features/casino_hub/gridmap/decor_lighting.gd" id="decor_lighting"]
+
+
+[sub_resource type="BoxShape3D" id="CeilingShape"]
+size = Vector3(48, 0.2, 40)
+
+
+[sub_resource type="BoxShape3D" id="PawnRoofShape"]
+size = Vector3(14, 0.2, 10)
+
+
+[sub_resource type="BoxShape3D" id="FoodRoofShape"]
+size = Vector3(32, 0.2, 18)
+
+
+[sub_resource type="BoxShape3D" id="CorridorRoofShape"]
+size = Vector3(4, 0.2, 10)
+
+[sub_resource type="Environment" id="Environment"]
+background_mode = 1
+background_color = Color(0.055, 0.042, 0.032, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.9, 0.76, 0.59, 1)
+ambient_light_energy = 0.3
+reflected_light_source = 2
+
+[node name="CasinoGridMap" type="Node3D"]
+
+[node name="Floors" type="GridMap" parent="."]
+mesh_library = ExtResource("tiles")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_y = false
+cell_octant_size = 4
+
+[node name="WallsNorthSouth" type="GridMap" parent="."]
+mesh_library = ExtResource("tiles")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_y = false
+cell_octant_size = 4
+
+[node name="WallsEastWest" type="GridMap" parent="."]
+mesh_library = ExtResource("tiles")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_y = false
+cell_octant_size = 4
+
+[node name="Spawn" type="Marker3D" parent="."]
+position = Vector3(0, 1, 16)
+
+[node name="Destinations" type="Node3D" parent="."]
+
+[node name="GamingPit" type="Marker3D" parent="Destinations"]
+position = Vector3(0, -1.5, 0)
+script = ExtResource("gps")
+label = "Golden Crown Gaming Pit"
+hint = "Slot machines, casino patrons and the bar."
+
+[node name="Furnishings" parent="." instance=ExtResource("furnishings")]
+
+[node name="Environment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment")
+metadata/fixed_indoor_lighting = true
+
+[node name="WarmLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-50, -25, 0)
+light_color = Color(1, 0.86, 0.64, 1)
+light_energy = 0.0
+
+[node name="FillLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-35, 140, 0)
+light_color = Color(0.8, 0.75, 0.64, 1)
+light_energy = 0.0
+
+[node name="Overview" type="Camera3D" parent="."]
+position = Vector3(50, 48, 57)
+rotation_degrees = Vector3(-32.35, 41.25, 0)
+projection = 1
+size = 85.0
+current = true
+
+[node name="Ceiling" type="GridMap" parent="."]
+mesh_library = ExtResource("tiles")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_y = false
+cell_octant_size = 4
+
+[node name="Body" type="StaticBody3D" parent="Ceiling"]
+position = Vector3(0, 5.1, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="Ceiling/Body" groups=["radar_geometry"]]
+shape = SubResource("CeilingShape")
+
+[node name="ShopWallsNorthSouth" type="GridMap" parent="."]
+mesh_library = ExtResource("tiles")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_y = false
+cell_octant_size = 4
+
+[node name="ShopWallsEastWest" type="GridMap" parent="."]
+mesh_library = ExtResource("tiles")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_y = false
+cell_octant_size = 4
+
+[node name="PawnRoof" type="Node3D" parent="."]
+position = Vector3(-9, 5.1, 25)
+
+[node name="Body" type="StaticBody3D" parent="PawnRoof"]
+
+[node name="Shape" type="CollisionShape3D" parent="PawnRoof/Body"]
+shape = SubResource("PawnRoofShape")
+
+[node name="FoodRoof" type="Node3D" parent="."]
+position = Vector3(18, 5.1, 29)
+
+[node name="Body" type="StaticBody3D" parent="FoodRoof"]
+
+[node name="Shape" type="CollisionShape3D" parent="FoodRoof/Body"]
+shape = SubResource("FoodRoofShape")
+
+[node name="CorridorRoof" type="Node3D" parent="."]
+position = Vector3(0, 5.1, 25)
+
+[node name="Body" type="StaticBody3D" parent="CorridorRoof"]
+
+[node name="Shape" type="CollisionShape3D" parent="CorridorRoof/Body"]
+shape = SubResource("CorridorRoofShape")
+
+[node name="Decor" type="GridMap" parent="."]
+mesh_library = ExtResource("decor")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_x = false
+cell_center_y = false
+cell_octant_size = 4
+cell_center_z = false
+script = ExtResource("decor_lighting")

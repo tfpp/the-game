@@ -43,7 +43,7 @@ modulate = Color(0.6, 1, 1, 1)
 position = Vector3(294, 0, -305.9)
 script = ExtResource("4_gps")
 label = "Garage Teleporter"
-hint = "In the dev room, behind the DEV ROOM booth in the south lobby. Use the cyan teleporter."
+hint = "In the dev room, behind the DEV ROOM booth in the north promenade. Use the cyan teleporter."
 
 [node name="Garage" type="Marker3D" parent="Destinations"]
 position = Vector3(32, 0, -25)

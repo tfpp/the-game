@@ -1,0 +1,6 @@
+# Walnut albedo generation
+
+Tool: built-in image generation. Input 1: `uv_template.png` (UV guide).
+Input 2: user-supplied `assets/characters/interior/wood-panel-wall.png` (style reference).
+
+Create a flat diffuse WOOD GRAIN TEXTURE for a retro low poly game mesh, portrait 1:2 aspect. Input 1 is an actual UV guide with deliberately overlapping UVs; input 2 is STYLE REFERENCE only. Paint the ENTIRE canvas edge to edge with consistent medium-dark aged walnut grain, vertical grain everywhere. IMPORTANT: remove all guide lines completely. Do NOT paint any panels, frames, molding, seams, shadows or borders: the 3D mesh already models them, and the UV is intentionally shared and rotated for rails. Entire result is one continuous generic walnut wood swatch, with broad irregular blocky vertical streaks, restrained warm brown/umber palette matching reference, sparse muted amber wear, minimal contrast, no orange saturation, no black lines. GoldSrc inspired hand painted coarse 64x128 pixel aesthetic; broad pixel blocks, no photographic micrograin, no knots, no text, no perspective, no illumination gradients, no shine, opaque. All corners and unused guide areas must have identical grain density and color treatment. This will be reduced to 64x128 runtime pixels.

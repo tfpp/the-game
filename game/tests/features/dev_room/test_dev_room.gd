@@ -32,9 +32,44 @@ func _player_at(global_pos: Vector3) -> Player:
 
 
 func test_casino_booth_replaces_the_old_staff_door() -> void:
-	assert_eq(_room.get_node("CasinoBooth").position, Vector3(12, 0, 31))
+	assert_eq(_room.get_node("CasinoBooth").position, Vector3(12, 0, -18.4))
 	var door := _room.get_node("CasinoBooth/Door") as GarageDoor
 	assert_eq(door.door_label, "Enter the dev room")
+
+
+func test_casino_development_doors_and_return_landings_clear_shops_and_walls() -> void:
+	var casino := load("res://features/casino_hub/gridmap/playable.tscn") as PackedScene
+	add_child_autofree(casino.instantiate())
+	var street_scene := load("res://features/street_district/feature.tscn") as PackedScene
+	var street := add_child_autofree(street_scene.instantiate()) as Node3D
+	await wait_physics_frames(3)
+	var space := _room.get_world_3d().direct_space_state
+	var hull := CapsuleShape3D.new()
+	hull.radius = 0.4064
+	hull.height = 1.8288
+	for pair: Array in [
+		[_room.get_node("CasinoBooth/Door"), _room.get_node("CasinoBooth/Arrival")],
+		[street.get_node("CasinoStreetEntrance"), street.get_node("MainCasinoArrival")]
+	]:
+		var door := pair[0] as Node3D
+		var arrival := pair[1] as Marker3D
+		assert_lt(door.global_position.z, -12.0, "Door is on north promenade, clear of shops")
+		assert_gt(arrival.global_basis.z.dot(Vector3.FORWARD), 0.99, "Return faces into casino")
+		var point := arrival.global_position
+		var ray := PhysicsRayQueryParameters3D.create(point, point - Vector3(0, 3, 0), 1)
+		var hit := space.intersect_ray(ray)
+		assert_false(hit.is_empty(), "Landing has a floor")
+		if not hit.is_empty():
+			assert_almost_eq((hit["position"] as Vector3).y, 0.0, 0.01)
+		var query := PhysicsShapeQueryParameters3D.new()
+		query.shape = hull
+		query.collision_mask = 1
+		query.transform.origin = point
+		assert_true(space.intersect_shape(query).is_empty(), "Return hull clears walls")
+		query.transform.origin = (
+			door.global_position + (point - door.global_position).normalized() * 0.8
+		)
+		assert_true(space.intersect_shape(query).is_empty(), "Door can be approached")
 
 
 func test_booth_and_return_door_round_trip() -> void:

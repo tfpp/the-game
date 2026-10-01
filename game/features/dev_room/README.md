@@ -1,7 +1,7 @@
 # Dev room
 
 One sealed room that holds every warp door, so the casino floor stays tidy. The
-casino's south lobby has a single **DEV ROOM** booth at world `(12, 0, 31)`; press
+casino's north promenade has a single **DEV ROOM** booth at world `(12, 0, -18.4)`; press
 Use (E, controller B/Circle or touch Use) on its door to arrive in the room at
 `(300, 0, -300)`. The **BACK TO THE CASINO** door on the south wall returns you to
 the booth.

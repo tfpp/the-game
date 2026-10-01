@@ -1,0 +1,9 @@
+{
+  "title": "A closer casino floor",
+  "summary": "The casino's rectangular hall brings the surrounding promenade and shops closer to the gaming pit.",
+  "notes": [
+    "Reduce the main casino hall to 48 by 40 metres while preserving the 30 by 24 metre gaming pit and its ramps.",
+    "Move the food court and pawn shop closer to the south entrance and update their GPS markers.",
+    "Extend chandelier light reach and include GridMap tiles in room visibility bounds so distant walls stay visible."
+  ]
+}

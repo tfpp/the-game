@@ -1,0 +1,146 @@
+[gd_resource type="MeshLibrary" format=4]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="1_2dsmp"]
+[ext_resource type="Texture2D" path="res://assets/room_kits/wood_panel_wall/wood_panel_wall_albedo.png" id="2_u477p"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/tile.tres" id="3_pnm1y"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="4_2lvix"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/ceiling.tres" id="5_83ny6"]
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+material = ExtResource("1_2dsmp")
+size = Vector3(1, 0.25, 1)
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(1, 0.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="WallMaterial"]
+albedo_color = Color(0.58, 0.51, 0.38, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="WallMesh"]
+material = SubResource("WallMaterial")
+size = Vector3(1, 2.5, 0.2)
+
+[sub_resource type="BoxShape3D" id="WallShape"]
+size = Vector3(1, 2.5, 0.2)
+
+[sub_resource type="PrismMesh" id="RampMesh"]
+material = ExtResource("1_2dsmp")
+left_to_right = 0.0
+size = Vector3(6, 1.5, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="RampShape"]
+points = PackedVector3Array(-3, -0.75, -0.5, 3, -0.75, -0.5, -3, 0.75, -0.5, -3, -0.75, 0.5, 3, -0.75, 0.5, -3, 0.75, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="Material_wood"]
+resource_name = "AgedWalnut"
+albedo_texture = ExtResource("2_u477p")
+roughness = 0.78
+texture_filter = 2
+metadata/per_pixel_lighting = true
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_1tgbf"]
+resource_name = "blockbench_export_mesh"
+_surfaces = [{
+"aabb": AABB(-0.5, 0, -0.1, 1, 2.5, 0.2),
+"attribute_data": PackedByteArray("/w//B/8P/2cKJ/9nCif/B2Y2//f/D//3/w957GY2eez/D//3Zjb/92Y2eez/D3ns/w//B/8P/2etF/9nrRf/B2Y2eez/D3ns/w+i6Lguouj/D3nsZjZ57Lguouj/D6Lo/w//B/8P/zeZGf83mRn/B/8P/wf/D/83mRn/N5kZ/wf/D9bjmRnW45kZ6rH/D+qxZmbW4/9v1uP/b+qxZmbqsZkZ1uNmZtbjhGNl4nocZeJmZtbjZmbqsYRjW7OEY2XiZmbqsZkZ6rF6HFuzhGNbs5kZ6rGZGdbjehxl4nocW7N6HGXihGNl4oRjW7N6HFuz/w//N/8P/2eZGf9nmRn/N/8P/zf/D/9nmRn/Z5kZ/zf/b9bjmXnW45l56rH/b+qxZcbW4//P1uP/z+qxZcbqsZl51uNlxtbjhMNl4np8ZeJlxtbjZcbqsYTDW7OEw2XiZcbqsZl56rF6fFuzhMNbs5l56rGZedbjenxl4np8W7N6fGXihMNl4oTDW7N6fFuzuC6i6P8Pouj/Dx6tuC4erf8Poui4LqLouC4erf8PHq3/D/8H/w//Z9YT/2fWE/8HuC4erf8PHq3/DzKrZjYyq/8PHq24Lh6tZjYyq/8PMqv/D/8H/w//Z60X/2etF/8HZjYyq/8PMqv/D1unZjZbp/8PMqtmNjKrZjZbp/8PW6f/D/8H/w//Z9YT/2fWE/8HZjZbp/8PW6f/D2+luC5vpf8PW6dmNlunuC5vpf8Pb6X/D/8H/w//Z4Ub/2eFG/8H/w//B/8P/2eFG/9nhRv/B/8PrZ+FG62fhRszG/8PMxt6xK2f/8+tn//PMxt6xDMbhRutn3rErZ+jwMGdXB/BnXrErZ96xDMbo8AeHaPAwZ16xDMbhRszG1wfHh2jwB4dhRszG4UbrZ9cH8GdXB8eHVwfwZ2jwMGdo8AeHVwfHh24Lm+l/w9vpf8PcBW4LnAV/w9vpbgub6W4LnAV/w9wFf8P/wf/D/9nrRf/Z60X/we4LnAV/w9wFf8PmRFmNpkR/w9wFbgucBVmNpkR/w+ZEf8P/wf/D/9nMyP/ZzMj/wdmNpkR/w+ZEf8P/wdmNv8H/w+ZEWY2mRFmNv8H/w//Bw=="),
+"format": 34896613399,
+"index_count": 312,
+"index_data": PackedByteArray("AAACAAEAAAADAAIABAAGAAUABAAHAAYACAAKAAkACAALAAoADAAOAA0ADAAPAA4AEAASABEAEAATABIAFAAWABUAFAAXABYAGAAaABkAGAAbABoAHAAeAB0AHAAfAB4AIAAiACEAIAAjACIAJAAmACUAJAAnACYAKAAqACkAKAArACoALAAuAC0ALAAvAC4AMAAyADEAMAAzADIANAA2ADUANAA3ADYAOAA6ADkAOAA7ADoAPAA+AD0APAA/AD4AQABCAEEAQABDAEIARABGAEUARABHAEYASABKAEkASABLAEoATABOAE0ATABPAE4AUABSAFEAUABTAFIAVABWAFUAVABXAFYAWABaAFkAWABbAFoAXABeAF0AXABfAF4AYABiAGEAYABjAGIAZABmAGUAZABnAGYAaABqAGkAaABrAGoAbABuAG0AbABvAG4AcAByAHEAcABzAHIAdAB2AHUAdAB3AHYAeAB6AHkAeAB7AHoAfAB+AH0AfAB/AH4AgACCAIEAgACDAIIAhACGAIUAhACHAIYAiACKAIkAiACLAIoAjACOAI0AjACPAI4AkACSAJEAkACTAJIAlACWAJUAlACXAJYAmACaAJkAmACbAJoAnACeAJ0AnACfAJ4AoACiAKEAoACjAKIApACmAKUApACnAKYAqACqAKkAqACrAKoArACuAK0ArACvAK4AsACyALEAsACzALIAtAC2ALUAtAC3ALYAuAC6ALkAuAC7ALoAvAC+AL0AvAC/AL4AwADCAMEAwADDAMIAxADGAMUAxADHAMYAyADKAMkAyADLAMoAzADOAM0AzADPAM4A"),
+"material": SubResource("Material_wood"),
+"name": "AgedWalnut",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 208,
+"vertex_data": PackedByteArray("AAAAAP///7///wAA////v///SQz///+/AABJDP///7///wAA////////AAAAAP////9JDAAA/////0kM/////wAAAAAAAP+/AAAAAP///78AAEkM////vwAASQwAAP+/AABJDP//QNz//0kM//9A3P//YhDLzEDcAABiEMvMQNz//0kM////////SQwAAP////9iEAAA/////2IQy8z//wAASQwAAP+/AABJDP///78AAGIQy8z/vwAAYhAAAP+/AABiEMvM/7//f2IQy8z/v/9/gBXLzP+/AACAFcvM/78AAMBKy8z/v/9/wErLzP+//3/eT8vM/78AAN5Py8z/vwAAgBXLzP+/zAyAFcvM/7/MDMBKy8z/vwAAwErLzP+/MnOAFcvM/7//f4AVy8z/v/9/wErLzP+/MnPASsvM/7/MDIAVy8yv5DJzgBXLzK/kW28KFzKzr+SjEAoXMrOv5DJzgBXLzEKpMnPASsvMQqlbbzdJMrNCqVtvChcys0KpMnPASsvMr+TMDMBKy8yv5KMQN0kys6/kW283STKzr+TMDMBKy8yc8MwMgBXLzJzwoxAKFzKznPCjEDdJMrOc8KMQChcys/+/W28KFzKz/79bbzdJMrP/v6MQN0kys/+//39iEMvM/7///2IQy8z/v///gBXLzP+//3+AFcvM/7//f8BKy8z/v///wErLzP+////eT8vM/7//f95Py8z/v/9/gBXLzP+/zIyAFcvM/7/MjMBKy8z/v/9/wErLzP+/MvOAFcvM/7///4AVy8z/v///wErLzP+/MvPASsvM/7/MjIAVy8yv5DLzgBXLzK/kW+8KFzKzr+SjkAoXMrOv5DLzgBXLzEKpMvPASsvMQqlb7zdJMrNCqVvvChcys0KpMvPASsvMr+TMjMBKy8yv5KOQN0kys6/kW+83STKzr+TMjMBKy8yc8MyMgBXLzJzwo5AKFzKznPCjkDdJMrOc8KOQChcys/+/W+8KFzKz/79b7zdJMrP/v6OQN0kys/+///9iEMvM/////2IQAAD/////3k8AAP/////eT8vM//8AAGIQAAD/vwAAYhDLzP+/AADeT8vM/78AAN5PAAD/vwAA3k/LzGLu///eT8vMYu7//+tR//9i7gAA61H//2Lu///eT8vM/////95PAAD/////61EAAP/////rUf////8AAN5PAAD/vwAA3k/LzP+/AADrUf///78AAOtRAAD/vwAA61H///+////rUf///7///wNW////vwAAA1b///+////rUf///////+tRAAD/////A1YAAP////8DVv////8AAOtRAAD/vwAA61H///+/AAADVv///78AAANWAAD/vwAAA1b//2Lu//8DVv//Yu7//xBYy8xi7gAAEFjLzGLu//8DVv///////wNWAAD/////EFgAAP////8QWMvM//8AAANWAAD/vwAAA1b///+/AAAQWMvM/78AABBYAAD/vwAAEFjLzP+///8QWMvM/7///zRey8z/vwAANF7LzP+/AACE68vM/7///4Try8z/v///qfHLzP+/AACp8cvM/78AADRey8z/v1wPNF7LzP+/XA+E68vM/78AAITry8z/v6LwNF7LzP+///80XsvM/7///4Try8z/v6LwhOvLzP+/XA80XsvMQNyi8DRey8xA3ITrQWAys0DcehRBYDKzQNyi8DRey8w/qKLwhOvLzD+ohOt36TKzP6iE60FgMrM/qKLwhOvLzEDcXA+E68vMQNx6FHfpMrNA3ITrd+kys0DcXA+E68vM4uhcDzRey8zi6HoUQWAys+LoehR36TKz4uh6FEFgMrP/v4TrQWAys/+/hOt36TKz/796FHfpMrP/v///EFjLzP////8QWAAA/////6nxAAD/////qfHLzP//AAAQWAAA/78AABBYy8z/vwAAqfHLzP+/AACp8QAA/78AAKnxy8xA3P//qfHLzEDc///B9f//QNwAAMH1//9A3P//qfHLzP////+p8QAA/////8H1AAD/////wfX/////AACp8QAA/78AAKnxy8z/vwAAwfX///+/AADB9QAA/78AAMH1////v///wfX///+//////////78AAP//////v///wfX////////B9QAA////////AAD/////////////AADB9QAA/78AAMH1////vwAA//////+/AAD//wAA/7//f/9//3//f/9//3//f/9//7//f/+//3//v/9//7//f/9/////f////3////9////ZkI2g2ZCNoNmQjaDZkI2g/7//f/+//3//v/9//7//f/9/////f////3////9/////f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/546xpeeOsaXnjrGl546xpUlv3M1Jb9zNSW/czUlv3M0XcU1aF3FNWhdxTVoXcU1a0Kdzd9Cnc3fQp3N30Kdzd/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9/546xpeeOsaXnjrGl546xpUlv3M1Jb9zNSW/czUlv3M0XcU1aF3FNWhdxTVoXcU1a0Kdzd9Cnc3fQp3N30Kdzd/9//3//f/9//3//f/9//3//v/9//7//f/+//3//v/9//3////9/////f////3///2l0iFNpdIhTaXSIU2l0iFP/v/9//7//f/+//3//v/9//3////9/////f////3////9//3//f/9//3//f/9//3//v/9//7//f/+//3//v/9//3////9/////f////3///5WLdqyVi3aslYt2rJWLdqz/v/9//7//f/+//3//v/9//3////9/////f////3////9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3//f/9//3/ZkI2g2ZCNoNmQjaDZkI2gfGxivXxsYr18bGK9fGxivSVvcV8lb3FfJW9xXyVvcV9Lohh1S6IYdUuiGHVLohh1/3//f/9//3//f/9//3//f/+//3//v/9//7//f/+//3//f////3////9/////f///JW9xXyVvcV8lb3FfJW9xX/+//3//v/9//7//f/+//3//f////3////9/////f////3//f/9//3//f/9//3//f/+//3//v/9//7//f/+//3//f////3////9/////f///")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nl3d0"]
+size = Vector3(2, 5, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kky1x"]
+size = Vector3(1, 1.5, 0.2)
+
+[sub_resource type="BoxMesh" id="TileFloorMesh"]
+material = ExtResource("3_pnm1y")
+size = Vector3(1, 0.25, 1)
+
+[sub_resource type="BoxMesh" id="WoodFloorMesh"]
+material = ExtResource("4_2lvix")
+size = Vector3(1, 0.25, 1)
+
+[sub_resource type="BoxMesh" id="HeaderMesh"]
+material = ExtResource("4_2lvix")
+size = Vector3(2, 2.5, 0.2)
+
+[sub_resource type="BoxShape3D" id="HeaderShape"]
+size = Vector3(2, 2.5, 0.2)
+
+[sub_resource type="QuadMesh" id="CeilingTileMesh"]
+material = ExtResource("5_83ny6")
+
+[resource]
+item/0/name = "Floor"
+item/0/mesh = SubResource("FloorMesh")
+item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
+item/0/mesh_cast_shadow = 1
+item/0/shapes = [SubResource("FloorShape"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)]
+item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/navigation_layers = 1
+item/1/name = "Wall"
+item/1/mesh = SubResource("WallMesh")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -0.5)
+item/1/mesh_cast_shadow = 1
+item/1/shapes = [SubResource("WallShape"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -0.5)]
+item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/navigation_layers = 1
+item/2/name = "Ramp"
+item/2/mesh = SubResource("RampMesh")
+item/2/mesh_transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0.75, -0.5)
+item/2/mesh_cast_shadow = 1
+item/2/shapes = [SubResource("RampShape"), Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0.75, -0.5)]
+item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/navigation_layers = 1
+item/3/name = "WoodWall"
+item/3/mesh = SubResource("ArrayMesh_1tgbf")
+item/3/mesh_transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 1, 0.5, 0, -0.5)
+item/3/mesh_cast_shadow = 1
+item/3/shapes = [SubResource("BoxShape3D_nl3d0"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 2.5, -0.5)]
+item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/3/navigation_layers = 1
+item/4/name = "WoodPitWall"
+item/4/mesh = SubResource("ArrayMesh_1tgbf")
+item/4/mesh_transform = Transform3D(1, 0, 0, 0, 0.6, 0, 0, 0, 1, 0, 0, -0.5)
+item/4/mesh_cast_shadow = 1
+item/4/shapes = [SubResource("BoxShape3D_kky1x"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -0.5)]
+item/4/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/4/navigation_layers = 1
+item/5/name = "TileFloor"
+item/5/mesh = SubResource("TileFloorMesh")
+item/5/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
+item/5/mesh_cast_shadow = 1
+item/5/shapes = [SubResource("FloorShape"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)]
+item/5/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/5/navigation_layers = 1
+item/6/name = "WoodFloor"
+item/6/mesh = SubResource("WoodFloorMesh")
+item/6/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
+item/6/mesh_cast_shadow = 1
+item/6/shapes = [SubResource("FloorShape"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)]
+item/6/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/6/navigation_layers = 1
+item/7/name = "DoorHeader"
+item/7/mesh = SubResource("HeaderMesh")
+item/7/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 3.75, -0.5)
+item/7/mesh_cast_shadow = 1
+item/7/shapes = [SubResource("HeaderShape"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 3.75, -0.5)]
+item/7/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/7/navigation_layers = 1
+item/8/name = "CeilingTile"
+item/8/mesh = SubResource("CeilingTileMesh")
+item/8/mesh_transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+item/8/mesh_cast_shadow = 1
+item/8/shapes = []
+item/8/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/8/navigation_layers = 1

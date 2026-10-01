@@ -1,0 +1,11 @@
+{
+  "title": "Warm casino lighting and decor",
+  "summary": "Warm sconces, framed paintings and chandelier pools give the casino its faded atmosphere.",
+  "notes": [
+    "Add an editable decor GridMap reusing the original framed landscape paintings, brass sconces and chandeliers.",
+    "Replace fixed fullbright casino shading with light-responsive materials and darker ambient lighting.",
+    "Place warm fixtures around the casino, food court, pawn shop and connecting corridor.",
+    "Keep the enclosed casino's authored lighting independent of the outdoor day/night clock.",
+    "Prevent camera-dependent light flicker with small ceiling and wall batches that stay within the Compatibility renderer's light budget."
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "title": "Mariachi facing and backdrop clearance",
+  "summary": "All five musicians face the gaming pit and stand clear of their stage backdrop.",
+  "notes": [
+    "Straighten each musician's facing and move the lineup forward to prevent animated bodies and instruments clipping into the backdrop."
+  ]
+}

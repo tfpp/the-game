@@ -1,9 +1,11 @@
 # Mariachi band
 
-**Mariachi Corona de Oro** plays on a round walnut stage on the casino's north
-promenade, at (8, 0, -20), facing south-west toward the top of the north ramp out of
-the gaming floor. Walk up the ramp and you hear them; the walkway from the ramp to the
-casino-wing doorway at (0, 0, -34) stays clear. GPS lists the band under Objects and
+**Mariachi Corona de Oro** plays on a round walnut stage on the casino's west
+promenade, at (-20.8, 0, 0), facing east into the gaming pit. The stage sits
+against the west wall with an open audience aisle between it and the pit.
+All five musicians face east in a straight lineup, forward of the backdrop so
+their animated meshes remain clear of the wall. GPS lists the band under
+Objects and
 each musician under People.
 
 - Five musicians on the player avatar rig (`MariachiMusicianModel`, a `PatronModel`):

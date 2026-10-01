@@ -1,0 +1,9 @@
+{
+  "title": "Enclosed GridMap casino",
+  "summary": "Explore a clean casino interior with taller wood walls and a plaster ceiling.",
+  "notes": [
+    "Double the GridMap perimeter wood panels to two metres wide and five metres tall, preserving their proportions and using half as many instances.",
+    "Cover the casino with a low-poly plaster ceiling and solid collision.",
+    "Exclude the petting zoo, ferry, gnomes and overlapping legacy annex geometry from this map while retaining their feature scenes."
+  ]
+}

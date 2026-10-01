@@ -77,15 +77,16 @@ hint = "Use STREET DISTRICT on the dev room's east wall. Explore streets, alleys
 position = Vector3(312.4, 0.1, -300)
 script = ExtResource("gps")
 label = "Street District Teleporter"
-hint = "Dev room east wall. Enter through DEV ROOM in the casino south lobby."
+hint = "Dev room east wall. Enter through DEV ROOM in the casino north promenade."
 
 [node name="StreetObjects" parent="Room" instance=ExtResource("objects")]
 
 [node name="MainCasinoArrival" type="Marker3D" parent="."]
-position = Vector3(7, 1, 29.2)
+position = Vector3(7, 1, -17.8)
+rotation = Vector3(0, 3.1415926536, 0)
 
 [node name="CasinoStreetEntrance" type="CSGBox3D" parent="."]
-position = Vector3(7, 1.1, 31)
+position = Vector3(7, 1.1, -19.7)
 size = Vector3(1.4, 2.2, 0.12)
 use_collision = true
 material = SubResource("paint")
@@ -103,12 +104,6 @@ billboard = 1
 text = "STREET CASINO\nE / USE TO TELEPORT"
 font_size = 36
 pixel_size = 0.004
-
-[node name="CasinoPortalFloor" type="CSGBox3D" parent="."]
-position = Vector3(7, -0.1, 31)
-size = Vector3(3, 0.2, 5)
-use_collision = true
-material = SubResource("paint")
 
 [node name="CasinoArrival" type="Marker3D" parent="Room"]
 position = Vector3(18.75, 1, 33.3)

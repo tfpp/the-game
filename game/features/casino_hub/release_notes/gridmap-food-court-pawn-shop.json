@@ -1,0 +1,9 @@
+{
+  "title": "GridMap food court and pawn shop",
+  "summary": "Walk south from the casino to eat, sit in a booth or visit Rusty Hogg's pawn shop.",
+  "notes": [
+    "Build covered food-court and pawn-shop rooms with GridMap floors, wood panels and doorway headers.",
+    "Restore the food court's 32 seats and food counters alongside the pawn shop's existing sales and loot counter.",
+    "Connect both shops to the casino through a four-metre-wide south corridor."
+  ]
+}

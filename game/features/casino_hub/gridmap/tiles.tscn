@@ -1,0 +1,117 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="carpet"]
+[ext_resource type="PackedScene" path="res://features/room_kits/wood_panel_wall.tscn" id="wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/tile.tres" id="tile"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="walnut"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/ceiling.tres" id="plaster"]
+
+[sub_resource type="QuadMesh" id="CeilingTileMesh"]
+size = Vector2(1, 1)
+material = ExtResource("plaster")
+
+[sub_resource type="BoxMesh" id="TileFloorMesh"]
+material = ExtResource("tile")
+size = Vector3(1, 0.25, 1)
+
+[sub_resource type="BoxMesh" id="WoodFloorMesh"]
+material = ExtResource("walnut")
+size = Vector3(1, 0.25, 1)
+
+[sub_resource type="BoxMesh" id="HeaderMesh"]
+material = ExtResource("walnut")
+size = Vector3(2, 2.5, 0.2)
+
+[sub_resource type="BoxShape3D" id="HeaderShape"]
+size = Vector3(2, 2.5, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="WallMaterial"]
+albedo_color = Color(0.58, 0.51, 0.38, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="WallMesh"]
+material = SubResource("WallMaterial")
+size = Vector3(1, 2.5, 0.2)
+
+[sub_resource type="BoxShape3D" id="WallShape"]
+size = Vector3(1, 2.5, 0.2)
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+material = ExtResource("carpet")
+size = Vector3(1, 0.25, 1)
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(1, 0.25, 1)
+
+[sub_resource type="PrismMesh" id="RampMesh"]
+material = ExtResource("carpet")
+left_to_right = 0.0
+size = Vector3(6, 1.5, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="RampShape"]
+points = PackedVector3Array(-3, -0.75, -0.5, 3, -0.75, -0.5, -3, 0.75, -0.5, -3, -0.75, 0.5, 3, -0.75, 0.5, -3, 0.75, 0.5)
+
+[node name="CasinoGridTiles" type="Node3D"]
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.125, 0)
+mesh = SubResource("FloorMesh")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D"]
+shape = SubResource("FloorShape")
+
+[node name="Wall" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.25, -0.5)
+mesh = SubResource("WallMesh")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Wall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall/StaticBody3D"]
+shape = SubResource("WallShape")
+
+[node name="Ramp" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.75, -0.5)
+rotation_degrees = Vector3(0, -90, 0)
+mesh = SubResource("RampMesh")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ramp"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ramp/StaticBody3D"]
+shape = SubResource("RampShape")
+
+[node name="WoodWall" parent="." instance=ExtResource("wood")]
+position = Vector3(0.5, 0, -0.5)
+scale = Vector3(2, 2, 1)
+
+[node name="TileFloor" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.125, 0)
+mesh = SubResource("TileFloorMesh")
+
+[node name="Body" type="StaticBody3D" parent="TileFloor"]
+
+[node name="Shape" type="CollisionShape3D" parent="TileFloor/Body"]
+shape = SubResource("FloorShape")
+
+[node name="WoodFloor" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.125, 0)
+mesh = SubResource("WoodFloorMesh")
+
+[node name="Body" type="StaticBody3D" parent="WoodFloor"]
+
+[node name="Shape" type="CollisionShape3D" parent="WoodFloor/Body"]
+shape = SubResource("FloorShape")
+
+[node name="DoorHeader" type="MeshInstance3D" parent="."]
+position = Vector3(0.5, 3.75, -0.5)
+mesh = SubResource("HeaderMesh")
+
+[node name="Body" type="StaticBody3D" parent="DoorHeader"]
+
+[node name="Shape" type="CollisionShape3D" parent="DoorHeader/Body"]
+shape = SubResource("HeaderShape")
+
+[node name="CeilingTile" type="MeshInstance3D" parent="."]
+rotation_degrees = Vector3(90, 0, 0)
+mesh = SubResource("CeilingTileMesh")

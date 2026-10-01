@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded;
+render_mode diffuse_lambert, specular_disabled;
 
 uniform sampler2D albedo_texture : source_color, filter_nearest_mipmap, repeat_enable;
 uniform vec4 tint : source_color = vec4(1.0);
@@ -28,10 +28,6 @@ void fragment() {
 	vec2 pixel = mod(floor(FRAGCOORD.xy), 2.0);
 	float threshold = (pixel.x + pixel.y * 2.0) / 4.0 - 0.375;
 	vec3 pixel_color = clamp(floor(color * color_steps + 0.5 + threshold * 0.45) / color_steps, 0.0, 1.0);
-	// Fixed warm indoor illumination stays legible when the outdoor clock turns to night.
-	// Broad pools suggest the repeated ceiling fixtures without mobile shadow maps.
-	vec2 lamp_offset = (fract((p.xz + vec2(4.0, 3.0)) / vec2(8.0, 6.0)) - 0.5) * vec2(8.0, 6.0);
-	float pool = 0.72 + 0.28 / (1.0 + dot(lamp_offset, lamp_offset) * 0.18);
-	float face = 0.78 + 0.22 * abs(world_normal.y);
-	ALBEDO = pixel_color * pool * face * vec3(1.0, 0.9, 0.78);
+	ALBEDO = pixel_color;
+	ROUGHNESS = 1.0;
 }

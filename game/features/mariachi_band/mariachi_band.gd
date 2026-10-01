@@ -1,6 +1,6 @@
 class_name MariachiBand
 extends Node3D
-## Mariachi Corona de Oro: five musicians on a little stage on the casino's north
+## Mariachi Corona de Oro: five musicians on a little stage on the casino's west
 ## promenade, playing traditional songs on loop. The server owns which song is on
 ## (`net_song`) and bumps `net_take` every time a song starts, so every peer starts
 ## it together and late joiners pick up the current one. Players press Use near the

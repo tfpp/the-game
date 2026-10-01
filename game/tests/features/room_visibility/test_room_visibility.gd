@@ -60,6 +60,38 @@ func test_far_plane_covers_the_selected_room_corners() -> void:
 	assert_almost_eq(outside, Vector3(-14, 4, 19).length() + 0.05, 0.001)
 
 
+func test_gridmap_tiles_contribute_transformed_bounds_and_camera_distance() -> void:
+	var root := Node3D.new()
+	add_child_autofree(root)
+	var grid := GridMap.new()
+	grid.position = Vector3(10, 0, -5)
+	grid.cell_size = Vector3.ONE
+	grid.cell_center_x = false
+	grid.cell_center_y = false
+	grid.cell_center_z = false
+	var library := MeshLibrary.new()
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(2, 5, 0.2)
+	library.create_item(0)
+	library.set_item_mesh(0, mesh)
+	library.set_item_mesh_transform(0, Transform3D(Basis.IDENTITY, Vector3(0, 2.5, 0)))
+	grid.mesh_library = library
+	root.add_child(grid)
+	var turn := grid.get_orthogonal_index_from_basis(Basis(Vector3.UP, PI / 2))
+	grid.set_cell_item(Vector3i(-24, 0, 0), 0, turn)
+	grid.set_cell_item(Vector3i(24, 0, 0), 0, turn)
+	var visibility := RoomVisibility.new()
+	var bounds := visibility._world_bounds(root)
+	visibility.free()
+	assert_almost_eq(bounds.position, Vector3(-14.1, 0, -6), Vector3.ONE * 0.001)
+	assert_almost_eq(bounds.size, Vector3(48.2, 5, 2), Vector3.ONE * 0.001)
+	assert_gt(RoomVisibility.far_for_bounds(bounds, Vector3.ZERO, 0.05), 34.1)
+	grid.visible = false
+	var hidden_check := RoomVisibility.new()
+	assert_eq(hidden_check._world_bounds(root), AABB(), "Hidden grids do not extend the room")
+	hidden_check.free()
+
+
 func test_pending_arrival_survives_a_stale_room_assignment_then_expires() -> void:
 	var fixture := _fixture()
 	var room := fixture["room"] as StreamedRoom

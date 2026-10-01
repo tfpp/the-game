@@ -1,7 +1,7 @@
 [gd_resource type="StandardMaterial3D" format=3]
 
 [resource]
-shading_mode = 0
+shading_mode = 1
 texture_filter = 2
 metallic = 0.0
 metallic_specular = 0.0
@@ -12,6 +12,6 @@ uv1_triplanar = true
 uv1_world_triplanar = true
 uv1_scale = Vector3(3, 3, 3)
 
-emission_enabled = true
+emission_enabled = false
 emission = Color(0.16560, 0.08820, 0.02280, 1)
 emission_energy_multiplier = 1.0

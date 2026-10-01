@@ -13,14 +13,14 @@ const SEAT_SCRIPT := preload("res://features/food_court/booth_seat.gd")
 
 ## Booth centres on the wing's floor (feature-local; the root sits at the origin).
 const BOOTHS: Array[Vector3] = [
-	Vector3(7.5, 0, 37.4),
-	Vector3(12.5, 0, 37.4),
-	Vector3(17.5, 0, 37.4),
-	Vector3(22.5, 0, 37.4),
-	Vector3(7.5, 0, 48.6),
-	Vector3(12.5, 0, 48.6),
-	Vector3(17.5, 0, 48.6),
-	Vector3(22.5, 0, 48.6),
+	Vector3(7.5, 0, 22.4),
+	Vector3(12.5, 0, 22.4),
+	Vector3(17.5, 0, 22.4),
+	Vector3(22.5, 0, 22.4),
+	Vector3(7.5, 0, 33.6),
+	Vector3(12.5, 0, 33.6),
+	Vector3(17.5, 0, 33.6),
+	Vector3(22.5, 0, 33.6),
 ]
 const SIT_RANGE := 1.8
 ## Seated players further than this from their seat were moved away (respawn, kill

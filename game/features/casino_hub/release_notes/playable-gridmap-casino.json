@@ -1,0 +1,9 @@
+{
+  "title": "Playable GridMap casino",
+  "summary": "Play in the new wood-panelled casino with its bar, patrons and slot machines.",
+  "notes": [
+    "Make the GridMap casino the main game's starting room.",
+    "Restore the bar, bartender, seated guests and card tables.",
+    "Keep the existing networked slot machines and roaming patrons in the gaming pit."
+  ]
+}

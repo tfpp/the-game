@@ -111,7 +111,21 @@ func _world_bounds(world: Node3D) -> AABB:
 
 
 func _collect_bounds(node: Node, boxes: Array[AABB]) -> void:
-	if node is GeometryInstance3D:
+	if node is GridMap:
+		var grid := node as GridMap
+		if grid.visible and grid.mesh_library != null:
+			for cell: Vector3i in grid.get_used_cells():
+				var item := grid.get_cell_item(cell)
+				var mesh := grid.mesh_library.get_item_mesh(item)
+				if mesh == null:
+					continue
+				var transform := (
+					grid.global_transform
+					* Transform3D(grid.get_cell_item_basis(cell), grid.map_to_local(cell))
+					* grid.mesh_library.get_item_mesh_transform(item)
+				)
+				boxes.append(transform * mesh.get_aabb())
+	elif node is GeometryInstance3D:
 		var geometry := node as GeometryInstance3D
 		if geometry.visible:
 			var box := geometry.global_transform * geometry.get_aabb()
