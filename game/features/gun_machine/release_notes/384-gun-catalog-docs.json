@@ -1,0 +1,5 @@
+{
+  "title": "Gun catalog docs",
+  "summary": "A new guide lists every gun and whether it is held in the player's hands.",
+  "notes": ["Document every gun and which ones use the player's hand rig in docs/guns.md."]
+}
