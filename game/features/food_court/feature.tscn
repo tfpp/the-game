@@ -15,10 +15,10 @@ script = ExtResource("2_entity")
 replicated_properties = Array[NodePath]([NodePath(".:net_seats")])
 
 [node name="Hall" type="CSGCombiner3D" parent="."]
-use_collision = true
+use_collision = false
 
 [node name="Floor" type="CSGBox3D" parent="Hall"]
-position = Vector3(22, -0.02, 27.5)
+position = Vector3(22, -0.01, 27.5)
 size = Vector3(24, 0.04, 13)
 material = ExtResource("3_tile")
 

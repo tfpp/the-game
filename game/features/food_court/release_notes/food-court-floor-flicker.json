@@ -1,0 +1,7 @@
+{
+  "title": "Stable food court tiles",
+  "summary": "The food court floor no longer flickers against the casino carpet.",
+  "notes": [
+    "Raise the decorative food court tiles slightly above the carpet while retaining the casino floor collision."
+  ]
+}
