@@ -186,6 +186,31 @@ opened right away; its thread says where it is in line, and again when it starts
 Messages never ping anyone except the requester, and only on their own job's results.
 Requests are copied into issues with `@` defused, so they can't ping GitHub users.
 
+## Game chat recording (optional)
+
+Create a `#game-chat` text channel in the configured Discord server and grant the bot
+View Channel and Send Messages there. Set `BOT_GAME_CHAT_CHANNEL_ID` to that channel's
+ID, and mount a dedicated random relay key (at least 32 ASCII bytes) at
+`BOT_GAME_CHAT_KEY_FILE` (default `/run/secrets/bot/game-chat-key`). The game server
+needs the same key file and `GAME_CHAT_BOT_URL=http://bot:8081/bot/game-chat`.
+Use private container networking; no new public tunnel route is needed. Use HTTPS if
+traffic crosses an untrusted network. This requires an operator deployment/restart;
+CI does not create the live Discord channel or provision secrets.
+
+`POST /bot/game-chat` accepts HMAC-signed, timestamped public text messages, not
+Discord replies. It posts the server-supplied display name/text as literal code blocks
+without allowed mentions, so players cannot ping users/roles or forge formatted bot
+notifications. It excludes slash commands, private notices and voice chat. Do not reuse
+any existing bot, account or agent credential as the relay key. Without a channel ID the
+endpoint is disabled; specifying a channel requires a readable key of at least 32 bytes.
+
+Delivery and replay tracking are bounded, in-memory and best effort, not a durable audit
+log. Discord retains successfully posted history; restarts/outages may lose messages,
+and ambiguous upstream failures can duplicate them. The bot does not store chat bodies
+in SQLite or logs. Review channel visibility and notify players that public chat is
+recorded. See [text chat](../game/features/chat_box/README.md) for protocol, queue/retry
+limits, setup and tests.
+
 ## Configuration
 
 Environment variables; secrets are files.
@@ -210,6 +235,8 @@ Environment variables; secrets are files.
 | `BOT_MAX_ACTIVE_RUNS` | `5` | Concurrent runs; `0` for no limit |
 | `BOT_DEPLOY_DIR` | off | Directory shared with the host's deploy service |
 | `BOT_RELEASE_CHANNEL_ID` | off | Channel for release and edge announcements (needs `BOT_DEPLOY_DIR`) |
+| `BOT_GAME_CHAT_CHANNEL_ID` | off | Operator-created text channel for public game chat; enables `/bot/game-chat` |
+| `BOT_GAME_CHAT_KEY_FILE` | `/run/secrets/bot/game-chat-key` | Dedicated server-to-bot relay key; required when game chat is enabled |
 | `BOT_REF`, `BOT_WORKFLOW`, `BOT_CI_WORKFLOW` | `main`, `agent.yml`, `game-ci.yml` | |
 | `BOT_AGENT` | `claude` | Fallback only for old jobs created before per-feature harness selection; new requests use their `harness` choice, or pi when omitted |
 | `BOT_SERVER_WORKFLOW`, `BOT_PAGES_WORKFLOW` | `server-image.yml`, `pages.yml` | Builds that gate a deploy |

@@ -7,6 +7,11 @@ extends CanvasLayer
 ## everyone, including the sender, via `receive_chat_message`. Nothing is shown locally
 ## until it comes back from the server.
 
+## Emitted only for accepted public messages, once on the authoritative server.
+signal message_accepted(sender_name: String, text: String)
+
+const DiscordRelay := preload("res://features/chat_box/discord_relay.gd")
+
 const MAX_MESSAGE_LENGTH := 120
 const MAX_VISIBLE_LINES := 8
 const FADE_AFTER_S := 6.0
@@ -35,6 +40,10 @@ func _ready() -> void:
 	add_to_group(&"chat_box")
 	Controls.ensure_action(OPEN_ACTION, [_key_event(KEY_ENTER), _key_event(KEY_KP_ENTER)])
 	_build()
+	var relay := DiscordRelay.new()
+	relay.name = "DiscordRelay"
+	add_child(relay)
+	message_accepted.connect(relay.enqueue)
 
 
 func _input(event: InputEvent) -> void:
@@ -98,9 +107,11 @@ func request_chat_message(text: String) -> void:
 	var sender_id := multiplayer.get_remote_sender_id()
 	var peer_id := sender_id if sender_id != 0 else multiplayer.get_unique_id()
 	var trimmed := sanitize_message(text)
-	if trimmed.is_empty():
+	if trimmed.is_empty() or is_command(trimmed):
 		return
-	receive_chat_message.rpc(_display_name(peer_id), trimmed)
+	var sender_name := _display_name(peer_id)
+	receive_chat_message.rpc(sender_name, trimmed)
+	message_accepted.emit(sender_name, trimmed)
 
 
 ## Server -> everyone (including itself): shows an already-validated message.
@@ -226,7 +237,7 @@ func _build() -> void:
 	_line_edit.name = "Input"
 	_line_edit.visible = false
 	_line_edit.max_length = MAX_MESSAGE_LENGTH
-	_line_edit.placeholder_text = "Say something…"
+	_line_edit.placeholder_text = "Public chat (may be recorded in Discord)…"
 	_line_edit.custom_minimum_size = Vector2(PANEL_WIDTH, 32.0)
 	_line_edit.text_submitted.connect(_on_text_submitted)
 	panel.add_child(_line_edit)

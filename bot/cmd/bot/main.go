@@ -223,6 +223,20 @@ func run(log *slog.Logger) error {
 	hooks.Start(ctx)
 	mux := http.NewServeMux()
 	mux.Handle("/bot/github", hooks)
+	// Optional one-way public game chat relay; use a dedicated server-only key.
+	gameChatChannel, err := envID("BOT_GAME_CHAT_CHANNEL_ID", false)
+	if err != nil {
+		return err
+	}
+	if gameChatChannel != 0 {
+		chatKey, err := secret(env("BOT_GAME_CHAT_KEY_FILE", "/run/secrets/bot/game-chat-key"))
+		if err != nil || len(chatKey) < 32 {
+			return errors.New("game chat requires a readable key file of at least 32 bytes")
+		}
+		mux.Handle("/bot/game-chat", &webhook.GameChatHandler{
+			Key: []byte(chatKey), ChannelID: gameChatChannel.String(), Poster: dc,
+		})
+	}
 	// Optional: live agent progress in feature threads (harness/progress.sh).
 	if progressSecret, err := secret(env("BOT_PROGRESS_SECRET_FILE", "/run/secrets/bot/progress-secret")); err == nil {
 		progress := core.NewProgress(svc, dc, []byte(progressSecret))
