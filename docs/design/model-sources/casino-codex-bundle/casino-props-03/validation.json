@@ -1,0 +1,20 @@
+[
+  {
+    "asset": "cigar",
+    "triangles": 20,
+    "texture": [
+      16,
+      16
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  },
+  {
+    "asset": "amber-beer-bottle",
+    "triangles": 68,
+    "texture": [
+      32,
+      32
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  }
+]

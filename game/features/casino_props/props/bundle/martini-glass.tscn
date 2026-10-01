@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/martini-glass.tres" id="1_nr8ew"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/martini-glass.res" id="2_g1yf1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ckito"]
+size = Vector3(0.103923045, 0.15, 0.12)
+
+[node name="MartiniGlass" type="StaticBody3D" unique_id=1609363877]
+metadata/prop_id = "martini-glass"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=706145473]
+material_override = ExtResource("1_nr8ew")
+mesh = ExtResource("2_g1yf1")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1350977847]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.075, 0)
+shape = SubResource("BoxShape3D_ckito")

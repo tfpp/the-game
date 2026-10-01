@@ -1,5 +1,8 @@
 # Model and texture workflow
 
+Follow the [generation standard](prop-generation.md) for new work. This document
+provides the existing native UV-packing, checker and painting examples.
+
 World and model textures have a hard **128×128 maximum on both dimensions**.
 Choose power-of-two sizes by physical size, visibility and detail: for example
 16×16 or 32×32 for a banana or small simple pickup, 32×32 or 64×64 for modest
@@ -26,7 +29,7 @@ UV guides outside `game/`; they are authoring sources, not runtime assets.
    island positions and ask for flat diffuse artwork, not a perspective rendering
    of the object. Describe each named island separately. Remove guide labels and
    preserve a quiet edge border. Save the exact prompt with the authoring source.
-5. Resample to 128×128, extrude island edge colours into their padding, and keep
+5. Resample to the allocated native size (16/32/64/up to 128px), extrude island edge colours into their padding, and keep
    unused atlas space neutral. Import with mipmaps and use nearest mipmap filtering.
    Do not automatically overwrite existing painted atlases during mesh rebuilds.
 6. Review the actual mapped model from front, back, side and at gameplay distance.

@@ -1,0 +1,412 @@
+[
+  {
+    "name": "casino-lounge-chair",
+    "folder": "casino-assets",
+    "glb": "casino-assets/casino-lounge-chair.glb",
+    "obj": "casino-assets/casino-lounge-chair.obj",
+    "triangles": 116,
+    "vertices": 226,
+    "embedded_texture_sizes": [
+      [
+        256,
+        256
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.4675,
+        0.015,
+        -0.415
+      ],
+      [
+        0.4675,
+        1.01,
+        0.415
+      ]
+    ],
+    "status": "historical texture allocation"
+  },
+  {
+    "name": "casino-two-seat-couch",
+    "folder": "casino-assets",
+    "glb": "casino-assets/casino-two-seat-couch.glb",
+    "obj": "casino-assets/casino-two-seat-couch.obj",
+    "triangles": 150,
+    "vertices": 288,
+    "embedded_texture_sizes": [
+      [
+        256,
+        256
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.8,
+        0.015,
+        -0.415
+      ],
+      [
+        0.8,
+        1.01,
+        0.415
+      ]
+    ],
+    "status": "historical texture allocation"
+  },
+  {
+    "name": "casino-brass-wastepaper-bin",
+    "folder": "bin-assets",
+    "glb": "bin-assets/casino-brass-wastepaper-bin.glb",
+    "obj": "bin-assets/casino-brass-wastepaper-bin.obj",
+    "triangles": 60,
+    "vertices": 112,
+    "embedded_texture_sizes": [
+      [
+        128,
+        128
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.15,
+        0.015,
+        -0.15
+      ],
+      [
+        0.15,
+        0.395,
+        0.15
+      ]
+    ],
+    "status": "historical texture allocation"
+  },
+  {
+    "name": "galvanised-rubbish-bin",
+    "folder": "bin-assets",
+    "glb": "bin-assets/galvanised-rubbish-bin.glb",
+    "obj": "bin-assets/galvanised-rubbish-bin.obj",
+    "triangles": 160,
+    "vertices": 312,
+    "embedded_texture_sizes": [
+      [
+        256,
+        256
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.2919844357829231,
+        0.025,
+        -0.275
+      ],
+      [
+        0.2919844357829231,
+        0.7067941029428578,
+        0.275
+      ]
+    ],
+    "status": "historical; handles not approved as reference"
+  },
+  {
+    "name": "standing-ashtray-with-cigarette",
+    "folder": "casino-props",
+    "glb": "casino-props/standing-ashtray-with-cigarette.glb",
+    "obj": "casino-props/standing-ashtray-with-cigarette.obj",
+    "triangles": 104,
+    "vertices": 204,
+    "embedded_texture_sizes": [
+      [
+        32,
+        32
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.14,
+        0.012,
+        -0.12124355652982141
+      ],
+      [
+        0.14,
+        0.741,
+        0.12124355652982143
+      ]
+    ],
+    "status": "current"
+  },
+  {
+    "name": "cigarette",
+    "folder": "casino-props",
+    "glb": "casino-props/cigarette.glb",
+    "obj": "casino-props/cigarette.obj",
+    "triangles": 12,
+    "vertices": 24,
+    "embedded_texture_sizes": [
+      [
+        32,
+        32
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.04,
+        0.0,
+        -0.004
+      ],
+      [
+        0.04,
+        0.008,
+        0.004
+      ]
+    ],
+    "status": "current"
+  },
+  {
+    "name": "wine-bottle",
+    "folder": "casino-props",
+    "glb": "casino-props/wine-bottle.glb",
+    "obj": "casino-props/wine-bottle.obj",
+    "triangles": 44,
+    "vertices": 84,
+    "embedded_texture_sizes": [
+      [
+        32,
+        32
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.030310889132455353,
+        0.008,
+        -0.035
+      ],
+      [
+        0.030310889132455356,
+        0.308,
+        0.035
+      ]
+    ],
+    "status": "current"
+  },
+  {
+    "name": "wine-bucket",
+    "folder": "casino-props",
+    "glb": "casino-props/wine-bucket.glb",
+    "obj": "casino-props/wine-bucket.obj",
+    "triangles": 76,
+    "vertices": 144,
+    "embedded_texture_sizes": [
+      [
+        32,
+        32
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.117,
+        0.008,
+        -0.117
+      ],
+      [
+        0.117,
+        0.236,
+        0.117
+      ]
+    ],
+    "status": "current"
+  },
+  {
+    "name": "walnut-wine-rack-cabinet",
+    "folder": "casino-props",
+    "glb": "casino-props/walnut-wine-rack-cabinet.glb",
+    "obj": "casino-props/walnut-wine-rack-cabinet.obj",
+    "triangles": 154,
+    "vertices": 308,
+    "embedded_texture_sizes": [
+      [
+        64,
+        64
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.32,
+        0.0,
+        -0.17
+      ],
+      [
+        0.32,
+        0.82,
+        0.17
+      ]
+    ],
+    "status": "current"
+  },
+  {
+    "name": "walnut-pedestal-cocktail-table",
+    "folder": "casino-props-02",
+    "glb": "casino-props-02/walnut-pedestal-cocktail-table.glb",
+    "obj": "casino-props-02/walnut-pedestal-cocktail-table.obj",
+    "triangles": 68,
+    "vertices": 132,
+    "embedded_texture_sizes": [
+      [
+        64,
+        64
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.36,
+        0.0,
+        -0.31176914536239786
+      ],
+      [
+        0.36,
+        1.045,
+        0.3117691453623979
+      ]
+    ],
+    "status": "current"
+  },
+  {
+    "name": "burgundy-pedestal-bar-stool",
+    "folder": "casino-props-02",
+    "glb": "casino-props-02/burgundy-pedestal-bar-stool.glb",
+    "obj": "casino-props-02/burgundy-pedestal-bar-stool.obj",
+    "triangles": 134,
+    "vertices": 264,
+    "embedded_texture_sizes": [
+      [
+        32,
+        32
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.23,
+        0.0,
+        -0.19918584287042088
+      ],
+      [
+        0.23,
+        0.752,
+        0.1991858428704209
+      ]
+    ],
+    "status": "current"
+  },
+  {
+    "name": "brass-wall-clock",
+    "folder": "casino-props-02",
+    "glb": "casino-props-02/brass-wall-clock.glb",
+    "obj": "casino-props-02/brass-wall-clock.obj",
+    "triangles": 48,
+    "vertices": 88,
+    "embedded_texture_sizes": [
+      [
+        32,
+        32
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.13858192987669302,
+        -0.13858192987669302,
+        0.0
+      ],
+      [
+        0.13858192987669302,
+        0.138581929876693,
+        0.036
+      ]
+    ],
+    "status": "current"
+  },
+  {
+    "name": "martini-glass",
+    "folder": "casino-props-02",
+    "glb": "casino-props-02/martini-glass.glb",
+    "obj": "casino-props-02/martini-glass.obj",
+    "triangles": 68,
+    "vertices": 132,
+    "embedded_texture_sizes": [
+      [
+        16,
+        16
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.051961524227066326,
+        0.0,
+        -0.06
+      ],
+      [
+        0.051961524227066326,
+        0.15,
+        0.06
+      ]
+    ],
+    "status": "current"
+  },
+  {
+    "name": "cigar",
+    "folder": "casino-props-03",
+    "glb": "casino-props-03/cigar.glb",
+    "obj": "casino-props-03/cigar.obj",
+    "triangles": 20,
+    "vertices": 36,
+    "embedded_texture_sizes": [
+      [
+        16,
+        16
+      ],
+      [
+        16,
+        16
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.065,
+        0.0,
+        -0.009526279441628826
+      ],
+      [
+        0.065,
+        0.022,
+        0.009526279441628824
+      ]
+    ],
+    "status": "current",
+    "note": "Latest revision: 22 mm nominal diameter; lit tip and emission map."
+  },
+  {
+    "name": "amber-beer-bottle",
+    "folder": "casino-props-03",
+    "glb": "casino-props-03/amber-beer-bottle.glb",
+    "obj": "casino-props-03/amber-beer-bottle.obj",
+    "triangles": 68,
+    "vertices": 132,
+    "embedded_texture_sizes": [
+      [
+        32,
+        32
+      ]
+    ],
+    "bounds_metres": [
+      [
+        -0.026846787517317595,
+        0.0,
+        -0.031
+      ],
+      [
+        0.0268467875173176,
+        0.264,
+        0.031
+      ]
+    ],
+    "status": "current"
+  }
+]

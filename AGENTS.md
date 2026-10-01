@@ -36,6 +36,7 @@ After the required reading, follow the documents relevant to the task:
 | [docs/design/lore.md](docs/design/lore.md) | World premise, Golden Crown, slums, elevator, tone and canon. Required for every task. |
 | [docs/design/gameplay.md](docs/design/gameplay.md) | Intended player loop and system behavior. Required for every task. |
 | [docs/design/art-style.md](docs/design/art-style.md) | Visual direction, geometry, textures, materials and lighting. Read before visual or asset work. |
+| [docs/design/prop-generation.md](docs/design/prop-generation.md) | Adopted mesh-first model/texture generation standard, budgets, exact UV painting and exported-model review. Read before new models or textures. |
 | [docs/asset-generation.md](docs/asset-generation.md) | Agent workflow for creating and updating assets: Blockbench MCP, references, low-poly modeling, small textures, GridMap interiors, export and rendered review. Read before model, texture or interior work. |
 | [game/features/casino_hub/gridmap/README.md](game/features/casino_hub/gridmap/README.md) | How interiors are built from GridMap tiles and a MeshLibrary. Read before building or changing rooms; the casino (`casino_gridmap.tscn`, `gridmap/tiles.tscn`) is the example to copy. |
 | [docs/design/model-workflow.md](docs/design/model-workflow.md) | Model authoring, UV maps, generated texture templates, validation and the 128px texture limit. |
@@ -62,7 +63,8 @@ files before editing the corresponding code.
 - Model and world textures must be no larger than **128×128 pixels**. Treat the
   limit as a maximum, not a default: scale texture size to physical size and visible
   detail (small simple pickups can use 16×16 or 32×32; modest props 32×32 or 64×64).
-  Follow the GoldSrc-inspired art direction and UV workflow in `docs/design/model-workflow.md`.
+  Follow the mesh-first generation standard in `docs/design/prop-generation.md`
+  and the native UV examples in `docs/design/model-workflow.md`.
   Keep larger painting sources and UV guides outside `game/`; they are authoring
   documents, not runtime textures.
 - Never introduce Python code, scripts, tooling or runtime/build dependencies. Use

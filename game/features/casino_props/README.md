@@ -24,3 +24,27 @@ introduced. Rebuild native meshes and prefabs without repainting textures:
 godot --headless --path game --editor --import
 godot --headless --path game -s res://features/casino_props/tools/import_props.gd
 ```
+
+## Uploaded mesh-first prop bundle
+
+Fifteen additional props live in `props/bundle/`, with separate native assets in
+`assets/casino_props/bundle/`. Inspect `bundle_showcase.tscn` for the full collection.
+`bundle_furnishings.tscn` places selected props in the live casino lounge and bar;
+original kit names and placements are preserved. These are static scenery.
+
+Read the [generation standard](../../../docs/design/prop-generation.md) before
+creating new models or textures. It adopts deliberate indexed meshes, exact UV
+chart painting with ImageGen and exported-model review. The uploaded Python tools
+are replaced by a native Godot importer and oversized source paintings become
+128px runtime versions. All approved paint is preserved during rebuilds:
+
+```sh
+godot --headless --path game -s res://features/casino_props/tools/import_bundle.gd
+godot --headless --path game --editor --import
+```
+
+[Authoring sources and rebuild details](../../../docs/design/model-sources/casino-codex-bundle/README.md)
+include original artwork, mesh JSON, prompts, UV guides and offline viewers. The
+historical galvanised bin remains in the review kit; its rejected handle design
+is not an approved modelling reference. Collider boxes are for broad placement;
+small tabletop and wall decorations disable collision in the placement scene.

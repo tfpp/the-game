@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/amber-beer-bottle.tres" id="1_3kxh3"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/amber-beer-bottle.res" id="2_52ej2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x3263"]
+size = Vector3(0.053693574, 0.264, 0.062)
+
+[node name="AmberBeerBottle" type="StaticBody3D" unique_id=2024521083]
+metadata/prop_id = "amber-beer-bottle"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1193778909]
+material_override = ExtResource("1_3kxh3")
+mesh = ExtResource("2_52ej2")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1229388087]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.132, 0)
+shape = SubResource("BoxShape3D_x3263")

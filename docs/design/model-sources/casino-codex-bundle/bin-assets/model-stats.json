@@ -1,0 +1,40 @@
+[
+  {
+    "name": "casino-brass-wastepaper-bin",
+    "texture": "casino-brass-wastepaper-bin-128.png",
+    "textureSize": 128,
+    "triangles": 60,
+    "vertices": 112,
+    "bounds": [
+      [
+        -0.15,
+        0.015,
+        -0.15
+      ],
+      [
+        0.15,
+        0.395,
+        0.15
+      ]
+    ]
+  },
+  {
+    "name": "galvanised-rubbish-bin",
+    "texture": "galvanised-rubbish-bin-256.png",
+    "textureSize": 256,
+    "triangles": 160,
+    "vertices": 312,
+    "bounds": [
+      [
+        -0.2919844357829231,
+        0.025,
+        -0.275
+      ],
+      [
+        0.2919844357829231,
+        0.7067941029428578,
+        0.275
+      ]
+    ]
+  }
+]

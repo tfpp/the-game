@@ -1,0 +1,44 @@
+[
+  {
+    "emission": "cigar-16-emission.png",
+    "name": "cigar",
+    "texture": "cigar-16.png",
+    "textureSize": 16,
+    "triangles": 20,
+    "vertices": 36,
+    "bounds": [
+      [
+        -0.065,
+        0.0,
+        -0.009526279441628826
+      ],
+      [
+        0.065,
+        0.022,
+        0.009526279441628824
+      ]
+    ],
+    "spec": "cigar"
+  },
+  {
+    "emission": null,
+    "name": "amber-beer-bottle",
+    "texture": "beer-32.png",
+    "textureSize": 32,
+    "triangles": 68,
+    "vertices": 132,
+    "bounds": [
+      [
+        -0.026846787517317595,
+        0.0,
+        -0.031
+      ],
+      [
+        0.0268467875173176,
+        0.264,
+        0.031
+      ]
+    ],
+    "spec": "beer"
+  }
+]

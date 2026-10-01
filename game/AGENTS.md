@@ -98,6 +98,9 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
   use 16×16 or 32×32, modest props 32×32 or 64×64, and larger models up to 128×128.
   The maximum is not a default. Use nearest mipmap filtering and
   GoldSrc-inspired coarse painted detail. See `../docs/design/model-workflow.md`.
+  Read `../docs/design/prop-generation.md` before new model or texture work.
+  Construct plausible continuous forms and inspect joins from oblique/rear/underside
+  views. Paint exact exported UV charts with ImageGen, then review in Godot.
   Author explicit UV1 islands with padding; stack or mirror repeated surfaces to
   reuse pixels. Allocate texel density by visibility and detail importance, pack with
   rotation, and avoid giving hidden faces equal texture budgets. Export a UV template, then

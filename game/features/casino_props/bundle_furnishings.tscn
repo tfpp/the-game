@@ -1,0 +1,70 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/casino-two-seat-couch.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/casino-lounge-chair.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/walnut-pedestal-cocktail-table.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/standing-ashtray-with-cigarette.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/casino-brass-wastepaper-bin.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/martini-glass.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/cigar.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/walnut-wine-rack-cabinet.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/burgundy-pedestal-bar-stool.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/wine-bucket.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/wine-bottle.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/amber-beer-bottle.tscn" id="12"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/brass-wall-clock.tscn" id="13"]
+
+[node name="BundleFurnishings" type="Node3D"]
+
+[node name="Sofa" parent="." instance=ExtResource("1")]
+position = Vector3(21.8, 0, 8)
+rotation = Vector3(0, -1.5707963267948966, 0)
+
+[node name="Chair" parent="." instance=ExtResource("2")]
+position = Vector3(19.2, 0, 6)
+
+[node name="CocktailTable" parent="." instance=ExtResource("3")]
+position = Vector3(19.6, 0, 8)
+
+[node name="Ashtray" parent="." instance=ExtResource("4")]
+position = Vector3(20.3, 0, 9.7)
+
+[node name="WastepaperBin" parent="." instance=ExtResource("5")]
+position = Vector3(22, 0, 5.5)
+
+[node name="Martini" parent="." instance=ExtResource("6")]
+position = Vector3(19.6, 1.045, 8)
+collision_layer = 0
+collision_mask = 0
+
+[node name="Cigar" parent="." instance=ExtResource("7")]
+position = Vector3(19.75, 1.058, 8.1)
+collision_layer = 0
+collision_mask = 0
+
+[node name="WineRack" parent="." instance=ExtResource("8")]
+position = Vector3(-11.9, -1.25, -9.4)
+
+[node name="BarStool" parent="." instance=ExtResource("9")]
+position = Vector3(-5, -1.25, -8.2)
+
+[node name="WineBucket" parent="." instance=ExtResource("10")]
+position = Vector3(-9.5, -0.27, -9.6)
+collision_layer = 0
+collision_mask = 0
+
+[node name="WineBottle" parent="." instance=ExtResource("11")]
+position = Vector3(-8.5, -0.27, -9.6)
+collision_layer = 0
+collision_mask = 0
+
+[node name="BeerBottle" parent="." instance=ExtResource("12")]
+position = Vector3(-7, -0.27, -9.6)
+collision_layer = 0
+collision_mask = 0
+
+[node name="Clock" parent="." instance=ExtResource("13")]
+position = Vector3(22.85, 2.7, 8)
+rotation = Vector3(0, -1.5707963267948966, 0)
+collision_layer = 0
+collision_mask = 0

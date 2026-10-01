@@ -1,0 +1,82 @@
+[
+  {
+    "name": "walnut-pedestal-cocktail-table",
+    "texture": "table-64.png",
+    "textureSize": 64,
+    "triangles": 68,
+    "vertices": 132,
+    "bounds": [
+      [
+        -0.36,
+        0.0,
+        -0.31176914536239786
+      ],
+      [
+        0.36,
+        1.045,
+        0.3117691453623979
+      ]
+    ],
+    "spec": "table"
+  },
+  {
+    "name": "burgundy-pedestal-bar-stool",
+    "texture": "stool-32.png",
+    "textureSize": 32,
+    "triangles": 134,
+    "vertices": 264,
+    "bounds": [
+      [
+        -0.23,
+        0.0,
+        -0.19918584287042088
+      ],
+      [
+        0.23,
+        0.752,
+        0.1991858428704209
+      ]
+    ],
+    "spec": "stool"
+  },
+  {
+    "name": "brass-wall-clock",
+    "texture": "clock-32.png",
+    "textureSize": 32,
+    "triangles": 48,
+    "vertices": 88,
+    "bounds": [
+      [
+        -0.13858192987669302,
+        -0.13858192987669302,
+        0.0
+      ],
+      [
+        0.13858192987669302,
+        0.138581929876693,
+        0.036
+      ]
+    ],
+    "spec": "clock"
+  },
+  {
+    "name": "martini-glass",
+    "texture": "glass-16.png",
+    "textureSize": 16,
+    "triangles": 68,
+    "vertices": 132,
+    "bounds": [
+      [
+        -0.051961524227066326,
+        0.0,
+        -0.06
+      ],
+      [
+        0.051961524227066326,
+        0.15,
+        0.06
+      ]
+    ],
+    "spec": "glass"
+  }
+]

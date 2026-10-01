@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/standing-ashtray-with-cigarette.tres" id="1_nnbby"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/standing-ashtray-with-cigarette.res" id="2_m47iq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m6677"]
+size = Vector3(0.28, 0.729, 0.24248712)
+
+[node name="StandingAshtrayWithCigarette" type="StaticBody3D" unique_id=2062009102]
+metadata/prop_id = "standing-ashtray-with-cigarette"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1040737945]
+material_override = ExtResource("1_nnbby")
+mesh = ExtResource("2_m47iq")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1136995641]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37649998, 0)
+shape = SubResource("BoxShape3D_m6677")

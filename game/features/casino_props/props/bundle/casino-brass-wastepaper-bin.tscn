@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/casino-brass-wastepaper-bin.tres" id="1_bc7gg"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/casino-brass-wastepaper-bin.res" id="2_nl0kw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p4ivt"]
+size = Vector3(0.3, 0.38000003, 0.3)
+
+[node name="CasinoBrassWastepaperBin" type="StaticBody3D" unique_id=400801012]
+metadata/prop_id = "casino-brass-wastepaper-bin"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=638162942]
+material_override = ExtResource("1_bc7gg")
+mesh = ExtResource("2_nl0kw")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=671337879]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20500001, 0)
+shape = SubResource("BoxShape3D_p4ivt")

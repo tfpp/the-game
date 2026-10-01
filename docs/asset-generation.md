@@ -5,6 +5,12 @@ Read [lore](design/lore.md), [gameplay](design/gameplay.md) and the
 [art style](design/art-style.md) first, plus the relevant
 [zone document](design/zones/) for location-specific work. Follow
 [game/AGENTS.md](../game/AGENTS.md) when editing game assets or their integration.
+Follow the [model and texture generation standard](design/prop-generation.md) for
+all new models and textures: deliberate indexed geometry, exact UV-template
+painting with ImageGen, small native atlases, convincing joints and exported-model
+review. The uploaded casino bundle is a working example, adapted to native Godot
+tooling and the repository's 128px runtime cap.
+
 The [model and texture workflow](design/model-workflow.md) supplies the detailed
 UV, painting and validation process; this guide explains how to choose and connect
 the available tools.

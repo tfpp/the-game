@@ -1,0 +1,8 @@
+MESH CONSTRUCTION — HARD REQUIREMENT
+Build a coherent, intentionally modelled object. Do not create an asset by grouping independent boxes, cylinders, or other primitive meshes whose intersections remain visible.
+
+Use continuous mesh construction for each manufactured part: shared vertex positions along connected surfaces, consistent edge flow, and deliberate silhouette changes. Handles, straps and curved trim must be continuous sweeps or shaped surfaces, not separate bar pieces.
+
+Separate components are allowed only where the real object has separate components. Their scale, thickness, placement and attachment must be physically plausible. Every attachment must meet its receiving surface: no floating ends, unexplained gaps, accidental penetration, stacked end caps, or block-like joints. Weld adjoining surfaces where they should form one piece. For assembled parts, model a convincing mount, recess, overlap or contact seam.
+
+Match normals, smoothing and texture scale across continuous surfaces. Keep deliberate hard edges and real assembly seams. Check all joins in close-up renders from multiple angles before delivery. A triangle budget is not justification for visibly crude assembly; simplify hidden detail and small bevels first.

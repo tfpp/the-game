@@ -1,0 +1,36 @@
+[
+  {
+    "name": "casino-lounge-chair",
+    "triangles": 116,
+    "vertices": 226,
+    "bounds": [
+      [
+        -0.4675,
+        0.015,
+        -0.415
+      ],
+      [
+        0.4675,
+        1.01,
+        0.415
+      ]
+    ]
+  },
+  {
+    "name": "casino-two-seat-couch",
+    "triangles": 150,
+    "vertices": 288,
+    "bounds": [
+      [
+        -0.8,
+        0.015,
+        -0.415
+      ],
+      [
+        0.8,
+        1.01,
+        0.415
+      ]
+    ]
+  }
+]

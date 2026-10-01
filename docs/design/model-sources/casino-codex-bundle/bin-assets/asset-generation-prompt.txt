@@ -1,0 +1,28 @@
+Create a game-ready 3D model of [SUBJECT], a realistic 1960s–1980s casino prop with economical PSX / GoldSrc-era geometry.
+
+GEOMETRY
+Use a strict maximum of [MAX TRIANGLES] triangles, counted after triangulation. Reference prop budgets: wastepaper bin 60, rubbish bin approximately 160, lounge chair approximately 120, two-seat couch approximately 150. Spend triangles on silhouette, essential structural features and convincing attachments. Remove enclosed faces. Paint stitching, piping, small trim, shallow creases and surface wear into the texture instead of adding geometry.
+
+MESH CONSTRUCTION — HARD REQUIREMENT
+Build a coherent, intentionally modelled object. Do not create an asset by grouping independent boxes, cylinders, or other primitive meshes whose intersections remain visible.
+
+Use continuous mesh construction for each manufactured part: shared vertex positions along connected surfaces, consistent edge flow, and deliberate silhouette changes. Handles, straps and curved trim must be continuous sweeps or shaped surfaces, not separate bar pieces.
+
+Separate components are allowed only where the real object has separate components. Their scale, thickness, placement and attachment must be physically plausible. Every attachment must meet its receiving surface: no floating ends, unexplained gaps, accidental penetration, stacked end caps, or block-like joints. Weld adjoining surfaces where they should form one piece. For assembled parts, model a convincing mount, recess, overlap or contact seam.
+
+Match normals, smoothing and texture scale across continuous surfaces. Keep deliberate hard edges and real assembly seams. Check all joins in close-up renders from multiple angles before delivery. For handles, explicitly show the mounting hardware and verify that the grip, pivots and receiving surface form a believable assembly. Do not approve attachment quality from a distant overview; render a face-on close-up and an oblique close-up. A triangle budget is not justification for visibly crude assembly; simplify hidden detail and small bevels first.
+
+TEXTURES
+Use realistic material detail at low resolution: believable brass, galvanised steel, leather and wood, with appropriate grain, scuffs, patina and restrained natural wear. Low polygon counts do not imply cartoon-like or flat materials. Use power-of-two texture dimensions selected according to physical surface area, detail needs and viewing distance. Neither dimension may exceed 256 pixels. Maintain comparable texel density between related assets; use 128 x 128 for smaller props and up to 256 x 256 for larger ones when appropriate.
+
+UV WORKFLOW
+Compute actual UV coordinates from the finished mesh using code or a modelling tool. Export the exact flat layout and a separate annotated surface guide. Pack islands with gutters and reuse UV space where repetition or symmetry permits.
+
+IMAGEGEN PAINTING
+Use the exported layout as the edit target. Instruct ImageGen to paint realistic [MATERIALS] directly into the existing regions, keeping their exact positions, outlines, dimensions, orientation and canvas framing. Output only a flat 2D base-colour texture atlas: no assembled object, perspective, isometric view, scene, model preview, labels or guide lines. Design surface detail to read at the final target resolution. Keep local material shading restrained and avoid scene lighting or directional cast shadows.
+
+EDGE PADDING
+Extend each island's edge colours outward through unused gutters using nearest-edge colour extrusion, preserving its painted interior. Let extensions meet between adjacent islands. Avoid dark background gaps around lighter materials, while preserving genuinely dark material regions.
+
+DELIVERY AND VALIDATION
+Resize the painting to its exact target dimensions if necessary, preserving padding. Apply it using the original UV coordinates. Verify the triangle count and inspect front, rear, side and close-up attachment views for silhouette, material placement, seams and edge bleeding. Export one mesh per prop as GLB and OBJ, plus the final atlas, UV guide, preview, source and generation prompts. Preserve intentional component geometry even when exported as one mesh.

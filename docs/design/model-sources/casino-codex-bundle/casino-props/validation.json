@@ -1,0 +1,47 @@
+[
+  {
+    "asset": "standing-ashtray-with-cigarette",
+    "triangles": 104,
+    "texture": [
+      32,
+      32
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  },
+  {
+    "asset": "cigarette",
+    "triangles": 12,
+    "texture": [
+      32,
+      32
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  },
+  {
+    "asset": "wine-bottle",
+    "triangles": 44,
+    "texture": [
+      32,
+      32
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  },
+  {
+    "asset": "wine-bucket",
+    "triangles": 76,
+    "texture": [
+      32,
+      32
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  },
+  {
+    "asset": "walnut-wine-rack-cabinet",
+    "triangles": 154,
+    "texture": [
+      64,
+      64
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  }
+]
