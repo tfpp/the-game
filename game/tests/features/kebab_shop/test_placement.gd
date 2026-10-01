@@ -1,5 +1,5 @@
 extends GutTest
-## The counter lives in the food court wing (features/food_court), off the gaming floor.
+## The counter lives in the southeast food court (features/food_court), off the gaming floor.
 
 const ROOM := preload("res://world/room.tscn")
 const COURT := preload("res://features/food_court/feature.tscn")

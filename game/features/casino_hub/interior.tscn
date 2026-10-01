@@ -661,26 +661,6 @@ text = "COAT CHECK / LOST & FOUND"
 font_size = 25
 outline_size = 6
 
-[node name="RecreationSign" type="Label3D" parent="." unique_id=91122181]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 4, 24)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
-text = "THE STARDUST REC ROOM"
-font_size = 30
-outline_size = 6
-
-[node name="TrampolineSign" type="Label3D" parent="." unique_id=2022950612]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 4, 23)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
-text = "JUMP LOUNGE"
-font_size = 35
-outline_size = 6
-
 [node name="ExhibitSign" type="Label3D" parent="." unique_id=353036611]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 5.5, -28)
 pixel_size = 0.012
@@ -760,39 +740,6 @@ light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
 omni_range = 11.0
 omni_attenuation = 1.4
-
-[node name="RecreationObstacles" type="Node3D" parent="." unique_id=1047186210]
-
-[node name="Crate" type="CSGBox3D" parent="RecreationObstacles" unique_id=394323186]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0.5, 29)
-use_collision = true
-size = Vector3(1.5, 1, 1.5)
-material = ExtResource("2_frjm8")
-
-[node name="CrateStack" type="CSGBox3D" parent="RecreationObstacles" unique_id=663987081]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 1, 29)
-use_collision = true
-size = Vector3(2, 2, 2)
-material = ExtResource("2_frjm8")
-
-[node name="Ramp" type="CSGBox3D" parent="RecreationObstacles" unique_id=777836059]
-transform = Transform3D(0.9397, -0.342, 0, 0.342, 0.9397, 0, 0, 0, 1, -22, 1.6, 25)
-use_collision = true
-size = Vector3(10, 0.5, 4)
-material = ExtResource("2_frjm8")
-
-[node name="Platform" type="CSGBox3D" parent="RecreationObstacles" unique_id=1332688585]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 1.75, 25)
-use_collision = true
-size = Vector3(6, 3.5, 6)
-material = ExtResource("2_frjm8")
-
-[node name="SurfRamp" type="CSGPolygon3D" parent="RecreationObstacles" unique_id=1447894347]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 0, 33)
-use_collision = true
-polygon = PackedVector2Array(-3.5, 0, 3.5, 0, 0, 5)
-depth = 10.0
-material = ExtResource("2_frjm8")
 
 [node name="ZooFence-31_-8" type="CSGBox3D" parent="." unique_id=1459626723]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 0.5, -8)

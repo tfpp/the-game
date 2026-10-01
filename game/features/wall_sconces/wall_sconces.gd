@@ -62,28 +62,6 @@ const SPOTS: Array[Vector4] = [
 	Vector4(60, -45.5, 0, 1),
 	Vector4(55.5, -40, 1, 0),
 	Vector4(64.5, -40, -1, 0),
-	# South wing: corridor, rooms 7 and 8.
-	Vector4(-2.5, 38, 1, 0),
-	Vector4(2.5, 44, -1, 0),
-	Vector4(-10, 45.5, 0, 1),
-	Vector4(-18, 41.5, 0, 1),
-	Vector4(-29.5, 50, 1, 0),
-	Vector4(-15.5, 52.75, -1, 0),
-	Vector4(-27.25, 54.5, 0, -1),
-	Vector4(-24.5, 60, 1, 0),
-	Vector4(-27.5, 67.5, 0, 1),
-	Vector4(-17.5, 67.5, 0, 1),
-	Vector4(-22.5, 80.5, 0, -1),
-	Vector4(-30, 74, 1, 0),
-	Vector4(-15, 74, -1, 0),
-	# Food court (features/food_court), east of the south corridor.
-	Vector4(12, 35, 0, 1),
-	Vector4(24, 35, 0, 1),
-	Vector4(10, 51, 0, -1),
-	Vector4(26, 51, 0, -1),
-	# Pawn shop (features/pawn_shop), west of the south corridor.
-	Vector4(-14.5, 37, 1, 0),
-	Vector4(-10, 44.5, 0, -1),
 ]
 
 var _lights: Array[OmniLight3D] = []

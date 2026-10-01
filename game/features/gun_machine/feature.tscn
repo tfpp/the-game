@@ -9,10 +9,10 @@
 script = ExtResource("1_script")
 
 [node name="Kiosk" parent="." instance=ExtResource("2_kiosk")]
-position = Vector3(-6.5, 0, 43.4)
+position = Vector3(-24.5, 0.0, 29.6)
 
 [node name="TrashCan" parent="." instance=ExtResource("3_trash")]
-position = Vector3(-8.3, 0, 43.7)
+position = Vector3(-26.3, 0.0, 29.9)
 
 [node name="Rigs" type="Node3D" parent="."]
 

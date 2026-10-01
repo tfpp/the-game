@@ -1,28 +1,20 @@
 # Pawn shop
 
-Rusty Hogg's pawn shop is its own room west of the south corridor, mirroring the
-food court on the east side. Leave the gaming floor through the south door, walk
-down the corridor and turn right (west) through the doorway marked **PAWN SHOP**
-at (-3, 0, 41.5). No teleports or streamed rooms. The GPS lists **Pawn Shop**.
+Rusty Hogg's pawn shop occupies the former Stardust Rec Room in the southwest
+casino corner. Walk west from the south lobby; the GPS lists **Pawn Shop**.
+The casino supplies its floor, ceiling, north wall and outer walls.
 
-- Room: x -14.5…-3.5, z 35…44.5, floor y 0, ceiling at y 5.5. The north wall is the
-  casino's south outer wall, the south wall is the south-wing bend corridor and the
-  east wall is the annex corridor (`features/annex` owns the `PawnShopDoorway` cut).
-  Two `wall_sconces` light it at night.
-- **Pawn counter** (`slum_runs`' `LootFence`, unchanged behavior) stands at
-  (-11.5, 0, 39.5) with its three gold balls toward the west wall. Rusty Hogg
-  (`rusty_hogg.tscn`) stands behind it facing the door. He is a `StationaryPatron`
-  (`features/casino_patrons`): shootable like the salon characters, back in 6 s.
-- **Gun wall** on the north wall: `wall_gun.tscn` (`WallGun`) instances hang the
-  holdables pistol ($10), SMG ($25), shotgun ($30) and AWP ($50) with price tags.
-  Use one to buy a copy; stock is unlimited.
-- **Top hat stand** in the north-west corner at (-13.6, 0, 36.4): a wood plinth with a
-  brass cap holding the tall black silk top hat (`ClothingCatalog.TOP_HAT`) for
-  $10,000. It is another `WallGun` instance (`tag_position` lifts its price tag above
-  the hat); buying it puts the hat straight on your head via the inventory hat slot.
-- **Gun-O-Matic** and its trash can (`features/gun_machine`) stand by the south wall.
+- Shop area: x -34…-18, z 21.2…34, floor y 0, open to the lobby on the east.
+- **Pawn counter** (`slum_runs`' `LootFence`) stands at (-29.5, 0, 25.7).
+  Rusty Hogg stands behind it at (-30.7, 0, 26.4), facing customers to the east.
+- **Gun wall** on the north wall sells the pistol ($10), SMG ($25), shotgun ($30)
+  and AWP ($50). Use one to buy a copy; stock is unlimited.
+- **Top hat stand** at (-31.6, 0, 22.6) sells the $10,000 top hat.
+- **Gun-O-Matic** at (-24.5, 0, 29.6) and its trash can at (-26.3, 0, 29.9)
+  share the shop. Existing casino lighting illuminates the area.
 
 ## Buying a gun
+
 
 `WallGun` uses `NetworkedInteraction`: the server resolves the sender, checks range
 and that the inventory has room, then charges `PlayerMoney.charge()` and hands the

@@ -1,5 +1,5 @@
 extends GutTest
-## The pawn shop is its own walkable room off the south corridor: Rusty Hogg's
+## The pawn shop is in the southwest casino corner: Rusty Hogg's
 ## counter, the gun wall and the Gun-O-Matic all stand on its real geometry.
 
 const ROOM := preload("res://world/room.tscn")
@@ -7,7 +7,7 @@ const ANNEX := preload("res://features/annex/feature.tscn")
 const SHOP := preload("res://features/pawn_shop/feature.tscn")
 const RUNS := preload("res://features/slum_runs/feature.tscn")
 const GUNS := preload("res://features/gun_machine/feature.tscn")
-const COUNTER_CUSTOMER := Vector3(-10.2, 0.95, 39.5)
+const COUNTER_CUSTOMER := Vector3(-28.2, 0.95, 25.7)
 
 var _shop: Node3D
 var _runs: Node3D
@@ -27,11 +27,10 @@ func before_each() -> void:
 	await wait_physics_frames(4)
 
 
-func test_walk_from_the_casino_through_the_doorway_to_every_counter() -> void:
+func test_walk_from_the_south_lobby_to_every_counter() -> void:
 	var route: Array[Vector3] = [
 		Vector3(-1.7, 0.95, 28),
-		Vector3(-1.7, 0.95, 41.5),
-		Vector3(-8, 0.95, 41.5),
+		Vector3(-26, 0.95, 27.7),
 		COUNTER_CUSTOMER,
 	]
 	for index: int in route.size() - 1:
@@ -39,23 +38,19 @@ func test_walk_from_the_casino_through_the_doorway_to_every_counter() -> void:
 	for point: Vector3 in route:
 		_assert_floor(point, 0.0)
 	for customer: Vector3 in [
-		Vector3(-9, 0.95, 36.4), Vector3(-6.5, 0.95, 42.2), Vector3(-8.3, 0.95, 42.4)
+		Vector3(-27.0, 0.95, 22.6), Vector3(-24.5, 0.95, 28.4), Vector3(-26.3, 0.95, 28.6)
 	]:
-		_sweep(Vector3(-8, 0.95, 41.5), customer)
+		_sweep(Vector3(-26.0, 0.95, 27.7), customer)
 		_assert_floor(customer, 0.0)
 
 
-func test_room_is_enclosed_and_covered() -> void:
-	for x: float in [-13.5, -9.0, -4.5]:
-		for z: float in [36.0, 40.0, 44.0]:
+func test_shop_uses_the_casino_floor_walls_and_ceiling() -> void:
+	for x: float in [-32.0, -27.0, -22.0]:
+		for z: float in [23.0, 28.0, 32.0]:
 			_assert_floor(Vector3(x, 1, z), 0.0)
 			assert_false(_ray(Vector3(x, 2, z), Vector3(x, 12, z)).is_empty(), "Ceiling")
-	for target: Vector3 in [Vector3(-9, 1.5, 55), Vector3(-25, 1.5, 38), Vector3(-9, 1.5, 30)]:
-		assert_false(_ray(Vector3(-9, 1.5, 40), target).is_empty(), "Walls toward %s" % target)
-	# The corridor wall stays solid beside and above the doorway, and the corridor sconce
-	# at z 38 keeps its wall.
-	assert_false(_ray(Vector3(0, 1.5, 38), Vector3(-6, 1.5, 38)).is_empty())
-	assert_false(_ray(Vector3(0, 3.6, 41.5), Vector3(-6, 3.6, 41.5)).is_empty())
+	for target: Vector3 in [Vector3(-27, 1.5, 40), Vector3(-40, 1.5, 28), Vector3(-27, 1.5, 18)]:
+		assert_false(_ray(Vector3(-27, 1.5, 28), target).is_empty(), "Walls toward %s" % target)
 
 
 func test_counter_stands_on_the_floor_with_rusty_behind_it() -> void:
@@ -76,7 +71,7 @@ func test_guns_hang_on_the_wall_within_reach() -> void:
 	assert_eq(wall.get_child_count(), 4)
 	var board := _shop.get_node("Hall/GunBoard") as CSGBox3D
 	var board_front := board.global_position.z + board.size.z * 0.5
-	var customer := Vector3(0, 0.95, 36.4)
+	var customer := Vector3(-18.0, 0.95, 22.6)
 	for gun: WallGun in wall.get_children():
 		assert_eq(ItemCatalog.find(gun.item_id).category, ItemDefinition.Category.WEAPON)
 		assert_gt(gun.price_cents, 0)
@@ -106,8 +101,8 @@ func test_gun_o_matic_moved_in_with_a_normal_sign() -> void:
 	var kiosk := _guns.get_node("Kiosk") as Node3D
 	var can := _guns.get_node("TrashCan") as Node3D
 	for node: Node3D in [kiosk, can]:
-		assert_between(node.global_position.x, -14.5, -3.5)
-		assert_between(node.global_position.z, 35.0, 44.5)
+		assert_between(node.global_position.x, -34.0, -18.0)
+		assert_between(node.global_position.z, 21.2, 34.0)
 		assert_eq(node.global_position.y, 0.0)
 		_assert_floor(node.global_position + Vector3(0, 1, -1.2), 0.0)
 	var sign := kiosk.get_node("Sign") as Label3D

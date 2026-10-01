@@ -1251,28 +1251,6 @@ outline_size = 6
 rotation = Vector3(0, 0, 0)
 
 double_sided = false
-[node name="RecreationSign" type="Label3D" parent="."]
-position = Vector3(-24, 4, 24)
-text = "THE STARDUST REC ROOM"
-font_size = 30
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
-rotation = Vector3(0, 0, 0)
-
-double_sided = false
-[node name="TrampolineSign" type="Label3D" parent="."]
-position = Vector3(25, 4, 23)
-text = "JUMP LOUNGE"
-font_size = 35
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
-rotation = Vector3(0, 0, 0)
-
-double_sided = false
 [node name="ExhibitSign" type="Label3D" parent="."]
 position = Vector3(-25, 5.5, -28)
 text = "QUIET GALLERY"
@@ -1701,39 +1679,6 @@ light_color = Color(1, 0.72, 0.4, 1)
 light_energy = 0.9
 omni_range = 11
 omni_attenuation = 1.4
-
-[node name="RecreationObstacles" type="Node3D" parent="."]
-
-[node name="Crate" type="CSGBox3D" parent="RecreationObstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 0.5, 29)
-size = Vector3(1.5, 1, 1.5)
-material = ExtResource("wood")
-use_collision = true
-
-[node name="CrateStack" type="CSGBox3D" parent="RecreationObstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 1, 29)
-size = Vector3(2, 2, 2)
-material = ExtResource("wood")
-use_collision = true
-
-[node name="Ramp" type="CSGBox3D" parent="RecreationObstacles"]
-transform = Transform3D(0.9397, -0.342, 0, 0.342, 0.9397, 0, 0, 0, 1, -22, 1.6, 25)
-size = Vector3(10, 0.5, 4)
-material = ExtResource("wood")
-use_collision = true
-
-[node name="Platform" type="CSGBox3D" parent="RecreationObstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 1.75, 25)
-size = Vector3(6, 3.5, 6)
-material = ExtResource("wood")
-use_collision = true
-
-[node name="SurfRamp" type="CSGPolygon3D" parent="RecreationObstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, 0, 33)
-polygon = PackedVector2Array(-3.5, 0, 3.5, 0, 0, 5)
-depth = 10.0
-material = ExtResource("wood")
-use_collision = true
 
 [node name="DirectionsBoard" type="CSGBox3D" parent="."]
 position = Vector3(0, 5.5, 14)

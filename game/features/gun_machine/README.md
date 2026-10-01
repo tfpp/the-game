@@ -2,7 +2,7 @@
 
 A machine that sells a randomly generated gun for $20, and a trash can next to it
 that gets rid of your current one. Both stand in Rusty Hogg's pawn shop
-(`features/pawn_shop`), west off the south corridor. Its holding, firing and projectile system is
+(`features/pawn_shop`), in the southwest casino corner. Its holding, firing and projectile system is
 independent of `features/holdables` (which has its own fixed pistol/SMG/shotgun/AWP):
 a generated gun's stats vary per instance, so it can't reuse `holdables`' static
 `ItemDefinition` catalog. The two are still mutually exclusive, though — equipping a
