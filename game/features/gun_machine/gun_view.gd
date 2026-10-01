@@ -1,8 +1,10 @@
 class_name GunView
 extends RefCounted
-## Builds a weapon's visual model straight from its rolled stats, since every
-## generated gun is a one-off: barrel count, thickness, length and color all come
-## from the stats a GunRig (or the machine's preview) is showing, not a fixed asset.
+## Selects an authored model for double-barrel plasma rolls. Other generated guns
+## use procedural dimensions and colors from the stats shown by the rig or kiosk.
+
+const PLASMA_SCENE := preload("res://features/gun_machine/double_barrel_plasma.tscn")
+const PLASMA_FIRST_PERSON_OFFSET := Vector3(0.25, -0.27, -0.64)
 
 const BARREL_SPACING := 0.055
 const BODY_COLOR := Color(0.15, 0.15, 0.17)
@@ -11,6 +13,8 @@ const BODY_COLOR := Color(0.15, 0.15, 0.17)
 ## A `Node3D`, forward-facing down -Z, with a `Muzzle` marker at the end of the
 ## barrels — the same muzzle-flash convention features/holdables/hand.gd uses.
 static func build(stats: Dictionary) -> Node3D:
+	if int(stats["ammo_type"]) == GunGenerator.AmmoType.PLASMA and int(stats["barrel_count"]) == 2:
+		return PLASMA_SCENE.instantiate() as Node3D
 	var root := Node3D.new()
 	var ammo_type: GunGenerator.AmmoType = stats["ammo_type"]
 	var profile := GunGenerator.profile(ammo_type)

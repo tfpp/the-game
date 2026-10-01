@@ -1,0 +1,8 @@
+{
+  "title": "Twin plasma chambers",
+  "summary": "Double-barrel plasma guns now have a futuristic armored model with glowing purple energy and properly gripping hands.",
+  "notes": [
+    "Replace the double-barrel plasma gun's placeholder with an original Blockbench model and violet energy chambers.",
+    "Fit both player hands to the plasma gun in first person, third person and remote player views."
+  ]
+}

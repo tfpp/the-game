@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/gun_machine/models/double_barrel_plasma.glb" id="1_model"]
+[ext_resource type="Texture2D" path="res://assets/gun_machine/models/double_barrel_plasma_PlasmaArmor_albedo.png" id="2_palette"]
+
+[sub_resource type="StandardMaterial3D" id="Energy"]
+shading_mode = 0
+albedo_texture = ExtResource("2_palette")
+texture_filter = 3
+emission_enabled = true
+emission = Color(0.65, 0.15, 1, 1)
+emission_energy_multiplier = 1.8
+
+[node name="DoubleBarrelPlasma" type="Node3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="PlasmaMesh" parent="Model" index="0"]
+surface_material_override/1 = SubResource("Energy")
+
+[node name="Grip" type="Marker3D" parent="."]
+
+[node name="SupportGrip" type="Marker3D" parent="."]
+position = Vector3(0, -0.015, -0.34)
+
+[node name="Muzzle" type="Marker3D" parent="."]
+position = Vector3(0, 0.13, -0.725)
+
+[node name="MuzzleLeft" type="Marker3D" parent="."]
+position = Vector3(-0.063, 0.13, -0.725)
+
+[node name="MuzzleRight" type="Marker3D" parent="."]
+position = Vector3(0.063, 0.13, -0.725)
+
+[editable path="Model"]

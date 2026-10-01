@@ -43,6 +43,7 @@ var peer_id := 0
 
 var _mounted_signature := ""
 var _view: Node3D
+var _arms := HeldArms.new()
 var _flash_timer := 0.0
 var _fire_cooldown := 0.0
 ## Throttles how often an automatic gun's held-trigger poll (`_maybe_auto_fire`)
@@ -54,6 +55,9 @@ var _auto_fire_cooldown := 0.0
 
 
 func _ready() -> void:
+	_arms.name = "Arms"
+	add_child(_arms)
+	_arms.visible = false
 	add_to_group(&"gun_rigs")
 	# Player updates at priority 0; third-person camera updates at 10. Mount after
 	# both so this frame's camera transform is current, not one frame stale (the
@@ -79,8 +83,13 @@ func _process(delta: float) -> void:
 		_rebuild_view()
 	var player := _player()
 	visible = player != null and is_active()
+	_arms.visible = false
 	if player != null:
 		global_transform = _mount_transform(player)
+		if has_hand_grips():
+			var hand := Hand.for_peer(get_tree(), peer_id)
+			var skin := hand.skin_tone_index() if hand != null else 0
+			_arms.pose_for_player(player, support_grip(), PlayerSkin.TONES[skin])
 	if _flash_timer > 0.0:
 		_flash_timer -= delta
 		if _flash_timer <= 0.0:
@@ -284,6 +293,8 @@ func _player() -> Player:
 ## (yaw *and* pitch, unlike features/holdables/hand.gd's fixed-orientation puppets),
 ## for everyone else watching one.
 func _mount_transform(player: Player) -> Transform3D:
+	if has_hand_grips():
+		return HeldItemPose.player_mount(player, GunView.PLASMA_FIRST_PERSON_OFFSET)
 	if player.is_local():
 		var camera := player.get_node("Camera") as Node3D
 		return camera.global_transform * LOCAL_OFFSET
@@ -334,6 +345,7 @@ func _rebuild_view() -> void:
 		return
 	_view = GunView.build(net_stats)
 	_mount.add_child(_view)
+	HeldItemPose.align_grip(_view)
 
 
 func _set_flash(active: bool) -> void:
@@ -344,7 +356,8 @@ func _set_flash(active: bool) -> void:
 		return
 	var existing := muzzle.get_node_or_null("MuzzleFlash")
 	if active and existing == null:
-		var glow := GunFx.flash(Color(1.0, 0.85, 0.5, 0.9), 0.12)
+		var color := Color(0.7, 0.25, 1.0, 0.9) if has_hand_grips() else Color(1.0, 0.85, 0.5, 0.9)
+		var glow := GunFx.flash(color, 0.12)
 		glow.name = "MuzzleFlash"
 		muzzle.add_child(glow)
 	elif not active and existing != null:
@@ -353,3 +366,12 @@ func _set_flash(active: bool) -> void:
 
 func _signature(stats: Dictionary) -> String:
 	return JSON.stringify(stats)
+
+
+## Only authored generated models opt into the shared hand rig.
+func has_hand_grips() -> bool:
+	return is_active() and _view != null and _view.has_node("Grip")
+
+
+func support_grip() -> Node3D:
+	return _view.get_node_or_null("SupportGrip") as Node3D if has_hand_grips() else null

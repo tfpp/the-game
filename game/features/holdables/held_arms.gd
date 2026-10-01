@@ -45,3 +45,45 @@ func pose(right_shoulder: Vector3, left_shoulder: Vector3, support: Node3D) -> v
 		human.place_shoulder(false, to_global(left_shoulder))
 		human.reach_grip(false, _left.to_global(Vector3(-0.055, -0.04, 0.055)), true)
 		human.orient_grip(false, _left.global_basis.orthonormalized())
+
+
+## Shared by catalog items and generated weapons with authored grip markers.
+func pose_for_player(player: Player, support: Node3D, skin: Color) -> void:
+	set_skin_color(skin)
+	var body := player.get_node("Body") as Node3D
+	var avatar := body.get_node_or_null("Avatar")
+	if avatar != null and avatar.has_method("sleeve_color"):
+		set_sleeve_color(avatar.call("sleeve_color"))
+	else:
+		set_sleeve_color(skin)
+	var first_person := player.is_local() and not body.visible
+	visible = true
+	if not first_person and avatar is BlockPlayerModel and avatar.human.visible:
+		visible = false
+		avatar.human.reach_grip(true, to_global(Vector3(0.055, -0.04, 0.055)), true)
+		avatar.human.orient_grip(true, global_basis.orthonormalized())
+		if support != null:
+			avatar.human.reach_grip(false, support.to_global(Vector3(-0.055, -0.04, 0.055)), true)
+			avatar.human.orient_grip(false, support.global_basis.orthonormalized())
+		return
+	if not first_person and avatar != null and avatar.has_method("shoulder_position"):
+		pose(
+			to_local(avatar.call("shoulder_position", true)),
+			to_local(avatar.call("shoulder_position", false)),
+			support
+		)
+		return
+	var shoulders: Transform3D
+	if first_person:
+		shoulders = (player.get_node("Camera") as Node3D).global_transform
+		var drop := -0.36 * HeldItemPose.avatar_height_scale(body)
+		shoulders.origin += shoulders.basis * Vector3(0, drop, 0.10)
+	else:
+		var yaw := player.yaw if player.is_local() else body.global_rotation.y
+		shoulders = Transform3D(Basis(Vector3.UP, yaw), body.global_position)
+		shoulders.origin.y += 0.30
+	pose(
+		to_local(shoulders * Vector3(0.32, 0, 0)),
+		to_local(shoulders * Vector3(-0.32, 0, 0)),
+		support
+	)
