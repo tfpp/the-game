@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/serving_tray.tres" id="1_tjbqp"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/serving_tray.res" id="2_llv10"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_36nyr"]
+size = Vector3(0.6, 0.021, 0.4)
+
+[node name="ServingTray" type="StaticBody3D" unique_id=195472685]
+metadata/prop_id = "serving_tray"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=391630297]
+material_override = ExtResource("1_tjbqp")
+mesh = ExtResource("2_llv10")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=37652834]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0105, 0)
+shape = SubResource("BoxShape3D_36nyr")

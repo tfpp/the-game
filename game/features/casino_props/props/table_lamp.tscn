@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/table_lamp.tres" id="1_nhdk3"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/table_lamp.res" id="2_gt8oc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xq721"]
+size = Vector3(0.29799998, 0.3908635, 0.19)
+
+[node name="TableLamp" type="StaticBody3D" unique_id=1452632625]
+metadata/prop_id = "table_lamp"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=2122133885]
+material_override = ExtResource("1_nhdk3")
+mesh = ExtResource("2_gt8oc")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=602128176]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.003999993, 0.19543175, 0)
+shape = SubResource("BoxShape3D_xq721")

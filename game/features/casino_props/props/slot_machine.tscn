@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/slot_machine.tres" id="1_82kcl"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/slot_machine.res" id="2_gyvqd"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rdtqp"]
+size = Vector3(0.71500003, 1.4, 0.65)
+
+[node name="SlotMachine" type="StaticBody3D" unique_id=2012546710]
+metadata/prop_id = "slot_machine"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1271635174]
+material_override = ExtResource("1_82kcl")
+mesh = ExtResource("2_gyvqd")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=558824707]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.027500004, 0.7, 0.08499999)
+shape = SubResource("BoxShape3D_rdtqp")

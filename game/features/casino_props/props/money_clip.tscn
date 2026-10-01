@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/money_clip.tres" id="1_ud3mw"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/money_clip.res" id="2_gumdy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qqv14"]
+size = Vector3(0.076, 0.012, 0.065)
+
+[node name="MoneyClip" type="StaticBody3D" unique_id=192617620]
+metadata/prop_id = "money_clip"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=488175760]
+material_override = ExtResource("1_ud3mw")
+mesh = ExtResource("2_gumdy")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1975469385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.006, 0)
+shape = SubResource("BoxShape3D_qqv14")

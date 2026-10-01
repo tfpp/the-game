@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/coffee_table.tres" id="1_wt2f8"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/coffee_table.res" id="2_jafjc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e10eq"]
+size = Vector3(1.15, 0.4625, 0.6)
+
+[node name="CoffeeTable" type="StaticBody3D" unique_id=1782150941]
+metadata/prop_id = "coffee_table"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1781230983]
+material_override = ExtResource("1_wt2f8")
+mesh = ExtResource("2_jafjc")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1244187419]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23125, 0)
+shape = SubResource("BoxShape3D_e10eq")

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/betting_plaque.tres" id="1_qxymu"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/betting_plaque.res" id="2_pocw2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5avmr"]
+size = Vector3(0.075, 0.0045, 0.115)
+
+[node name="BettingPlaque" type="StaticBody3D" unique_id=610978644]
+metadata/prop_id = "betting_plaque"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1507009509]
+material_override = ExtResource("1_qxymu")
+mesh = ExtResource("2_pocw2")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=592545709]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00225, 0)
+shape = SubResource("BoxShape3D_5avmr")

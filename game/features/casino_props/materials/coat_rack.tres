@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/casino_props/textures/coat_rack.png" id="1_m6r5g"]
+
+[resource]
+cull_mode = 2
+albedo_texture = ExtResource("1_m6r5g")
+metallic_specular = 0.0
+texture_filter = 2
+texture_repeat = false

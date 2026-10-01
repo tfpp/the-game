@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/chip_rack.tres" id="1_d3t1k"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/chip_rack.res" id="2_6s5fm"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_q7i6n"]
+size = Vector3(0.394, 0.082, 0.244)
+
+[node name="ChipRack" type="StaticBody3D" unique_id=1851244528]
+metadata/prop_id = "chip_rack"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=692009089]
+material_override = ExtResource("1_d3t1k")
+mesh = ExtResource("2_6s5fm")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1959563741]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.041, 0)
+shape = SubResource("BoxShape3D_q7i6n")

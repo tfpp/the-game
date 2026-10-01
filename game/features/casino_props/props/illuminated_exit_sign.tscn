@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/illuminated_exit_sign.tres" id="1_x7w3a"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/illuminated_exit_sign.res" id="2_g2f0t"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pcni7"]
+size = Vector3(0.38, 0.2065, 0.083000004)
+
+[node name="IlluminatedExitSign" type="StaticBody3D" unique_id=280426104]
+metadata/prop_id = "illuminated_exit_sign"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=736210695]
+material_override = ExtResource("1_x7w3a")
+mesh = ExtResource("2_g2f0t")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1643790909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.10325, 0.0035000034)
+shape = SubResource("BoxShape3D_pcni7")

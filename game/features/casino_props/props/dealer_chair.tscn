@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/dealer_chair.tres" id="1_dtw7r"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/dealer_chair.res" id="2_63e71"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kpwvi"]
+size = Vector3(0.45, 1.025, 0.45749998)
+
+[node name="DealerChair" type="StaticBody3D" unique_id=537633104]
+metadata/prop_id = "dealer_chair"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=107835115]
+material_override = ExtResource("1_dtw7r")
+mesh = ExtResource("2_63e71")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1361261570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5125, -0.0037500113)
+shape = SubResource("BoxShape3D_kpwvi")

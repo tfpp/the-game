@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/cashier_counter.tres" id="1_b173l"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/cashier_counter.res" id="2_m3g6g"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dp0lx"]
+size = Vector3(2.64, 1.1375, 0.87)
+
+[node name="CashierCounter" type="StaticBody3D" unique_id=556364902]
+metadata/prop_id = "cashier_counter"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1438377147]
+material_override = ExtResource("1_b173l")
+mesh = ExtResource("2_m3g6g")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=2147100012]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56875, 0)
+shape = SubResource("BoxShape3D_dp0lx")

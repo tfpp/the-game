@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/security_camera.tres" id="1_800pc"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/security_camera.res" id="2_4jw5a"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ixwki"]
+size = Vector3(0.14, 0.16, 0.3749045)
+
+[node name="SecurityCamera" type="StaticBody3D" unique_id=365222582]
+metadata/prop_id = "security_camera"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=370537715]
+material_override = ExtResource("1_800pc")
+mesh = ExtResource("2_4jw5a")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=599861454]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0.0060477555)
+shape = SubResource("BoxShape3D_ixwki")

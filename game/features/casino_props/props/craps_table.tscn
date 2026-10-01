@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/craps_table.tres" id="1_fkwhd"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/craps_table.res" id="2_p6opv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1qfyp"]
+size = Vector3(3.0600002, 1.1925, 1.5999999)
+
+[node name="CrapsTable" type="StaticBody3D" unique_id=130912513]
+metadata/prop_id = "craps_table"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=953969946]
+material_override = ExtResource("1_fkwhd")
+mesh = ExtResource("2_p6opv")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1363642850]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.59625, 0.029999971)
+shape = SubResource("BoxShape3D_1qfyp")

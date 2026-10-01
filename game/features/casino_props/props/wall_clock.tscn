@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/wall_clock.tres" id="1_pqxog"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/wall_clock.res" id="2_2g3so"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1jbk5"]
+size = Vector3(0.316, 0.33, 0.067499995)
+
+[node name="WallClock" type="StaticBody3D" unique_id=899705645]
+metadata/prop_id = "wall_clock"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=351191244]
+material_override = ExtResource("1_pqxog")
+mesh = ExtResource("2_2g3so")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=229367957]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.165, 0.010249998)
+shape = SubResource("BoxShape3D_1jbk5")

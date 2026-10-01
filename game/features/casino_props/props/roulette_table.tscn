@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/roulette_table.tres" id="1_mrfxi"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/roulette_table.res" id="2_ilpuc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_marwa"]
+size = Vector3(2.84, 0.98, 1.42)
+
+[node name="RouletteTable" type="StaticBody3D" unique_id=1099080586]
+metadata/prop_id = "roulette_table"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=401813115]
+material_override = ExtResource("1_mrfxi")
+mesh = ExtResource("2_ilpuc")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=79192823]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49, 0)
+shape = SubResource("BoxShape3D_marwa")

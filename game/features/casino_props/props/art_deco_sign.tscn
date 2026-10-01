@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/art_deco_sign.tres" id="1_8tq3q"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/art_deco_sign.res" id="2_bcjq8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xpp4h"]
+size = Vector3(1.12, 0.78, 0.125)
+
+[node name="ArtDecoSign" type="StaticBody3D" unique_id=607818284]
+metadata/prop_id = "art_deco_sign"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=2004084334]
+material_override = ExtResource("1_8tq3q")
+mesh = ExtResource("2_bcjq8")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=352724761]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.39, 0.0225)
+shape = SubResource("BoxShape3D_xpp4h")

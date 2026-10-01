@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/brass_stanchion.tres" id="1_5ks37"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/brass_stanchion.res" id="2_h6xah"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_axelp"]
+size = Vector3(0.3314754, 0.969, 0.34)
+
+[node name="BrassStanchion" type="StaticBody3D" unique_id=1663678803]
+metadata/prop_id = "brass_stanchion"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=230538979]
+material_override = ExtResource("1_5ks37")
+mesh = ExtResource("2_h6xah")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=788534217]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4845, 0)
+shape = SubResource("BoxShape3D_axelp")

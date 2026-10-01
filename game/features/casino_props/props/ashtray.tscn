@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/ashtray.tres" id="1_3b0wr"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/ashtray.res" id="2_fps03"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f4oep"]
+size = Vector3(0.14, 0.027, 0.14)
+
+[node name="Ashtray" type="StaticBody3D" unique_id=945420029]
+metadata/prop_id = "ashtray"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=424664523]
+material_override = ExtResource("1_3b0wr")
+mesh = ExtResource("2_fps03")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=393838907]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0135, 0)
+shape = SubResource("BoxShape3D_f4oep")

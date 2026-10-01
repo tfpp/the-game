@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/whiskey_bottle.tres" id="1_4phj3"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/whiskey_bottle.res" id="2_kw4gw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fyh1q"]
+size = Vector3(0.09, 0.3235, 0.094)
+
+[node name="WhiskeyBottle" type="StaticBody3D" unique_id=1984138400]
+metadata/prop_id = "whiskey_bottle"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1840147236]
+material_override = ExtResource("1_4phj3")
+mesh = ExtResource("2_kw4gw")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=235321913]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16175, 0.0019999966)
+shape = SubResource("BoxShape3D_fyh1q")

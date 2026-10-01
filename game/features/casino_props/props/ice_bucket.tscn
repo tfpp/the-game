@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/ice_bucket.tres" id="1_x1x1v"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/ice_bucket.res" id="2_hl67f"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hfs1f"]
+size = Vector3(0.2959808, 0.2415, 0.216)
+
+[node name="IceBucket" type="StaticBody3D" unique_id=1702403414]
+metadata/prop_id = "ice_bucket"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=811533813]
+material_override = ExtResource("1_x1x1v")
+mesh = ExtResource("2_hl67f")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=854382453]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12075, 0)
+shape = SubResource("BoxShape3D_hfs1f")

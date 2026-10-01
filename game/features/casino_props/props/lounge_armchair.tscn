@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/lounge_armchair.tres" id="1_q8p6g"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/lounge_armchair.res" id="2_hvcfq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wmlb6"]
+size = Vector3(0.87, 0.96, 0.82)
+
+[node name="LoungeArmchair" type="StaticBody3D" unique_id=2101829106]
+metadata/prop_id = "lounge_armchair"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=507105123]
+material_override = ExtResource("1_q8p6g")
+mesh = ExtResource("2_hvcfq")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1071053284]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, -0.00999999)
+shape = SubResource("BoxShape3D_wmlb6")

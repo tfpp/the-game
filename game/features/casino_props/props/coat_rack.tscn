@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/coat_rack.tres" id="1_7hbo8"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/coat_rack.res" id="2_petpx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_si4nl"]
+size = Vector3(0.5351004, 1.7881639, 0.5351004)
+
+[node name="CoatRack" type="StaticBody3D" unique_id=1438353965]
+metadata/prop_id = "coat_rack"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1158788192]
+material_override = ExtResource("1_7hbo8")
+mesh = ExtResource("2_petpx")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1717200822]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89408195, 0)
+shape = SubResource("BoxShape3D_si4nl")

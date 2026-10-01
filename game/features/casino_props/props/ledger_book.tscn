@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/ledger_book.tres" id="1_37n10"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/ledger_book.res" id="2_n2js1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ixprs"]
+size = Vector3(0.266, 0.0505, 0.33)
+
+[node name="LedgerBook" type="StaticBody3D" unique_id=1387214412]
+metadata/prop_id = "ledger_book"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1671368033]
+material_override = ExtResource("1_37n10")
+mesh = ExtResource("2_n2js1")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1428797454]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02525, 0)
+shape = SubResource("BoxShape3D_ixprs")

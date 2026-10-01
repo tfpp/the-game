@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/velvet_rope.tres" id="1_y1gir"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/velvet_rope.res" id="2_ec3of"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0gyqe"]
+size = Vector3(1.696, 0.2379019, 0.046)
+
+[node name="VelvetRope" type="StaticBody3D" unique_id=1196604447]
+metadata/prop_id = "velvet_rope"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1331902669]
+material_override = ExtResource("1_y1gir")
+mesh = ExtResource("2_ec3of")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=756463297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11895095, 0)
+shape = SubResource("BoxShape3D_0gyqe")

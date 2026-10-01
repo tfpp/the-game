@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/cocktail_table.tres" id="1_67fis"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/cocktail_table.res" id="2_5odr4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_slk8s"]
+size = Vector3(0.62, 0.7525, 0.62)
+
+[node name="CocktailTable" type="StaticBody3D" unique_id=2091963312]
+metadata/prop_id = "cocktail_table"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=2125473426]
+material_override = ExtResource("1_67fis")
+mesh = ExtResource("2_5odr4")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1301305663]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37625, 0)
+shape = SubResource("BoxShape3D_slk8s")
