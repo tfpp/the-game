@@ -1,6 +1,6 @@
 class_name FoodCourt
 extends Node3D
-## The casino's food court wing: booth seating that anyone can sit in.
+## The casino's southeast food court: booth seating that anyone can sit in.
 ##
 ## The server owns `net_seats` (one occupant peer per seat, 0 = free) and validates
 ## sit/stand requests through the NetworkedEntity component. Movement stays
@@ -11,16 +11,16 @@ extends Node3D
 const BOOTH_SCRIPT := preload("res://features/food_court/booth.gd")
 const SEAT_SCRIPT := preload("res://features/food_court/booth_seat.gd")
 
-## Booth centres on the wing's floor (feature-local; the root sits at the origin).
+## Booth centres in the southeast casino corner (feature-local, root at origin).
 const BOOTHS: Array[Vector3] = [
-	Vector3(7.5, 0, 37.4),
-	Vector3(12.5, 0, 37.4),
-	Vector3(17.5, 0, 37.4),
-	Vector3(22.5, 0, 37.4),
-	Vector3(7.5, 0, 48.6),
-	Vector3(12.5, 0, 48.6),
-	Vector3(17.5, 0, 48.6),
-	Vector3(22.5, 0, 48.6),
+	Vector3(14.5, 0, 23),
+	Vector3(18.5, 0, 23),
+	Vector3(22.5, 0, 23),
+	Vector3(26.5, 0, 23),
+	Vector3(14.5, 0, 32),
+	Vector3(18.5, 0, 32),
+	Vector3(22.5, 0, 32),
+	Vector3(26.5, 0, 32),
 ]
 const SIT_RANGE := 1.8
 ## Seated players further than this from their seat were moved away (respawn, kill

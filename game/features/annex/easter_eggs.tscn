@@ -124,8 +124,8 @@ cast_shadow = 0
 visibility_range_end = 18.0
 
 [node name="EncodedMessage" type="Node3D" parent="."]
-position = Vector3(-22.5, 1.55, 80.5)
-rotation = Vector3(0, 3.141592654, 0)
+position = Vector3(-52, 1.55, -8)
+rotation = Vector3(0, 1.570796327, 0)
 
 [node name="Plaque" type="MeshInstance3D" parent="EncodedMessage"]
 position = Vector3(0, 0, 0.025)

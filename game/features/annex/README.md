@@ -1,7 +1,7 @@
 # Annex routes
 
-Ten rooms connect to the casino through five entrances. The northwest and west
-entrances share a loop; the northeast, east and south wings branch off the hub.
+Eight rooms connect to the casino through four entrances. The northwest and west
+entrances share a loop; the northeast and east wings branch off the hub.
 
 Every standalone CSG floor, wall, ceiling and obstacle has collision enabled.
 Each corridor combiner has a Walls child ending with passage subtraction volumes
@@ -9,8 +9,8 @@ matching the floor footprints. These remove crossing walls at bends and T juncti
 while keeping floors and ceilings intact. The round northwest room also has a clearance cut
 where its outer wall otherwise protrudes into the adjoining corridor.
 
-The south corridor's east wall has one more cut, `FoodCourtDoorway` (x 3, z 38…42,
-3.2 m high), into the food court wing (`features/food_court`).
+The former south wing and its shop corridor have been removed. The casino's south
+wall closes the old entrance; the shops now occupy its southwest and southeast corners.
 
 Keep subtraction volumes after additive geometry in each combiner. New passages
 need continuous floors and standing-player clearance in both directions.
@@ -34,7 +34,7 @@ Spoilers / placement (world coordinates, wall face at y=1.55):
 | Ferry review | East room 5 | 74.5, -10 | -X |
 | Emergency frog | East room 6 | 60, -45.5 | +Z |
 | Gnome union | West room 9 | -59.5, 32.5 | +X |
-| Encoded message | South room 8 | -22.5, 80.5 | -Z |
+| Encoded message | West loop spine | -52, -8 | +X |
 
 The backing starts 5mm in front of each wall; lettering sits another 5mm beyond
 its face, facing into the room. Labels retain depth testing and are unshaded for

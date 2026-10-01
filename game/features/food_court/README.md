@@ -1,19 +1,17 @@
 # Food court
 
-A casino wing east of the south corridor, reached on foot: leave the gaming floor
-through the south door, walk down the corridor and turn left (east) through the
-doorway marked **FOOD COURT** at (3, 0, 40). No teleports or streamed rooms.
+The food court occupies the former Jump Lounge in the southeast casino corner.
+Walk east from the south lobby; no corridor or teleport is needed.
 
-- Hall: x 3.5…33, z 35…51, floor y 0, ceiling at y 5.5. The north wall is the casino's
-  south outer wall; the west wall is the annex corridor (`features/annex`, which owns
-  the `FoodCourtDoorway` cut). Four `wall_sconces` light it at night.
+- Court: x 13…34, z 21.2…34, floor y 0. The existing casino supplies the outer
+  walls, ceiling and lighting; a tile inset marks the dining area.
 - İstanbul Kebab (`features/kebab_shop`) stands against the east wall facing west,
-  its counter front at x ≈ 29.7, cashier at (29.8, 44.35).
-- Eight booths in two rows (z 37.4 and 48.6, x 7.5…22.5) leave a 6.7 m aisle from the
-  doorway to the counter. Each booth is a walnut table between two velvet benches with
-  two seats each (32 seats). GPS lists **Food Court** and **İstanbul Kebab**.
+  with its cashier at (29.8, 29.85).
+- Eight booths in two rows (z 23 and 32, x 14.5…26.5) retain all 32 seats and
+  leave a central aisle to the counters. GPS lists **Food Court** and **İstanbul Kebab**.
 
 ## Sitting
+
 
 Walk up to a bench and press Use (E, controller B/Circle, touch USE) on "Sit in the
 booth". Press Use again, Jump or move to stand up; you step out at the open end of
@@ -34,7 +32,7 @@ Nothing is persisted. Tests: `tests/features/food_court/`.
 
 ## Poke bowls
 
-The small **POKE BOWLS** stand at (30, 0, 37.5) faces west, beside the kebab
+The small **POKE BOWLS** stand at (30, 0, 23) faces west, beside the kebab
 shop. Follow the existing Food Court GPS marker, then continue toward the east
 counters. Use (E / B / Circle / touch USE) opens a menu with six tip buttons:
 15%, 20%, 25%, 30%, 35%, 40%. Each button buys one $29 salmon, rice and avocado

@@ -1,10 +1,9 @@
 # İstanbul Kebab
 
-A Turkish kebab counter in the food court wing (`features/food_court`), against its
-east wall at (30.2, 0, 43), rotated so its front, staff and sign face west into the
+A Turkish kebab counter in the southeast casino food court (`features/food_court`), against its
+east wall at (30.2, 0, 28.5), rotated so its front, staff and sign face west into the
 hall. The GPS lists **İstanbul Kebab** and routes to the cashier's customer side at
-(28.7, 0, 44.35). It used to stand ahead of the casino spawn; only the root transform
-and GPS marker moved. No light is added.
+(28.7, 0, 29.85). The counter and its GPS marker moved together from the former south wing. No light is added.
 
 Use **E / B / Circle / touch USE** in front of Aylin to order a complimentary
 kebab. Orders place it in an empty hand or the existing backpack. Make room if both

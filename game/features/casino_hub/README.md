@@ -1,7 +1,7 @@
 # The Golden Crown
 
 A faded 1964 casino. `world/room.tscn` instances `interior.tscn` and
-retains the stable `Room/Spawn` path and all five original annex entrances. This
+retains the stable `Room/Spawn` path and the four remaining annex entrances. This
 folder intentionally has no `feature.tscn`: the architecture is part of the room,
 not a second copy loaded by the feature loader. Collision-bearing architecture remains CSG; static decoration is baked into sector meshes and props are reusable low-polygon glTF meshes.
 
@@ -22,11 +22,14 @@ not a second copy loaded by the feature loader. Collision-bearing architecture r
   the gaming floor; a smooth 21-degree collision ramp follows its visual treads.
   Railings protect the landing and leave the stair entrance open.
 - Spawn: (2, 0.2, 5), in the clear central gaming aisle. The stable `Room/Spawn`
-  path is unchanged. Weapons, clothing, recreation areas and the south lobby
+  path is unchanged. Weapons, clothing, shops and the south lobby
   remain reachable via the original south ramp.
+- Shops: the pawn shop replaces the southwest Stardust Rec Room; the food court
+  replaces the southeast Jump Lounge. Their old south wing and corridor are removed,
+  with a solid south wall closing the former entrance.
 - Outer walls: the gnome burrows' doggy-door holes (`features/gnomes`); the Kaaba remains in its northwest gallery.
-  All three coin pickups remain available. Original annex rooms and routes are
-  retained, with covered ceilings and matching finishes.
+  All three coin pickups remain available. The four remaining annex routes retain
+  covered ceilings and matching finishes.
 
 Generated burgundy carpet, green wallpaper and walnut artwork is imported at
 128×128 with nearest mipmap sampling. Shared matte finishes use authored warm vertex illumination and fixed indoor
