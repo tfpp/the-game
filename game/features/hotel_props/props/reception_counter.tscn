@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/reception_counter.tres" id="1_ojv3d"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/reception_counter.res" id="2_1ew1x"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_scd5t"]
+size = Vector3(2.42, 1.0925001, 0.78)
+
+[node name="ReceptionCounter" type="StaticBody3D" unique_id=736400832]
+metadata/prop_id = "reception_counter"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1167463242]
+material_override = ExtResource("1_ojv3d")
+mesh = ExtResource("2_1ew1x")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=2103560304]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54625005, 0)
+shape = SubResource("BoxShape3D_scd5t")

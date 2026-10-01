@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/table_lamp.tres" id="1_a2s5k"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/table_lamp.res" id="2_5lv0o"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mqb7c"]
+size = Vector3(0.23, 0.517, 0.23)
+
+[node name="TableLamp" type="StaticBody3D" unique_id=1890176400]
+metadata/prop_id = "table_lamp"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=7594392]
+material_override = ExtResource("1_a2s5k")
+mesh = ExtResource("2_5lv0o")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1232782631]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2585, 0)
+shape = SubResource("BoxShape3D_mqb7c")

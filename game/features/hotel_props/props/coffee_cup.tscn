@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/coffee_cup.tres" id="1_c8fe1"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/coffee_cup.res" id="2_otqkf"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1rvg3"]
+size = Vector3(0.1549904, 0.09, 0.094)
+
+[node name="CoffeeCup" type="StaticBody3D" unique_id=395415671]
+metadata/prop_id = "coffee_cup"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1505048564]
+material_override = ExtResource("1_c8fe1")
+mesh = ExtResource("2_otqkf")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=680664335]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.030495204, 0.045, 0)
+shape = SubResource("BoxShape3D_1rvg3")

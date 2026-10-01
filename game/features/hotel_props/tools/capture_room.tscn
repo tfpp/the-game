@@ -1,0 +1,4 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://features/hotel_props/tools/capture_room.gd" id="script"]
+[node name="HotelRoomCapture" type="Node3D"]
+script = ExtResource("script")

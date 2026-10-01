@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/single_bed.tres" id="1_ls0nr"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/single_bed.res" id="2_wx8a6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cojjj"]
+size = Vector3(1.07, 1.08, 2.065)
+
+[node name="SingleBed" type="StaticBody3D" unique_id=807946851]
+metadata/prop_id = "single_bed"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1188680811]
+material_override = ExtResource("1_ls0nr")
+mesh = ExtResource("2_wx8a6")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1671753165]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54, 0)
+shape = SubResource("BoxShape3D_cojjj")

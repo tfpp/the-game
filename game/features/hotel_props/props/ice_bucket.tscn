@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/ice_bucket.tres" id="1_axsbx"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/ice_bucket.res" id="2_3fplm"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fehxi"]
+size = Vector3(0.3259808, 0.255, 0.232)
+
+[node name="IceBucket" type="StaticBody3D" unique_id=166499126]
+metadata/prop_id = "ice_bucket"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=245755582]
+material_override = ExtResource("1_axsbx")
+mesh = ExtResource("2_3fplm")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1395021227]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1275, 0)
+shape = SubResource("BoxShape3D_fehxi")

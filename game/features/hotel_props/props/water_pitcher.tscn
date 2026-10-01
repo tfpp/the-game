@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/water_pitcher.tres" id="1_cwwmt"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/water_pitcher.res" id="2_gu7af"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_si6cw"]
+size = Vector3(0.2590869, 0.2589412, 0.18)
+
+[node name="WaterPitcher" type="StaticBody3D" unique_id=352743747]
+metadata/prop_id = "water_pitcher"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1167405232]
+material_override = ExtResource("1_cwwmt")
+mesh = ExtResource("2_gu7af")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=2119667311]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.023446955, 0.1294706, 0)
+shape = SubResource("BoxShape3D_si6cw")

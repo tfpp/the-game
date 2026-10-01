@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/wall_air_conditioner.tres" id="1_ov8pb"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/wall_air_conditioner.res" id="2_ee6ki"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_taipu"]
+size = Vector3(0.78, 0.44, 0.31199998)
+
+[node name="WallAirConditioner" type="StaticBody3D" unique_id=576235537]
+metadata/prop_id = "wall_air_conditioner"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=13378254]
+material_override = ExtResource("1_ov8pb")
+mesh = ExtResource("2_ee6ki")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1588840000]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, 0.0109999925)
+shape = SubResource("BoxShape3D_taipu")

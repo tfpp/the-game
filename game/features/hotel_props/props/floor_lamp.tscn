@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/floor_lamp.tres" id="1_nxt8j"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/floor_lamp.res" id="2_hjhdl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_deofr"]
+size = Vector3(0.713, 1.59325, 0.713)
+
+[node name="FloorLamp" type="StaticBody3D" unique_id=1565959583]
+metadata/prop_id = "floor_lamp"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=746014808]
+material_override = ExtResource("1_nxt8j")
+mesh = ExtResource("2_hjhdl")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=33716656]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.796625, 0)
+shape = SubResource("BoxShape3D_deofr")

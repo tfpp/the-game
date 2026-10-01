@@ -1,0 +1,439 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/rotary_phone.tscn" id="rotary_phone"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/vintage_suitcase.tscn" id="vintage_suitcase"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/single_bed.tscn" id="single_bed"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/bedside_table.tscn" id="bedside_table"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/wardrobe.tscn" id="wardrobe"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/writing_desk.tscn" id="writing_desk"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/desk_chair.tscn" id="desk_chair"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/armchair.tscn" id="armchair"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/two_seat_sofa.tscn" id="two_seat_sofa"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/coffee_table.tscn" id="coffee_table"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/round_side_table.tscn" id="round_side_table"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/table_lamp.tscn" id="table_lamp"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/floor_lamp.tscn" id="floor_lamp"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/wall_sconce.tscn" id="wall_sconce"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/crt_television.tscn" id="crt_television"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/bedside_radio.tscn" id="bedside_radio"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/alarm_clock.tscn" id="alarm_clock"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/wall_clock.tscn" id="wall_clock"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/framed_art.tscn" id="framed_art"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/wall_mirror.tscn" id="wall_mirror"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/reception_counter.tscn" id="reception_counter"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/key_cubby.tscn" id="key_cubby"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/service_bell.tscn" id="service_bell"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/guest_register.tscn" id="guest_register"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/room_key.tscn" id="room_key"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/mail_envelope.tscn" id="mail_envelope"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/luggage_cart.tscn" id="luggage_cart"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/steamer_trunk.tscn" id="steamer_trunk"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/briefcase.tscn" id="briefcase"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/hatbox.tscn" id="hatbox"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/ashtray.tscn" id="ashtray"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/ice_bucket.tscn" id="ice_bucket"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/water_pitcher.tscn" id="water_pitcher"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/drinking_glass.tscn" id="drinking_glass"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/coffee_cup.tscn" id="coffee_cup"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/tea_saucer.tscn" id="tea_saucer"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/serving_tray.tscn" id="serving_tray"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/room_service_cart.tscn" id="room_service_cart"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/waste_bin.tscn" id="waste_bin"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/tissue_box.tscn" id="tissue_box"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/towel_stack.tscn" id="towel_stack"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/soap_bar.tscn" id="soap_bar"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/shampoo_bottle.tscn" id="shampoo_bottle"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/fire_extinguisher.tscn" id="fire_extinguisher"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/radiator.tscn" id="radiator"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/wall_air_conditioner.tscn" id="wall_air_conditioner"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/standing_fan.tscn" id="standing_fan"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/potted_plant.tscn" id="potted_plant"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/cleaning_cart.tscn" id="cleaning_cart"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/folding_luggage_rack.tscn" id="folding_luggage_rack"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="carpet"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="wallpaper"]
+
+[sub_resource type="StandardMaterial3D" id="Cream"]
+albedo_color = Color(0.74, 0.66, 0.52, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Brass"]
+albedo_color = Color(0.5, 0.36, 0.16, 1)
+roughness = 1.0
+
+[node name="HotelInterior" type="Node3D"]
+
+[node name="Floor" type="CSGBox3D" parent="."]
+position = Vector3(0, -0.15, 0)
+size = Vector3(20.6, 0.3, 16.6)
+material = ExtResource("carpet")
+use_collision = true
+
+[node name="Ceiling" type="CSGBox3D" parent="."]
+position = Vector3(0, 4.35, 0)
+size = Vector3(20.6, 0.3, 16.6)
+material = SubResource("Cream")
+use_collision = true
+
+[node name="NorthWall" type="CSGBox3D" parent="."]
+position = Vector3(0, 2.1, -8.15)
+size = Vector3(20.6, 4.2, 0.3)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="SouthWall" type="CSGBox3D" parent="."]
+position = Vector3(0, 2.1, 8.15)
+size = Vector3(20.6, 4.2, 0.3)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="EastWall" type="CSGBox3D" parent="."]
+position = Vector3(10.15, 2.1, 0)
+size = Vector3(0.3, 4.2, 16.6)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="WestWall" type="CSGBox3D" parent="."]
+position = Vector3(-10.15, 2.1, 0)
+size = Vector3(0.3, 4.2, 16.6)
+material = ExtResource("wallpaper")
+use_collision = true
+
+[node name="NorthWainscot" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.48, -7.94)
+size = Vector3(20, 0.96, 0.1)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="SouthWainscot" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.48, 7.94)
+size = Vector3(20, 0.96, 0.1)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="EastWainscot" type="CSGBox3D" parent="."]
+position = Vector3(9.94, 0.48, 0)
+size = Vector3(0.1, 0.96, 16)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="WestWainscot" type="CSGBox3D" parent="."]
+position = Vector3(-9.94, 0.48, 0)
+size = Vector3(0.1, 0.96, 16)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="NorthCornice" type="CSGBox3D" parent="."]
+position = Vector3(0, 3.97, -7.9)
+size = Vector3(20, 0.15, 0.15)
+material = SubResource("Brass")
+use_collision = true
+
+[node name="SouthCornice" type="CSGBox3D" parent="."]
+position = Vector3(0, 3.97, 7.9)
+size = Vector3(20, 0.15, 0.15)
+material = SubResource("Brass")
+use_collision = true
+
+[node name="EastCornice" type="CSGBox3D" parent="."]
+position = Vector3(9.9, 3.97, 0)
+size = Vector3(0.15, 0.15, 16)
+material = SubResource("Brass")
+use_collision = true
+
+[node name="WestCornice" type="CSGBox3D" parent="."]
+position = Vector3(-9.9, 3.97, 0)
+size = Vector3(0.15, 0.15, 16)
+material = SubResource("Brass")
+use_collision = true
+
+[node name="ReceptionBackdrop" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 1.25, 1.5)
+size = Vector3(3.5, 2.5, 0.12)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="TelevisionConsole" type="CSGBox3D" parent="."]
+position = Vector3(5.5, 0.37, -2.6)
+size = Vector3(1.25, 0.74, 0.55)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="AmenityTableTop" type="CSGBox3D" parent="."]
+position = Vector3(-6, 0.87, 4.8)
+size = Vector3(1.6, 0.05, 0.65)
+material = SubResource("Cream")
+use_collision = true
+
+[node name="AmenityLeg034999999999999964455" type="CSGBox3D" parent="."]
+position = Vector3(-6.65, 0.42, 4.55)
+size = Vector3(0.04, 0.84, 0.04)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="AmenityLeg034999999999999964505" type="CSGBox3D" parent="."]
+position = Vector3(-6.65, 0.42, 5.05)
+size = Vector3(0.04, 0.84, 0.04)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="AmenityLeg16500000000000004455" type="CSGBox3D" parent="."]
+position = Vector3(-5.35, 0.42, 4.55)
+size = Vector3(0.04, 0.84, 0.04)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="AmenityLeg16500000000000004505" type="CSGBox3D" parent="."]
+position = Vector3(-5.35, 0.42, 5.05)
+size = Vector3(0.04, 0.84, 0.04)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="SuitePartition" type="CSGBox3D" parent="."]
+position = Vector3(-2.8, 1, -5.85)
+size = Vector3(0.14, 2, 3.8)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="ServicePartition" type="CSGBox3D" parent="."]
+position = Vector3(-5, 0.6, 2)
+size = Vector3(6, 1.2, 0.14)
+material = ExtResource("wood")
+use_collision = true
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="RotaryPhone" parent="Props" instance=ExtResource("rotary_phone")]
+position = Vector3(-5.4, 0.667, -4.38)
+
+[node name="VintageSuitcase" parent="Props" instance=ExtResource("vintage_suitcase")]
+position = Vector3(-4, 0.5, -5.8)
+
+[node name="SingleBed" parent="Props" instance=ExtResource("single_bed")]
+position = Vector3(-6.3, 0, -4.5)
+
+[node name="BedsideTable" parent="Props" instance=ExtResource("bedside_table")]
+position = Vector3(-5.3, 0, -4.5)
+
+[node name="Wardrobe" parent="Props" instance=ExtResource("wardrobe")]
+position = Vector3(-8.5, 0, -6.6)
+
+[node name="WritingDesk" parent="Props" instance=ExtResource("writing_desk")]
+position = Vector3(-8, 0, -2.7)
+
+[node name="DeskChair" parent="Props" instance=ExtResource("desk_chair")]
+position = Vector3(-8, 0, -1.85)
+rotation = Vector3(0, 3.141592653589793, 0)
+
+[node name="Armchair" parent="Props" instance=ExtResource("armchair")]
+position = Vector3(3.4, 0, -4.8)
+rotation = Vector3(0, 0.45, 0)
+
+[node name="TwoSeatSofa" parent="Props" instance=ExtResource("two_seat_sofa")]
+position = Vector3(5.5, 0, -5.8)
+
+[node name="CoffeeTable" parent="Props" instance=ExtResource("coffee_table")]
+position = Vector3(5.5, 0, -4.2)
+
+[node name="RoundSideTable" parent="Props" instance=ExtResource("round_side_table")]
+position = Vector3(7.2, 0, -5.5)
+
+[node name="TableLamp" parent="Props" instance=ExtResource("table_lamp")]
+position = Vector3(-5.4, 0.667, -4.62)
+
+[node name="FloorLamp" parent="Props" instance=ExtResource("floor_lamp")]
+position = Vector3(3.2, 0, -6.2)
+
+[node name="WallSconce" parent="Props" instance=ExtResource("wall_sconce")]
+position = Vector3(-9.74, 2.3, 2.2)
+rotation = Vector3(0, 1.5707963267948966, 0)
+
+[node name="CrtTelevision" parent="Props" instance=ExtResource("crt_television")]
+position = Vector3(5.5, 0.78, -2.6)
+rotation = Vector3(0, 3.141592653589793, 0)
+
+[node name="BedsideRadio" parent="Props" instance=ExtResource("bedside_radio")]
+position = Vector3(-8.3, 0.799, -2.7)
+
+[node name="AlarmClock" parent="Props" instance=ExtResource("alarm_clock")]
+position = Vector3(-5.15, 0.667, -4.35)
+
+[node name="WallClock" parent="Props" instance=ExtResource("wall_clock")]
+position = Vector3(5.5, 2.5, -7.74)
+
+[node name="FramedArt" parent="Props" instance=ExtResource("framed_art")]
+position = Vector3(-6.3, 2.2, -7.74)
+
+[node name="WallMirror" parent="Props" instance=ExtResource("wall_mirror")]
+position = Vector3(-9.74, 1.1, -4)
+rotation = Vector3(0, 1.5707963267948966, 0)
+
+[node name="ReceptionCounter" parent="Props" instance=ExtResource("reception_counter")]
+position = Vector3(5.5, 0, 3.5)
+
+[node name="KeyCubby" parent="Props" instance=ExtResource("key_cubby")]
+position = Vector3(5.5, 1.1, 1.64)
+
+[node name="ServiceBell" parent="Props" instance=ExtResource("service_bell")]
+position = Vector3(6.15, 1.11, 3.4)
+
+[node name="GuestRegister" parent="Props" instance=ExtResource("guest_register")]
+position = Vector3(5.6, 1.11, 3.4)
+
+[node name="RoomKey" parent="Props" instance=ExtResource("room_key")]
+position = Vector3(4.85, 1.11, 3.4)
+
+[node name="MailEnvelope" parent="Props" instance=ExtResource("mail_envelope")]
+position = Vector3(-8, 0.799, -2.7)
+
+[node name="LuggageCart" parent="Props" instance=ExtResource("luggage_cart")]
+position = Vector3(8, 0, 3.5)
+
+[node name="SteamerTrunk" parent="Props" instance=ExtResource("steamer_trunk")]
+position = Vector3(8, 0, 5.5)
+
+[node name="Briefcase" parent="Props" instance=ExtResource("briefcase")]
+position = Vector3(-8.2, 0, -1)
+
+[node name="Hatbox" parent="Props" instance=ExtResource("hatbox")]
+position = Vector3(8, 0.505, 5.5)
+
+[node name="Ashtray" parent="Props" instance=ExtResource("ashtray")]
+position = Vector3(5.15, 0.463, -4.2)
+
+[node name="IceBucket" parent="Props" instance=ExtResource("ice_bucket")]
+position = Vector3(7.2, 0.586, -5.5)
+
+[node name="WaterPitcher" parent="Props" instance=ExtResource("water_pitcher")]
+position = Vector3(7.1, 0.586, -5.4)
+
+[node name="DrinkingGlass" parent="Props" instance=ExtResource("drinking_glass")]
+position = Vector3(7.35, 0.586, -5.5)
+
+[node name="CoffeeCup" parent="Props" instance=ExtResource("coffee_cup")]
+position = Vector3(5.65, 0.484, -4.15)
+
+[node name="TeaSaucer" parent="Props" instance=ExtResource("tea_saucer")]
+position = Vector3(5.65, 0.463, -4.15)
+
+[node name="ServingTray" parent="Props" instance=ExtResource("serving_tray")]
+position = Vector3(5.9, 0.463, -4.2)
+
+[node name="RoomServiceCart" parent="Props" instance=ExtResource("room_service_cart")]
+position = Vector3(8, 0, -1)
+
+[node name="WasteBin" parent="Props" instance=ExtResource("waste_bin")]
+position = Vector3(3.5, 0, 3.5)
+
+[node name="TissueBox" parent="Props" instance=ExtResource("tissue_box")]
+position = Vector3(-7.75, 0.799, -2.65)
+
+[node name="TowelStack" parent="Props" instance=ExtResource("towel_stack")]
+position = Vector3(-8, 0.835, 4.45)
+
+[node name="SoapBar" parent="Props" instance=ExtResource("soap_bar")]
+position = Vector3(-6.45, 0.895, 4.8)
+
+[node name="ShampooBottle" parent="Props" instance=ExtResource("shampoo_bottle")]
+position = Vector3(-6.25, 0.895, 4.8)
+
+[node name="FireExtinguisher" parent="Props" instance=ExtResource("fire_extinguisher")]
+position = Vector3(-9.7, 0.2, 5.8)
+rotation = Vector3(0, 1.5707963267948966, 0)
+
+[node name="Radiator" parent="Props" instance=ExtResource("radiator")]
+position = Vector3(-9.55, 0, 0)
+rotation = Vector3(0, 1.5707963267948966, 0)
+
+[node name="WallAirConditioner" parent="Props" instance=ExtResource("wall_air_conditioner")]
+position = Vector3(-9.74, 2.9, 0)
+rotation = Vector3(0, 1.5707963267948966, 0)
+
+[node name="StandingFan" parent="Props" instance=ExtResource("standing_fan")]
+position = Vector3(8, 0, -5.1)
+
+[node name="PottedPlant" parent="Props" instance=ExtResource("potted_plant")]
+position = Vector3(8.7, 0, -6.6)
+
+[node name="CleaningCart" parent="Props" instance=ExtResource("cleaning_cart")]
+position = Vector3(-8, 0, 4.5)
+
+[node name="FoldingLuggageRack" parent="Props" instance=ExtResource("folding_luggage_rack")]
+position = Vector3(-4, 0, -5.8)
+
+[node name="Title" type="Label3D" parent="."]
+position = Vector3(0, 3.1, -7.88)
+rotation = Vector3(0, 0, 0)
+text = "THE GOLDEN CROWN\nHOTEL COLLECTION"
+font_size = 40
+pixel_size = 0.006
+modulate = Color(1, 0.83, 0.52, 1)
+
+[node name="ReceptionLabel" type="Label3D" parent="."]
+position = Vector3(5.5, 2.75, 1.41)
+rotation = Vector3(0, 0, 0)
+text = "RECEPTION"
+font_size = 40
+pixel_size = 0.006
+modulate = Color(1, 0.83, 0.52, 1)
+
+[node name="SuiteLabel" type="Label3D" parent="."]
+position = Vector3(-6.3, 3.3, -7.88)
+rotation = Vector3(0, 0, 0)
+text = "GUEST SUITE"
+font_size = 40
+pixel_size = 0.006
+modulate = Color(1, 0.83, 0.52, 1)
+
+[node name="LoungeLabel" type="Label3D" parent="."]
+position = Vector3(5.5, 3.3, -7.88)
+rotation = Vector3(0, 0, 0)
+text = "LOUNGE"
+font_size = 40
+pixel_size = 0.006
+modulate = Color(1, 0.83, 0.52, 1)
+
+[node name="ServiceLabel" type="Label3D" parent="."]
+position = Vector3(-6.5, 2.8, 7.86)
+rotation = Vector3(0, 3.141592653589793, 0)
+text = "ROOM SERVICE"
+font_size = 40
+pixel_size = 0.006
+modulate = Color(1, 0.83, 0.52, 1)
+
+[node name="WarmLight0" type="OmniLight3D" parent="."]
+position = Vector3(-6, 3.6, -4)
+light_color = Color(1, 0.83, 0.62, 1)
+light_energy = 1.4
+omni_range = 8.0
+
+[node name="WarmLight1" type="OmniLight3D" parent="."]
+position = Vector3(5.5, 3.6, -4)
+light_color = Color(1, 0.83, 0.62, 1)
+light_energy = 1.4
+omni_range = 8.0
+
+[node name="WarmLight2" type="OmniLight3D" parent="."]
+position = Vector3(-6, 3.6, 4.5)
+light_color = Color(1, 0.83, 0.62, 1)
+light_energy = 1.4
+omni_range = 8.0
+
+[node name="WarmLight3" type="OmniLight3D" parent="."]
+position = Vector3(5.5, 3.6, 4.5)
+light_color = Color(1, 0.83, 0.62, 1)
+light_energy = 1.4
+omni_range = 8.0
+
+[node name="WarmLight4" type="OmniLight3D" parent="."]
+position = Vector3(0, 3.6, 1)
+light_color = Color(1, 0.83, 0.62, 1)
+light_energy = 1.4
+omni_range = 8.0
+
+[node name="WarmLight5" type="OmniLight3D" parent="."]
+position = Vector3(0, 3.6, -5)
+light_color = Color(1, 0.83, 0.62, 1)
+light_energy = 1.4
+omni_range = 8.0

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/hatbox.tres" id="1_dljht"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/hatbox.res" id="2_wkw5a"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bmva8"]
+size = Vector3(0.42, 0.395, 0.42)
+
+[node name="Hatbox" type="StaticBody3D" unique_id=805597712]
+metadata/prop_id = "hatbox"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1834195588]
+material_override = ExtResource("1_dljht")
+mesh = ExtResource("2_wkw5a")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1402750445]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1975, 0)
+shape = SubResource("BoxShape3D_bmva8")

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/key_cubby.tres" id="1_o26jb"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/key_cubby.res" id="2_j7tkn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yjxuc"]
+size = Vector3(0.82, 1.0180001, 0.1945)
+
+[node name="KeyCubby" type="StaticBody3D" unique_id=839745337]
+metadata/prop_id = "key_cubby"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=228737771]
+material_override = ExtResource("1_o26jb")
+mesh = ExtResource("2_j7tkn")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=635224816]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50900006, -0.00024999678)
+shape = SubResource("BoxShape3D_yjxuc")

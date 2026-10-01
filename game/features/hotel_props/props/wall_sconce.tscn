@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/wall_sconce.tres" id="1_srh8o"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/wall_sconce.res" id="2_28yid"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rjha2"]
+size = Vector3(0.1426584, 0.27, 0.2175)
+
+[node name="WallSconce" type="StaticBody3D" unique_id=1481757365]
+metadata/prop_id = "wall_sconce"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=365077799]
+material_override = ExtResource("1_srh8o")
+mesh = ExtResource("2_28yid")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=61243984]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.135, 0.04625)
+shape = SubResource("BoxShape3D_rjha2")

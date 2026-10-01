@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/folding_luggage_rack.tres" id="1_qtb5y"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/folding_luggage_rack.res" id="2_e3xyi"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_06lit"]
+size = Vector3(0.64, 0.4978981, 0.4781052)
+
+[node name="FoldingLuggageRack" type="StaticBody3D" unique_id=1637136050]
+metadata/prop_id = "folding_luggage_rack"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=443864564]
+material_override = ExtResource("1_qtb5y")
+mesh = ExtResource("2_e3xyi")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=621099488]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.24894905, 0)
+shape = SubResource("BoxShape3D_06lit")

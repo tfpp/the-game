@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/room_key.tres" id="1_qm0d4"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/room_key.res" id="2_tv8ck"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3eut8"]
+size = Vector3(0.066996, 0.01, 0.1840551)
+
+[node name="RoomKey" type="StaticBody3D" unique_id=226788263]
+metadata/prop_id = "room_key"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1736816988]
+material_override = ExtResource("1_qm0d4")
+mesh = ExtResource("2_tv8ck")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1237511032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.005, -0.04797245)
+shape = SubResource("BoxShape3D_3eut8")

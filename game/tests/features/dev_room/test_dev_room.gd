@@ -4,6 +4,7 @@ extends GutTest
 const FEATURE := preload("res://features/dev_room/feature.tscn")
 const PlayerScene := preload("res://core/player/player.tscn")
 const WARP_SCENES: Array[String] = [
+	"res://features/hotel_props/feature.tscn",
 	"res://features/apartments/feature.tscn",
 	"res://features/room_doors/feature.tscn",
 	"res://features/hotel_annex/feature.tscn",
@@ -60,6 +61,7 @@ func test_distant_player_cannot_use_the_booth() -> void:
 
 func test_every_warp_door_and_its_return_marker_is_in_the_room() -> void:
 	var doors := {
+		"hotel_props": ["Entrance", "CasinoArrival"],
 		"apartments": ["Entrance", "CasinoArrival"],
 		"room_doors": ["Lobby/Door", "Lobby/LobbyArrival"],
 		"hotel_annex": ["Entrance", "CasinoArrival"],
@@ -75,7 +77,7 @@ func test_every_warp_door_and_its_return_marker_is_in_the_room() -> void:
 		if nodes[1] != "":
 			var marker := feature.get_node(nodes[1]) as Node3D
 			assert_true(INTERIOR.has_point(marker.global_position), "%s return" % path)
-	var gallery_exit := load(WARP_SCENES[4]).instantiate() as Node3D
+	var gallery_exit := load("res://features/shooting_gallery/feature.tscn").instantiate() as Node3D
 	add_child_autofree(gallery_exit)
 	assert_true(INTERIOR.has_point(gallery_exit.get_node("Arena/Exit").destination))
 

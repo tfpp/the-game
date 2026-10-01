@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/potted_plant.tres" id="1_mkywr"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/potted_plant.res" id="2_von6t"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rpyex"]
+size = Vector3(0.9526502, 0.99, 0.9416747)
+
+[node name="PottedPlant" type="StaticBody3D" unique_id=1686250844]
+metadata/prop_id = "potted_plant"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1170255145]
+material_override = ExtResource("1_mkywr")
+mesh = ExtResource("2_von6t")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1686461184]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0036748946, 0.495, 0.0073216558)
+shape = SubResource("BoxShape3D_rpyex")

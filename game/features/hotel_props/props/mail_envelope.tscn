@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/mail_envelope.tres" id="1_dboms"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/mail_envelope.res" id="2_51m8k"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1bml1"]
+size = Vector3(0.22, 0.004, 0.11)
+
+[node name="MailEnvelope" type="StaticBody3D" unique_id=912065557]
+metadata/prop_id = "mail_envelope"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=928787530]
+material_override = ExtResource("1_dboms")
+mesh = ExtResource("2_51m8k")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=950226427]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.001, 0)
+shape = SubResource("BoxShape3D_1bml1")

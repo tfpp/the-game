@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/soap_bar.tres" id="1_u43gn"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/soap_bar.res" id="2_vyiup"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mt7yf"]
+size = Vector3(0.082, 0.031, 0.052)
+
+[node name="SoapBar" type="StaticBody3D" unique_id=122798519]
+metadata/prop_id = "soap_bar"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=912026700]
+material_override = ExtResource("1_u43gn")
+mesh = ExtResource("2_vyiup")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1216553809]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0155, 0)
+shape = SubResource("BoxShape3D_mt7yf")

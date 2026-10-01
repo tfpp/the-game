@@ -2,6 +2,7 @@ extends GutTest
 
 const FEATURE := preload("res://features/gps/feature.tscn")
 const ROOM_SCENES: Array[String] = [
+	"res://features/hotel_props/feature.tscn",
 	"res://features/room_doors/feature.tscn",
 	"res://features/hotel_annex/feature.tscn",
 	"res://features/apartments/feature.tscn",

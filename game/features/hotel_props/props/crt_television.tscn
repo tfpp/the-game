@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/crt_television.tres" id="1_ejl2r"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/crt_television.res" id="2_bvga8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_muwtn"]
+size = Vector3(0.62, 0.455, 0.412)
+
+[node name="CrtTelevision" type="StaticBody3D" unique_id=1008689806]
+metadata/prop_id = "crt_television"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=177865815]
+material_override = ExtResource("1_ejl2r")
+mesh = ExtResource("2_bvga8")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1703078879]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2275, 0.016000003)
+shape = SubResource("BoxShape3D_muwtn")

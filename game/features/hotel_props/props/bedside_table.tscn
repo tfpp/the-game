@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/bedside_table.tres" id="1_k8kow"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/bedside_table.res" id="2_xq6fd"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rjt68"]
+size = Vector3(0.54, 0.665, 0.4525)
+
+[node name="BedsideTable" type="StaticBody3D" unique_id=1346492936]
+metadata/prop_id = "bedside_table"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1375762287]
+material_override = ExtResource("1_k8kow")
+mesh = ExtResource("2_xq6fd")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=2044843697]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3325, 0.011249989)
+shape = SubResource("BoxShape3D_rjt68")
