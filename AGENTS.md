@@ -36,6 +36,7 @@ After the required reading, follow the documents relevant to the task:
 | [docs/design/lore.md](docs/design/lore.md) | World premise, Golden Crown, slums, elevator, tone and canon. Required for every task. |
 | [docs/design/gameplay.md](docs/design/gameplay.md) | Intended player loop and system behavior. Required for every task. |
 | [docs/design/art-style.md](docs/design/art-style.md) | Visual direction, geometry, textures, materials and lighting. Read before visual or asset work. |
+| [docs/asset-generation.md](docs/asset-generation.md) | Agent workflow for creating and updating assets: Blockbench MCP, references, low-poly modeling, small textures, export and rendered review. Read before model or texture work. |
 | [docs/design/model-workflow.md](docs/design/model-workflow.md) | Model authoring, UV maps, generated texture templates, validation and the 128px texture limit. |
 | [docs/design/concept-art/](docs/design/concept-art/) | Visual references. Open relevant images before modeling or scene design: `dealer.png` and `dealer-side.png` for the character, `casino.png` for the casino, and `elevator-parking-garage.png` / `loot-parking-garage.png` for garage scenes. |
 | [docs/design/zones/](docs/design/zones/) | Location-specific design, grouped by zone type. Read the relevant zone document before changing its layout, encounters or atmosphere. |
