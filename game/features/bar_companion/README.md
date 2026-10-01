@@ -1,7 +1,7 @@
 # Bar companion (Vivienne)
 
-The salon bar at the back of the gaming floor (bar at (-7.4, -1.5, -10.7)) now has a
-working bartender and **Vivienne**, who sits on a brass stool at (-5.2, -1.5, -8.55)
+The salon bar at the back of the gaming floor (bar at (-7.4, -1.25, -10.7)) now has a
+working bartender and **Vivienne**, who sits on a brass stool at (-5.2, -1.25, -8.55)
 facing the counter. Everything uses Use (E, Circle / B, or mobile **USE**).
 
 - **Bartender** (Use at the counter): a drink costs $5 through `PlayerMoney.charge()`.
@@ -68,7 +68,7 @@ Tests: `tests/features/bar_companion/`.
 
 ## Celeste: an uncertain ally
 
-Celeste stands beside the bar at **(-6.6, -1.5, -7.8)**, in a moss green evening
+Celeste stands beside the bar at **(-6.6, -1.25, -7.8)**, in a moss green evening
 dress with a swept fringe and a gold brooch. Use **E**, **B /
 Circle**, or touch **USE** to invite her along for free; Use her again to part ways.
 She accompanies one player at a time around the gaming floor for up to five minutes,
@@ -114,7 +114,7 @@ The bartender's existing NetworkedInteraction owns `order` with exactly one
 allows only one pending payment per player. `PlayerMoney.charge` remains the only
 wallet; `PlayerInventory.collect` delivers items. A full inventory rejects before
 payment. If it fills or the buyer disconnects during payment, the paid item lands
-on the existing customer-side floor at (-6.5, -1.5, -8.35), as a normal shared
+on the existing customer-side floor at (-6.5, -1.25, -8.35), as a normal shared
 pickup. Session generations discard stale callbacks after a mode change.
 
 Bottled beer applies the same intoxication/charisma rules as the original drink,

@@ -36,7 +36,7 @@ walk back in from the start of their route 6 s later.
   `PlayerSkin` tone, `PlayerAppearance` hair and `ClothingCatalog` shirt/pants colors,
   so no new textures are needed; ties, beards, glasses and badges are small boxes on
   the rig's torso and head pivots.
-- Routes stay on the clear aisles of the gaming floor (y −1.5);
+- Routes stay on the clear aisles of the gaming floor (y −1.25);
   `tests/features/casino_patrons/test_patron_routes.gd` sweeps every leg against the
   real room, slots and roulette.
 
@@ -70,7 +70,7 @@ still allocates apartments during the respawn delay. Existing gun controls apply
 
 Trump (look 5) follows Mamdani along the slot aisle, staying about 1.5 metres
 away and stopping when he catches up. He has blond swept hair, a navy suit, a
-red tie and a name tag. Find him initially at (8.5, -1.5, -11.7).
+red tie and a name tag. Find him initially at (8.5, -1.25, -11.7).
 Use E, controller B/Circle or touch USE near him to bribe him. The price doubles
 with each bribe: $100, $200, $400, $800, $1,600 (`Trump.bribe_price()`), charged
 through the existing wallet; insufficient funds leave it unchanged and add nothing.

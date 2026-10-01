@@ -23,7 +23,7 @@ func test_decor_library_reuses_painting_and_fixtures_without_collision() -> void
 	assert_eq(_decor.mesh_library.get_item_name(Decor.PAINTING), "FramedLandscape")
 	assert_eq(_decor.mesh_library.get_item_mesh(Decor.PAINTING).get_surface_count(), 2)
 	assert_gt(_decor.get_used_cells_by_item(Decor.PAINTING).size(), 10)
-	assert_eq(_decor.get_used_cells_by_item(Decor.WALL_LIGHT).size(), 20)
+	assert_eq(_decor.get_used_cells_by_item(Decor.WALL_LIGHT).size(), 21)
 	assert_eq(_decor.get_cell_item(Vector3i(-9, 12, 30)), Decor.PAINTING)
 	assert_eq(_decor.get_cell_item(Vector3i(13, 12, 38)), Decor.PAINTING)
 
@@ -43,7 +43,7 @@ func test_saved_fixture_cells_have_local_lights_and_only_two_shadow_pools() -> v
 		if light is OmniLight3D:
 			assert_false(light.shadow_enabled)
 	assert_eq(shadow_count, 2)
-	assert_lte(lights.get_child_count(), 30, "Leave room below the 32-light frame limit")
+	assert_lte(lights.get_child_count(), 31, "Leave room below the 32-light frame limit")
 	assert_false(_decor.is_processing(), "Runtime lights need no polling")
 
 
@@ -73,8 +73,8 @@ func test_indoor_lighting_stays_fixed_when_the_clock_changes() -> void:
 
 
 func test_gridmap_batches_stay_within_compatibility_light_budget() -> void:
-	var lamps := _decor.get_node("FixtureLights").find_children("*", "OmniLight3D", false, false)
-	for node: Node in _room.get_node("Casino").get_children():
+	var lamps := _room.find_children("*", "OmniLight3D", true, false)
+	for node: Node in _room.find_children("*", "GridMap", true, false):
 		if not node is GridMap:
 			continue
 		var grid := node as GridMap

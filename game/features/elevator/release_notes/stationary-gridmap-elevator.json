@@ -1,0 +1,10 @@
+{
+  "title": "Stationary Golden Crown elevator",
+  "summary": "A wood-and-brass elevator now anchors the north casino wall, with working doors and controls.",
+  "notes": [
+    "Center one elevator opposite spawn in a reusable GridMap bay with a recessed entrance.",
+    "Open or close the doors from hall and interior buttons, and hold them open for players in the threshold.",
+    "Organize shared models and use authenticated interactions with late-join door state replication.",
+    "Keep casino travel disabled while retaining an optional transfer hook for future destinations."
+  ]
+}

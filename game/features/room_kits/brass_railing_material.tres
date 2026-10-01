@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://features/room_kits/brass_railing.gdshader" id="shader"]
+[ext_resource type="Texture2D" path="res://assets/room_kits/brass_pit_railing/aged_brass_palette.png" id="texture"]
+
+[resource]
+resource_name = "WalnutAndPolishedGoldBrass"
+shader = ExtResource("shader")
+shader_parameter/albedo_texture = ExtResource("texture")

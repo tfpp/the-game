@@ -43,14 +43,14 @@ ring_segments = 4
 script = ExtResource("root")
 
 [node name="Celeste" parent="." instance=ExtResource("celeste")]
-position = Vector3(-6.6, -1.5, -7.8)
+position = Vector3(-6.6, -1.25, -7.8)
 
 [node name="NetworkedEntity" type="Node" parent="."]
 script = ExtResource("entity")
 replicated_properties = Array[NodePath]([NodePath(".:stats")])
 
 [node name="Bartender" type="Node3D" parent="."]
-position = Vector3(-6.5, -0.4, -9.6)
+position = Vector3(-6.5, -0.15, -9.6)
 script = ExtResource("bartender")
 
 [node name="NetworkedEntity" type="Node" parent="Bartender"]
@@ -66,7 +66,7 @@ font_size = 36
 outline_size = 10
 
 [node name="Stool" type="Node3D" parent="."]
-position = Vector3(-5.2, -1.5, -8.67)
+position = Vector3(-5.2, -1.25, -8.67)
 
 [node name="Seat" type="MeshInstance3D" parent="Stool"]
 position = Vector3(0, 0.71, 0)
@@ -89,7 +89,7 @@ mesh = SubResource("ring")
 surface_material_override/0 = ExtResource("brass")
 
 [node name="Vivienne" type="Node3D" parent="."]
-position = Vector3(-5.2, -1.5, -8.55)
+position = Vector3(-5.2, -1.25, -8.55)
 script = ExtResource("companion")
 
 [node name="NetworkedEntity" type="Node" parent="Vivienne"]

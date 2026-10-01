@@ -43,7 +43,7 @@ func test_stage_sits_on_the_promenade_floor_under_its_ceiling() -> void:
 		assert_false(down.is_empty(), "floor under %s" % point)
 		if not down.is_empty():
 			assert_almost_eq((down["position"] as Vector3).y, 0.0, 0.03, "flush on the floor")
-		var up := _ray(point + Vector3(0, 0.3, 0), point + Vector3(0, 8, 0))
+		var up := _ray(point + Vector3(0, 0.3, 0), point + Vector3(0, 10, 0))
 		assert_false(up.is_empty(), "covered by the casino ceiling")
 		if not up.is_empty():
 			assert_gt((up["position"] as Vector3).y, 3.6, "headroom over sign and sombreros")

@@ -8,7 +8,9 @@ const RAMP := 2
 const WOOD_WALL := 3
 const PIT_WALL := 4
 const DOOR_HEADER := 7
-const PIT_LAYER := -6
+const STANDARD_WALL_HEIGHT := 5.0
+const PIT_HEIGHT := STANDARD_WALL_HEIGHT / 4.0
+const PIT_LAYER := -5
 const WEST := -24
 const EAST := 24
 const NORTH := -20
@@ -26,7 +28,7 @@ static func populate(floors: GridMap, walls: GridMap, side_walls: GridMap) -> vo
 			var ramp := x >= -3 and x < 3 and ((z >= -12 and z < -6) or (z >= 6 and z < 12))
 			if not ramp:
 				floors.set_cell_item(Vector3i(x, PIT_LAYER if pit else 0, z), FLOOR)
-	# Six solid wedge strips span each 6 m run with the original 1:4 slope.
+	# Six solid wedge strips span each 6 m run, rising one quarter-wall height.
 	var reverse := floors.get_orthogonal_index_from_basis(Basis(Vector3.UP, PI))
 	for x: int in range(-3, 3):
 		floors.set_cell_item(Vector3i(x, PIT_LAYER, -9), RAMP)
@@ -39,7 +41,8 @@ static func _build_walls(walls: GridMap, side_walls: GridMap) -> void:
 	var west := walls.get_orthogonal_index_from_basis(Basis(Vector3.UP, PI / 2))
 	var east := walls.get_orthogonal_index_from_basis(Basis(Vector3.UP, -PI / 2))
 	for x: int in range(WEST, EAST, 2):
-		walls.set_cell_item(Vector3i(x, 0, NORTH), WOOD_WALL)
+		if x < -4 or x >= 4:
+			walls.set_cell_item(Vector3i(x, 0, NORTH), WOOD_WALL)
 		walls.set_cell_item(
 			Vector3i(x + 1, 0, SOUTH - 1), DOOR_HEADER if x >= -2 and x < 2 else WOOD_WALL, south
 		)

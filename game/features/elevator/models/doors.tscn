@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3]
 [ext_resource type="ArrayMesh" path="res://assets/procedural_rooms/models/elevator/frame.tres" id="1"]
 [ext_resource type="ArrayMesh" path="res://assets/procedural_rooms/models/elevator/leaf.tres" id="2"]
-[ext_resource type="Material" path="res://features/procedural_rooms/materials/elevator_model.tres" id="3"]
+[ext_resource type="Material" path="res://features/elevator/models/painted_wood_brass.tres" id="3"]
 [sub_resource type="BoxShape3D" id="Jamb"]
 size = Vector3(0.16, 3.15, 0.24)
 [sub_resource type="BoxShape3D" id="Header"]

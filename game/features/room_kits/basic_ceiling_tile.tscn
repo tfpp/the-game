@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/room_kits/ceiling_tiles/basic_ceiling_tile.res" id="mesh"]
+[ext_resource type="Material" path="res://features/room_kits/ceiling_tiles_material.tres" id="finish"]
+
+[node name="BasicCeilingTile" type="MeshInstance3D"]
+mesh = ExtResource("mesh")
+material_override = ExtResource("finish")

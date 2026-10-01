@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://g0wcwcsesxn6"
-path="res://.godot/imported/car__albedo.png-e887acd9ed2ca0875308dad7f8dd8fbe.ctex"
+path.s3tc="res://.godot/imported/car__albedo.png-e887acd9ed2ca0875308dad7f8dd8fbe.s3tc.ctex"
+path.etc2="res://.godot/imported/car__albedo.png-e887acd9ed2ca0875308dad7f8dd8fbe.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "3f952d5f59fb7878f4485f4b51476af6"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/procedural_rooms/models/car/car__albedo.png"
-dest_files=["res://.godot/imported/car__albedo.png-e887acd9ed2ca0875308dad7f8dd8fbe.ctex"]
+dest_files=["res://.godot/imported/car__albedo.png-e887acd9ed2ca0875308dad7f8dd8fbe.s3tc.ctex", "res://.godot/imported/car__albedo.png-e887acd9ed2ca0875308dad7f8dd8fbe.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +42,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

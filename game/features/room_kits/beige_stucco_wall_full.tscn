@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/room_kits/beige_stucco_wall_full/beige_stucco_wall_full.res" id="mesh"]
+[ext_resource type="Material" path="res://features/room_kits/beige_stucco_wall_full_material.tres" id="finish"]
+
+[sub_resource type="BoxShape3D" id="shape"]
+size = Vector3(1, 5, 0.2)
+
+[node name="BeigeStuccoWallFull" type="MeshInstance3D"]
+mesh = ExtResource("mesh")
+material_override = ExtResource("finish")
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+position = Vector3(0, 2.5, 0)
+shape = SubResource("shape")

@@ -2,7 +2,7 @@ extends Node3D
 ## Validated landing calls and in-cab floor buttons for one physical elevator.
 
 const Showcase := preload("res://features/procedural_rooms/showcase.gd")
-const BUTTON_MODEL := preload("res://features/procedural_rooms/elevator_button_model.tscn")
+const BUTTON_MODEL := preload("res://features/elevator/models/button.tscn")
 @export var floor_index := 4
 @export var ride_button := false
 @export var lift_path := NodePath("../../Lift")

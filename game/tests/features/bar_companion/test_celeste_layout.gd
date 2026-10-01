@@ -1,6 +1,6 @@
 extends GutTest
 
-const ROOM := preload("res://world/room.tscn")
+const ROOM := preload("res://features/casino_hub/gridmap/playable.tscn")
 const BAR := preload("res://features/bar_companion/feature.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
 var _room: Node3D
@@ -19,7 +19,7 @@ func before_each() -> void:
 
 func test_home_has_floor_body_clearance_and_space_from_vivienne_and_ramp() -> void:
 	var home := _npc.global_position
-	assert_eq(home, Vector3(-6.6, -1.5, -7.8))
+	assert_eq(home, Vector3(-6.6, -1.25, -7.8))
 	var space := _room.get_world_3d().direct_space_state
 	var ray := PhysicsRayQueryParameters3D.create(home + Vector3.UP, home + Vector3.DOWN, 1)
 	var hit := space.intersect_ray(ray)
@@ -48,10 +48,10 @@ func test_follows_clear_route_on_floor_and_faces_motion() -> void:
 	player.set_physics_process(false)
 	player.net_position = _npc.global_position + Vector3(0, 0, 1)
 	_npc.use()
-	player.net_position = Vector3(-3.6, -1.5, -7.8)
+	player.net_position = Vector3(-3.6, -1.25, -7.8)
 	await wait_physics_frames(100)
 	assert_gt(_npc.global_position.x, -6.0, "actually moves toward the leader")
-	assert_almost_eq(_npc.global_position.y, -1.5, 0.04, "does not sink or float")
+	assert_almost_eq(_npc.global_position.y, -1.25, 0.04, "does not sink or float")
 	var forward := _npc.global_basis * Vector3.FORWARD
 	assert_gt(forward.x, 0.0, "faces toward movement, not backwards")
 
@@ -64,9 +64,9 @@ func test_world_collision_stops_walk_through_counter() -> void:
 	player.net_position = _npc.global_position
 	_npc.use()
 	# Simulate a leader jumping over the counter; Celeste must stay on the near side.
-	_npc.global_position = Vector3(-6, -1.5, -8.5)
+	_npc.global_position = Vector3(-6, -1.25, -8.5)
 	_npc.net_position = _npc.global_position
 	_npc._trail.clear()
-	player.net_position = Vector3(-6, -1.5, -11)
+	player.net_position = Vector3(-6, -1.25, -11)
 	await wait_physics_frames(100)
 	assert_gt(_npc.global_position.z, -9.4, "cannot walk through the bar")

@@ -1,0 +1,65 @@
+[gd_scene load_steps=14 format=3]
+[ext_resource type="PackedScene" path="res://features/elevator/models/cab.tscn" id="cab"]
+[ext_resource type="PackedScene" path="res://features/room_kits/wood_panel_wall.tscn" id="wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/ceiling.tres" id="plaster"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="walnut"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
+[sub_resource type="BoxMesh" id="HeaderMesh"]
+size = Vector3(3, 1.9, 0.2)
+material = ExtResource("walnut")
+[sub_resource type="BoxMesh" id="RoofMesh"]
+size = Vector3(8, 1.9, 3.6)
+material = ExtResource("plaster")
+[sub_resource type="BoxMesh" id="PlateMesh"]
+size = Vector3(2.9, 0.68, 0.06)
+material = ExtResource("walnut")
+[sub_resource type="BoxShape3D" id="SideShape"]
+size = Vector3(0.2, 3.1, 3.9)
+[sub_resource type="BoxShape3D" id="BackShape"]
+size = Vector3(3, 3.1, 0.2)
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(8, 0.2, 4)
+[sub_resource type="BoxShape3D" id="RoofShape"]
+size = Vector3(8, 1.9, 3.6)
+[sub_resource type="BoxShape3D" id="FacadeShape"]
+size = Vector3(2.3, 5, 0.2)
+[node name="ElevatorBay" type="Node3D"]
+[node name="Interior" parent="." instance=ExtResource("cab")]
+position = Vector3(0, 0.02, -1.55)
+[node name="LeftFacade" parent="." instance=ExtResource("wood")]
+position = Vector3(-2.85, 0, 0)
+scale = Vector3(2.3, 2, 1)
+[node name="RightFacade" parent="." instance=ExtResource("wood")]
+position = Vector3(2.85, 0, 0)
+scale = Vector3(2.3, 2, 1)
+[node name="Header" type="MeshInstance3D" parent="."]
+position = Vector3(0, 4.05, -0.22)
+mesh = SubResource("HeaderMesh")
+[node name="Roof" type="MeshInstance3D" parent="."]
+position = Vector3(0, 4.05, -2.2)
+mesh = SubResource("RoofMesh")
+[node name="SignPlate" type="MeshInstance3D" parent="."]
+position = Vector3(0, 3.48, 0.1)
+mesh = SubResource("PlateMesh")
+[node name="Body" type="StaticBody3D" parent="."]
+[node name="Left" type="CollisionShape3D" parent="Body"]
+position = Vector3(-1.6, 1.55, -2.05)
+shape = SubResource("SideShape")
+[node name="Right" type="CollisionShape3D" parent="Body"]
+position = Vector3(1.6, 1.55, -2.05)
+shape = SubResource("SideShape")
+[node name="Back" type="CollisionShape3D" parent="Body"]
+position = Vector3(0, 1.55, -3.15)
+shape = SubResource("BackShape")
+[node name="Floor" type="CollisionShape3D" parent="Body"]
+position = Vector3(0, -0.1, -2)
+shape = SubResource("FloorShape")
+[node name="Roof" type="CollisionShape3D" parent="Body"]
+position = Vector3(0, 4.05, -2.2)
+shape = SubResource("RoofShape")
+[node name="LeftFacade" type="CollisionShape3D" parent="Body"]
+position = Vector3(-2.85, 2.5, -0.1)
+shape = SubResource("FacadeShape")
+[node name="RightFacade" type="CollisionShape3D" parent="Body"]
+position = Vector3(2.85, 2.5, -0.1)
+shape = SubResource("FacadeShape")

@@ -68,7 +68,7 @@ func _run() -> void:
 		while _npc.net_leader != 0:
 			await get_tree().process_frame
 		await get_tree().create_timer(0.3).timeout
-		assert(_npc.net_position.distance_to(Vector3(-6.6, -1.5, -7.8)) < 0.01)
+		assert(_npc.net_position.distance_to(Vector3(-6.6, -1.25, -7.8)) < 0.01)
 		print("CELESTE_DISCONNECT_PASS")
 		get_tree().quit()
 

@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/room_kits/ceiling_tiles/ceiling_tiles_albedo.png" id="atlas"]
+
+[resource]
+resource_name = "AgedPaintedTinAndPlaster"
+albedo_texture = ExtResource("atlas")
+roughness = 0.72
+texture_filter = 3

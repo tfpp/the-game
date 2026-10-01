@@ -91,18 +91,18 @@ func test_five_metre_perimeter_and_ceiling_have_matching_collision() -> void:
 		)
 	for x: float in [-23.0, 0.0, 23.0]:
 		for z: float in [-19.0, 0.0, 19.0]:
-			var ray := PhysicsRayQueryParameters3D.create(Vector3(x, 4.5, z), Vector3(x, 6, z), 1)
+			var ray := PhysicsRayQueryParameters3D.create(Vector3(x, 5.2, z), Vector3(x, 10, z), 1)
 			var hit := _world.get_world_3d().direct_space_state.intersect_ray(ray)
 			assert_false(hit.is_empty(), "Ceiling covers %s, %s" % [x, z])
 			if not hit.is_empty():
-				assert_almost_eq((hit["position"] as Vector3).y, 5.0, 0.001)
+				assert_almost_eq((hit["position"] as Vector3).y, 8.75, 0.001)
 
 
 func test_double_width_panels_join_without_gaps_on_all_four_sides() -> void:
 	var walls := _room.get_node("Casino/WallsNorthSouth") as GridMap
 	var sides := _room.get_node("Casino/WallsEastWest") as GridMap
-	assert_eq(walls.get_used_cells_by_item(3).size(), 46)
-	assert_eq(sides.get_used_cells_by_item(3).size(), 40)
+	assert_eq(walls.get_used_cells_by_item(3).size(), 42)
+	assert_eq(sides.get_used_cells_by_item(3).size(), 27)
 	for x: int in range(-24, 24):
 		for sign_z: float in [-1.0, 1.0]:
 			var ray := PhysicsRayQueryParameters3D.create(
@@ -112,7 +112,7 @@ func test_double_width_panels_join_without_gaps_on_all_four_sides() -> void:
 	for z: int in range(-20, 20):
 		for sign_x: float in [-1.0, 1.0]:
 			var ray := PhysicsRayQueryParameters3D.create(
-				Vector3(sign_x * 23, 4.5, z + 0.5), Vector3(sign_x * 25, 4.5, z + 0.5), 1
+				Vector3(sign_x * 23, 4.5, z + 0.5), Vector3(sign_x * 36, 4.5, z + 0.5), 1
 			)
 			assert_false(_world.get_world_3d().direct_space_state.intersect_ray(ray).is_empty())
 
@@ -137,3 +137,23 @@ func test_spawn_jitter_and_each_slot_machine_approach_are_clear() -> void:
 		var result := _world.get_world_3d().direct_space_state.cast_motion(query)
 		assert_almost_eq(result[0], 1.0, 0.001, str(machine.name))
 		assert_lt(approach.distance_to(machine.interaction_point()), SlotMachine.USE_RANGE)
+
+
+func test_pit_columns_stack_two_wall_units_and_upper_walls_close_the_hall() -> void:
+	var structure := _room.get_node("Casino/PitStructure")
+	for x: int in [-13, 13]:
+		for z: int in [-10, 10]:
+			var tower := structure.get_node("Column_%s_%s" % [x, z]) as Node3D
+			assert_eq(tower.position, Vector3(x, -1.25, z))
+			assert_eq(tower.get_child_count(), 2)
+			var top := tower.get_node("Story2/StackTop") as Marker3D
+			assert_almost_eq(top.global_position.y, 8.75, 0.001)
+			var ray := PhysicsRayQueryParameters3D.create(
+				Vector3(x - 2, 2, z), Vector3(x + 2, 2, z), 1
+			)
+			assert_false(_world.get_world_3d().direct_space_state.intersect_ray(ray).is_empty())
+	for end: Vector3 in [
+		Vector3(-36, 8, 0), Vector3(36, 8, 0), Vector3(0, 8, -37), Vector3(0, 8, 37)
+	]:
+		var ray := PhysicsRayQueryParameters3D.create(Vector3(0.5, 8, 0.5), end, 1)
+		assert_false(_world.get_world_3d().direct_space_state.intersect_ray(ray).is_empty())

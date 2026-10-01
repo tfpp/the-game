@@ -1,5 +1,9 @@
 # The Golden Crown
 
+The active game uses the saved [casino GridMap](gridmap/README.md), with a **1.25 m**
+deep gaming pit, quarter-height retaining walls and six-metre ramps to ground level.
+The geometry below describes the retained legacy CSG room used for reference.
+
 A faded 1964 casino. `world/room.tscn` instances `interior.tscn` and
 retains the stable `Room/Spawn` path and all five original annex entrances. This
 folder intentionally has no `feature.tscn`: the architecture is part of the room,

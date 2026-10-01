@@ -26,7 +26,7 @@ func _ready() -> void:
 		"Golden Crown / GridMap layout preview\n"
 		+ "F1: overview / F2 or click: walk / Esc: release mouse\n"
 		+ "Arrow keys: move / Shift: jump / Controller: left stick + A\n"
-		+ "Gaming pit: -1.5 m / Surrounding floor: 0 m"
+		+ "Gaming pit: -1.25 m / Surrounding floor: 0 m"
 	)
 	canvas.add_child(_caption)
 	_capture.call_deferred()
@@ -79,6 +79,19 @@ func _capture() -> void:
 	_camera.position = Vector3(1.5, 1.65, -16)
 	_camera.look_at(Vector3(0, 1.2, -20))
 	await _save(args[0], "wood-walls")
+	($Casino/Ceiling as Node3D).visible = true
+	_camera.position = Vector3(4, 0.4, 8)
+	_camera.look_at(Vector3(-13, 4.5, -10))
+	await _save(args[0], "two-storey-columns")
+	_camera.position = Vector3(-14, 2.4, 9)
+	_camera.look_at(Vector3(-26, 4, 0))
+	await _save(args[0], "mariachi-balcony")
+	_camera.position = Vector3(-25, 6.65, -3)
+	_camera.look_at(Vector3(-30, 5.7, 1))
+	await _save(args[0], "balcony-bar")
+	_camera.position = Vector3(-25, 1.65, -13)
+	_camera.look_at(Vector3(-28, 3.5, -7))
+	await _save(args[0], "balcony-stairs")
 	print("CASINO_GRIDMAP_CAPTURE: actual saved GridMaps rendered")
 	get_tree().quit()
 

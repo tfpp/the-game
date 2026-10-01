@@ -1,9 +1,13 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://features/casino_hub/gridmap/preview.gd" id="review"]
 [ext_resource type="PackedScene" path="res://features/casino_hub/casino_gridmap.tscn" id="casino"]
+
+[ext_resource type="PackedScene" path="res://features/mariachi_band/feature.tscn" id="band"]
 
 [node name="CasinoGridMapReview" type="Node3D"]
 script = ExtResource("review")
 
 [node name="Casino" parent="." instance=ExtResource("casino")]
+
+[node name="MariachiBand" parent="." instance=ExtResource("band")]

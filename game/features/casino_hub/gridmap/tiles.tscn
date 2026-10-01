@@ -1,10 +1,17 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="carpet"]
 [ext_resource type="PackedScene" path="res://features/room_kits/wood_panel_wall.tscn" id="wood"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/tile.tres" id="tile"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="walnut"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/ceiling.tres" id="plaster"]
+
+[ext_resource type="PackedScene" path="res://features/room_kits/brass_railing.tscn" id="railing"]
+[ext_resource type="PackedScene" path="res://features/room_kits/beige_stucco_wall.tscn" id="stucco"]
+
+[ext_resource type="PackedScene" path="res://features/room_kits/beige_stucco_wall_full.tscn" id="full_stucco"]
+
+[ext_resource type="PackedScene" path="res://features/room_kits/casino_stair_module.tscn" id="stairs"]
 
 [sub_resource type="QuadMesh" id="CeilingTileMesh"]
 size = Vector2(1, 1)
@@ -46,10 +53,10 @@ size = Vector3(1, 0.25, 1)
 [sub_resource type="PrismMesh" id="RampMesh"]
 material = ExtResource("carpet")
 left_to_right = 0.0
-size = Vector3(6, 1.5, 1)
+size = Vector3(6, 1.25, 1)
 
 [sub_resource type="ConvexPolygonShape3D" id="RampShape"]
-points = PackedVector3Array(-3, -0.75, -0.5, 3, -0.75, -0.5, -3, 0.75, -0.5, -3, -0.75, 0.5, 3, -0.75, 0.5, -3, 0.75, 0.5)
+points = PackedVector3Array(-3, -0.625, -0.5, 3, -0.625, -0.5, -3, 0.625, -0.5, -3, -0.625, 0.5, 3, -0.625, 0.5, -3, 0.625, 0.5)
 
 [node name="CasinoGridTiles" type="Node3D"]
 
@@ -72,7 +79,7 @@ mesh = SubResource("WallMesh")
 shape = SubResource("WallShape")
 
 [node name="Ramp" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.75, -0.5)
+position = Vector3(0, 0.625, -0.5)
 rotation_degrees = Vector3(0, -90, 0)
 mesh = SubResource("RampMesh")
 
@@ -115,3 +122,13 @@ shape = SubResource("HeaderShape")
 [node name="CeilingTile" type="MeshInstance3D" parent="."]
 rotation_degrees = Vector3(90, 0, 0)
 mesh = SubResource("CeilingTileMesh")
+
+[node name="RailingKit" parent="." instance=ExtResource("railing")]
+
+[node name="StuccoPitWall" parent="." instance=ExtResource("stucco")]
+position = Vector3(0, 0, -0.5)
+
+[node name="StuccoWall" parent="." instance=ExtResource("full_stucco")]
+position = Vector3(0, 0, -0.5)
+
+[node name="CasinoStairFlight" parent="." instance=ExtResource("stairs")]

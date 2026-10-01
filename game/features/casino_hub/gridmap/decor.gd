@@ -87,7 +87,7 @@ static func _append(
 
 static func populate(grid: GridMap) -> void:
 	grid.clear()
-	for x: int in [-16, 0, 16]:
+	for x: int in [-16, -5, 5, 16]:
 		_place(grid, WALL_LIGHT, Vector3i(x, 12, -20), 0)
 	for x: int in [-16, -8, 16]:
 		_place(grid, WALL_LIGHT, Vector3i(x, 12, 20), PI)

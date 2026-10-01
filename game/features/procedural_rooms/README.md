@@ -10,8 +10,9 @@ The standalone cyan **PROCEDURAL GARAGE**
 teleporter stands on the north wall of the [dev room](../dev_room/README.md),
 or locate **Garage Teleporter** in GPS. E / controller
 Use / touch Use teleports to B1. Its **RETURN TO CASINO** portal is beside arrival.
-Players normally arrive through the non-moving [garage elevator](../elevator/README.md)
-set into the south lobby wall; its partner cab stands in B1's front wall.
+The casino currently has a non-moving [elevator](../elevator/README.md) with travel
+disabled; its old paired garage connection is not loaded. The procedural garage
+and its physical service lift remain available through the development entrance.
 The kit uses a fixed seed on every peer; there is no live reroll control, general random
 layout solver or automatic map mutation. The proposed complete system is described in
 [the plan](../../../docs/design/procedural-rooms.md).
@@ -220,8 +221,7 @@ for the actual model gallery and UV checker controls.
 
 ## Painted service elevator
 
-The physical lift now uses reusable `elevator_cab_model.tscn`,
-`elevator_door_model.tscn` and `elevator_button_model.tscn` prefabs. Its wood/brass
+The physical lift now uses reusable `cab.tscn`, `doors.tscn` and `button.tscn` from `features/elevator/models/` prefabs. Its wood/brass
 interior, carpet, rails, lamp and matching doors share one 128×128 atlas. The cab
 floor and doorway collision retain their original dimensions. Authored UV1 keeps
 the painting attached during travel; developer sliding-door leaves use local

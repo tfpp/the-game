@@ -52,179 +52,179 @@ size = Vector3(7, 0.98, 0.4)
 script = ExtResource("finishes")
 
 [node name="CardTable0" parent="." instance=ExtResource("card_table")]
-position = Vector3(-5.5, -1.5, -6.2)
+position = Vector3(-5.5, -1.25, -6.2)
 rotation = Vector3(0, 0, 0)
 
 [node name="TableBody0" type="StaticBody3D" parent="."]
-position = Vector3(-5.5, -1.03, -5.66)
+position = Vector3(-5.5, -0.78, -5.66)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="TableBody0" groups=["radar_geometry"]]
 shape = SubResource("shape21")
 
 [node name="Dealer0" parent="." instance=ExtResource("card_dealer")]
-position = Vector3(-5.5, -1.5, -6.65)
+position = Vector3(-5.5, -1.25, -6.65)
 rotation = Vector3(0, 0, 0)
 
 [node name="Body" parent="Dealer0" index="0"]
 seed_phase = 0.0
 
 [node name="ChairBody0_0" type="StaticBody3D" parent="."]
-position = Vector3(-3.838299, -0.9, -5.103984)
+position = Vector3(-3.838299, -0.65, -5.103984)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="ChairBody0_0" groups=["radar_geometry"]]
 shape = SubResource("shape22")
 
 [node name="Patron0_0" parent="." instance=ExtResource("lady")]
-position = Vector3(-3.838299, -1.5, -5.103984)
+position = Vector3(-3.838299, -1.25, -5.103984)
 rotation = Vector3(0, 2.356194, 0)
 
 [node name="ChairBody0_1" type="StaticBody3D" parent="."]
-position = Vector3(-5.5, -0.9, -4.65)
+position = Vector3(-5.5, -0.65, -4.65)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="ChairBody0_1" groups=["radar_geometry"]]
 shape = SubResource("shape23")
 
 [node name="Patron0_1" parent="." instance=ExtResource("seated")]
-position = Vector3(-5.5, -1.5, -4.65)
+position = Vector3(-5.5, -1.25, -4.65)
 rotation = Vector3(0, 3.141593, 0)
 
 [node name="ChairBody0_2" type="StaticBody3D" parent="."]
-position = Vector3(-7.161701, -0.9, -5.103984)
+position = Vector3(-7.161701, -0.65, -5.103984)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="ChairBody0_2" groups=["radar_geometry"]]
 shape = SubResource("shape24")
 
 [node name="Patron0_2" parent="." instance=ExtResource("seated")]
-position = Vector3(-7.161701, -1.5, -5.103984)
+position = Vector3(-7.161701, -1.25, -5.103984)
 rotation = Vector3(0, 3.926991, 0)
 
 [node name="CardTable1" parent="." instance=ExtResource("card_table")]
-position = Vector3(-5.5, -1.5, -1.2)
+position = Vector3(-5.5, -1.25, -1.2)
 rotation = Vector3(0, 0, 0)
 
 [node name="TableBody1" type="StaticBody3D" parent="."]
-position = Vector3(-5.5, -1.03, -0.66)
+position = Vector3(-5.5, -0.78, -0.66)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="TableBody1" groups=["radar_geometry"]]
 shape = SubResource("shape25")
 
 [node name="Dealer1" parent="." instance=ExtResource("card_dealer")]
-position = Vector3(-5.5, -1.5, -1.65)
+position = Vector3(-5.5, -1.25, -1.65)
 rotation = Vector3(0, 0, 0)
 
 [node name="Body" parent="Dealer1" index="0"]
 seed_phase = 0.7
 
 [node name="ChairBody1_0" type="StaticBody3D" parent="."]
-position = Vector3(-3.838299, -0.9, -0.103984)
+position = Vector3(-3.838299, -0.65, -0.103984)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="ChairBody1_0" groups=["radar_geometry"]]
 shape = SubResource("shape26")
 
 [node name="Patron1_0" parent="." instance=ExtResource("seated")]
-position = Vector3(-3.838299, -1.5, -0.103984)
+position = Vector3(-3.838299, -1.25, -0.103984)
 rotation = Vector3(0, 2.356194, 0)
 
 [node name="ChairBody1_1" type="StaticBody3D" parent="."]
-position = Vector3(-5.5, -0.9, 0.35)
+position = Vector3(-5.5, -0.65, 0.35)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="ChairBody1_1" groups=["radar_geometry"]]
 shape = SubResource("shape27")
 
 [node name="Patron1_1" parent="." instance=ExtResource("seated")]
-position = Vector3(-5.5, -1.5, 0.35)
+position = Vector3(-5.5, -1.25, 0.35)
 rotation = Vector3(0, 3.141593, 0)
 
 [node name="ChairBody1_2" type="StaticBody3D" parent="."]
-position = Vector3(-7.161701, -0.9, -0.103984)
+position = Vector3(-7.161701, -0.65, -0.103984)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="ChairBody1_2" groups=["radar_geometry"]]
 shape = SubResource("shape28")
 
 [node name="Patron1_2" parent="." instance=ExtResource("lady")]
-position = Vector3(-7.161701, -1.5, -0.103984)
+position = Vector3(-7.161701, -1.25, -0.103984)
 rotation = Vector3(0, 3.926991, 0)
 
 [node name="CardTable2" parent="." instance=ExtResource("card_table")]
-position = Vector3(-5.5, -1.5, 3.4)
+position = Vector3(-5.5, -1.25, 3.4)
 rotation = Vector3(0, 0, 0)
 
 [node name="TableBody2" type="StaticBody3D" parent="."]
-position = Vector3(-5.5, -1.03, 3.94)
+position = Vector3(-5.5, -0.78, 3.94)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="TableBody2" groups=["radar_geometry"]]
 shape = SubResource("shape29")
 
 [node name="Dealer2" parent="." instance=ExtResource("card_dealer")]
-position = Vector3(-5.5, -1.5, 2.95)
+position = Vector3(-5.5, -1.25, 2.95)
 rotation = Vector3(0, 0, 0)
 
 [node name="Body" parent="Dealer2" index="0"]
 seed_phase = 1.4
 
 [node name="ChairBody2_0" type="StaticBody3D" parent="."]
-position = Vector3(-3.838299, -0.9, 4.496016)
+position = Vector3(-3.838299, -0.65, 4.496016)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="ChairBody2_0" groups=["radar_geometry"]]
 shape = SubResource("shape30")
 
 [node name="Patron2_0" parent="." instance=ExtResource("seated")]
-position = Vector3(-3.838299, -1.5, 4.496016)
+position = Vector3(-3.838299, -1.25, 4.496016)
 rotation = Vector3(0, 2.356194, 0)
 
 [node name="ChairBody2_1" type="StaticBody3D" parent="."]
-position = Vector3(-5.5, -0.9, 4.95)
+position = Vector3(-5.5, -0.65, 4.95)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="ChairBody2_1" groups=["radar_geometry"]]
 shape = SubResource("shape31")
 
 [node name="Patron2_1" parent="." instance=ExtResource("lady")]
-position = Vector3(-5.5, -1.5, 4.95)
+position = Vector3(-5.5, -1.25, 4.95)
 rotation = Vector3(0, 3.141593, 0)
 
 [node name="ChairBody2_2" type="StaticBody3D" parent="."]
-position = Vector3(-7.161701, -0.9, 4.496016)
+position = Vector3(-7.161701, -0.65, 4.496016)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="ChairBody2_2" groups=["radar_geometry"]]
 shape = SubResource("shape32")
 
 [node name="Patron2_2" parent="." instance=ExtResource("seated")]
-position = Vector3(-7.161701, -1.5, 4.496016)
+position = Vector3(-7.161701, -1.25, 4.496016)
 rotation = Vector3(0, 3.926991, 0)
 
 [node name="Bar" parent="." instance=ExtResource("bar")]
-position = Vector3(-7.4, -1.5, -10.7)
+position = Vector3(-7.4, -1.25, -10.7)
 rotation = Vector3(0, 0, 0)
 
 [node name="BarCounter" type="StaticBody3D" parent="."]
-position = Vector3(-7.4, -1.01, -9.6)
+position = Vector3(-7.4, -0.76, -9.6)
 rotation = Vector3(0, 0, 0)
 
 [node name="Shape" type="CollisionShape3D" parent="BarCounter" groups=["radar_geometry"]]
 shape = SubResource("shape33")
 
 [node name="Bartender" parent="." instance=ExtResource("dealer")]
-position = Vector3(-6.5, -1.5, -10.3)
+position = Vector3(-6.5, -1.25, -10.3)
 rotation = Vector3(0, 0, 0)
 
 [node name="GuestAtBar" parent="." instance=ExtResource("guest")]
-position = Vector3(-8.2, -1.5, -8.25)
+position = Vector3(-8.2, -1.25, -8.25)
 rotation = Vector3(0, 3.141593, 0)
 
 [node name="GuestTalking" parent="." instance=ExtResource("guest")]
-position = Vector3(3.0, -1.5, 1)
+position = Vector3(3.0, -1.25, 1)
 rotation = Vector3(0, -0.6, 0)
 
 [node name="GuestGallery" parent="." instance=ExtResource("guest")]

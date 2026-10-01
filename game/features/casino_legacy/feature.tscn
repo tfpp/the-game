@@ -1,0 +1,56 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://world/room.tscn" id="legacy"]
+[ext_resource type="PackedScene" path="res://features/slot_machine/feature.tscn" id="slots"]
+[ext_resource type="PackedScene" path="res://features/roulette/feature.tscn" id="roulette"]
+[ext_resource type="Script" path="res://features/parking_garage/garage_door.gd" id="door"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
+[node name="LegacyCasinoAccess" type="Node3D"]
+[node name="Entrance" type="CSGBox3D" parent="."]
+position = Vector3(-21, 1.1, -18.8)
+size = Vector3(1.2, 2.2, 0.15)
+material = ExtResource("wood")
+use_collision = true
+script = ExtResource("door")
+destination = NodePath("../Legacy/Arrival")
+door_label = "Visit the old casino"
+[node name="EntranceSign" type="Label3D" parent="."]
+position = Vector3(-21, 2.6, -18.65)
+text = "OLD CASINO"
+font_size = 32
+modulate = Color(0.95, 0.78, 0.36, 1)
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(-21, 1, -16.8)
+rotation = Vector3(0, 3.1415926536, 0)
+[node name="Legacy" parent="." instance=ExtResource("legacy")]
+position = Vector3(500, 0, 500)
+[node name="Environment" parent="Legacy" index="0"]
+environment = null
+[node name="Arrival" type="Marker3D" parent="Legacy"]
+position = Vector3(0, 1, 16)
+rotation = Vector3(0, 3.1415926536, 0)
+[node name="ReturnDoor" type="CSGBox3D" parent="Legacy"]
+position = Vector3(3, 1.1, 18)
+size = Vector3(1.2, 2.2, 0.15)
+material = ExtResource("wood")
+use_collision = true
+script = ExtResource("door")
+destination = NodePath("../../CasinoArrival")
+door_label = "Return to the new casino"
+[node name="ReturnSign" type="Label3D" parent="Legacy"]
+position = Vector3(3, 2.6, 17.85)
+rotation = Vector3(0, 3.1415926536, 0)
+text = "NEW CASINO"
+font_size = 32
+modulate = Color(0.95, 0.78, 0.36, 1)
+[node name="Slots" parent="Legacy" instance=ExtResource("slots")]
+position = Vector3(0, -0.25, 0)
+[node name="Roulette" parent="Legacy" instance=ExtResource("roulette")]
+position = Vector3(0, -0.25, 0)
+[node name="Destination" type="Marker3D" parent="."]
+position = Vector3(500, 0, 516)
+script = ExtResource("gps")
+label = "Old Golden Crown Casino"
+hint = "Original casino layout; OLD CASINO door on the north promenade."
+area = AABB(465, -3, 465, 70, 15, 70)
+[editable path="Legacy"]
