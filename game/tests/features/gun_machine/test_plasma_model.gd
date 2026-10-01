@@ -32,7 +32,8 @@ func test_plasma_variants_select_only_the_double_barrel_asset() -> void:
 			stats["is_automatic"] = automatic
 			var view := GunView.build(stats)
 			add_child_autofree(view)
-			assert_eq(view.has_node("Grip"), barrels == 2)
+			assert_true(view.has_node("Grip"))
+			assert_true(view.has_node("SupportGrip"))
 			assert_true(view.has_node("Muzzle"))
 
 
@@ -54,6 +55,17 @@ func test_first_person_hands_reach_both_grips_and_holster_hides_them() -> void:
 	_check_wrists(_rig._arms.human)
 
 
+func test_procedural_guns_put_first_person_hands_on_their_grips() -> void:
+	(_player.get_node("Body") as Node3D).visible = false
+	_rig.net_stats["barrel_count"] = 1
+	_rig._process(0.0)
+	assert_true(_rig.has_hand_grips())
+	var grip := _rig._view.get_node("Grip") as Marker3D
+	assert_true(grip.global_transform.is_equal_approx(_rig.global_transform))
+	assert_true(_rig._arms.visible)
+	_check_wrists(_rig._arms.human)
+
+
 func test_third_person_uses_avatar_hands_and_stays_with_body() -> void:
 	var body := _player.get_node("Body") as Node3D
 	body.visible = true
@@ -69,8 +81,9 @@ func test_third_person_uses_avatar_hands_and_stays_with_body() -> void:
 	assert_true(_rig.global_transform.is_equal_approx(before))
 	_rig.net_stats["barrel_count"] = 3
 	_rig._process(0.0)
-	assert_false(_rig.has_hand_grips())
+	assert_true(_rig.has_hand_grips(), "Procedural guns are hand-rigged too")
 	assert_false(_rig._arms.visible)
+	_check_wrists(avatar.human)
 
 
 func test_remote_plasma_uses_body_mount_and_aim_pitch() -> void:

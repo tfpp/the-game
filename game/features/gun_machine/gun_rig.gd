@@ -375,7 +375,7 @@ func _signature(stats: Dictionary) -> String:
 	return JSON.stringify(stats)
 
 
-## Only authored generated models opt into the shared hand rig.
+## Generated views carry `Grip` markers, so every active gun uses the hand rig.
 func has_hand_grips() -> bool:
 	return is_active() and _view != null and _view.has_node("Grip")
 

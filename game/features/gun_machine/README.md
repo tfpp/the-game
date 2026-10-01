@@ -120,7 +120,9 @@ See [asset source and export instructions](../../assets/gun_machine/models/READM
 `HeldArms`, shared with catalog weapons. First person uses the camera-relative
 mount; third person and remote peers use the body-relative mount and aim pitch.
 Human avatars use their own skinned arms; creature bodies use the existing arm
-fallback. Skin and sleeve colors follow the player's appearance. Holstering or
-switching back to a procedural gun disables the generated weapon's hand pose.
+fallback. Skin and sleeve colors follow the player's appearance. Procedural rolls (including
+the Ray Gun) get `Grip` under the rear of the body and `SupportGrip` under the
+barrels from `GunView.build`, so every generated gun is hand-rigged. Holstering
+disables the hand pose.
 `Muzzle` remains the cosmetic shot origin, with separate left/right markers for
 future barrel-specific effects; authoritative projectile origins remain at the eye.

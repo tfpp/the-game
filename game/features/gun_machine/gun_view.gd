@@ -2,6 +2,7 @@ class_name GunView
 extends RefCounted
 ## Selects an authored model for double-barrel plasma rolls. Other generated guns
 ## use procedural dimensions and colors from the stats shown by the rig or kiosk.
+## Every view carries `Grip` and `SupportGrip` markers for the player hand rig.
 
 const PLASMA_SCENE := preload("res://features/gun_machine/double_barrel_plasma.tscn")
 const PLASMA_FIRST_PERSON_OFFSET := Vector3(0.25, -0.27, -0.64)
@@ -48,6 +49,17 @@ static func build(stats: Dictionary) -> Node3D:
 
 	if GunGenerator.is_ray_gun(stats):
 		_add_ray_gun_details(root, body, length, color)
+
+	# Hand-rig markers, so HeldArms poses the player's hands on every generated gun:
+	# the right hand under the rear of the body, the left under the barrels.
+	var grip := Marker3D.new()
+	grip.name = "Grip"
+	grip.position = Vector3(0, -0.04, 0.1)
+	root.add_child(grip)
+	var support := Marker3D.new()
+	support.name = "SupportGrip"
+	support.position = Vector3(0, -radius - BARREL_SPACING, -length * 0.45)
+	root.add_child(support)
 
 	var muzzle := Marker3D.new()
 	muzzle.name = "Muzzle"
