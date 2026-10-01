@@ -15,8 +15,10 @@ no new default controller binding because existing buttons are occupied.
 Orbit is an offset from player aim and stays where you leave it, including on mouse
 release. Ordinary mouse/controller look still turns the player and carries that offset
 with it. Toggle to first person to reset the orbit (on phones, also use first person
-to change character aim). Pitch is limited to ±89 degrees. Pause/focus loss clears the
-held modifier; replacing/disconnecting the local player resets orbit but keeps the F3
+to change character aim). Pitch is limited to ±89 degrees. Pause/focus loss, modal
+menus and XR immersion clear the held modifier; press it again after resuming.
+Switching from touch/controller to a mouse or rebound key keeps the new hold intact.
+Replacing/disconnecting the local player resets orbit but keeps the F3
 preference. Camera mode and angles are session-local, not saved or replicated. Remote
 players, movement direction and authoritative weapon aim are unaffected.
 

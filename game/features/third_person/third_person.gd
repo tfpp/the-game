@@ -35,8 +35,19 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_released(ORBIT_ACTION):
 		_reset_hold()
 	if not Controls.gameplay_active() or get_viewport().use_xr:
+		_reset_hold()
 		return
 	if event.is_action_pressed(ORBIT_ACTION):
+		# _input runs before the Controls autoload. Switch first so its input_reset
+		# cannot immediately discard this new hold when coming from touch/gamepad.
+		if (
+			event is InputEventKey
+			or (event is InputEventMouseButton and event.device != InputEvent.DEVICE_ID_EMULATION)
+		):
+			Controls.select_device(Controls.Device.KEYBOARD)
+		elif event is InputEventJoypadButton:
+			Controls.joypad = event.device
+			Controls.select_device(Controls.Device.GAMEPAD)
 		_orbit_held = enabled and _local_player() != null
 	if _orbit_held and event is InputEventMouseMotion:
 		var motion := event as InputEventMouseMotion
@@ -86,6 +97,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
+	# Modals and XR can suspend gameplay without calling Controls.pause().
+	if not Controls.gameplay_active() or get_viewport().use_xr:
+		_reset_hold()
 	var player := _local_player()
 	if player == null or player.is_queued_for_deletion():
 		return

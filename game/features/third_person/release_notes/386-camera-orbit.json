@@ -3,6 +3,7 @@
   "summary": "Orbit your character with middle mouse or mobile swipes, and toggle the camera on phones.",
   "notes": [
     "Hold middle mouse in F3 mode to orbit without turning your character; rebind it in Settings > Controls.",
-    "Tap CAM on phones to switch camera modes and swipe the right side to orbit in third person."
+    "Tap CAM on phones to switch camera modes and swipe the right side to orbit in third person.",
+    "Keep orbit holds working across input-device switches and clear them when menus or VR interrupt play."
   ]
 }

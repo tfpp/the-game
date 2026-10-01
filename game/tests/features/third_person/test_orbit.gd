@@ -75,6 +75,13 @@ func _motion() -> InputEventMouseMotion:
 	return event
 
 
+func _allow_headless_pointer() -> void:
+	# Only headless needs a substitute gameplay gate: its display cannot capture
+	# the mouse. Windowed runs exercise the real keyboard/captured-pointer gate.
+	if DisplayServer.get_name() == "headless":
+		Controls.device = Controls.Device.TOUCH
+
+
 func test_orbit_changes_camera_not_player_aim_or_body_facing() -> void:
 	_player.yaw = 0.4
 	_player.pitch = 0.2
@@ -127,6 +134,7 @@ func test_middle_mouse_hold_release_and_pause() -> void:
 	mouse.button_index = MOUSE_BUTTON_MIDDLE
 	mouse.pressed = true
 	_feature._input(mouse)
+	_allow_headless_pointer()
 	_feature._input(_motion())
 	var rotation := _render().global_rotation
 	assert_lt(rotation.y, 0.0)
@@ -136,6 +144,7 @@ func test_middle_mouse_hold_release_and_pause() -> void:
 	assert_eq(_render().global_rotation, rotation, "Release keeps the orbit but stops rotation")
 	mouse.pressed = true
 	_feature._input(mouse)
+	_allow_headless_pointer()
 	Controls.pause()
 	Controls.start()
 	_feature._input(_motion())
@@ -144,14 +153,73 @@ func test_middle_mouse_hold_release_and_pause() -> void:
 
 func test_mouse_orbit_dispatch_does_not_reach_player_aim() -> void:
 	_feature.toggle_camera()
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	var mouse := InputEventMouseButton.new()
 	mouse.button_index = MOUSE_BUTTON_MIDDLE
 	mouse.pressed = true
 	_feature._input(mouse)
+	_allow_headless_pointer()
 	get_viewport().push_input(_motion())
 	assert_eq(_player.yaw, 0.0)
 	assert_eq(_player.pitch, 0.0)
 	assert_lt(_render().global_rotation.y, 0.0)
+
+
+func test_dispatched_mouse_hold_survives_switch_from_touch() -> void:
+	_feature.toggle_camera()
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	var mouse := InputEventMouseButton.new()
+	mouse.button_index = MOUSE_BUTTON_MIDDLE
+	mouse.pressed = true
+	get_viewport().push_input(mouse)
+	assert_eq(Controls.device, Controls.Device.KEYBOARD)
+	assert_true(_feature._orbit_held, "Device reset must precede the new hold")
+	_allow_headless_pointer()
+	get_viewport().push_input(_motion())
+	assert_lt(_render().global_rotation.y, 0.0)
+	assert_eq(_player.yaw, 0.0, "Device switching must not lose the orbit hold")
+	mouse.pressed = false
+	get_viewport().push_input(mouse)
+
+
+func test_dispatched_rebound_pad_hold_survives_device_switch() -> void:
+	var button := InputEventJoypadButton.new()
+	button.button_index = JOY_BUTTON_LEFT_SHOULDER
+	button.device = 0
+	button.pressed = true
+	Bindings.bind(Feature.ORBIT_ACTION, true, button)
+	_feature.toggle_camera()
+	get_viewport().push_input(button)
+	assert_eq(Controls.device, Controls.Device.GAMEPAD)
+	assert_true(_feature._orbit_held)
+	get_viewport().push_input(_motion())
+	assert_lt(_render().global_rotation.y, 0.0)
+	assert_eq(_player.yaw, 0.0)
+	button.pressed = false
+	get_viewport().push_input(button)
+	assert_false(_feature._orbit_held)
+
+
+func test_modal_and_xr_interruptions_release_orbit_hold() -> void:
+	_feature.toggle_camera()
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	var mouse := InputEventMouseButton.new()
+	mouse.button_index = MOUSE_BUTTON_MIDDLE
+	mouse.pressed = true
+	for xr: bool in [false, true]:
+		_feature._input(mouse)
+		_allow_headless_pointer()
+		var modal := Node.new()
+		add_child_autofree(modal)
+		if xr:
+			get_viewport().use_xr = true
+		else:
+			modal.add_to_group(&"modal_ui")
+		_feature._process(0.0)
+		modal.remove_from_group(&"modal_ui")
+		get_viewport().use_xr = false
+		_feature._input(_motion())
+		assert_eq(_render().global_rotation, Vector3.ZERO, "Interruption releases orbit")
 
 
 func test_rebound_key_replaces_middle_mouse() -> void:
@@ -169,6 +237,9 @@ func test_rebound_key_replaces_middle_mouse() -> void:
 	_feature._input(_motion())
 	assert_eq(_render().global_rotation, Vector3.ZERO)
 	_feature._input(key)
+	assert_eq(Controls.device, Controls.Device.KEYBOARD)
+	assert_true(_feature._orbit_held)
+	_allow_headless_pointer()
 	_feature._input(_motion())
 	assert_lt(_render().global_rotation.y, 0.0)
 
