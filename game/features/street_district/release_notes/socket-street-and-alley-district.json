@@ -1,0 +1,5 @@
+{
+ "title":"Socket street and alley district",
+ "summary":"Explore connected streets, alleys and two enterable city buildings.",
+ "notes":["Add an outdoor district using the garage socket system, closed exits, reusable buildings and a standalone walking preview.","Add a corner shop and workshop with front and back rooms contained inside their building envelopes."]
+}

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_district/materials/brick_tenement.tres" id="1_8gwkv"]
+[ext_resource type="ArrayMesh" path="res://assets/street_district/models/brick_tenement.res" id="2_qmd3a"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u28e5"]
+size = Vector3(6.24, 15.240001, 14.44)
+
+[node name="BrickTenement" type="StaticBody3D" unique_id=1848945969]
+metadata/prop_id = "brick_tenement"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1366623992]
+material_override = ExtResource("1_8gwkv")
+mesh = ExtResource("2_qmd3a")
+
+[node name="@CollisionShape3D@2" type="CollisionShape3D" parent="." unique_id=1174154062]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.6200004, 0)
+shape = SubResource("BoxShape3D_u28e5")

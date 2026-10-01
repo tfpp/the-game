@@ -1,0 +1,140 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
+[ext_resource type="Script" path="res://features/hotel_props/hotel_portal.gd" id="portal"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
+[ext_resource type="PackedScene" path="res://features/street_district/street_objects.tscn" id="objects"]
+
+[sub_resource type="StandardMaterial3D" id="paint"]
+albedo_color = Color(0.15, 0.4, 0.42, 1)
+roughness = 1.0
+
+[node name="StreetDistrict" type="Node3D"]
+
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(312.4, 1, -300)
+rotation = Vector3(0, 1.5707963, 0)
+
+[node name="Entrance" type="CSGBox3D" parent="."]
+position = Vector3(314.1, 1.1, -300)
+size = Vector3(0.12, 2.2, 1.4)
+use_collision = true
+material = SubResource("paint")
+script = ExtResource("portal")
+destination = NodePath("../Room/Arrival")
+door_label = "Teleport to the street district"
+
+[node name="NetworkedEntity" type="Node" parent="Entrance"]
+script = ExtResource("net")
+interaction_range = 2.5
+
+[node name="Sign" type="Label3D" parent="Entrance"]
+position = Vector3(-0.1, 1.4, 0)
+billboard = 1
+text = "STREET DISTRICT\nE / USE TO TELEPORT"
+font_size = 36
+pixel_size = 0.004
+
+[node name="Room" type="Node3D" parent="."]
+position = Vector3(0, 0, -2200)
+script = ExtResource("room")
+room_scene = "res://features/street_district/district.tscn"
+bounds = AABB(-45, -1, -23, 90, 22, 102)
+
+[node name="Arrival" type="Marker3D" parent="Room"]
+position = Vector3(0, 1, 3)
+
+[node name="Return" type="CSGBox3D" parent="Room"]
+position = Vector3(2, 1.1, 3)
+size = Vector3(0.12, 2.2, 1.4)
+use_collision = true
+material = SubResource("paint")
+script = ExtResource("portal")
+destination = NodePath("../../CasinoArrival")
+door_label = "Return to the dev room"
+
+[node name="NetworkedEntity" type="Node" parent="Room/Return"]
+script = ExtResource("net")
+interaction_range = 2.5
+
+[node name="Sign" type="Label3D" parent="Room/Return"]
+position = Vector3(0, 1.4, 0)
+billboard = 1
+text = "RETURN TO DEV ROOM\nE / USE"
+font_size = 36
+pixel_size = 0.004
+
+[node name="Destinations" type="Node3D" parent="."]
+
+[node name="District" type="Marker3D" parent="Destinations"]
+position = Vector3(0, 0.1, -2197)
+script = ExtResource("gps")
+label = "Street District"
+hint = "Use STREET DISTRICT on the dev room's east wall. Explore streets, alleys, shop and workshop."
+
+[node name="Teleporter" type="Marker3D" parent="Destinations"]
+position = Vector3(312.4, 0.1, -300)
+script = ExtResource("gps")
+label = "Street District Teleporter"
+hint = "Dev room east wall. Enter through DEV ROOM in the casino south lobby."
+
+[node name="StreetObjects" parent="Room" instance=ExtResource("objects")]
+
+[node name="MainCasinoArrival" type="Marker3D" parent="."]
+position = Vector3(7, 1, 29.2)
+
+[node name="CasinoStreetEntrance" type="CSGBox3D" parent="."]
+position = Vector3(7, 1.1, 31)
+size = Vector3(1.4, 2.2, 0.12)
+use_collision = true
+material = SubResource("paint")
+script = ExtResource("portal")
+destination = NodePath("../Room/CasinoArrival")
+door_label = "Visit the street casino entrance"
+
+[node name="NetworkedEntity" type="Node" parent="CasinoStreetEntrance"]
+script = ExtResource("net")
+interaction_range = 2.5
+
+[node name="Sign" type="Label3D" parent="CasinoStreetEntrance"]
+position = Vector3(0, 1.5, 0)
+billboard = 1
+text = "STREET CASINO\nE / USE TO TELEPORT"
+font_size = 36
+pixel_size = 0.004
+
+[node name="CasinoPortalFloor" type="CSGBox3D" parent="."]
+position = Vector3(7, -0.1, 31)
+size = Vector3(3, 0.2, 5)
+use_collision = true
+material = SubResource("paint")
+
+[node name="CasinoArrival" type="Marker3D" parent="Room"]
+position = Vector3(18.75, 1, 33.3)
+
+[node name="CasinoEntrance" type="CSGBox3D" parent="Room"]
+position = Vector3(18.75, 1.1, 34.8)
+size = Vector3(1.4, 2.2, 0.12)
+use_collision = true
+material = SubResource("paint")
+script = ExtResource("portal")
+destination = NodePath("../../MainCasinoArrival")
+door_label = "Enter the Golden Crown casino"
+
+[node name="NetworkedEntity" type="Node" parent="Room/CasinoEntrance"]
+script = ExtResource("net")
+interaction_range = 2.5
+
+[node name="Sign" type="Label3D" parent="Room/CasinoEntrance"]
+position = Vector3(0, 1.3, -0.1)
+rotation = Vector3(0, 3.14159265, 0)
+text = "ENTER CASINO · E / USE"
+font_size = 24
+pixel_size = 0.004
+
+[node name="Casino" type="Marker3D" parent="Destinations"]
+position = Vector3(18.75, 0.1, -2166.7)
+script = ExtResource("gps")
+label = "Street Casino Entrance"
+hint = "Golden Crown frontage in the east block. Use its door to enter the main casino."

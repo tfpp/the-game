@@ -1,0 +1,152 @@
+[
+  {
+    "name": "brick_tenement",
+    "texture_size": 128,
+    "vertices": 1208,
+    "triangles": 1812,
+    "dimensions_m": [
+      6.24,
+      14.44,
+      15.24
+    ],
+    "uv_zones": 4,
+    "texture": "textures/brick_tenement.png",
+    "obj": "models/brick_tenement/brick_tenement.obj",
+    "glb": "models/brick_tenement/brick_tenement.glb"
+  },
+  {
+    "name": "corner_store",
+    "texture_size": 128,
+    "vertices": 696,
+    "triangles": 1044,
+    "dimensions_m": [
+      6.24,
+      15.15,
+      10.16
+    ],
+    "uv_zones": 4,
+    "texture": "textures/corner_store.png",
+    "obj": "models/corner_store/corner_store.obj",
+    "glb": "models/corner_store/corner_store.glb"
+  },
+  {
+    "name": "plaster_apartments",
+    "texture_size": 128,
+    "vertices": 920,
+    "triangles": 1380,
+    "dimensions_m": [
+      6.24,
+      14.48,
+      12.16
+    ],
+    "uv_zones": 4,
+    "texture": "textures/plaster_apartments.png",
+    "obj": "models/plaster_apartments/plaster_apartments.obj",
+    "glb": "models/plaster_apartments/plaster_apartments.glb"
+  },
+  {
+    "name": "shutter_warehouse",
+    "texture_size": 128,
+    "vertices": 632,
+    "triangles": 948,
+    "dimensions_m": [
+      6.24,
+      14.44,
+      8.16
+    ],
+    "uv_zones": 4,
+    "texture": "textures/shutter_warehouse.png",
+    "obj": "models/shutter_warehouse/shutter_warehouse.obj",
+    "glb": "models/shutter_warehouse/shutter_warehouse.glb"
+  },
+  {
+    "name": "narrow_office",
+    "texture_size": 128,
+    "vertices": 920,
+    "triangles": 1380,
+    "dimensions_m": [
+      6.24,
+      14.44,
+      13.24
+    ],
+    "uv_zones": 4,
+    "texture": "textures/narrow_office.png",
+    "obj": "models/narrow_office/narrow_office.obj",
+    "glb": "models/narrow_office/narrow_office.glb"
+  },
+  {
+    "name": "laundry_block",
+    "texture_size": 128,
+    "vertices": 656,
+    "triangles": 984,
+    "dimensions_m": [
+      6.24,
+      15.15,
+      9.16
+    ],
+    "uv_zones": 4,
+    "texture": "textures/laundry_block.png",
+    "obj": "models/laundry_block/laundry_block.obj",
+    "glb": "models/laundry_block/laundry_block.glb"
+  },
+  {
+    "name": "service_workshop",
+    "texture_size": 128,
+    "vertices": 384,
+    "triangles": 576,
+    "dimensions_m": [
+      6.24,
+      14.44,
+      6.16
+    ],
+    "uv_zones": 4,
+    "texture": "textures/service_workshop.png",
+    "obj": "models/service_workshop/service_workshop.obj",
+    "glb": "models/service_workshop/service_workshop.glb"
+  },
+  {
+    "name": "hotel_facade",
+    "texture_size": 128,
+    "vertices": 1224,
+    "triangles": 1836,
+    "dimensions_m": [
+      6.24,
+      14.48,
+      16.24
+    ],
+    "uv_zones": 4,
+    "texture": "textures/hotel_facade.png",
+    "obj": "models/hotel_facade/hotel_facade.obj",
+    "glb": "models/hotel_facade/hotel_facade.glb"
+  },
+  {
+    "name": "concrete_commercial",
+    "texture_size": 128,
+    "vertices": 960,
+    "triangles": 1440,
+    "dimensions_m": [
+      6.24,
+      15.15,
+      11.16
+    ],
+    "uv_zones": 4,
+    "texture": "textures/concrete_commercial.png",
+    "obj": "models/concrete_commercial/concrete_commercial.obj",
+    "glb": "models/concrete_commercial/concrete_commercial.glb"
+  },
+  {
+    "name": "brick_storeroom",
+    "texture_size": 128,
+    "vertices": 344,
+    "triangles": 516,
+    "dimensions_m": [
+      6.24,
+      14.44,
+      7.16
+    ],
+    "uv_zones": 4,
+    "texture": "textures/brick_storeroom.png",
+    "obj": "models/brick_storeroom/brick_storeroom.obj",
+    "glb": "models/brick_storeroom/brick_storeroom.glb"
+  }
+]

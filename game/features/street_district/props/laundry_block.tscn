@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_district/materials/laundry_block.tres" id="1_wi7bf"]
+[ext_resource type="ArrayMesh" path="res://assets/street_district/models/laundry_block.res" id="2_fsjms"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ibbfc"]
+size = Vector3(6.24, 9.16, 15.15)
+
+[node name="LaundryBlock" type="StaticBody3D" unique_id=125715916]
+metadata/prop_id = "laundry_block"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=547866133]
+material_override = ExtResource("1_wi7bf")
+mesh = ExtResource("2_fsjms")
+
+[node name="@CollisionShape3D@13" type="CollisionShape3D" parent="." unique_id=1381036705]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.58, 0.35500002)
+shape = SubResource("BoxShape3D_ibbfc")

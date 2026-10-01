@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_district/materials/hotel_facade.tres" id="1_6ff1c"]
+[ext_resource type="ArrayMesh" path="res://assets/street_district/models/hotel_facade.res" id="2_jv5rd"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1jym5"]
+size = Vector3(6.24, 16.240002, 14.48)
+
+[node name="HotelFacade" type="StaticBody3D" unique_id=220986507]
+metadata/prop_id = "hotel_facade"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1752488426]
+material_override = ExtResource("1_6ff1c")
+mesh = ExtResource("2_jv5rd")
+
+[node name="@CollisionShape3D@21" type="CollisionShape3D" parent="." unique_id=138469130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.120001, 0.01999998)
+shape = SubResource("BoxShape3D_1jym5")

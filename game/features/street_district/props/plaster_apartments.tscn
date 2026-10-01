@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_district/materials/plaster_apartments.tres" id="1_an73j"]
+[ext_resource type="ArrayMesh" path="res://assets/street_district/models/plaster_apartments.res" id="2_3fjhq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qvadv"]
+size = Vector3(6.24, 12.16, 14.48)
+
+[node name="PlasterApartments" type="StaticBody3D" unique_id=649708537]
+metadata/prop_id = "plaster_apartments"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1495134115]
+material_override = ExtResource("1_an73j")
+mesh = ExtResource("2_3fjhq")
+
+[node name="@CollisionShape3D@10" type="CollisionShape3D" parent="." unique_id=1095167266]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.08, 0.01999998)
+shape = SubResource("BoxShape3D_qvadv")

@@ -1,0 +1,5 @@
+{
+  "title": "Street district teleporter",
+  "summary": "Visit the street district from the dev room.",
+  "notes": ["Use STREET DISTRICT on the dev room east wall to load and visit the streets, alleys and interiors.", "Add a return teleporter at the arrival point and GPS destinations for both the district and its entrance."]
+}

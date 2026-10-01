@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_district/materials/shutter_warehouse.tres" id="1_pk6ew"]
+[ext_resource type="ArrayMesh" path="res://assets/street_district/models/shutter_warehouse.res" id="2_3g7tv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_y3uwb"]
+size = Vector3(6.24, 8.16, 14.44)
+
+[node name="ShutterWarehouse" type="StaticBody3D" unique_id=411670776]
+metadata/prop_id = "shutter_warehouse"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=270211966]
+material_override = ExtResource("1_pk6ew")
+mesh = ExtResource("2_3g7tv")
+
+[node name="@CollisionShape3D@11" type="CollisionShape3D" parent="." unique_id=1649948637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.08, 0)
+shape = SubResource("BoxShape3D_y3uwb")

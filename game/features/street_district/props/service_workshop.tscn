@@ -1,0 +1,60 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_district/materials/service_workshop.tres" id="1_jgbci"]
+[ext_resource type="ArrayMesh" path="res://assets/street_district/models/service_workshop.res" id="2_ts45v"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u6nj8"]
+size = Vector3(0.24, 6, 14.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_67cal"]
+size = Vector3(0.24, 6, 14.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_44a1p"]
+size = Vector3(5.52, 6, 0.24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0mi0x"]
+size = Vector3(1.5, 6, 0.24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0x83b"]
+size = Vector3(1.5, 6, 0.24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_io5ec"]
+size = Vector3(3, 3, 0.24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fsdgx"]
+size = Vector3(6.24, 0.16, 14.44)
+
+[node name="ServiceWorkshop" type="StaticBody3D" unique_id=375352715]
+metadata/prop_id = "service_workshop"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1226000094]
+material_override = ExtResource("1_jgbci")
+mesh = ExtResource("2_ts45v")
+
+[node name="@CollisionShape3D@14" type="CollisionShape3D" parent="." unique_id=999025225]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.88, 3, 0)
+shape = SubResource("BoxShape3D_u6nj8")
+
+[node name="@CollisionShape3D@15" type="CollisionShape3D" parent="." unique_id=2134709489]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.88, 3, 0)
+shape = SubResource("BoxShape3D_67cal")
+
+[node name="@CollisionShape3D@16" type="CollisionShape3D" parent="." unique_id=1795831274]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -6.98)
+shape = SubResource("BoxShape3D_44a1p")
+
+[node name="@CollisionShape3D@17" type="CollisionShape3D" parent="." unique_id=804663952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 3, 6.98)
+shape = SubResource("BoxShape3D_0mi0x")
+
+[node name="@CollisionShape3D@18" type="CollisionShape3D" parent="." unique_id=659956671]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 3, 6.98)
+shape = SubResource("BoxShape3D_0x83b")
+
+[node name="@CollisionShape3D@19" type="CollisionShape3D" parent="." unique_id=1507991821]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 6.98)
+shape = SubResource("BoxShape3D_io5ec")
+
+[node name="@CollisionShape3D@20" type="CollisionShape3D" parent="." unique_id=1260409626]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.08, 0)
+shape = SubResource("BoxShape3D_fsdgx")

@@ -1,0 +1,5 @@
+{
+  "title": "Searchable street dumpsters and parked cars",
+  "summary": "Search six dumpsters around the alleys and service areas, with six cars parked along the streets.",
+  "notes": ["Reuse existing dumpster loot, animated lids and garage cars with searchable boots.", "Keep interactive objects on every peer while street geometry streams, preserving shared contents and late joins.", "Keep intersections, alley entrances, building doors and central traffic lanes clear."]
+}

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_district/materials/concrete_commercial.tres" id="1_tf813"]
+[ext_resource type="ArrayMesh" path="res://assets/street_district/models/concrete_commercial.res" id="2_hti18"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_andm6"]
+size = Vector3(6.24, 11.16, 15.15)
+
+[node name="ConcreteCommercial" type="StaticBody3D" unique_id=1909511313]
+metadata/prop_id = "concrete_commercial"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=383504113]
+material_override = ExtResource("1_tf813")
+mesh = ExtResource("2_hti18")
+
+[node name="@CollisionShape3D@22" type="CollisionShape3D" parent="." unique_id=1092482137]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.58, 0.35500002)
+shape = SubResource("BoxShape3D_andm6")
