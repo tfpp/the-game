@@ -162,3 +162,13 @@ func test_socket_cap_freed_before_deferred_registration_is_ignored() -> void:
 	cap.free()
 	await wait_physics_frames(2)
 	assert_false(_renderer._registered.has(id), "Freed procedural cap must not enter render cache")
+
+
+func test_streamed_visual_detached_before_queue_free_is_removed_from_cache() -> void:
+	var mesh := _mesh(_root, Vector3.ZERO)
+	_renderer._register(mesh, true)
+	var id := mesh.get_instance_id()
+	_root.remove_child(mesh)
+	_renderer.refresh_moving()
+	assert_false(_renderer._registered.has(id))
+	mesh.free()

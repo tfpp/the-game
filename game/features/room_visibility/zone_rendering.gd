@@ -100,7 +100,7 @@ func _process(delta: float) -> void:
 func refresh_moving() -> void:
 	for index: int in range(_visuals.size() - 1, -1, -1):
 		var entry := _visuals[index]
-		if not is_instance_valid(entry["node"]):
+		if not is_instance_valid(entry["node"]) or not entry["node"].is_inside_tree():
 			_registered.erase(entry["id"])
 			_visuals.remove_at(index)
 		elif entry["moving"]:

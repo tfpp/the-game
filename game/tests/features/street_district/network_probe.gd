@@ -2,6 +2,7 @@ extends Node
 ## Exercise real authenticated peers against the production room and portal paths.
 
 var _player: Player
+var _remote: Player
 var _role := ""
 var _stop := ""
 var _result := -1
@@ -15,6 +16,7 @@ var _seen_visitor := false
 
 func _ready() -> void:
 	$Game/Features/character_memory.queue_free()
+	$Game/LoginScreen.queue_free()
 	_role = str(Network.args.get("street-role", "server"))
 	_stop = str(Network.args.get("probe-stop", ""))
 	for door: RoomDoor in [_entrance, _exit]:
@@ -85,9 +87,15 @@ func _run() -> void:
 	assert(_player.is_on_floor(), "Real player stands on the streamed street floor")
 	assert(_player.net_position.y > .5, "Arrival did not fall through street")
 	_player.set_physics_process(false)
+	if not Network.has_flag("street-overlap"):
+		_move(_room.to_global(Vector3(-2 if _role == "driver" else 2, .95, 0)))
 	if _role == "driver":
 		print("STREET_DRIVER_ENTERED")
+	await _see_other_player()
+	if _role == "driver":
 		await _wait(func() -> bool: return FileAccess.file_exists(_stop + ".late"))
+	else:
+		await _wait(func() -> bool: return FileAccess.file_exists(_stop + ".sighted"))
 	await _return_to_dev_room()
 	if _role == "late":
 		print("STREET_LATE_PASS")
@@ -127,3 +135,117 @@ func _wait(condition: Callable) -> void:
 			get_tree().quit(1)
 			return
 		await get_tree().process_frame
+
+
+func _see_other_player() -> void:
+	await _wait(
+		func() -> bool:
+			for candidate: Player in $Game.get_players():
+				if (
+					Network.has_flag("street-overlap")
+					and candidate != _player
+					and _room.contains(candidate.net_position)
+				):
+					_remote = candidate
+					return true
+				if (
+					candidate != _player
+					and (
+						candidate.net_position.distance_to(
+							_room.to_global(Vector3(2 if _role == "driver" else -2, .95, 0))
+						)
+						< .1
+					)
+				):
+					_remote = candidate
+					return _remote.global_position.distance_to(_remote.net_position) < .1
+			return false
+	)
+	var direction := (_remote.global_position - _player.global_position).normalized()
+	_player.yaw = atan2(-direction.x, -direction.z)
+	_player.pitch = 0
+	await get_tree().create_timer(.4).timeout
+	var camera := _player.get_node("Camera") as Camera3D
+	var nameplate := _remote.get_node("Nameplate") as Label3D
+	var body := _remote.get_node("Body") as Node3D
+	if Network.has_flag("street-overlap"):
+		print(
+			"STREET_OVERLAP: positions=",
+			_player.net_position,
+			" / ",
+			_remote.net_position,
+			" name_in_view=",
+			camera.is_position_in_frustum(nameplate.global_position)
+		)
+		if DisplayServer.get_name() != "headless":
+			await RenderingServer.frame_post_draw
+			var folder := str(Network.args.get("probe-images", "user://street-visibility"))
+			DirAccess.make_dir_recursive_absolute(folder)
+			get_viewport().get_texture().get_image().save_png(
+				folder.path_join("street-overlap-" + _role + ".png")
+			)
+		print("STREET_SIGHT_PASS: ", _role)
+		return
+	print(
+		"STREET_SIGHT: ",
+		_role,
+		" remote_position=",
+		_remote.net_position,
+		" local_position=",
+		_player.net_position,
+		" body_visible=",
+		body.is_visible_in_tree(),
+		" camera_mask=",
+		camera.cull_mask,
+		" far=",
+		camera.far
+	)
+	assert(body.is_visible_in_tree(), "Remote body remains visible on the street")
+	assert(nameplate.is_visible_in_tree(), "Remote nameplate remains visible")
+	assert(camera.cull_mask & nameplate.layers, "Camera includes _remote nameplate layer")
+	assert(
+		camera.is_position_in_frustum(nameplate.global_position), "Remote nameplate is in the view"
+	)
+	var count := 0
+	for mesh: MeshInstance3D in body.find_children("*", "MeshInstance3D", true, false):
+		if mesh.is_visible_in_tree():
+			count += 1
+			print(
+				"STREET_AVATAR: ",
+				mesh.get_path(),
+				" position=",
+				mesh.global_position,
+				" layers=",
+				mesh.layers,
+				" bounds=",
+				mesh.get_aabb()
+			)
+			assert(camera.cull_mask & mesh.layers, "Camera includes _remote avatar layer")
+	assert(count > 0, "Remote avatar has visible geometry")
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+		var before := get_viewport().get_texture().get_image()
+		var folder := str(Network.args.get("probe-images", "user://street-visibility"))
+		DirAccess.make_dir_recursive_absolute(folder)
+		before.save_png(folder.path_join("street-peer-" + _role + ".png"))
+		body.hide()
+		await get_tree().process_frame
+		await get_tree().process_frame
+		await RenderingServer.frame_post_draw
+		var after := get_viewport().get_texture().get_image()
+		var left := camera.unproject_position(
+			_remote.global_position - camera.global_basis.x * .5 + Vector3.UP * 1.0
+		)
+		var right := camera.unproject_position(
+			_remote.global_position + camera.global_basis.x * .5 - Vector3.UP * .9
+		)
+		var changed := 0
+		for y: int in range(maxi(0, int(left.y)), mini(before.get_height(), int(right.y))):
+			for x: int in range(maxi(0, int(left.x)), mini(before.get_width(), int(right.x))):
+				var delta := before.get_pixel(x, y) - after.get_pixel(x, y)
+				if absf(delta.r) + absf(delta.g) + absf(delta.b) > .3:
+					changed += 1
+		body.show()
+		print("STREET_AVATAR_PIXELS: ", changed)
+		assert(changed > 500, "Remote avatar actually renders, not just its nameplate")
+	print("STREET_SIGHT_PASS: ", _role)

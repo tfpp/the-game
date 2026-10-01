@@ -1,0 +1,5 @@
+{
+  "title": "Clean up streamed room visuals on unload",
+  "summary": "Remove detached streamed visuals from the moving render cache.",
+  "notes": ["Skip nodes that have left the scene tree while waiting to be freed, preventing transform errors during room unloading.", "Verify remote player bodies and names on the street with authenticated peers and optional actual-render checks."]
+}

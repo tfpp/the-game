@@ -23,12 +23,18 @@ wait_for() {
 port="$((22000 + RANDOM % 20000))"
 spawn() {
   local role="$1"
+  local render_args=(--headless)
+  if [[ "${STREET_RENDER_TEST:-}" == 1 && "$role" != server ]]; then
+    render_args=(--rendering-method gl_compatibility --audio-driver Dummy)
+  fi
   local args=("--connect=ws://127.0.0.1:$port")
+  local probe_args=()
+  if [[ "${STREET_OVERLAP_TEST:-}" == 1 ]]; then probe_args=(--street-overlap); fi
   if [[ "$role" == server ]]; then args=(--server "--port=$port"); fi
   touch "$tmp/$role.log"
-  godot --headless --path "$game" res://tests/features/street_district/network_probe.tscn -- \
+  godot "${render_args[@]}" --path "$game" res://tests/features/street_district/network_probe.tscn -- \
     --dev-insecure-auth "--street-role=$role" "--probe-stop=$tmp/stop" \
-    "--name=$role" "${args[@]}" > "$tmp/$role.log" 2>&1 &
+    "--name=$role" "--probe-images=${STREET_CAPTURE_DIR:-$tmp}" "${probe_args[@]}" "${args[@]}" > "$tmp/$role.log" 2>&1 &
   pids+=("$!")
 }
 spawn server
@@ -37,6 +43,8 @@ spawn driver
 wait_for "$tmp/driver.log" STREET_DRIVER_ENTERED
 wait_for "$tmp/server.log" STREET_SERVER_VISITOR
 spawn late
+wait_for "$tmp/driver.log" STREET_SIGHT_PASS
+touch "$tmp/stop.sighted"
 wait_for "$tmp/late.log" STREET_LATE_PASS
 touch "$tmp/stop.late"
 wait_for "$tmp/driver.log" STREET_DRIVER_PASS

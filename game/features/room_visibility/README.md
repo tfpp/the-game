@@ -62,3 +62,9 @@ bash game/tests/features/street_district/network_test.sh
 
 The probe deliberately delivers a stale departure assignment after preloading,
 checks standing floor contact after teleport, then verifies return/unloading.
+It also places two authenticated players on the street and verifies their bodies,
+nameplates, replicated positions and camera masks. With a display available,
+`STREET_RENDER_TEST=1` adds a framebuffer check that the remote body is actually
+drawn. Set `STREET_CAPTURE_DIR` to retain the in-game screenshots. Detached visuals
+are removed from the cache before their deferred deletion, so unloading a street
+cannot query transforms on nodes that have already left the scene tree.
