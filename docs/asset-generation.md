@@ -158,6 +158,34 @@ its loader. For held items, preserve the `Grip`, optional `SupportGrip` and weap
 marker orientation and -Z forward. Verify camera clearance, hand contact, dropped
 placement and remote-player presentation when affected.
 
+## Interiors use GridMaps
+
+Interior architecture is built with Godot's `GridMap` and a shared `MeshLibrary`, not
+with CSG walls. Author each modular piece (floor slab, wall panel, ramp, ceiling tile,
+door header, decor fixture) once as a low-poly model, add it to the library with its
+own collision shape, then paint it onto grid cells. Only use CSG or one-off meshes for
+unique shapes that do not repeat; do not build new rooms from `CSGBox3D` walls.
+
+The live casino is the reference example; read its
+[GridMap guide](../game/features/casino_hub/gridmap/README.md) before building or
+changing an interior. It documents cell size, tile IDs, wall orientation, rebuilding
+and verification. The key files are:
+
+| File | Role |
+| --- | --- |
+| `game/features/casino_hub/casino_gridmap.tscn` | The casino scene: floor, wall and decor GridMaps with painted cells, plus furnishings. |
+| `game/features/casino_hub/gridmap/tiles.tscn` | Editable tile source scene: one child per library item with mesh, material and collision. |
+| `game/features/casino_hub/gridmap/casino_tiles.tres` | Structural `MeshLibrary` the GridMaps use (`casino_decor.tres` holds decor). |
+| `game/features/casino_hub/gridmap/build.gd` | Rebuilds the libraries from `tiles.tscn` and the authored models. |
+| `docs/design/model-sources/` (e.g. `wood-panel-wall/`, `beige-stucco-wall/`) | Blockbench sources and UV guides for the casino tiles. |
+
+When adding a tile, keep existing item IDs stable so painted cells still refer to
+the same parts, size it to whole grid cells, put its pivot where the guide's
+conventions expect it, and give it one simple collider on world layer 1. Use
+separate GridMaps when two items must share a cell (for example perpendicular walls
+at corners). Extend the casino libraries when an interior shares their look, or
+follow the same structure in the owning feature for a new kit.
+
 ## Render and inspect existing models
 
 For a `.bbmodel`, the headless MCP `bbmodel_render` tool can produce a PNG and

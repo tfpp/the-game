@@ -18,7 +18,9 @@ Run `../harness/verify.sh`, or `scripts/check.sh` for the game only. It must pas
 - `core/`: engine-level systems (movement, player, networking, input, game root,
   feature loader). Avoid editing this for features. Changes here need human review.
 - `features/<name>/`: one directory per feature, containing its scenes and scripts.
-- `world/`: level geometry (CSG for now).
+- `world/`: legacy level geometry (CSG). New interiors are GridMaps painted from a
+  MeshLibrary, not CSG walls; see `docs/asset-generation.md` and the casino example in
+  `features/casino_hub/gridmap/README.md`.
 - `ui/`: HUD and menus.
 - `assets/`: all media (textures, models, audio, fonts). Put a feature's files in
   `assets/<feature>/` (e.g. `assets/roulette/textures/`), never inside `features/`;

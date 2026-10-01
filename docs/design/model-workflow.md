@@ -114,3 +114,7 @@ The moving platform and guarded landing behavior stay in their existing owners;
 visual prefabs reuse the original collision footprint. Moving surfaces use mesh
 UV1 or local triplanar projection, never world triplanar projection, so their
 textures move with them.
+
+Modular interior pieces (walls, floors, ramps, ceiling tiles) become GridMap
+MeshLibrary items rather than CSG; see
+[Interiors use GridMaps](../asset-generation.md#interiors-use-gridmaps).

@@ -36,7 +36,8 @@ After the required reading, follow the documents relevant to the task:
 | [docs/design/lore.md](docs/design/lore.md) | World premise, Golden Crown, slums, elevator, tone and canon. Required for every task. |
 | [docs/design/gameplay.md](docs/design/gameplay.md) | Intended player loop and system behavior. Required for every task. |
 | [docs/design/art-style.md](docs/design/art-style.md) | Visual direction, geometry, textures, materials and lighting. Read before visual or asset work. |
-| [docs/asset-generation.md](docs/asset-generation.md) | Agent workflow for creating and updating assets: Blockbench MCP, references, low-poly modeling, small textures, export and rendered review. Read before model or texture work. |
+| [docs/asset-generation.md](docs/asset-generation.md) | Agent workflow for creating and updating assets: Blockbench MCP, references, low-poly modeling, small textures, GridMap interiors, export and rendered review. Read before model, texture or interior work. |
+| [game/features/casino_hub/gridmap/README.md](game/features/casino_hub/gridmap/README.md) | How interiors are built from GridMap tiles and a MeshLibrary. Read before building or changing rooms; the casino (`casino_gridmap.tscn`, `gridmap/tiles.tscn`) is the example to copy. |
 | [docs/design/model-workflow.md](docs/design/model-workflow.md) | Model authoring, UV maps, generated texture templates, validation and the 128px texture limit. |
 | [docs/design/concept-art/](docs/design/concept-art/) | Visual references. Open relevant images before modeling or scene design: `dealer.png` and `dealer-side.png` for the character, `casino.png` for the casino, and `elevator-parking-garage.png` / `loot-parking-garage.png` for garage scenes. |
 | [docs/design/zones/](docs/design/zones/) | Location-specific design, grouped by zone type. Read the relevant zone document before changing its layout, encounters or atmosphere. |
@@ -54,6 +55,9 @@ files before editing the corresponding code.
 
 ## Rules
 
+- Build interiors (walls, floors, ramps, ceilings) as GridMap tiles from a MeshLibrary,
+  not CSG geometry. Read the GridMap guide in the documentation map when needed and
+  use the casino (`casino_gridmap.tscn` with `gridmap/tiles.tscn`) as the example.
 - Model and world textures must be no larger than **128×128 pixels**. Treat the
   limit as a maximum, not a default: scale texture size to physical size and visible
   detail (small simple pickups can use 16×16 or 32×32; modest props 32×32 or 64×64).
