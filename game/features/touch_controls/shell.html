@@ -154,7 +154,30 @@ window.addEventListener('keydown', function (evt) {
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="$GODOT_URL"></script>
+		<script>
+// Cache busting (#371): the version-mismatch "Reload page" button adds ?v=<server build>.
+// Pass it to the engine script and to the files the engine fetches (wasm, pck), so the
+// browser downloads the new build instead of reusing its cached copy.
+const CACHE_BUST = new URLSearchParams(window.location.search).get('v') || '';
+function withCacheBust(url) {
+	if (!CACHE_BUST) {
+		return url;
+	}
+	const u = new URL(url, window.location.href);
+	if (u.origin !== window.location.origin) {
+		return url;
+	}
+	u.searchParams.set('v', CACHE_BUST);
+	return u.toString();
+}
+if (CACHE_BUST) {
+	const nativeFetch = window.fetch.bind(window);
+	window.fetch = function (input, init) {
+		return nativeFetch(typeof input === 'string' ? withCacheBust(input) : input, init);
+	};
+}
+document.write('<script src="' + withCacheBust('$GODOT_URL') + '"><\/script>');
+		</script>
 		<script>
 const GODOT_CONFIG = $GODOT_CONFIG;
 const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;

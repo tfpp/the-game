@@ -1,0 +1,7 @@
+{
+  "title": "Reliable update reloads",
+  "summary": "Reloading after a game update now downloads the new version instead of a stale cached copy.",
+  "notes": [
+    "Reload with the server's version in the address so browsers skip their cached game files."
+  ]
+}

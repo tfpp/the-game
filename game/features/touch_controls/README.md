@@ -11,3 +11,8 @@ right trigger (`JOY_AXIS_TRIGGER_RIGHT`) presses them once past 0.5 and releases
 The shared web `shell.html` preserves browser reload and native macOS screenshot
 shortcuts before Godot's canvas handler can prevent their defaults. Mac pointer
 release and click-to-resume are owned by `features/control_scheme/system_shortcuts.gd`.
+
+When the server refuses a client for a version mismatch, the login screen's "Reload
+page" button reloads with `?v=<server build>`. The shell appends that `v` to the engine
+script and to same-origin `fetch()` requests (WASM, PCK), so browsers bypass their
+cached bundle instead of reloading the stale build forever (#371).
