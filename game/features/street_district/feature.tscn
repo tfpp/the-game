@@ -40,7 +40,7 @@ pixel_size = 0.004
 position = Vector3(0, 0, -2200)
 script = ExtResource("room")
 room_scene = "res://features/street_district/district.tscn"
-bounds = AABB(-45, -1, -23, 90, 22, 102)
+bounds = AABB(-55, -1, -23, 100, 44, 102)
 
 [node name="Arrival" type="Marker3D" parent="Room"]
 position = Vector3(0, 1, 3)

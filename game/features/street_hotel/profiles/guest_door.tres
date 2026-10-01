@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="ProceduralSocketProfile" format=3]
+[ext_resource type="Script" path="res://features/procedural_rooms/socket_profile.gd" id="profile"]
+[resource]
+script = ExtResource("profile")
+width = 1.2
+height = 2.4

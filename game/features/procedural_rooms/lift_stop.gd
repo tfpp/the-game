@@ -5,6 +5,7 @@ const Showcase := preload("res://features/procedural_rooms/showcase.gd")
 const BUTTON_MODEL := preload("res://features/procedural_rooms/elevator_button_model.tscn")
 @export var floor_index := 4
 @export var ride_button := false
+@export var aim_half_width := .25
 @export var lift_path := NodePath("../../Lift")
 var light: MeshInstance3D
 @onready var entity: NetworkedInteraction = $NetworkedEntity
@@ -32,9 +33,7 @@ func _ready() -> void:
 		model.rotation.y = -PI / 2
 		model.position.z = -.27
 		add_child(model)
-		var label := Showcase.placard(
-			self, ProceduralMovingLift.floor_label(floor_index), Vector3(0, 1.6, -.07)
-		)
+		var label := Showcase.placard(self, _floor_label(), Vector3(0, 1.6, -.07))
 		label.font_size = 20
 		label.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 		label.rotation.y = PI
@@ -85,7 +84,7 @@ func aimed_at(player: Player) -> bool:
 		return false
 	var distance := -origin.x / direction.x
 	var hit := origin + direction * distance
-	return distance > 0 and absf(hit.y) <= .055 and absf(hit.z) <= .25
+	return distance > 0 and absf(hit.y) <= .055 and absf(hit.z) <= aim_half_width
 
 
 func _process(_delta: float) -> void:
@@ -101,8 +100,14 @@ func _process(_delta: float) -> void:
 
 func interaction_text() -> String:
 	if ride_button and lift().net_floor == floor_index:
-		return "Already at %s" % ProceduralMovingLift.floor_label(floor_index)
+		return "Already at %s" % _floor_label()
+	return ("Ride to %s" if ride_button else "Call elevator to %s") % _floor_label()
+
+
+func _floor_label() -> String:
+	var owner := lift()
 	return (
-		("Ride to %s" if ride_button else "Call elevator to %s")
-		% ProceduralMovingLift.floor_label(floor_index)
+		owner.stop_label(floor_index)
+		if owner != null
+		else ProceduralMovingLift.floor_label(floor_index)
 	)

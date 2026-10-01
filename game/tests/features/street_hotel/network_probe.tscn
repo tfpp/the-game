@@ -1,0 +1,6 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://tests/features/street_hotel/network_probe.gd" id="script"]
+[ext_resource type="PackedScene" path="res://main.tscn" id="game"]
+[node name="HotelNetworkProbe" type="Node"]
+script = ExtResource("script")
+[node name="Game" parent="." instance=ExtResource("game")]

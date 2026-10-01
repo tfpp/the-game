@@ -10,7 +10,7 @@ const BIN_POSITIONS: Array[Vector3] = [
 	Vector3(18, 0, -5.15),
 	Vector3(-18, 0, 22.85),
 	Vector3(18, 0, 22.85),
-	Vector3(-33.15, 0, 14),
+	Vector3(-33.15, 0, 17.7),
 	Vector3(33.15, 0, 42),
 ]
 

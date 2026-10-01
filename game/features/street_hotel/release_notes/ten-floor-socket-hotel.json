@@ -1,0 +1,10 @@
+{
+  "title": "Ten-floor Crown Hotel on the street map",
+  "summary": "Visit 200 varied guest rooms in a new hotel connected to the street district.",
+  "notes": [
+    "Add ten storeys with twenty numbered guest rooms each, socket-connected corridors, reception and themed floor lounges using the existing vintage hotel models.",
+    "Use the west-side reception teleporter and ride the garage’s physical elevator across ten hotel floors, with sliding-door interlocks, original cab/audio and authenticated controls.",
+    "Arrange beds, bedside tables, desks, chairs and lounge furniture in authored groups; stream floors around the rider, batch repeated furniture and cull distant props.",
+    "Show a simplified copy of the same streets and buildings through framed windows using 32px textures and no extra rendering cameras."
+  ]
+}

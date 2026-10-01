@@ -23,7 +23,8 @@ closures. Interior caps remain ordinary walls. Opening a socket removes both cap
 presentation and structural collision. One indexed structural collision mesh spans
 all joined floors. Pavement is flush for clean traversal.
 
-Twenty-eight building instances surround four city blocks. A corner shop and a
+Twenty-four building instances surround four city blocks, including the ten-storey
+Crown Hotel replacing five west-side background facades. A corner shop and a
 workshop have real 3 m facade openings and fitted wall collision, each containing
 a front and back room. All room corners and ceilings stay within their actual
 6×14.2 m building envelopes. Other buildings are closed scenery. The central
@@ -95,3 +96,7 @@ layout checks cannot verify browser placement. After importing the project, run
 `GODOT_RELEASE=/path/to/linux_release.x86_64 bash tests/features/street_district/release_test.sh`
 from `game/`. This regression runs with assertions disabled and checks all joins,
 nine separate junction positions, and floor collision across the district.
+
+The Crown Hotel west-side reception door connects to its 200-room interior.
+Its street apron supports the approach; the facade footprint matches the
+interior envelope, and a simplified street copy provides hotel window views.
