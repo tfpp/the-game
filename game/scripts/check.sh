@@ -10,6 +10,8 @@ SRC=(core ui world tests)
 
 step() { printf '\n==> %s\n' "$*"; }
 
+step "preview packaging"
+scripts/test_preview_pack.sh
 step "feature release notes"
 (cd .. && scripts/feature_notes.sh validate WORKTREE)
 # harness/verify.sh sets this when the branch doesn't touch scripts/.

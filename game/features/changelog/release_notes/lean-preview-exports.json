@@ -1,0 +1,8 @@
+{
+  "title": "Smaller working web previews",
+  "summary": "Trim authoring-only images from downloads and restore preview loading with cache-busting enabled.",
+  "notes": [
+    "Exclude hotel reference screenshots and the original painting atlas from web and server exports while retaining their source files.",
+    "Install preview decompression before the engine loader so the current HTML shell deploys correctly."
+  ]
+}
