@@ -131,7 +131,7 @@ day/night feature from changing this scene's ambient light or adding a global su
 Maps without that metadata retain the existing clock behavior.
 
 The Compatibility renderer limits local lights per mesh. Structural and decor
-GridMaps use four-cell render batches, and ceiling quads replace the former whole
+GridMaps use eight-cell render batches, and ceiling quads replace the former whole
 room mesh. 13 m perimeter sconces and 8 m chandeliers keep each batch within the eight-light budget
 without raising project limits. Thirty authored positional lights also stay below the
 32-light frame limit, leaving space for player lights. `test_decor_lighting.gd` audits overlaps across all
@@ -264,3 +264,28 @@ Vivienne's main-bar stool share this wrapper. A 0.9840426 vertical scale fits th
 0.752 m source to the established 0.74 m seat height, preserving her seated pose.
 Rebuilding the balcony uses this same wrapper. The bundle retains authoritative
 mesh, paint and UV sources; no duplicate model or texture is needed.
+
+## Rendering batch regression
+
+The saved casino, its authoring source and generated pit/balcony maps use an
+eight-cell octant size. The existing light-overlap test audits every resulting
+batch against the eight-light budget. Sixteen-cell batches exceed that budget
+on the floor and ceiling, so keep the size at eight. Cells, meshes, collision,
+materials and shadow lights are unchanged. Larger batches can submit more
+offscreen tiles; the tradeoff favors fewer calls in this compact interior.
+
+With a display, compare the old and current sizes using:
+
+```sh
+godot --path game --audio-driver Dummy --rendering-method gl_compatibility \
+  -s res://tests/features/casino_hub/render_batch_probe.gd
+```
+
+The probe freezes furnishings and compares four views at 960×540, saving images
+to `/tmp/batch-<view>-<size>.png`. In Godot 4.7.2 Compatibility on Mesa llvmpipe,
+visible draw counts changed from 451→251, 52→26, 275→172 and 127→63. Only
+0–8 pixels per view differed by more than 0.01; the largest channel difference
+was 0.032. These are native renderer measurements, not RTX/Edge FPS results.
+The separate shadow draw counter reports zero on this renderer, so it cannot
+attribute shadow savings. The same batched geometry remains available to both
+shadow pools.

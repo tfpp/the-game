@@ -167,3 +167,6 @@ The bartender, apartment clerk and roulette croupier (`stationary_dealer.tscn`) 
 the same tux with `dealing = false`: they stand at ease and glance around.
 `tests/features/casino_patrons/dealer_probe.tscn` renders a close-up
 (`-- --dealer-capture=/tmp/dealer.png`, add `--dealer-back` for the back).
+
+Salon guests keep their immediate initial pose, then stagger their 10 Hz updates
+across seven phases to avoid posing every seated/standing rig in the same frame.

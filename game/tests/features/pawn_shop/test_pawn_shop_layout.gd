@@ -87,6 +87,30 @@ func test_guns_hang_on_the_wall_within_reach() -> void:
 		assert_true(gun.entity.in_range(_player_at(customer)), "%s reachable" % gun.name)
 
 
+func test_rusty_talk_is_reachable_without_stealing_the_pawn_counter() -> void:
+	var interaction := preload("res://features/interaction/interaction.gd").new()
+	add_child_autofree(interaction)
+	interaction.set_physics_process(false)
+	var device := Controls.device
+	var playing := Controls.playing
+	Controls.device = Controls.Device.TOUCH
+	Controls.playing = true
+	var player := _player_at(COUNTER_CUSTOMER)
+	player.add_to_group(&"local_player")
+	player.global_position = player.net_position
+	assert_same(interaction._find_target(), _runs.get_node("Fence"))
+	var talk_spot := Vector3(-12.7, 0.95, 27.2)
+	_sweep(Vector3(-8, 0.95, 26.5), talk_spot)
+	_assert_clear(talk_spot)
+	_assert_floor(talk_spot, 0.0)
+	player.net_position = talk_spot
+	player.global_position = talk_spot
+	assert_same(interaction._find_target(), _shop.get_node("RustyHogg"))
+	assert_eq(interaction.target_text(), "Talk to Rusty Hogg")
+	Controls.device = device
+	Controls.playing = playing
+
+
 func test_top_hat_sits_on_its_stand_within_reach() -> void:
 	var stand := _shop.get_node("HatStand") as CSGBox3D
 	var hat := stand.get_node("TopHat") as WallGun

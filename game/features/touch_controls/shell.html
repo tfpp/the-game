@@ -137,6 +137,58 @@ window.addEventListener('keydown', function (evt) {
 	}
 }, true);
 		</script>
+		<script id="game-scissor-cache">
+// Emscripten reads SCISSOR_TEST while saving GL state every frame. Some drivers
+// synchronously stall on getParameter; track this one boolean in JavaScript.
+(function () {
+	if (typeof WebGL2RenderingContext === 'undefined') return;
+	const prototype = WebGL2RenderingContext.prototype;
+	const getParameter = prototype.getParameter;
+	const enable = prototype.enable;
+	const disable = prototype.disable;
+	const states = new WeakMap();
+	function state(context) {
+		let value = states.get(context);
+		if (!value) {
+			value = { enabled: null };
+			states.set(context, value);
+			context.canvas.addEventListener('webglcontextlost', function () {
+				// Read the restored native state on first use. A restoration handler
+				// may enable scissoring before any later event listeners run.
+				value.enabled = null;
+			});
+		}
+		if (value.enabled === null) {
+			value.enabled = getParameter.call(context, context.SCISSOR_TEST);
+		}
+		return value;
+	}
+	prototype.getParameter = function (parameter) {
+		if (parameter !== this.SCISSOR_TEST || this.isContextLost()) {
+			return getParameter.call(this, parameter);
+		}
+		return state(this).enabled;
+	};
+	prototype.enable = function (capability) {
+		if (capability === this.SCISSOR_TEST && !this.isContextLost()) {
+			const value = state(this);
+			enable.call(this, capability);
+			value.enabled = true;
+			return;
+		}
+		return enable.call(this, capability);
+	};
+	prototype.disable = function (capability) {
+		if (capability === this.SCISSOR_TEST && !this.isContextLost()) {
+			const value = state(this);
+			disable.call(this, capability);
+			value.enabled = false;
+			return;
+		}
+		return disable.call(this, capability);
+	};
+}());
+		</script>
 		$GODOT_HEAD_INCLUDE
 	</head>
 	<body>

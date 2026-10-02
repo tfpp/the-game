@@ -1,0 +1,7 @@
+{
+  "title": "Cheaper unseen enemy animation",
+  "summary": "Avoid animating garage enemy rigs that the active camera cannot render.",
+  "notes": [
+    "Skip masked enemy poses while preserving movement, combat and replication."
+  ]
+}
