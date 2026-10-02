@@ -16,8 +16,8 @@ Kicking works with items or guns in hand. Punches and kicks share a cooldown
 Aim at the target; charged kicks can knock down or shove gallery dummies/patrons,
 hurt players through Combat, and hit other killables (including the soccer ball).
 Quick kicks use jab rules, so generic `take_hit`-only targets require a charged kick.
-There is no new casino safety policy: this retains the shipped punching/combat rules,
-which do not yet implement the design documents’ casino-wide safe-zone restriction.
+Punches and kicks cannot hurt players inside the Golden Crown (`features/safe_zone`);
+killable targets there still react.
 
 First person shows a matching right leg/foot drawing back and snapping forward;
 third person and other players see the avatar’s right leg kick, including penguin

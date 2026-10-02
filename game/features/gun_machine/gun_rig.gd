@@ -204,6 +204,8 @@ func request_fire() -> void:
 	var gun_machine := get_tree().get_first_node_in_group(&"gun_machine_root")
 	if player == null or gun_machine == null:
 		return
+	if SafeZone.covers(get_tree(), player.global_position):
+		return
 	var barrel_count := int(net_stats["barrel_count"])
 	_fire_cooldown = 1.0 / maxf(float(net_stats["fire_rate"]), 0.01)
 	net_ammo_in_mag -= barrel_count

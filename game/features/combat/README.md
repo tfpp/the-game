@@ -40,6 +40,11 @@ owning another death timer. The operations van uses it to reject travel during t
 death screen. Its optional `player_spawn` marker uses the same existing ±3m jitter
 as initial joins and fall recovery; marker ownership remains with `starter_room`.
 
+## Safe zones
+
+Damage between two different players is ignored while either stands in a
+`SafeZone` (`features/safe_zone`), so the Golden Crown stays peaceful.
+
 ## Adding a new source of damage
 
 Call `apply_damage` on the `combat` group's node from server-only code, same as

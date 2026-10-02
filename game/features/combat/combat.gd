@@ -64,6 +64,8 @@ func is_respawning(peer_id: int) -> bool:
 func apply_damage(target_peer: int, amount: float, attacker_peer: int) -> void:
 	if not multiplayer.is_server() or amount <= 0.0 or _respawns.has(target_peer):
 		return
+	if attacker_peer != target_peer and _in_safe_zone(target_peer, attacker_peer):
+		return
 	var remaining := health_for(target_peer) - amount
 	if remaining > 0.0:
 		_set_health(target_peer, remaining)
@@ -127,6 +129,13 @@ func _respawn_position() -> Vector3:
 	)
 	var feature_spawn := get_tree().get_first_node_in_group(&"player_spawn") as Marker3D
 	return (feature_spawn.global_position if feature_spawn != null else RESPAWN_POINT) + jitter
+
+
+## The Golden Crown is safe (features/safe_zone): no player hurts another while
+## either stands inside. Self-inflicted damage such as /suicide still applies.
+func _in_safe_zone(target_peer: int, attacker_peer: int) -> bool:
+	var tree := get_tree()
+	return SafeZone.covers_peer(tree, target_peer) or SafeZone.covers_peer(tree, attacker_peer)
 
 
 func _player_for_peer(peer_id: int) -> Player:

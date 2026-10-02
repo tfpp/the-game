@@ -162,10 +162,15 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
 ## Milestone D: safe casino
 
 ### D1. No combat in the Crown
-- [ ] Server rejects `apply_damage` between players and from enemies while the
+- [x] Server rejects `apply_damage` between players and from enemies while the
   victim is inside a shared casino zone; weapons cannot fire there (lowered pose).
   Shooting-gallery targets and other `killable` toys keep working. Tests for PvP
   blocked inside and allowed in a slum.
+- Completed in #434: `features/safe_zone` boxes cover the Crown, annex, lounge,
+  cellar and hotel wing (not the B1–B5 garage below). Combat ignores damage between
+  players when either is inside; held and gun-machine guns refuse to fire there.
+  No lowered pose yet. Enemies never reach the Crown, and their damage is
+  self-attributed, so the check is PvP-only.
 
 ### D2. Spawn and first minute in the Crown
 - [ ] Spawn new players in the Crown near the elevator, not in the operations

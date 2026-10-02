@@ -164,6 +164,8 @@ func _fire(def: ItemDefinition) -> void:
 	var player := _player()
 	if player == null:
 		return
+	if def.damage > 0.0 and SafeZone.covers(get_tree(), player.global_position):
+		return
 	_fire_cooldown = def.fire_cooldown_s
 	var origin := _aim_origin(player)
 	_play_fire.rpc(def.id, origin)
