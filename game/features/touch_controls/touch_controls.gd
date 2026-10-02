@@ -1,5 +1,5 @@
 extends Control
-## Floating move stick, fixed aim stick, optional look swipes and independent action targets.
+## Floating move stick, optional first-person aim stick, look swipes and action targets.
 
 const AttackInput := preload("res://features/touch_controls/attack_input.gd")
 
@@ -7,6 +7,8 @@ const INK := Color(0.9, 0.96, 1.0)
 const ACCENT := Color(0.34, 0.94, 0.76)
 const STICK_RADIUS := 76.0
 const ACTION_RADIUS := 34.0
+const STORE_NAME := "touch_controls"
+var first_person_aim_enabled := false
 var ui_scale := 1.0
 var ui_size := Vector2.ZERO
 var safe_bounds := Rect2()
@@ -25,6 +27,10 @@ var _safe_area_refresh := 0.0
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_to_group(&"settings_pages")
+	first_person_aim_enabled = (
+		SettingsStore.load_data(STORE_NAME).get("first_person_aim_enabled", false) == true
+	)
 	if OS.has_feature("web"):
 		_browser = JavaScriptBridge.get_interface("window")
 	Controls.input_reset.connect(_clear_fingers)
@@ -34,6 +40,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	visible = Controls.touch_visible() and Controls.gameplay_active()
+	_sync_aim()
 	if visible:
 		Controls.look_delta += Controls.deadzone(aim_value) * Controls.stick_sensitivity * delta
 	elif [move_finger, look_finger, aim_finger, jump_finger, use_finger, fire_finger].any(
@@ -45,6 +52,44 @@ func _process(delta: float) -> void:
 		_update_safe_area()
 		_safe_area_refresh = 0.5
 	queue_redraw()
+
+
+func settings_page_label() -> String:
+	return "Touch controls"
+
+
+func settings_page_build() -> Control:
+	var box := VBoxContainer.new()
+	var toggle := CheckButton.new()
+	toggle.text = "First-person aim joystick"
+	toggle.custom_minimum_size.y = 48
+	toggle.button_pressed = first_person_aim_enabled
+	toggle.toggled.connect(set_first_person_aim_enabled)
+	box.add_child(toggle)
+	var hint := Label.new()
+	hint.text = "Off by default. Swipe to aim in first person with or without the joystick."
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(hint)
+	return box
+
+
+func set_first_person_aim_enabled(value: bool) -> void:
+	first_person_aim_enabled = value
+	SettingsStore.save_data(STORE_NAME, {"first_person_aim_enabled": value})
+	_sync_aim()
+	queue_redraw()
+
+
+func aim_stick_active() -> bool:
+	var camera := get_tree().get_first_node_in_group(&"third_person_camera")
+	var third_person: bool = camera != null and camera.enabled and not get_viewport().use_xr
+	return first_person_aim_enabled or third_person
+
+
+func _sync_aim() -> void:
+	if not aim_stick_active():
+		aim_finger = -1
+		aim_value = Vector2.ZERO
 
 
 func _resize_layout() -> void:
@@ -119,6 +164,7 @@ func fire_center() -> Vector2:
 func _input(event: InputEvent) -> void:
 	if not Controls.touch_visible() or not Controls.gameplay_active():
 		return
+	_sync_aim()
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
 		var point := touch.position / ui_scale
@@ -137,7 +183,7 @@ func _input(event: InputEvent) -> void:
 		elif point.distance_to(jump_center()) <= ACTION_RADIUS and jump_finger == -1:
 			jump_finger = touch.index
 			Controls.jump_queued = true
-		elif point.distance_to(aim_center()) <= STICK_RADIUS:
+		elif aim_stick_active() and point.distance_to(aim_center()) <= STICK_RADIUS:
 			if aim_finger == -1:
 				aim_finger = touch.index
 				aim_value = ((point - aim_center()) / STICK_RADIUS).limit_length()
@@ -218,9 +264,10 @@ func _draw_touch() -> void:
 	draw_circle(center, 76, Color(0.06, 0.1, 0.14, 0.45))
 	draw_arc(center, 76, 0, TAU, 48, Color(0.9, 0.96, 1, 0.55), 2, true)
 	draw_circle(center + Controls.touch_move * 56, 28, Color(0.34, 0.94, 0.76, 0.65))
-	draw_circle(aim_center(), STICK_RADIUS, Color(0.06, 0.1, 0.14, 0.45))
-	draw_arc(aim_center(), STICK_RADIUS, 0, TAU, 48, Color(0.9, 0.96, 1, 0.55), 2, true)
-	draw_circle(aim_center() + aim_value * 56, 28, Color(0.34, 0.94, 0.76, 0.65))
+	if aim_stick_active():
+		draw_circle(aim_center(), STICK_RADIUS, Color(0.06, 0.1, 0.14, 0.45))
+		draw_arc(aim_center(), STICK_RADIUS, 0, TAU, 48, Color(0.9, 0.96, 1, 0.55), 2, true)
+		draw_circle(aim_center() + aim_value * 56, 28, Color(0.34, 0.94, 0.76, 0.65))
 	draw_circle(jump_center(), ACTION_RADIUS, Color(0.06, 0.1, 0.14, 0.6))
 	draw_arc(jump_center(), ACTION_RADIUS, 0, TAU, 48, ACCENT, 2, true)
 	draw_string(
@@ -234,8 +281,8 @@ func _draw_touch() -> void:
 	)
 	draw_string(
 		ThemeDB.fallback_font,
-		aim_center() + Vector2(-16, 110),
-		"AIM",
+		aim_center() + Vector2(-16 if aim_stick_active() else -65, 110),
+		"AIM" if aim_stick_active() else "SWIPE TO AIM",
 		HORIZONTAL_ALIGNMENT_LEFT,
 		-1,
 		16,

@@ -27,6 +27,8 @@ func before_each() -> void:
 	_overlay = Overlay.new()
 	_overlay.size = Vector2(1280, 720)
 	add_child_autofree(_overlay)
+	# These rate/capture regressions exercise the explicitly enabled joystick.
+	_overlay.first_person_aim_enabled = true
 	_overlay.set_process(false)
 
 

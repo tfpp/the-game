@@ -24,8 +24,10 @@ looking, and jumping use separate finger IDs, so they work simultaneously. The w
 shell accounts for iPhone safe areas, and rotation releases active touches. The fixed
 right AIM stick aligns with the idle movement stick below smaller FIRE, USE and JUMP
 buttons. Hold it off-center to turn continuously; lift or center it to stop. It uses the
-controller-stick sensitivity setting and turns player aim in both views. Swipes outside
-the stick retain first-person aim / third-person camera orbit.
+controller-stick sensitivity setting. In first person it is off by default; toggle
+**First-person aim joystick** in **Settings > Touch controls** to enable it (saved locally).
+First-person swipe aim always remains available, including the hidden stick's area when
+disabled. In third person AIM stays on and swipes outside it orbit the camera.
 
 A connected controller hides the touch controls automatically. In browsers, a button
 press may be needed before the browser exposes the controller. Start opens/resumes
