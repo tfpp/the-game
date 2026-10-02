@@ -255,3 +255,12 @@ The balcony reuses the salon bar and stool assets, matching counter collision an
 is the offline recipe called after the base layout and upper story are built.
 The review scene includes the stage and captures balcony/stair views. The old
 casino doorway is supplied by the separately loaded `casino_legacy` feature.
+
+## Burgundy pedestal bar stools
+
+`models/casino_stool.tscn` reuses the imported bundle's burgundy-and-brass stool,
+including its matching collision and 32×32 atlas. The three balcony stools and
+Vivienne's main-bar stool share this wrapper. A 0.9840426 vertical scale fits the
+0.752 m source to the established 0.74 m seat height, preserving her seated pose.
+Rebuilding the balcony uses this same wrapper. The bundle retains authoritative
+mesh, paint and UV sources; no duplicate model or texture is needed.

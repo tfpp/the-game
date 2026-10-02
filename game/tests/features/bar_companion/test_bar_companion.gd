@@ -182,8 +182,8 @@ func test_stats_and_escort_are_replicated_for_late_joiners() -> void:
 
 
 func test_seated_on_the_stool_clear_of_the_counter() -> void:
-	var stool := _bar.get_node("Stool/Seat") as MeshInstance3D
-	var seat_top := stool.global_position.y + (stool.mesh as CylinderMesh).height / 2.0
+	var stool := _bar.get_node("Stool/Model/Model") as MeshInstance3D
+	var seat_top := (stool.global_transform * stool.get_aabb()).end.y
 	var model := _vivienne.get_node("Body") as CompanionModel
 	assert_eq(model.avatar.locomotion, &"seated")
 	var hip := model.bone_position("ThighL").y
