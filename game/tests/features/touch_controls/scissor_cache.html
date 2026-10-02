@@ -25,6 +25,11 @@ try {
     const canvas = document.createElement('canvas');
     const a = canvas.getContext('webgl2');
     check(!!a, 'WebGL2 unavailable');
+    let enableOnRestore = false;
+    // Engine handlers may exist before the shell first observes this context.
+    canvas.addEventListener('webglcontextrestored', () => {
+        if (enableOnRestore) a.enable(a.SCISSOR_TEST);
+    });
     a.enable(a.SCISSOR_TEST); // Already-existing contexts must be initialized correctly.
     Function(source)();
     check(a.getParameter(a.SCISSOR_TEST) === true, 'Initial native state');
@@ -63,6 +68,16 @@ try {
     a.enable(a.SCISSOR_TEST);
     check(a.getParameter(a.SCISSOR_TEST) === true, 'Updates after restoration');
     check(b.getParameter(b.SCISSOR_TEST) === false, 'Restoration isolation');
+    enableOnRestore = true;
+    const lostAgain = event(canvas, 'webglcontextlost');
+    lose.loseContext();
+    await lostAgain;
+    const restoredAgain = event(canvas, 'webglcontextrestored');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    lose.restoreContext();
+    await restoredAgain;
+    check(nativeGet.call(a, a.SCISSOR_TEST) === true, 'Earlier restoration handler enabled native state');
+    check(a.getParameter(a.SCISSOR_TEST) === true, 'Earlier restoration handler preserves cached state');
     result.textContent = `PASS: ${checks} checks`;
 } catch (error) {
     result.textContent = `FAIL: ${error.stack}`;

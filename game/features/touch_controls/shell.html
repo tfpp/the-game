@@ -150,12 +150,16 @@ window.addEventListener('keydown', function (evt) {
 	function state(context) {
 		let value = states.get(context);
 		if (!value) {
-			value = { enabled: getParameter.call(context, context.SCISSOR_TEST) };
+			value = { enabled: null };
 			states.set(context, value);
-			context.canvas.addEventListener('webglcontextrestored', function () {
-				// Restored contexts start with the default GL state.
-				value.enabled = false;
+			context.canvas.addEventListener('webglcontextlost', function () {
+				// Read the restored native state on first use. A restoration handler
+				// may enable scissoring before any later event listeners run.
+				value.enabled = null;
 			});
+		}
+		if (value.enabled === null) {
+			value.enabled = getParameter.call(context, context.SCISSOR_TEST);
 		}
 		return value;
 	}

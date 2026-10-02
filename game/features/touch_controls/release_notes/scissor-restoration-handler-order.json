@@ -1,0 +1,5 @@
+{
+  "title": "Reliable browser graphics recovery",
+  "summary": "Keep graphics state correct when recovering from a lost browser context.",
+  "notes": ["Preserve scissor state set by earlier graphics context restoration handlers."]
+}
