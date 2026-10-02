@@ -33,3 +33,6 @@ alone. Toggles/orbit are ignored in VR, and the same preference resumes when the
 session ends. Tests live in `tests/features/third_person/`, with XR transitions in
 `tests/features/webxr/test_integration.gd` and binding persistence in
 `tests/features/control_scheme/test_rebinding.gd`.
+
+The HUD crosshair (group `aim_reticle`, `ui/hud.tscn`) is hidden while the third-person
+camera is active and shown again in first person, VR, or without a local player.

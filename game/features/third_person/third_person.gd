@@ -101,6 +101,7 @@ func _process(_delta: float) -> void:
 	if not Controls.gameplay_active() or get_viewport().use_xr:
 		_reset_hold()
 	var player := _local_player()
+	_show_reticle(not enabled or player == null or get_viewport().use_xr)
 	if player == null or player.is_queued_for_deletion():
 		return
 	var body := player.get_node("Body") as Node3D
@@ -127,3 +128,10 @@ func _process(_delta: float) -> void:
 	camera.global_position += motion * fraction
 	# Avoid filling the view with our own capsule in very tight spaces.
 	body.visible = DISTANCE * fraction > player.movement.hull_radius_m() + CAMERA_RADIUS
+
+
+## The HUD reticle marks the first-person aim point; the third-person camera sits
+## behind and off that line, so hide it while this camera is active.
+func _show_reticle(show: bool) -> void:
+	for reticle in get_tree().get_nodes_in_group(&"aim_reticle"):
+		(reticle as CanvasItem).visible = show
