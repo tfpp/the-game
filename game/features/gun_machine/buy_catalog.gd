@@ -13,7 +13,7 @@ const CATEGORIES: Array[String] = [
 	"Ray Gun",
 	"Classic ammunition"
 ]
-const FIXED_PRICES := {"pistol": 3000, "smg": 7500, "shotgun": 9000, "awp": 15000}
+const FIXED_PRICES := {"pistol": 150000, "smg": 555000, "shotgun": 555000, "awp": 1500000}
 
 
 static func entries(category: int) -> Array[Dictionary]:

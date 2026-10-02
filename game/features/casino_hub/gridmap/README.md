@@ -111,9 +111,9 @@ remote Crown Strip Mall at z -5000. Its modeled portal occupies the former food
 entrance at (1.8,1.25,25); GPS routes food shopping through that door. The saved
 casino shell is retained, not rebuilt or removed by the relocation. See
 `features/strip_mall/README.md` for the new feature-owned gridset.
-Rusty Hogg’s shop,
-Gun-O-Matic and loot fence now occupy the separate roadside storefront reached by
-the operations van (`features/pawn_shop/README.md`). The old west corridor opening
+Rusty Hogg’s shop and loot fence occupy the separate roadside storefront reached by
+the operations van (`features/pawn_shop/README.md`). The Gun-O-Matic now stands in
+the Dev Room. The old west corridor opening
 is sealed with wood wall tiles; its unused floor and roof remain in the saved map. Shop geometry is serialized by the offline
 builder, so scene loading does not replace edits made in the GridMap editor.
 

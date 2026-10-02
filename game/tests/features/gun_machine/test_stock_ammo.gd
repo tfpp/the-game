@@ -108,8 +108,9 @@ func test_bad_pack_ids_cannot_be_bought_or_restored_and_no_free_ammo_with_guns()
 		assert_null(ItemCatalog.find(id))
 		assert_ne(await _machine.purchase(1, id), "")
 	assert_eq(_wallet.balances[1], 100000)
+	_wallet.balances[1] = 150500
 	assert_eq(await _machine.purchase(1, "pistol"), "")
-	assert_eq(_wallet.balances[1], 97000)
+	assert_eq(_wallet.balances[1], 500)
 	assert_eq(_hand.inventory().ammo_for("pistol"), 0)
 	_hand.inventory().loading = true
 	assert_ne(await _machine.purchase(1, "ammo:pistol:20"), "")

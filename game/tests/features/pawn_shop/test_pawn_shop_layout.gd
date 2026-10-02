@@ -1,29 +1,24 @@
 extends GutTest
 ## The separate storefront retains reachable merchandise and Rusty Hogg's
-## counter, the gun wall and the Gun-O-Matic all stand on its real geometry.
+## counter and the gun wall stand on its real geometry.
 
 const SHOP := preload("res://features/pawn_shop/feature.tscn")
 const RUNS := preload("res://features/slum_runs/feature.tscn")
-const GUNS := preload("res://features/gun_machine/feature.tscn")
 const COUNTER_CUSTOMER := Vector3(-10.2, 0.95, 24.5)
 
 var _shop: Node3D
 var _runs: Node3D
-var _guns: Node3D
 var _shape: CapsuleShape3D
 
 
 func before_each() -> void:
 	_shop = add_child_autofree(SHOP.instantiate())
 	_runs = add_child_autofree(RUNS.instantiate())
-	_guns = add_child_autofree(GUNS.instantiate())
 	# Exercise the local layout; the travel integration verifies deployed world positions.
 	_shop.position = Vector3.ZERO
 	(_shop.get_node("Room") as StreamedRoom).load_room(60000)
 	for prop: String in ["Fence"]:
 		(_runs.get_node(prop) as Node3D).position.z += 4000
-	for prop: String in ["Kiosk", "TrashCan"]:
-		(_guns.get_node(prop) as Node3D).position.z += 4000
 	_shape = CapsuleShape3D.new()
 	_shape.radius = 0.4064
 	_shape.height = 1.8288
@@ -127,19 +122,6 @@ func test_top_hat_sits_on_its_stand_within_reach() -> void:
 	customer.y = 0.95
 	_assert_clear(customer)
 	assert_true(hat.entity.in_range(_player_at(customer)))
-
-
-func test_gun_o_matic_moved_in_with_a_normal_sign() -> void:
-	var kiosk := _guns.get_node("Kiosk") as Node3D
-	var can := _guns.get_node("TrashCan") as Node3D
-	for node: Node3D in [kiosk, can]:
-		assert_between(node.global_position.x, -14.5, -3.5)
-		assert_between(node.global_position.z, 20.0, 29.5)
-		assert_eq(node.global_position.y, 0.0)
-		_assert_floor(node.global_position + Vector3(0, 1, -1.2), 0.0)
-	var sign := kiosk.get_node("Sign") as Label3D
-	assert_false(sign.fixed_size, "Sign scales with distance like other 3D signs")
-	assert_lt(sign.font_size * sign.pixel_size, 0.25)
 
 
 func _player_at(at: Vector3) -> Player:

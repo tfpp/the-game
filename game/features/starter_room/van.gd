@@ -14,7 +14,7 @@ const ZONE_HINTS: Array[String] = [
 	"Casino, shops and friends",
 	"Five floors · hostile enemies",
 	"Streets, alleys and searchable containers",
-	"Guns, pawn counter and Gun-O-Matic",
+	"Guns and pawn counter",
 	"Kebabs, poke bowls and Wendy's · outdoor dining"
 ]
 

@@ -8,6 +8,14 @@
 script = ExtResource("1_zone")
 bounds = AABB(-70, -3, -70, 140, 40, 125)
 
+[node name="OperationsGarage" type="Node3D" parent="."]
+script = ExtResource("1_zone")
+bounds = AABB(-8.2, -1, -3009.2, 16.4, 7, 18.4)
+
+[node name="PawnShop" type="Node3D" parent="."]
+script = ExtResource("1_zone")
+bounds = AABB(-16.2, -1, -3980.2, 14.4, 6.5, 10.4)
+
 [node name="Lounge" type="Node3D" parent="."]
 script = ExtResource("1_zone")
 bounds = AABB(-5, -1, -604, 10, 6, 8)

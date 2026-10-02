@@ -16,7 +16,9 @@ const CROWN_POINTS: Array[Vector3] = [
 	Vector3(0, -1.25, 0),  # gaming pit
 	Vector3(0, 0, -17.5),  # elevator
 	Vector3(-26, 0, 0),  # petting parlor
-	Vector3(-9, 0, 24.5),  # pawn shop
+	Vector3(-9, 0, -3975.5),  # standalone pawn shop
+	Vector3(-4.5, 1, -2994),  # operations arrival
+	Vector3(-4, 3.5, -3007.8),  # upstairs office
 	Vector3(28.7, 0, 29.35),  # kebab shop
 	Vector3(-50, 3, -58),  # annex northwest
 	Vector3(0, 0, -597),  # lounge
@@ -59,6 +61,63 @@ func test_the_crown_and_its_rooms_are_covered() -> void:
 func test_slums_garages_and_the_shooting_gallery_are_not_covered() -> void:
 	for point: Vector3 in SLUM_POINTS + [Vector3(306, 1, -306.5)]:
 		assert_false(SafeZone.covers(get_tree(), point), "unsafe at %s" % point)
+
+
+func test_preparation_volumes_match_actual_rooms_and_exclude_the_exterior() -> void:
+	for path: String in [
+		"res://features/starter_room/feature.tscn", "res://features/pawn_shop/feature.tscn"
+	]:
+		var feature := load(path).instantiate() as Node3D
+		add_child_autofree(feature)
+		var room := feature.get_node("Room") as StreamedRoom
+		for x: float in [0.01, room.bounds.size.x - 0.01]:
+			for y: float in [0.01, room.bounds.size.y - 0.01]:
+				for z: float in [0.01, room.bounds.size.z - 0.01]:
+					var point := room.to_global(room.bounds.position + Vector3(x, y, z))
+					assert_true(SafeZone.covers(get_tree(), point), str(point))
+		var outside := room.to_global(room.bounds.end + Vector3(1, 0, 1))
+		assert_false(SafeZone.covers(get_tree(), outside), "Exterior remains outside")
+
+
+func test_preparation_rooms_block_incoming_and_outgoing_damage_and_fire() -> void:
+	var player := _player(1, Vector3.ZERO)
+	var target := _player(2, SLUM_POINTS[0])
+	var hand := HandScene.instantiate() as Hand
+	hand.peer_id = 1
+	add_child_autofree(hand)
+	var stub := _MachineStub.new()
+	stub.add_to_group(&"gun_machine_root")
+	add_child_autofree(stub)
+	var rig := GunRigScene.instantiate() as GunRig
+	rig.peer_id = 1
+	add_child_autofree(rig)
+	rig.set_process(false)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 460
+	var shots: Array[String] = []
+	hand.fired.connect(func(id: String) -> void: shots.append(id))
+	await get_tree().physics_frame
+	for at: Vector3 in [
+		Vector3(-4.5, 1, -2994), Vector3(-4, 3.5, -3007.8), Vector3(-9, 1, -3975.5)
+	]:
+		player.global_position = at
+		player.net_position = at
+		_combat.apply_damage(1, 40.0, 2)
+		_combat.apply_damage(2, 40.0, 1)
+		assert_eq(_combat.health_for(1), Combat.MAX_HEALTH)
+		assert_eq(_combat.health_for(2), Combat.MAX_HEALTH)
+		hand.net_item_id = "pistol"
+		hand.inventory().collect("ammo:pistol:1")
+		var ammo := hand.inventory().ammo_for("pistol")
+		hand.request_primary_action()
+		assert_eq(hand.inventory().ammo_for("pistol"), ammo)
+		rig.equip(GunGenerator.generate(rng))
+		var magazine := rig.net_ammo_in_mag
+		rig.request_fire()
+		assert_eq(rig.net_ammo_in_mag, magazine)
+	assert_true(shots.is_empty())
+	assert_true(stub.spawned.is_empty())
+	assert_false(_combat.is_respawning(target.get_multiplayer_authority()))
 
 
 func test_pvp_damage_is_refused_inside_the_crown() -> void:

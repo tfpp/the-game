@@ -60,7 +60,8 @@ func test_van_shop_and_return_with_later_loaded_garage() -> void:
 	features.add_child(machine)
 	var runs := preload("res://features/slum_runs/feature.tscn").instantiate() as Node3D
 	features.add_child(runs)
-	assert_true(room.contains((machine.get_node("Kiosk") as Node3D).global_position))
+	assert_false(room.contains((machine.get_node("Kiosk") as Node3D).global_position))
+	assert_false(room.contains((machine.get_node("TrashCan") as Node3D).global_position))
 	assert_true(room.contains((runs.get_node("Fence") as Node3D).global_position))
 
 
