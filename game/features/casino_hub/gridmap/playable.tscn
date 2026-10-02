@@ -8,8 +8,3 @@
 position = Vector3(0, 1, 16)
 
 [node name="Casino" parent="." instance=ExtResource("casino")]
-
-[node name="Overview" parent="Casino" index="9"]
-current = false
-
-[editable path="Casino"]

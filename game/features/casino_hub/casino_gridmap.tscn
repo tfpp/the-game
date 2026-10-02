@@ -109,12 +109,6 @@ transform = Transform3D(-0.76604444, -0.36868784, 0.5265408, 0, 0.81915206, 0.57
 light_color = Color(0.8, 0.75, 0.64, 1)
 light_energy = 0.0
 
-[node name="Overview" type="Camera3D" parent="." unique_id=165192651]
-transform = Transform3D(0.7518398, -0.35280922, 0.5570122, 0, 0.8447952, 0.5350898, -0.6593458, -0.40230182, 0.6351507, 50, 48, 57)
-projection = 1
-current = true
-size = 85.0
-
 [node name="Ceiling" type="GridMap" parent="." unique_id=531153571]
 mesh_library = ExtResource("1_8l6pa")
 cell_size = Vector3(1, 0.25, 1)

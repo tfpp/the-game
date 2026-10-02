@@ -11,7 +11,7 @@ func _ready() -> void:
 	# Keep the layout visible from the review camera; the live room keeps its roof.
 	for name: String in ["Ceiling", "PawnRoof", "FoodRoof", "CorridorRoof"]:
 		($Casino.get_node(name) as Node3D).visible = false
-	_camera = $Casino/Overview as Camera3D
+	_camera = $Overview as Camera3D
 	_player = PLAYER.instantiate() as Player
 	_player.position = ($Casino/Spawn as Marker3D).position
 	add_child(_player)
