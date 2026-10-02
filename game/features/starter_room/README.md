@@ -99,8 +99,10 @@ network-mode change clears them. Earned authenticated money persists in the exis
 wallet; offline money remains temporary. No shared wallet or API interface changed.
 
 The office is part of the same StreamedRoom (not a separately teleported room).
-Architecture remains saved GridMaps, reusing garage concrete slabs and existing
-casino stair/guard tiles. The original spawn square, walking exit and van approach
+Architecture remains saved GridMaps, reusing garage concrete slabs and a feature-owned
+concrete stair/industrial steel guard library (`upstairs_tiles.tres`). The stair
+profile and smooth walking proxy retain the original dimensions; no casino carpet,
+walnut or brass guard finish is used. The original spawn square, walking exit and van approach
 remain clear. Static props live in streamed `interior.tscn`; the terminal endpoint
 and GPS marker always exist in `feature.tscn`. The desk and CRT reuse existing
 painted hotel/casino assets (no new meshes or textures, lights or shadows).
@@ -117,6 +119,31 @@ and a synthetic ready-job phone pin. Captures are under
 or browser performance. New tests cover validated jobs, continuous survey presence,
 existing wallet payout/retry, XP, lifecycle, private pin/modal behavior, actual stair
 walking/headroom and ENet authenticated requests/concurrent records/late joins.
+
+## Heist planning wall
+
+The east wall beside the van's open arrival aisle carries two 2.8 × 2.1 m boards:
+**WORLD / ROUTE MAP** circles **OPERATIONS GARAGE / YOU ARE HERE** in red, and
+**GOLDEN CROWN / BLUEPRINTS** shows the main hall, sunken gaming pit, both ramps,
+west balcony bar and elevator, plus an upper-bar section. The world map is a
+schematic of the van's three existing destinations, not literal distances or a
+claim about the intentionally undefined city geography. Red entry arrows are
+heist-style scenery, not new missions or travel controls. Just walk over and look;
+keyboard, touch and controller all use their normal movement/look controls.
+
+`planning_board.gd` constructs static art only when StreamedRoom loads the interior,
+with no processing, collision, RPCs, extra lights or shared mutable state. It reuses
+SignBoard's exact letter quads and the shared 64px glyph atlas; the two paper charts
+share a painted 128px atlas. This avoids unreadable rasterized map labels. Late joins
+and room reloads see identical boards; van, jobs and walking exit remain unchanged.
+
+The stair library builder retains existing cell IDs and collision shapes but emits
+new squared steel hand/knee rails with upright supports. Existing weathered concrete
+and steel textures are reused. Art sources, UV template, ImageGen prompt, rebuild
+commands and Compatibility renderer review are documented in
+`docs/design/model-sources/garage-planning/README.md`. The capture command above also
+renders both boards, the stair underside and mezzanine guard. Placement/winding,
+materials, texture budget and streaming reload checks are in `test_planning_art.gd`.
 
 Tests cover spawn fallback/override, actual initial floor contact, spawn and approach
 clearance, indexed winding/UVs/budget, all real arrival links, streamed floor preload,

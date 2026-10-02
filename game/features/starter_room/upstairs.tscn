@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="MeshLibrary" path="res://features/starter_room/garage_tiles.tres" id="1_su7xc"]
-[ext_resource type="MeshLibrary" path="res://features/casino_hub/gridmap/casino_tiles.tres" id="2_xp3od"]
+[ext_resource type="MeshLibrary" path="res://features/starter_room/upstairs_tiles.tres" id="2_xp3od"]
 
 [node name="Upstairs" type="Node3D" unique_id=1753965707]
 

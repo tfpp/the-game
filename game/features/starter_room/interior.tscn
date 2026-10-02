@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://features/starter_room/upstairs.tscn" id="upstairs"]
 [ext_resource type="PackedScene" path="res://features/hotel_props/props/writing_desk.tscn" id="desk"]
 [ext_resource type="PackedScene" path="res://features/casino_props/props/security_monitor.tscn" id="crt"]
+[ext_resource type="Script" path="res://features/starter_room/planning_board.gd" id="planning"]
 
 [sub_resource type="BoxMesh" id="tube"]
 size = Vector3(0.16, 0.08, 2.4)
@@ -86,6 +87,17 @@ position = Vector3(-6, 3.9, -8.8)
 text = "FIELDWORK / JOBS\nUPSTAIRS · E / USE COMPUTER"
 font_size = 32
 pixel_size = 0.005
+
+[node name="WorldMap" type="Node3D" parent="."]
+position = Vector3(7.9, 2.4, 3.2)
+rotation = Vector3(0, -1.57079633, 0)
+script = ExtResource("planning")
+
+[node name="CasinoBlueprints" type="Node3D" parent="."]
+position = Vector3(7.9, 2.4, 6.4)
+rotation = Vector3(0, -1.57079633, 0)
+script = ExtResource("planning")
+blueprint = true
 
 [node name="TubeB" type="MeshInstance3D" parent="."]
 position = Vector3(3, 4.6, -3)
