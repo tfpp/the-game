@@ -189,15 +189,26 @@ static func generate(rng: RandomNumberGenerator) -> Dictionary:
 	if rng.randf() < RAY_GUN_CHANCE:
 		return ray_gun()
 	var ammo_type: AmmoType = REGULAR_AMMO_TYPES[rng.randi_range(0, REGULAR_AMMO_TYPES.size() - 1)]
+	return generate_selected(rng, ammo_type)
+
+
+## Selected family keeps the same ranges as a kiosk roll. Zero barrels means random.
+static func generate_selected(
+	rng: RandomNumberGenerator, ammo_type: AmmoType, barrels: int = 0, automatic: int = -1
+) -> Dictionary:
+	if ammo_type == AmmoType.RAY:
+		return ray_gun()
 	var stats: Dictionary = AMMO_PROFILES[ammo_type]
-	var magazine_size := rng.randi_range(stats["magazine_size"][0], stats["magazine_size"][1])
+	var magazine_size := rng.randi_range(
+		maxi(int(stats["magazine_size"][0]), barrels), stats["magazine_size"][1]
+	)
 	# A gun can never fire if it has more barrels than rounds in a full magazine, so
 	# barrel count is capped by whatever magazine size was just rolled.
-	var barrel_count := mini(_roll_barrel_count(rng), magazine_size)
+	var barrel_count := barrels if barrels > 0 else mini(_roll_barrel_count(rng), magazine_size)
 	var total_ammo := (
 		magazine_size * rng.randi_range(stats["ammo_multiplier"][0], stats["ammo_multiplier"][1])
 	)
-	var is_automatic := rng.randf() < AUTOMATIC_CHANCE
+	var is_automatic := rng.randf() < AUTOMATIC_CHANCE if automatic < 0 else automatic == 1
 	return {
 		"ammo_type": ammo_type,
 		"barrel_count": barrel_count,

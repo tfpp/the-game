@@ -88,12 +88,12 @@ static func format_line(sender_name: String, text: String) -> String:
 	)
 
 
-## A sent line is a command, not a chat message, if it starts with "/".
+## Slash commands and the exact !guns alias stay out of public chat/Discord.
 static func is_command(text: String) -> bool:
-	return text.begins_with("/")
+	return text.begins_with("/") or text.to_lower() == "!guns"
 
 
-## The lowercase command word of a slash command, e.g. "/Suicide now" -> "suicide".
+## Lowercase command word, e.g. "/Suicide now" -> "suicide", "!GUNS" -> "guns".
 static func parse_command(text: String) -> String:
 	return text.substr(1).split(" ")[0].to_lower()
 

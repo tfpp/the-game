@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://features/gun_machine/gun_machine.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://features/gun_machine/kiosk.tscn" id="2_kiosk"]
 [ext_resource type="PackedScene" path="res://features/gun_machine/trash_can.tscn" id="3_trash"]
 [ext_resource type="Script" path="res://features/gun_machine/gun_stats_panel.gd" id="4_panel"]
+
+[ext_resource type="Script" path="res://features/gun_machine/buy_menu.gd" id="5_buy"]
 
 [node name="GunMachine" type="Node3D"]
 script = ExtResource("1_script")
@@ -23,6 +25,9 @@ spawn_path = NodePath("../Rigs")
 
 [node name="ProjectileSpawner" type="MultiplayerSpawner" parent="."]
 spawn_path = NodePath("../Projectiles")
+
+[node name="BuyMenu" type="CanvasLayer" parent="."]
+script = ExtResource("5_buy")
 
 [node name="StatsPanel" type="CanvasLayer" parent="."]
 script = ExtResource("4_panel")

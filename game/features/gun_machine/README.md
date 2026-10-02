@@ -10,6 +10,48 @@ gun from either system holsters whatever the other was holding, so only one weap
 ever in hand. See `gun_rig.gd`'s `holster`/`net_equipped` and
 `features/inventory/player_inventory.gd`'s `holster_weapon`.
 
+## Chat buy menu
+
+Type **!guns** (or **/guns**) in in-game chat, or open **Esc → Activities → Buy guns**.
+The CS 1.6-inspired olive-and-gold menu uses numbered categories: **1–8** select,
+**0** exits, and **Esc** returns to categories then closes. Click/tap also works;
+controller focus navigation and A select rows. The Activities link lets touch players
+open it without a chat keyboard. Scrollable rows scale to phone-sized screens.
+These shortcuts are modal only and do not replace weapon-hotbar bindings.
+
+Buy anywhere: classic pistol $10, SMG $25, shotgun $30 and AWP $50 match the pawn
+shop prices. Classic guns fill the hand if empty, otherwise a free backpack slot;
+use Inventory to equip stored guns. Generated families (buckshot, rifle, low-caliber,
+rocket, grenade, plasma) and Ray Gun cost the existing machine price of $20.
+Select barrels and automatic/semi-auto mode for generated families; other stats
+still roll within `GunGenerator` ranges. Rocket variants stop at two barrels because
+the magazine cannot hold more. Double-barrel plasma uses its existing authored model.
+The menu offers every **player** gun family/valid barrel-mode combination, not the
+NPC-only gunman prop or an infinite list of random stat rolls. Generated purchases
+replace the current rig; existing mutual holstering and firing rules are unchanged.
+
+`buy_catalog.gd` supplies trusted stock IDs, labels and prices. `buy_menu.gd` owns only
+local UI and a `NetworkedEntity` endpoint; it validates a single stock ID plus the real
+sender's player and calls `GunMachine.purchase(peer, choice = "")`. The optional choice
+extends the original server-only interface: omitted/empty still buys a random kiosk
+gun. All kiosk/menu payments share a per-peer pending lock; wallet checks still run
+through `PlayerMoney.charge`. No client can supply stats, a price or another peer.
+Loading inventories and active consumable use block buying. If capacity changes
+while paying, a paid classic gun drops at the purchase location, like pawn-shop sales.
+
+The menu and receipts are private transient events, never replayed to late joiners.
+Weapons/ammo replicate through existing Hand/inventory/GunRig spawners and Syncs.
+Respawns retain the existing carried weapons. Disconnect removes generated rigs
+(as before, including a purchase that finishes after leaving); a paid classic gun
+can drop locally if its buyer has left. Session switches invalidate pending delivery.
+Classic gun persistence follows Inventory; generated rigs remain session-only.
+No map placement, combat safety, wallet persistence or weapon damage changes.
+
+Tests: `tests/features/gun_machine/test_buy_menu.gd` and `test_buy_network.gd`
+cover catalog variants, chat dispatch, payment/capacity guards, holstering, modal
+cleanup, two real clients, private events, rejected forged payloads, late-join
+weapon snapshots and disconnect removal.
+
 ## How it works
 
 - `gun_generator.gd`: pure, seeded random generation (`GunGenerator.generate(rng)`),

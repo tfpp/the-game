@@ -3,7 +3,10 @@
 Enter opens public chat; Enter sends, Esc cancels. Existing controller rebinding of
 `chat_open` remains supported; there is no new touch/controller control. Messages are
 trimmed to 120 characters, escaped for BBCode and shown to every connected peer.
-Slash commands go to `chat_commands`; server `send_notice(peer_id, text)` remains private.
+Slash commands go to `chat_commands`; the exact `!guns` alias (case-insensitive) also
+uses that private path to open the gun-machine buy menu. `/guns` works too. Other
+exclamation-prefixed messages stay public. Neither command reaches the public log or
+Discord recording. Server `send_notice(peer_id, text)` remains private.
 
 ## Discord recording
 

@@ -1,0 +1,8 @@
+{
+  "title": "Classic chat gun buy menu",
+  "summary": "Type !guns to buy any player gun family from a classic numbered menu.",
+  "notes": [
+    "Add a CS 1.6-inspired !guns menu with numbered categories, wallet prices and touch/controller access through Activities.",
+    "Offer classic weapons and selectable generated gun families, barrels and fire modes through the existing inventory and gun rigs."
+  ]
+}
