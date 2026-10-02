@@ -49,6 +49,16 @@ payout together, rejecting both if the wallet can't cover the wager. It's the `r
 action (`wager_cents` up to the slot cap, `payout_cents` at most 36 times the wager); see
 `features/roulette/README.md`.
 
+`PlayerMoney.credit_reward(peer, id, amount_cents, reason)` is the server-only
+variable-reward interface used by Vivienne's case for its $100 helper fee.
+`sell_loot` delegates to this same implementation without changing its signature,
+prices, busy handling, notices or retries. Both use the existing signed `sell`
+API transaction: positive server-chosen cents and a stable operation ID. This is
+an amount-credit operation, not a new balance or protocol; no API deployment change
+is needed. Callers must validate eligibility, keep their ID through retries and
+block pending/duplicate claims. Temporary wallets still rely on the owning feature
+to prevent replay; the API additionally records idempotent transactions.
+
 ## Animated slot payouts
 
 `spin()` keeps its existing immediate-settlement behavior. Slots use the server-only

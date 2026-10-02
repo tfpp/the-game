@@ -318,6 +318,12 @@ func credit_coin(peer: int, id: String, reason: String) -> Dictionary:
 ## item while awaiting the result and retries the same operation ID if the API
 ## response is lost. The API records the amount and rejects altered retries.
 func sell_loot(peer: int, id: String, amount_cents: int, reason: String) -> Dictionary:
+	return await credit_reward(peer, id, amount_cents, reason)
+
+
+## Server-chosen variable reward, using the existing signed, idempotent amount-credit
+## transaction ("sell" on the API). No client payload may choose an amount.
+func credit_reward(peer: int, id: String, amount_cents: int, reason: String) -> Dictionary:
 	if not multiplayer.is_server() or _busy.has(peer) or amount_cents <= 0:
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true

@@ -9,7 +9,8 @@ facing the counter. Everything uses Use (E, Circle / B, or mobile **USE**).
 - **Charisma** (0–10): +2 for every slot win (up to +6, fading 1 point a minute) plus
   one per drink for the first three drinks. Each drink past three costs 2 points, so
   getting drunk also eats into charisma from wins.
-- **Vivienne** (Use near her): costs $50, minus 7% per charisma point (at least $15).
+- **Vivienne** (Use near her): opens free dialogue topics. Choose **A night out** for the
+  original visit: costs $50, minus 7% per charisma point (at least $15).
   Replies appear in on-screen subtitles as well as her overhead bubble, so room
   requirements and payment failures remain readable when standing close in either view.
   You need a Lily Apartments unit first (`features/apartments`). After paying she
@@ -21,6 +22,74 @@ facing the counter. Everything uses Use (E, Circle / B, or mobile **USE**).
   she goes back too. Only one player can have her at a time.
 - A line above the wallet (bottom right) shows your charisma, mood, lucky-night timer
   and escort goal while any of them apply.
+
+## Vivienne's case (#456)
+
+Use Vivienne at the salon bar and choose **Get to know you — help with the case**.
+Use is E, B/Circle or touch USE; choose topics with mouse/touch or gamepad focus.
+The optional ten-step quest never requires an apartment, payment, a gun or luck.
+Her original paid **A night out** option remains separate. The Esc/touch/controller
+menu's **Vivienne case journal** keeps your current objective and all acquired
+exhibit text readable in a scrolling dossier.
+
+This is expressly fictional: childhood pageant success precedes a nonsexual
+**adult** dispute about rigged reunion scores. The antagonist is fictional promoter
+**Donald Gilt**, not Donald Trump. Trump's existing walking/bribe/favor behavior
+is unchanged. Confrontation is a telephone dialogue, not combat.
+
+1. Get to know Vivienne and agree to gather evidence.
+2. Copy the pageant program from the northwest corner of the north card table.
+3. Copy the scoring ledger from the same corner of the middle card table.
+4. Return to Vivienne to compare the scores and her protest.
+5. Copy the blacklist memo from the northwest corner of the south card table.
+6. Use the **CASE PHONE** at the far left end of the bar for a signed witness statement.
+7. Copy Gilt's contract from the east lounge cocktail table.
+8. Return to the bar telephone and confront Donald Gilt with the evidence.
+9. Use the north table's case envelope to file the dossier and receive the verdict.
+10. Return to Vivienne, hear about her cartoonishly fast $1 billion settlement,
+    and collect your measly **$100** helper fee. Close and Use again if the wallet is busy.
+
+The case endpoint positions are in `VivienneCase.SPOTS`: card documents at
+(-6.6,-0.31,-6.1), (-6.6,-0.31,-1.1), (-6.6,-0.31,3.5); telephone at
+(-10.5,-0.27,-9.6); contract at (19.44,1.045,8.02). They reuse the hotel envelope
+and rotary phone meshes without collision. No layout, room, texture or new NPC is
+added. Labels appear only for your current objective; papers/phone remain visible.
+Evidence is copied into the case, not backpack inventory, and cannot be sold or
+taken away from another player's quest. The billion is narrative, not a wallet payout.
+
+`vivienne_case.gd` alone owns replicated per-peer `progress` (0–10) and private
+reward IDs/pending flags. Static `case_point.gd` endpoints exist at matching paths
+on all peers. All Use and topic requests pass through NetworkedInteraction's sender,
+range, schema, cooldown and authority checks; topic payloads include only the expected
+step, so stale/forged/skip requests cannot advance. Dead/respawning players cannot
+advance; respawns/replaced player nodes otherwise retain progress. Players can work
+independently at the same time. Late joiners receive the current bounded progress
+snapshot, not another player's private dialogue. Disconnect clears only that peer;
+session changes/restarts clear every case. There is no quest save file: reconnecting
+starts over and allows another complete run; authenticated reward money retains the
+existing wallet persistence, while offline money is temporary.
+
+Vivienne's `conversation` action opens topics without charging; `case` requests
+validate the expected step and seated/available state again. The existing empty
+`use` request remains the validated paid-escort interface, used by **A night out**.
+`PlayerMoney.credit_reward(peer, id, amount_cents, reason)` handles the one $100 fee.
+It reuses the existing signed/idempotent amount-credit transaction behind
+`sell_loot`, with a stable random ID on retries. Pending claims block duplicate
+settlements and stale disconnect/session callbacks cannot complete a replacement case.
+
+Tests: `test_vivienne_case.gd`, `test_case_layout.gd`, original escort tests and
+money gain/sale tests. Run `tests/features/bar_companion/case_network_test.sh` from
+`game/` for real WebSocket full-case, private events, two-player independence,
+late join, range/schema rejection, replicated reward, replay and disconnect checks.
+`CASE_TEST_PORT` overrides the port. Like the base busboy probe, it disables the
+server's unrelated weapon-hotbar HUD to avoid a freed-hand error after disconnect.
+
+Native captures: `docs/design/previews/vivienne-case/`. Reproduce from `game/`:
+`godot --audio-driver Dummy --rendering-method gl_compatibility --resolution 390x844
+res://tests/features/bar_companion/case_network_probe.tscn -- --offline
+--case-role=capture` (one command using a display). Add `--case-view=phone` or
+`--case-view=document` at 1100x750 for prop placement. Files appear at
+`/tmp/vivienne-case-<view>.png`; prop captures seed only example objective progress.
 
 ## How it works
 

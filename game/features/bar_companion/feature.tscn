@@ -17,8 +17,13 @@
 
 [ext_resource type="PackedScene" path="res://features/bar_companion/busboy_shift.tscn" id="busboy"]
 
+[ext_resource type="PackedScene" path="res://features/bar_companion/vivienne_case.tscn" id="case"]
+[ext_resource type="Script" path="res://features/bar_companion/case_menu.gd" id="case_menu"]
+
 [node name="BarCompanion" type="Node3D"]
 script = ExtResource("root")
+
+[node name="VivienneCase" parent="." instance=ExtResource("case")]
 
 [node name="BusboyShift" parent="." instance=ExtResource("busboy")]
 
@@ -57,6 +62,9 @@ script = ExtResource("interaction")
 replicated_properties = Array[NodePath]([NodePath(".:net_escort")])
 continuous_properties = Array[NodePath]([NodePath(".:net_position"), NodePath(".:net_yaw")])
 replication_interval = 0.1
+
+[node name="CaseMenu" type="CanvasLayer" parent="Vivienne"]
+script = ExtResource("case_menu")
 
 [node name="Body" type="Node3D" parent="Vivienne"]
 script = ExtResource("model")

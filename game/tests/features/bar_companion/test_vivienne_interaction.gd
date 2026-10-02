@@ -57,6 +57,12 @@ func _stand_near() -> void:
 	_player.global_position = _player.net_position
 
 
+func _choose_hire() -> void:
+	var menu := _npc.get_node("CaseMenu") as CanvasLayer
+	assert_true(menu._root.visible, "Use opens free topics instead of charging")
+	menu._choose("hire")
+
+
 func _claim_room() -> void:
 	_player.net_position = _home.get_node("Lobby/Desk").global_position + Vector3(0, 0, 1)
 	assert_gt(_home.claim(1), 0)
@@ -66,6 +72,7 @@ func _claim_room() -> void:
 func test_use_near_her_explains_missing_room_without_charging() -> void:
 	assert_same(_interaction._find_target(), _npc, "not Celeste or the bartender")
 	_interaction.use()
+	_choose_hire()
 	assert_true(_subs.is_showing(), "reply stays readable without looking above her head")
 	assert_eq(_subs.current_text(), "Vivienne: Get a room at Lily Apartments first, darling.")
 	assert_eq(int(_wallet.balances[1]), 20000)
@@ -77,6 +84,7 @@ func test_use_with_room_but_no_money_reports_failure_then_allows_retry() -> void
 	_claim_room()
 	_wallet.balances[1] = 100
 	_interaction.use()
+	_choose_hire()
 	assert_eq(_subs.current_text(), "Vivienne: You can't afford that")
 	assert_eq(int(_wallet.balances[1]), 100)
 	assert_eq(_npc.net_escort, 0)
@@ -84,7 +92,9 @@ func test_use_with_room_but_no_money_reports_failure_then_allows_retry() -> void
 	_wallet.balances[1] = 20000
 	# Cooldowns use wall time; clear the accepted failed-payment request for this retry.
 	(_npc.get_node("NetworkedEntity") as NetworkedInteraction)._actions[&"use"].next_msec = 0
+	(_npc.get_node("NetworkedEntity") as NetworkedInteraction)._actions[&"conversation"].next_msec = 0
 	_interaction.use()
+	_choose_hire()
 	assert_eq(_npc.net_escort, 1)
 	assert_string_contains(_subs.current_text(), "Vivienne: Lead me to your room, unit 101.")
 
@@ -92,6 +102,7 @@ func test_use_with_room_but_no_money_reports_failure_then_allows_retry() -> void
 func test_public_use_pays_and_apartment_arrival_announces_lucky_night() -> void:
 	_claim_room()
 	_interaction.use()
+	_choose_hire()
 	assert_eq(int(_wallet.balances[1]), 20000 - CharmMath.BASE_PRICE_CENTS)
 	assert_eq(_npc.net_escort, 1)
 	assert_eq(_bar.rerolls_for(1), 0, "hiring alone does not grant luck")
