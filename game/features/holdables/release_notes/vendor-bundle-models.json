@@ -1,0 +1,8 @@
+{
+  "title": "New beer and cigarette models",
+  "summary": "Vendor purchases now use the textured casino bundle models in your hand and on the ground.",
+  "notes": [
+    "Replace the primitive beer bottle and cigarette with the imported amber bottle and cigarette meshes.",
+    "Keep existing prices, three uses, drinking and smoking animations, and multiplayer behavior."
+  ]
+}

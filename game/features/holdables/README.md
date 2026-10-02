@@ -85,6 +85,13 @@ that same collection, consumption and drop path, with a two-hand bowl view.
 
 ## Cigarettes and bottled beer
 
+The purchased items reuse the casino bundle's textured amber beer bottle and
+cigarette meshes and materials. Held views have no static prop collider. The
+bottle is centered at its grip; the cigarette's +X filter end is rotated to +Z
+to preserve the hand convention. Mouth markers follow the bottle lip and filter,
+and smoke originates at the cigarette's opposite tip. Dropped items share these
+views through the existing catalog.
+
 Buy these at the salon bartender's **Bar shop** using E / B / Circle / touch USE.
 A cigarette costs $2 and a bottled beer costs $5. They collect into an empty hand
 or the backpack; equip stored items through Inventory (I / View / Esc → Activities → Inventory).
