@@ -206,7 +206,7 @@ func links() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for node: Node in get_tree().get_nodes_in_group(&"interactables"):
 		var door := node as GarageDoor
-		if door == null or door.destination.is_empty():
+		if door == null or door.destination.is_empty() or DevGate.blocks(door):
 			continue
 		var arrival := door.get_node_or_null(door.destination) as Node3D
 		if arrival == null:

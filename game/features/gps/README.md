@@ -54,3 +54,7 @@ Active routes clear on death/despawn/disconnect; reopened lists include respawns
 Moving targets replan on the existing distance/time budget and cancel the arrival
 countdown if they move away. No new RPCs, shared state, persistence, keys or world
 placements are introduced; entity owners retain all simulation and replication.
+
+Places with `dev_only = true` are listed only while `sv_cheats 1` is on, and doors with a
+`DevGate` child are left out of routing while they are locked (see
+[dev access](../dev_access/README.md)).

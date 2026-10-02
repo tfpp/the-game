@@ -1,4 +1,5 @@
 [gd_scene format=3]
+[ext_resource type="Script" path="res://features/dev_access/dev_gate.gd" id="dev_gate"]
 [ext_resource type="PackedScene" path="res://world/room.tscn" id="legacy"]
 [ext_resource type="PackedScene" path="res://features/slot_machine/feature.tscn" id="slots"]
 [ext_resource type="PackedScene" path="res://features/roulette/feature.tscn" id="roulette"]
@@ -51,6 +52,11 @@ position = Vector3(0, -0.25, 0)
 position = Vector3(500, 0, 516)
 script = ExtResource("gps")
 label = "Old Golden Crown Casino"
+dev_only = true
 hint = "Original casino layout; OLD CASINO door on the north promenade."
 area = AABB(465, -3, 465, 70, 15, 70)
+[node name="DevGate" type="Node" parent="Entrance"]
+script = ExtResource("dev_gate")
+extra = Array[NodePath]([NodePath("../../EntranceSign")])
+
 [editable path="Legacy"]

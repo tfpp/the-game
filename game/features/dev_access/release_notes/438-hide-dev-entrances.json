@@ -1,0 +1,8 @@
+{
+  "title": "Hidden developer doors",
+  "summary": "Test doors like the old casino and the street district now stay hidden unless cheats are on.",
+  "notes": [
+    "Hide the old casino, street casino, street district, hotel props and procedural garage teleporters until sv_cheats 1.",
+    "Hide developer places from the GPS list and routes until sv_cheats 1."
+  ]
+}

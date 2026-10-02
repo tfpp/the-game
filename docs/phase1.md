@@ -181,9 +181,15 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
   small "Click to play" prompt until the player has played once.
 
 ### D3. Hide dev and test content
-- [ ] Remove dev room portals, the street-casino portal, the procedural garage
+- [x] Remove dev room portals, the street-casino portal, the procedural garage
   teleporter and dev elevator entries from GPS and from walkable reach in normal
   builds. Keep them behind `sv_cheats` / noclip.
+- Completed in #438: `features/dev_access` `DevGate` hides and server-locks the old
+  casino and street casino doors on the promenade and the street district, hotel props
+  and procedural garage teleporters in the dev room until `sv_cheats 1`; GPS hides
+  `dev_only` places and skips locked doors. The dev room booth stays open because the
+  lounge, cellar, hotel wing and apartments are still entered from it, and the van
+  routes stay for B1. The dev elevator pad already sat in a sealed room.
 
 ## Milestone E: signs as real models
 

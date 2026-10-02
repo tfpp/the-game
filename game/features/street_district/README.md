@@ -98,3 +98,7 @@ layout checks cannot verify browser placement. After importing the project, run
 `GODOT_RELEASE=/path/to/linux_release.x86_64 bash tests/features/street_district/release_test.sh`
 from `game/`. This regression runs with assertions disabled and checks all joins,
 nine separate junction positions, and floor collision across the district.
+
+## Developer access
+
+Since issue #438 this entrance is a development door: it stays hidden and locked until `sv_cheats 1` (see [dev access](../dev_access/README.md)).

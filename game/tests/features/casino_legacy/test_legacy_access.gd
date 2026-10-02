@@ -1,5 +1,6 @@
 extends GutTest
 
+const Cheats := preload("res://tests/features/dev_access/cheats_fixture.gd")
 const FEATURE := preload("res://features/casino_legacy/feature.tscn")
 const ROOM := preload("res://features/casino_hub/gridmap/playable.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
@@ -10,6 +11,7 @@ func before_each() -> void:
 	add_child_autofree(ROOM.instantiate())
 	_access = FEATURE.instantiate() as Node3D
 	add_child_autofree(_access)
+	Cheats.enable(self)
 	await wait_physics_frames(4)
 
 
