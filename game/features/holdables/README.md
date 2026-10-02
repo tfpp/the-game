@@ -79,7 +79,8 @@ stash entries show their sale values. Ordinary items keep their old prompts.
   Holding (`net_item_id`) is server-authoritative, like the rest of shared state — the one exception in this codebase is player movement.
 - The primary action (left click / right shoulder button) asks the server to resolve
   it based on the held item's category:
-  - `WEAPON`: hitscans from the replicated player eye position (independent of
+  - `WEAPON`: requires matching purchased ammunition in the backpack (see
+    [classic ammo](../gun_machine/README.md#classic-ammunition)), then hitscans from the replicated player eye position (independent of
     camera mode or the visual item pose), once per `pellet_count` (a shotgun fires
     several at slightly randomized angles — `spread_degrees`), and deals `damage` to
     whichever `Player` a pellet hits by calling `apply_damage` on

@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/bar_companion/busboy_shift.gd" id="shift"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="entity"]
+
+[ext_resource type="Script" path="res://features/bar_companion/busboy_hud.gd" id="hud"]
+
+[node name="BusboyShift" type="Node3D"]
+script = ExtResource("shift")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")
+replicated_properties = Array[NodePath]([NodePath(".:snapshot")])
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("hud")

@@ -72,7 +72,7 @@ func _input(event: InputEvent) -> void:
 			var code := key.physical_keycode if key.physical_keycode != 0 else key.keycode
 			if code == KEY_0:
 				close_menu()
-			elif code >= KEY_1 and code <= KEY_8:
+			elif code >= KEY_1 and code <= KEY_9:
 				var index := code - KEY_1
 				if index < _buttons.size() and not _buttons[index].disabled:
 					_buttons[index].pressed.emit()
@@ -126,7 +126,7 @@ func _complete_purchase(peer: int, id: String) -> void:
 		return
 	var text := result
 	if text.is_empty():
-		text = "Purchased! Classic guns go to hand/backpack; generated guns replace your rig."
+		text = "Purchased! Ammo goes to backpack; classic guns ship empty; generated guns replace rig."
 	entity.send_event(&"receipt", {"text": text}, peer)
 
 
@@ -212,7 +212,7 @@ func _build() -> void:
 	_wallet = _label(box, "Wallet: …")
 	_label(
 		box,
-		"1–8: select  •  0: exit  •  Esc: back\n!guns anywhere • Generated stats roll on purchase"
+		"1–9: select  •  0: exit  •  Esc: back\n!guns anywhere • Generated stats roll on purchase"
 	)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL

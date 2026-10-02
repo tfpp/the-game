@@ -82,6 +82,7 @@ func test_real_weapon_hits_frog_without_making_it_block_player_movement() -> voi
 	await wait_physics_frames(2)
 	assert_eq(player.collision_mask & _frog.collision_layer, 0)
 	hand.net_item_id = "pistol"
+	hand.inventory().collect("ammo:pistol:1")
 	hand.request_primary_action()
 	assert_false(_frog.net_alive, "A weapon must hit the real frog collider on layer 2")
 

@@ -26,8 +26,10 @@ casino's operations-garage door and then to the van.
   (`rusty_hogg.tscn`) stands behind it facing the customer aisle. He is a `StationaryPatron`
   (`features/casino_patrons`): shootable like the salon characters, back in 6 s.
 - **Gun wall** on the north wall: `wall_gun.tscn` (`WallGun`) instances hang the
-  holdables pistol ($10), SMG ($25), shotgun ($30) and AWP ($50) with price tags.
-  Use one to buy a copy; stock is unlimited.
+  holdables pistol ($30), SMG ($75), shotgun ($90) and AWP ($150) with price tags.
+  Use one to buy an empty copy; stock is unlimited. Prices share GunBuyCatalog.
+  Buy separate ammo with **!guns → 9. Classic ammunition** or **Esc → Activities →
+  Buy guns**; packs feed the held matching gun from the backpack.
 - **Top hat stand** in the north-west corner at (-13.6, 0, 21.4): a wood plinth with a
   brass cap holding the tall black silk top hat (`ClothingCatalog.TOP_HAT`) for
   $10,000. It is another `WallGun` instance (`tag_position` lifts its price tag above

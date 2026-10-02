@@ -41,6 +41,11 @@ The server checks sender ownership, slot bounds, bag capacity and pickup distanc
 Repeated pickup/drop requests cannot duplicate items. The avatar and held arms
 read replicated clothing, so other players see equipment changes too.
 
+Classic ammunition packs automatically collect into the backpack and consume a slot.
+The held matching gun draws one round per shot; partial pack IDs preserve the exact
+remaining count through storage, drops and persistence. See
+[ammunition prices and controls](../gun_machine/README.md#classic-ammunition).
+
 Inventory survives an in-session combat respawn. World pickups follow the existing
 one-use pickup system.
 

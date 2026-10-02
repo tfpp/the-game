@@ -105,8 +105,10 @@ func test_held_guns_do_not_fire_inside_the_crown() -> void:
 	hand.fired.connect(func(item_id: String) -> void: shots.append(item_id))
 	await get_tree().physics_frame
 	hand.net_item_id = "pistol"
+	hand.inventory().collect("ammo:pistol:1")
 	hand.request_primary_action()
 	assert_eq(shots, [] as Array[String])
+	assert_eq(hand.inventory().ammo_for("pistol"), 1, "safe-zone shots spend nothing")
 	assert_eq(_combat.health_for(target.get_multiplayer_authority()), Combat.MAX_HEALTH)
 
 
@@ -119,6 +121,7 @@ func test_held_guns_fire_in_the_slums() -> void:
 	hand.fired.connect(func(item_id: String) -> void: shots.append(item_id))
 	await get_tree().physics_frame
 	hand.net_item_id = "pistol"
+	hand.inventory().collect("ammo:pistol:1")
 	hand.request_primary_action()
 	assert_eq(shots, ["pistol"] as Array[String])
 
