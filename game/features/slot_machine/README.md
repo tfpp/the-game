@@ -78,12 +78,19 @@ frame times still require visual profiling.
 
 ## Sound assets
 
-The machine uses original, deterministic 22,050 Hz mono WAV effects: a lever latch,
+The machine uses original 22,050 Hz mono WAV effects: a lever latch,
 looping mechanical ratchet, individual reel-stop clunks, a payout coin cascade,
-three bell strikes for a win, and a quiet mechanism close for a loss. Only the
+three bell strikes for a win, and a short fart-like toot for a loss. Only the
 motor loops. All voices use `GameSFX`, so the existing effects slider and mute
-settings apply. Sources and rebuild instructions live alongside the cabinet recipe.
-The previous optional Ogg files remain legacy assets and are no longer used.
+settings apply. Mechanical sources and rebuild instructions live alongside the
+cabinet recipe; toot synthesis provenance is in the audio asset README.
+The previous optional Ogg files and `loss.wav` remain legacy assets and are no longer used.
+
+`toot.wav` is 0.22 seconds, played at -14 dB. Each new loss picks a local random
+pitch from 0.85–1.35, also varying its length to roughly 0.16–0.26 seconds.
+Duplicate results do not reroll or replay it. Wins restore normal pitch and the
+mechanical bell's -10 dB volume. No shared state or new RPC is needed for cosmetic
+pitch variation; listeners may hear slightly different pitches on the same loss.
 
 `slot_feedback.gd` owns three reusable positional voices (motor, mechanism, coins).
 The existing reliable result event owns the bell/loss voice and celebration.
