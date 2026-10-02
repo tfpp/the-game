@@ -11,6 +11,8 @@ func _ready() -> void:
 
 
 func interaction_text() -> String:
+	if cab.net_overloaded and cab.net_state == ElevatorCab.State.OPEN:
+		return "Over capacity: %d riders max" % ElevatorCab.MAX_RIDERS
 	return "Close elevator doors" if cab.net_state == ElevatorCab.State.OPEN else "Call elevator"
 
 
@@ -22,7 +24,10 @@ func can_use(player: Player) -> bool:
 	return (
 		entity.in_range(player)
 		and cab.net_state in [ElevatorCab.State.CLOSED, ElevatorCab.State.OPEN]
-		and (cab.net_state != ElevatorCab.State.OPEN or not cab.doorway_occupied())
+		and (
+			cab.net_state != ElevatorCab.State.OPEN
+			or not (cab.doorway_occupied() or cab.net_overloaded)
+		)
 	)
 
 

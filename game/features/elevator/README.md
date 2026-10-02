@@ -11,6 +11,13 @@ closing. Both the hall and interior plates can close them sooner. A player in th
 threshold holds the doors open or reverses a closing door. Doors and buttons use
 the existing keyboard, controller and touch interaction system.
 
+The cab carries at most **four riders**. The server counts players inside the cab
+every tick; with five or more the doors refuse to close (the plates show "Over
+capacity") and closing doors reopen. A small brass lamp with a red emissive lens
+lights above the hall doors (right of the floor indicator) and on the cab's back
+wall. The replicated `net_overloaded` flag drives both lamps, so late joiners see
+the current state. `rider_count()` exposes the server count.
+
 **Travel is disabled in the casino.** There is no destination cab or basement trip
 loaded by this feature. The elevator car never translates vertically.
 

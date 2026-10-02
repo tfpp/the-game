@@ -1,8 +1,24 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=10 format=3]
 [ext_resource type="Script" path="res://features/elevator/elevator_cab.gd" id="script"]
 [ext_resource type="Script" path="res://core/net/networked_entity.gd" id="network"]
 [ext_resource type="PackedScene" path="res://features/elevator/models/doors.tscn" id="doors"]
 [ext_resource type="PackedScene" path="res://features/elevator/call_button.tscn" id="button"]
+[ext_resource type="Material" path="res://features/elevator/models/painted_wood_brass.tres" id="brass"]
+[sub_resource type="BoxMesh" id="LampHousing"]
+size = Vector3(0.24, 0.16, 0.06)
+[sub_resource type="CylinderMesh" id="LampLens"]
+top_radius = 0.055
+bottom_radius = 0.06
+height = 0.03
+radial_segments = 12
+rings = 1
+[sub_resource type="StandardMaterial3D" id="LensMaterial"]
+resource_local_to_scene = true
+albedo_color = Color(0.35, 0.03, 0.02, 1)
+roughness = 0.3
+emission_enabled = true
+emission = Color(1, 0.1, 0.05, 1)
+emission_energy_multiplier = 0.0
 [node name="ElevatorCab" type="Node3D"]
 script = ExtResource("script")
 [node name="Car" type="Node3D" parent="."]
@@ -35,6 +51,22 @@ text = "C"
 font_size = 48
 pixel_size = 0.004
 outline_size = 0
+[node name="HallLamp" type="MeshInstance3D" parent="Car"]
+position = Vector3(1.25, 3.3, 1.73)
+mesh = SubResource("LampHousing")
+material_override = ExtResource("brass")
+[node name="Lens" type="MeshInstance3D" parent="Car/HallLamp"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0.04)
+mesh = SubResource("LampLens")
+material_override = SubResource("LensMaterial")
+[node name="CabLamp" type="MeshInstance3D" parent="Car"]
+position = Vector3(0.6, 2.67, -1.33)
+mesh = SubResource("LampHousing")
+material_override = ExtResource("brass")
+[node name="Lens" type="MeshInstance3D" parent="Car/CabLamp"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0.04)
+mesh = SubResource("LampLens")
+material_override = SubResource("LensMaterial")
 [node name="CabLight" type="OmniLight3D" parent="Car"]
 position = Vector3(0, 2.7, -0.1)
 light_color = Color(1, 0.82, 0.58, 1)
@@ -43,5 +75,5 @@ light_specular = 0.0
 omni_range = 4.0
 [node name="NetworkedEntity" type="Node" parent="."]
 script = ExtResource("network")
-replicated_properties = Array[NodePath]([NodePath(".:net_state")])
+replicated_properties = Array[NodePath]([NodePath(".:net_state"), NodePath(".:net_overloaded")])
 continuous_properties = Array[NodePath]([NodePath(".:net_aperture")])

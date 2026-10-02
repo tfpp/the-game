@@ -96,7 +96,7 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
 - Keep the existing door, hall-call and obstruction behavior and tests.
 
 ### A5. Capacity limit and weight light (depends on nothing)
-- [ ] Count riders inside the cab volume on the server. With more than 4 riders the
+- [x] Count riders inside the cab volume on the server. With more than 4 riders the
   doors refuse to close and a red **OVER CAPACITY** lamp (a modeled lamp with an
   emissive lens, not a Label3D) lights inside and above the hall doors. Replicate
   the lamp state for late joiners. Test 4 vs 5 riders and riders leaving.
