@@ -14,8 +14,9 @@ casino's operations-garage door and then to the van.
 - `Room` streams only static architecture, street scenery and four shadowless
   lights from `interior.tscn`. Guns, Rusty, the hat and return endpoint remain
   present on every peer; existing network paths and purchase behavior stay stable.
-  The Gun-O-Matic and pawn counter remain owned by their original features,
-  positioned inside the new shop. The former casino doorway is sealed with tiles.
+  The pawn counter remains owned by `slum_runs`, positioned inside the shop.
+  The Gun-O-Matic and its trash can now live in the Dev Room instead.
+  The former casino doorway is sealed with tiles.
 - Rebuild only the saved store structure with
   `godot --headless --path game -s res://features/pawn_shop/tools/build_store.gd`.
   Road, props and van are hand-placed editable instances in `street.tscn`, reusing
@@ -26,7 +27,7 @@ casino's operations-garage door and then to the van.
   (`rusty_hogg.tscn`) stands behind it facing the customer aisle. He is a `StationaryPatron`
   (`features/casino_patrons`): shootable like the salon characters, back in 6 s.
 - **Gun wall** on the north wall: `wall_gun.tscn` (`WallGun`) instances hang the
-  holdables pistol ($30), SMG ($75), shotgun ($90) and AWP ($150) with price tags.
+  holdables pistol ($1,500), SMG/shotgun ($5,550) and AWP ($15,000) with price tags.
   Use one to buy an empty copy; stock is unlimited. Prices share GunBuyCatalog.
   Buy separate ammo with **!guns → 9. Classic ammunition** or **Esc → Activities →
   Buy guns**; packs feed the held matching gun from the backpack.
@@ -34,7 +35,9 @@ casino's operations-garage door and then to the van.
   brass cap holding the tall black silk top hat (`ClothingCatalog.TOP_HAT`) for
   $10,000. It is another `WallGun` instance (`tag_position` lifts its price tag above
   the hat); buying it puts the hat straight on your head via the inventory hat slot.
-- **Gun-O-Matic** and its trash can (`features/gun_machine`) stand by the south wall.
+- The whole shop is a **safe zone** (`features/safe_zone`): no PvP damage or
+  firearm use; rejected shots spend no ammo. The street scenery is outside the zone.
+  Self-damage commands retain the existing safe-zone exception.
 
 ## Buying a gun
 

@@ -56,8 +56,20 @@ func test_import_preserves_counts_dimensions_uvs_and_outward_normals() -> void:
 func test_live_placement_keeps_decorations_nonblocking_and_rejected_bin_out() -> void:
 	var placement := PLACEMENT.instantiate() as Node3D
 	add_child_autofree(placement)
-	assert_eq(placement.get_child_count(), 13)
-	for name: String in ["Martini", "Cigar", "WineBucket", "WineBottle", "BeerBottle", "Clock"]:
+	assert_eq(placement.get_child_count(), 28)
+	for name: String in [
+		"Martini",
+		"Cigar",
+		"WineBucket",
+		"WineBottle",
+		"BeerBottle",
+		"Clock",
+		"GlassAshtrayEast",
+		"GlassAshtrayWest",
+		"TableWineEast",
+		"TableWineWest",
+		"CigarWest"
+	]:
 		var prop := placement.get_node(name) as StaticBody3D
 		assert_eq(prop.collision_layer, 0)
 		assert_eq(prop.collision_mask, 0)
@@ -68,3 +80,33 @@ func test_live_placement_keeps_decorations_nonblocking_and_rejected_bin_out() ->
 	var room := furniture.instantiate() as Node3D
 	add_child_autofree(room)
 	assert_not_null(room.get_node_or_null("BundleFurnishings/Sofa/Model"))
+
+
+func test_glass_ashtray_export_has_a_recessed_bowl_and_small_native_paint() -> void:
+	var scene := load("res://features/casino_props/props/glass_ashtray.tscn") as PackedScene
+	var tray := scene.instantiate() as Node3D
+	add_child_autofree(tray)
+	var model := tray.get_node("Model") as MeshInstance3D
+	assert_almost_eq(model.mesh.get_aabb().size, Vector3(.15, .026, .15), Vector3.ONE * .0001)
+	var material := model.material_override as StandardMaterial3D
+	assert_eq(material.albedo_texture.get_size(), Vector2(32, 32))
+	assert_true(material.albedo_texture.get_image().has_mipmaps())
+	assert_eq(material.transparency, BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS)
+	var arrays := model.mesh.surface_get_arrays(0)
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	var bowl_floor := false
+	for index: int in vertices.size():
+		assert_true(vertices[index].is_finite())
+		assert_almost_eq(normals[index].length(), 1.0, .001)
+		if vertices[index].distance_to(Vector3(0, .006, 0)) < .0001:
+			bowl_floor = true
+	assert_true(bowl_floor, "The centre is recessed below the 26 mm rim")
+	for index: int in range(0, indices.size(), 3):
+		var a := indices[index]
+		var face := (vertices[indices[index + 2]] - vertices[a]).cross(
+			vertices[indices[index + 1]] - vertices[a]
+		)
+		assert_gt(face.length(), .000001)
+		assert_gt(face.normalized().dot(normals[a]), .99)

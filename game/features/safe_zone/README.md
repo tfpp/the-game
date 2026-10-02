@@ -17,13 +17,15 @@ so each `bounds` is a world AABB:
 | Zone | Covers |
 | --- | --- |
 | GoldenCrown | casino hub, annex wings, south lobby, shops; y ≥ -3 so the B1–B5 garage below stays a combat zone |
+| OperationsGarage | operations garage at z -3000, including upstairs office; matches its StreamedRoom bounds |
+| PawnShop | roadside pawn/gun shop interior at z -4000; excludes exterior scenery |
 | Lounge, WineCellar | the room-door rooms at z -600 |
 | HotelWing, Atrium | the hotel annex at z -1400 / -1500 |
 
 The server checks the player's current position (`SafeZone.covers_peer`), so there
 is no replicated state, and late joiners, respawns and offline play need nothing
 extra. Garage enemies pass the victim as attacker; they live in the slums and
-never reach a zone. Add a box here when a new shared Crown room is built.
+never reach a zone. Add a box here when a new shared safe preparation room is built.
 
 Not yet done: a lowered-weapon pose or on-screen hint when a shot is refused.
 
