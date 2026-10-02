@@ -4,6 +4,7 @@
 [ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="4_brass"]
 [ext_resource type="PackedScene" path="res://features/pawn_shop/wall_gun.tscn" id="6_gun"]
 [ext_resource type="PackedScene" path="res://features/pawn_shop/rusty_hogg.tscn" id="7_rusty"]
+[ext_resource type="PackedScene" path="res://features/pawn_shop/skin_crates.tscn" id="skins"]
 
 [ext_resource type="PackedScene" path="res://features/signage/sign_board.tscn" id="sign"]
 [ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
@@ -21,6 +22,9 @@ roughness = 0.9
 
 [node name="PawnShop" type="Node3D"]
 position = Vector3(0, 0, -4000)
+
+[node name="PrawnSkins" parent="." instance=ExtResource("skins")]
+position = Vector3(-4, 0, 21.1)
 
 [node name="Hall" type="Node3D" parent="."]
 
