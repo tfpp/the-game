@@ -1,0 +1,9 @@
+{
+  "title": "u died gg",
+  "summary": "See a short death screen before automatically respawning.",
+  "notes": [
+    "Show u died gg for two seconds after combat deaths, then respawn at the casino.",
+    "Use the same death screen and normal death consequences for /suicide.",
+    "Prevent repeated hits during the death screen from awarding duplicate kills."
+  ]
+}

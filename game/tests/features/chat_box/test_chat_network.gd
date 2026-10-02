@@ -55,18 +55,25 @@ func test_clients_receive_public_chat_but_only_server_emits_for_discord() -> voi
 			get_tree(), func() -> bool: return server.multiplayer.get_peers().size() == 1, 5.0
 		)
 	)
-	client.request_chat_message("direct client call must not be accepted")
-	assert_signal_not_emitted(client, "message_accepted")
-	client.request_chat_message.rpc_id(1, "  hello  ")
 	assert_true(
 		await RealTime.wait_until(
 			get_tree(), func() -> bool: return client._log.get_child_count() == 1, 5.0
 		)
 	)
+	assert_eq(client._log.get_child(0).text, ChatBox.format_line("", "Alice joined the game."))
+	assert_signal_not_emitted(server, "message_accepted", "joins do not go to Discord")
+	client.request_chat_message("direct client call must not be accepted")
+	assert_signal_not_emitted(client, "message_accepted")
+	client.request_chat_message.rpc_id(1, "  hello  ")
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return client._log.get_child_count() == 2, 5.0
+		)
+	)
 	assert_signal_emit_count(server, "message_accepted", 1)
 	assert_signal_emitted_with_parameters(server, "message_accepted", ["Alice", "hello"])
 	assert_signal_not_emitted(client, "message_accepted")
-	assert_eq(client._log.get_child(0).text, ChatBox.format_line("Alice", "hello"))
+	assert_eq(client._log.get_child(1).text, ChatBox.format_line("Alice", "hello"))
 	var late_peer := ENetMultiplayerPeer.new()
 	assert_eq(late_peer.create_client("127.0.0.1", server_peer.host.get_local_port()), OK)
 	var late := _branch("Late", late_peer)
@@ -75,11 +82,20 @@ func test_clients_receive_public_chat_but_only_server_emits_for_discord() -> voi
 			get_tree(), func() -> bool: return server.multiplayer.get_peers().size() == 2, 5.0
 		)
 	)
-	assert_eq(late._log.get_child_count(), 0, "late joining never replays or re-exports history")
-	client.request_chat_message.rpc_id(1, "second")
 	assert_true(
 		await RealTime.wait_until(
 			get_tree(), func() -> bool: return late._log.get_child_count() == 1, 5.0
+		)
+	)
+	assert_eq(
+		late._log.get_child(0).text,
+		ChatBox.format_line("", "Player %d joined the game." % late_peer.get_unique_id()),
+		"late joining sees only its own join, not old chat or old joins"
+	)
+	client.request_chat_message.rpc_id(1, "second")
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return late._log.get_child_count() == 2, 5.0
 		)
 	)
 	assert_signal_emit_count(server, "message_accepted", 2)

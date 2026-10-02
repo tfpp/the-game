@@ -71,7 +71,7 @@ static func populate_upper_walls(level: Node3D) -> void:
 		grid.mesh_library = (level.get_node("WallsNorthSouth") as GridMap).mesh_library
 		grid.cell_size = Layout.CELL_SIZE
 		grid.cell_center_y = false
-		grid.cell_octant_size = 4
+		grid.cell_octant_size = 8
 		grid.position.y = Layout.STANDARD_WALL_HEIGHT
 		structure.add_child(grid)
 		grid.owner = level

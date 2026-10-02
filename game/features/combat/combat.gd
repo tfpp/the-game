@@ -7,10 +7,12 @@ extends Node
 ## features/smeckles/smeckles.gd replicates balances.
 
 ## Broadcast whenever someone's health hits zero (see `_announce_death`), so
-## combat_hud.gd can show the victim a "You died" flash.
+## combat_hud.gd can show the victim the death screen.
 signal player_died(victim_peer: int, attacker_peer: int)
+signal player_respawned(peer_id: int)
 
 const MAX_HEALTH := 100.0
+const RESPAWN_DELAY_S := 2.0
 
 ## Mirrors world/room.tscn's Spawn marker: features can't read core/world nodes
 ## directly, so killed players reappear here with the same jitter
@@ -23,10 +25,27 @@ const RESPAWN_JITTER := 3.0
 ## peer_id (as String) -> int of other players killed. Self-damage never counts.
 @export var kills: Dictionary = {}
 
+## Server-only countdowns. Cleared on disconnect and session changes.
+var _respawns: Dictionary[int, float] = {}
+
 
 func _ready() -> void:
 	add_to_group(&"combat")
 	Network.mode_changed.connect(_reset)
+	multiplayer.peer_disconnected.connect(_cancel_respawn)
+
+
+func _process(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+	for peer_id: int in _respawns.keys():
+		_respawns[peer_id] -= delta
+		if _respawns[peer_id] <= 0.0:
+			_respawns.erase(peer_id)
+			var player := _player_for_peer(peer_id)
+			if player != null:
+				player.server_teleport.rpc_id(peer_id, _respawn_position())
+			_announce_respawn.rpc(peer_id)
 
 
 func health_for(peer_id: int) -> float:
@@ -38,23 +57,21 @@ func kills_for(peer_id: int) -> int:
 
 
 ## Server-only: `attacker_peer` deals `amount` damage to `target_peer`. Once that
-## brings them to zero or below, they're healed back up and respawned.
+## brings them to zero or below, they're healed and respawn after the death screen.
 func apply_damage(target_peer: int, amount: float, attacker_peer: int) -> void:
-	if not multiplayer.is_server() or amount <= 0.0:
+	if not multiplayer.is_server() or amount <= 0.0 or _respawns.has(target_peer):
 		return
 	var remaining := health_for(target_peer) - amount
 	if remaining > 0.0:
 		_set_health(target_peer, remaining)
 		return
 	_set_health(target_peer, MAX_HEALTH)
-	var player := _player_for_peer(target_peer)
+	_respawns[target_peer] = RESPAWN_DELAY_S
 	if attacker_peer != target_peer:
 		_add_kill(attacker_peer)
 	# Announce before teleporting so slum-run listeners can scatter the victim's
 	# valuables where they actually fell, not at the casino respawn point.
 	_announce_death.rpc(target_peer, attacker_peer)
-	if player != null:
-		player.server_teleport.rpc_id(target_peer, _respawn_position())
 
 
 ## Server-only: restores up to `amount` health to `peer_id`, never above
@@ -72,7 +89,17 @@ func _announce_death(victim_peer: int, attacker_peer: int) -> void:
 	player_died.emit(victim_peer, attacker_peer)
 
 
+@rpc("authority", "call_local", "reliable")
+func _announce_respawn(peer_id: int) -> void:
+	player_respawned.emit(peer_id)
+
+
+func _cancel_respawn(peer_id: int) -> void:
+	_respawns.erase(peer_id)
+
+
 func _reset(_mode: Network.Mode) -> void:
+	_respawns.clear()
 	health = {}
 	kills = {}
 

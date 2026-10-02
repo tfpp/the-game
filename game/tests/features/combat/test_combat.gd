@@ -47,13 +47,19 @@ func test_lethal_damage_announces_the_kill() -> void:
 	assert_eq(deaths, [[1, 2]])
 
 
-func test_lethal_damage_teleports_the_victim_near_the_respawn_point() -> void:
+func test_lethal_damage_teleports_after_the_death_screen() -> void:
 	var player := PlayerScene.instantiate() as Player
 	player.name = "1"
 	player.set_multiplayer_authority(1)
 	add_child_autofree(player)
 	await get_tree().physics_frame
+	player.set_physics_process(false)
+	player.global_position = Vector3(20, 1, 20)
 	_combat.apply_damage(1, Combat.MAX_HEALTH, 2)
+	assert_eq(player.global_position, Vector3(20, 1, 20), "not respawned immediately")
+	assert_true((_combat.get_node("Hud/DeathScreen") as Control).visible)
+	await wait_seconds(Combat.RESPAWN_DELAY_S + 0.1)
+	assert_false((_combat.get_node("Hud/DeathScreen") as Control).visible)
 	var offset := player.global_position - Combat.RESPAWN_POINT
 	offset.y = 0.0
 	assert_lt(offset.length(), Combat.RESPAWN_JITTER * 1.5)
