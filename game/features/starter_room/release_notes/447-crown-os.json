@@ -1,5 +1,5 @@
 {
   "title": "Crown OS desktop",
   "summary": "Use the upstairs garage computer for a personal mini desktop with jobs, notes, files and a calculator.",
-  "notes": ["Add a classic desktop with icon shortcuts, a Start menu, bottom taskbar and beveled application windows with minimize, restore and close controls.", "Keep garage jobs and rewards in their existing server-owned system.", "Add private session documents, a basic calculator and an in-computer help guide."]
+  "notes": ["Add a classic desktop with icon shortcuts, a Start menu, bottom taskbar and draggable, resizable application windows that can stay visible together.", "Keep garage jobs and rewards in their existing server-owned system.", "Add a top New/Save notes toolbar with unsaved-change confirmation, private session documents, a compact calculator and an in-computer help guide."]
 }

@@ -6,6 +6,7 @@ signal exit_requested
 
 const DesktopTheme := preload("res://features/starter_room/desktop_theme.gd")
 const DesktopShortcut := preload("res://features/starter_room/desktop_shortcut.gd")
+const DesktopWindow := preload("res://features/starter_room/desktop_window.gd")
 const APP_NAMES := ["Jobs", "Notes", "Files", "Calculator", "Help"]
 const MAX_FILES := 12
 const MAX_TEXT := 4096
@@ -17,7 +18,7 @@ var running: Array[String] = []
 var _windows: Dictionary[String, Control] = {}
 var _launchers: Dictionary[String, Button] = {}
 var _tasks: Dictionary[String, Button] = {}
-var _workspace: VBoxContainer
+var _workspace: Control
 var _taskbar: HFlowContainer
 var _home: HBoxContainer
 var _start: MenuButton
@@ -26,6 +27,9 @@ var _filename: LineEdit
 var _status: Label
 var _file_list: VBoxContainer
 var _display: Label
+var _saved_text := ""
+var _saved_name := ""
+var _discard_dialog: ConfirmationDialog
 var _entry := "0"
 var _left := 0.0
 var _operator := ""
@@ -35,6 +39,7 @@ var _fresh := true
 func _ready() -> void:
 	theme = DesktopTheme.create(body_font)
 	_build_shell()
+	get_viewport().gui_focus_changed.connect(_focus_changed)
 	_build_notes()
 	_file_list = app_body("Files")
 	_build_calculator()
@@ -43,10 +48,13 @@ func _ready() -> void:
 		"CROWN OS / USER GUIDE\n\n"
 		+ "Jobs: accept surveys and submit reports through the existing garage terminal.\n\n"
 		+ "Notes: name a document and Save. Open or delete it in Files. "
+		+ "Use the top toolbar for New and Save. New/Open asks before discarding edits. "
 		+ "Up to 12 documents, 4096 characters each. Save before closing Notes.\n\n"
 		+ "Calculator: use the keypad for basic arithmetic. C clears it.\n\n"
 		+ "Use desktop shortcuts or Start to launch apps. The bottom taskbar restores them. "
-		+ "Windows are maximized to work on phones. Minimize keeps an app running; "
+		+ "Drag title bars to move windows; drag the bottom-right grip to resize. "
+		+ "The square title button maximizes/restores a window, also with a controller. "
+		+ "Multiple apps can be visible together. Minimize keeps an app running; "
 		+ "Close removes it from the taskbar. Jobs keep progressing while closed.\n\n"
 		+ "This is a simulation: no real files, shell commands or internet. "
 		+ "Documents survive log off, but not a connection change or game restart."
@@ -57,12 +65,13 @@ func _ready() -> void:
 
 func _build_shell() -> void:
 	add_theme_constant_override("separation", 4)
-	_workspace = VBoxContainer.new()
+	_workspace = Control.new()
+	_workspace.clip_contents = true
 	_workspace.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	add_child(_workspace)
 	_home = HBoxContainer.new()
-	_home.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_workspace.add_child(_home)
+	_home.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var shortcuts := GridContainer.new()
 	shortcuts.columns = 2
 	_home.add_child(shortcuts)
@@ -111,10 +120,16 @@ func _start_selected(id: int) -> void:
 
 
 func app_body(app: String) -> VBoxContainer:
-	var window := PanelContainer.new()
+	var window := DesktopWindow.new()
+	window.preferred_size = Vector2(320, 370) if app == "Calculator" else Vector2(580, 390)
+	window.initial_position = (
+		Vector2(640, 40)
+		if app == "Calculator"
+		else Vector2(24, 16) + Vector2(36, 22) * _windows.size()
+	)
 	window.add_theme_stylebox_override("panel", DesktopTheme.bevel())
-	window.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_workspace.add_child(window)
+	window.activated.connect(_activate.bind(app))
 	_windows[app] = window
 	var layout := VBoxContainer.new()
 	window.add_child(layout)
@@ -127,17 +142,24 @@ func app_body(app: String) -> VBoxContainer:
 	var title := HBoxContainer.new()
 	title_frame.add_child(title)
 	var label := Label.new()
-	label.text = app + " — Crown OS"
+	label.text = app if app == "Calculator" else app + " — Crown OS"
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.add_theme_color_override("font_color", Color.WHITE)
 	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title.add_child(label)
-	var minimize_button := _button(title, "_", minimize)
+	label.mouse_filter = Control.MOUSE_FILTER_STOP
+	label.mouse_default_cursor_shape = Control.CURSOR_MOVE
+	label.gui_input.connect(window.begin_gesture.bind("move", label))
+	title_frame.gui_input.connect(window.begin_gesture.bind("move", title_frame))
+	var minimize_button := _button(title, "_", minimize.bind(app))
 	minimize_button.tooltip_text = "Minimize"
 	minimize_button.custom_minimum_size.x = 44
 	var close_button := _button(title, "X", close_app.bind(app))
 	close_button.tooltip_text = "Close"
 	close_button.custom_minimum_size.x = 44
+	var maximize_button := _button(title, "□", window.toggle_maximize)
+	maximize_button.tooltip_text = "Maximize / restore"
+	maximize_button.custom_minimum_size.x = 44
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -147,6 +169,15 @@ func app_body(app: String) -> VBoxContainer:
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 10)
 	scroll.add_child(body)
+	var grip := Label.new()
+	grip.text = "◢"
+	grip.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	grip.custom_minimum_size.y = 24
+	grip.mouse_filter = Control.MOUSE_FILTER_STOP
+	grip.mouse_default_cursor_shape = Control.CURSOR_FDIAGSIZE
+	grip.tooltip_text = "Drag to resize window"
+	grip.gui_input.connect(window.begin_gesture.bind("resize", grip))
+	layout.add_child(grip)
 	window.hide()
 	return body
 
@@ -156,37 +187,63 @@ func launch_app(app: String) -> void:
 		return
 	if app not in running:
 		running.append(app)
-	active_app = app
-	_home.hide()
-	for name: String in _windows:
-		_windows[name].visible = name == app
-		_tasks[name].visible = name in running
-		_tasks[name].set_pressed_no_signal(name == app)
+	_windows[app].show()
+	_tasks[app].show()
+	_activate(app)
 	if app == "Files":
 		_refresh_files()
 	_tasks[app].grab_focus()
 
 
-func minimize() -> void:
-	for window: Control in _windows.values():
-		window.hide()
+func _focus_changed(control: Control) -> void:
+	for app: String in _windows:
+		if _windows[app].visible and _windows[app].is_ancestor_of(control):
+			_activate(app)
+			return
+
+
+func _activate(app: String) -> void:
+	active_app = app
+	_workspace.move_child(_windows[app], -1)
+	for name: String in _tasks:
+		_tasks[name].set_pressed_no_signal(name == app)
+
+
+func minimize(app := "") -> void:
+	if app.is_empty():
+		for window: Control in _windows.values():
+			window.hide()
+	else:
+		_windows[app].hide()
 	active_app = ""
 	for task: Button in _tasks.values():
 		task.set_pressed_no_signal(false)
-	_home.show()
-	_launchers["Jobs"].grab_focus()
+	for child: Node in _workspace.get_children():
+		if child is GarageDesktopWindow and child.visible:
+			for name: String in _windows:
+				if _windows[name] == child:
+					active_app = name
+	if not active_app.is_empty():
+		_tasks[active_app].set_pressed_no_signal(true)
+		_tasks[active_app].grab_focus()
+	else:
+		_launchers["Jobs"].grab_focus()
 
 
 func close_app(app: String) -> void:
 	running.erase(app)
 	_tasks[app].hide()
-	if active_app == app:
-		minimize()
+	minimize(app)
 
 
 func reset_session() -> void:
 	files.clear()
 	running.clear()
+	_saved_text = ""
+	_saved_name = ""
+	if is_instance_valid(_discard_dialog):
+		_discard_dialog.hide()
+		_discard_dialog.queue_free()
 	_filename.text = ""
 	_editor.text = ""
 	_status.text = ""
@@ -209,10 +266,15 @@ func save_file(title: String, contents: String) -> bool:
 func open_file(title: String) -> void:
 	if not files.has(title):
 		return
-	_filename.text = title
-	_editor.text = files[title]
-	_status.text = "Opened " + title
-	launch_app("Notes")
+	_confirm_replace(
+		func() -> void:
+			_filename.text = title
+			_editor.text = files[title]
+			_saved_text = _editor.text
+			_saved_name = title
+			_status.text = "Opened " + title
+			launch_app("Notes")
+	)
 
 
 func delete_file(title: String) -> void:
@@ -223,34 +285,85 @@ func delete_file(title: String) -> void:
 
 func _build_notes() -> void:
 	var body := app_body("Notes")
+	var layout := _windows["Notes"].get_child(0) as VBoxContainer
+	var toolbar := HBoxContainer.new()
+	toolbar.name = "DocumentToolbar"
+	layout.add_child(toolbar)
+	layout.move_child(toolbar, 1)
+	_button(toolbar, "New", _new_note)
+	_button(toolbar, "Save", _save_note)
 	_filename = LineEdit.new()
 	_filename.placeholder_text = "Document name (32 characters)"
 	_filename.max_length = 32
-	body.add_child(_filename)
+	layout.add_child(_filename)
+	layout.move_child(_filename, 2)
 	_editor = TextEdit.new()
-	_editor.custom_minimum_size.y = 180
+	_editor.custom_minimum_size.y = 100
+	_editor.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_editor.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	body.add_child(_editor)
 	_status = Label.new()
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.add_child(_status)
-	_button(body, "Save document", _save_note)
-	_button(body, "New document", _new_note)
+	_status.text = "New unsaved document"
+	_editor.text_changed.connect(_mark_edited)
+	_filename.text_changed.connect(func(_text: String) -> void: _mark_edited())
 
 
-func _save_note() -> void:
+func _mark_edited() -> void:
 	_status.text = (
 		"Saved locally for this session."
-		if save_file(_filename.text, _editor.text)
-		else "Not saved: name required, max 12 files / 4096 characters."
+		if _editor.text == _saved_text and _filename.text == _saved_name
+		else "Unsaved changes — use Save in the toolbar."
 	)
 
 
+func _save_note() -> void:
+	if save_file(_filename.text, _editor.text):
+		_saved_text = _editor.text
+		_saved_name = _filename.text
+		_status.text = "Saved locally for this session."
+		_refresh_files()
+	else:
+		_status.text = "Not saved: name required, max 12 files / 4096 characters."
+
+
 func _new_note() -> void:
-	_filename.text = ""
-	_editor.text = ""
-	_status.text = "New unsaved document"
-	_filename.grab_focus()
+	_confirm_replace(
+		func() -> void:
+			_filename.text = ""
+			_editor.text = ""
+			_saved_text = ""
+			_saved_name = ""
+			_status.text = "New unsaved document"
+			_filename.grab_focus()
+	)
+
+
+func _confirm_replace(callback: Callable) -> void:
+	if _editor.text == _saved_text and _filename.text == _saved_name:
+		callback.call()
+		return
+	if is_instance_valid(_discard_dialog):
+		return
+	_discard_dialog = ConfirmationDialog.new()
+	_discard_dialog.title = "Unsaved document"
+	_discard_dialog.dialog_text = (
+		"Unsaved document\n\nDiscard unsaved changes? " + "Cancel to return and save first."
+	)
+	_discard_dialog.borderless = true
+	_discard_dialog.add_theme_stylebox_override("panel", DesktopTheme.bevel())
+	_discard_dialog.dialog_autowrap = true
+	_discard_dialog.ok_button_text = "Discard"
+	add_child(_discard_dialog)
+	_discard_dialog.confirmed.connect(callback)
+	_discard_dialog.confirmed.connect(_discard_dialog.queue_free)
+	_discard_dialog.canceled.connect(_discard_dialog.queue_free)
+	# Embedded Windows do not inherit the panel's CanvasLayer scale.
+	var ui_scale := get_global_transform_with_canvas().get_scale().x
+	_discard_dialog.content_scale_factor = ui_scale
+	_discard_dialog.popup_centered(Vector2i(Vector2(320, 220) * ui_scale))
 
 
 func _refresh_files() -> void:
@@ -281,7 +394,7 @@ func _build_calculator() -> void:
 		"7", "8", "9", "/", "4", "5", "6", "*", "1", "2", "3", "-", "C", "0", "=", "+", "."
 	]:
 		var button := _button(grid, key, calculator_key.bind(key))
-		button.custom_minimum_size.x = 64
+		button.custom_minimum_size.x = 60
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 

@@ -47,6 +47,9 @@ func close(resume := true) -> void:
 	var was_open := is_open()
 	_root.hide()
 	desktop._start.get_popup().hide()
+	if is_instance_valid(desktop._discard_dialog):
+		desktop._discard_dialog.hide()
+		desktop._discard_dialog.queue_free()
 	if is_in_group(&"modal_ui"):
 		remove_from_group(&"modal_ui")
 	if was_open and resume and get_tree().get_first_node_in_group(&"modal_ui") == null:

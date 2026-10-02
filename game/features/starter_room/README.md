@@ -126,18 +126,24 @@ walking/headroom and ENet authenticated requests/concurrent records/late joins.
 The same upstairs CRT now runs a simulated personal desktop with classic
 Windows/Linux-style chrome: teal wallpaper, icon shortcuts, grey beveled controls,
 blue window title bars and a bottom taskbar. Click a desktop shortcut or **Start**
-to open **Jobs**, **Notes**, **Files**, **Calculator**, or **Help**. Windows are maximized
-rather than draggable, so the same interface works on phones. Multiple apps can
-remain running: **Minimize** returns to the desktop, the taskbar restores an app,
-and **Close** removes it from the taskbar. **Log off** or Esc leaves the computer.
+to open **Jobs**, **Notes**, **Files**, **Calculator**, or **Help**. Multiple windows
+can remain visible together. Drag a title bar to move a window and its bottom-right
+grip to resize it (mouse or touch). Clicking or focusing app controls brings that
+window to the front. **□** maximizes/restores a window and supports controller focus.
+The calculator opens as a compact utility window. Windows stay within the workspace
+above the taskbar and shrink to fit small viewports; contents remain scrollable.
+**Minimize** hides only that app, the taskbar restores it, and **Close** removes it
+from the taskbar. **Log off** or Esc leaves the computer.
 The taskbar stays below the workspace; app contents scroll and follow controller
 focus in short viewports. **Start → Log off** leaves the computer. Text entry requires a physical or on-screen keyboard;
 controller users can navigate buttons and use the calculator keypad.
 
-Notes has explicit **Save document** and **New document** buttons. Files opens and
-deletes saved documents. Names are at most 32 characters; there are up to 12 private
+Notes has a fixed top **New / Save** toolbar and document-name field above the
+editor. New or opening another file asks before discarding unsaved changes; cancel
+to save first. Files opens and deletes saved documents, and an already-open Files
+list refreshes after saving. Names are at most 32 characters; there are up to 12 private
 documents of 4096 characters each. Saving an existing name replaces that document.
-New/open can replace an unsaved draft: save first. Documents and drafts survive
+Saving is explicit, not automatic. Documents and drafts survive
 closing apps/logging off and death, but reset on disconnect, network-mode change
 or game restart. Nothing is uploaded, shared with other players or stored on disk.
 The calculator supports decimal +, -, *, / with left-to-right chaining, clear and
@@ -148,8 +154,11 @@ retains the original modal/pin lifecycle and public open/close/request_result
 interfaces; Jobs uses the original validated terminal actions, replicated records,
 progress and wallet settlement unchanged. `desktop_theme.gd` supplies classic
 chrome shared by all apps; `desktop_shortcut.gd` draws small native shortcut icons.
-The capture recipe includes the Start menu; revised desktop, jobs, phone notes
-and landscape calculator reviews are in `docs/design/previews/crown-os/`.
+`desktop_window.gd` handles local focus, drag/resize gestures, maximize/restore and
+workspace bounds (including canvas scaling and viewport changes).
+The capture recipe includes the Start menu and concurrent apps; revised desktop,
+jobs, phone notes and landscape calculator reviews are in
+`docs/design/previews/crown-os/`.
 Opening the desktop still requires the
 server-authorized in-range use event. No new RPC, gameplay state, placement,
 persistence system, key or host OS/internet access is introduced. Late joins see

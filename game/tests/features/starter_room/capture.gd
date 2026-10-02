@@ -95,6 +95,15 @@ func _capture() -> void:
 	computer.panel.desktop._start.get_popup().hide()
 	computer.panel.desktop.launch_app("Jobs")
 	await _save("jobs-application")
+	root.size = Vector2i(1200, 800)
+	computer.panel.desktop.launch_app("Notes")
+	computer.panel.desktop._filename.text = "Van plan"
+	computer.panel.desktop._editor.text = "Meet upstairs, then take the van."
+	computer.panel.desktop._save_note()
+	computer.panel.desktop.launch_app("Calculator")
+	await _save("multitasking")
+	computer.panel.desktop.minimize()
+	computer.panel.desktop.launch_app("Jobs")
 	root.size = Vector2i(390, 844)
 	await _save("jobs-phone")
 	computer.panel.desktop.launch_app("Notes")
@@ -102,6 +111,11 @@ func _capture() -> void:
 	computer.panel.desktop._editor.text = "Meet upstairs, then take the van."
 	computer.panel.desktop._save_note()
 	await _save("notes-phone")
+	computer.panel.desktop._editor.text += " Unsaved edit."
+	computer.panel.desktop._editor.text_changed.emit()
+	computer.panel.desktop._new_note()
+	await _save("notes-discard-phone")
+	computer.panel.desktop._discard_dialog.canceled.emit()
 	computer.panel.desktop.launch_app("Files")
 	await _save("files-phone")
 	root.size = Vector2i(844, 390)
