@@ -125,6 +125,11 @@ architecture described above remains in `world/room.tscn` for reference. Press F
 to play, or open `gridmap/preview.tscn` for isolated geometry review. See
 [the GridMap guide](gridmap/README.md) for editing, tiles, rebuilding and verification.
 
+Three existing guests at the main bar and north/south card tables now smoke ambient
+cigarettes; their transforms and hitboxes are unchanged. See
+[`casino_patrons/README.md`](../casino_patrons/README.md#ambient-smoking) for animation,
+visibility budgets and the opt-in `SalonGuestModel.smoking` flag.
+
 The live casino now uses a separate decor GridMap for the original framed paintings,
 brass sconces and chandeliers. Its warm local light pools, darker ambient fill and
 light-responsive casino shaders replace the previous fullbright presentation.

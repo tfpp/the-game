@@ -66,6 +66,42 @@ so unloading the lobby cannot reset its state or remove its server hitbox. The d
 still allocates apartments during the respawn delay. Existing gun controls apply
 (left click or controller right shoulder); no new touch firing control is added.
 
+## Ambient smoking
+
+Three existing guests in the **live GridMap casino** smoke: the standing guest at
+the main bar (-8.2, -1.25, -8.25), the west seat of the northern card table
+(-7.16, -1.25, -5.10), and the lady at the southern table (-5.5, -1.25, 4.95).
+Just walk over and watch; no controls, purchases or inventory changes are involved.
+Other guests, dealers, named roaming patrons and vendors keep their existing poses.
+
+`SalonGuestModel.smoking` is an opt-in presentation flag set on those bodies in
+`casino_hub/gridmap/furnishings.tscn`. `PatronSmoking` reuses the painted holdables
+cigarette, its Mouth/Grip markers, the avatar's `mouth_transform()` and existing
+arm/finger IK. Each ten-second loop eases the cigarette to the mouth, holds a draw,
+lowers the hand and exhales. Seated guests retain their seat/feet pose and left hand
+on the felt. Timings are offset by the existing guest look seed.
+
+Smoke uses two small world-space CPU emitters (8 tip wisps + 20 exhale wisps per
+smoker), camera-facing procedural soft quads, growth and alpha fade curves.
+There are no new textures, lights, shadows, colliders or model exports.
+Smoker posing runs at up to 30 Hz within 18 m of a camera; distant, hidden and
+headless guests stop emitting and clear old clouds. Death follows the existing
+replicated `net_alive` visibility; respawning resumes presentation without stale
+smoke. These are local cosmetic loops, like dealer hand motion: peers may see
+different puff timing, and late joiners see a fresh loop, never a replayed event.
+No new RPC, shared state or persistence is introduced.
+
+Coverage: `tests/features/casino_patrons/test_smoking.gd`, original rig/life tests
+and the existing ENet stationary life test. To inspect the actual rig and shader:
+
+```sh
+godot --path game res://tests/features/casino_patrons/smoking_probe.tscn -- \
+  --smoking-capture=/tmp/smoking.png
+```
+
+Add `--smoking-exhale`, `--smoking-seated` or `--smoking-back` for other views.
+The capture needs a graphical renderer; it is not a browser performance benchmark.
+
 ## Donald Trump
 
 Trump (look 5) follows Mamdani along the slot aisle, staying about 1.5 metres
