@@ -7,6 +7,10 @@
 [ext_resource type="Material" path="res://features/procedural_rooms/materials/dark.tres" id="metal"]
 [ext_resource type="ArrayMesh" path="res://assets/starter_room/shutter.res" id="shutter"]
 
+[ext_resource type="PackedScene" path="res://features/starter_room/upstairs.tscn" id="upstairs"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/writing_desk.tscn" id="desk"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/security_monitor.tscn" id="crt"]
+
 [sub_resource type="BoxMesh" id="tube"]
 size = Vector3(0.16, 0.08, 2.4)
 
@@ -37,13 +41,13 @@ font_size = 32
 pixel_size = 0.006
 
 [node name="Cabinet" parent="." instance=ExtResource("cabinet")]
-position = Vector3(-6.6, 0, -6)
+position = Vector3(-7, 0, 1)
 
 [node name="Crate" parent="." instance=ExtResource("crate")]
-position = Vector3(-6.4, 0, -3)
+position = Vector3(-3.4, 0, -7)
 
 [node name="Barrel" parent="." instance=ExtResource("barrel")]
-position = Vector3(-6.5, 0, -1.5)
+position = Vector3(-3.4, 0, -5.8)
 
 [node name="WorkLight" type="OmniLight3D" parent="."]
 position = Vector3(-4, 3.8, 0)
@@ -61,6 +65,27 @@ omni_range = 12.0
 position = Vector3(-4, 4.6, 0)
 mesh = SubResource("tube")
 material_override = SubResource("glow")
+
+[node name="Upstairs" parent="." instance=ExtResource("upstairs")]
+
+[node name="JobsDesk" parent="." instance=ExtResource("desk")]
+position = Vector3(-4, 2.5, -7.8)
+
+[node name="CRT" parent="." instance=ExtResource("crt")]
+position = Vector3(-4, 3.303, -7.8)
+
+[node name="ScreenText" type="Label3D" parent="CRT"]
+position = Vector3(0, 0.25, 0.235)
+text = "JOBS.EXE\nREADY >"
+font_size = 22
+pixel_size = 0.0018
+modulate = Color(0.5, 1, 0.65, 1)
+
+[node name="JobSign" type="Label3D" parent="."]
+position = Vector3(-6, 3.9, -8.8)
+text = "FIELDWORK / JOBS\nUPSTAIRS · E / USE COMPUTER"
+font_size = 32
+pixel_size = 0.005
 
 [node name="TubeB" type="MeshInstance3D" parent="."]
 position = Vector3(3, 4.6, -3)

@@ -1,0 +1,9 @@
+{
+  "title": "Upstairs garage jobs computer",
+  "summary": "Use the upstairs CRT in the operations garage to take survey jobs for money and XP.",
+  "notes": [
+    "Add a walk-up mezzanine office with an interactive CRT jobs application.",
+    "Pin an accepted survey at the top right and pay $10 plus 25 session XP when its report is submitted.",
+    "Offer one survey per van destination per session with server-validated progress and wallet rewards."
+  ]
+}

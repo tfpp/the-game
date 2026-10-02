@@ -67,6 +67,56 @@ godot --rendering-method gl_compatibility --audio-driver Dummy \
   res://tests/features/starter_room/capture.tscn -- /tmp/operations-garage
 ```
 
+## Upstairs CRT jobs application
+
+Climb the two-metre-wide west stairs (bottom at x -6, z 0) to the **2.5 m-high
+mezzanine**, and use the CRT on the desk with **E / B or Circle / touch USE**.
+The green-screen application offers three optional surveys, one for each existing
+van destination. Select one, exit the application, travel there and stay within
+five metres of the arrival marker for three consecutive seconds. The job is pinned
+at the **top right**, below the connection readout. Return to this computer and
+**Submit report** to collect **$10 + 25 XP**. No purchase, extra key, level gate or
+casino assignment is involved. The van still works exactly as before.
+
+Buttons support controller focus and touch; the application scrolls on small screens.
+Exit application / Esc closes it, and walking out of range or dying closes it too.
+An accepted contract survives death/respawn. Survey dwell resets if you leave its
+arrival area or die; once a report is ready it stays ready until submitted.
+
+`job_terminal.gd` owns per-peer `records` (`job`, `ready`, `done`, `xp`) replicated by
+NetworkedInteraction, including late-join snapshots. Accept and claim requests validate
+transport sender, payload, range, life, destination and current state. Clients never
+supply progress, reward, XP or another player's ID. A server-side payout lock prevents
+duplicate claims, and settlement defers outside the synchronous component callback.
+Wallet failures keep the ready report and operation ID for a retry through existing
+`PlayerMoney.credit_coin`; XP is awarded only after wallet success. Players can work
+on the same job independently, including offline peer 1.
+
+Jobs and XP are **connection-session state**, not a permanent leveling system:
+each destination can be completed once per connection; disconnect/server restart or
+network-mode change clears them. Earned authenticated money persists in the existing
+wallet; offline money remains temporary. No shared wallet or API interface changed.
+
+The office is part of the same StreamedRoom (not a separately teleported room).
+Architecture remains saved GridMaps, reusing garage concrete slabs and existing
+casino stair/guard tiles. The original spawn square, walking exit and van approach
+remain clear. Static props live in streamed `interior.tscn`; the terminal endpoint
+and GPS marker always exist in `feature.tscn`. The desk and CRT reuse existing
+painted hotel/casino assets (no new meshes or textures, lights or shadows).
+Desk top y=3.303 supports the CRT; mezzanine headroom is 2.25 m. Rebuild only the
+new editable stair/deck GridMaps with:
+
+```sh
+godot --headless --path game -s res://features/starter_room/tools/build_upstairs.gd
+```
+
+The capture command above now also renders stairs, CRT, desktop/phone application
+and a synthetic ready-job phone pin. Captures are under
+`docs/design/previews/garage-jobs/`; they review presentation, not a paid transaction
+or browser performance. New tests cover validated jobs, continuous survey presence,
+existing wallet payout/retry, XP, lifecycle, private pin/modal behavior, actual stair
+walking/headroom and ENet authenticated requests/concurrent records/late joins.
+
 Tests cover spawn fallback/override, actual initial floor contact, spawn and approach
 clearance, indexed winding/UVs/budget, all real arrival links, streamed floor preload,
 excursion finish, validated requests, cancellation, concurrent preparation, modal

@@ -9,6 +9,9 @@
 [ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
 [ext_resource type="PackedScene" path="res://features/starter_room/van_model.tscn" id="model"]
 
+[ext_resource type="Script" path="res://features/starter_room/job_terminal.gd" id="jobs"]
+[ext_resource type="Script" path="res://features/starter_room/job_panel.gd" id="job_panel"]
+
 [sub_resource type="StandardMaterial3D" id="door_paint"]
 albedo_color = Color(0.27, 0.37, 0.35, 1)
 roughness = 1.0
@@ -97,4 +100,25 @@ script = ExtResource("panel")
 position = Vector3(0, 0.1, 4)
 script = ExtResource("gps")
 label = "Operations Garage"
-hint = "Starter base. Use the van for a route map. Return from the casino north promenade."
+hint = "Starter base. Use the van for travel; climb the west stairs for jobs."
+
+[node name="JobTerminal" type="Node3D" parent="Room"]
+position = Vector3(-4, 3.5, -7.8)
+script = ExtResource("jobs")
+van_path = NodePath("../Van")
+panel_path = NodePath("../../JobPanel")
+
+[node name="NetworkedEntity" type="Node" parent="Room/JobTerminal"]
+script = ExtResource("net")
+replicated_properties = Array[NodePath]([NodePath(".:records")])
+interaction_offset = Vector3(0, 0, 0.8)
+interaction_range = 1.8
+
+[node name="JobsDestination" type="Marker3D" parent="Room"]
+position = Vector3(-4, 2.5, -6.5)
+script = ExtResource("gps")
+label = "Garage Jobs Computer"
+hint = "Climb the west stairs in the operations garage; use the upstairs CRT."
+
+[node name="JobPanel" type="CanvasLayer" parent="."]
+script = ExtResource("job_panel")
