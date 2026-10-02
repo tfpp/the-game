@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/van.res" id="mesh"]
+[ext_resource type="Texture2D" path="res://assets/starter_room/van.png" id="texture"]
+
+[sub_resource type="StandardMaterial3D" id="paint"]
+albedo_texture = ExtResource("texture")
+roughness = 1.0
+texture_filter = 2
+texture_repeat = false
+
+[sub_resource type="BoxShape3D" id="shape"]
+size = Vector3(2.2, 1.9, 5)
+
+[node name="VanModel" type="Node3D"]
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = ExtResource("mesh")
+material_override = SubResource("paint")
+
+[node name="Collision" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0, 1.4, 0)
+shape = SubResource("shape")

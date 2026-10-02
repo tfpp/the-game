@@ -92,7 +92,11 @@ func _spawn_player(data: Variant) -> Node:
 
 func _spawn_position() -> Vector3:
 	var jitter := Vector3(randf_range(-3.0, 3.0), 0.0, randf_range(-3.0, 3.0))
-	return _spawn_point.global_position + jitter
+	var feature_spawn := get_tree().get_first_node_in_group(&"player_spawn") as Marker3D
+	var origin := (
+		feature_spawn.global_position if feature_spawn != null else _spawn_point.global_position
+	)
+	return origin + jitter
 
 
 ## Debug aid (`-- --debug-roster`): prints who this peer sees, once per second.

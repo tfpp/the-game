@@ -1,0 +1,10 @@
+{
+  "title": "Garage operations base",
+  "summary": "Start in a garage and use the van route map to travel with an engine-start driving transition.",
+  "notes": [
+    "Start new joins and respawns in a shared concrete GridMap garage.",
+    "Use the van with E, controller Use or touch USE to visit the casino, basement garage or street district.",
+    "Play a short driving screen and engine sound before server-validated travel.",
+    "Return through Operations Garage on the casino north promenade or follow GPS directions."
+  ]
+}
