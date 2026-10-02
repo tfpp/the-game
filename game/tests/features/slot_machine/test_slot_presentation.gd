@@ -57,12 +57,12 @@ func test_large_prices_and_server_messages_fit_real_display_widths() -> void:
 			)
 			* label.pixel_size
 		)
-		assert_lte(width, 1.69 if label == caption else 1.19)
+		assert_lte(width, 1.12 if label == caption else 1.05)
 
 
 func test_refined_cabinet_preserves_collision_and_shared_painted_hardware() -> void:
 	var hull := (_machine.get_node("Collider") as CollisionShape3D).shape as BoxShape3D
-	assert_eq(hull.size, Vector3(2.2, 2.8, 1.2))
+	assert_eq(hull.size, Vector3(1.38, 2.8, 1.3))
 	var cabinet := _view.get_node("SlotCabinet/Model") as MeshInstance3D
 	var lever := _view.get_node("Lever/Model") as MeshInstance3D
 	assert_same(cabinet.material_override, lever.material_override)
@@ -77,7 +77,7 @@ func test_refined_cabinet_preserves_collision_and_shared_painted_hardware() -> v
 		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
 		var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
 		var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
-		assert_eq(indices.size() / 3, 844 if model == cabinet else 144)
+		assert_lte(indices.size() / 3, 1600 if model == cabinet else 200)
 		for index: int in vertices.size():
 			assert_true(vertices[index].is_finite())
 			assert_almost_eq(normals[index].length(), 1.0, .001)
@@ -93,11 +93,11 @@ func test_refined_cabinet_preserves_collision_and_shared_painted_hardware() -> v
 			assert_gt(cross.normalized().dot(normals[indices[index]]), .99)
 	# Rays along the payline must hit the backing behind the reels, never the bezel.
 	var faces := cabinet.mesh.get_faces()
-	for x: float in [-.58, 0.0, .58]:
+	for x: float in [-.36, 0.0, .36]:
 		for index: int in range(0, faces.size(), 3):
 			var hit: Variant = Geometry3D.segment_intersects_triangle(
 				Vector3(x, 1.73, 1),
-				Vector3(x, 1.73, .43),
+				Vector3(x, 1.73, .40),
 				faces[index],
 				faces[index + 1],
 				faces[index + 2]

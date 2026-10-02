@@ -100,5 +100,6 @@ func test_sound_assets_are_bounded_and_motor_is_the_only_loop() -> void:
 		assert_eq(stream.loop_mode, AudioStreamWAV.LOOP_DISABLED)
 		assert_eq(stream.mix_rate, 22050)
 	assert_eq(_feedback.motor.stream.loop_mode, AudioStreamWAV.LOOP_FORWARD)
-	assert_eq(_feedback._bulbs.multimesh.instance_count, 24)
+	assert_not_null(_feedback._candle)
+	assert_not_null(_feedback._button)
 	assert_false(_feedback._wash.shadow_enabled)

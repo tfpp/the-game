@@ -10,11 +10,9 @@ const GREEN := Color("7febba")
 var motor: AudioStreamPlayer3D
 var mechanism: AudioStreamPlayer3D
 var payout: AudioStreamPlayer3D
-var _bulbs: MultiMeshInstance3D
 var _candle: MeshInstance3D
 var _button: MeshInstance3D
 var _wash: OmniLight3D
-var _phase := 0.0
 var _win_left := 0.0
 var _last_spin := -1
 var _stopped := 3
@@ -69,20 +67,13 @@ func update(snapshot: Dictionary, delta: float) -> void:
 			motor.play()
 	else:
 		motor.stop()
-	_phase += delta
 	_win_left = maxf(0, _win_left - delta)
 	if not nearby:
 		_wash.hide()
 		return
 	var winning := _win_left > 0
-	for i: int in _bulbs.multimesh.instance_count:
-		var chase := (i + int(_phase * (9 if spinning else 2))) % 4 == 0
-		var gain := 1.0 if chase else .55
-		if winning:
-			gain = .7 + .3 * sin(_phase * 6 + i * .45)
-		_bulbs.multimesh.set_instance_color(i, (GREEN if winning else AMBER) * gain)
 	_candle.material_override.albedo_color = (
-		GREEN if winning else AMBER if spinning else Color("60432c")
+		GREEN if winning else AMBER if spinning else Color("ddcfad")
 	)
 	_button.material_override.albedo_color = AMBER if spinning else GREEN
 	_wash.visible = (
@@ -130,58 +121,33 @@ func _voice(stream: AudioStream, gain: float) -> AudioStreamPlayer3D:
 
 
 func _build_lights() -> void:
-	var bulb := SphereMesh.new()
-	bulb.radius = .025
-	bulb.height = .05
-	bulb.radial_segments = 8
-	bulb.rings = 3
-	var material := _glow(AMBER)
-	material.vertex_color_use_as_albedo = true
-	material.albedo_color = Color.WHITE
-	bulb.material = material
-	_bulbs = MultiMeshInstance3D.new()
-	_bulbs.name = "MarqueeBulbs"
-	_bulbs.multimesh = MultiMesh.new()
-	_bulbs.multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	_bulbs.multimesh.use_colors = true
-	_bulbs.multimesh.mesh = bulb
-	_bulbs.multimesh.instance_count = 24
-	_bulbs.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	for i: int in 24:
-		var at := Vector3(-.88 + (i % 10) * .1955, 2.685 if i < 10 else 2.29, .585)
-		if i >= 20:
-			at = Vector3(-.987 if i < 22 else .987, 2.36 + (i % 2) * .16, .585)
-		_bulbs.multimesh.set_instance_transform(i, Transform3D(Basis.IDENTITY, at))
-		_bulbs.multimesh.set_instance_color(i, AMBER * .5)
-	add_child(_bulbs)
 	_candle = MeshInstance3D.new()
 	var lens := CylinderMesh.new()
-	lens.top_radius = .095
-	lens.bottom_radius = .095
-	lens.height = .145
+	lens.top_radius = .067
+	lens.bottom_radius = .067
+	lens.height = .094
 	lens.radial_segments = 12
 	_candle.mesh = lens
-	_candle.position = Vector3(0, 2.905, 0)
-	_candle.material_override = _glow(AMBER)
+	_candle.position = Vector3(0, 2.935, -.10)
+	_candle.material_override = _glow(Color("efddb1"))
 	add_child(_candle)
-	_candle.material_override.albedo_color = Color("60432c")
-	_button = MeshInstance3D.new()
-	var button := CylinderMesh.new()
-	button.top_radius = .047
-	button.bottom_radius = .047
-	button.height = .017
-	button.radial_segments = 12
-	_button.mesh = button
-	_button.rotation.x = PI * .5
-	_button.position = Vector3(.72, 1.11, .835)
-	_button.material_override = _glow(GREEN)
-	add_child(_button)
-	var red := _button.duplicate() as MeshInstance3D
-	red.position.x = -.73
-	red.material_override = _glow(Color("a84932"))
-	add_child(red)
+	var lower := _candle.duplicate() as MeshInstance3D
+	lower.position.y = 2.831
+	lower.material_override = _glow(Color("881d18"))
+	add_child(lower)
+	for i: int in 5:
+		var button := MeshInstance3D.new()
+		var face := BoxMesh.new()
+		face.size = Vector3(.122, .081, .018)
+		button.mesh = face
+		button.transform = Transform3D(Basis(Vector3.RIGHT, -.58), Vector3(0, 1.345, .615))
+		button.position += button.basis * Vector3(-.48 + i * .23, 0, .111)
+		button.material_override = _glow(GREEN if i == 4 else Color("e8ba80"))
+		add_child(button)
+		if i == 4:
+			_button = button
 	_wash = OmniLight3D.new()
-	_wash.position = Vector3(0, 1.9, .9)
+	_wash.position = Vector3(0, 2.32, .62)
 	_wash.omni_range = 2.6
 	_wash.shadow_enabled = false
 	add_child(_wash)

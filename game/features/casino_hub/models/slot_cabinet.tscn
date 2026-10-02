@@ -1,5 +1,5 @@
 [gd_scene format=3]
-[ext_resource type="ArrayMesh" path="res://assets/slot_machine/cabinet_v2/cabinet.res" id="mesh"]
+[ext_resource type="ArrayMesh" path="res://assets/slot_machine/cabinet_v3/cabinet.res" id="mesh"]
 [ext_resource type="Material" path="res://features/slot_machine/materials/cabinet_v2.tres" id="material"]
 [node name="SlotCabinet" type="Node3D"]
 [node name="Model" type="MeshInstance3D" parent="."]

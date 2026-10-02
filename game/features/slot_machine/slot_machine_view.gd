@@ -28,14 +28,18 @@ var _settle_from: Array[float] = [0.0, 1.0, 2.0]
 
 func _ready() -> void:
 	add_child(CABINET.instantiate())
-	_label("LUCKY FIVE", Vector3(0, 2.50, 0.596), 48, INK, 0.0037)
-	_label("THE GOLDEN CROWN  •  EST. 1964", Vector3(0, 2.38, 0.596), 18, INK, 0.003)
+	_art_panel(Vector3(0, 2.3875, .333), Vector2(1.20, .635), Rect2(2, 2, 124, 72))
+	_art_panel(Vector3(0, .885, .512), Vector2(1.20, .45), Rect2(2, 78, 124, 48))
+	_label("LUCKY FIVE", Vector3(0, 2.60, .345), 38, INK, .0027)
+	_label("THE GOLDEN CROWN", Vector3(0, .85, .525), 28, INK, .0022)
 	var drum := SlotReelMesh.create()
 	for index: int in 3:
 		var reel := MeshInstance3D.new()
 		reel.name = "Reel%d" % index
 		reel.mesh = drum
-		reel.position = Vector3(float(index - 1) * 0.58, 1.73, 0.26)
+		reel.position = Vector3(float(index - 1) * .36, 1.6744, .2042)
+		reel.rotation.x = -.30
+		reel.scale = Vector3(.54, .49, .53)
 		var material := ShaderMaterial.new()
 		material.shader = REEL_SHADER
 		material.set_shader_parameter("symbols", SYMBOL_TEXTURE)
@@ -43,14 +47,22 @@ func _ready() -> void:
 		reel.material_override = material
 		_reels.append(material)
 		add_child(reel)
-	# Small red payline pointers, outside the clear viewing area.
-	_label("▶", Vector3(-0.91, 1.73, 0.655), 25, Color("ba293a"), 0.003)
-	_label("◀", Vector3(0.91, 1.73, 0.655), 25, Color("ba293a"), 0.003)
-	_status = _label("TRY YOUR LUCK", Vector3(-0.18, 0.94, 0.56), 26, GOLD, 0.0025)
-	_caption = _label(_price_caption(), Vector3(0, 2.225, 0.67), 21, GOLD, 0.0025)
-	_label("7  ×30    BAR  ×20    STAR  ×10", Vector3(0, 0.72, 0.519), 18, GOLD, 0.0025)
-	_label("BELL  ×15    GEM  ×25    PAIRS  ×0", Vector3(0, 0.65, 0.519), 18, GOLD, 0.0025)
-	_label("THREE MATCHING SYMBOLS PAY", Vector3(0, 0.58, 0.519), 13, Color("ded2b9"), 0.0025)
+	_status = _label("READY", Vector3(0, 1.505, .56), 20, Color("ff6a3f"), .002)
+	_caption = _label(_price_caption(), Vector3(0, 2.012, .365), 16, GOLD, .002)
+	_label(
+		"7 ×30    BAR ×20    STAR ×10    BELL ×15    GEM ×25",
+		Vector3(0, .672, .527),
+		11,
+		GOLD,
+		.00165
+	)
+	var controls: Array[String] = ["BET", "MAX", "COLLECT", "SERVICE", "SPIN"]
+	for i: int in 5:
+		var label := _label(
+			controls[i], Vector3(-.48 + i * .23, 1.416, .724), 12, Color("171b18"), .0015
+		)
+		label.rotation.x = -.58
+	_label("INSERT BILLS", Vector3(.465, 1.243, .771), 9, Color("efe4cc"), .0012)
 	_build_lever()
 	feedback = FEEDBACK.new()
 	feedback.name = "Feedback"
@@ -118,11 +130,11 @@ func _update_snapshot(snapshot: Dictionary) -> void:
 			else "PLAY AGAIN"
 		)
 	else:
-		_status.text = "TRY YOUR LUCK"
+		_status.text = "READY"
 	_caption.text = _price_caption()
 	# Keep even billion-dollar buy-ins and long server messages inside their panels.
-	_fit_label(_status, 1.18, 0.0025)
-	_fit_label(_caption, 1.68, 0.0025)
+	_fit_label(_status, 1.05, 0.002)
+	_fit_label(_caption, 1.12, 0.002)
 
 
 func _price_caption() -> String:
@@ -132,7 +144,8 @@ func _price_caption() -> String:
 func _build_lever() -> void:
 	_lever = Node3D.new()
 	_lever.name = "Lever"
-	_lever.position = Vector3(1.14, 1.23, 0.0)
+	_lever.position = Vector3(.76, 1.48, .18)
+	_lever.scale = Vector3.ONE * .70
 	add_child(_lever)
 	var model := MeshInstance3D.new()
 	model.name = "Model"
@@ -163,28 +176,33 @@ func _fit_label(label: Label3D, width: float, maximum_pixel_size: float) -> void
 
 
 func _build_glass() -> void:
-	# Thin tinted glass remains subtle in Compatibility; highlights are geometry,
-	# not screen-space reflections or bloom that would disappear on web builds.
 	var glass := MeshInstance3D.new()
 	var pane := QuadMesh.new()
-	pane.size = Vector2(1.72, .79)
+	pane.size = Vector2(1.18, .49)
 	glass.mesh = pane
-	glass.position = Vector3(0, 1.735, .651)
+	glass.position = Vector3(0, 1.735, .412)
+	glass.rotation.x = -.30
 	var material := StandardMaterial3D.new()
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.albedo_color = Color(.45, .65, .60, .055)
+	material.albedo_color = Color(.45, .65, .60, .045)
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	glass.material_override = material
 	glass.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(glass)
-	for x: float in [-.86, .86]:
-		var edge := MeshInstance3D.new()
-		var strip := QuadMesh.new()
-		strip.size = Vector2(.008, .74)
-		edge.mesh = strip
-		edge.position = Vector3(x, 1.735, .653)
-		var shine := StandardMaterial3D.new()
-		shine.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		shine.albedo_color = Color("8aab9e")
-		edge.material_override = shine
-		add_child(edge)
+
+
+func _art_panel(at: Vector3, dimensions: Vector2, chart: Rect2) -> void:
+	var panel := MeshInstance3D.new()
+	var quad := QuadMesh.new()
+	quad.size = dimensions
+	panel.mesh = quad
+	panel.position = at
+	var paint := StandardMaterial3D.new()
+	paint.albedo_texture = preload("res://assets/slot_machine/cabinet_v3/glass.png")
+	paint.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
+	paint.uv1_scale = Vector3(chart.size.x / 128, chart.size.y / 128, 1)
+	paint.uv1_offset = Vector3(chart.position.x / 128, chart.position.y / 128, 0)
+	paint.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	paint.roughness = .45
+	panel.material_override = paint
+	add_child(panel)
