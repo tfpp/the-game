@@ -16,7 +16,17 @@ errors occurred; headless import/tests and the full verification are clean.
 These captures do not establish a browser frame-rate improvement or a multiplayer
 rendering benchmark.
 
-Reproduce from the repository root:
+`van-map-phone.png` and `van-map-landscape.png` review the fifth destination
+using the existing operations-garage capture scene with the mall endpoint loaded.
+All five buttons remain distinct and enabled; these are native renders, not
+physical-device or browser checks. Reproduce with:
+
+```sh
+xvfb-run -a godot --path game --rendering-method gl_compatibility --audio-driver Dummy \
+  res://tests/features/starter_room/capture.tscn -- /tmp/mall-van-review
+```
+
+Reproduce the plaza views from the repository root:
 ```sh
 xvfb-run -a godot --path game --rendering-method gl_compatibility --audio-driver Dummy \
   res://tests/features/strip_mall/capture.tscn -- /tmp/strip-mall

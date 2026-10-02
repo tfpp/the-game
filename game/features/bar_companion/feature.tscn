@@ -15,8 +15,12 @@
 
 [ext_resource type="PackedScene" path="res://features/casino_hub/models/casino_stool.tscn" id="stool"]
 
+[ext_resource type="PackedScene" path="res://features/bar_companion/busboy_shift.tscn" id="busboy"]
+
 [node name="BarCompanion" type="Node3D"]
 script = ExtResource("root")
+
+[node name="BusboyShift" parent="." instance=ExtResource("busboy")]
 
 [node name="Celeste" parent="." instance=ExtResource("celeste")]
 position = Vector3(-6.6, -1.25, -7.8)

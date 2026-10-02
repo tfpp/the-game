@@ -34,7 +34,7 @@ position = Vector3(-4.5, 1, 6)
 [node name="Van" type="Node3D" parent="Room"]
 position = Vector3(3, 0, -3)
 script = ExtResource("van")
-arrivals = Array[NodePath]([NodePath("../../CasinoArrival"), NodePath("../../../procedural_rooms/Garage/Arrival"), NodePath("../../../street_district/Room/Arrival"), NodePath("../../../pawn_shop/Room/Arrival")])
+arrivals = Array[NodePath]([NodePath("../../CasinoArrival"), NodePath("../../../procedural_rooms/Garage/Arrival"), NodePath("../../../street_district/Room/Arrival"), NodePath("../../../pawn_shop/Room/Arrival"), NodePath("../../../strip_mall/Room/Arrival")])
 panel_path = NodePath("../../TravelPanel")
 
 [node name="NetworkedEntity" type="Node" parent="Room/Van"]

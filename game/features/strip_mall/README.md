@@ -8,7 +8,9 @@ From the Crown's south promenade, walk down the south corridor and use the
 **E / controller B or Circle / touch USE**. GPS lists Strip Mall, Food Court,
 İstanbul Kebab, Poke Bowls and Wendy's. The return kiosk stands just behind the
 arrival point and takes you back to the same casino corridor. No new keys,
-prices, orders, jobs or van routes are added.
+prices or orders are added. Alternatively, use the operations garage van and
+choose **5 · Strip Mall** for the same arrival and existing driving transition.
+The garage computer automatically offers the usual arrival survey for this route.
 
 ## Ownership and streaming
 
