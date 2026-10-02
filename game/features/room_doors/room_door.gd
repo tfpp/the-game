@@ -9,6 +9,10 @@ const ARRIVAL_HOLD_MSEC := 3000
 
 
 func destination_room() -> StreamedRoom:
+	if not is_instance_valid(_arrival):
+		_arrival = get_node_or_null(destination) as Marker3D
+	if _arrival == null:
+		return null
 	var node := _arrival.get_parent()
 	while node != null:
 		if node is StreamedRoom:

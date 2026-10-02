@@ -20,6 +20,9 @@ func test_all_routes_use_existing_arrivals_and_street_floor_preloads_before_trav
 	var starter := FEATURE.instantiate() as Node3D
 	starter.name = "starter_room"
 	features.add_child(starter)
+	var shop := preload("res://features/pawn_shop/feature.tscn").instantiate() as Node3D
+	shop.name = "pawn_shop"
+	features.add_child(shop)
 	var van := starter.get_node("Room/Van") as OperationsVan
 	van.set_physics_process(false)
 	assert_eq(van.arrival(1), garage.get_node("Garage/Arrival"))
@@ -31,7 +34,8 @@ func test_all_routes_use_existing_arrivals_and_street_floor_preloads_before_trav
 	features.add_child(runs)
 	var slum := SlumArrivalPoint.new()
 	features.add_child(slum)
-	for zone: int in 3:
+	assert_eq(van.arrival(3), shop.get_node("Room/Arrival"))
+	for zone: int in 4:
 		player.net_position = van.to_global(Vector3(-1.6, 1, 1))
 		player.global_position = player.net_position
 		runs.begin(1, slum)
@@ -39,6 +43,8 @@ func test_all_routes_use_existing_arrivals_and_street_floor_preloads_before_trav
 		van.request_trip(zone)
 		if zone == 2:
 			assert_true((street.get_node("Room") as StreamedRoom).arrival_held())
+		if zone == 3:
+			assert_true((shop.get_node("Room") as StreamedRoom).arrival_held())
 		van._physics_process(OperationsVan.TRAVEL_SECONDS)
 		assert_eq(player.net_position, van.arrival(zone).global_position)
 		assert_false(runs.is_active(1), "reuse existing excursion finish on development travel")
@@ -49,7 +55,7 @@ func test_all_routes_use_existing_arrivals_and_street_floor_preloads_before_trav
 			player.net_position, player.net_position - Vector3.UP * 2
 		)
 	)
-	assert_false(hit.is_empty(), "street arrival's streamed floor exists before teleport")
+	assert_false(hit.is_empty(), "shop arrival's streamed floor exists before teleport")
 
 
 func test_casino_entrance_is_on_supported_north_promenade_with_clear_approach() -> void:

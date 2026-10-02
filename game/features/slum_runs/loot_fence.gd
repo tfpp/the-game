@@ -11,6 +11,8 @@ const BALL_OFFSETS: Array[Vector3] = [
 ]
 const BALL_RADIUS_M := 0.1
 
+@export var storefront_scene: PackedScene
+
 var _pending: Dictionary = {}
 
 
@@ -87,6 +89,11 @@ func _player_for_peer(peer_id: int) -> Player:
 
 
 func _build_storefront() -> void:
+	if storefront_scene != null:
+		var storefront := storefront_scene.instantiate() as Node3D
+		storefront.position.y = -size.y * 0.5
+		add_child(storefront)
+		return
 	var gold := StandardMaterial3D.new()
 	gold.albedo_color = Color(0.95, 0.72, 0.2)
 	gold.metallic = 0.9

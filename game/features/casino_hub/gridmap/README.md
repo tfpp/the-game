@@ -99,17 +99,17 @@ casino patrons and the bar companion continue to load normally.
 
 ## South shops
 
-`shops.gd` adds a pawn shop (x -16…-2, z 20…30), food court (x 2…34,
+`shops.gd` retains a sealed former shop unit (x -16…-2, z 20…30), food court (x 2…34,
 z 20…38) and the connecting four-metre corridor (x -2…2, z 20…30).
 Floors share the main floor GridMap; two additional GridMaps hold shop walls.
-The south casino opening and both shop doors are four metres wide with tiled
+The south casino opening and food court door are four metres wide with tiled
 headers above 2.5 m. The ceiling GridMap covers both rooms and the corridor, with
 room-sized box collision at y 5 m; the main hall ceiling is higher at y 8.75 m.
 
-The food court, kebab shop, pawn shop, Gun-O-Matic and loot-fence features keep
-their original transforms, networking and prices. Only their obsolete food/pawn
-room shells are removed; props and booth collisions remain. GPS destinations
-still point to the same counters. Shop geometry is serialized by the offline
+The food court and kebab shop retain their original transforms. Rusty Hogg’s shop,
+Gun-O-Matic and loot fence now occupy the separate roadside storefront reached by
+the operations van (`features/pawn_shop/README.md`). The old west corridor opening
+is sealed with wood wall tiles; its unused floor and roof remain in the saved map. Shop geometry is serialized by the offline
 builder, so scene loading does not replace edits made in the GridMap editor.
 
 ## Rebuild and verification

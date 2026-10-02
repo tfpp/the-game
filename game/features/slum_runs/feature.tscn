@@ -1,9 +1,14 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://features/slum_runs/slum_runs.gd" id="1_runs"]
 [ext_resource type="Script" path="res://features/slum_runs/slum_gate.gd" id="2_gate"]
 [ext_resource type="Script" path="res://features/slum_runs/loot_fence.gd" id="3_fence"]
 [ext_resource type="Material" path="res://world/materials/proto_dark.tres" id="4_dark"]
+
+[ext_resource type="PackedScene" path="res://features/pawn_shop/models/display_case.tscn" id="display"]
+[sub_resource type="StandardMaterial3D" id="invisible_hull"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0)
 
 [node name="SlumRuns" type="Node3D"]
 script = ExtResource("1_runs")
@@ -26,16 +31,9 @@ font_size = 20
 outline_size = 6
 
 [node name="Fence" type="CSGBox3D" parent="."]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -11.5, 0.75, 24.5)
-size = Vector3(1.5, 1.5, 0.6)
-material = ExtResource("4_dark")
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -11.5, 0.575, -3975.5)
+size = Vector3(2.8, 1.15, 0.8)
+material = SubResource("invisible_hull")
 use_collision = true
 script = ExtResource("3_fence")
-
-[node name="FenceSign" type="Label3D" parent="."]
-position = Vector3(-11.3, 3.35, 24.5)
-billboard = 1
-modulate = Color(1, 0.8, 0.3, 1)
-text = "RUSTY HOGG'S PAWN SHOP\nWE BUY VALUABLES"
-font_size = 17
-outline_size = 6
+storefront_scene = ExtResource("display")

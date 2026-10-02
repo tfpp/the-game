@@ -205,6 +205,22 @@ func regions() -> Array[AABB]:
 func links() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for node: Node in get_tree().get_nodes_in_group(&"interactables"):
+		if node is OperationsVan:
+			var van := node as OperationsVan
+			for zone: int in mini(van.arrivals.size(), OperationsVan.ZONE_NAMES.size()):
+				var van_arrival := van.arrival(zone)
+				if van_arrival != null:
+					(
+						result
+						. append(
+							{
+								"from": van.to_global(van.entity.interaction_offset),
+								"to": van_arrival.global_position,
+								"label": "Take the van to " + OperationsVan.ZONE_NAMES[zone],
+							}
+						)
+					)
+			continue
 		var door := node as GarageDoor
 		if door == null or door.destination.is_empty() or DevGate.blocks(door):
 			continue

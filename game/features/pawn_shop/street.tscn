@@ -1,0 +1,101 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_district/materials/asphalt.tres" id="asphalt"]
+[ext_resource type="Material" path="res://features/street_district/materials/sidewalk.tres" id="concrete"]
+[ext_resource type="PackedScene" path="res://features/starter_room/van_model.tscn" id="van"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/street_lamp.tscn" id="lamp"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/dumpster.tscn" id="dumpster"]
+[ext_resource type="PackedScene" path="res://features/street_district/props/brick_tenement.tscn" id="tenement"]
+[ext_resource type="PackedScene" path="res://features/street_district/props/shutter_warehouse.tscn" id="warehouse"]
+
+[sub_resource type="BoxMesh" id="road"]
+size = Vector3(100, 0.2, 12)
+material = ExtResource("asphalt")
+
+[sub_resource type="BoxMesh" id="pavement"]
+size = Vector3(100, 0.25, 3)
+material = ExtResource("concrete")
+
+[sub_resource type="StandardMaterial3D" id="paint"]
+albedo_color = Color(0.7, 0.62, 0.35, 1)
+roughness = 1.0
+
+[sub_resource type="BoxMesh" id="line"]
+size = Vector3(3, 0.012, 0.12)
+material = SubResource("paint")
+
+[node name="StreetBackdrop" type="Node3D"]
+
+[node name="PublicRoad" type="MeshInstance3D" parent="."]
+position = Vector3(-9, -0.3, 39)
+mesh = SubResource("road")
+
+[node name="ShopSidewalk" type="MeshInstance3D" parent="."]
+position = Vector3(-9, -0.125, 31.5)
+mesh = SubResource("pavement")
+
+[node name="FarSidewalk" type="MeshInstance3D" parent="."]
+position = Vector3(-9, -0.125, 46.5)
+mesh = SubResource("pavement")
+
+[node name="ParkedVan" parent="." instance=ExtResource("van")]
+position = Vector3(-10, -0.2, 34.6)
+rotation = Vector3(0, 1.5707964, 0)
+
+[node name="LampLeft" parent="." instance=ExtResource("lamp")]
+position = Vector3(-18, 0, 32)
+
+[node name="LampRight" parent="." instance=ExtResource("lamp")]
+position = Vector3(0, 0, 32)
+
+[node name="StreetLight" type="OmniLight3D" parent="."]
+position = Vector3(-11, 4.5, 35)
+light_color = Color(0.58, 0.72, 0.85, 1)
+light_energy = 3.0
+omni_range = 20.0
+
+[node name="FarLight" type="OmniLight3D" parent="."]
+position = Vector3(-9, 6, 46)
+light_color = Color(0.58, 0.68, 0.75, 1)
+light_energy = 2.0
+omni_range = 22.0
+
+[node name="TenementLeft" parent="." instance=ExtResource("tenement")]
+position = Vector3(-19, 0, 55.5)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="TenementRight" parent="." instance=ExtResource("tenement")]
+position = Vector3(2, 0, 55.5)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="Warehouse" parent="." instance=ExtResource("warehouse")]
+position = Vector3(-8.5, 0, 56)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="Dumpster" parent="." instance=ExtResource("dumpster")]
+position = Vector3(-17, 0, 47)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="RoadMark1" type="MeshInstance3D" parent="."]
+position = Vector3(-27, -0.194, 39)
+mesh = SubResource("line")
+
+[node name="RoadMark2" type="MeshInstance3D" parent="."]
+position = Vector3(-21, -0.194, 39)
+mesh = SubResource("line")
+
+[node name="RoadMark3" type="MeshInstance3D" parent="."]
+position = Vector3(-15, -0.194, 39)
+mesh = SubResource("line")
+
+[node name="RoadMark4" type="MeshInstance3D" parent="."]
+position = Vector3(-9, -0.194, 39)
+mesh = SubResource("line")
+
+[node name="RoadMark5" type="MeshInstance3D" parent="."]
+position = Vector3(-3, -0.194, 39)
+mesh = SubResource("line")
+
+[node name="RoadMark6" type="MeshInstance3D" parent="."]
+position = Vector3(3, -0.194, 39)
+mesh = SubResource("line")

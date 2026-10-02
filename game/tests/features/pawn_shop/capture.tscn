@@ -1,0 +1,4 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://tests/features/pawn_shop/capture.gd" id="capture"]
+[node name="StoreCapture" type="Node"]
+script = ExtResource("capture")

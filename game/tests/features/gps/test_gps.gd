@@ -3,6 +3,7 @@ extends GutTest
 const Cheats := preload("res://tests/features/dev_access/cheats_fixture.gd")
 const FEATURE := preload("res://features/gps/feature.tscn")
 const ROOM_SCENES: Array[String] = [
+	"res://features/pawn_shop/feature.tscn",
 	"res://features/starter_room/feature.tscn",
 	"res://features/hotel_props/feature.tscn",
 	"res://features/street_district/feature.tscn",

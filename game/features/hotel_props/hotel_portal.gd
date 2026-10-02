@@ -10,6 +10,8 @@ func _ready() -> void:
 
 
 func _can_enter(player: Player) -> bool:
+	if not is_instance_valid(_arrival):
+		_arrival = get_node_or_null(destination) as Marker3D
 	return entity.in_range(player) and is_instance_valid(_arrival) and not DevGate.blocks(self)
 
 

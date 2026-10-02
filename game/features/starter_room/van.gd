@@ -3,11 +3,14 @@ extends Node3D
 ## Static shared endpoint. Only the authenticated requester sees the map/transition.
 
 const TRAVEL_SECONDS := 2.0
-const ZONE_NAMES: Array[String] = ["The Golden Crown", "Basement Garage · B1", "Street District"]
+const ZONE_NAMES: Array[String] = [
+	"The Golden Crown", "Basement Garage · B1", "Street District", "Gun Shop · Rusty Hogg's"
+]
 const ZONE_HINTS: Array[String] = [
 	"Casino, shops and friends",
 	"Five floors · hostile enemies",
-	"Streets, alleys and searchable containers"
+	"Streets, alleys and searchable containers",
+	"Guns, pawn counter and Gun-O-Matic"
 ]
 
 @export var arrivals: Array[NodePath] = []

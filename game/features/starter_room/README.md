@@ -4,7 +4,7 @@ This shared concrete garage is reachable by its door on the casino north promena
 New joins, fall recovery and combat respawns start in the Crown (`../crown_spawn/`).
 Walk to the van's driver side and press **E / B or Circle / touch USE**. Pick a
 numbered destination on its schematic route map: **The Golden Crown**, **Basement
-Garage B1**, or **Street District**. A two-second engine-start/acceleration sound
+Garage B1**, **Street District**, or **Gun Shop · Rusty Hogg's**. A two-second engine-start/acceleration sound
 and opaque driving screen precede travel. Buttons support touch and controller
 focus; the list scrolls on small/landscape screens. Esc / Back to garage dismisses
 an unsubmitted map. There is no extra key or purchase.
@@ -13,7 +13,7 @@ The walking exit reaches the casino without the driving screen. Return through
 **OPERATIONS GARAGE** on the casino north promenade at (-7, 1.1, -19.7), or find
 **Operations Garage** in GPS. The street's existing casino entrance returns to the
 Crown; the basement garage's existing return portal reaches the dev room, whose
-exit reaches the casino. Existing elevator, shop and slum-gate behavior is unchanged.
+exit reaches the casino. The gun shop door returns directly here; its street and parked van are scenery only.
 
 ## Ownership and integration
 
@@ -72,7 +72,7 @@ godot --rendering-method gl_compatibility --audio-driver Dummy \
 
 Climb the two-metre-wide west stairs (bottom at x -6, z 0) to the **2.5 m-high
 mezzanine**, and use the CRT on the desk with **E / B or Circle / touch USE**.
-The green-screen application offers three optional surveys, one for each existing
+The green-screen application offers four optional surveys, one for each existing
 van destination. Select one, exit the application, travel there and stay within
 five metres of the arrival marker for three consecutive seconds. The job is pinned
 at the **top right**, below the connection readout. Return to this computer and
