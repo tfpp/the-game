@@ -1,0 +1,12 @@
+[gd_scene format=3]
+[ext_resource type="ArrayMesh" path="res://assets/pawn_shop/shop_shelves.res" id="mesh"]
+[ext_resource type="Material" path="res://features/pawn_shop/models/furniture.tres" id="paint"]
+[sub_resource type="BoxShape3D" id="shape"]
+size = Vector3(2.4, 2.6, 0.55)
+[node name="ShopShelves" type="StaticBody3D"]
+[node name="Model" type="MeshInstance3D" parent="."]
+mesh = ExtResource("mesh")
+material_override = ExtResource("paint")
+[node name="Collider" type="CollisionShape3D" parent="."]
+position = Vector3(0, 1.3, 0)
+shape = SubResource("shape")

@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+[ext_resource type="Texture2D" path="res://assets/pawn_shop/shop_furniture.png" id="paint"]
+[resource]
+albedo_texture = ExtResource("paint")
+roughness = 0.85
+texture_filter = 2
+texture_repeat = false
