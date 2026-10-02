@@ -35,7 +35,11 @@ func _capture() -> void:
 	var street := preload("res://features/street_district/feature.tscn").instantiate() as Node3D
 	street.name = "street_district"
 	world.add_child(street)
+	var shop := preload("res://features/pawn_shop/feature.tscn").instantiate() as Node3D
+	shop.name = "pawn_shop"
+	world.add_child(shop)
 	var feature := FEATURE.instantiate() as Node3D
+	feature.name = "starter_room"
 	world.add_child(feature)
 	var room := feature.get_node("Room") as StreamedRoom
 	room.load_room(60000)
@@ -61,6 +65,8 @@ func _capture() -> void:
 	await _save("route-map")
 	root.size = Vector2i(390, 844)
 	await _save("route-map-phone")
+	root.size = Vector2i(844, 390)
+	await _save("route-map-landscape")
 	_van.panel.depart(_van, 0, _van.arrival(0).global_position)
 	_van.panel.set_process(false)
 	await _save("driving-transition")

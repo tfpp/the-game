@@ -2,12 +2,13 @@ class_name VanTravelPanel
 extends CanvasLayer
 
 const MAP := preload("res://features/starter_room/route_map.gd")
+const DRIVE := preload("res://features/starter_room/travel_drive.gd")
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 
 var _body_font: Font = preload("res://assets/fonts/inter/Inter-Regular.ttf").duplicate()
 var _root: ColorRect
-var _box: VBoxContainer
 var _status: Label
+var _drive: SubViewportContainer
 var _map: Control
 var _buttons: Array[Button] = []
 var _close: Button
@@ -32,6 +33,7 @@ func open_map(van: OperationsVan) -> void:
 	_close.disabled = false
 	_status.text = "VAN ROUTE MAP · choose a destination"
 	_map.show()
+	_drive.hide()
 	_close.show()
 	for i: int in _buttons.size():
 		_buttons[i].show()
@@ -48,6 +50,7 @@ func depart(van: OperationsVan, zone: int, destination: Vector3) -> void:
 	_destination = destination
 	_status.text = "ENGINE STARTING…\n" + OperationsVan.ZONE_NAMES[zone]
 	_map.hide()
+	_drive.start()
 	_close.hide()
 	for button: Button in _buttons:
 		button.hide()
@@ -66,6 +69,7 @@ func reject_trip() -> void:
 func close(resume: bool = true) -> void:
 	var was_open := is_open()
 	_root.hide()
+	_drive.hide()
 	_travelling = false
 	_waiting = false
 	_van = null
@@ -143,67 +147,49 @@ func _choose(zone: int) -> void:
 
 func _build() -> void:
 	_root = ColorRect.new()
-	_root.color = Color(.025, .03, .04, 1)
+	_root.color = Color("202828")
 	_root.theme = UI_THEME
-	_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_root)
-	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	for edge: String in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + edge, 16)
-	_root.add_child(margin)
-	var center := CenterContainer.new()
-	margin.add_child(center)
-	var scroll := ScrollContainer.new()
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.follow_focus = true
-	center.add_child(scroll)
-	_box = VBoxContainer.new()
-	_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_box.add_theme_constant_override("separation", 10)
-	scroll.add_child(_box)
 	_status = Label.new()
 	_status.add_theme_font_override("font", _body_font)
 	_status.add_theme_color_override("font_color", Color("e1d5b5"))
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_status.custom_minimum_size.y = 55
-	_box.add_child(_status)
+	_status.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_root.add_child(_status)
 	_map = MAP.new()
-	_map.set("map_font", _body_font)
-	_box.add_child(_map)
+	_root.add_child(_map)
+	_drive = DRIVE.new()
+	_root.add_child(_drive)
+	_drive.hide()
 	for i: int in OperationsVan.ZONE_NAMES.size():
-		var button := Button.new()
-		button.add_theme_font_override("font", _body_font)
-		button.add_theme_font_size_override("font_size", 16)
-		button.text = (
-			"%d · %s\n%s" % [i + 1, OperationsVan.ZONE_NAMES[i], OperationsVan.ZONE_HINTS[i]]
-		)
-		button.custom_minimum_size.y = 58
-		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var button: Button = _map.add_destination(i, _body_font)
 		button.pressed.connect(_choose.bind(i))
-		_box.add_child(button)
 		_buttons.append(button)
 	_close = Button.new()
 	_close.add_theme_font_override("font", _body_font)
 	_close.add_theme_font_size_override("font_size", 16)
 	_close.text = "Back to garage"
-	_close.custom_minimum_size.y = 44
 	_close.pressed.connect(close)
-	_box.add_child(_close)
-	get_viewport().size_changed.connect(_resize.bind(scroll))
-	_resize(scroll)
+	_root.add_child(_close)
+	get_viewport().size_changed.connect(_resize)
+	_resize()
 	_root.hide()
 
 
-func _resize(scroll: ScrollContainer) -> void:
+func _resize() -> void:
 	var logical := get_viewport().get_visible_rect().size
 	var physical := Vector2(get_window().size)
 	var ui_scale := maxf(1.0, logical.x / maxf(physical.x, 1.0))
 	scale = Vector2.ONE * ui_scale
 	_body_font.set("oversampling", ui_scale)
-	_root.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	_root.size = logical / ui_scale
-	var available := _root.size - Vector2(32, 32)
-	scroll.custom_minimum_size = Vector2(minf(560, available.x), minf(520, available.y))
-	_box.custom_minimum_size.x = maxf(150, scroll.custom_minimum_size.x - 16)
+	_status.position = Vector2(12, 4)
+	_status.size = Vector2(_root.size.x - 24, 52)
+	var side := maxf(1, minf(_root.size.x - 24, _root.size.y - 116))
+	_map.position = Vector2((_root.size.x - side) * .5, 58 + (_root.size.y - 116 - side) * .5)
+	_map.size = Vector2.ONE * side
+	_drive.position = _map.position
+	_drive.size = _map.size
+	_close.position = Vector2((_root.size.x - 200) * .5, _root.size.y - 52)
+	_close.size = Vector2(200, 44)
