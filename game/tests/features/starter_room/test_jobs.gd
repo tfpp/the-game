@@ -141,8 +141,8 @@ func test_death_disconnect_and_session_reset_do_not_complete_or_pay_jobs() -> vo
 	assert_eq(_wallet.balances[1], 2000)
 
 
-func test_all_three_routes_can_pay_once_and_accumulate_session_xp() -> void:
-	for job: int in 3:
+func test_all_routes_can_pay_once_and_accumulate_session_xp() -> void:
+	for job: int in OperationsVan.ZONE_NAMES.size():
 		if _terminal.van.arrival(job) == null:
 			var marker := Marker3D.new()
 			marker.name = "TestArrival%s" % job
@@ -158,11 +158,11 @@ func test_all_three_routes_can_pay_once_and_accumulate_session_xp() -> void:
 		_player.net_position = _terminal.to_global(Vector3(0, 0, .8))
 		assert_eq(_terminal.entity._evaluate(1, &"claim", {}), NetworkedEntity.Result.ACCEPTED)
 		await wait_process_frames(2)
-	assert_eq(_wallet.balances[1], 5000)
-	assert_eq(_terminal.record(1)["xp"], 75)
-	assert_eq(_terminal.record(1)["done"], [0, 1, 2])
+	assert_eq(_wallet.balances[1], 6000)
+	assert_eq(_terminal.record(1)["xp"], 100)
+	assert_eq(_terminal.record(1)["done"], [0, 1, 2, 3])
 	_terminal.panel.open(_terminal)
-	assert_eq(get_viewport().gui_get_focus_owner(), _terminal.panel._back)
+	assert_eq(get_viewport().gui_get_focus_owner(), _terminal.panel.desktop._launchers["Jobs"])
 	_terminal._disconnect(1)
 	assert_eq(_terminal.record(1)["xp"], 0)
 

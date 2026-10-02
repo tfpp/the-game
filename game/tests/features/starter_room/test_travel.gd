@@ -117,7 +117,7 @@ func test_two_players_can_prepare_independent_trips_without_global_cooldown() ->
 func test_destination_button_preserves_input_lock_but_modal_blocks_gameplay() -> void:
 	_van.use()
 	assert_true(_van.panel.is_open())
-	_van.panel._choose(0)
+	_van.panel._buttons[0].pressed.emit()
 	assert_true(_van.panel._travelling)
 	assert_true(_van.panel.is_in_group(&"modal_ui"))
 	assert_false(Controls.gameplay_active())
@@ -131,3 +131,35 @@ func test_respawning_players_cannot_open_map_or_depart() -> void:
 	assert_true(combat.is_respawning(1))
 	assert_eq(_van.entity._evaluate(1, &"use", {}), NetworkedEntity.Result.DENIED)
 	assert_eq(_van.entity._evaluate(1, &"travel", {"zone": 0}), NetworkedEntity.Result.DENIED)
+
+
+func test_map_pins_stay_on_image_and_do_not_overlap_at_small_sizes() -> void:
+	_van.use()
+	var map := _van.panel._map
+	assert_true(map is TextureRect)
+	assert_not_null((map as TextureRect).texture)
+	for side: float in [274.0, 366.0, 424.0]:
+		map.size = Vector2.ONE * side
+		map._layout()
+		for i: int in _van.panel._buttons.size():
+			var pin := _van.panel._buttons[i]
+			assert_true(Rect2(Vector2.ZERO, map.size).encloses(pin.get_rect()))
+			assert_gte(pin.size.y, 43.99)
+			for j: int in range(i + 1, _van.panel._buttons.size()):
+				assert_false(pin.get_rect().intersects(_van.panel._buttons[j].get_rect()))
+	assert_false(_van.panel._buttons[0].disabled)
+	assert_true(_van.panel._buttons[3].disabled, "missing destination cannot be selected")
+
+
+func test_driving_vignette_animates_only_during_travel() -> void:
+	_van.use()
+	var drive := _van.panel._drive
+	assert_false(drive.visible)
+	_van.panel._buttons[0].pressed.emit()
+	assert_true(drive.visible)
+	assert_false(_van.panel._map.visible)
+	drive._process(.1)
+	assert_gt(float(drive.elapsed), 0.0)
+	assert_ne(drive._van.position.y, 0.0)
+	_van.panel.close(false)
+	assert_false(drive.visible)
