@@ -4,51 +4,6 @@ const FEATURE := preload("res://features/starter_room/feature.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
 
 
-class SpawnProbe:
-	extends Game
-
-	func _ready() -> void:
-		pass
-
-	func _physics_process(_delta: float) -> void:
-		pass
-
-
-func test_join_and_combat_respawn_use_same_marker_with_legacy_fallbacks() -> void:
-	var game := SpawnProbe.new()
-	for title: String in ["Features", "Players"]:
-		var child := Node3D.new()
-		child.name = title
-		game.add_child(child)
-	var spawner := MultiplayerSpawner.new()
-	spawner.name = "PlayerSpawner"
-	game.add_child(spawner)
-	var room := Node3D.new()
-	room.name = "Room"
-	game.add_child(room)
-	var fallback := Marker3D.new()
-	fallback.name = "Spawn"
-	fallback.position = Vector3(10, 1, 10)
-	room.add_child(fallback)
-	add_child_autofree(game)
-	var combat := Combat.new()
-	add_child_autofree(combat)
-	var old := game._spawn_position() - fallback.global_position
-	assert_lte(absf(old.x), 3.0)
-	assert_lte(absf(old.z), 3.0)
-	assert_eq(old.y, 0.0)
-	assert_eq(combat._respawn_position().y, Combat.RESPAWN_POINT.y)
-	var feature := FEATURE.instantiate() as Node3D
-	add_child_autofree(feature)
-	var spawn := feature.get_node("Room/Spawn") as Marker3D
-	for i: int in 20:
-		for position: Vector3 in [game._spawn_position(), combat._respawn_position()]:
-			var offset := position - spawn.global_position
-			assert_lte(absf(offset.x), 3.0)
-			assert_lte(absf(offset.z), 3.0)
-			assert_eq(offset.y, 0.0)
-
-
 func test_entire_spawn_square_and_routes_have_floor_and_capsule_clearance() -> void:
 	var feature := FEATURE.instantiate() as Node3D
 	add_child_autofree(feature)

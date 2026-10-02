@@ -1,6 +1,7 @@
 # Operations garage
 
-New joins, fall recovery and combat respawns start in this shared concrete garage.
+This shared concrete garage is reachable by its door on the casino north promenade.
+New joins, fall recovery and combat respawns start in the Crown (`../crown_spawn/`).
 Walk to the van's driver side and press **E / B or Circle / touch USE**. Pick a
 numbered destination on its schematic route map: **The Golden Crown**, **Basement
 Garage B1**, or **Street District**. A two-second engine-start/acceleration sound
@@ -22,9 +23,9 @@ exit reaches the casino. Existing elevator, shop and slum-gate behavior is uncha
   `starter_room.gd` checks the local initial/respawn position before player physics
   and preloads the base floor while the server assignment is in flight. Dedicated
   servers skip it; subsequent content lifetime stays with RoomVisibility.
-- `Spawn` joins `player_spawn`. Game's initial/fall spawn and Combat's respawn use
-  its world position plus their existing ±3m jitter. Without a marker, each retains
-  its old fallback. The entire spawn square is clear of the van and workshop props.
+- `Spawn` marks the garage arrival point for its floor preload and tests. It is no
+  longer in `player_spawn`; `crown_spawn` supplies that marker. The square around
+  it is clear of the van and workshop props.
 - Structure uses the casino's **1 × .25 × 1m GridMap** and existing floor/wall tile
   shapes/transforms, copied to `garage_tiles.tres` with existing concrete materials.
   Separate east/west and north/south grids preserve corner panels. Floor top is y=0,

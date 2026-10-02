@@ -1,7 +1,7 @@
 # Golden Crown elevator
 
 The current casino has one stationary elevator in the center of its north wall,
-opposite the south spawn. Its eight-meter facade replaces four two-meter wall
+opposite the south lobby. New players spawn just in front of it (`../crown_spawn/`). Its eight-meter facade replaces four two-meter wall
 panels. A broad brass-lettered sign, matching wood facade and flanking sconces make
 it a landmark. The entrance is recessed 20 cm behind the wall; the header and roof
 have separate front planes to avoid z fighting. The floor remains at y = 0.

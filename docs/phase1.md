@@ -173,9 +173,12 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
   self-attributed, so the check is PvP-only.
 
 ### D2. Spawn and first minute in the Crown
-- [ ] Spawn new players in the Crown near the elevator, not in the operations
+- [x] Spawn new players in the Crown near the elevator, not in the operations
   garage, and don't open the Esc menu over the scene on first load (show a small
   "Click to play" prompt instead). Keep the operations garage reachable by door.
+- Completed in #436: `features/crown_spawn` supplies the only `player_spawn` marker at
+  (0, 1, -16), in front of the elevator inside the safe zone; the login screen shows a
+  small "Click to play" prompt until the player has played once.
 
 ### D3. Hide dev and test content
 - [ ] Remove dev room portals, the street-casino portal, the procedural garage

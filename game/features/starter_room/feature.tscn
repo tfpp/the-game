@@ -25,7 +25,7 @@ script = ExtResource("room")
 room_scene = "res://features/starter_room/interior.tscn"
 bounds = AABB(-8.2, -1, -9.2, 16.4, 7, 18.4)
 
-[node name="Spawn" type="Marker3D" parent="Room" groups=["player_spawn"]]
+[node name="Spawn" type="Marker3D" parent="Room"]
 position = Vector3(0, 1, 4)
 
 [node name="Arrival" type="Marker3D" parent="Room"]

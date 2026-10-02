@@ -20,7 +20,7 @@ respawns) at 100 HP.
 - Reaching zero health heals back to full and broadcasts `player_died` at the
   death location, preserving slum loot drops and other death listeners. The victim
   sees a full-screen **u died gg** overlay for two seconds, then the server teleports
-  them to the feature-owned `player_spawn` marker (the operations garage), or the
+  them to the feature-owned `player_spawn` marker (the Crown, `crown_spawn`), or the
   legacy casino fallback when no marker exists, with `player.server_teleport` and broadcasts
   `player_respawned(peer_id)`. Further damage to that victim is ignored during the
   delay, preventing duplicate deaths/kills. Pending respawns are server-only and
