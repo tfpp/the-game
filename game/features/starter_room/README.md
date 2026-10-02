@@ -4,7 +4,7 @@ This shared concrete garage is reachable by its door on the casino north promena
 New joins, fall recovery and combat respawns start in the Crown (`../crown_spawn/`).
 Walk to the van's driver side and press **E / B or Circle / touch USE**. Pick a
 numbered destination on its schematic route map: **The Golden Crown**, **Basement
-Garage B1**, or **Street District**. A two-second engine-start/acceleration sound
+Garage B1**, **Street District**, or **Gun Shop · Rusty Hogg's**. A two-second engine-start/acceleration sound
 and opaque driving screen precede travel. Buttons support touch and controller
 focus; the list scrolls on small/landscape screens. Esc / Back to garage dismisses
 an unsubmitted map. There is no extra key or purchase.
@@ -13,7 +13,7 @@ The walking exit reaches the casino without the driving screen. Return through
 **OPERATIONS GARAGE** on the casino north promenade at (-7, 1.1, -19.7), or find
 **Operations Garage** in GPS. The street's existing casino entrance returns to the
 Crown; the basement garage's existing return portal reaches the dev room, whose
-exit reaches the casino. Existing elevator, shop and slum-gate behavior is unchanged.
+exit reaches the casino. The gun shop door returns directly here; its street and parked van are scenery only.
 
 ## Ownership and integration
 
@@ -72,7 +72,8 @@ godot --rendering-method gl_compatibility --audio-driver Dummy \
 
 Climb the two-metre-wide west stairs (bottom at x -6, z 0) to the **2.5 m-high
 mezzanine**, and use the CRT on the desk with **E / B or Circle / touch USE**.
-The **Crown OS desktop** opens first. Launch **Jobs** for three optional surveys, one for each existing
+The **Crown OS desktop** opens first. Launch **Jobs** for four optional surveys,
+one for each existing
 van destination. Select one, exit the application, travel there and stay within
 five metres of the arrival marker for three consecutive seconds. The job is pinned
 at the **top right**, below the connection readout. Return to this computer and
@@ -122,13 +123,15 @@ walking/headroom and ENet authenticated requests/concurrent records/late joins.
 
 ## Crown OS desktop
 
-The same upstairs CRT now runs a simulated personal desktop. The launcher opens
-**Jobs**, **Notes**, **Files**, **Calculator**, and **Help**. Windows are maximized
+The same upstairs CRT now runs a simulated personal desktop with classic
+Windows/Linux-style chrome: teal wallpaper, icon shortcuts, grey beveled controls,
+blue window title bars and a bottom taskbar. Click a desktop shortcut or **Start**
+to open **Jobs**, **Notes**, **Files**, **Calculator**, or **Help**. Windows are maximized
 rather than draggable, so the same interface works on phones. Multiple apps can
 remain running: **Minimize** returns to the desktop, the taskbar restores an app,
 and **Close** removes it from the taskbar. **Log off** or Esc leaves the computer.
-The whole desktop scrolls in short viewports and follows controller focus; app
-contents scroll separately. Text entry requires a physical or on-screen keyboard;
+The taskbar stays below the workspace; app contents scroll and follow controller
+focus in short viewports. **Start → Log off** leaves the computer. Text entry requires a physical or on-screen keyboard;
 controller users can navigate buttons and use the calculator keypad.
 
 Notes has explicit **Save document** and **New document** buttons. Files opens and
@@ -143,7 +146,11 @@ division-by-zero handling (not expression precedence).
 `desktop.gd` owns only private UI and bounded session documents. GarageJobPanel
 retains the original modal/pin lifecycle and public open/close/request_result
 interfaces; Jobs uses the original validated terminal actions, replicated records,
-progress and wallet settlement unchanged. Opening the desktop still requires the
+progress and wallet settlement unchanged. `desktop_theme.gd` supplies classic
+chrome shared by all apps; `desktop_shortcut.gd` draws small native shortcut icons.
+The capture recipe includes the Start menu; revised desktop, jobs, phone notes
+and landscape calculator reviews are in `docs/design/previews/crown-os/`.
+Opening the desktop still requires the
 server-authorized in-range use event. No new RPC, gameplay state, placement,
 persistence system, key or host OS/internet access is introduced. Late joins see
 existing job snapshots, never another player's desktop or documents.

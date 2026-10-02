@@ -12,9 +12,10 @@ func _ready() -> void:
 
 func _draw() -> void:
 	var base := Vector2(size.x * .5, 116)
-	var pins: Array[Vector2] = [
-		Vector2(size.x * .15, 34), Vector2(size.x * .5, 20), Vector2(size.x * .85, 34)
-	]
+	var pins: Array[Vector2] = []
+	for index: int in OperationsVan.ZONE_NAMES.size():
+		var fraction := float(index + 1) / float(OperationsVan.ZONE_NAMES.size() + 1)
+		pins.append(Vector2(size.x * fraction, 24 + 10 * absf(fraction - .5)))
 	for i: int in pins.size():
 		var point := pins[i]
 		draw_polyline(

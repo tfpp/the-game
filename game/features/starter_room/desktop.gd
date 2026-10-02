@@ -4,6 +4,8 @@ extends VBoxContainer
 
 signal exit_requested
 
+const DesktopTheme := preload("res://features/starter_room/desktop_theme.gd")
+const DesktopShortcut := preload("res://features/starter_room/desktop_shortcut.gd")
 const APP_NAMES := ["Jobs", "Notes", "Files", "Calculator", "Help"]
 const MAX_FILES := 12
 const MAX_TEXT := 4096
@@ -17,7 +19,8 @@ var _launchers: Dictionary[String, Button] = {}
 var _tasks: Dictionary[String, Button] = {}
 var _workspace: VBoxContainer
 var _taskbar: HFlowContainer
-var _home: Label
+var _home: HBoxContainer
+var _start: MenuButton
 var _editor: TextEdit
 var _filename: LineEdit
 var _status: Label
@@ -30,47 +33,8 @@ var _fresh := true
 
 
 func _ready() -> void:
-	theme = Theme.new()
-	for type: String in ["Label", "Button", "LineEdit", "TextEdit"]:
-		theme.set_font("font", type, body_font)
-		theme.set_font_size("font_size", type, 16)
-		theme.set_color("font_color", type, Color("b4f5c7"))
-	for type: String in ["LineEdit", "TextEdit"]:
-		for state: String in ["normal", "focus"]:
-			var style := StyleBoxFlat.new()
-			style.bg_color = Color("102018")
-			style.border_color = Color("90d6a6")
-			style.set_border_width_all(1)
-			style.set_content_margin_all(8)
-			theme.set_stylebox(state, type, style)
-	add_theme_constant_override("separation", 8)
-	var heading := Label.new()
-	heading.text = "CROWN OS / PERSONAL DESKTOP"
-	add_child(heading)
-	var launch := HFlowContainer.new()
-	add_child(launch)
-	for app: String in APP_NAMES:
-		var button := _button(launch, app, launch_app.bind(app))
-		_launchers[app] = button
-	_button(launch, "Log off", func() -> void: exit_requested.emit())
-	_taskbar = HFlowContainer.new()
-	add_child(_taskbar)
-	for app: String in APP_NAMES:
-		_tasks[app] = _button(_taskbar, app, launch_app.bind(app))
-		_tasks[app].hide()
-	_workspace = VBoxContainer.new()
-	_workspace.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_workspace.custom_minimum_size.y = 300
-	add_child(_workspace)
-	_home = Label.new()
-	_home.text = (
-		"Welcome to Crown OS. Launch an application above.\n"
-		+ "Running apps stay in the taskbar when minimized.\n"
-		+ "Personal files are private and reset on disconnect.\n"
-		+ "Log off or Esc returns to the garage."
-	)
-	_home.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_workspace.add_child(_home)
+	theme = DesktopTheme.create(body_font)
+	_build_shell()
 	_build_notes()
 	_file_list = app_body("Files")
 	_build_calculator()
@@ -81,6 +45,7 @@ func _ready() -> void:
 		+ "Notes: name a document and Save. Open or delete it in Files. "
 		+ "Up to 12 documents, 4096 characters each. Save before closing Notes.\n\n"
 		+ "Calculator: use the keypad for basic arithmetic. C clears it.\n\n"
+		+ "Use desktop shortcuts or Start to launch apps. The bottom taskbar restores them. "
 		+ "Windows are maximized to work on phones. Minimize keeps an app running; "
 		+ "Close removes it from the taskbar. Jobs keep progressing while closed.\n\n"
 		+ "This is a simulation: no real files, shell commands or internet. "
@@ -90,23 +55,94 @@ func _ready() -> void:
 	app_body("Help").add_child(help)
 
 
+func _build_shell() -> void:
+	add_theme_constant_override("separation", 4)
+	_workspace = VBoxContainer.new()
+	_workspace.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	add_child(_workspace)
+	_home = HBoxContainer.new()
+	_home.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_workspace.add_child(_home)
+	var shortcuts := GridContainer.new()
+	shortcuts.columns = 2
+	_home.add_child(shortcuts)
+	for app: String in APP_NAMES:
+		var button := DesktopShortcut.new()
+		button.application = app
+		button.pressed.connect(launch_app.bind(app))
+		shortcuts.add_child(button)
+		_launchers[app] = button
+	var wallpaper := Label.new()
+	wallpaper.text = "CROWN\nOS"
+	wallpaper.add_theme_font_size_override("font_size", 32)
+	wallpaper.add_theme_color_override("font_color", Color("8bb2ad"))
+	wallpaper.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	wallpaper.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	wallpaper.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wallpaper.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_home.add_child(wallpaper)
+	var bar := PanelContainer.new()
+	bar.add_theme_stylebox_override("panel", DesktopTheme.bevel())
+	add_child(bar)
+	_taskbar = HFlowContainer.new()
+	bar.add_child(_taskbar)
+	_start = MenuButton.new()
+	_start.text = "Start"
+	_start.custom_minimum_size = Vector2(80, 44)
+	_start.flat = false
+	_taskbar.add_child(_start)
+	var menu := _start.get_popup()
+	for app: String in APP_NAMES:
+		menu.add_item(app)
+	menu.add_separator()
+	menu.add_item("Log off", APP_NAMES.size())
+	menu.id_pressed.connect(_start_selected)
+	for app: String in APP_NAMES:
+		_tasks[app] = _button(_taskbar, app, launch_app.bind(app))
+		_tasks[app].toggle_mode = true
+		_tasks[app].hide()
+
+
+func _start_selected(id: int) -> void:
+	if id == APP_NAMES.size():
+		exit_requested.emit()
+	elif id >= 0 and id < APP_NAMES.size():
+		launch_app(APP_NAMES[id])
+
+
 func app_body(app: String) -> VBoxContainer:
-	var window := VBoxContainer.new()
+	var window := PanelContainer.new()
+	window.add_theme_stylebox_override("panel", DesktopTheme.bevel())
 	window.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_workspace.add_child(window)
 	_windows[app] = window
-	var title := HFlowContainer.new()
-	window.add_child(title)
+	var layout := VBoxContainer.new()
+	window.add_child(layout)
+	var title_frame := PanelContainer.new()
+	var title_style := StyleBoxFlat.new()
+	title_style.bg_color = Color("000080")
+	title_style.set_content_margin_all(4)
+	title_frame.add_theme_stylebox_override("panel", title_style)
+	layout.add_child(title_frame)
+	var title := HBoxContainer.new()
+	title_frame.add_child(title)
 	var label := Label.new()
-	label.text = app.to_upper() + ".EXE"
+	label.text = app + " — Crown OS"
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.add_theme_color_override("font_color", Color.WHITE)
+	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title.add_child(label)
-	_button(title, "Minimize", minimize)
-	_button(title, "Close", close_app.bind(app))
+	var minimize_button := _button(title, "_", minimize)
+	minimize_button.tooltip_text = "Minimize"
+	minimize_button.custom_minimum_size.x = 44
+	var close_button := _button(title, "X", close_app.bind(app))
+	close_button.tooltip_text = "Close"
+	close_button.custom_minimum_size.x = 44
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
-	window.add_child(scroll)
+	layout.add_child(scroll)
 	var body := VBoxContainer.new()
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 10)
@@ -125,6 +161,7 @@ func launch_app(app: String) -> void:
 	for name: String in _windows:
 		_windows[name].visible = name == app
 		_tasks[name].visible = name in running
+		_tasks[name].set_pressed_no_signal(name == app)
 	if app == "Files":
 		_refresh_files()
 	_tasks[app].grab_focus()
@@ -134,6 +171,8 @@ func minimize() -> void:
 	for window: Control in _windows.values():
 		window.hide()
 	active_app = ""
+	for task: Button in _tasks.values():
+		task.set_pressed_no_signal(false)
 	_home.show()
 	_launchers["Jobs"].grab_focus()
 
@@ -288,14 +327,6 @@ func _button(parent: Node, title: String, callback: Callable) -> Button:
 	button.text = title
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.custom_minimum_size = Vector2(100, 44)
-	for state: String in ["normal", "hover", "pressed", "disabled", "focus"]:
-		var style := StyleBoxFlat.new()
-		style.bg_color = Color("102f20")
-		style.border_color = Color("90d6a6") if state == "focus" else Color("386c4a")
-		style.set_border_width_all(2)
-		style.set_content_margin_all(8)
-		button.add_theme_stylebox_override(state, style)
-	button.add_theme_color_override("font_hover_color", Color("e0ffe9"))
 	button.pressed.connect(callback)
 	parent.add_child(button)
 	return button

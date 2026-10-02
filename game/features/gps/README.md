@@ -14,7 +14,8 @@ Everything is client-side and private to each player: no RPCs, no shared state.
   `StreamedRoom`, like the parking garage).
 - `gps_route.gd` (`GpsRoute`): pure routing. `next_hop()` treats every `StreamedRoom`
   and destination `area` as a region and every `GarageDoor`/`RoomDoor` as a link, and
-  finds the next door to use. `grid_path()` walks a 0.5 m grid (50 m across) around
+  finds the next door to use. Operations van destinations also supply links, so the
+  separate gun shop routes through the garage and its van. `grid_path()` walks a 0.5 m grid (50 m across) around
   the radar's wall slice, then string-pulls the path into straight legs.
 - `gps.gd` (`Gps`): the P action, route state, radar overlay (`radar_overlays` group).
   The walkable path is re-planned every 2 m or 3 s.

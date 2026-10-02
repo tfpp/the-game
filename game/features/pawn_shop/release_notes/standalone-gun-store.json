@@ -1,0 +1,9 @@
+{
+  "title": "Rusty Hogg's roadside gun shop",
+  "summary": "Take the garage van to a separate gun shop overlooking the street.",
+  "notes": [
+    "Move Rusty's guns, pawn counter and Gun-O-Matic out of the casino into their own tiled storefront.",
+    "Add a gun shop destination to the van map and GPS, with a shop door that returns to the operations garage.",
+    "Show the parked van, road, sidewalks and street props through closed shop windows."
+  ]
+}
