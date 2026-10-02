@@ -20,10 +20,6 @@ func before_each() -> void:
 	shape.position.y = -0.1
 	floor_body.add_child(shape)
 	add_child_autofree(floor_body)
-	# Enemies hit the first node in the "combat" group. A server scene another suite
-	# is still freeing would otherwise take the hit instead of this test's Combat.
-	for stray: Node in get_tree().get_nodes_in_group(&"combat"):
-		stray.remove_from_group(&"combat")
 	_combat = COMBAT.instantiate()
 	add_child_autofree(_combat)
 	_enemy = ENEMY.instantiate() as GarageEnemy
@@ -73,6 +69,18 @@ func test_melee_winds_up_then_damages_through_combat() -> void:
 	assert_false(_enemy.net_windup)
 	assert_eq(_health(), 100.0 - float(_enemy.profile()["damage"]))
 	assert_eq(int(_combat.call("kills_for", 5)), 0)
+
+
+func test_melee_skips_a_combat_that_is_being_freed() -> void:
+	var dying := COMBAT.instantiate()
+	add_child(dying)
+	move_child(dying, 0)
+	dying.queue_free()
+	assert_eq(get_tree().get_first_node_in_group(&"combat"), dying, "the dying one comes first")
+	_place(Vector3(0, 0.95, -1.0))
+	_enemy._sense()
+	_enemy._physics_process(1.0)
+	assert_eq(_health(), 100.0 - float(_enemy.profile()["damage"]), "the live Combat is hit")
 
 
 func test_player_who_escapes_during_windup_is_not_hit() -> void:
