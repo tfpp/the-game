@@ -134,12 +134,13 @@ func test_guest_pose_timers_spread_updates_without_delaying_initial_pose() -> vo
 		var guest := SEATED.instantiate() as StationaryPatron
 		add_child_autofree(guest)
 		var model := guest.get_node("Body") as SalonGuestModel
-		phases.append(model._since)
+		phases.append(model._until_update)
+		assert_eq(model._since, 0.0, "Scheduling offsets do not add animation time")
 		assert_gt(model.bone_position("Head").y, 0.8, "Initial seated pose is ready")
 	phases.sort()
 	for index: int in phases.size():
 		assert_almost_eq(
 			phases[index],
-			float(index) * SalonGuestModel.UPDATE_S / SalonGuestModel.POSE_PHASES,
+			float(index + 1) * SalonGuestModel.UPDATE_S / SalonGuestModel.POSE_PHASES,
 			0.00001
 		)

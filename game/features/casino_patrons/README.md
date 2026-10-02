@@ -42,6 +42,33 @@ walk back in from the start of their route 6 s later.
 
 Nothing is persisted.
 
+## Shared locomotion clips
+
+Ordinary roaming patrons (looks 0–3) use shared idle/walk bone tracks baked from
+the existing steady gait. `animation/patron_locomotion.gd` owns an AnimationTree
+per character, blends walking and stopping, and advances it manually once before
+applying head turning/flinch to the head bone. The AnimationPlayer only supplies
+the shared library and has no separate automatic playback. Necessary torso/head
+accessory anchors remain; leg and arm pivots are no longer the intermediate pose
+representation for this path. Root motion stays with the existing NPC controller.
+
+Knockdown/recovery and seated or named characters retain their procedural pose
+ownership. Recovery seeks the clip to the current stride phase. Salon guests keep
+10 Hz posing with independent staggered deadlines and accumulated elapsed time.
+
+Rebuild the shared native clip library from the repository root:
+
+```sh
+godot --headless --path game res://features/casino_patrons/animation/bake_clips.tscn
+```
+
+The output is `game/assets/casino_patrons/animations/locomotion.tres`. See
+[animation architecture](../../../docs/animation.md) and
+[profiling results](../../../docs/profiling-animation.md). Native graphical
+measurements, behavior tests and exported Chrome playback cover this first
+migration. Both web paths reached roughly 60 FPS in the isolated test; real casino,
+mobile and other browser workloads still need comparisons before expanding it.
+
 ## Stationary characters
 
 `stationary_patron.gd` wraps the salon characters in layer-2 hitboxes fitted to their

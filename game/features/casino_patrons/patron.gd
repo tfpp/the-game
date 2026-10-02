@@ -18,6 +18,7 @@ const FALL_SPEED := 4.0
 const GET_UP_SPEED := 1.5
 const LYING_LIFT := 0.14
 const TALK_RANGE := 2.5
+const AnimationBisect := preload("res://features/profiler/animation_bisect.gd")
 
 ## Replicated (server -> everyone), see patron.tscn's synchronizer.
 @export var net_position := Vector3.ZERO
@@ -62,6 +63,10 @@ func _ready() -> void:
 	add_to_group(&"killable")
 	add_to_group(&"casino_patrons")
 	_body.build(look)
+	# First clip migration: ordinary walkers. Named and seated actions keep their
+	# existing procedural ownership until those layers are migrated together.
+	if look < PatronModel.MAMDANI_LOOK:
+		_body.enable_clip_locomotion()
 	sync_to_physics = false
 	_collider_rest = _collider.transform
 	if multiplayer.is_server():
@@ -156,7 +161,8 @@ func _process(delta: float) -> void:
 		Vector3.UP * LYING_LIFT * _fallen
 	)
 	_body.transform = pose
-	_body.pose(delta, _walk, _fallen, _flinch, _idle)
+	if AnimationBisect.patrons:
+		_body.pose(delta, _walk, _fallen, _flinch, _idle)
 	_collider.transform = pose * _collider_rest
 
 

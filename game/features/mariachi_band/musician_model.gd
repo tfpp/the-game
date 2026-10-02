@@ -40,6 +40,7 @@ const POSE_RANGE_M := 32.0
 ## Seconds to raise or lower a trumpet or bow between phrases.
 const RAISE_S := 0.35
 const MATERIAL := preload("res://features/mariachi_band/vertex_color.tres")
+const AnimationBisect := preload("res://features/profiler/animation_bisect.gd")
 
 ## Instruments in the torso pivot's space (the waist, facing -Z). The trumpet's
 ## playing pose puts its mouthpiece on the rig's lips (head pivot +0.65 m, mouth
@@ -87,6 +88,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if not AnimationBisect.musicians:
+		return
 	_time += delta
 	_since += delta
 	if _since < UPDATE_S or not is_visible_in_tree() or not _near_camera():
