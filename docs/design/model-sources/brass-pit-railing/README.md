@@ -1,5 +1,10 @@
 # Walnut and polished brass pit railing
 
+The current mesh-first geometry is maintained in
+[casino-fixtures-v2](../casino-fixtures-v2/README.md). Use that rebuild recipe for
+the current rail meshes. This folder retains the original Blockbench authoring
+history and the approved 32×32 paint reused by the replacement.
+
 Authoritative source: `brass_pit_railing.bbmodel`, created in Blockbench Generic Model.
 The model follows the casino concept's mid-century, warm wood-and-brass direction.
 It uses original geometry and a hand-painted palette; no third-party artwork.

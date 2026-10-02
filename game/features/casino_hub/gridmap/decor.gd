@@ -3,7 +3,7 @@ extends RefCounted
 
 const FINISHES := preload("res://features/casino_hub/model_materials.gd")
 const SALON_PATH := "res://features/casino_hub/salon.tscn"
-const SCONCE := preload("res://assets/casino_hub/models/salon_sconce.glb")
+const SCONCE := preload("res://features/casino_hub/models/brass_sconce.tscn")
 const CHANDELIER := preload("res://features/casino_hub/models/brass_chandelier.tscn")
 const PAINTING := 0
 const WALL_LIGHT := 1
