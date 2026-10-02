@@ -5,6 +5,7 @@ extends RefCounted
 ## feature needs to change.
 
 const DEFINITIONS: Array[ItemDefinition] = [
+	preload("res://features/holdables/items/wendys_burger.tres"),
 	preload("res://features/holdables/items/cigarette.tres"),
 	preload("res://features/holdables/items/beer.tres"),
 	preload("res://features/holdables/items/poke_bowl.tres"),

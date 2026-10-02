@@ -12,6 +12,8 @@ func _ready() -> void:
 	var target := Vector3(0, 1.1, 0)
 	var capture := ""
 	var clock := -1.0
+	var member := -1
+	var banter := -1
 	for arg: String in OS.get_cmdline_user_args():
 		var value := arg.split("=", true, 1)[-1]
 		if arg.begins_with("--band-capture="):
@@ -22,6 +24,10 @@ func _ready() -> void:
 			target = _vector(value)
 		elif arg.begins_with("--band-time="):
 			clock = float(value)
+		elif arg.begins_with("--band-member="):
+			member = int(value)
+		elif arg.begins_with("--band-banter="):
+			banter = int(value)
 	var environment := WorldEnvironment.new()
 	environment.environment = Environment.new()
 	environment.environment.background_mode = Environment.BG_COLOR
@@ -40,6 +46,11 @@ func _ready() -> void:
 	var band := BAND.instantiate() as Node3D
 	band.transform = Transform3D.IDENTITY
 	add_child(band)
+	if member >= 0:
+		band.set("net_stocky_member", member)
+	if banter >= 0:
+		band.set_process(false)
+		band.set("net_banter", banter)
 	if clock >= 0.0:
 		(band.get_node("Audio") as AudioStreamPlayer3D).stop()
 		band.set("_clock", clock)

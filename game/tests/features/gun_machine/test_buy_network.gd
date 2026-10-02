@@ -83,13 +83,18 @@ func test_private_command_purchase_sender_and_late_join_snapshot() -> void:
 	var other_menu := other.get_node("BuyMenu") as CanvasLayer
 	var server_menu := server.get_node("BuyMenu") as CanvasLayer
 	var chat := client.get_parent().get_node("Chat")
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return chat._log.get_child_count() == 2, 5.0
+		)
+	)
 	chat.request_chat_command.rpc_id(1, "guns")
 	assert_true(
 		await RealTime.wait_until(get_tree(), func() -> bool: return menu._panel.visible, 5.0)
 	)
 	assert_false(other_menu._panel.visible)
 	assert_false(server_menu._panel.visible)
-	assert_eq(chat._log.get_child_count(), 0)
+	assert_eq(chat._log.get_child_count(), 2, "private commands add no lines beyond join notices")
 	menu.entity.request_action(&"buy", {"id": "ray", "peer": other_peer})
 	await RealTime.wait(get_tree(), 0.1)
 	assert_eq(wallet.balances[peer], 6000)

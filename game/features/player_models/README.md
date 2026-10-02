@@ -146,6 +146,12 @@ replication and rebuilding without losing clothing or skin tone).
 
 ## Integration and verification
 
+`SkinnedHuman` caches the imported rig's fixed rest transforms and checks actual
+bone values before writing a pose, avoiding skeleton updates for unchanged bones.
+Reading actual values preserves the reset of item IK and emote overlays. Patron
+callers defer `BlockPlayerModel.animate()`'s skeleton pass until their NPC pose
+adjustments are complete; player callers retain the default immediate pass.
+
 `PlayerModels` owns appearance, body/head/tail choices and their session lifecycle.
 Its legacy RPC adapters now delegate to `NetworkedEntity`; the picker uses the
 component directly. No player movement or core scene changes are needed.

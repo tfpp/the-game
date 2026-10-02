@@ -88,6 +88,31 @@ func test_poke_counter_is_grounded_faces_west_and_has_a_clear_approach() -> void
 	)
 
 
+func test_wendys_is_grounded_faces_west_and_clears_booths_and_existing_vendors() -> void:
+	var stand := _court.get_node("WendysStand") as Node3D
+	var counter := stand.get_node("Counter") as MeshInstance3D
+	var box := counter.mesh as BoxMesh
+	assert_almost_eq(counter.global_position.y - box.size.y * 0.5, 0.0, 0.001)
+	assert_almost_eq(stand.global_position, Vector3(30, 0, 35), Vector3.ONE * 0.001)
+	assert_almost_eq(stand.global_basis.z, Vector3.LEFT, Vector3.ONE * 0.001)
+	var customer := stand.to_global(Vector3(0, 0.95, 1.7))
+	_sweep(Vector3(27, 0.95, 28), Vector3(27, 0.95, 35))
+	_sweep(Vector3(27, 0.95, 35), customer)
+	_assert_clear(customer)
+	_assert_floor(customer, 0.0)
+	var burger := stand.get_node("DisplayBurger/BottomBun") as MeshInstance3D
+	var bun := burger.mesh as CylinderMesh
+	var top := stand.get_node("Top") as MeshInstance3D
+	var surface := top.mesh as BoxMesh
+	assert_almost_eq(
+		burger.global_position.y - bun.height * 0.5,
+		top.global_position.y + surface.size.y * 0.5,
+		0.001
+	)
+	assert_gt(stand.global_position.distance_to(_court.get_node("PokeStand").global_position), 6.0)
+	assert_gt(stand.global_position.distance_to(_shop.global_position), 6.0)
+
+
 func _assert_clear(origin: Vector3) -> void:
 	var query := PhysicsShapeQueryParameters3D.new()
 	query.collision_mask = 1

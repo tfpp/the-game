@@ -1,0 +1,54 @@
+[gd_scene format=3]
+[ext_resource type="Texture2D" path="res://assets/casino_hub/textures/prop_grain.png" id="grain"]
+
+[sub_resource type="StandardMaterial3D" id="bread"]
+albedo_color = Color(0.78, 0.48, 0.21, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.95
+[sub_resource type="StandardMaterial3D" id="beef"]
+albedo_color = Color(0.24, 0.105, 0.045, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 1.0
+[sub_resource type="StandardMaterial3D" id="cheese"]
+albedo_color = Color(0.95, 0.66, 0.12, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.9
+[sub_resource type="CylinderMesh" id="bottom"]
+top_radius = 0.14
+bottom_radius = 0.13
+height = 0.045
+radial_segments = 12
+rings = 1
+[sub_resource type="BoxMesh" id="patty"]
+size = Vector3(0.245, 0.04, 0.245)
+[sub_resource type="BoxMesh" id="slice"]
+size = Vector3(0.26, 0.01, 0.26)
+[sub_resource type="CylinderMesh" id="top"]
+top_radius = 0.09
+bottom_radius = 0.14
+height = 0.065
+radial_segments = 12
+rings = 1
+
+[node name="Cheeseburger" type="Node3D"]
+[node name="Grip" type="Marker3D" parent="."]
+position = Vector3(0.11, -0.04, 0.035)
+[node name="BottomBun" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.055, 0)
+mesh = SubResource("bottom")
+material_override = SubResource("bread")
+[node name="SquarePatty" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.0125, 0)
+mesh = SubResource("patty")
+material_override = SubResource("beef")
+[node name="Cheese" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.0125, 0)
+mesh = SubResource("slice")
+material_override = SubResource("cheese")
+[node name="TopBun" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.05, 0)
+mesh = SubResource("top")
+material_override = SubResource("bread")

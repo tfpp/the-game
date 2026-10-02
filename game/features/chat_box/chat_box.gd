@@ -44,6 +44,8 @@ func _ready() -> void:
 	relay.name = "DiscordRelay"
 	add_child(relay)
 	message_accepted.connect(relay.enqueue)
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	Network.mode_changed.connect(_on_mode_changed)
 
 
 func _input(event: InputEvent) -> void:
@@ -146,6 +148,21 @@ func request_chat_command(command: String) -> void:
 	var sender_id := multiplayer.get_remote_sender_id()
 	var peer_id := sender_id if sender_id != 0 else multiplayer.get_unique_id()
 	get_tree().call_group(COMMAND_GROUP, &"handle_chat_command", peer_id, command)
+
+
+## Connected peers have already passed Network's authentication handshake.
+func _on_peer_connected(peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	var player_name := Network.peer_name(peer_id)
+	if player_name.is_empty():
+		player_name = _display_name(peer_id)
+	receive_chat_message.rpc("", "%s joined the game." % player_name)
+
+
+func _on_mode_changed(mode: Network.Mode) -> void:
+	if mode == Network.Mode.OFFLINE:
+		receive_notice("Player 1 joined the game.")
 
 
 func _open() -> void:

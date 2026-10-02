@@ -1,9 +1,8 @@
 extends Node
 ## "/suicide" chat command: respawns the requester on demand.
 ##
-## Rather than picking a new spawn point, this drops the requester below the world's
-## kill plane (`Game.KILL_Y`), so the server's existing "fell out of the world" watcher
-## (see core/game/game.gd) respawns them the exact same way as an accidental fall.
+## Uses Combat's death/respawn lifecycle when available. Without Combat, drops the
+## requester below the world's kill plane so the existing fall recovery still works.
 ##
 ## Listens on `COMMAND_GROUP`, the group chat_box.gd calls into for any slash command
 ## a player types (see features/chat_box/chat_box.gd's `COMMAND_GROUP`).
@@ -24,7 +23,11 @@ func handle_chat_command(peer_id: int, command: String) -> void:
 		return
 	for player: Player in get_tree().get_nodes_in_group(&"players"):
 		if player.get_multiplayer_authority() == peer_id:
-			player.server_teleport.rpc_id(peer_id, kill_position(player.net_position))
+			var combat := get_tree().get_first_node_in_group(&"combat") as Combat
+			if combat != null:
+				combat.apply_damage(peer_id, Combat.MAX_HEALTH, peer_id)
+			else:
+				player.server_teleport.rpc_id(peer_id, kill_position(player.net_position))
 			return
 
 

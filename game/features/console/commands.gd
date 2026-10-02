@@ -5,6 +5,7 @@ extends RefCounted
 
 const GitCommands := preload("res://features/console/git_commands.gd")
 const Bindings := preload("res://features/control_scheme/input_bindings.gd")
+const AnimationBisect := preload("res://features/profiler/animation_bisect.gd")
 const HELP := {
 	"git": "Read-only repository snapshot; git help lists supported commands",
 	"help": "List commands; help <text> filters them",
@@ -12,6 +13,10 @@ const HELP := {
 	"profiler": "0 | 1: local frametime graph; Esc > Profiler inspects missed frames",
 	"profiler_budget": "Local frame budget in milliseconds: 1..1000 (default 16.667)",
 	"profiler_clear": "Clear local profiler graph and retained missed-frame traces",
+	"profile_animations":
+	"Local animation bisect: [all|guests|dealers|musicians|patrons|players] [0|1]",
+	"profile_fingers": "0 | 1: freeze finger curls independently of body animation (local)",
+	"profile_skeleton": "0 | 1: freeze the main human bone-pose pass (local)",
 	"sensitivity": "Mouse sensitivity: 0.1..10 (local, saved)",
 	"stick_scale": "Controller look scale: 0.25..3 (local, saved)",
 	"touch_scale": "Touch look scale: 0.25..3 (local, saved)",
@@ -54,6 +59,12 @@ func execute(raw: String) -> String:
 		return git_commands.execute(value)
 	if command == "clear":
 		return ""
+	if command == "profile_animations":
+		return AnimationBisect.execute(value)
+	if command == "profile_fingers":
+		return AnimationBisect.execute_fingers(value)
+	if command == "profile_skeleton":
+		return AnimationBisect.execute_skeleton(value)
 	if command in ["profiler", "profiler_budget", "profiler_clear"]:
 		return _profiler(command, value)
 	if command == "bind":
@@ -118,6 +129,10 @@ func suggestions(raw: String) -> PackedStringArray:
 	var candidates: Array[String] = []
 	if query.begins_with("git "):
 		candidates.assign(GitCommands.COMMANDS)
+	elif query.begins_with("profile_animations "):
+		for group: String in ["all"] + AnimationBisect.GROUPS:
+			for enabled: String in ["0", "1"]:
+				candidates.append("profile_animations %s %s" % [group, enabled])
 	elif query.begins_with("bind "):
 		var words := query.split(" ", false)
 		if (
@@ -154,7 +169,7 @@ func suggestions(raw: String) -> PackedStringArray:
 	elif query.contains(" "):
 		var command := query.get_slice(" ", 0)
 		var values: Array = []
-		if command in ["sv_cheats", "mute", "profiler"]:
+		if command in ["sv_cheats", "mute", "profiler", "profile_fingers", "profile_skeleton"]:
 			values = ["0", "1"]
 		elif command == "scheme":
 			values = ["left", "right"]

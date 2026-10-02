@@ -12,6 +12,14 @@ const PLAYS_PER_SONG := 2
 const REQUEST_COOLDOWN_S := 4.0
 ## Requests are taken from anywhere around the stage edge.
 const REQUEST_RANGE := 4.6
+const STOCKY_SCALE := Vector3(1.15, 0.9, 1.15)
+const BANTER_CYCLE_S := 36.0
+const BANTER_START_S := 12.0
+const BANTER_LINE_S := 4.0
+const BANTER_LINES: Array[String] = [
+	"Psst... a short suit with extra bass.",
+	"Shh... less treble, more belly.",
+]
 const STREAMS: Array[AudioStream] = [
 	preload("res://assets/mariachi_band/audio/la_cucaracha.wav"),
 	preload("res://assets/mariachi_band/audio/jarabe_tapatio.wav"),
@@ -31,8 +39,24 @@ const STREAMS: Array[AudioStream] = [
 			_take_pending = true
 			_start_take.call_deferred()
 
+## One server-selected member per session; -1 while a client awaits its snapshot.
+@export var net_stocky_member := -1:
+	set(value):
+		net_stocky_member = clampi(value, -1, 4)
+		if is_node_ready():
+			_present_members()
+## 0: performing; 1/2: whispered line while the selected member faces backstage.
+@export var net_banter := 0:
+	set(value):
+		net_banter = clampi(value, 0, 2)
+		if is_node_ready():
+			_present_members()
+
 ## Server: seconds into the current take.
 var elapsed := 0.0
+var _banter_clock := 0.0
+var _rng := RandomNumberGenerator.new()
+var _bubbles: Array[Label3D] = []
 ## Local fallback clock for animation while no audio plays (dedicated server, muted).
 var _clock := 0.0
 var _take_pending := false
@@ -51,6 +75,10 @@ func _ready() -> void:
 	_entity.session_reset.connect(_reset_session)
 	if AudioServer.get_bus_index(GameAudio.BUS) >= 0:
 		_audio.bus = GameAudio.BUS
+	_build_bubbles()
+	if _entity.is_authority() and net_stocky_member < 0:
+		net_stocky_member = _rng.randi_range(0, _musicians.get_child_count() - 1)
+	_present_members()
 	_present()
 	_start_take()
 
@@ -61,6 +89,11 @@ func _process(delta: float) -> void:
 		elapsed += delta
 		if elapsed >= MariachiSongs.duration(net_song) * PLAYS_PER_SONG:
 			advance()
+		_banter_clock = fmod(_banter_clock + delta, BANTER_CYCLE_S)
+		var phase := banter_phase(_banter_clock)
+		if net_banter != phase:
+			net_banter = phase
+	_present_bubbles()
 	var asleep := not band_awake()
 	if asleep != _silenced:
 		_silenced = asleep
@@ -139,7 +172,64 @@ func _start_take() -> void:
 	_audio.stream_paused = _silenced
 
 
+## Pure schedule: two four-second whispers, then a long quiet interval.
+static func banter_phase(clock: float) -> int:
+	var since := fposmod(clock, BANTER_CYCLE_S) - BANTER_START_S
+	if since < 0.0 or since >= BANTER_LINE_S * 2.0:
+		return 0
+	return 1 + int(since / BANTER_LINE_S)
+
+
+func _build_bubbles() -> void:
+	for musician: Node3D in _musicians.get_children():
+		var bubble := Label3D.new()
+		bubble.name = "Whisper"
+		bubble.position.y = 1.93
+		bubble.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		bubble.font_size = 32
+		bubble.outline_size = 8
+		bubble.pixel_size = 0.003
+		bubble.modulate = Color(1.0, 0.9, 0.65)
+		bubble.visibility_range_end = 12.0
+		bubble.visible = false
+		musician.add_child(bubble)
+		_bubbles.append(bubble)
+
+
+func _present_members() -> void:
+	for index: int in _musicians.get_child_count():
+		var musician := _musicians.get_child(index) as StationaryPatron
+		var body := musician.get_node("Body") as MariachiMusicianModel
+		body.scale = STOCKY_SCALE if index == net_stocky_member else Vector3.ONE
+		# He checks his tuning backstage while his friends whisper behind his back.
+		body.rotation.y = PI if index == net_stocky_member and net_banter > 0 else 0.0
+		var bounds := body.transform * body.hitbox_bounds()
+		var hitbox := musician.get_node("Hitbox") as CollisionShape3D
+		(hitbox.shape as BoxShape3D).size = bounds.size
+		hitbox.position = bounds.get_center()
+	_present_bubbles()
+
+
+func _present_bubbles() -> void:
+	for index: int in _bubbles.size():
+		var speaker := posmod(net_stocky_member + net_banter, _bubbles.size())
+		var musician := _musicians.get_child(index) as StationaryPatron
+		var target_alive := (
+			net_stocky_member >= 0
+			and (_musicians.get_child(net_stocky_member) as StationaryPatron).net_alive
+		)
+		var shown := net_banter > 0 and index == speaker and musician.net_alive and target_alive
+		_bubbles[index].visible = shown
+		if shown:
+			_bubbles[index].text = BANTER_LINES[net_banter - 1]
+
+
 func _reset_session(_mode: Network.Mode) -> void:
+	if not _entity.is_authority():
+		return
+	_banter_clock = 0.0
+	net_banter = 0
+	net_stocky_member = _rng.randi_range(0, _musicians.get_child_count() - 1)
 	net_song = 0
 	elapsed = 0.0
 	net_take = net_take + 1

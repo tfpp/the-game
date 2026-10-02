@@ -54,6 +54,18 @@ measured phase traces. Commands query their values when given no argument.
 This is local, session-only diagnostics, not server control or per-script call stacks.
 See `features/profiler/README.md` for timing semantics and bounded retention.
 
+For the temporary animation experiment, `profile_animations` lists the local states.
+`profile_animations all 0` freezes the suspect groups; `profile_animations all 1`
+restores them. Replace `all` with `guests`, `dealers`, `musicians`, `patrons` or
+`players` to isolate a group. Runs now start with normal animation enabled.
+`profile_fingers 0` independently freezes shared human finger curls while leaving
+body animation enabled; `profile_fingers 1` restores them. The finger switch starts
+enabled, and `profile_fingers` queries it.
+`profile_skeleton 0` freezes the main human bone-pose pass while animation
+calculations and rig transforms continue; `profile_skeleton 1` restores it.
+Separate hand IK and emote overlays still run. This independent switch also starts
+enabled and can be queried without an argument.
+
 ## Read-only Git
 
 Type `git help` for the fixed command list. `git log` (or `git log --oneline`)

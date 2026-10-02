@@ -83,6 +83,10 @@ consumption, drops, grip positioning and replication use the ordinary food path.
 The `poke_bowl` FOOD item is sold by `features/food_court/poke_stand.gd` and uses
 that same collection, consumption and drop path, with a two-hand bowl view.
 
+The `wendys_burger` FOOD item is supplied by the food court's Wendy's counter.
+It uses ordinary collection, backpack, drops, inventory icons and one-hand food
+consumption, restoring full health through Combat.heal like the kebab.
+
 ## Cigarettes and bottled beer
 
 The purchased items reuse the casino bundle's textured amber beer bottle and

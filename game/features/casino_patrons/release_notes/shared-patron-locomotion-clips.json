@@ -1,0 +1,5 @@
+{
+  "title": "Shared patron locomotion clips",
+  "summary": "Reduce ordinary patron animation work and spread guest pose updates across frames.",
+  "notes": ["Blend shared native idle/walk bone clips for ordinary patrons, retain procedural reactions and named-character actions, stagger guest updates at their existing rate, and restore normal animation startup."]
+}
