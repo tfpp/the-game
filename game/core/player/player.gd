@@ -81,7 +81,11 @@ func _physics_process(delta: float) -> void:
 	pitch = clampf(pitch - look.y, deg_to_rad(-89.0), deg_to_rad(89.0))
 	var extra_jump := Controls.consume_jump()
 	_jump_queued = Controls.gameplay_active() and (_jump_queued or extra_jump)
-	var wish_dir := SourceMovement.wish_direction(yaw, input)
+	var movement_yaw := yaw
+	var third_person := get_tree().get_first_node_in_group(&"third_person_camera")
+	if third_person != null:
+		movement_yaw = third_person.movement_yaw(self)
+	var wish_dir := SourceMovement.wish_direction(movement_yaw, input)
 
 	var result := SourceMovement.step(
 		velocity, wish_dir, is_on_floor(), _jump_queued, movement, delta, input.length()
