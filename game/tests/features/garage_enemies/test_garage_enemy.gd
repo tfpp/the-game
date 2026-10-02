@@ -20,6 +20,10 @@ func before_each() -> void:
 	shape.position.y = -0.1
 	floor_body.add_child(shape)
 	add_child_autofree(floor_body)
+	# Enemies hit the first node in the "combat" group. A server scene another suite
+	# is still freeing would otherwise take the hit instead of this test's Combat.
+	for stray: Node in get_tree().get_nodes_in_group(&"combat"):
+		stray.remove_from_group(&"combat")
 	_combat = COMBAT.instantiate()
 	add_child_autofree(_combat)
 	_enemy = ENEMY.instantiate() as GarageEnemy
