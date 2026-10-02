@@ -45,6 +45,7 @@ After the required reading, follow the documents relevant to the task:
 | [docs/design/zones/slums/parking-garage.md](docs/design/zones/slums/parking-garage.md) | Garage layout, vertical progression, combat, loot and atmosphere. |
 | [docs/design/zones/casinos/the-golden-crown.md](docs/design/zones/casinos/the-golden-crown.md) | Casino-specific document; currently a placeholder. Use lore and gameplay for established casino requirements. |
 | [docs/project/phases.md](docs/project/phases.md) | Delivery phases, dependencies and progress checklist. Consult before feature planning; check prerequisite work in code before moving to a later phase. |
+| [docs/phase1.md](docs/phase1.md) | Actionable Phase 1 polish task list (elevator, instancing, garage, loot, safe casino, modeled signs). Pick a task from here for MVP work. |
 | [docs/architecture.md](docs/architecture.md) | Service boundaries, networking, accounts, deployment and the agent pipeline. Read for implementation context. |
 | [docs/guns.md](docs/guns.md) | Every gun, its owning feature and whether it uses the player hand rig or floats. |
 | [docs/controls.md](docs/controls.md) | Player inputs across keyboard/mouse, controller and touch, plus device checks. |
