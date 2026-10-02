@@ -1,0 +1,7 @@
+{
+  "title": "Smoother casino guest animation",
+  "summary": "Spread guest animation updates across frames to reduce periodic stutters.",
+  "notes": [
+    "Stagger salon guest pose timers while retaining their immediate initial poses."
+  ]
+}

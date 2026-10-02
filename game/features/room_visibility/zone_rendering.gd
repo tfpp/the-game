@@ -5,7 +5,8 @@ extends Node
 const ZONE_MASK := (1 << 18) | (1 << 19)
 const UPDATE_SECONDS := 0.1
 
-var _visuals: Array[Dictionary] = []
+var _visuals: Dictionary[int, Dictionary] = {}
+var _moving_visuals: Dictionary[int, Dictionary] = {}
 var _registered: Dictionary[int, bool] = {}
 var _camera: Camera3D
 var _original_mask := 0
@@ -61,7 +62,10 @@ func _register(node: Node, added: bool) -> void:
 		"shared": shared,
 		"moving": moving and zone == null
 	}
-	_visuals.append(entry)
+	_visuals[id] = entry
+	if entry["moving"]:
+		_moving_visuals[id] = entry
+	visual.tree_exiting.connect(_unregister.bind(id))
 	_apply(entry)
 
 
@@ -98,13 +102,29 @@ func _process(delta: float) -> void:
 
 
 func refresh_moving() -> void:
-	for index: int in range(_visuals.size() - 1, -1, -1):
-		var entry := _visuals[index]
+	for id: int in _moving_visuals.keys():
+		var entry := _moving_visuals[id]
 		if not is_instance_valid(entry["node"]) or not entry["node"].is_inside_tree():
-			_registered.erase(entry["id"])
-			_visuals.remove_at(index)
-		elif entry["moving"]:
+			_unregister(id)
+		else:
 			_apply(entry)
+
+
+func _unregister(id: int) -> void:
+	if not _visuals.has(id):
+		return
+	var entry := _visuals[id]
+	var visual := entry["node"] as VisualInstance3D
+	if is_instance_valid(visual):
+		visual.layers = entry["original"]
+		if visual is Light3D:
+			(visual as Light3D).light_cull_mask = entry["light_mask"]
+		var callback := _unregister.bind(id)
+		if visual.tree_exiting.is_connected(callback):
+			visual.tree_exiting.disconnect(callback)
+	_visuals.erase(id)
+	_moving_visuals.erase(id)
+	_registered.erase(id)
 
 
 func update_camera(camera: Camera3D) -> void:
@@ -131,11 +151,8 @@ func _restore_camera() -> void:
 
 func _exit_tree() -> void:
 	_restore_camera()
-	for entry: Dictionary in _visuals:
-		if is_instance_valid(entry["node"]):
-			(entry["node"] as VisualInstance3D).layers = entry["original"]
-			if entry["node"] is Light3D:
-				(entry["node"] as Light3D).light_cull_mask = entry["light_mask"]
+	for id: int in _visuals.keys():
+		_unregister(id)
 
 
 func _register_added(reference: WeakRef) -> void:

@@ -310,4 +310,11 @@ func _parent_direction(direction: Vector3) -> Vector3:
 ## Only pose the skinned rig for cameras close enough to see it.
 func _near_camera() -> bool:
 	var camera := get_viewport().get_camera_3d()
-	return camera == null or camera.global_position.distance_to(global_position) < ANIMATE_RADIUS
+	if camera == null:
+		return true
+	if (_model.avatar.human.surface.layers & camera.cull_mask) == 0:
+		return false
+	return (
+		camera.global_position.distance_squared_to(global_position)
+		< ANIMATE_RADIUS * ANIMATE_RADIUS
+	)

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Scissor cache regression</title></head>
+<body><pre id="result">RUNNING</pre><script type="module">
+const result = document.querySelector('#result');
+let checks = 0;
+function check(condition, message) {
+    if (!condition) throw new Error(message);
+    checks++; result.textContent = 'RUNNING: ' + checks + ' ' + message;
+}
+function event(target, name) {
+    return new Promise(resolve => target.addEventListener(name, resolve, { once: true }));
+}
+try {
+    const prototype = WebGL2RenderingContext.prototype;
+    const nativeGet = prototype.getParameter;
+    let nativeReads = 0;
+    prototype.getParameter = function (parameter) {
+        if (parameter === this.SCISSOR_TEST) nativeReads++;
+        return nativeGet.call(this, parameter);
+    };
+    // Exercise the exact inline implementation shipped in the web shell.
+    const shell = await (await fetch('../../../features/touch_controls/shell.html')).text();
+    const source = new DOMParser().parseFromString(shell, 'text/html')
+        .querySelector('#game-scissor-cache').textContent;
+    const canvas = document.createElement('canvas');
+    const a = canvas.getContext('webgl2');
+    check(!!a, 'WebGL2 unavailable');
+    let enableOnRestore = false;
+    // Engine handlers may exist before the shell first observes this context.
+    canvas.addEventListener('webglcontextrestored', () => {
+        if (enableOnRestore) a.enable(a.SCISSOR_TEST);
+    });
+    a.enable(a.SCISSOR_TEST); // Already-existing contexts must be initialized correctly.
+    Function(source)();
+    check(a.getParameter(a.SCISSOR_TEST) === true, 'Initial native state');
+    const b = document.createElement('canvas').getContext('webgl2');
+    check(b.getParameter(b.SCISSOR_TEST) === false, 'Independent context default');
+    const reads = nativeReads;
+    for (let i = 0; i < 100; i++) {
+        (i % 2 ? a.enable : a.disable).call(a, a.SCISSOR_TEST);
+        check(a.getParameter(a.SCISSOR_TEST) === !!(i % 2), 'Tracked state');
+        check(a.getParameter(a.SCISSOR_TEST) === nativeGet.call(a, a.SCISSOR_TEST), 'Native agreement');
+        check(b.getParameter(b.SCISSOR_TEST) === false, 'Context isolation');
+    }
+    check(nativeReads === reads, 'Steady-state queries must not read native SCISSOR_TEST');
+    a.enable(a.BLEND);
+    check(a.getParameter(a.BLEND) === nativeGet.call(a, a.BLEND), 'Other capability unchanged');
+    a.disable(a.BLEND);
+    check(a.getParameter(a.BLEND) === false, 'Other capability disabled');
+    a.getParameter(0xffffffff);
+    check(a.getError() === a.INVALID_ENUM, 'Invalid parameter preserves GL error');
+    a.enable(a.SCISSOR_TEST);
+    const lose = a.getExtension('WEBGL_lose_context');
+    check(!!lose, 'Context loss extension unavailable');
+    canvas.addEventListener('webglcontextlost', e => e.preventDefault());
+    const lost = event(canvas, 'webglcontextlost');
+    lose.loseContext();
+    check(a.getParameter(a.SCISSOR_TEST) === nativeGet.call(a, a.SCISSOR_TEST), 'Immediate context loss');
+    await lost;
+    a.disable(a.SCISSOR_TEST);
+    check(a.getParameter(a.SCISSOR_TEST) === null, 'Lost context query');
+    const restored = event(canvas, 'webglcontextrestored');
+    // Chromium throttles synthetic restoration immediately after loss.
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    lose.restoreContext();
+    await restored;
+    check(a.getParameter(a.SCISSOR_TEST) === false, 'Restored default');
+    a.enable(a.SCISSOR_TEST);
+    check(a.getParameter(a.SCISSOR_TEST) === true, 'Updates after restoration');
+    check(b.getParameter(b.SCISSOR_TEST) === false, 'Restoration isolation');
+    enableOnRestore = true;
+    const lostAgain = event(canvas, 'webglcontextlost');
+    lose.loseContext();
+    await lostAgain;
+    const restoredAgain = event(canvas, 'webglcontextrestored');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    lose.restoreContext();
+    await restoredAgain;
+    check(nativeGet.call(a, a.SCISSOR_TEST) === true, 'Earlier restoration handler enabled native state');
+    check(a.getParameter(a.SCISSOR_TEST) === true, 'Earlier restoration handler preserves cached state');
+    result.textContent = `PASS: ${checks} checks`;
+} catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+}
+</script></body></html>
