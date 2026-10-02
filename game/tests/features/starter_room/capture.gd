@@ -1,0 +1,74 @@
+extends Node
+## Actual Compatibility-renderer review. Run with a display, not --headless.
+
+const FEATURE := preload("res://features/starter_room/feature.tscn")
+const PLAYER := preload("res://core/player/player.tscn")
+var _output := "/tmp/operations-garage"
+var _camera: Camera3D
+var _van: OperationsVan
+@onready var root: Window = get_tree().root
+
+
+func _ready() -> void:
+	call_deferred("_capture")
+
+
+func _capture() -> void:
+	if not OS.get_cmdline_user_args().is_empty():
+		_output = OS.get_cmdline_user_args()[0]
+	DirAccess.make_dir_recursive_absolute(_output)
+	ThemeDB.fallback_font = preload("res://assets/fonts/inter/Inter-Regular.ttf")
+	root.size = Vector2i(960, 540)
+	var world := Node3D.new()
+	root.add_child(world)
+	var environment := WorldEnvironment.new()
+	environment.environment = Environment.new()
+	environment.environment.background_mode = Environment.BG_COLOR
+	environment.environment.background_color = Color("252b30")
+	environment.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	environment.environment.ambient_light_color = Color("9baca6")
+	environment.environment.ambient_light_energy = .65
+	world.add_child(environment)
+	var garage := preload("res://features/procedural_rooms/feature.tscn").instantiate() as Node3D
+	garage.name = "procedural_rooms"
+	world.add_child(garage)
+	var street := preload("res://features/street_district/feature.tscn").instantiate() as Node3D
+	street.name = "street_district"
+	world.add_child(street)
+	var feature := FEATURE.instantiate() as Node3D
+	world.add_child(feature)
+	var room := feature.get_node("Room") as StreamedRoom
+	room.load_room(60000)
+	_van = room.get_node("Van")
+	var player := PLAYER.instantiate() as Player
+	player.position = _van.to_global(Vector3(-1.6, 1, 1))
+	player.net_position = player.position
+	world.add_child(player)
+	player.set_physics_process(false)
+	_camera = Camera3D.new()
+	world.add_child(_camera)
+	_camera.current = true
+	_camera.position = room.to_global(Vector3(-2, 1.65, 4))
+	_camera.look_at(_van.global_position + Vector3.UP)
+	await _save("garage-arrival")
+	_camera.position = _van.to_global(Vector3(-3.5, 2.8, -4))
+	_camera.look_at(_van.global_position + Vector3.UP)
+	await _save("van-rear")
+	_camera.position = _van.to_global(Vector3(-3, .15, 4))
+	_camera.look_at(_van.global_position + Vector3(0, .4, 0))
+	await _save("van-underside")
+	_van.panel.open_map(_van)
+	await _save("route-map")
+	root.size = Vector2i(390, 844)
+	await _save("route-map-phone")
+	_van.panel.depart(_van, 0, _van.arrival(0).global_position)
+	_van.panel.set_process(false)
+	await _save("driving-transition")
+	get_tree().quit()
+
+
+func _save(title: String) -> void:
+	for i: int in 5:
+		await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	root.get_texture().get_image().save_png(_output.path_join(title + ".png"))

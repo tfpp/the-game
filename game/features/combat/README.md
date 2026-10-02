@@ -20,7 +20,8 @@ respawns) at 100 HP.
 - Reaching zero health heals back to full and broadcasts `player_died` at the
   death location, preserving slum loot drops and other death listeners. The victim
   sees a full-screen **u died gg** overlay for two seconds, then the server teleports
-  them to the existing casino spawn with `player.server_teleport` and broadcasts
+  them to the feature-owned `player_spawn` marker (the operations garage), or the
+  legacy casino fallback when no marker exists, with `player.server_teleport` and broadcasts
   `player_respawned(peer_id)`. Further damage to that victim is ignored during the
   delay, preventing duplicate deaths/kills. Pending respawns are server-only and
   cancelled on disconnect/session reset; no death history is replayed to late joiners.
@@ -33,6 +34,11 @@ respawns) at 100 HP.
   combat death penalties and kill credit are unchanged.
 - `combat_hud.gd` also shows the local player's own HP as a UI Pack - Space
   Expansion bar in the bottom-right corner, the one corner `game/ui/hud.gd`'s corner layout leaves free.
+
+`is_respawning(peer_id)` exposes the server countdown without modifying health or
+owning another death timer. The operations van uses it to reject travel during the
+death screen. Its optional `player_spawn` marker uses the same existing ±3m jitter
+as initial joins and fall recovery; marker ownership remains with `starter_room`.
 
 ## Adding a new source of damage
 

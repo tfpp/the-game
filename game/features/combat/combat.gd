@@ -14,9 +14,8 @@ signal player_respawned(peer_id: int)
 const MAX_HEALTH := 100.0
 const RESPAWN_DELAY_S := 2.0
 
-## Mirrors world/room.tscn's Spawn marker: features can't read core/world nodes
-## directly, so killed players reappear here with the same jitter
-## core/game/game.gd uses for normal spawns.
+## Legacy fallback when no feature supplies a player_spawn marker.
+## Join, fall recovery and combat respawn use the same feature-owned marker.
 const RESPAWN_POINT := Vector3(0, 1.2, 12)
 const RESPAWN_JITTER := 3.0
 
@@ -54,6 +53,10 @@ func health_for(peer_id: int) -> float:
 
 func kills_for(peer_id: int) -> int:
 	return int(kills.get(str(peer_id), 0))
+
+
+func is_respawning(peer_id: int) -> bool:
+	return _respawns.has(peer_id)
 
 
 ## Server-only: `attacker_peer` deals `amount` damage to `target_peer`. Once that
@@ -122,7 +125,8 @@ func _respawn_position() -> Vector3:
 		0.0,
 		randf_range(-RESPAWN_JITTER, RESPAWN_JITTER)
 	)
-	return RESPAWN_POINT + jitter
+	var feature_spawn := get_tree().get_first_node_in_group(&"player_spawn") as Marker3D
+	return (feature_spawn.global_position if feature_spawn != null else RESPAWN_POINT) + jitter
 
 
 func _player_for_peer(peer_id: int) -> Player:

@@ -1,0 +1,68 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/starter_room/structure.tscn" id="structure"]
+[ext_resource type="PackedScene" path="res://features/procedural_rooms/service_cabinet.tscn" id="cabinet"]
+[ext_resource type="PackedScene" path="res://features/procedural_rooms/props/crate.tscn" id="crate"]
+[ext_resource type="PackedScene" path="res://features/procedural_rooms/props/barrel.tscn" id="barrel"]
+[ext_resource type="Material" path="res://features/procedural_rooms/materials/dark.tres" id="metal"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/shutter.res" id="shutter"]
+
+[sub_resource type="BoxMesh" id="tube"]
+size = Vector3(0.16, 0.08, 2.4)
+
+[sub_resource type="StandardMaterial3D" id="glow"]
+albedo_color = Color(0.8, 0.87, 0.82, 1)
+emission_enabled = true
+emission = Color(0.7, 0.8, 0.7, 1)
+
+[node name="OperationsGarage" type="Node3D"]
+
+[node name="Structure" parent="." instance=ExtResource("structure")]
+
+[node name="Shutter" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0, -8.85)
+mesh = ExtResource("shutter")
+material_override = ExtResource("metal")
+
+[node name="Title" type="Label3D" parent="."]
+position = Vector3(0, 4.1, -8.8)
+text = "OPERATIONS GARAGE"
+font_size = 60
+pixel_size = 0.008
+
+[node name="Instructions" type="Label3D" parent="."]
+position = Vector3(0, 3.5, -8.8)
+text = "PREPARE · PICK A ROUTE · HEAD OUT"
+font_size = 32
+pixel_size = 0.006
+
+[node name="Cabinet" parent="." instance=ExtResource("cabinet")]
+position = Vector3(-6.6, 0, -6)
+
+[node name="Crate" parent="." instance=ExtResource("crate")]
+position = Vector3(-6.4, 0, -3)
+
+[node name="Barrel" parent="." instance=ExtResource("barrel")]
+position = Vector3(-6.5, 0, -1.5)
+
+[node name="WorkLight" type="OmniLight3D" parent="."]
+position = Vector3(-4, 3.8, 0)
+light_color = Color(1, 0.85, 0.64, 1)
+light_energy = 2.0
+omni_range = 12.0
+
+[node name="BayLight" type="OmniLight3D" parent="."]
+position = Vector3(3, 3.8, -3)
+light_color = Color(0.73, 0.86, 0.82, 1)
+light_energy = 2.0
+omni_range = 12.0
+
+[node name="TubeA" type="MeshInstance3D" parent="."]
+position = Vector3(-4, 4.6, 0)
+mesh = SubResource("tube")
+material_override = SubResource("glow")
+
+[node name="TubeB" type="MeshInstance3D" parent="."]
+position = Vector3(3, 4.6, -3)
+mesh = SubResource("tube")
+material_override = SubResource("glow")
