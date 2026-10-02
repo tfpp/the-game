@@ -1,9 +1,11 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://features/food_court/food_court.gd" id="1_court"]
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="2_entity"]
 
 [ext_resource type="PackedScene" path="res://features/food_court/poke_stand.tscn" id="7_poke"]
+
+[ext_resource type="PackedScene" path="res://features/food_court/wendys_stand.tscn" id="8_wendys"]
 
 [node name="FoodCourt" type="Node3D"]
 script = ExtResource("1_court")
@@ -33,6 +35,10 @@ outline_modulate = Color(0.16, 0.04, 0.02, 1)
 text = "THE CROWN FOOD COURT"
 font_size = 96
 outline_size = 20
+
+[node name="WendysStand" parent="." instance=ExtResource("8_wendys")]
+position = Vector3(30, 0, 35)
+rotation = Vector3(0, -1.5707964, 0)
 
 [node name="PokeStand" parent="." instance=ExtResource("7_poke")]
 position = Vector3(30, 0, 22.5)
