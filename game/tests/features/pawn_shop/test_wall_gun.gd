@@ -35,7 +35,7 @@ class SlowWallet:
 func before_each() -> void:
 	_gun = GUN.instantiate() as WallGun
 	_gun.item_id = "shotgun"
-	_gun.price_cents = 3000
+	_gun.price_cents = 9000
 	add_child_autofree(_gun)
 	_player = PLAYER.instantiate() as Player
 	_player.name = "1"
@@ -48,7 +48,7 @@ func before_each() -> void:
 	_wallet = PlayerMoney.new()
 	add_child_autofree(_wallet)
 	_wallet.set_process(false)
-	_wallet.balances = {1: 10000}
+	_wallet.balances = {1: 30000}
 	_drops = DropRecorder.new()
 	_drops.add_to_group(&"holdables_root")
 	add_child_autofree(_drops)
@@ -57,24 +57,24 @@ func before_each() -> void:
 func test_shows_the_gun_and_its_price() -> void:
 	assert_not_null(_gun.get_node_or_null("View"))
 	var tag := _gun.get_node("PriceTag") as Label3D
-	assert_string_contains(tag.text, "$30.00")
-	assert_eq(_gun.interaction_text(), "Buy Shotgun — $30.00")
+	assert_string_contains(tag.text, "$90.00")
+	assert_eq(_gun.interaction_text(), "Buy Shotgun — $90.00")
 
 
 func test_buying_charges_the_wallet_and_equips_the_gun() -> void:
 	assert_eq(_request(1), NetworkedEntity.Result.ACCEPTED)
-	assert_eq(_wallet.balances[1], 7000)
+	assert_eq(_wallet.balances[1], 21000)
 	assert_eq(_hand.net_item_id, "shotgun")
 	# Unlimited stock: a second purchase goes into the backpack.
 	assert_eq(_request(1), NetworkedEntity.Result.ACCEPTED)
-	assert_eq(_wallet.balances[1], 4000)
+	assert_eq(_wallet.balances[1], 12000)
 	assert_eq(_hand.inventory().backpack.count("shotgun"), 1)
 
 
 func test_cannot_afford_keeps_money_and_hands_empty() -> void:
-	_wallet.balances = {1: 2999}
+	_wallet.balances = {1: 8999}
 	_request(1)
-	assert_eq(_wallet.balances[1], 2999)
+	assert_eq(_wallet.balances[1], 8999)
 	assert_eq(_hand.net_item_id, "")
 	assert_true(_drops.items.is_empty())
 
@@ -84,14 +84,14 @@ func test_rejects_unknown_peer_payloads_and_distance() -> void:
 	assert_eq(_gun.entity._evaluate(1, &"use", {"peer": 1}), NetworkedEntity.Result.DENIED)
 	_player.net_position = Vector3(0, 0, 6)
 	assert_eq(_request(1), NetworkedEntity.Result.DENIED)
-	assert_eq(_wallet.balances[1], 10000)
+	assert_eq(_wallet.balances[1], 30000)
 
 
 func test_full_bag_is_refused_before_paying() -> void:
 	for index: int in 9:
 		_hand.inventory().collect("banana")
 	assert_eq(_request(1), NetworkedEntity.Result.DENIED)
-	assert_eq(_wallet.balances[1], 10000)
+	assert_eq(_wallet.balances[1], 30000)
 
 
 func test_pending_payment_blocks_a_double_purchase() -> void:

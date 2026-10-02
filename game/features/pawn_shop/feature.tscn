@@ -50,22 +50,22 @@ position = Vector3(-9, 1.85, 20.25)
 [node name="Pistol" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(-2.25, 0, 0)
 item_id = "pistol"
-price_cents = 1000
+price_cents = 3000
 
 [node name="Smg" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(-0.75, 0, 0)
 item_id = "smg"
-price_cents = 2500
+price_cents = 7500
 
 [node name="Shotgun" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(0.75, 0, 0)
 item_id = "shotgun"
-price_cents = 3000
+price_cents = 9000
 
 [node name="Awp" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(2.25, 0, 0)
 item_id = "awp"
-price_cents = 5000
+price_cents = 15000
 
 [node name="HatStand" type="CSGBox3D" parent="."]
 position = Vector3(-13.6, 0.55, 21.4)
