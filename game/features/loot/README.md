@@ -44,3 +44,12 @@ than a sixth valuable tier. See the holdables README for the price/color table.
 Claims, resets and replication remain unchanged.
 
 Tests: `tests/features/loot/`.
+
+## Pickup feedback
+
+A successful take sends the taker an owner-only `picked_up` event through the
+container's `NetworkedEntity`. The client shows `LootToast` (`loot_toast.gd`):
+"Picked up <name> ($<value>)" in the item's rarity color for 2.5 seconds near
+the top of the screen. Newer pickups replace the text rather than stacking. The
+sound is the existing owner-only `pickup` cue played by `PlayerInventory`.
+Events are not replayed to late joiners; dedicated servers show nothing.

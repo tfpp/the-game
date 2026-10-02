@@ -37,6 +37,7 @@ func _ready() -> void:
 	_entity.register_action(&"search_keepalive", _validate_keepalive, _keepalive)
 	_entity.register_action(&"search_end", _validate_end, _end)
 	_entity.session_reset.connect(_reset_search_session)
+	_entity.event_received.connect(_on_event)
 	multiplayer.peer_disconnected.connect(_forget_searcher)
 
 
@@ -206,4 +207,13 @@ func _take(peer: int, payload: Dictionary) -> bool:
 	var remaining := net_contents.duplicate()
 	remaining.remove_at(index)
 	net_contents = remaining
+	# Owner-only feedback; the pickup sound comes from PlayerInventory.
+	_entity.send_event(&"picked_up", {"id": id}, peer)
 	return true
+
+
+func _on_event(event: StringName, payload: Dictionary) -> void:
+	if event != &"picked_up" or Network.mode == Network.Mode.SERVER:
+		return
+	var id := str(payload.get("id", ""))
+	LootToast.show_text(get_tree(), LootToast.pickup_message(id), ItemCatalog.item_color(id))

@@ -149,8 +149,11 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
   Garage/alley weights already decline by valuable tier; floor scaling stays B4.
 
 ### C2. Pickup feedback
-- [ ] When a player takes loot, show a short toast "Picked up <name> ($<value>)" and
+- [x] When a player takes loot, show a short toast "Picked up <name> ($<value>)" and
   play a pickup sound via `GameAudio.play_ui()`.
+- Completed in #432: the server sends the taker an owner-only `picked_up` event
+  after a stash claim; `features/loot/loot_toast.gd` shows the rarity-colored toast.
+  The existing owner-only `pickup` cue from `PlayerInventory` provides the sound.
 
 ### C3. Clear death penalty messaging
 - [ ] On death in a slum, tell the player what was dropped and that weapons were
