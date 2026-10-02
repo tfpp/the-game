@@ -15,8 +15,8 @@ func _run() -> void:
 	root.add_child(room)
 	# Freeze animated furnishings for a comparable framebuffer.
 	room.process_mode = Node.PROCESS_MODE_DISABLED
-	var camera := room.get_node("Casino/Overview") as Camera3D
-	camera.projection = Camera3D.PROJECTION_PERSPECTIVE
+	var camera := Camera3D.new()
+	room.add_child(camera)
 	camera.current = true
 	var views: Array[Vector3] = [
 		Vector3(0, 1.65, 16), Vector3(-19, 2.2, -8), Vector3(-1, 0.15, 5), Vector3(6, 1.65, 26)

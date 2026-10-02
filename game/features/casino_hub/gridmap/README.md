@@ -3,8 +3,10 @@
 `main.tscn` now loads `playable.tscn`, which wraps the saved
 `res://features/casino_hub/casino_gridmap.tscn` with the game's stable `Room/Spawn`
 marker. F5 runs the normal game with login, HUD, multiplayer, eight functional slot
-machines and roaming NPCs supplied by the existing feature loader. The overview
-camera is disabled in this wrapper so the local player's camera controls the view.
+machines and roaming NPCs supplied by the existing feature loader. The live casino
+scene has no camera of its own: Godot makes the first camera in a viewport current
+when none is, so a level camera would show a stray isometric view before the local
+player spawns. The orthographic overview camera lives only in `preview.tscn`.
 `world/room.tscn` retains the original casino for reference during migration.
 
 Open `casino_gridmap.tscn` to edit its saved cells with Godot's GridMap editor.
