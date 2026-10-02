@@ -5,11 +5,11 @@ extends RefCounted
 const BASE_METERS := 1.8288
 const MIN_METERS := 1.0
 const MAX_METERS := 3.0
-const SOR_METERS := 0.2032
+const SOR_METERS := 2.4384
 
 
 static func for_identity(identity: int, account_name: String) -> float:
-	# Treat the requested double quote literally as eight inches.
+	# Sor's requested standing height is eight feet.
 	if account_name.strip_edges().to_lower() == "sor":
 		return SOR_METERS
 	# Eleven repeatable heights spanning the full 1–3 m range in 20 cm steps.
@@ -39,7 +39,7 @@ static func apply_eyes(player: Player, factor: float) -> void:
 
 static func apply_avatar(model: BlockPlayerModel, factor: float, hull: float) -> void:
 	# The costume already scales its inner rig. Scale the outer avatar to the
-	# final requested height, so Sor stays eight inches in every costume.
+	# final requested height, so Sor stays eight feet in every costume.
 	var costume := BlockPlayerModel.PENGUIN_HEIGHT_SCALE if model.body_type == &"penguin" else 1.0
 	var bounds := model.human.surface.get_aabb()
 	var bottom := bounds.position.y

@@ -49,13 +49,13 @@ No menu or key is needed; **F3** shows your own size. This works on desktop,
 controller and touch without additional inputs.
 
 The server's account name **Sor** (case-insensitive, trimmed) overrides the ID
-height to **eight inches / 0.2032 m**, interpreting `8"` as inches, not feet.
+height to **eight feet / 2.4384 m**.
 There is no known account ID for Sor in this repository, so the special case uses
 the authenticated name, not a client-supplied player label. Dev-auth preview
 servers can use `--name=Sor`; an ordinary offline peer 1 keeps the original height.
 Normal girl/penguin body multipliers compose with ID height, clamped to **1–3 m**
 so even the shortest normal costume is at least one metre tall. Sor remains eight
-inches in every body, preserving the deliberate exception. Crouching still lowers
+feet in every body, preserving the deliberate exception. Crouching still lowers
 the capsule and eye further. Offline peer 1 without an account retains the original
 1.8288 m build; authenticated account ID 1 uses the same variety as other accounts.
 

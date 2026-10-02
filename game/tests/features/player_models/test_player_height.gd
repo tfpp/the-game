@@ -159,7 +159,7 @@ func test_sor_capsule_avatar_eyes_and_equipment_anchor_at_feet_in_every_body() -
 		_models._process(0)
 		avatar._process(0)
 		var capsule := collider.shape as CapsuleShape3D
-		assert_almost_eq(capsule.height, 0.2032, 0.00001)
+		assert_almost_eq(capsule.height, 2.4384, 0.00001)
 		assert_lte(capsule.radius * 2, capsule.height)
 		assert_almost_eq(collider.global_position.y - capsule.height * 0.5, 0.0, 0.00001)
 		var factor := _models.height_scale_for(1)
@@ -180,7 +180,7 @@ func test_sor_capsule_avatar_eyes_and_equipment_anchor_at_feet_in_every_body() -
 		assert_almost_eq(hand._aim_origin(_player).y, 1.6256 * factor, 0.00001)
 		hand._process(0)
 		assert_almost_eq(hand.global_basis.get_scale().x, factor, 0.00001)
-		assert_lt((_player.get_node("Camera") as Camera3D).near, 0.01)
+		assert_almost_eq((_player.get_node("Camera") as Camera3D).near, 0.05, 0.00001)
 		(_player.get_node("Body") as Node3D).show()
 		hand._process(0)
 		assert_almost_eq(hand.global_basis.get_scale().x, factor, 0.00001)
@@ -245,7 +245,7 @@ func test_generated_gun_mount_and_aim_use_the_same_height_without_changing_stats
 	_models._process(0)
 	var mount := rig._mount_transform(remote)
 	assert_almost_eq(mount.basis.get_scale().x, factor, 0.00001)
-	assert_lt(mount.origin.y, 0.3, "Remote gun follows the tiny player's feet")
+	assert_gt(mount.origin.y, PlayerHeight.BASE_METERS, "Remote gun follows Sor's tall body")
 	assert_eq(rig.net_stats, stats)
 	# Main's authored plasma model uses the shared holdable mount and arm helpers.
 	stats["ammo_type"] = GunGenerator.AmmoType.PLASMA
@@ -258,7 +258,7 @@ func test_generated_gun_mount_and_aim_use_the_same_height_without_changing_stats
 		rig._process(0)
 		assert_true(rig.has_hand_grips())
 		assert_almost_eq(rig.global_basis.get_scale().x, factor, 0.00001)
-		assert_lt(rig.global_position.y, 0.3)
+		assert_gt(rig.global_position.y, 0.3)
 		assert_eq(rig.net_stats, stats)
 		var human := rig._arms.human if rig._arms.visible else avatar.human
 		for right: bool in [true, false]:
@@ -280,10 +280,10 @@ func test_snapshot_applies_to_late_avatar_and_nameplate() -> void:
 	_models._process(0)
 	var avatar := remote.get_node("Body/Avatar") as BlockPlayerModel
 	avatar._process(0)
-	assert_almost_eq(avatar.height_scale(), 1.0 / 9, 0.00001)
+	assert_almost_eq(avatar.height_scale(), 4.0 / 3, 0.00001)
 	assert_almost_eq(
 		remote.get_node("Nameplate").position.y,
-		-PlayerHeight.BASE_METERS * 0.5 + 0.2032 + 0.35,
+		-PlayerHeight.BASE_METERS * 0.5 + 2.4384 + 0.35,
 		0.00001
 	)
 	assert_eq(_models.height_scale_for(1), 1.0)
