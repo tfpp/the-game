@@ -1,0 +1,8 @@
+{
+  "title": "Slot payout timing and smoother celebrations",
+  "summary": "Slot winnings reach your wallet with the final reel and celebration, with reusable win effects.",
+  "notes": [
+    "Reveal slot winnings when the reels finish and the coins and fireworks launch.",
+    "Reuse bounded celebration nodes and shared graphics resources, disable effect shadows and skip distant shows."
+  ]
+}

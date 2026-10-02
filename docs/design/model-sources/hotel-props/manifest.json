@@ -1,0 +1,752 @@
+[
+  {
+    "name": "rotary_phone",
+    "texture_size": 64,
+    "vertices": 170,
+    "triangles": 280,
+    "dimensions_m": [
+      0.2794,
+      0.2,
+      0.201
+    ],
+    "uv_zones": 4,
+    "texture": "textures/rotary_phone.png",
+    "obj": "models/rotary_phone/rotary_phone.obj",
+    "glb": "models/rotary_phone/rotary_phone.glb"
+  },
+  {
+    "name": "vintage_suitcase",
+    "texture_size": 128,
+    "vertices": 100,
+    "triangles": 156,
+    "dimensions_m": [
+      0.715,
+      0.305,
+      0.485
+    ],
+    "uv_zones": 4,
+    "texture": "textures/vintage_suitcase.png",
+    "obj": "models/vintage_suitcase/vintage_suitcase.obj",
+    "glb": "models/vintage_suitcase/vintage_suitcase.glb"
+  },
+  {
+    "name": "single_bed",
+    "texture_size": 128,
+    "vertices": 80,
+    "triangles": 120,
+    "dimensions_m": [
+      1.07,
+      2.065,
+      1.08
+    ],
+    "uv_zones": 4,
+    "texture": "textures/single_bed.png",
+    "obj": "models/single_bed/single_bed.obj",
+    "glb": "models/single_bed/single_bed.glb"
+  },
+  {
+    "name": "bedside_table",
+    "texture_size": 128,
+    "vertices": 80,
+    "triangles": 120,
+    "dimensions_m": [
+      0.54,
+      0.4525,
+      0.665
+    ],
+    "uv_zones": 4,
+    "texture": "textures/bedside_table.png",
+    "obj": "models/bedside_table/bedside_table.obj",
+    "glb": "models/bedside_table/bedside_table.glb"
+  },
+  {
+    "name": "wardrobe",
+    "texture_size": 128,
+    "vertices": 80,
+    "triangles": 120,
+    "dimensions_m": [
+      1.14,
+      0.6425,
+      2.035
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wardrobe.png",
+    "obj": "models/wardrobe/wardrobe.obj",
+    "glb": "models/wardrobe/wardrobe.glb"
+  },
+  {
+    "name": "writing_desk",
+    "texture_size": 128,
+    "vertices": 96,
+    "triangles": 144,
+    "dimensions_m": [
+      1.1,
+      0.61,
+      0.803
+    ],
+    "uv_zones": 4,
+    "texture": "textures/writing_desk.png",
+    "obj": "models/writing_desk/writing_desk.obj",
+    "glb": "models/writing_desk/writing_desk.glb"
+  },
+  {
+    "name": "desk_chair",
+    "texture_size": 128,
+    "vertices": 64,
+    "triangles": 96,
+    "dimensions_m": [
+      0.45,
+      0.455,
+      1.025
+    ],
+    "uv_zones": 4,
+    "texture": "textures/desk_chair.png",
+    "obj": "models/desk_chair/desk_chair.obj",
+    "glb": "models/desk_chair/desk_chair.glb"
+  },
+  {
+    "name": "armchair",
+    "texture_size": 128,
+    "vertices": 72,
+    "triangles": 108,
+    "dimensions_m": [
+      0.86,
+      0.805,
+      0.965
+    ],
+    "uv_zones": 4,
+    "texture": "textures/armchair.png",
+    "obj": "models/armchair/armchair.obj",
+    "glb": "models/armchair/armchair.glb"
+  },
+  {
+    "name": "two_seat_sofa",
+    "texture_size": 128,
+    "vertices": 80,
+    "triangles": 120,
+    "dimensions_m": [
+      1.57,
+      0.805,
+      0.965
+    ],
+    "uv_zones": 4,
+    "texture": "textures/two_seat_sofa.png",
+    "obj": "models/two_seat_sofa/two_seat_sofa.obj",
+    "glb": "models/two_seat_sofa/two_seat_sofa.glb"
+  },
+  {
+    "name": "coffee_table",
+    "texture_size": 128,
+    "vertices": 48,
+    "triangles": 72,
+    "dimensions_m": [
+      1.0,
+      0.55,
+      0.4625
+    ],
+    "uv_zones": 4,
+    "texture": "textures/coffee_table.png",
+    "obj": "models/coffee_table/coffee_table.obj",
+    "glb": "models/coffee_table/coffee_table.glb"
+  },
+  {
+    "name": "round_side_table",
+    "texture_size": 64,
+    "vertices": 60,
+    "triangles": 108,
+    "dimensions_m": [
+      0.56,
+      0.56,
+      0.5775
+    ],
+    "uv_zones": 4,
+    "texture": "textures/round_side_table.png",
+    "obj": "models/round_side_table/round_side_table.obj",
+    "glb": "models/round_side_table/round_side_table.glb"
+  },
+  {
+    "name": "table_lamp",
+    "texture_size": 64,
+    "vertices": 88,
+    "triangles": 160,
+    "dimensions_m": [
+      0.23,
+      0.23,
+      0.517
+    ],
+    "uv_zones": 4,
+    "texture": "textures/table_lamp.png",
+    "obj": "models/table_lamp/table_lamp.obj",
+    "glb": "models/table_lamp/table_lamp.glb"
+  },
+  {
+    "name": "floor_lamp",
+    "texture_size": 128,
+    "vertices": 88,
+    "triangles": 160,
+    "dimensions_m": [
+      0.713,
+      0.713,
+      1.5933
+    ],
+    "uv_zones": 4,
+    "texture": "textures/floor_lamp.png",
+    "obj": "models/floor_lamp/floor_lamp.obj",
+    "glb": "models/floor_lamp/floor_lamp.glb"
+  },
+  {
+    "name": "wall_sconce",
+    "texture_size": 64,
+    "vertices": 40,
+    "triangles": 68,
+    "dimensions_m": [
+      0.1427,
+      0.2175,
+      0.27
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wall_sconce.png",
+    "obj": "models/wall_sconce/wall_sconce.obj",
+    "glb": "models/wall_sconce/wall_sconce.glb"
+  },
+  {
+    "name": "crt_television",
+    "texture_size": 128,
+    "vertices": 88,
+    "triangles": 140,
+    "dimensions_m": [
+      0.62,
+      0.412,
+      0.455
+    ],
+    "uv_zones": 4,
+    "texture": "textures/crt_television.png",
+    "obj": "models/crt_television/crt_television.obj",
+    "glb": "models/crt_television/crt_television.glb"
+  },
+  {
+    "name": "bedside_radio",
+    "texture_size": 64,
+    "vertices": 52,
+    "triangles": 84,
+    "dimensions_m": [
+      0.31,
+      0.117,
+      0.295
+    ],
+    "uv_zones": 4,
+    "texture": "textures/bedside_radio.png",
+    "obj": "models/bedside_radio/bedside_radio.obj",
+    "glb": "models/bedside_radio/bedside_radio.glb"
+  },
+  {
+    "name": "alarm_clock",
+    "texture_size": 32,
+    "vertices": 16,
+    "triangles": 24,
+    "dimensions_m": [
+      0.13,
+      0.0705,
+      0.13
+    ],
+    "uv_zones": 4,
+    "texture": "textures/alarm_clock.png",
+    "obj": "models/alarm_clock/alarm_clock.obj",
+    "glb": "models/alarm_clock/alarm_clock.glb"
+  },
+  {
+    "name": "wall_clock",
+    "texture_size": 64,
+    "vertices": 64,
+    "triangles": 120,
+    "dimensions_m": [
+      0.3,
+      0.047,
+      0.3
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wall_clock.png",
+    "obj": "models/wall_clock/wall_clock.obj",
+    "glb": "models/wall_clock/wall_clock.glb"
+  },
+  {
+    "name": "framed_art",
+    "texture_size": 128,
+    "vertices": 48,
+    "triangles": 72,
+    "dimensions_m": [
+      0.682,
+      0.0585,
+      0.502
+    ],
+    "uv_zones": 4,
+    "texture": "textures/framed_art.png",
+    "obj": "models/framed_art/framed_art.obj",
+    "glb": "models/framed_art/framed_art.glb"
+  },
+  {
+    "name": "wall_mirror",
+    "texture_size": 128,
+    "vertices": 48,
+    "triangles": 72,
+    "dimensions_m": [
+      0.652,
+      0.0585,
+      1.002
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wall_mirror.png",
+    "obj": "models/wall_mirror/wall_mirror.obj",
+    "glb": "models/wall_mirror/wall_mirror.glb"
+  },
+  {
+    "name": "reception_counter",
+    "texture_size": 128,
+    "vertices": 56,
+    "triangles": 84,
+    "dimensions_m": [
+      2.42,
+      0.78,
+      1.0925
+    ],
+    "uv_zones": 4,
+    "texture": "textures/reception_counter.png",
+    "obj": "models/reception_counter/reception_counter.obj",
+    "glb": "models/reception_counter/reception_counter.glb"
+  },
+  {
+    "name": "key_cubby",
+    "texture_size": 128,
+    "vertices": 256,
+    "triangles": 384,
+    "dimensions_m": [
+      0.82,
+      0.1945,
+      1.018
+    ],
+    "uv_zones": 4,
+    "texture": "textures/key_cubby.png",
+    "obj": "models/key_cubby/key_cubby.obj",
+    "glb": "models/key_cubby/key_cubby.glb"
+  },
+  {
+    "name": "service_bell",
+    "texture_size": 32,
+    "vertices": 76,
+    "triangles": 144,
+    "dimensions_m": [
+      0.13,
+      0.13,
+      0.0925
+    ],
+    "uv_zones": 4,
+    "texture": "textures/service_bell.png",
+    "obj": "models/service_bell/service_bell.obj",
+    "glb": "models/service_bell/service_bell.glb"
+  },
+  {
+    "name": "guest_register",
+    "texture_size": 64,
+    "vertices": 24,
+    "triangles": 36,
+    "dimensions_m": [
+      0.49,
+      0.32,
+      0.0623
+    ],
+    "uv_zones": 4,
+    "texture": "textures/guest_register.png",
+    "obj": "models/guest_register/guest_register.obj",
+    "glb": "models/guest_register/guest_register.glb"
+  },
+  {
+    "name": "room_key",
+    "texture_size": 32,
+    "vertices": 72,
+    "triangles": 128,
+    "dimensions_m": [
+      0.067,
+      0.1841,
+      0.01
+    ],
+    "uv_zones": 4,
+    "texture": "textures/room_key.png",
+    "obj": "models/room_key/room_key.obj",
+    "glb": "models/room_key/room_key.glb"
+  },
+  {
+    "name": "mail_envelope",
+    "texture_size": 32,
+    "vertices": 8,
+    "triangles": 12,
+    "dimensions_m": [
+      0.22,
+      0.11,
+      0.002
+    ],
+    "uv_zones": 4,
+    "texture": "textures/mail_envelope.png",
+    "obj": "models/mail_envelope/mail_envelope.obj",
+    "glb": "models/mail_envelope/mail_envelope.glb"
+  },
+  {
+    "name": "luggage_cart",
+    "texture_size": 128,
+    "vertices": 200,
+    "triangles": 352,
+    "dimensions_m": [
+      0.8,
+      0.52,
+      1.5058
+    ],
+    "uv_zones": 4,
+    "texture": "textures/luggage_cart.png",
+    "obj": "models/luggage_cart/luggage_cart.obj",
+    "glb": "models/luggage_cart/luggage_cart.glb"
+  },
+  {
+    "name": "steamer_trunk",
+    "texture_size": 128,
+    "vertices": 116,
+    "triangles": 180,
+    "dimensions_m": [
+      0.915,
+      0.535,
+      0.585
+    ],
+    "uv_zones": 4,
+    "texture": "textures/steamer_trunk.png",
+    "obj": "models/steamer_trunk/steamer_trunk.obj",
+    "glb": "models/steamer_trunk/steamer_trunk.glb"
+  },
+  {
+    "name": "briefcase",
+    "texture_size": 64,
+    "vertices": 100,
+    "triangles": 156,
+    "dimensions_m": [
+      0.495,
+      0.185,
+      0.395
+    ],
+    "uv_zones": 4,
+    "texture": "textures/briefcase.png",
+    "obj": "models/briefcase/briefcase.obj",
+    "glb": "models/briefcase/briefcase.glb"
+  },
+  {
+    "name": "hatbox",
+    "texture_size": 64,
+    "vertices": 84,
+    "triangles": 148,
+    "dimensions_m": [
+      0.42,
+      0.42,
+      0.395
+    ],
+    "uv_zones": 4,
+    "texture": "textures/hatbox.png",
+    "obj": "models/hatbox/hatbox.obj",
+    "glb": "models/hatbox/hatbox.glb"
+  },
+  {
+    "name": "ashtray",
+    "texture_size": 32,
+    "vertices": 60,
+    "triangles": 116,
+    "dimensions_m": [
+      0.13,
+      0.13,
+      0.025
+    ],
+    "uv_zones": 4,
+    "texture": "textures/ashtray.png",
+    "obj": "models/ashtray/ashtray.obj",
+    "glb": "models/ashtray/ashtray.glb"
+  },
+  {
+    "name": "ice_bucket",
+    "texture_size": 64,
+    "vertices": 160,
+    "triangles": 284,
+    "dimensions_m": [
+      0.326,
+      0.232,
+      0.255
+    ],
+    "uv_zones": 4,
+    "texture": "textures/ice_bucket.png",
+    "obj": "models/ice_bucket/ice_bucket.obj",
+    "glb": "models/ice_bucket/ice_bucket.glb"
+  },
+  {
+    "name": "water_pitcher",
+    "texture_size": 64,
+    "vertices": 116,
+    "triangles": 212,
+    "dimensions_m": [
+      0.2591,
+      0.18,
+      0.2589
+    ],
+    "uv_zones": 4,
+    "texture": "textures/water_pitcher.png",
+    "obj": "models/water_pitcher/water_pitcher.obj",
+    "glb": "models/water_pitcher/water_pitcher.glb"
+  },
+  {
+    "name": "drinking_glass",
+    "texture_size": 32,
+    "vertices": 60,
+    "triangles": 116,
+    "dimensions_m": [
+      0.082,
+      0.082,
+      0.11
+    ],
+    "uv_zones": 4,
+    "texture": "textures/drinking_glass.png",
+    "obj": "models/drinking_glass/drinking_glass.obj",
+    "glb": "models/drinking_glass/drinking_glass.glb"
+  },
+  {
+    "name": "coffee_cup",
+    "texture_size": 32,
+    "vertices": 132,
+    "triangles": 244,
+    "dimensions_m": [
+      0.155,
+      0.094,
+      0.09
+    ],
+    "uv_zones": 4,
+    "texture": "textures/coffee_cup.png",
+    "obj": "models/coffee_cup/coffee_cup.obj",
+    "glb": "models/coffee_cup/coffee_cup.glb"
+  },
+  {
+    "name": "tea_saucer",
+    "texture_size": 32,
+    "vertices": 80,
+    "triangles": 156,
+    "dimensions_m": [
+      0.14,
+      0.14,
+      0.014
+    ],
+    "uv_zones": 4,
+    "texture": "textures/tea_saucer.png",
+    "obj": "models/tea_saucer/tea_saucer.obj",
+    "glb": "models/tea_saucer/tea_saucer.glb"
+  },
+  {
+    "name": "serving_tray",
+    "texture_size": 64,
+    "vertices": 80,
+    "triangles": 156,
+    "dimensions_m": [
+      0.66,
+      0.44,
+      0.02
+    ],
+    "uv_zones": 4,
+    "texture": "textures/serving_tray.png",
+    "obj": "models/serving_tray/serving_tray.obj",
+    "glb": "models/serving_tray/serving_tray.glb"
+  },
+  {
+    "name": "room_service_cart",
+    "texture_size": 128,
+    "vertices": 164,
+    "triangles": 280,
+    "dimensions_m": [
+      0.8,
+      0.5773,
+      0.8878
+    ],
+    "uv_zones": 4,
+    "texture": "textures/room_service_cart.png",
+    "obj": "models/room_service_cart/room_service_cart.obj",
+    "glb": "models/room_service_cart/room_service_cart.glb"
+  },
+  {
+    "name": "waste_bin",
+    "texture_size": 64,
+    "vertices": 60,
+    "triangles": 116,
+    "dimensions_m": [
+      0.3,
+      0.3,
+      0.365
+    ],
+    "uv_zones": 4,
+    "texture": "textures/waste_bin.png",
+    "obj": "models/waste_bin/waste_bin.obj",
+    "glb": "models/waste_bin/waste_bin.glb"
+  },
+  {
+    "name": "tissue_box",
+    "texture_size": 64,
+    "vertices": 24,
+    "triangles": 36,
+    "dimensions_m": [
+      0.23,
+      0.12,
+      0.1892
+    ],
+    "uv_zones": 4,
+    "texture": "textures/tissue_box.png",
+    "obj": "models/tissue_box/tissue_box.obj",
+    "glb": "models/tissue_box/tissue_box.glb"
+  },
+  {
+    "name": "towel_stack",
+    "texture_size": 64,
+    "vertices": 24,
+    "triangles": 36,
+    "dimensions_m": [
+      0.35,
+      0.23,
+      0.137
+    ],
+    "uv_zones": 4,
+    "texture": "textures/towel_stack.png",
+    "obj": "models/towel_stack/towel_stack.obj",
+    "glb": "models/towel_stack/towel_stack.glb"
+  },
+  {
+    "name": "soap_bar",
+    "texture_size": 32,
+    "vertices": 8,
+    "triangles": 12,
+    "dimensions_m": [
+      0.082,
+      0.052,
+      0.031
+    ],
+    "uv_zones": 4,
+    "texture": "textures/soap_bar.png",
+    "obj": "models/soap_bar/soap_bar.obj",
+    "glb": "models/soap_bar/soap_bar.glb"
+  },
+  {
+    "name": "shampoo_bottle",
+    "texture_size": 32,
+    "vertices": 40,
+    "triangles": 68,
+    "dimensions_m": [
+      0.048,
+      0.051,
+      0.125
+    ],
+    "uv_zones": 4,
+    "texture": "textures/shampoo_bottle.png",
+    "obj": "models/shampoo_bottle/shampoo_bottle.obj",
+    "glb": "models/shampoo_bottle/shampoo_bottle.glb"
+  },
+  {
+    "name": "fire_extinguisher",
+    "texture_size": 64,
+    "vertices": 96,
+    "triangles": 168,
+    "dimensions_m": [
+      0.1914,
+      0.1523,
+      0.414
+    ],
+    "uv_zones": 4,
+    "texture": "textures/fire_extinguisher.png",
+    "obj": "models/fire_extinguisher/fire_extinguisher.obj",
+    "glb": "models/fire_extinguisher/fire_extinguisher.glb"
+  },
+  {
+    "name": "radiator",
+    "texture_size": 128,
+    "vertices": 160,
+    "triangles": 252,
+    "dimensions_m": [
+      1.0775,
+      0.17,
+      0.635
+    ],
+    "uv_zones": 4,
+    "texture": "textures/radiator.png",
+    "obj": "models/radiator/radiator.obj",
+    "glb": "models/radiator/radiator.glb"
+  },
+  {
+    "name": "wall_air_conditioner",
+    "texture_size": 128,
+    "vertices": 64,
+    "triangles": 96,
+    "dimensions_m": [
+      0.78,
+      0.312,
+      0.44
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wall_air_conditioner.png",
+    "obj": "models/wall_air_conditioner/wall_air_conditioner.obj",
+    "glb": "models/wall_air_conditioner/wall_air_conditioner.glb"
+  },
+  {
+    "name": "standing_fan",
+    "texture_size": 128,
+    "vertices": 244,
+    "triangles": 416,
+    "dimensions_m": [
+      0.46,
+      0.34,
+      1.23
+    ],
+    "uv_zones": 4,
+    "texture": "textures/standing_fan.png",
+    "obj": "models/standing_fan/standing_fan.obj",
+    "glb": "models/standing_fan/standing_fan.glb"
+  },
+  {
+    "name": "potted_plant",
+    "texture_size": 128,
+    "vertices": 219,
+    "triangles": 340,
+    "dimensions_m": [
+      0.9527,
+      0.9417,
+      0.99
+    ],
+    "uv_zones": 4,
+    "texture": "textures/potted_plant.png",
+    "obj": "models/potted_plant/potted_plant.obj",
+    "glb": "models/potted_plant/potted_plant.glb"
+  },
+  {
+    "name": "cleaning_cart",
+    "texture_size": 128,
+    "vertices": 204,
+    "triangles": 360,
+    "dimensions_m": [
+      1.11,
+      0.5773,
+      0.8878
+    ],
+    "uv_zones": 4,
+    "texture": "textures/cleaning_cart.png",
+    "obj": "models/cleaning_cart/cleaning_cart.obj",
+    "glb": "models/cleaning_cart/cleaning_cart.glb"
+  },
+  {
+    "name": "folding_luggage_rack",
+    "texture_size": 64,
+    "vertices": 96,
+    "triangles": 156,
+    "dimensions_m": [
+      0.64,
+      0.4781,
+      0.4979
+    ],
+    "uv_zones": 4,
+    "texture": "textures/folding_luggage_rack.png",
+    "obj": "models/folding_luggage_rack/folding_luggage_rack.obj",
+    "glb": "models/folding_luggage_rack/folding_luggage_rack.glb"
+  }
+]

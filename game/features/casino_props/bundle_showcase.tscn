@@ -1,0 +1,78 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/casino-lounge-chair.tscn" id="1_tftgf"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/casino-two-seat-couch.tscn" id="2_k7w7t"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/casino-brass-wastepaper-bin.tscn" id="3_rk0ou"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/galvanised-rubbish-bin.tscn" id="4_l0b6k"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/standing-ashtray-with-cigarette.tscn" id="5_ssabl"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/cigarette.tscn" id="6_0c82u"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/wine-bottle.tscn" id="7_fvlym"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/wine-bucket.tscn" id="8_0sktg"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/walnut-wine-rack-cabinet.tscn" id="9_lbfxf"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/walnut-pedestal-cocktail-table.tscn" id="10_6vnb5"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/burgundy-pedestal-bar-stool.tscn" id="11_1ow5t"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/brass-wall-clock.tscn" id="12_2svm6"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/martini-glass.tscn" id="13_6e8f5"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/cigar.tscn" id="14_8cj6l"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/amber-beer-bottle.tscn" id="15_k00ao"]
+
+[node name="BundleShowcase" type="Node3D" unique_id=754566747]
+
+[node name="CasinoLoungeChair" type="StaticBody3D" parent="." unique_id=678280421 instance=ExtResource("1_tftgf")]
+metadata/prop_id = "casino-lounge-chair"
+
+[node name="CasinoTwoSeatCouch" type="StaticBody3D" parent="." unique_id=792193592 instance=ExtResource("2_k7w7t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 0)
+metadata/prop_id = "casino-two-seat-couch"
+
+[node name="CasinoBrassWastepaperBin" type="StaticBody3D" parent="." unique_id=400801012 instance=ExtResource("3_rk0ou")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
+metadata/prop_id = "casino-brass-wastepaper-bin"
+
+[node name="GalvanisedRubbishBin" type="StaticBody3D" parent="." unique_id=753258349 instance=ExtResource("4_l0b6k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, 0)
+metadata/prop_id = "galvanised-rubbish-bin"
+
+[node name="StandingAshtrayWithCigarette" type="StaticBody3D" parent="." unique_id=2062009102 instance=ExtResource("5_ssabl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+metadata/prop_id = "standing-ashtray-with-cigarette"
+
+[node name="Cigarette" type="StaticBody3D" parent="." unique_id=2144908449 instance=ExtResource("6_0c82u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.5)
+metadata/prop_id = "cigarette"
+
+[node name="WineBottle" type="StaticBody3D" parent="." unique_id=155922511 instance=ExtResource("7_fvlym")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 2.5)
+metadata/prop_id = "wine-bottle"
+
+[node name="WineBucket" type="StaticBody3D" parent="." unique_id=1369863419 instance=ExtResource("8_0sktg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 2.5)
+metadata/prop_id = "wine-bucket"
+
+[node name="WalnutWineRackCabinet" type="StaticBody3D" parent="." unique_id=596889700 instance=ExtResource("9_lbfxf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, 2.5)
+metadata/prop_id = "walnut-wine-rack-cabinet"
+
+[node name="WalnutPedestalCocktailTable" type="StaticBody3D" parent="." unique_id=976628002 instance=ExtResource("10_6vnb5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 2.5)
+metadata/prop_id = "walnut-pedestal-cocktail-table"
+
+[node name="BurgundyPedestalBarStool" type="StaticBody3D" parent="." unique_id=418483959 instance=ExtResource("11_1ow5t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+metadata/prop_id = "burgundy-pedestal-bar-stool"
+
+[node name="BrassWallClock" type="StaticBody3D" parent="." unique_id=963673062 instance=ExtResource("12_2svm6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 5)
+metadata/prop_id = "brass-wall-clock"
+
+[node name="MartiniGlass" type="StaticBody3D" parent="." unique_id=1609363877 instance=ExtResource("13_6e8f5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 5)
+metadata/prop_id = "martini-glass"
+
+[node name="Cigar" type="StaticBody3D" parent="." unique_id=252893627 instance=ExtResource("14_8cj6l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, 5)
+metadata/prop_id = "cigar"
+
+[node name="AmberBeerBottle" type="StaticBody3D" parent="." unique_id=2024521083 instance=ExtResource("15_k00ao")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 5)
+metadata/prop_id = "amber-beer-bottle"

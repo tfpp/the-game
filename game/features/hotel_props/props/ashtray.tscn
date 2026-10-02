@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/ashtray.tres" id="1_0pwwn"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/ashtray.res" id="2_jh7q8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cn5bf"]
+size = Vector3(0.13, 0.025, 0.13)
+
+[node name="Ashtray" type="StaticBody3D" unique_id=1439968330]
+metadata/prop_id = "ashtray"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=166668876]
+material_override = ExtResource("1_0pwwn")
+mesh = ExtResource("2_jh7q8")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1284845015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0125, 0)
+shape = SubResource("BoxShape3D_cn5bf")

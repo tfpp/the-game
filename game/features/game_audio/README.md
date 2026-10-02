@@ -22,6 +22,11 @@ sounds and four UI sounds; oldest voices are removed at capacity. Finished voice
 free themselves. Changing network mode clears pending sounds. World voices live
 under this feature so an explosion's visual cleanup cannot truncate its sound.
 
+The operations garage uses the owner-only `van_departure` UI cue for its two-second
+travel screen. It shares this feature’s GameSFX bus and bounded UI voice pool. The
+original PCM source/builder is documented in `features/starter_room/README.md`;
+late joiners do not hear previous trips.
+
 ## Assets
 
 Files copied unmodified from the downloaded Kenney All-in-1 pack:

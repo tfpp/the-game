@@ -717,7 +717,8 @@ func (s *Service) requestDeploy(ctx context.Context, what, key, sha string,
 
 const deployAnnouncedKey = "deploy_announced"
 
-// announceDeploys tells the threads of merged PRs once a deploy contains them.
+// announceDeploys tells the threads of merged PRs once a deploy contains them, then
+// closes those threads: their work is done.
 func (s *Service) announceDeploys(ctx context.Context) error {
 	if s.cfg.Deployer == nil {
 		return nil
@@ -745,6 +746,9 @@ func (s *Service) announceDeploys(ctx context.Context) error {
 			if job, err := s.st.JobByID(ctx, m.JobID); err == nil {
 				s.card(ctx, job, Embed{Title: "🚀 Live", URL: s.pullURL(m.PR), Color: colorSuccess,
 					Description: fmt.Sprintf("%s is live. Reload the game to try it.", s.prLabel(m.PR))})
+				if job.State == store.JobMerged {
+					s.closeThread(ctx, job)
+				}
 			}
 		}
 		if err := s.st.SetAnnounced(ctx, m.ID); err != nil {

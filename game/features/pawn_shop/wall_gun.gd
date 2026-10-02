@@ -20,6 +20,8 @@ var _generation := 0
 
 
 func _ready() -> void:
+	if GunBuyCatalog.FIXED_PRICES.has(item_id):
+		price_cents = GunBuyCatalog.FIXED_PRICES[item_id]
 	add_to_group(&"interactables")
 	var view := ItemCatalog.create_view(item_id)
 	if view != null:

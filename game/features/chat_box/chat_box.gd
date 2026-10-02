@@ -7,6 +7,11 @@ extends CanvasLayer
 ## everyone, including the sender, via `receive_chat_message`. Nothing is shown locally
 ## until it comes back from the server.
 
+## Emitted only for accepted public messages, once on the authoritative server.
+signal message_accepted(sender_name: String, text: String)
+
+const DiscordRelay := preload("res://features/chat_box/discord_relay.gd")
+
 const MAX_MESSAGE_LENGTH := 120
 const MAX_VISIBLE_LINES := 8
 const FADE_AFTER_S := 6.0
@@ -35,6 +40,12 @@ func _ready() -> void:
 	add_to_group(&"chat_box")
 	Controls.ensure_action(OPEN_ACTION, [_key_event(KEY_ENTER), _key_event(KEY_KP_ENTER)])
 	_build()
+	var relay := DiscordRelay.new()
+	relay.name = "DiscordRelay"
+	add_child(relay)
+	message_accepted.connect(relay.enqueue)
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	Network.mode_changed.connect(_on_mode_changed)
 
 
 func _input(event: InputEvent) -> void:
@@ -79,12 +90,12 @@ static func format_line(sender_name: String, text: String) -> String:
 	)
 
 
-## A sent line is a command, not a chat message, if it starts with "/".
+## Slash commands and the exact !guns alias stay out of public chat/Discord.
 static func is_command(text: String) -> bool:
-	return text.begins_with("/")
+	return text.begins_with("/") or text.to_lower() == "!guns"
 
 
-## The lowercase command word of a slash command, e.g. "/Suicide now" -> "suicide".
+## Lowercase command word, e.g. "/Suicide now" -> "suicide", "!GUNS" -> "guns".
 static func parse_command(text: String) -> String:
 	return text.substr(1).split(" ")[0].to_lower()
 
@@ -98,9 +109,11 @@ func request_chat_message(text: String) -> void:
 	var sender_id := multiplayer.get_remote_sender_id()
 	var peer_id := sender_id if sender_id != 0 else multiplayer.get_unique_id()
 	var trimmed := sanitize_message(text)
-	if trimmed.is_empty():
+	if trimmed.is_empty() or is_command(trimmed):
 		return
-	receive_chat_message.rpc(_display_name(peer_id), trimmed)
+	var sender_name := _display_name(peer_id)
+	receive_chat_message.rpc(sender_name, trimmed)
+	message_accepted.emit(sender_name, trimmed)
 
 
 ## Server -> everyone (including itself): shows an already-validated message.
@@ -135,6 +148,21 @@ func request_chat_command(command: String) -> void:
 	var sender_id := multiplayer.get_remote_sender_id()
 	var peer_id := sender_id if sender_id != 0 else multiplayer.get_unique_id()
 	get_tree().call_group(COMMAND_GROUP, &"handle_chat_command", peer_id, command)
+
+
+## Connected peers have already passed Network's authentication handshake.
+func _on_peer_connected(peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	var player_name := Network.peer_name(peer_id)
+	if player_name.is_empty():
+		player_name = _display_name(peer_id)
+	receive_chat_message.rpc("", "%s joined the game." % player_name)
+
+
+func _on_mode_changed(mode: Network.Mode) -> void:
+	if mode == Network.Mode.OFFLINE:
+		receive_notice("Player 1 joined the game.")
 
 
 func _open() -> void:
@@ -226,7 +254,7 @@ func _build() -> void:
 	_line_edit.name = "Input"
 	_line_edit.visible = false
 	_line_edit.max_length = MAX_MESSAGE_LENGTH
-	_line_edit.placeholder_text = "Say something…"
+	_line_edit.placeholder_text = "Public chat (may be recorded in Discord)…"
 	_line_edit.custom_minimum_size = Vector2(PANEL_WIDTH, 32.0)
 	_line_edit.text_submitted.connect(_on_text_submitted)
 	panel.add_child(_line_edit)

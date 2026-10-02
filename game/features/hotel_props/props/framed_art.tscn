@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/framed_art.tres" id="1_bxyib"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/framed_art.res" id="2_bemwn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ot0lq"]
+size = Vector3(0.682, 0.502, 0.0585)
+
+[node name="FramedArt" type="StaticBody3D" unique_id=1741448078]
+metadata/prop_id = "framed_art"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1161223597]
+material_override = ExtResource("1_bxyib")
+mesh = ExtResource("2_bemwn")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1166883386]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.251, 0.01675)
+shape = SubResource("BoxShape3D_ot0lq")

@@ -1,41 +1,39 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://features/slum_runs/slum_runs.gd" id="1_runs"]
 [ext_resource type="Script" path="res://features/slum_runs/slum_gate.gd" id="2_gate"]
 [ext_resource type="Script" path="res://features/slum_runs/loot_fence.gd" id="3_fence"]
 [ext_resource type="Material" path="res://world/materials/proto_dark.tres" id="4_dark"]
 
+[ext_resource type="PackedScene" path="res://features/pawn_shop/models/display_case.tscn" id="display"]
+[sub_resource type="StandardMaterial3D" id="invisible_hull"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0)
+
 [node name="SlumRuns" type="Node3D"]
 script = ExtResource("1_runs")
 
 [node name="CasinoArrival" type="Marker3D" parent="."]
-position = Vector3(0, 1.2, 28)
+position = Vector3(18, 1.2, 17)
 
 [node name="Gate" type="CSGBox3D" parent="."]
-position = Vector3(0, 1.1, 31)
+position = Vector3(18, 1.1, 19.8)
 size = Vector3(1.5, 2.2, 0.14)
 material = ExtResource("4_dark")
 use_collision = true
 script = ExtResource("2_gate")
 
 [node name="GateSign" type="Label3D" parent="."]
-position = Vector3(0, 2.5, 30.8)
+position = Vector3(18, 2.5, 19.6)
 billboard = 1
 text = "THE GOLDEN CROWN\nSLUM GATE"
 font_size = 20
 outline_size = 6
 
 [node name="Fence" type="CSGBox3D" parent="."]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -11.5, 0.75, 39.5)
-size = Vector3(1.5, 1.5, 0.6)
-material = ExtResource("4_dark")
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -11.5, 0.575, -3975.5)
+size = Vector3(2.8, 1.15, 0.8)
+material = SubResource("invisible_hull")
 use_collision = true
 script = ExtResource("3_fence")
-
-[node name="FenceSign" type="Label3D" parent="."]
-position = Vector3(-11.3, 3.35, 39.5)
-billboard = 1
-modulate = Color(1, 0.8, 0.3, 1)
-text = "RUSTY HOGG'S PAWN SHOP\nWE BUY VALUABLES"
-font_size = 17
-outline_size = 6
+storefront_scene = ExtResource("display")

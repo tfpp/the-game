@@ -1,0 +1,252 @@
+[
+  [
+    "roulette_table",
+    128,
+    "Roulette table"
+  ],
+  [
+    "blackjack_table",
+    128,
+    "Blackjack table"
+  ],
+  [
+    "poker_table",
+    128,
+    "Poker table"
+  ],
+  [
+    "craps_table",
+    128,
+    "Craps table"
+  ],
+  [
+    "baccarat_table",
+    128,
+    "Baccarat table"
+  ],
+  [
+    "slot_machine",
+    128,
+    "Mechanical slot machine"
+  ],
+  [
+    "video_poker_machine",
+    128,
+    "1980s video poker cabinet"
+  ],
+  [
+    "change_machine",
+    128,
+    "Casino change machine"
+  ],
+  [
+    "cashier_counter",
+    128,
+    "Cashier counter"
+  ],
+  [
+    "cashier_cage_window",
+    128,
+    "Cashier cage window"
+  ],
+  [
+    "chip_rack",
+    64,
+    "Dealer chip rack"
+  ],
+  [
+    "chip_stack",
+    32,
+    "Poker chip stack"
+  ],
+  [
+    "chip_tray",
+    64,
+    "Casino chip tray"
+  ],
+  [
+    "playing_card",
+    32,
+    "Playing card"
+  ],
+  [
+    "card_deck",
+    32,
+    "Deck of cards"
+  ],
+  [
+    "card_shoe",
+    64,
+    "Blackjack card shoe"
+  ],
+  [
+    "discard_tray",
+    32,
+    "Card discard tray"
+  ],
+  [
+    "roulette_wheel",
+    128,
+    "Roulette wheel"
+  ],
+  [
+    "roulette_ball",
+    16,
+    "Roulette ball"
+  ],
+  [
+    "craps_dice",
+    32,
+    "Pair of casino dice"
+  ],
+  [
+    "dealer_button",
+    32,
+    "Dealer button"
+  ],
+  [
+    "betting_plaque",
+    32,
+    "High-value betting plaque"
+  ],
+  [
+    "cash_bundle",
+    32,
+    "Bundled banknotes"
+  ],
+  [
+    "money_clip",
+    32,
+    "Money clip"
+  ],
+  [
+    "ledger_book",
+    64,
+    "Casino accounting ledger"
+  ],
+  [
+    "desk_telephone",
+    64,
+    "Black rotary desk telephone"
+  ],
+  [
+    "security_monitor",
+    128,
+    "CRT security monitor"
+  ],
+  [
+    "security_camera",
+    64,
+    "Vintage surveillance camera"
+  ],
+  [
+    "wall_clock",
+    64,
+    "Art Deco wall clock"
+  ],
+  [
+    "table_lamp",
+    64,
+    "Green banker lamp"
+  ],
+  [
+    "pendant_lamp",
+    64,
+    "Casino pendant lamp"
+  ],
+  [
+    "wall_sconce",
+    64,
+    "Art Deco wall sconce"
+  ],
+  [
+    "casino_stool",
+    64,
+    "Casino bar stool"
+  ],
+  [
+    "dealer_chair",
+    64,
+    "Dealer chair"
+  ],
+  [
+    "lounge_armchair",
+    128,
+    "Burgundy lounge armchair"
+  ],
+  [
+    "leather_sofa",
+    128,
+    "Dark leather sofa"
+  ],
+  [
+    "coffee_table",
+    128,
+    "Mahogany coffee table"
+  ],
+  [
+    "cocktail_table",
+    64,
+    "Round cocktail table"
+  ],
+  [
+    "ashtray",
+    32,
+    "Smoked amber ashtray"
+  ],
+  [
+    "cigarette_case",
+    32,
+    "Engraved cigarette case"
+  ],
+  [
+    "whiskey_bottle",
+    64,
+    "Whiskey bottle"
+  ],
+  [
+    "rocks_glass",
+    32,
+    "Whiskey tumbler"
+  ],
+  [
+    "cocktail_glass",
+    32,
+    "Cocktail coupe"
+  ],
+  [
+    "ice_bucket",
+    64,
+    "Casino ice bucket"
+  ],
+  [
+    "serving_tray",
+    64,
+    "Silver drinks tray"
+  ],
+  [
+    "velvet_rope",
+    64,
+    "Burgundy velvet queue rope"
+  ],
+  [
+    "brass_stanchion",
+    64,
+    "Brass queue stanchion"
+  ],
+  [
+    "illuminated_exit_sign",
+    64,
+    "Vintage illuminated exit sign"
+  ],
+  [
+    "art_deco_sign",
+    128,
+    "Golden Crown Art Deco sign"
+  ],
+  [
+    "coat_rack",
+    128,
+    "Mahogany coat rack"
+  ]
+]

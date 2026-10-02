@@ -1,0 +1,253 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/casino_props/props/roulette_table.tscn" id="1_ff4at"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/blackjack_table.tscn" id="2_l8cue"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/poker_table.tscn" id="3_gxnkx"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/craps_table.tscn" id="4_exkrn"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/baccarat_table.tscn" id="5_e06mx"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/slot_machine.tscn" id="6_3ie3n"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/video_poker_machine.tscn" id="7_i7v5a"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/change_machine.tscn" id="8_301rm"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/cashier_counter.tscn" id="9_roroe"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/cashier_cage_window.tscn" id="10_7srgx"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/chip_rack.tscn" id="11_aemvs"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/chip_stack.tscn" id="12_8ln0t"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/chip_tray.tscn" id="13_6qevb"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/playing_card.tscn" id="14_ylow6"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/card_deck.tscn" id="15_bydo0"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/card_shoe.tscn" id="16_gv66f"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/discard_tray.tscn" id="17_dqnjg"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/roulette_wheel.tscn" id="18_fsny5"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/roulette_ball.tscn" id="19_gjwu6"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/craps_dice.tscn" id="20_trwwv"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/dealer_button.tscn" id="21_etbir"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/betting_plaque.tscn" id="22_eth18"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/cash_bundle.tscn" id="23_snu2n"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/money_clip.tscn" id="24_t71i3"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/ledger_book.tscn" id="25_yi134"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/desk_telephone.tscn" id="26_xn8iq"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/security_monitor.tscn" id="27_1htmu"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/security_camera.tscn" id="28_370g6"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/wall_clock.tscn" id="29_k6mbn"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/table_lamp.tscn" id="30_3c1g4"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/pendant_lamp.tscn" id="31_ioawt"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/wall_sconce.tscn" id="32_ccb6m"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/casino_stool.tscn" id="33_p4e3i"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/dealer_chair.tscn" id="34_s5vld"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/lounge_armchair.tscn" id="35_2ls8l"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/leather_sofa.tscn" id="36_khho2"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/coffee_table.tscn" id="37_ggwiq"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/cocktail_table.tscn" id="38_b7ifh"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/ashtray.tscn" id="39_wjato"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/cigarette_case.tscn" id="40_bltmn"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/whiskey_bottle.tscn" id="41_s150c"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/rocks_glass.tscn" id="42_n2hgy"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/cocktail_glass.tscn" id="43_08ttn"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/ice_bucket.tscn" id="44_2j1hm"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/serving_tray.tscn" id="45_2dqrs"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/velvet_rope.tscn" id="46_8hg04"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/brass_stanchion.tscn" id="47_ngu6b"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/illuminated_exit_sign.tscn" id="48_vkpdu"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/art_deco_sign.tscn" id="49_76nj8"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/coat_rack.tscn" id="50_o31po"]
+
+[node name="CasinoPropsShowcase" type="Node3D" unique_id=1108286035]
+
+[node name="RouletteTable" type="StaticBody3D" parent="." unique_id=1099080586 instance=ExtResource("1_ff4at")]
+metadata/prop_id = "roulette_table"
+
+[node name="BlackjackTable" type="StaticBody3D" parent="." unique_id=1136048661 instance=ExtResource("2_l8cue")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 0)
+metadata/prop_id = "blackjack_table"
+
+[node name="PokerTable" type="StaticBody3D" parent="." unique_id=1876568167 instance=ExtResource("3_gxnkx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
+metadata/prop_id = "poker_table"
+
+[node name="CrapsTable" type="StaticBody3D" parent="." unique_id=130912513 instance=ExtResource("4_exkrn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 0)
+metadata/prop_id = "craps_table"
+
+[node name="BaccaratTable" type="StaticBody3D" parent="." unique_id=1387647563 instance=ExtResource("5_e06mx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
+metadata/prop_id = "baccarat_table"
+
+[node name="SlotMachine" type="StaticBody3D" parent="." unique_id=2012546710 instance=ExtResource("6_3ie3n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 0)
+metadata/prop_id = "slot_machine"
+
+[node name="VideoPokerMachine" type="StaticBody3D" parent="." unique_id=259331966 instance=ExtResource("7_i7v5a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
+metadata/prop_id = "video_poker_machine"
+
+[node name="ChangeMachine" type="StaticBody3D" parent="." unique_id=2079407038 instance=ExtResource("8_301rm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, 0)
+metadata/prop_id = "change_machine"
+
+[node name="CashierCounter" type="StaticBody3D" parent="." unique_id=556364902 instance=ExtResource("9_roroe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 0)
+metadata/prop_id = "cashier_counter"
+
+[node name="CashierCageWindow" type="StaticBody3D" parent="." unique_id=105405721 instance=ExtResource("10_7srgx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0, 0)
+metadata/prop_id = "cashier_cage_window"
+
+[node name="ChipRack" type="StaticBody3D" parent="." unique_id=1851244528 instance=ExtResource("11_aemvs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+metadata/prop_id = "chip_rack"
+
+[node name="ChipStack" type="StaticBody3D" parent="." unique_id=1345639854 instance=ExtResource("12_8ln0t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 3)
+metadata/prop_id = "chip_stack"
+
+[node name="ChipTray" type="StaticBody3D" parent="." unique_id=787009099 instance=ExtResource("13_6qevb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 3)
+metadata/prop_id = "chip_tray"
+
+[node name="PlayingCard" type="StaticBody3D" parent="." unique_id=1419033286 instance=ExtResource("14_ylow6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 3)
+metadata/prop_id = "playing_card"
+
+[node name="CardDeck" type="StaticBody3D" parent="." unique_id=315007400 instance=ExtResource("15_bydo0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 3)
+metadata/prop_id = "card_deck"
+
+[node name="CardShoe" type="StaticBody3D" parent="." unique_id=1266128671 instance=ExtResource("16_gv66f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 3)
+metadata/prop_id = "card_shoe"
+
+[node name="DiscardTray" type="StaticBody3D" parent="." unique_id=445769552 instance=ExtResource("17_dqnjg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 3)
+metadata/prop_id = "discard_tray"
+
+[node name="RouletteWheel" type="StaticBody3D" parent="." unique_id=64799398 instance=ExtResource("18_fsny5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, 3)
+metadata/prop_id = "roulette_wheel"
+
+[node name="RouletteBall" type="StaticBody3D" parent="." unique_id=377213583 instance=ExtResource("19_gjwu6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 3)
+metadata/prop_id = "roulette_ball"
+
+[node name="CrapsDice" type="StaticBody3D" parent="." unique_id=898725099 instance=ExtResource("20_trwwv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0, 3)
+metadata/prop_id = "craps_dice"
+
+[node name="DealerButton" type="StaticBody3D" parent="." unique_id=236484953 instance=ExtResource("21_etbir")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
+metadata/prop_id = "dealer_button"
+
+[node name="BettingPlaque" type="StaticBody3D" parent="." unique_id=610978644 instance=ExtResource("22_eth18")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 6)
+metadata/prop_id = "betting_plaque"
+
+[node name="CashBundle" type="StaticBody3D" parent="." unique_id=1247406257 instance=ExtResource("23_snu2n")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 6)
+metadata/prop_id = "cash_bundle"
+
+[node name="MoneyClip" type="StaticBody3D" parent="." unique_id=192617620 instance=ExtResource("24_t71i3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 6)
+metadata/prop_id = "money_clip"
+
+[node name="LedgerBook" type="StaticBody3D" parent="." unique_id=1387214412 instance=ExtResource("25_yi134")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 6)
+metadata/prop_id = "ledger_book"
+
+[node name="DeskTelephone" type="StaticBody3D" parent="." unique_id=1008536728 instance=ExtResource("26_xn8iq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 6)
+metadata/prop_id = "desk_telephone"
+
+[node name="SecurityMonitor" type="StaticBody3D" parent="." unique_id=1603480199 instance=ExtResource("27_1htmu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 6)
+metadata/prop_id = "security_monitor"
+
+[node name="SecurityCamera" type="StaticBody3D" parent="." unique_id=365222582 instance=ExtResource("28_370g6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, 6)
+metadata/prop_id = "security_camera"
+
+[node name="WallClock" type="StaticBody3D" parent="." unique_id=899705645 instance=ExtResource("29_k6mbn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 6)
+metadata/prop_id = "wall_clock"
+
+[node name="TableLamp" type="StaticBody3D" parent="." unique_id=1452632625 instance=ExtResource("30_3c1g4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0, 6)
+metadata/prop_id = "table_lamp"
+
+[node name="PendantLamp" type="StaticBody3D" parent="." unique_id=872241799 instance=ExtResource("31_ioawt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9)
+metadata/prop_id = "pendant_lamp"
+
+[node name="WallSconce" type="StaticBody3D" parent="." unique_id=1052643713 instance=ExtResource("32_ccb6m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 9)
+metadata/prop_id = "wall_sconce"
+
+[node name="CasinoStool" type="StaticBody3D" parent="." unique_id=384151020 instance=ExtResource("33_p4e3i")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 9)
+metadata/prop_id = "casino_stool"
+
+[node name="DealerChair" type="StaticBody3D" parent="." unique_id=537633104 instance=ExtResource("34_s5vld")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 9)
+metadata/prop_id = "dealer_chair"
+
+[node name="LoungeArmchair" type="StaticBody3D" parent="." unique_id=2101829106 instance=ExtResource("35_2ls8l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 9)
+metadata/prop_id = "lounge_armchair"
+
+[node name="LeatherSofa" type="StaticBody3D" parent="." unique_id=57372932 instance=ExtResource("36_khho2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 9)
+metadata/prop_id = "leather_sofa"
+
+[node name="CoffeeTable" type="StaticBody3D" parent="." unique_id=1782150941 instance=ExtResource("37_ggwiq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 9)
+metadata/prop_id = "coffee_table"
+
+[node name="CocktailTable" type="StaticBody3D" parent="." unique_id=2091963312 instance=ExtResource("38_b7ifh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, 9)
+metadata/prop_id = "cocktail_table"
+
+[node name="Ashtray" type="StaticBody3D" parent="." unique_id=945420029 instance=ExtResource("39_wjato")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 9)
+metadata/prop_id = "ashtray"
+
+[node name="CigaretteCase" type="StaticBody3D" parent="." unique_id=1792116335 instance=ExtResource("40_bltmn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0, 9)
+metadata/prop_id = "cigarette_case"
+
+[node name="WhiskeyBottle" type="StaticBody3D" parent="." unique_id=1984138400 instance=ExtResource("41_s150c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+metadata/prop_id = "whiskey_bottle"
+
+[node name="RocksGlass" type="StaticBody3D" parent="." unique_id=1992430293 instance=ExtResource("42_n2hgy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 12)
+metadata/prop_id = "rocks_glass"
+
+[node name="CocktailGlass" type="StaticBody3D" parent="." unique_id=645270541 instance=ExtResource("43_08ttn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 12)
+metadata/prop_id = "cocktail_glass"
+
+[node name="IceBucket" type="StaticBody3D" parent="." unique_id=1702403414 instance=ExtResource("44_2j1hm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 12)
+metadata/prop_id = "ice_bucket"
+
+[node name="ServingTray" type="StaticBody3D" parent="." unique_id=195472685 instance=ExtResource("45_2dqrs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 12)
+metadata/prop_id = "serving_tray"
+
+[node name="VelvetRope" type="StaticBody3D" parent="." unique_id=1196604447 instance=ExtResource("46_8hg04")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 12)
+metadata/prop_id = "velvet_rope"
+
+[node name="BrassStanchion" type="StaticBody3D" parent="." unique_id=1663678803 instance=ExtResource("47_ngu6b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 12)
+metadata/prop_id = "brass_stanchion"
+
+[node name="IlluminatedExitSign" type="StaticBody3D" parent="." unique_id=280426104 instance=ExtResource("48_vkpdu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, 12)
+metadata/prop_id = "illuminated_exit_sign"
+
+[node name="ArtDecoSign" type="StaticBody3D" parent="." unique_id=607818284 instance=ExtResource("49_76nj8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 12)
+metadata/prop_id = "art_deco_sign"
+
+[node name="CoatRack" type="StaticBody3D" parent="." unique_id=1438353965 instance=ExtResource("50_o31po")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0, 12)
+metadata/prop_id = "coat_rack"

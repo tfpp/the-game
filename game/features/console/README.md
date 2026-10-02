@@ -1,6 +1,6 @@
 # Console
 
-Press **~ / backtick** (the key below Esc on a US keyboard), or open **Esc → Console**.
+Press **~ / backtick** (the key below Esc on a US keyboard), or open **Esc → More → Console**.
 The olive-grey Source-style panel pauses gameplay input. Close with the same key,
 Esc, controller B, or Close. Browser pointer-lock rules may show the Resume menu
 when closing with Esc; Close is a user gesture that can recapture the mouse.
@@ -49,10 +49,22 @@ Tests: `godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests/features/c
 `profiler 1` enables a passive frametime graph; `profiler 0` stops sampling.
 `profiler_budget <milliseconds>` changes the default 60 FPS budget (1–1000 ms),
 and `profiler_clear` clears retained data. Close the console and open
-**Esc → Profiler** to click/tap or controller-select missed frames and inspect their
+**Esc → More → Profiler** to click/tap or controller-select missed frames and inspect their
 measured phase traces. Commands query their values when given no argument.
 This is local, session-only diagnostics, not server control or per-script call stacks.
 See `features/profiler/README.md` for timing semantics and bounded retention.
+
+For the temporary animation experiment, `profile_animations` lists the local states.
+`profile_animations all 0` freezes the suspect groups; `profile_animations all 1`
+restores them. Replace `all` with `guests`, `dealers`, `musicians`, `patrons` or
+`players` to isolate a group. Runs now start with normal animation enabled.
+`profile_fingers 0` independently freezes shared human finger curls while leaving
+body animation enabled; `profile_fingers 1` restores them. The finger switch starts
+enabled, and `profile_fingers` queries it.
+`profile_skeleton 0` freezes the main human bone-pose pass while animation
+calculations and rig transforms continue; `profile_skeleton 1` restores it.
+Separate hand IK and emote overlays still run. This independent switch also starts
+enabled and can be queried without an argument.
 
 ## Read-only Git
 

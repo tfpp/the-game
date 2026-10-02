@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/poker_table.tres" id="1_rmsos"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/poker_table.res" id="2_3rgwl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tmmmr"]
+size = Vector3(2.4149997, 0.865, 1.4175)
+
+[node name="PokerTable" type="StaticBody3D" unique_id=1876568167]
+metadata/prop_id = "poker_table"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=237685851]
+material_override = ExtResource("1_rmsos")
+mesh = ExtResource("2_3rgwl")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=116367385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4325, 0)
+shape = SubResource("BoxShape3D_tmmmr")

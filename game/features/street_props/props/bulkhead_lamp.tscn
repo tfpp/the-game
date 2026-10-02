@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/bulkhead_lamp.tres" id="1_5t7ka"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/bulkhead_lamp.res" id="2_fb7um"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kg37n"]
+size = Vector3(0.42, 0.36, 0.16)
+
+[node name="BulkheadLamp" type="StaticBody3D" unique_id=1411446321]
+metadata/prop_id = "bulkhead_lamp"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=566501279]
+material_override = ExtResource("1_5t7ka")
+mesh = ExtResource("2_fb7um")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1595493463]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, 0.02)
+shape = SubResource("BoxShape3D_kg37n")

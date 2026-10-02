@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/service_door.tres" id="1_yconb"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/service_door.res" id="2_0h00i"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_djbh4"]
+size = Vector3(1.02, 2.1325002, 0.15832049)
+
+[node name="ServiceDoor" type="StaticBody3D" unique_id=1329762835]
+metadata/prop_id = "service_door"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1306662465]
+material_override = ExtResource("1_yconb")
+mesh = ExtResource("2_0h00i")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1370341018]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0662501, 0.014160246)
+shape = SubResource("BoxShape3D_djbh4")

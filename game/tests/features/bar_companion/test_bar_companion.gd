@@ -182,14 +182,14 @@ func test_stats_and_escort_are_replicated_for_late_joiners() -> void:
 
 
 func test_seated_on_the_stool_clear_of_the_counter() -> void:
-	var stool := _bar.get_node("Stool/Seat") as MeshInstance3D
-	var seat_top := stool.global_position.y + (stool.mesh as CylinderMesh).height / 2.0
+	var stool := _bar.get_node("Stool/Model/Model") as MeshInstance3D
+	var seat_top := (stool.global_transform * stool.get_aabb()).end.y
 	var model := _vivienne.get_node("Body") as CompanionModel
 	assert_eq(model.avatar.locomotion, &"seated")
 	var hip := model.bone_position("ThighL").y
 	assert_almost_eq(hip - seat_top, 0.07, 0.03, "sits on the seat, not above or in it")
-	assert_gt(model.bone_position("FootL").y, -1.5, "feet stay above the floor")
-	assert_almost_eq(seat_top, -1.5 + 0.74, 0.01)
+	assert_gt(model.bone_position("FootL").y, -1.25, "feet stay above the floor")
+	assert_almost_eq(seat_top, -1.25 + 0.74, 0.01)
 	# The bar counter's front face is at z -9.4 (salon.tscn BarCounter).
 	for bone: String in ["FootL", "FootR", "CalfL", "CalfR"]:
 		assert_gt(model.bone_position(bone).z - 0.15, -9.4, bone + " stays in front of the counter")

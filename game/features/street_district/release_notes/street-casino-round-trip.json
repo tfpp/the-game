@@ -1,0 +1,5 @@
+{
+  "title": "Street casino frontage and lobby connection",
+  "summary": "Enter the Golden Crown through a signed street casino building.",
+  "notes": ["Add a gold-trimmed casino marquee and entrance canopy to the east block frontage.", "Use its entrance to teleport to the main casino, or use STREET CASINO in the casino south lobby to return to the street facade.", "Reuse authenticated portals, streamed arrival preload and GPS routing."]
+}

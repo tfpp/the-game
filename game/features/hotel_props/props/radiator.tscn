@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/radiator.tres" id="1_1w2iv"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/radiator.res" id="2_rhi6w"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_aae1a"]
+size = Vector3(1.0775, 0.635, 0.17)
+
+[node name="Radiator" type="StaticBody3D" unique_id=1704524910]
+metadata/prop_id = "radiator"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1009928297]
+material_override = ExtResource("1_1w2iv")
+mesh = ExtResource("2_rhi6w")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=328749533]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05124998, 0.3175, 0)
+shape = SubResource("BoxShape3D_aae1a")

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/wall_mirror.tres" id="1_5nafk"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/wall_mirror.res" id="2_7o3pk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8foms"]
+size = Vector3(0.652, 1.0019999, 0.0585)
+
+[node name="WallMirror" type="StaticBody3D" unique_id=39085642]
+metadata/prop_id = "wall_mirror"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1012123490]
+material_override = ExtResource("1_5nafk")
+mesh = ExtResource("2_7o3pk")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1845677133]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5009999, 0.01675)
+shape = SubResource("BoxShape3D_8foms")

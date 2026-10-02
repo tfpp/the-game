@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/street_lamp.tres" id="1_01vb4"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/street_lamp.res" id="2_nm4dv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v7byt"]
+size = Vector3(1.6049999, 5.145, 0.32)
+
+[node name="StreetLamp" type="StaticBody3D" unique_id=428976908]
+metadata/prop_id = "street_lamp"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1358155689]
+material_override = ExtResource("1_01vb4")
+mesh = ExtResource("2_nm4dv")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=135068121]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6424999, 2.5725, 0)
+shape = SubResource("BoxShape3D_v7byt")

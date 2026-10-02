@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/armchair.tres" id="1_o0rgf"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/armchair.res" id="2_is4ux"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h4w4r"]
+size = Vector3(0.86, 0.965, 0.805)
+
+[node name="Armchair" type="StaticBody3D" unique_id=1961392930]
+metadata/prop_id = "armchair"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1745884662]
+material_override = ExtResource("1_o0rgf")
+mesh = ExtResource("2_is4ux")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1297742556]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4825, -0.007499993)
+shape = SubResource("BoxShape3D_h4w4r")

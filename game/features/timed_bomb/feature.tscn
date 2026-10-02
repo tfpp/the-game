@@ -1,0 +1,86 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://features/timed_bomb/timed_bomb.gd" id="1"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="2"]
+[ext_resource type="Script" path="res://features/timed_bomb/keypad.gd" id="3"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/velvet.tres" id="4"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="5"]
+
+[sub_resource type="BoxMesh" id="Case"]
+size = Vector3(0.9, 0.28, 0.65)
+material = ExtResource("5")
+
+[sub_resource type="CylinderMesh" id="Bundle"]
+top_radius = 0.12
+bottom_radius = 0.12
+height = 0.75
+radial_segments = 8
+material = ExtResource("4")
+
+[sub_resource type="BoxShape3D" id="Shape"]
+size = Vector3(0.9, 0.65, 0.65)
+
+[sub_resource type="StandardMaterial3D" id="Dark"]
+albedo_color = Color(0.09, 0.07, 0.055, 1)
+roughness = 1.0
+
+[sub_resource type="BoxMesh" id="Keypad"]
+size = Vector3(0.4, 0.18, 0.35)
+material = SubResource("Dark")
+
+[sub_resource type="BoxMesh" id="Wreck"]
+size = Vector3(0.9, 0.12, 0.65)
+material = SubResource("Dark")
+
+[node name="TimedBomb" type="Node3D"]
+position = Vector3(-2.3, -1.5, 4.5)
+script = ExtResource("1")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("2")
+interaction_offset = Vector3(0, 0.5, 0)
+replicated_properties = Array[NodePath]([NodePath(".:net_state"), NodePath(".:net_remaining"), NodePath(".:net_available")])
+
+[node name="Collision" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0, 0.325, 0)
+shape = SubResource("Shape")
+
+[node name="Body" type="Node3D" parent="."]
+
+[node name="Case" type="MeshInstance3D" parent="Body"]
+position = Vector3(0, 0.14, 0)
+mesh = SubResource("Case")
+
+[node name="Bundle" type="MeshInstance3D" parent="Body"]
+position = Vector3(0, 0.39, -0.17)
+rotation_degrees = Vector3(0, 0, 90)
+mesh = SubResource("Bundle")
+
+[node name="Bundle2" type="MeshInstance3D" parent="Body"]
+position = Vector3(0, 0.39, 0.17)
+rotation_degrees = Vector3(0, 0, 90)
+mesh = SubResource("Bundle")
+
+[node name="Keypad" type="MeshInstance3D" parent="Body"]
+position = Vector3(0, 0.56, 0)
+mesh = SubResource("Keypad")
+
+[node name="Wreck" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.06, 0)
+mesh = SubResource("Wreck")
+visible = false
+
+[node name="Display" type="Label3D" parent="."]
+position = Vector3(0, 1.1, 0)
+billboard = 1
+text = "TIMED BOMB"
+font_size = 32
+pixel_size = 0.007
+modulate = Color(1, 0.68, 0.3, 1)
+outline_size = 6
+no_depth_test = false
+
+[node name="KeypadUI" type="CanvasLayer" parent="."]
+script = ExtResource("3")

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/video_poker_machine.tres" id="1_d7iqn"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/video_poker_machine.res" id="2_xn0jq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ylg53"]
+size = Vector3(0.68, 1.4925001, 0.76160467)
+
+[node name="VideoPokerMachine" type="StaticBody3D" unique_id=259331966]
+metadata/prop_id = "video_poker_machine"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=242518178]
+material_override = ExtResource("1_d7iqn")
+mesh = ExtResource("2_xn0jq")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=952451073]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74625003, 0.06080234)
+shape = SubResource("BoxShape3D_ylg53")

@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/room_kits/wooden_support_column/wooden_support_column_albedo.png" id="albedo"]
+
+[resource]
+resource_name = "AgedWalnutAndGold"
+albedo_texture = ExtResource("albedo")
+roughness = 0.78
+texture_filter = 3

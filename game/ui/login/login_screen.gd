@@ -16,7 +16,7 @@ extends CanvasLayer
 ## Styled with Kenney's UI Pack (ui/theme/ui_theme.tres).
 
 const MODAL_GROUP := &"modal_ui"
-## Feature panels that want an entry here (e.g. Controls, Release notes) join this group
+## Feature panels that want an entry here (e.g. Settings, Release notes) join this group
 ## and implement `esc_menu_label() -> String` and `esc_menu_open() -> void`, and
 ## optionally `esc_menu_icon() -> Texture2D` (a white icon, tinted by the theme).
 const ESC_MENU_LINKS_GROUP := &"esc_menu_links"
@@ -40,12 +40,22 @@ var _api: AccountApi
 var _account := {}
 var _server_url := ""
 var _box: VBoxContainer
+var _panel: PanelContainer
+var _scroll: ScrollContainer
+var _submenu := false
+var _theme: Theme
+var _ui_scale := 1.0
 ## The in-game menu is showing (Esc closes it on native builds).
 var _menu_open := false
 ## How long the mouse has been free with no screen up.
 var _idle_s := 0.0
 ## Fires a silent reconnect attempt after a dropped connection.
 var _reconnect_timer: Timer
+## Becomes true the first time gameplay is active. Until then, losing input shows the
+## small play prompt instead of the full menu, so the first frame shows the Crown.
+var _has_played := false
+var _play_layer: CanvasLayer
+var _play_prompt: Button
 
 
 func _ready() -> void:
@@ -79,12 +89,45 @@ func _process(delta: float) -> void:
 	# mode rather than the key. The grace period covers a lock request still in flight.
 	# Another modal (e.g. the chat box) also reads as "not playing" via gameplay_active,
 	# but it isn't a lost pointer lock, so don't pop the menu open on top of it.
+	if Controls.gameplay_active():
+		_has_played = true
 	if Controls.gameplay_active() or _other_modal_ui_open():
+		_play_layer.visible = false
 		_idle_s = 0.0
 		return
 	_idle_s += delta
 	if _idle_s >= IDLE_MENU_DELAY_S:
+		_idle_timeout()
+
+
+## Pointer lock or touch play stopped with no screen up. Before the player has ever
+## played, ask for the click (browsers need a gesture) with a small prompt over the
+## scene; afterwards a lost lock opens the menu as before.
+func _idle_timeout() -> void:
+	if _has_played:
 		open_menu()
+	else:
+		_show_play_prompt()
+
+
+func _show_play_prompt() -> void:
+	var verb := "Click"
+	if Controls.device == Controls.Device.TOUCH:
+		verb = "Tap"
+	elif Controls.device == Controls.Device.GAMEPAD:
+		verb = "Press A"
+	_play_prompt.text = "%s to play" % verb
+	_play_layer.visible = true
+	if Controls.device == Controls.Device.GAMEPAD and not _play_prompt.has_focus():
+		_play_prompt.grab_focus()
+
+
+func _on_play_prompt_pressed() -> void:
+	# Pressing inside the user gesture lets the browser grant pointer lock.
+	get_viewport().set_input_as_handled()
+	_play_layer.visible = false
+	_idle_s = 0.0
+	Controls.start()
 
 
 ## True while a different feature owns the modal_ui group (this screen removes itself
@@ -94,19 +137,22 @@ func _other_modal_ui_open() -> bool:
 
 
 func _input(event: InputEvent) -> void:
-	# Browsers only lock the pointer from a click, never from Esc, so on the web Esc
-	# leaves the menu up and Resume is the way back.
-	if OS.has_feature("web"):
+	if not _menu_open or not visible:
 		return
-	if _menu_open and visible and event.is_action_pressed("release_mouse"):
-		get_viewport().set_input_as_handled()
-		_resume()
+	if not (event.is_action_pressed("release_mouse") or event.is_action_pressed("ui_cancel")):
+		return
+	# Web Esc cannot re-lock the pointer, but can go Back without starting play.
+	# Controller cancel does not need pointer lock and works in web builds too.
+	if OS.has_feature("web") and not _submenu and not event is InputEventJoypadButton:
+		return
+	get_viewport().set_input_as_handled()
+	_menu_back()
 
 
 func _on_menu_requested() -> void:
 	if visible:
 		if _menu_open:
-			_resume()
+			_menu_back()
 	else:
 		open_menu()
 
@@ -313,14 +359,7 @@ func _show_game_menu(message: String) -> void:
 	_clear("Signed in as %s" % display_name if display_name else "Menu", message)
 	_menu_open = true
 	_resume_button()
-	if _api != null and _api.has_session():
-		if OS.has_feature("web") and not _account.get("discord_linked", false):
-			_link("Link your Discord account", _start_discord.bind(true))
-		_link("Change display name", _show_pick_name.bind(""))
-	_add_esc_menu_links()
-	_game_button("Leave and play offline", _leave, false)
-	if _api != null and _api.has_session():
-		_link("Sign out", _sign_out)
+	_add_menu_sections()
 
 
 ## Menu when no server is configured (native builds default to offline).
@@ -329,9 +368,7 @@ func _show_offline_menu() -> void:
 	_label("The Golden Crown is open. Gamble inside, or leave the gate to find your fortune.")
 	_menu_open = true
 	_resume_button()
-	_add_esc_menu_links()
-	if not OS.has_feature("web"):
-		_link("Quit", get_tree().quit)
+	_add_menu_sections()
 
 
 func _back_to_menu() -> void:
@@ -348,6 +385,20 @@ static func should_auto_play(auto_play: bool, message: String, version_mismatch:
 	return auto_play and message.is_empty() and not version_mismatch
 
 
+## JavaScript that reloads the page with `v=<version>` in the query, keeping the other
+## parameters. The new URL bypasses a cached `index.html`, and `shell.html` adds the
+## same `v` to the engine's JS, WASM and PCK requests, so the browser fetches the
+## server's build instead of looping on the stale cached one (#371).
+static func cache_bust_reload_js(version: String) -> String:
+	return (
+		(
+			"(function(){const u=new URL(window.location.href);u.searchParams.set('v',%s);"
+			% JSON.stringify(version)
+		)
+		+ "window.location.replace(u.toString());})()"
+	)
+
+
 func _show_ready(message: String, auto_play: bool = false) -> void:
 	var version_mismatch := OS.has_feature("web") and not Network.server_version_mismatch.is_empty()
 	if should_auto_play(auto_play, message, version_mismatch):
@@ -357,7 +408,11 @@ func _show_ready(message: String, auto_play: bool = false) -> void:
 	_clear("Signed in as %s" % _account.get("display_name", ""), message)
 	_label("Make money. Lose money. Steal it back. Get lucky.")
 	if version_mismatch:
-		_button("Reload page", func() -> void: JavaScriptBridge.eval("window.location.reload()"))
+		_button(
+			"Reload page",
+			func() -> void:
+				JavaScriptBridge.eval(cache_bust_reload_js(Network.server_version_mismatch))
+		)
 		_game_button("Play", _play, false)
 	else:
 		_game_button("Play", _play, true)
@@ -411,13 +466,53 @@ func _resume_button() -> void:
 	_game_button("Resume", _close, true)
 
 
-## Adds a link for every feature panel registered in ESC_MENU_LINKS_GROUP (Controls,
-## Release notes, ...), alphabetically by label so the order doesn't depend on feature
-## load order.
-func _add_esc_menu_links() -> void:
+## Keep Settings direct; gameplay panels and less-used utilities live one level down.
+func _add_menu_sections() -> void:
+	_add_esc_menu_links("Settings")
+	_link("Activities", _show_menu_section.bind("Activities"))
+	_link("More", _show_menu_section.bind("More"))
+
+
+func _show_menu_section(section: String) -> void:
+	_clear(section, "")
+	_menu_open = true
+	_submenu = true
+	_link("Back to menu", open_menu)
+	_add_esc_menu_links(section)
+	if section == "More":
+		if _api != null and _api.has_session():
+			if OS.has_feature("web") and not _account.get("discord_linked", false):
+				_link("Link your Discord account", _start_discord.bind(true))
+			_link("Change display name", _show_pick_name.bind(""))
+			_link("Sign out", _sign_out)
+		if Network.mode == Network.Mode.CLIENT:
+			_game_button("Leave and play offline", _leave, false)
+		elif not OS.has_feature("web"):
+			_link("Quit", get_tree().quit)
+
+
+func _menu_back() -> void:
+	if _submenu:
+		open_menu()
+	else:
+		_resume()
+
+
+static func _menu_section(label: String) -> String:
+	if label == "Settings":
+		return "Settings"
+	if label in ["Inventory", "GPS", "Leaderboard"]:
+		return "Activities"
+	return "More"
+
+
+## Sorted within each section. Unknown/future links remain reachable under More.
+func _add_esc_menu_links(section: String) -> void:
 	var entries := get_tree().get_nodes_in_group(ESC_MENU_LINKS_GROUP)
 	entries.sort_custom(_esc_menu_label_is_before)
 	for entry: Node in entries:
+		if _menu_section(entry.esc_menu_label()) != section:
+			continue
 		var link := _link(entry.esc_menu_label(), _open_esc_menu_link.bind(entry))
 		if entry.has_method(&"esc_menu_icon"):
 			link.icon = entry.esc_menu_icon()
@@ -478,6 +573,7 @@ func _sign_out() -> void:
 
 func _open() -> void:
 	visible = true
+	_play_layer.visible = false
 	add_to_group(MODAL_GROUP)
 	Controls.pause()
 
@@ -520,21 +616,57 @@ func _build() -> void:
 	var backdrop := ColorRect.new()
 	backdrop.color = Color(0.05, 0.06, 0.08, 0.6)
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	backdrop.theme = UI_THEME
+	_theme = UI_THEME.duplicate()
+	backdrop.theme = _theme
 	add_child(backdrop)
 	var center := CenterContainer.new()
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	backdrop.add_child(center)
-	var panel := PanelContainer.new()
-	panel.custom_minimum_size.x = PANEL_WIDTH
-	center.add_child(panel)
+	_panel = PanelContainer.new()
+	center.add_child(_panel)
+	_scroll = ScrollContainer.new()
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_scroll.follow_focus = true
+	_panel.add_child(_scroll)
 	_box = VBoxContainer.new()
+	_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_box.add_theme_constant_override("separation", 12)
-	panel.add_child(_box)
+	_scroll.add_child(_box)
+	_build_play_prompt()
+	get_viewport().size_changed.connect(_resize_panel)
+	_resize_panel()
+
+
+## Bound the entire form, not just its buttons, so short landscape phones can scroll.
+func _resize_panel() -> void:
+	if not is_inside_tree():
+		return
+	# canvas_items stretches a 1280x720 design canvas down on phones. Compensate
+	# fonts and hit targets so 48 canvas units still render as at least 48 pixels.
+	_ui_scale = clampf(get_viewport().get_stretch_transform().get_scale().x, 0.1, 1.0)
+	_theme.default_font_size = roundi(UI_THEME.default_font_size / _ui_scale)
+	for type: StringName in UI_THEME.get_type_list():
+		for font_size: StringName in UI_THEME.get_font_size_list(type):
+			_theme.set_font_size(
+				font_size, type, roundi(UI_THEME.get_font_size(font_size, type) / _ui_scale)
+			)
+	var available := get_viewport().get_visible_rect().size - Vector2(24, 24) / _ui_scale
+	_panel.custom_minimum_size = Vector2(
+		minf(PANEL_WIDTH / _ui_scale, maxf(available.x, 0)),
+		minf(560 / _ui_scale, maxf(available.y, 0))
+	)
+	_box.add_theme_constant_override("separation", roundi(12 / _ui_scale))
+	for child: Node in _box.get_children():
+		if child is Button:
+			(child as Button).custom_minimum_size.y = 48 / _ui_scale
+		elif child is LineEdit:
+			(child as LineEdit).custom_minimum_size.y = 48 / _ui_scale
 
 
 func _clear(title: String, message: String) -> void:
 	_menu_open = false
+	_submenu = false
+	_scroll.scroll_vertical = 0
 	for child: Node in _box.get_children():
 		_box.remove_child(child)
 		child.queue_free()
@@ -586,7 +718,7 @@ func _field(placeholder: String, secret: bool = false) -> LineEdit:
 	var edit := LineEdit.new()
 	edit.placeholder_text = placeholder
 	edit.secret = secret
-	edit.custom_minimum_size.y = 44
+	edit.custom_minimum_size.y = 48 / _ui_scale
 	_box.add_child(edit)
 	return edit
 
@@ -594,7 +726,8 @@ func _field(placeholder: String, secret: bool = false) -> LineEdit:
 func _button(text: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size.y = 48
+	button.custom_minimum_size.y = 48 / _ui_scale
+	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.pressed.connect(action)
 	_box.add_child(button)
 	return button
@@ -603,7 +736,6 @@ func _button(text: String, action: Callable) -> Button:
 func _link(text: String, action: Callable) -> Button:
 	var button := _button(text, action)
 	button.theme_type_variation = &"SecondaryButton"
-	button.custom_minimum_size.y = 40
 	return button
 
 
@@ -618,3 +750,24 @@ func _focus_default_button() -> void:
 		if child is Button and not (child as Button).disabled:
 			(child as Button).grab_focus()
 			return
+
+
+## Small first-load prompt near the bottom of the screen, on its own layer so it shows
+## while the menu is hidden. A full-screen transparent button accepts a click anywhere.
+func _build_play_prompt() -> void:
+	_play_layer = CanvasLayer.new()
+	_play_layer.layer = layer
+	_play_layer.visible = false
+	add_child(_play_layer)
+	_play_prompt = Button.new()
+	_play_prompt.theme = _theme
+	_play_prompt.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+	_play_prompt.flat = true
+	_play_prompt.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_play_prompt.add_theme_font_size_override("font_size", 28)
+	_play_prompt.add_theme_color_override("font_color", Color.WHITE)
+	_play_prompt.add_theme_color_override("font_hover_color", Color(1, 0.85, 0.4))
+	_play_prompt.add_theme_color_override("font_outline_color", Color.BLACK)
+	_play_prompt.add_theme_constant_override("outline_size", 8)
+	_play_prompt.pressed.connect(_on_play_prompt_pressed)
+	_play_layer.add_child(_play_prompt)

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/utility_pole.tres" id="1_ebohb"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/utility_pole.res" id="2_pt633"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5d68p"]
+size = Vector3(1.6, 6, 0.28)
+
+[node name="UtilityPole" type="StaticBody3D" unique_id=1099702097]
+metadata/prop_id = "utility_pole"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1434548783]
+material_override = ExtResource("1_ebohb")
+mesh = ExtResource("2_pt633")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=808967379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0.020000003)
+shape = SubResource("BoxShape3D_5d68p")

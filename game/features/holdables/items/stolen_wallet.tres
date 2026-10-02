@@ -8,6 +8,7 @@ script = ExtResource("1_script")
 id = "stolen_wallet"
 display_name = "Wallet"
 category = 2
+rarity = 2
 view_scene = ExtResource("2_view")
 weight = 0.2
 sale_value_cents = 300

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://features/casino_hub/casino_gridmap.tscn" id="casino"]
+
+[node name="Room" type="Node3D"]
+
+[node name="Spawn" type="Marker3D" parent="."]
+position = Vector3(0, 1, 16)
+
+[node name="Casino" parent="." instance=ExtResource("casino")]

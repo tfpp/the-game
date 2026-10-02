@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/rotary_phone.tres" id="1_yww3i"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/rotary_phone.res" id="2_vt4vq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mesbb"]
+size = Vector3(0.2793643, 0.201, 0.2)
+
+[node name="RotaryPhone" type="StaticBody3D" unique_id=1138931119]
+metadata/prop_id = "rotary_phone"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1714827956]
+material_override = ExtResource("1_yww3i")
+mesh = ExtResource("2_vt4vq")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=711646928]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.013682157, 0.1005, 0)
+shape = SubResource("BoxShape3D_mesbb")

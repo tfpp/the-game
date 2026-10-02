@@ -4,7 +4,8 @@ World surfaces use nearest-neighbour sampling with mipmaps, matte vertex lightin
 and low-polygon silhouettes. The casino's textured finishes add restrained
 ordered dithering, mapped in world space so textures never swim when the camera
 turns (an earlier affine blend made props appear to slide). This runs in the
-surface shader: no full-screen texture copy, depth-of-field or bloom pass.
+surface shader, independently of the optional viewport effect below; there is no
+depth-of-field or bloom pass.
 
 All fourteen referenced world-image imports are capped at 128 pixels on the longest
 side (square artwork is 128×128; the sky panoramas keep their aspect ratio).
@@ -48,6 +49,40 @@ StandardMaterial3D surfaces keep their plain colour with matte vertex shading: a
 shared grain albedo used to be multiplied in, but it darkened guns, gnomes and other
 dark props to near black. Authored texture/UV setups and custom shaders are preserved.
 This includes streamed props because it uses the existing bounded material styling queue.
+
+## Experimental posterization
+
+Open the main menu (Esc, controller Start, or touch pause), then **Settings →
+Graphics**. The focusable, touch-friendly strength slider applies immediately and
+saves locally through SettingsStore (`posterization`), not to the server/account.
+Zero (the default) is **Off** and skips the fullscreen draw and screen-texture copy.
+Increasing strength reduces RGB steps logarithmically from 256 to 4 per channel
+(roughly 8 to 2 bits/channel, including 32 steps at 50%). This is a retro
+reduced-color approximation, not an exact historical indexed or RGB565 palette.
+
+`posterization.gd` is a child of this feature's existing scene and implements the
+existing `settings_pages` interface; `set_strength(float)` clamps and persists the
+local preference. A single nearest-sampled, no-mipmap screen read in a CanvasLayer
+at 128 quantizes the **completed viewport**, after all current UI layers (0–30).
+A viewport-wide BackBufferCopy immediately before the draw refreshes the screen
+texture, including any UI drawn after earlier screen-reading effects. Both copy
+and draw are disabled at zero strength. Lighting, sky, transparent world surfaces,
+streamed rooms, arms, holdables and generated guns are included in first person
+and F3 alike, as are the HUD, menus, emote wheel and touch controls. The pass ignores
+mouse input and cannot take focus; UI remains interactive. New UI should stay below
+this reserved final-presentation layer.
+No materials, camera masks, physics, networking, resolution or shared state change.
+The same local choice survives respawn, reconnect and new rooms; other players
+choose independently. Headless/dedicated servers do not allocate the effect.
+At nonzero strength it costs one fullscreen copy/pass; no CPU per-frame polling.
+WebXR hides canvas layers while immersive, so this canvas effect is not applied
+inside VR (the saved choice resumes on exit).
+
+Tests: `tests/features/retro_style/test_posterization.gd` plus existing retro and
+settings suites. A real Compatibility-renderer pixel probe checks 3D world and
+equipped-item-layer coverage, lighting gradients, transparent composition, authored
+shader surfaces, HUD/menu inclusion, earlier screen reads, Off identity and resize:
+`xvfb-run -a godot --path game res://tests/features/retro_style/posterization_probe.tscn`.
 
 WebXR owns render scale while immersive and restores the prior scale on exit.
 RetroStyle's UI resize handling leaves that scale intact in either mode.

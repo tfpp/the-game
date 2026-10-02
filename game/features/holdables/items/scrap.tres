@@ -8,6 +8,7 @@ script = ExtResource("1_script")
 id = "scrap"
 display_name = "Scrap Metal"
 category = 2
+rarity = 1
 view_scene = ExtResource("2_view")
 weight = 1.5
 sale_value_cents = 100

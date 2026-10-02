@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/hotel_props/textures/cleaning_cart.png" id="1_khcsf"]
+
+[resource]
+cull_mode = 2
+albedo_texture = ExtResource("1_khcsf")
+metallic_specular = 0.0
+texture_filter = 2
+texture_repeat = false

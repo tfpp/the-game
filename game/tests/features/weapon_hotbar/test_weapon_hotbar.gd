@@ -101,6 +101,7 @@ func _spawn_rig() -> GunRig:
 
 func test_firing_starts_a_recoil_kick_that_moves_the_held_view() -> void:
 	_hand.net_item_id = "pistol"
+	_hand.inventory().collect("ammo:pistol:1")
 	_hand._process(0.0)
 	var view := _hand.held_view()
 	assert_not_null(view)
@@ -113,6 +114,7 @@ func test_firing_starts_a_recoil_kick_that_moves_the_held_view() -> void:
 
 func test_recoil_settles_back_to_the_rest_pose_once_it_finishes() -> void:
 	_hand.net_item_id = "pistol"
+	_hand.inventory().collect("ammo:pistol:1")
 	_hand._process(0.0)
 	var view := _hand.held_view()
 	var base := view.transform

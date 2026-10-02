@@ -198,3 +198,83 @@ func test_penguin_gesture_restores_the_costume_afterwards() -> void:
 	_view._process(0)
 	assert_false(_avatar.human.visible)
 	assert_true(_avatar._left_arm.visible)
+
+
+func test_new_names_use_existing_authority_cooldown_and_timeline() -> void:
+	for emote: String in ["wave", "salute", "cheer"]:
+		_models._reset_session(Network.Mode.OFFLINE)
+		assert_eq(
+			_models.entity._evaluate(1, &"emote", {"name": emote}), NetworkedEntity.Result.ACCEPTED
+		)
+		assert_eq(_models.emote_name(1), emote)
+		assert_eq(
+			_models.entity._evaluate(1, &"emote", {"name": "flip_off"}),
+			NetworkedEntity.Result.DENIED
+		)
+		_models._clock_received = false
+		assert_eq(_models.emote_elapsed(1), -1.0)
+		_models.emote_clock = 1.25
+		assert_almost_eq(_models.emote_elapsed(1), 1.25, 0.001)
+		_models._remove_peer(1)
+		assert_true(_models.emotes.is_empty())
+
+
+func test_new_gestures_show_in_both_views_and_restore_penguin() -> void:
+	for emote: String in ["wave", "salute", "cheer"]:
+		_models._reset_session(Network.Mode.OFFLINE)
+		assert_true(_models._apply_emote(1, {"name": emote}))
+		_models.emote_clock = 1.0
+		_avatar.set_body_type("penguin")
+		_avatar.animate(0.1, Vector3.ZERO, true, 8)
+		_view._process(0)
+		assert_true(_view.first_person.visible)
+		assert_true(_avatar.human.visible)
+		assert_false(_avatar._left_arm.visible)
+		var skeleton: Skeleton3D = _view.first_person.skeleton
+		var wrist := skeleton.find_bone("HandL")
+		var at := (_player.get_node("Camera") as Node3D).to_local(
+			skeleton.to_global(skeleton.get_bone_global_pose(wrist).origin)
+		)
+		assert_lt(at.z, -0.3 * _avatar.height_scale(), "Costume-scaled first-person gesture")
+		var digit := skeleton.find_bone("Index1L")
+		var rest := skeleton.get_bone_rest(digit).basis.get_rotation_quaternion()
+		var alignment := absf(skeleton.get_bone_pose_rotation(digit).dot(rest))
+		if emote == "cheer":
+			assert_lt(alignment, 0.95, "Cheer closes a fist")
+		else:
+			assert_almost_eq(alignment, 1.0, 0.001, "Wave/salute extend fingers")
+		(_player.get_node("Body") as Node3D).show()
+		_view._process(0)
+		assert_false(_view.first_person.visible)
+		_models.emote_clock = PlayerModels.EMOTE_SECONDS
+		_models._process(0)
+		_avatar.animate(0.1, Vector3.ZERO, true, 8)
+		_view._process(0)
+		assert_false(_avatar.human.visible)
+		assert_true(_avatar._left_arm.visible)
+		(_player.get_node("Body") as Node3D).hide()
+
+
+func test_new_gestures_keep_weapon_and_restore_support_hand() -> void:
+	var hand := HAND.instantiate() as Hand
+	hand.peer_id = 1
+	add_child_autofree(hand)
+	hand.set_process(false)
+	hand.net_item_id = "shotgun"
+	for emote: String in ["wave", "salute", "cheer"]:
+		_models._reset_session(Network.Mode.OFFLINE)
+		assert_true(_models._apply_emote(1, {"name": emote}))
+		_models.emote_clock = 1.0
+		_avatar.animate(0.1, Vector3.ZERO, true, 8, 0, true, true)
+		hand._process(0)
+		_view._process(0)
+		assert_eq(hand.net_item_id, "shotgun")
+		assert_true(hand.visible)
+		assert_true(bool(hand._arms.human.material.get_shader_parameter("hide_left_arm")))
+		_models.emote_clock = PlayerModels.EMOTE_SECONDS
+		_models._process(0)
+		_avatar.animate(0.1, Vector3.ZERO, true, 8, 0, true, true)
+		hand._process(0)
+		_view._process(0)
+		assert_false(_view.first_person.visible)
+		assert_false(bool(hand._arms.human.material.get_shader_parameter("hide_left_arm")))

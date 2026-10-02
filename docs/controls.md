@@ -7,7 +7,7 @@ controllers such as Backbone). Online and offline play use the same inputs.
 | --- | --- | --- | --- | --- | --- | --- |
 | Desktop | WASD / arrows | Mouse | Space | C | E | Escape |
 | Controller | Left stick | Right stick | A / Cross (bottom face button) | Right-stick click | B / Circle | Start |
-| Touch | Drag left side | Drag right side | JUMP button | — | USE button | II button |
+| Touch | Drag left side | AIM stick or right-side swipe | JUMP button | — | USE button | II button |
 
 Use works while looking at a nearby interactable. A prompt identifies the target;
 menus and chat suppress interaction. The slot machine is near the initial spawn area.
@@ -21,7 +21,13 @@ elapsed time.
 
 On phones, Resume/Play starts without requesting mouse capture. Touch movement,
 looking, and jumping use separate finger IDs, so they work simultaneously. The web
-shell accounts for iPhone safe areas, and rotation releases active touches.
+shell accounts for iPhone safe areas, and rotation releases active touches. The fixed
+right AIM stick aligns with the idle movement stick below smaller FIRE, USE and JUMP
+buttons. Hold it off-center to turn continuously; lift or center it to stop. It uses the
+controller-stick sensitivity setting. In first person it is off by default; toggle
+**First-person aim joystick** in **Settings > Touch controls** to enable it (saved locally).
+First-person swipe aim always remains available, including the hidden stick's area when
+disabled. In third person AIM stays on and swipes outside it orbit the camera.
 
 A connected controller hides the touch controls automatically. In browsers, a button
 press may be needed before the browser exposes the controller. Start opens/resumes

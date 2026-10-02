@@ -1,0 +1,5 @@
+{
+  "title": "Camera-relative third-person movement",
+  "summary": "Move in the camera direction even when orbiting to face your character.",
+  "notes": ["Make third-person forward, backward and strafe controls follow the camera heading on keyboard, controller and touch without changing weapon aim."]
+}

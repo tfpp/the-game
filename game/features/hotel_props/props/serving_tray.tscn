@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/serving_tray.tres" id="1_0k2ka"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/serving_tray.res" id="2_bdmdw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f8rid"]
+size = Vector3(0.66, 0.02, 0.44)
+
+[node name="ServingTray" type="StaticBody3D" unique_id=765301342]
+metadata/prop_id = "serving_tray"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1827327234]
+material_override = ExtResource("1_0k2ka")
+mesh = ExtResource("2_bdmdw")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1917233382]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+shape = SubResource("BoxShape3D_f8rid")

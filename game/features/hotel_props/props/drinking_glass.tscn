@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/drinking_glass.tres" id="1_74bb0"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/drinking_glass.res" id="2_32wya"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_17gii"]
+size = Vector3(0.082, 0.11, 0.082)
+
+[node name="DrinkingGlass" type="StaticBody3D" unique_id=1265806178]
+metadata/prop_id = "drinking_glass"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=916464089]
+material_override = ExtResource("1_74bb0")
+mesh = ExtResource("2_32wya")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1142418113]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.055, 0)
+shape = SubResource("BoxShape3D_17gii")

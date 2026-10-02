@@ -1,0 +1,752 @@
+[
+  {
+    "name": "roulette_table",
+    "texture_size": 128,
+    "vertices": 184,
+    "triangles": 324,
+    "dimensions_m": [
+      2.84,
+      1.42,
+      0.98
+    ],
+    "uv_zones": 4,
+    "texture": "textures/roulette_table.png",
+    "obj": "models/roulette_table/roulette_table.obj",
+    "glb": "models/roulette_table/roulette_table.glb"
+  },
+  {
+    "name": "blackjack_table",
+    "texture_size": 128,
+    "vertices": 294,
+    "triangles": 508,
+    "dimensions_m": [
+      2.6993,
+      1.3197,
+      0.9
+    ],
+    "uv_zones": 4,
+    "texture": "textures/blackjack_table.png",
+    "obj": "models/blackjack_table/blackjack_table.obj",
+    "glb": "models/blackjack_table/blackjack_table.glb"
+  },
+  {
+    "name": "poker_table",
+    "texture_size": 128,
+    "vertices": 160,
+    "triangles": 296,
+    "dimensions_m": [
+      2.415,
+      1.4175,
+      0.865
+    ],
+    "uv_zones": 4,
+    "texture": "textures/poker_table.png",
+    "obj": "models/poker_table/poker_table.obj",
+    "glb": "models/poker_table/poker_table.glb"
+  },
+  {
+    "name": "craps_table",
+    "texture_size": 128,
+    "vertices": 112,
+    "triangles": 168,
+    "dimensions_m": [
+      3.06,
+      1.6,
+      1.1925
+    ],
+    "uv_zones": 4,
+    "texture": "textures/craps_table.png",
+    "obj": "models/craps_table/craps_table.obj",
+    "glb": "models/craps_table/craps_table.glb"
+  },
+  {
+    "name": "baccarat_table",
+    "texture_size": 128,
+    "vertices": 160,
+    "triangles": 296,
+    "dimensions_m": [
+      3.675,
+      1.7325,
+      0.865
+    ],
+    "uv_zones": 4,
+    "texture": "textures/baccarat_table.png",
+    "obj": "models/baccarat_table/baccarat_table.obj",
+    "glb": "models/baccarat_table/baccarat_table.glb"
+  },
+  {
+    "name": "slot_machine",
+    "texture_size": 128,
+    "vertices": 166,
+    "triangles": 280,
+    "dimensions_m": [
+      0.715,
+      0.65,
+      1.4
+    ],
+    "uv_zones": 4,
+    "texture": "textures/slot_machine.png",
+    "obj": "models/slot_machine/slot_machine.obj",
+    "glb": "models/slot_machine/slot_machine.glb"
+  },
+  {
+    "name": "video_poker_machine",
+    "texture_size": 128,
+    "vertices": 56,
+    "triangles": 84,
+    "dimensions_m": [
+      0.68,
+      0.7616,
+      1.4925
+    ],
+    "uv_zones": 4,
+    "texture": "textures/video_poker_machine.png",
+    "obj": "models/video_poker_machine/video_poker_machine.obj",
+    "glb": "models/video_poker_machine/video_poker_machine.glb"
+  },
+  {
+    "name": "change_machine",
+    "texture_size": 128,
+    "vertices": 48,
+    "triangles": 72,
+    "dimensions_m": [
+      0.58,
+      0.525,
+      1.35
+    ],
+    "uv_zones": 4,
+    "texture": "textures/change_machine.png",
+    "obj": "models/change_machine/change_machine.obj",
+    "glb": "models/change_machine/change_machine.glb"
+  },
+  {
+    "name": "cashier_counter",
+    "texture_size": 128,
+    "vertices": 40,
+    "triangles": 60,
+    "dimensions_m": [
+      2.64,
+      0.87,
+      1.1375
+    ],
+    "uv_zones": 4,
+    "texture": "textures/cashier_counter.png",
+    "obj": "models/cashier_counter/cashier_counter.obj",
+    "glb": "models/cashier_counter/cashier_counter.glb"
+  },
+  {
+    "name": "cashier_cage_window",
+    "texture_size": 128,
+    "vertices": 216,
+    "triangles": 352,
+    "dimensions_m": [
+      1.78,
+      0.2,
+      1.555
+    ],
+    "uv_zones": 4,
+    "texture": "textures/cashier_cage_window.png",
+    "obj": "models/cashier_cage_window/cashier_cage_window.obj",
+    "glb": "models/cashier_cage_window/cashier_cage_window.glb"
+  },
+  {
+    "name": "chip_rack",
+    "texture_size": 64,
+    "vertices": 272,
+    "triangles": 456,
+    "dimensions_m": [
+      0.394,
+      0.244,
+      0.082
+    ],
+    "uv_zones": 4,
+    "texture": "textures/chip_rack.png",
+    "obj": "models/chip_rack/chip_rack.obj",
+    "glb": "models/chip_rack/chip_rack.glb"
+  },
+  {
+    "name": "chip_stack",
+    "texture_size": 32,
+    "vertices": 192,
+    "triangles": 352,
+    "dimensions_m": [
+      0.039,
+      0.039,
+      0.0303
+    ],
+    "uv_zones": 4,
+    "texture": "textures/chip_stack.png",
+    "obj": "models/chip_stack/chip_stack.obj",
+    "glb": "models/chip_stack/chip_stack.glb"
+  },
+  {
+    "name": "chip_tray",
+    "texture_size": 64,
+    "vertices": 272,
+    "triangles": 456,
+    "dimensions_m": [
+      0.514,
+      0.314,
+      0.082
+    ],
+    "uv_zones": 4,
+    "texture": "textures/chip_tray.png",
+    "obj": "models/chip_tray/chip_tray.obj",
+    "glb": "models/chip_tray/chip_tray.glb"
+  },
+  {
+    "name": "playing_card",
+    "texture_size": 32,
+    "vertices": 8,
+    "triangles": 12,
+    "dimensions_m": [
+      0.063,
+      0.088,
+      0.0008
+    ],
+    "uv_zones": 4,
+    "texture": "textures/playing_card.png",
+    "obj": "models/playing_card/playing_card.obj",
+    "glb": "models/playing_card/playing_card.glb"
+  },
+  {
+    "name": "card_deck",
+    "texture_size": 32,
+    "vertices": 8,
+    "triangles": 12,
+    "dimensions_m": [
+      0.066,
+      0.091,
+      0.016
+    ],
+    "uv_zones": 4,
+    "texture": "textures/card_deck.png",
+    "obj": "models/card_deck/card_deck.obj",
+    "glb": "models/card_deck/card_deck.glb"
+  },
+  {
+    "name": "card_shoe",
+    "texture_size": 64,
+    "vertices": 48,
+    "triangles": 72,
+    "dimensions_m": [
+      0.161,
+      0.2825,
+      0.1375
+    ],
+    "uv_zones": 4,
+    "texture": "textures/card_shoe.png",
+    "obj": "models/card_shoe/card_shoe.obj",
+    "glb": "models/card_shoe/card_shoe.glb"
+  },
+  {
+    "name": "discard_tray",
+    "texture_size": 32,
+    "vertices": 32,
+    "triangles": 48,
+    "dimensions_m": [
+      0.132,
+      0.1415,
+      0.085
+    ],
+    "uv_zones": 4,
+    "texture": "textures/discard_tray.png",
+    "obj": "models/discard_tray/discard_tray.obj",
+    "glb": "models/discard_tray/discard_tray.glb"
+  },
+  {
+    "name": "roulette_wheel",
+    "texture_size": 128,
+    "vertices": 390,
+    "triangles": 756,
+    "dimensions_m": [
+      0.766,
+      0.766,
+      0.26
+    ],
+    "uv_zones": 4,
+    "texture": "textures/roulette_wheel.png",
+    "obj": "models/roulette_wheel/roulette_wheel.obj",
+    "glb": "models/roulette_wheel/roulette_wheel.glb"
+  },
+  {
+    "name": "roulette_ball",
+    "texture_size": 16,
+    "vertices": 52,
+    "triangles": 100,
+    "dimensions_m": [
+      0.0171,
+      0.018,
+      0.018
+    ],
+    "uv_zones": 4,
+    "texture": "textures/roulette_ball.png",
+    "obj": "models/roulette_ball/roulette_ball.obj",
+    "glb": "models/roulette_ball/roulette_ball.glb"
+  },
+  {
+    "name": "craps_dice",
+    "texture_size": 32,
+    "vertices": 16,
+    "triangles": 24,
+    "dimensions_m": [
+      0.047,
+      0.03,
+      0.018
+    ],
+    "uv_zones": 4,
+    "texture": "textures/craps_dice.png",
+    "obj": "models/craps_dice/craps_dice.obj",
+    "glb": "models/craps_dice/craps_dice.glb"
+  },
+  {
+    "name": "dealer_button",
+    "texture_size": 32,
+    "vertices": 24,
+    "triangles": 44,
+    "dimensions_m": [
+      0.05,
+      0.05,
+      0.005
+    ],
+    "uv_zones": 4,
+    "texture": "textures/dealer_button.png",
+    "obj": "models/dealer_button/dealer_button.obj",
+    "glb": "models/dealer_button/dealer_button.glb"
+  },
+  {
+    "name": "betting_plaque",
+    "texture_size": 32,
+    "vertices": 40,
+    "triangles": 60,
+    "dimensions_m": [
+      0.075,
+      0.115,
+      0.0045
+    ],
+    "uv_zones": 4,
+    "texture": "textures/betting_plaque.png",
+    "obj": "models/betting_plaque/betting_plaque.obj",
+    "glb": "models/betting_plaque/betting_plaque.glb"
+  },
+  {
+    "name": "cash_bundle",
+    "texture_size": 32,
+    "vertices": 32,
+    "triangles": 48,
+    "dimensions_m": [
+      0.156,
+      0.072,
+      0.0275
+    ],
+    "uv_zones": 4,
+    "texture": "textures/cash_bundle.png",
+    "obj": "models/cash_bundle/cash_bundle.obj",
+    "glb": "models/cash_bundle/cash_bundle.glb"
+  },
+  {
+    "name": "money_clip",
+    "texture_size": 32,
+    "vertices": 24,
+    "triangles": 36,
+    "dimensions_m": [
+      0.076,
+      0.065,
+      0.012
+    ],
+    "uv_zones": 4,
+    "texture": "textures/money_clip.png",
+    "obj": "models/money_clip/money_clip.obj",
+    "glb": "models/money_clip/money_clip.glb"
+  },
+  {
+    "name": "ledger_book",
+    "texture_size": 64,
+    "vertices": 32,
+    "triangles": 48,
+    "dimensions_m": [
+      0.266,
+      0.33,
+      0.0505
+    ],
+    "uv_zones": 4,
+    "texture": "textures/ledger_book.png",
+    "obj": "models/ledger_book/ledger_book.obj",
+    "glb": "models/ledger_book/ledger_book.glb"
+  },
+  {
+    "name": "desk_telephone",
+    "texture_size": 64,
+    "vertices": 170,
+    "triangles": 280,
+    "dimensions_m": [
+      0.2794,
+      0.2,
+      0.201
+    ],
+    "uv_zones": 4,
+    "texture": "textures/desk_telephone.png",
+    "obj": "models/desk_telephone/desk_telephone.obj",
+    "glb": "models/desk_telephone/desk_telephone.glb"
+  },
+  {
+    "name": "security_monitor",
+    "texture_size": 128,
+    "vertices": 88,
+    "triangles": 140,
+    "dimensions_m": [
+      0.5,
+      0.4155,
+      0.445
+    ],
+    "uv_zones": 4,
+    "texture": "textures/security_monitor.png",
+    "obj": "models/security_monitor/security_monitor.obj",
+    "glb": "models/security_monitor/security_monitor.glb"
+  },
+  {
+    "name": "security_camera",
+    "texture_size": 64,
+    "vertices": 82,
+    "triangles": 140,
+    "dimensions_m": [
+      0.14,
+      0.3749,
+      0.16
+    ],
+    "uv_zones": 4,
+    "texture": "textures/security_camera.png",
+    "obj": "models/security_camera/security_camera.obj",
+    "glb": "models/security_camera/security_camera.glb"
+  },
+  {
+    "name": "wall_clock",
+    "texture_size": 64,
+    "vertices": 48,
+    "triangles": 72,
+    "dimensions_m": [
+      0.316,
+      0.0675,
+      0.33
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wall_clock.png",
+    "obj": "models/wall_clock/wall_clock.obj",
+    "glb": "models/wall_clock/wall_clock.glb"
+  },
+  {
+    "name": "table_lamp",
+    "texture_size": 64,
+    "vertices": 64,
+    "triangles": 108,
+    "dimensions_m": [
+      0.298,
+      0.19,
+      0.3909
+    ],
+    "uv_zones": 4,
+    "texture": "textures/table_lamp.png",
+    "obj": "models/table_lamp/table_lamp.obj",
+    "glb": "models/table_lamp/table_lamp.glb"
+  },
+  {
+    "name": "pendant_lamp",
+    "texture_size": 64,
+    "vertices": 192,
+    "triangles": 324,
+    "dimensions_m": [
+      0.5,
+      0.4755,
+      0.9725
+    ],
+    "uv_zones": 4,
+    "texture": "textures/pendant_lamp.png",
+    "obj": "models/pendant_lamp/pendant_lamp.obj",
+    "glb": "models/pendant_lamp/pendant_lamp.glb"
+  },
+  {
+    "name": "wall_sconce",
+    "texture_size": 64,
+    "vertices": 40,
+    "triangles": 64,
+    "dimensions_m": [
+      0.16,
+      0.205,
+      0.34
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wall_sconce.png",
+    "obj": "models/wall_sconce/wall_sconce.obj",
+    "glb": "models/wall_sconce/wall_sconce.glb"
+  },
+  {
+    "name": "casino_stool",
+    "texture_size": 64,
+    "vertices": 140,
+    "triangles": 256,
+    "dimensions_m": [
+      0.41,
+      0.41,
+      0.8095
+    ],
+    "uv_zones": 4,
+    "texture": "textures/casino_stool.png",
+    "obj": "models/casino_stool/casino_stool.obj",
+    "glb": "models/casino_stool/casino_stool.glb"
+  },
+  {
+    "name": "dealer_chair",
+    "texture_size": 64,
+    "vertices": 64,
+    "triangles": 96,
+    "dimensions_m": [
+      0.45,
+      0.4575,
+      1.025
+    ],
+    "uv_zones": 4,
+    "texture": "textures/dealer_chair.png",
+    "obj": "models/dealer_chair/dealer_chair.obj",
+    "glb": "models/dealer_chair/dealer_chair.glb"
+  },
+  {
+    "name": "lounge_armchair",
+    "texture_size": 128,
+    "vertices": 72,
+    "triangles": 108,
+    "dimensions_m": [
+      0.87,
+      0.82,
+      0.96
+    ],
+    "uv_zones": 4,
+    "texture": "textures/lounge_armchair.png",
+    "obj": "models/lounge_armchair/lounge_armchair.obj",
+    "glb": "models/lounge_armchair/lounge_armchair.glb"
+  },
+  {
+    "name": "leather_sofa",
+    "texture_size": 128,
+    "vertices": 80,
+    "triangles": 120,
+    "dimensions_m": [
+      1.76,
+      0.82,
+      0.96
+    ],
+    "uv_zones": 4,
+    "texture": "textures/leather_sofa.png",
+    "obj": "models/leather_sofa/leather_sofa.obj",
+    "glb": "models/leather_sofa/leather_sofa.glb"
+  },
+  {
+    "name": "coffee_table",
+    "texture_size": 128,
+    "vertices": 48,
+    "triangles": 72,
+    "dimensions_m": [
+      1.15,
+      0.6,
+      0.4625
+    ],
+    "uv_zones": 4,
+    "texture": "textures/coffee_table.png",
+    "obj": "models/coffee_table/coffee_table.obj",
+    "glb": "models/coffee_table/coffee_table.glb"
+  },
+  {
+    "name": "cocktail_table",
+    "texture_size": 64,
+    "vertices": 72,
+    "triangles": 132,
+    "dimensions_m": [
+      0.62,
+      0.62,
+      0.7525
+    ],
+    "uv_zones": 4,
+    "texture": "textures/cocktail_table.png",
+    "obj": "models/cocktail_table/cocktail_table.obj",
+    "glb": "models/cocktail_table/cocktail_table.glb"
+  },
+  {
+    "name": "ashtray",
+    "texture_size": 32,
+    "vertices": 60,
+    "triangles": 116,
+    "dimensions_m": [
+      0.14,
+      0.14,
+      0.027
+    ],
+    "uv_zones": 4,
+    "texture": "textures/ashtray.png",
+    "obj": "models/ashtray/ashtray.obj",
+    "glb": "models/ashtray/ashtray.glb"
+  },
+  {
+    "name": "cigarette_case",
+    "texture_size": 32,
+    "vertices": 16,
+    "triangles": 24,
+    "dimensions_m": [
+      0.081,
+      0.097,
+      0.012
+    ],
+    "uv_zones": 4,
+    "texture": "textures/cigarette_case.png",
+    "obj": "models/cigarette_case/cigarette_case.obj",
+    "glb": "models/cigarette_case/cigarette_case.glb"
+  },
+  {
+    "name": "whiskey_bottle",
+    "texture_size": 64,
+    "vertices": 88,
+    "triangles": 164,
+    "dimensions_m": [
+      0.09,
+      0.094,
+      0.3235
+    ],
+    "uv_zones": 4,
+    "texture": "textures/whiskey_bottle.png",
+    "obj": "models/whiskey_bottle/whiskey_bottle.obj",
+    "glb": "models/whiskey_bottle/whiskey_bottle.glb"
+  },
+  {
+    "name": "rocks_glass",
+    "texture_size": 32,
+    "vertices": 96,
+    "triangles": 184,
+    "dimensions_m": [
+      0.088,
+      0.088,
+      0.094
+    ],
+    "uv_zones": 4,
+    "texture": "textures/rocks_glass.png",
+    "obj": "models/rocks_glass/rocks_glass.obj",
+    "glb": "models/rocks_glass/rocks_glass.glb"
+  },
+  {
+    "name": "cocktail_glass",
+    "texture_size": 32,
+    "vertices": 124,
+    "triangles": 232,
+    "dimensions_m": [
+      0.094,
+      0.094,
+      0.127
+    ],
+    "uv_zones": 4,
+    "texture": "textures/cocktail_glass.png",
+    "obj": "models/cocktail_glass/cocktail_glass.obj",
+    "glb": "models/cocktail_glass/cocktail_glass.glb"
+  },
+  {
+    "name": "ice_bucket",
+    "texture_size": 64,
+    "vertices": 172,
+    "triangles": 308,
+    "dimensions_m": [
+      0.296,
+      0.216,
+      0.2415
+    ],
+    "uv_zones": 4,
+    "texture": "textures/ice_bucket.png",
+    "obj": "models/ice_bucket/ice_bucket.obj",
+    "glb": "models/ice_bucket/ice_bucket.glb"
+  },
+  {
+    "name": "serving_tray",
+    "texture_size": 64,
+    "vertices": 80,
+    "triangles": 156,
+    "dimensions_m": [
+      0.6,
+      0.4,
+      0.021
+    ],
+    "uv_zones": 4,
+    "texture": "textures/serving_tray.png",
+    "obj": "models/serving_tray/serving_tray.obj",
+    "glb": "models/serving_tray/serving_tray.glb"
+  },
+  {
+    "name": "velvet_rope",
+    "texture_size": 64,
+    "vertices": 208,
+    "triangles": 368,
+    "dimensions_m": [
+      1.696,
+      0.046,
+      0.2379
+    ],
+    "uv_zones": 4,
+    "texture": "textures/velvet_rope.png",
+    "obj": "models/velvet_rope/velvet_rope.obj",
+    "glb": "models/velvet_rope/velvet_rope.glb"
+  },
+  {
+    "name": "brass_stanchion",
+    "texture_size": 64,
+    "vertices": 174,
+    "triangles": 332,
+    "dimensions_m": [
+      0.3315,
+      0.34,
+      0.969
+    ],
+    "uv_zones": 4,
+    "texture": "textures/brass_stanchion.png",
+    "obj": "models/brass_stanchion/brass_stanchion.obj",
+    "glb": "models/brass_stanchion/brass_stanchion.glb"
+  },
+  {
+    "name": "illuminated_exit_sign",
+    "texture_size": 64,
+    "vertices": 32,
+    "triangles": 48,
+    "dimensions_m": [
+      0.38,
+      0.083,
+      0.2065
+    ],
+    "uv_zones": 4,
+    "texture": "textures/illuminated_exit_sign.png",
+    "obj": "models/illuminated_exit_sign/illuminated_exit_sign.obj",
+    "glb": "models/illuminated_exit_sign/illuminated_exit_sign.glb"
+  },
+  {
+    "name": "art_deco_sign",
+    "texture_size": 128,
+    "vertices": 64,
+    "triangles": 96,
+    "dimensions_m": [
+      1.12,
+      0.125,
+      0.78
+    ],
+    "uv_zones": 4,
+    "texture": "textures/art_deco_sign.png",
+    "obj": "models/art_deco_sign/art_deco_sign.obj",
+    "glb": "models/art_deco_sign/art_deco_sign.glb"
+  },
+  {
+    "name": "coat_rack",
+    "texture_size": 128,
+    "vertices": 236,
+    "triangles": 416,
+    "dimensions_m": [
+      0.5351,
+      0.5351,
+      1.7882
+    ],
+    "uv_zones": 4,
+    "texture": "textures/coat_rack.png",
+    "obj": "models/coat_rack/coat_rack.obj",
+    "glb": "models/coat_rack/coat_rack.glb"
+  }
+]

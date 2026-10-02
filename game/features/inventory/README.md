@@ -1,6 +1,6 @@
 # Inventory and clothing
 
-Press **I**, the controller **View/Back** button, or **Inventory** in the Esc menu.
+Press **I**, the controller **View/Back** button, or **Esc → Activities → Inventory**.
 The screen uses the project's Kenney panel and button assets. It shows a live
 character preview, equipment and an eight-slot backpack. The top-right coin and
 balance read the existing wallet and never occupy a slot. Select an item to equip,
@@ -21,8 +21,10 @@ procedural clothing. `ModelIconRenderer` automatically frames mesh bounds in a
 private transparent 128×128 viewport. Each item renders once, then shares a cached
 texture across controls; the viewport stops updating between jobs. The cache is
 limited to 128 textures and headless servers allocate no rendering viewport.
-`ItemDefinition.icon_view_direction` controls the viewing angle. The money balance
-keeps its separate coin symbol. [`loot-models.md`](../../../docs/design/loot-models.md)
+`ItemDefinition.icon_view_direction` controls the viewing angle. Valuable icons have a rarity-colored border, leaving the actual model colors
+intact. Stash entries, backpack tooltips and the selected item's description show
+the rarity name and pawn price; tap/select an item on touch or controller to read
+it without needing hover. The money balance keeps its separate coin symbol. [`loot-models.md`](../../../docs/design/loot-models.md)
 includes actual inventory screenshots and a capture command.
 
 Shirts and pants have fixed colors. Find other colors to change your outfit;
@@ -38,6 +40,11 @@ Clients request slot operations; they cannot supply new item IDs or target peers
 The server checks sender ownership, slot bounds, bag capacity and pickup distance.
 Repeated pickup/drop requests cannot duplicate items. The avatar and held arms
 read replicated clothing, so other players see equipment changes too.
+
+Classic ammunition packs automatically collect into the backpack and consume a slot.
+The held matching gun draws one round per shot; partial pack IDs preserve the exact
+remaining count through storage, drops and persistence. See
+[ammunition prices and controls](../gun_machine/README.md#classic-ammunition).
 
 Inventory survives an in-session combat respawn. World pickups follow the existing
 one-use pickup system.

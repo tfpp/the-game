@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/street_name_sign.tres" id="1_5cy40"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/street_name_sign.res" id="2_qyxr7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8u2nh"]
+size = Vector3(0.9, 2.85, 0.73)
+
+[node name="StreetNameSign" type="StaticBody3D" unique_id=599926105]
+metadata/prop_id = "street_name_sign"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=314519817]
+material_override = ExtResource("1_5cy40")
+mesh = ExtResource("2_qyxr7")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=428038709]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.425, 0)
+shape = SubResource("BoxShape3D_8u2nh")

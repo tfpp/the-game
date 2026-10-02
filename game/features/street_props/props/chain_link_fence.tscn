@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/chain_link_fence.tres" id="1_ayxut"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/chain_link_fence.res" id="2_mh8v1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e3w86"]
+size = Vector3(2.0700002, 2, 0.07)
+
+[node name="ChainLinkFence" type="StaticBody3D" unique_id=509295990]
+metadata/prop_id = "chain_link_fence"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1886905043]
+material_override = ExtResource("1_ayxut")
+mesh = ExtResource("2_mh8v1")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=955654389]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1920929e-07, 1, 0)
+shape = SubResource("BoxShape3D_e3w86")

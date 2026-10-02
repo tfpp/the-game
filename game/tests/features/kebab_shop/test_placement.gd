@@ -1,7 +1,7 @@
 extends GutTest
 ## The counter lives in the food court wing (features/food_court), off the gaming floor.
 
-const ROOM := preload("res://world/room.tscn")
+const ROOM := preload("res://features/casino_hub/gridmap/playable.tscn")
 const COURT := preload("res://features/food_court/feature.tscn")
 const SHOP := preload("res://features/kebab_shop/feature.tscn")
 const GPS := preload("res://features/gps/feature.tscn")

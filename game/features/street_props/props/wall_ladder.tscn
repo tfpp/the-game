@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/wall_ladder.tres" id="1_x7ebq"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/wall_ladder.res" id="2_6kp4e"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cdgbg"]
+size = Vector3(0.495, 2.8, 0.192)
+
+[node name="WallLadder" type="StaticBody3D" unique_id=609819617]
+metadata/prop_id = "wall_ladder"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=861713346]
+material_override = ExtResource("1_x7ebq")
+mesh = ExtResource("2_6kp4e")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=2070372494]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, -0.074)
+shape = SubResource("BoxShape3D_cdgbg")

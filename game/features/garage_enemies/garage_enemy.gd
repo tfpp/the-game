@@ -193,12 +193,22 @@ func _strike() -> void:
 		hit = randf() < GarageEnemyTiers.hit_chance(_target_speed)
 	entity.send_event(&"attack", {"to": point, "hit": hit})
 	if hit:
-		var combat := get_tree().get_first_node_in_group(&"combat")
+		var combat := _live_combat()
 		if combat != null:
 			# The victim is also the "attacker", so dying to an enemy never awards
 			# another player a kill.
 			var peer := player.get_multiplayer_authority()
 			combat.call("apply_damage", peer, float(_info["damage"]), peer)
+
+
+## The Combat that should take the hit. A world being torn down (a network mode change
+## or session reset) can leave its Combat in the group until the end of the frame; skip
+## it so damage always lands on the live one.
+func _live_combat() -> Node:
+	for combat: Node in get_tree().get_nodes_in_group(&"combat"):
+		if not combat.is_queued_for_deletion():
+			return combat
+	return null
 
 
 ## Server-only: any weapon's hit. Being shot turns the enemy towards its attacker.
@@ -310,4 +320,11 @@ func _parent_direction(direction: Vector3) -> Vector3:
 ## Only pose the skinned rig for cameras close enough to see it.
 func _near_camera() -> bool:
 	var camera := get_viewport().get_camera_3d()
-	return camera == null or camera.global_position.distance_to(global_position) < ANIMATE_RADIUS
+	if camera == null:
+		return true
+	if (_model.avatar.human.surface.layers & camera.cull_mask) == 0:
+		return false
+	return (
+		camera.global_position.distance_squared_to(global_position)
+		< ANIMATE_RADIUS * ANIMATE_RADIUS
+	)

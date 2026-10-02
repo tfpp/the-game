@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/walnut-pedestal-cocktail-table.tres" id="1_76swt"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/walnut-pedestal-cocktail-table.res" id="2_lcbib"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qa655"]
+size = Vector3(0.72, 1.045, 0.6235383)
+
+[node name="WalnutPedestalCocktailTable" type="StaticBody3D" unique_id=976628002]
+metadata/prop_id = "walnut-pedestal-cocktail-table"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=572567365]
+material_override = ExtResource("1_76swt")
+mesh = ExtResource("2_lcbib")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1794778389]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5225, 0)
+shape = SubResource("BoxShape3D_qa655")

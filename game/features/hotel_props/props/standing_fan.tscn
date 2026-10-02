@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/standing_fan.tres" id="1_f21or"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/standing_fan.res" id="2_hfulo"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4lc7n"]
+size = Vector3(0.46, 1.23, 0.34)
+
+[node name="StandingFan" type="StaticBody3D" unique_id=806959328]
+metadata/prop_id = "standing_fan"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1821265084]
+material_override = ExtResource("1_f21or")
+mesh = ExtResource("2_hfulo")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=632696622]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.615, 0)
+shape = SubResource("BoxShape3D_4lc7n")

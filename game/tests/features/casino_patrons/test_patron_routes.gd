@@ -2,7 +2,7 @@ extends GutTest
 ## Every patron route leg is clear for a patron (and a standing player) on the
 ## real casino floor, with the slots and roulette loaded.
 
-const ROOM := preload("res://world/room.tscn")
+const ROOM := preload("res://features/casino_hub/gridmap/playable.tscn")
 const SLOTS := preload("res://features/slot_machine/feature.tscn")
 const ROULETTE := preload("res://features/roulette/feature.tscn")
 

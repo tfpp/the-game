@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/rolling_shutter.tres" id="1_bsj4r"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/rolling_shutter.res" id="2_xv2mj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0jv84"]
+size = Vector3(2.5, 2.4850001, 0.23)
+
+[node name="RollingShutter" type="StaticBody3D" unique_id=441628212]
+metadata/prop_id = "rolling_shutter"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=514093852]
+material_override = ExtResource("1_bsj4r")
+mesh = ExtResource("2_xv2mj")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1941488661]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2425001, 0)
+shape = SubResource("BoxShape3D_0jv84")

@@ -1,0 +1,752 @@
+[
+  {
+    "name": "street_lamp",
+    "texture_size": 128,
+    "vertices": 88,
+    "triangles": 148,
+    "dimensions_m": [
+      1.605,
+      0.32,
+      5.145
+    ],
+    "uv_zones": 4,
+    "texture": "textures/street_lamp.png",
+    "obj": "models/street_lamp/street_lamp.obj",
+    "glb": "models/street_lamp/street_lamp.glb"
+  },
+  {
+    "name": "double_street_lamp",
+    "texture_size": 128,
+    "vertices": 136,
+    "triangles": 228,
+    "dimensions_m": [
+      2.89,
+      0.32,
+      5.145
+    ],
+    "uv_zones": 4,
+    "texture": "textures/double_street_lamp.png",
+    "obj": "models/double_street_lamp/double_street_lamp.obj",
+    "glb": "models/double_street_lamp/double_street_lamp.glb"
+  },
+  {
+    "name": "wall_lamp",
+    "texture_size": 64,
+    "vertices": 56,
+    "triangles": 96,
+    "dimensions_m": [
+      0.44,
+      0.545,
+      0.42
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wall_lamp.png",
+    "obj": "models/wall_lamp/wall_lamp.obj",
+    "glb": "models/wall_lamp/wall_lamp.glb"
+  },
+  {
+    "name": "bulkhead_lamp",
+    "texture_size": 64,
+    "vertices": 56,
+    "triangles": 84,
+    "dimensions_m": [
+      0.42,
+      0.16,
+      0.36
+    ],
+    "uv_zones": 4,
+    "texture": "textures/bulkhead_lamp.png",
+    "obj": "models/bulkhead_lamp/bulkhead_lamp.obj",
+    "glb": "models/bulkhead_lamp/bulkhead_lamp.glb"
+  },
+  {
+    "name": "fluorescent_fixture",
+    "texture_size": 64,
+    "vertices": 56,
+    "triangles": 92,
+    "dimensions_m": [
+      1.25,
+      0.22,
+      0.17
+    ],
+    "uv_zones": 4,
+    "texture": "textures/fluorescent_fixture.png",
+    "obj": "models/fluorescent_fixture/fluorescent_fixture.obj",
+    "glb": "models/fluorescent_fixture/fluorescent_fixture.glb"
+  },
+  {
+    "name": "utility_pole",
+    "texture_size": 128,
+    "vertices": 232,
+    "triangles": 432,
+    "dimensions_m": [
+      1.6,
+      0.28,
+      6.0
+    ],
+    "uv_zones": 4,
+    "texture": "textures/utility_pole.png",
+    "obj": "models/utility_pole/utility_pole.obj",
+    "glb": "models/utility_pole/utility_pole.glb"
+  },
+  {
+    "name": "street_bench",
+    "texture_size": 128,
+    "vertices": 136,
+    "triangles": 212,
+    "dimensions_m": [
+      1.8,
+      0.5575,
+      1.08
+    ],
+    "uv_zones": 4,
+    "texture": "textures/street_bench.png",
+    "obj": "models/street_bench/street_bench.obj",
+    "glb": "models/street_bench/street_bench.glb"
+  },
+  {
+    "name": "bus_stop_bench",
+    "texture_size": 128,
+    "vertices": 104,
+    "triangles": 156,
+    "dimensions_m": [
+      1.8,
+      0.5575,
+      1.08
+    ],
+    "uv_zones": 4,
+    "texture": "textures/bus_stop_bench.png",
+    "obj": "models/bus_stop_bench/bus_stop_bench.obj",
+    "glb": "models/bus_stop_bench/bus_stop_bench.glb"
+  },
+  {
+    "name": "bus_shelter",
+    "texture_size": 128,
+    "vertices": 104,
+    "triangles": 156,
+    "dimensions_m": [
+      3.1,
+      1.4,
+      2.49
+    ],
+    "uv_zones": 4,
+    "texture": "textures/bus_shelter.png",
+    "obj": "models/bus_shelter/bus_shelter.obj",
+    "glb": "models/bus_shelter/bus_shelter.glb"
+  },
+  {
+    "name": "phone_booth",
+    "texture_size": 128,
+    "vertices": 112,
+    "triangles": 172,
+    "dimensions_m": [
+      1.02,
+      1.033,
+      2.3
+    ],
+    "uv_zones": 4,
+    "texture": "textures/phone_booth.png",
+    "obj": "models/phone_booth/phone_booth.obj",
+    "glb": "models/phone_booth/phone_booth.glb"
+  },
+  {
+    "name": "post_box",
+    "texture_size": 64,
+    "vertices": 40,
+    "triangles": 60,
+    "dimensions_m": [
+      0.55,
+      0.555,
+      1.13
+    ],
+    "uv_zones": 4,
+    "texture": "textures/post_box.png",
+    "obj": "models/post_box/post_box.obj",
+    "glb": "models/post_box/post_box.glb"
+  },
+  {
+    "name": "newspaper_box",
+    "texture_size": 64,
+    "vertices": 76,
+    "triangles": 120,
+    "dimensions_m": [
+      0.55,
+      0.555,
+      1.13
+    ],
+    "uv_zones": 4,
+    "texture": "textures/newspaper_box.png",
+    "obj": "models/newspaper_box/newspaper_box.obj",
+    "glb": "models/newspaper_box/newspaper_box.glb"
+  },
+  {
+    "name": "parking_meter",
+    "texture_size": 64,
+    "vertices": 56,
+    "triangles": 92,
+    "dimensions_m": [
+      0.24,
+      0.169,
+      1.545
+    ],
+    "uv_zones": 4,
+    "texture": "textures/parking_meter.png",
+    "obj": "models/parking_meter/parking_meter.obj",
+    "glb": "models/parking_meter/parking_meter.glb"
+  },
+  {
+    "name": "fire_hydrant",
+    "texture_size": 64,
+    "vertices": 160,
+    "triangles": 292,
+    "dimensions_m": [
+      0.47,
+      0.365,
+      0.83
+    ],
+    "uv_zones": 4,
+    "texture": "textures/fire_hydrant.png",
+    "obj": "models/fire_hydrant/fire_hydrant.obj",
+    "glb": "models/fire_hydrant/fire_hydrant.glb"
+  },
+  {
+    "name": "bollard",
+    "texture_size": 64,
+    "vertices": 64,
+    "triangles": 112,
+    "dimensions_m": [
+      0.28,
+      0.28,
+      1.005
+    ],
+    "uv_zones": 4,
+    "texture": "textures/bollard.png",
+    "obj": "models/bollard/bollard.obj",
+    "glb": "models/bollard/bollard.glb"
+  },
+  {
+    "name": "traffic_light",
+    "texture_size": 64,
+    "vertices": 116,
+    "triangles": 196,
+    "dimensions_m": [
+      0.32,
+      0.565,
+      3.6
+    ],
+    "uv_zones": 4,
+    "texture": "textures/traffic_light.png",
+    "obj": "models/traffic_light/traffic_light.obj",
+    "glb": "models/traffic_light/traffic_light.glb"
+  },
+  {
+    "name": "pedestrian_signal",
+    "texture_size": 64,
+    "vertices": 40,
+    "triangles": 64,
+    "dimensions_m": [
+      0.35,
+      0.384,
+      3.6
+    ],
+    "uv_zones": 4,
+    "texture": "textures/pedestrian_signal.png",
+    "obj": "models/pedestrian_signal/pedestrian_signal.obj",
+    "glb": "models/pedestrian_signal/pedestrian_signal.glb"
+  },
+  {
+    "name": "stop_sign",
+    "texture_size": 64,
+    "vertices": 48,
+    "triangles": 84,
+    "dimensions_m": [
+      0.6563,
+      0.291,
+      2.55
+    ],
+    "uv_zones": 4,
+    "texture": "textures/stop_sign.png",
+    "obj": "models/stop_sign/stop_sign.obj",
+    "glb": "models/stop_sign/stop_sign.glb"
+  },
+  {
+    "name": "street_name_sign",
+    "texture_size": 64,
+    "vertices": 48,
+    "triangles": 80,
+    "dimensions_m": [
+      0.9,
+      0.73,
+      2.85
+    ],
+    "uv_zones": 4,
+    "texture": "textures/street_name_sign.png",
+    "obj": "models/street_name_sign/street_name_sign.obj",
+    "glb": "models/street_name_sign/street_name_sign.glb"
+  },
+  {
+    "name": "parking_sign",
+    "texture_size": 64,
+    "vertices": 40,
+    "triangles": 68,
+    "dimensions_m": [
+      0.48,
+      0.14,
+      2.55
+    ],
+    "uv_zones": 4,
+    "texture": "textures/parking_sign.png",
+    "obj": "models/parking_sign/parking_sign.obj",
+    "glb": "models/parking_sign/parking_sign.glb"
+  },
+  {
+    "name": "speed_limit_sign",
+    "texture_size": 64,
+    "vertices": 40,
+    "triangles": 68,
+    "dimensions_m": [
+      0.48,
+      0.14,
+      2.55
+    ],
+    "uv_zones": 4,
+    "texture": "textures/speed_limit_sign.png",
+    "obj": "models/speed_limit_sign/speed_limit_sign.obj",
+    "glb": "models/speed_limit_sign/speed_limit_sign.glb"
+  },
+  {
+    "name": "traffic_cone",
+    "texture_size": 32,
+    "vertices": 56,
+    "triangles": 96,
+    "dimensions_m": [
+      0.38,
+      0.38,
+      0.63
+    ],
+    "uv_zones": 4,
+    "texture": "textures/traffic_cone.png",
+    "obj": "models/traffic_cone/traffic_cone.obj",
+    "glb": "models/traffic_cone/traffic_cone.glb"
+  },
+  {
+    "name": "construction_barricade",
+    "texture_size": 64,
+    "vertices": 96,
+    "triangles": 160,
+    "dimensions_m": [
+      1.62,
+      0.6231,
+      1.0697
+    ],
+    "uv_zones": 4,
+    "texture": "textures/construction_barricade.png",
+    "obj": "models/construction_barricade/construction_barricade.obj",
+    "glb": "models/construction_barricade/construction_barricade.glb"
+  },
+  {
+    "name": "concrete_barrier",
+    "texture_size": 128,
+    "vertices": 48,
+    "triangles": 72,
+    "dimensions_m": [
+      2.0,
+      0.619,
+      0.8675
+    ],
+    "uv_zones": 4,
+    "texture": "textures/concrete_barrier.png",
+    "obj": "models/concrete_barrier/concrete_barrier.obj",
+    "glb": "models/concrete_barrier/concrete_barrier.glb"
+  },
+  {
+    "name": "sandbag_barrier",
+    "texture_size": 64,
+    "vertices": 96,
+    "triangles": 144,
+    "dimensions_m": [
+      1.85,
+      0.36,
+      0.73
+    ],
+    "uv_zones": 4,
+    "texture": "textures/sandbag_barrier.png",
+    "obj": "models/sandbag_barrier/sandbag_barrier.obj",
+    "glb": "models/sandbag_barrier/sandbag_barrier.glb"
+  },
+  {
+    "name": "dumpster",
+    "texture_size": 128,
+    "vertices": 140,
+    "triangles": 232,
+    "dimensions_m": [
+      1.92,
+      1.1373,
+      1.24
+    ],
+    "uv_zones": 4,
+    "texture": "textures/dumpster.png",
+    "obj": "models/dumpster/dumpster.obj",
+    "glb": "models/dumpster/dumpster.glb"
+  },
+  {
+    "name": "street_trash_can",
+    "texture_size": 64,
+    "vertices": 136,
+    "triangles": 252,
+    "dimensions_m": [
+      0.62,
+      0.62,
+      0.95
+    ],
+    "uv_zones": 4,
+    "texture": "textures/street_trash_can.png",
+    "obj": "models/street_trash_can/street_trash_can.obj",
+    "glb": "models/street_trash_can/street_trash_can.glb"
+  },
+  {
+    "name": "wheelie_bin",
+    "texture_size": 64,
+    "vertices": 84,
+    "triangles": 140,
+    "dimensions_m": [
+      0.53,
+      0.6173,
+      1.015
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wheelie_bin.png",
+    "obj": "models/wheelie_bin/wheelie_bin.obj",
+    "glb": "models/wheelie_bin/wheelie_bin.glb"
+  },
+  {
+    "name": "garbage_bag",
+    "texture_size": 32,
+    "vertices": 58,
+    "triangles": 104,
+    "dimensions_m": [
+      0.5326,
+      0.4261,
+      0.6225
+    ],
+    "uv_zones": 4,
+    "texture": "textures/garbage_bag.png",
+    "obj": "models/garbage_bag/garbage_bag.obj",
+    "glb": "models/garbage_bag/garbage_bag.glb"
+  },
+  {
+    "name": "wooden_crate",
+    "texture_size": 64,
+    "vertices": 56,
+    "triangles": 84,
+    "dimensions_m": [
+      0.76,
+      0.755,
+      0.7975
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wooden_crate.png",
+    "obj": "models/wooden_crate/wooden_crate.obj",
+    "glb": "models/wooden_crate/wooden_crate.glb"
+  },
+  {
+    "name": "wooden_pallet",
+    "texture_size": 64,
+    "vertices": 88,
+    "triangles": 132,
+    "dimensions_m": [
+      1.2,
+      1.04,
+      0.1925
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wooden_pallet.png",
+    "obj": "models/wooden_pallet/wooden_pallet.obj",
+    "glb": "models/wooden_pallet/wooden_pallet.glb"
+  },
+  {
+    "name": "steel_barrel",
+    "texture_size": 64,
+    "vertices": 256,
+    "triangles": 500,
+    "dimensions_m": [
+      0.6,
+      0.6,
+      0.9135
+    ],
+    "uv_zones": 4,
+    "texture": "textures/steel_barrel.png",
+    "obj": "models/steel_barrel/steel_barrel.obj",
+    "glb": "models/steel_barrel/steel_barrel.glb"
+  },
+  {
+    "name": "jerry_can",
+    "texture_size": 32,
+    "vertices": 68,
+    "triangles": 112,
+    "dimensions_m": [
+      0.31,
+      0.169,
+      0.59
+    ],
+    "uv_zones": 4,
+    "texture": "textures/jerry_can.png",
+    "obj": "models/jerry_can/jerry_can.obj",
+    "glb": "models/jerry_can/jerry_can.glb"
+  },
+  {
+    "name": "cardboard_box",
+    "texture_size": 32,
+    "vertices": 24,
+    "triangles": 36,
+    "dimensions_m": [
+      0.54,
+      0.4335,
+      0.449
+    ],
+    "uv_zones": 4,
+    "texture": "textures/cardboard_box.png",
+    "obj": "models/cardboard_box/cardboard_box.obj",
+    "glb": "models/cardboard_box/cardboard_box.glb"
+  },
+  {
+    "name": "electrical_cabinet",
+    "texture_size": 128,
+    "vertices": 68,
+    "triangles": 108,
+    "dimensions_m": [
+      0.75,
+      0.4373,
+      1.535
+    ],
+    "uv_zones": 4,
+    "texture": "textures/electrical_cabinet.png",
+    "obj": "models/electrical_cabinet/electrical_cabinet.obj",
+    "glb": "models/electrical_cabinet/electrical_cabinet.glb"
+  },
+  {
+    "name": "transformer_box",
+    "texture_size": 128,
+    "vertices": 88,
+    "triangles": 132,
+    "dimensions_m": [
+      1.48,
+      1.05,
+      1.35
+    ],
+    "uv_zones": 4,
+    "texture": "textures/transformer_box.png",
+    "obj": "models/transformer_box/transformer_box.obj",
+    "glb": "models/transformer_box/transformer_box.glb"
+  },
+  {
+    "name": "air_conditioner",
+    "texture_size": 64,
+    "vertices": 40,
+    "triangles": 60,
+    "dimensions_m": [
+      0.78,
+      0.46,
+      0.6
+    ],
+    "uv_zones": 4,
+    "texture": "textures/air_conditioner.png",
+    "obj": "models/air_conditioner/air_conditioner.obj",
+    "glb": "models/air_conditioner/air_conditioner.glb"
+  },
+  {
+    "name": "ventilation_fan",
+    "texture_size": 64,
+    "vertices": 80,
+    "triangles": 136,
+    "dimensions_m": [
+      0.76,
+      0.225,
+      0.76
+    ],
+    "uv_zones": 4,
+    "texture": "textures/ventilation_fan.png",
+    "obj": "models/ventilation_fan/ventilation_fan.obj",
+    "glb": "models/ventilation_fan/ventilation_fan.glb"
+  },
+  {
+    "name": "storm_drain",
+    "texture_size": 64,
+    "vertices": 96,
+    "triangles": 144,
+    "dimensions_m": [
+      0.65,
+      0.405,
+      0.09
+    ],
+    "uv_zones": 4,
+    "texture": "textures/storm_drain.png",
+    "obj": "models/storm_drain/storm_drain.obj",
+    "glb": "models/storm_drain/storm_drain.glb"
+  },
+  {
+    "name": "manhole_cover",
+    "texture_size": 64,
+    "vertices": 64,
+    "triangles": 112,
+    "dimensions_m": [
+      0.74,
+      0.74,
+      0.061
+    ],
+    "uv_zones": 4,
+    "texture": "textures/manhole_cover.png",
+    "obj": "models/manhole_cover/manhole_cover.obj",
+    "glb": "models/manhole_cover/manhole_cover.glb"
+  },
+  {
+    "name": "curb_segment",
+    "texture_size": 64,
+    "vertices": 8,
+    "triangles": 12,
+    "dimensions_m": [
+      1.5,
+      0.24,
+      0.22
+    ],
+    "uv_zones": 4,
+    "texture": "textures/curb_segment.png",
+    "obj": "models/curb_segment/curb_segment.obj",
+    "glb": "models/curb_segment/curb_segment.glb"
+  },
+  {
+    "name": "guardrail_segment",
+    "texture_size": 128,
+    "vertices": 56,
+    "triangles": 88,
+    "dimensions_m": [
+      2.5,
+      0.1305,
+      0.8
+    ],
+    "uv_zones": 4,
+    "texture": "textures/guardrail_segment.png",
+    "obj": "models/guardrail_segment/guardrail_segment.obj",
+    "glb": "models/guardrail_segment/guardrail_segment.glb"
+  },
+  {
+    "name": "chain_link_fence",
+    "texture_size": 128,
+    "vertices": 200,
+    "triangles": 316,
+    "dimensions_m": [
+      2.07,
+      0.07,
+      2.0
+    ],
+    "uv_zones": 4,
+    "texture": "textures/chain_link_fence.png",
+    "obj": "models/chain_link_fence/chain_link_fence.obj",
+    "glb": "models/chain_link_fence/chain_link_fence.glb"
+  },
+  {
+    "name": "metal_gate",
+    "texture_size": 128,
+    "vertices": 156,
+    "triangles": 240,
+    "dimensions_m": [
+      1.615,
+      0.1048,
+      1.9
+    ],
+    "uv_zones": 4,
+    "texture": "textures/metal_gate.png",
+    "obj": "models/metal_gate/metal_gate.obj",
+    "glb": "models/metal_gate/metal_gate.glb"
+  },
+  {
+    "name": "bicycle_rack",
+    "texture_size": 64,
+    "vertices": 272,
+    "triangles": 476,
+    "dimensions_m": [
+      1.8,
+      0.65,
+      0.708
+    ],
+    "uv_zones": 4,
+    "texture": "textures/bicycle_rack.png",
+    "obj": "models/bicycle_rack/bicycle_rack.obj",
+    "glb": "models/bicycle_rack/bicycle_rack.glb"
+  },
+  {
+    "name": "fire_escape_platform",
+    "texture_size": 128,
+    "vertices": 224,
+    "triangles": 356,
+    "dimensions_m": [
+      1.703,
+      0.92,
+      1.083
+    ],
+    "uv_zones": 4,
+    "texture": "textures/fire_escape_platform.png",
+    "obj": "models/fire_escape_platform/fire_escape_platform.obj",
+    "glb": "models/fire_escape_platform/fire_escape_platform.glb"
+  },
+  {
+    "name": "wall_ladder",
+    "texture_size": 128,
+    "vertices": 224,
+    "triangles": 384,
+    "dimensions_m": [
+      0.495,
+      0.192,
+      2.8
+    ],
+    "uv_zones": 4,
+    "texture": "textures/wall_ladder.png",
+    "obj": "models/wall_ladder/wall_ladder.obj",
+    "glb": "models/wall_ladder/wall_ladder.glb"
+  },
+  {
+    "name": "cable_junction_box",
+    "texture_size": 64,
+    "vertices": 40,
+    "triangles": 64,
+    "dimensions_m": [
+      0.33,
+      0.18,
+      0.6
+    ],
+    "uv_zones": 4,
+    "texture": "textures/cable_junction_box.png",
+    "obj": "models/cable_junction_box/cable_junction_box.obj",
+    "glb": "models/cable_junction_box/cable_junction_box.glb"
+  },
+  {
+    "name": "service_door",
+    "texture_size": 128,
+    "vertices": 76,
+    "triangles": 120,
+    "dimensions_m": [
+      1.02,
+      0.1583,
+      2.1325
+    ],
+    "uv_zones": 4,
+    "texture": "textures/service_door.png",
+    "obj": "models/service_door/service_door.obj",
+    "glb": "models/service_door/service_door.glb"
+  },
+  {
+    "name": "rolling_shutter",
+    "texture_size": 128,
+    "vertices": 232,
+    "triangles": 348,
+    "dimensions_m": [
+      2.5,
+      0.23,
+      2.485
+    ],
+    "uv_zones": 4,
+    "texture": "textures/rolling_shutter.png",
+    "obj": "models/rolling_shutter/rolling_shutter.obj",
+    "glb": "models/rolling_shutter/rolling_shutter.glb"
+  }
+]

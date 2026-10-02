@@ -30,3 +30,17 @@ full-world probe for rendered screenshots and streamed-room/visibility checks:
 ```sh
 godot --path game res://tests/features/radar/radar_probe.tscn
 ```
+
+Geometry discovery indexes CSG and collision nodes once, then tracks scene-tree
+additions/removals. The once-per-second nearby refresh visits those candidates,
+rather than recursively walking every prop, avatar and UI node. Group membership,
+disabled state, shape and world transform are still checked on each refresh, so
+streamed rooms and moving structural geometry retain their existing behavior.
+Nodes removed during a queued map build are skipped. The cache only observes the
+current game scene, excluding private inventory-icon viewports and other scenes.
+Mobile/touch players and dedicated servers retain the existing hidden radar.
+
+Run the full-world CPU discovery comparison (no GPU/browser FPS claim):
+`godot --headless --path game res://tests/features/radar/scan_probe.tscn`.
+It compares the former recursive traversal with indexed discovery on the same
+loaded scene, asserts identical nearby roots, and reports median/p95 microseconds.

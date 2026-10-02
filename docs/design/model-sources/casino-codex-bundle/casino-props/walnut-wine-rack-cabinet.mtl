@@ -1,0 +1,5 @@
+newmtl PropMaterial
+Kd 1 1 1
+Ks 0 0 0
+illum 1
+map_Kd cabinet-64.png

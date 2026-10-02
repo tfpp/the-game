@@ -16,6 +16,7 @@ const DEV_STARTING_CENTS := 100_000_00
 
 @export var balances: Dictionary = {}
 var _busy: Dictionary = {}
+var _animated_spins: Dictionary = {}
 var _generation := 0
 var _poll_elapsed := 5.0
 var _unresolved: Dictionary = {}
@@ -33,6 +34,7 @@ func _reset(_mode: Network.Mode) -> void:
 	_generation += 1
 	balances = {}
 	_busy.clear()
+	_animated_spins.clear()
 	_temporary_seconds.clear()
 	_temporary_income_units.clear()
 	_unresolved.clear()
@@ -249,9 +251,39 @@ func spin(
 	if generation != _generation:
 		return {"error": "Session changed"}
 	if _account(peer) == account and result.has("balance"):
-		_set_balance(peer, int(result["balance"]))
+		var held := int(result.get("payout", 0)) if _animated_spins.has(peer) else 0
+		_set_balance(peer, int(result["balance"]) - held)
+		if _animated_spins.has(peer):
+			_animated_spins[peer]["payout"] = held
+			_animated_spins[peer]["account"] = account
+			return result  # Keep refreshes and other transactions locked until reveal.
+	_animated_spins.erase(peer)
 	_busy.erase(peer)
 	return result
+
+
+## Slots alone use this wrapper. The API still commits atomically for crash safety,
+## but replicated/spendable winnings wait for the server's animation completion.
+func spin_animated(
+	peer: int, id: String, wager_cents: int = 100, rerolls: int = 0, blessings: int = 0
+) -> Dictionary:
+	if not multiplayer.is_server() or _busy.has(peer):
+		return {"error": "Wallet loading — try again"}
+	_animated_spins[peer] = {"id": id}
+	return await spin(peer, id, wager_cents, rerolls, blessings)
+
+
+## Server-only and idempotent. Never restores an old absolute balance over income.
+func reveal_spin(peer: int, id: String) -> void:
+	if not multiplayer.is_server() or not _animated_spins.has(peer):
+		return
+	var held: Dictionary = _animated_spins[peer]
+	if held["id"] != id or not held.has("payout"):
+		return
+	_animated_spins.erase(peer)
+	_busy.erase(peer)
+	if _account(peer) == int(held["account"]) and balances.has(peer):
+		_set_balance(peer, int(balances[peer]) + int(held["payout"]))
 
 
 ## Server-only: pays a fixed $10 reward for a map coin pickup into `peer`'s wallet,

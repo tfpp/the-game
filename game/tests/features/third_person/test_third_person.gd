@@ -122,3 +122,17 @@ func test_no_local_player_does_not_toggle() -> void:
 	_press()
 	_feature._process(0.0)
 	assert_false(_feature.enabled)
+
+
+func test_reticle_hidden_only_in_third_person() -> void:
+	var reticle := TextureRect.new()
+	reticle.add_to_group(&"aim_reticle")
+	add_child_autofree(reticle)
+	_feature._process(0.0)
+	assert_true(reticle.visible)
+	_press()
+	_feature._process(0.0)
+	assert_false(reticle.visible)
+	_press()
+	_feature._process(0.0)
+	assert_true(reticle.visible)

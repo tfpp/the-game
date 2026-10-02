@@ -1,0 +1,9 @@
+{
+  "title": "Vintage hotel prop room",
+  "summary": "Visit a furnished hotel showroom through the HOTEL PROPS teleport in the dev room.",
+  "notes": [
+    "Add fifty UV-mapped hotel props with individual 32–128 pixel painted textures.",
+    "Arrange reception, guest-suite, lounge and room-service displays with a clear walking route.",
+    "Add validated round-trip teleports and searchable Hotel Prop Room GPS destinations."
+  ]
+}

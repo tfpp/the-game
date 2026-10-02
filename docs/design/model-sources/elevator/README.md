@@ -35,8 +35,11 @@ godot --headless --path game -s res://features/procedural_rooms/model_tools/buil
 ```
 
 Normal rebuilds preserve the painting. Native scenes are
-`elevator_cab_model.tscn`, `elevator_door_model.tscn` and
-`elevator_button_model.tscn` under the procedural rooms feature. Meshes, the
+`cab.tscn`, `doors.tscn` and `button.tscn` under `game/features/elevator/models/`. Meshes, the
 atlas, UV checker/manifest and `elevator.glb` live under
 `game/assets/procedural_rooms/models/elevator/`. Gameplay/checker captures are
 in `docs/design/previews/world-level/elevator-model-*.png`.
+
+The casino's stationary elevator now shares these painted models. Its fixed bay
+is baked separately into a GridMap module; see
+[the feature guide](../../../../game/features/elevator/README.md).

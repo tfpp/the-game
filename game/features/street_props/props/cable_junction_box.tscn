@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/cable_junction_box.tres" id="1_g5eaa"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/cable_junction_box.res" id="2_qylej"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x73gn"]
+size = Vector3(0.33, 0.6, 0.18)
+
+[node name="CableJunctionBox" type="StaticBody3D" unique_id=1393125634]
+metadata/prop_id = "cable_junction_box"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=867445501]
+material_override = ExtResource("1_g5eaa")
+mesh = ExtResource("2_qylej")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1261630333]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.0050000027)
+shape = SubResource("BoxShape3D_x73gn")

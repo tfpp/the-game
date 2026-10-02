@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/brass-wall-clock.tres" id="1_j561e"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/brass-wall-clock.res" id="2_jlu52"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4ocow"]
+size = Vector3(0.27716386, 0.27716386, 0.036)
+
+[node name="BrassWallClock" type="StaticBody3D" unique_id=963673062]
+metadata/prop_id = "brass-wall-clock"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=384087648]
+material_override = ExtResource("1_j561e")
+mesh = ExtResource("2_jlu52")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1869045885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.018)
+shape = SubResource("BoxShape3D_4ocow")

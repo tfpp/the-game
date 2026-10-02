@@ -1,0 +1,8 @@
+{
+  "title": "Start in the Golden Crown",
+  "summary": "You now arrive in the Golden Crown in front of the elevator, with a small Click to play prompt instead of the full menu.",
+  "notes": [
+    "Spawn new players, fall recoveries and respawns in the Crown in front of the elevator.",
+    "Show a small Click to play prompt on first load instead of opening the Esc menu."
+  ]
+}

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/chip_tray.tres" id="1_u5ju8"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/chip_tray.res" id="2_v5k4o"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u7q8m"]
+size = Vector3(0.514, 0.082, 0.314)
+
+[node name="ChipTray" type="StaticBody3D" unique_id=787009099]
+metadata/prop_id = "chip_tray"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1304716102]
+material_override = ExtResource("1_u5ju8")
+mesh = ExtResource("2_v5k4o")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1835962377]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.041, 0)
+shape = SubResource("BoxShape3D_u7q8m")

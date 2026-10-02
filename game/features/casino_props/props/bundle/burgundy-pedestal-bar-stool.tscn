@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/burgundy-pedestal-bar-stool.tres" id="1_koupv"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/burgundy-pedestal-bar-stool.res" id="2_entxy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2bnqh"]
+size = Vector3(0.46, 0.752, 0.3983717)
+
+[node name="BurgundyPedestalBarStool" type="StaticBody3D" unique_id=418483959]
+metadata/prop_id = "burgundy-pedestal-bar-stool"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1575084537]
+material_override = ExtResource("1_koupv")
+mesh = ExtResource("2_entxy")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=891439375]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.376, 0)
+shape = SubResource("BoxShape3D_2bnqh")

@@ -23,6 +23,8 @@ func interaction_text() -> String:
 
 
 func can_use(player: Player) -> bool:
+	if DevGate.blocks(self):
+		return false
 	return global_position.distance_to(player.net_position) <= USE_RANGE_M
 
 

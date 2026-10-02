@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://features/casino_hub/gridmap/preview.gd" id="review"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/casino_gridmap.tscn" id="casino"]
+
+[ext_resource type="PackedScene" path="res://features/mariachi_band/feature.tscn" id="band"]
+
+[node name="CasinoGridMapReview" type="Node3D"]
+script = ExtResource("review")
+
+[node name="Casino" parent="." instance=ExtResource("casino")]
+
+[node name="MariachiBand" parent="." instance=ExtResource("band")]
+
+[node name="Overview" type="Camera3D" parent="."]
+transform = Transform3D(0.7518398, -0.35280922, 0.5570122, 0, 0.8447952, 0.5350898, -0.6593458, -0.40230182, 0.6351507, 50, 48, 57)
+projection = 1
+current = true
+size = 85.0

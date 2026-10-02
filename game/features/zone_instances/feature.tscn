@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/zone_instances/zone_instances.gd" id="1_zones"]
+
+[node name="ZoneInstances" type="Node"]
+script = ExtResource("1_zones")

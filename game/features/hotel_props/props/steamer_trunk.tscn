@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/steamer_trunk.tres" id="1_yok15"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/steamer_trunk.res" id="2_bw2mk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lufpw"]
+size = Vector3(0.915, 0.585, 0.535)
+
+[node name="SteamerTrunk" type="StaticBody3D" unique_id=1718767574]
+metadata/prop_id = "steamer_trunk"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1078999855]
+material_override = ExtResource("1_yok15")
+mesh = ExtResource("2_bw2mk")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=531957579]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2925, 0)
+shape = SubResource("BoxShape3D_lufpw")

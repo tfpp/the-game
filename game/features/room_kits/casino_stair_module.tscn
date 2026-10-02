@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="ArrayMesh" path="res://assets/room_kits/casino_stairs/casino_stair_module.res" id="mesh"]
+[ext_resource type="Material" path="res://features/room_kits/casino_stair_material.tres" id="finish"]
+[sub_resource type="ConvexPolygonShape3D" id="shape"]
+points = PackedVector3Array(-0.5, 0, -0.5, 0.5, 0, -0.5, -0.5, 0, 1.5, 0.5, 0, 1.5, -0.5, 1.25, 1.5, 0.5, 1.25, 1.5)
+[node name="CasinoStairFlight" type="MeshInstance3D"]
+mesh = ExtResource("mesh")
+material_override = ExtResource("finish")
+[node name="Body" type="StaticBody3D" parent="."]
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+shape = SubResource("shape")

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/service_bell.tres" id="1_41lj3"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/service_bell.res" id="2_eljk6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pibm5"]
+size = Vector3(0.13, 0.0925, 0.13)
+
+[node name="ServiceBell" type="StaticBody3D" unique_id=1156222947]
+metadata/prop_id = "service_bell"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=338426963]
+material_override = ExtResource("1_41lj3")
+mesh = ExtResource("2_eljk6")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=161731724]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04625, 0)
+shape = SubResource("BoxShape3D_pibm5")

@@ -93,7 +93,7 @@ func _serve(wallet: PlayerMoney, peer: int, item: String, hand: Hand) -> void:
 		if same_player and is_instance_valid(hand) and Hand.for_peer(get_tree(), peer) == hand:
 			delivered = hand.inventory().collect(item)
 		if not delivered and is_instance_valid(holdables):
-			# Existing salon floor is y=-1.5; customer side is in front of z=-9.4.
+			# Drop to the gaming floor on the customer side, in front of z=-9.4.
 			var spot := global_position + Vector3(0, -1.1, 1.25)
 			holdables.spawn_thrown_item(item, spot + Vector3.UP, spot)
 		message = (

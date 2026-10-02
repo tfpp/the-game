@@ -1,7 +1,7 @@
 # Bar companion (Vivienne)
 
-The salon bar at the back of the gaming floor (bar at (-7.4, -1.5, -10.7)) now has a
-working bartender and **Vivienne**, who sits on a brass stool at (-5.2, -1.5, -8.55)
+The salon bar at the back of the gaming floor (bar at (-7.4, -1.25, -10.7)) now has a
+working bartender and **Vivienne**, who sits on a brass stool at (-5.2, -1.25, -8.55)
 facing the counter. Everything uses Use (E, Circle / B, or mobile **USE**).
 
 - **Bartender** (Use at the counter): a drink costs $5 through `PlayerMoney.charge()`.
@@ -66,9 +66,69 @@ Old sessions have no saved stats to backfill. Wallet/inventory persistence is un
 
 Tests: `tests/features/bar_companion/`.
 
+## Busboy shift (#450)
+
+At the **left end of the main salon bar**, use the glass marked **BUSBOY SHIFT**
+(-9.9, -0.27, -9.6) with E / B / Circle / touch USE. The existing bartender
+shop is unchanged, several metres to the right. One worker at a time takes the
+shared two-minute shift; other players can watch but cannot take its tasks.
+
+- Collect glasses marked EMPTY from the west edges of the three card tables and
+  the east lounge cocktail table (19.6, 1.045, 8). Return each to the station with
+  Use before collecting another. They are temporary shift cargo, not backpack loot.
+- After 30 seconds, seated patrons at the east side of the card tables order drinks.
+  Take a bottled drink from the station, then Use the matching numbered patron.
+  Their labels show a 35-second deadline, including time spent carrying the drink.
+  You cannot carry an empty and an order together. The task HUD shows your cargo,
+  remaining shift time, dirty backlog and pending orders. Empty cargo uses the
+  existing hotel glass; ordered cargo uses the existing beer bottle, visible in
+  first person, third person and to observers on the offhand side.
+- Empty spawns accelerate from 12 seconds to 4; orders from 24 seconds to 10.
+  Slots are selected randomly from free table positions; living seated patrons
+  are selected randomly for orders. Decorative table glasses are not objectives.
+- A ninth dirty glass or any overdue order fails with **no prize**. To win at
+  120 seconds, return at least one empty and finish all orders. Remaining dirty
+  glasses are cleared when the shift ends. Return to the station to claim **$10**;
+  if the wallet is busy or unavailable, Use again to retry the same reward ID.
+  There is no entry charge. Use after failure or payment starts a new shift.
+
+`busboy_shift.gd` owns the worker, timers, backlog, cargo, deadlines and reward ID
+exclusively on the server. Its NetworkedEntity replicates one bounded `snapshot`
+including current task state on late join. `busboy_point.gd` constructs matching
+static NetworkedInteraction endpoints before connecting; these are fixed cosmetic
+views, not dynamically spawned entities. Empty Use payloads resolve the sender
+and validate range, ownership, phase and cargo again on the server. No new RPC,
+input action, inventory slot, collectible item or persistence store is introduced.
+`HeldItemPose.player_mount()` is reused only for the cosmetic cargo mount; normal
+inventory remains untouched, cannot store/sell task cargo and has its own hand.
+`PlayerMoney.credit_coin()` is the sole reward path, including its signed,
+idempotent authenticated-account settlement and private gain notice. Pending claims
+block duplicates; stale callbacks cannot change a replacement shift or session.
+
+Death or a replaced player node fails the shift. Disconnect or session changes
+clear all tasks and release the station. Rounds and unclaimed prizes reset on
+server restart; claimed account money follows existing wallet persistence. Offline
+play runs the same authority path with the normal temporary wallet.
+
+Tests: `test_busboy.gd` and `test_busboy_layout.gd` cover rules, security, cargo,
+wallet claims, lifecycle, snapshot presentation and supported placement in the
+actual live casino. Run `tests/features/bar_companion/busboy_network_test.sh` from
+`game/` for real WebSocket sender, competition, late-join, cargo and disconnect
+checks; `BUSBOY_TEST_PORT` overrides the port. The probe has the same isolated
+server-side weapon-hotbar workaround as the existing Celeste probe.
+
+Native review captures are in `docs/design/previews/busboy-shift/`. Reproduce with
+`godot --audio-driver Dummy --rendering-method gl_compatibility --resolution 1100x750
+res://tests/features/bar_companion/busboy_network_probe.tscn -- --offline
+--busboy-role=capture --busboy-view=tables` (one command, from `game/` using a display).
+Views `east` and `first` capture the lounge and carried glass; `390x844` automatically
+uses the existing mobile UI scale and touch controls. Captures seed a frozen example
+snapshot, not a completed shift or payout. Images are written to `/tmp/busboy-<view>.png`.
+
+
 ## Celeste: an uncertain ally
 
-Celeste stands beside the bar at **(-6.6, -1.5, -7.8)**, in a moss green evening
+Celeste stands beside the bar at **(-6.6, -1.25, -7.8)**, in a moss green evening
 dress with a swept fringe and a gold brooch. Use **E**, **B /
 Circle**, or touch **USE** to invite her along for free; Use her again to part ways.
 She accompanies one player at a time around the gaming floor for up to five minutes,
@@ -114,7 +174,7 @@ The bartender's existing NetworkedInteraction owns `order` with exactly one
 allows only one pending payment per player. `PlayerMoney.charge` remains the only
 wallet; `PlayerInventory.collect` delivers items. A full inventory rejects before
 payment. If it fills or the buyer disconnects during payment, the paid item lands
-on the existing customer-side floor at (-6.5, -1.5, -8.35), as a normal shared
+on the existing customer-side floor at (-6.5, -1.25, -8.35), as a normal shared
 pickup. Session generations discard stale callbacks after a mode change.
 
 Bottled beer applies the same intoxication/charisma rules as the original drink,

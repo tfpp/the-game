@@ -1,0 +1,102 @@
+[
+  {
+    "name": "standing-ashtray-with-cigarette",
+    "texture": "ashtray-32.png",
+    "textureSize": 32,
+    "triangles": 104,
+    "vertices": 204,
+    "bounds": [
+      [
+        -0.14,
+        0.012,
+        -0.12124355652982141
+      ],
+      [
+        0.14,
+        0.741,
+        0.12124355652982143
+      ]
+    ],
+    "spec": "ashtray"
+  },
+  {
+    "name": "cigarette",
+    "texture": "ashtray-32.png",
+    "textureSize": 32,
+    "triangles": 12,
+    "vertices": 24,
+    "bounds": [
+      [
+        -0.04,
+        0.0,
+        -0.004
+      ],
+      [
+        0.04,
+        0.008,
+        0.004
+      ]
+    ],
+    "spec": "ashtray"
+  },
+  {
+    "name": "wine-bottle",
+    "texture": "bottle-32.png",
+    "textureSize": 32,
+    "triangles": 44,
+    "vertices": 84,
+    "bounds": [
+      [
+        -0.030310889132455353,
+        0.008,
+        -0.035
+      ],
+      [
+        0.030310889132455356,
+        0.308,
+        0.035
+      ]
+    ],
+    "spec": "bottle"
+  },
+  {
+    "name": "wine-bucket",
+    "texture": "bucket-32.png",
+    "textureSize": 32,
+    "triangles": 76,
+    "vertices": 144,
+    "bounds": [
+      [
+        -0.117,
+        0.008,
+        -0.117
+      ],
+      [
+        0.117,
+        0.236,
+        0.117
+      ]
+    ],
+    "spec": "bucket"
+  },
+  {
+    "name": "walnut-wine-rack-cabinet",
+    "texture": "cabinet-64.png",
+    "textureSize": 64,
+    "triangles": 154,
+    "vertices": 308,
+    "bounds": [
+      [
+        -0.32,
+        0.0,
+        -0.17
+      ],
+      [
+        0.32,
+        0.82,
+        0.17
+      ]
+    ],
+    "spec": "cabinet"
+  }
+]

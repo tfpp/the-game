@@ -1,6 +1,6 @@
 # Slot machine
 
-Eight machines stand in two rows outside the initial spawn area, each with its own
+Eight machines stand along the casino’s east wall, each with its own
 buy-in. Approach a machine's front, look at it within 3.5 metres, then press **E**,
 **Circle / B**, or mobile **USE**. The on-screen prompt and cabinet show that
 machine's price. Menus and chat suppress interaction.
@@ -50,8 +50,13 @@ in a server-owned `MultiplayerSynchronizer` snapshot. Late joiners receive the
 current state. Result audio is a separate reliable server event, so joining after
 a result does not replay an old sound. A spin finishes even if its player disconnects.
 The API commits the charge and prize together before animation begins, so disconnects
-or a game-server crash during animation cannot lose a prize. Requests are locked
-while payment is pending as well as during animation.
+or a game-server crash during animation cannot lose a prize. The in-game wallet shows
+only the deducted buy-in until the final reel stops: then the server reveals the prize
+with the coin spray, fireworks launch and win notice. The wallet stays locked to other
+transactions and balance refreshes during the animation, so the prize cannot be spent
+or exposed early; temporary minute income still accrues. Reconnecting after a crash
+recovers the already committed account balance. Requests are locked while payment is
+pending as well as during animation.
 
 ## Win celebration
 
@@ -60,21 +65,49 @@ at the front (`slot_celebration.gd`). Both scale with the prize on a log scale f
 (one small rocket, a handful of coins) to $30 billion (seven big, fast bursts and about
 80 coins). They start from the reliable `play_result` event, which now carries the
 payout, so every nearby peer sees them once and late joiners don't replay old shows.
-Coins and sparks are `CPUParticles3D` with no collision or lights, and free themselves.
+Coins and sparks are `CPUParticles3D` with no collision, lights or shadows. Each cabinet
+prebuilds one coin emitter and seven shell/burst pairs; subsequent wins reuse those
+nodes and shared meshes, materials and fade gradient instead of creating/freeing them
+at payout or each burst. Particle counts remain bounded and prize-scaled. A small
+local timeline replaces per-rocket tweens and stops processing when idle. Shows beyond
+35 metres from the viewing camera are skipped; dedicated servers allocate no effects.
+Session changes hide/reset the pool and cancel remaining launches. A one-time tiny
+startup draw warms the coin, shell and particle-billboard material variants (following
+GunFx's existing pattern); it never runs on headless/dedicated processes. Actual browser
+frame times still require visual profiling.
 
 ## Sound assets
 
-Clips in `res://assets/slot_machine/audio/` play spatially from each cabinet:
+The machine uses original 22,050 Hz mono WAV effects: a lever latch,
+looping mechanical ratchet, individual reel-stop clunks, a payout coin cascade,
+three bell strikes for a win, and a short fart-like toot for a loss. Only the
+motor loops. All voices use `GameSFX`, so the existing effects slider and mute
+settings apply. Mechanical sources and rebuild instructions live alongside the
+cabinet recipe; toot synthesis provenance is in the audio asset README.
+The previous optional Ogg files and `loss.wav` remain legacy assets and are no longer used.
 
-- `win.ogg` — the winning “cha-ching!” sound, at its original volume and pitch.
-- `toot.wav` — a synthesized 0.22-second fart-like losing toot, played at -14 dB.
-  Each new loss picks a local random pitch from 0.85–1.35, also varying its length
-  to roughly 0.16–0.26 seconds. Duplicate results do not reroll or replay it.
+`toot.wav` is 0.22 seconds, played at -14 dB. Each new loss picks a local random
+pitch from 0.85–1.35, also varying its length to roughly 0.16–0.26 seconds.
+Duplicate results do not reroll or replay it. Wins restore normal pitch and the
+mechanical bell's -10 dB volume. No shared state or new RPC is needed for cosmetic
+pitch variation; listeners may hear slightly different pitches on the same loss.
 
-Both clips are short and non-looping. Restart/re-export after replacing them.
-Missing files remain optional. The legacy `lose.ogg` is no longer used.
-No shared state or new RPC is needed for cosmetic pitch variation; different
-listeners may hear slightly different pitches on the same loss.
+`slot_feedback.gd` owns three reusable positional voices (motor, mechanism, coins).
+The existing reliable result event owns the bell/loss voice and celebration.
+Snapshots initialize without replaying historical lever/stop sounds; an ongoing
+spin can resume its motor loop for a late joiner. A result event stops that loop
+even if it arrives before the final snapshot. Session resets stop all voices.
+Mechanical playback is skipped beyond 25 m; attenuation ends at 18 m.
+
+## Lights and motion
+
+A single MultiMesh draws the 24 warm marquee bulbs. Idle chasing is slow; spinning
+accelerates it, and genuine win events produce a three-second green wave and beacon.
+The lever springs back during the spin. The first two reels ease into a small detent;
+the final snapshot immediately aligns the result so payout never precedes its symbols.
+Thin glass and edge highlights work in Compatibility without relying on bloom.
+A shadow-free, short-range light illuminates the nearby cabinet while its viewer
+is within 10 m. Dedicated servers allocate no feedback lights or voices.
 
 ## Layout
 
@@ -102,6 +135,13 @@ each instance has its own busy state. All machines share player wallets.
 `harness/verify.sh` runs unit and standard multiplayer checks. Set `GODOT` to the
 Godot executable if it is not on `PATH`.
 
+From `game/`, run `tests/features/slot_machine/network_test.sh` for a real server,
+two competing clients and a late joiner. The test-only server fixture gives temporary
+wallets many rerolls to exercise five wins, and checks buy-in-only balances during
+animation, final credits and no replayed late-join audio. Override `SLOT_TEST_PORT`
+if needed. Like the Celeste probe, it disables the server's unrelated weapon-hotbar
+process because this base retains a freed remote hand after disconnect.
+
 ## Visual assets
 
 The original cabinet model lives in `res://assets/casino_hub/models/`. `res://assets/slot_machine/textures/reel_symbols.png`
@@ -110,7 +150,7 @@ GEM. Prompts and provenance are in `res://assets/casino_hub/textures/GENERATED_A
 The cabinet keeps its existing collision hull and interaction point. Materials
 are shared; each reel only owns its small animation shader state.
 
-The PS1 cabinet uses 844 triangles and flat, matte finishes. The reel texture imports
+The cabinet and lever use a shared painted atlas with matte finishes. The reel texture imports
 at 128×128 with nearest mipmap filtering; its five icons and server-selected results
 keep their original order. Drums use eight segments and idle reels skip redundant
 shader uploads. Labels and interaction prompts keep their normal readable fonts.
@@ -129,3 +169,13 @@ blessings for its 10 minutes, and each win gives the winner charisma once the re
 
 Lucky-night and Trump favor rerolls still apply only to temporary wallets;
 authenticated accounts receive the Kaaba blessing odds.
+
+### Refined mechanical cabinet
+
+The live cabinet now uses indexed native exports with continuous walnut side
+profiles, recessed metal reel framing, a coin throat and a folded payout tray.
+Its fixed side socket meets the moving faceted lever at the existing pivot.
+Cabinet and lever share one 128×128 painted atlas and material; their meshes are
+844 and 144 triangles respectively. Drum shaders, labels, prices, collision and
+payout behavior retain their established interfaces. The original GLB remains
+legacy source. See [the editable recipe and review guide](../../../docs/design/model-sources/slot-cabinet-v2/README.md).

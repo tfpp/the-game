@@ -1,6 +1,6 @@
 # Roulette table
 
-One table stands at `(-9.1, -1.5, -5.5)`, with the wheel at its west end and a dealer
+One table stands at `(-9.1, -1.25, -5.5)`, with the wheel at its west end and a dealer
 (`casino_patrons/stationary_dealer.tscn`) behind it. Approach the players' (south) long
 side, look at the betting layout within 3.5 metres, then press **E**, **Circle / B**, or
 mobile **USE**. Menus and chat suppress interaction.

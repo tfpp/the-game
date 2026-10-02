@@ -183,19 +183,41 @@ func test_fence_pays_once_for_a_reserved_valuable() -> void:
 	assert_eq(int(wallet.balances.get(1, 0)), 3000)
 
 
-func test_pawn_shop_storefront_sits_on_the_counter() -> void:
+func test_all_tiers_and_saved_cash_sell_once_at_the_catalog_price() -> void:
+	var features := _features()
+	var fence := _run(features).get_node("Fence") as LootFence
+	var player := _player(fence.global_position)
+	var hand := _hand()
+	var wallet := PlayerMoney.new()
+	add_child_autofree(wallet)
+	wallet.set_process(false)
+	wallet.balances = {1: 2000}
+	var total := 2000
+	for id: String in ["scrap", "stolen_wallet", "electronics", "watch", "jewelry", "cash_bundle"]:
+		assert_true(hand.inventory().collect(id))
+		player.net_position = fence.global_position + Vector3.RIGHT * 10
+		await fence.request_sell()
+		assert_eq(int(wallet.balances[1]), total, "Out-of-range sale is rejected")
+		assert_eq(hand.net_item_id, id)
+		player.net_position = fence.global_position
+		await fence.request_sell()
+		total += ItemCatalog.find(id).sale_value_cents
+		assert_eq(int(wallet.balances[1]), total)
+		assert_eq(hand.net_item_id, "")
+		await fence.request_sell()
+		assert_eq(int(wallet.balances[1]), total, "Repeated Use cannot duplicate a sale")
+
+
+func test_pawn_shop_display_case_matches_counter_and_keeps_sale_prompt() -> void:
 	var runs := _run(_features())
 	var fence := runs.get_node("Fence") as LootFence
 	assert_eq(fence.interaction_text(), "Pawn a valuable")
-	var top := fence.global_position.y + fence.size.y * 0.5
-	var case_node := fence.get_node("DisplayCase") as MeshInstance3D
-	var case_mesh := case_node.mesh as BoxMesh
-	assert_almost_eq(case_node.global_position.y - case_mesh.size.y * 0.5, top, 0.001)
-	var bar := fence.get_node("BallBar") as Node3D
-	for i: int in 3:
-		var ball := fence.get_node("Ball%d" % i) as Node3D
-		assert_lt(ball.global_position.y + LootFence.BALL_RADIUS_M, bar.global_position.y)
-		assert_gt(ball.global_position.y, top + 0.25, "hangs above the display case")
-	var sign := runs.get_node("FenceSign") as Label3D
-	assert_gt(sign.global_position.y, bar.global_position.y)
-	assert_string_contains(sign.text, "PAWN SHOP")
+	var case_node := fence.get_node("DisplayCase") as Node3D
+	var frame := case_node.get_node("Frame") as MeshInstance3D
+	var bounds := frame.mesh.get_aabb()
+	assert_almost_eq(case_node.global_position.y + bounds.position.y, 0.0, .001)
+	assert_almost_eq(bounds.size, fence.size, Vector3.ONE * .001)
+	var phone := case_node.get_node("Phone") as Node3D
+	assert_almost_eq(phone.global_position.y, fence.global_position.y + fence.size.y * .5, .001)
+	var sign := case_node.get_node("CashSign") as SignBoard
+	assert_string_contains(sign.text, "BUY - SELL - TRADE")

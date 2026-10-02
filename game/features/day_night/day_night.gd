@@ -44,6 +44,7 @@ var _sky_material: ShaderMaterial
 var _base_ambient_color := Color.WHITE
 var _base_ambient_energy := 1.0
 var _base_background_energy := 1.0
+var _fixed_indoor_lighting := false
 
 @onready var _sun: DirectionalLight3D = $Sun
 
@@ -53,6 +54,11 @@ func _ready() -> void:
 	# whole-world directional shadow map redraws thousands of surfaces each frame.
 	_sun.shadow_enabled = false
 	var world_env := _find_world_environment()
+	if world_env != null and world_env.get_meta("fixed_indoor_lighting", false):
+		_fixed_indoor_lighting = true
+		_sun.visible = false
+		set_process(false)
+		return
 	if world_env:
 		_environment = world_env.environment
 	if _environment:
@@ -90,6 +96,8 @@ static func compute_day_factor(elevation_deg: float) -> float:
 
 
 func _apply(t: float) -> void:
+	if _fixed_indoor_lighting:
+		return
 	var elevation := compute_sun_elevation_degrees(t)
 	var factor := compute_day_factor(elevation)
 	_apply_sun(elevation, factor)

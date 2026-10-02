@@ -1,5 +1,9 @@
 # The Golden Crown
 
+The active game uses the saved [casino GridMap](gridmap/README.md), with a **1.25 m**
+deep gaming pit, quarter-height retaining walls and six-metre ramps to ground level.
+The geometry below describes the retained legacy CSG room used for reference.
+
 A faded 1964 casino. `world/room.tscn` instances `interior.tscn` and
 retains the stable `Room/Spawn` path and all five original annex entrances. This
 folder intentionally has no `feature.tscn`: the architecture is part of the room,
@@ -70,6 +74,15 @@ reel settling during a win.
 ramps join both elevations, side doors stay open, the entire ferry hull route has
 clearance, landings have floors, and the main rooms have solid ceilings.
 
+## Operations garage starter point
+
+The main scene retains its original `Room/Spawn` marker as a fallback. The
+`crown_spawn` feature supplies the `player_spawn` marker for joins, fall recovery and
+combat respawns, in front of the elevator. The operations garage is reached by door. Its walking exit and van route map
+reach the casino; the return doorway is on the north promenade at (-7,1.1,-19.7),
+clear of the existing street/dev portals. Casino geometry and other entrances are
+unchanged. See `../starter_room/README.md`.
+
 ## Reference salon assets
 
 `salon.tscn` is checked in; edit it for layout changes. Its original meshes have adult proportions,
@@ -108,3 +121,26 @@ RGB retains the tint and alpha encodes the atlas tile (the shader stays opaque).
 Existing wood and felt maps remain separate. Untextured legacy StandardMaterial3D
 surfaces receive a shared 128px grain texture through RetroStyle; existing artwork
 and its UV mapping are preserved. This adds no materials to the model draw budget.
+
+## Live GridMap casino
+
+The main game now loads `gridmap/playable.tscn`, wrapping `casino_gridmap.tscn`.
+It preserves the 30 × 24 m pit at y -1.5, continuous surrounding floor at y 0 and two
+six-metre-wide ramps, using the Blockbench wood wall. The bar and stationary NPCs
+are restored; slots and roaming NPCs use their existing feature scenes. The
+food court and pawn shop now also use GridMap rooms off the south corridor, with
+their existing seating, counters, merchant and buying/selling interactions. The old
+architecture described above remains in `world/room.tscn` for reference. Press F5
+to play, or open `gridmap/preview.tscn` for isolated geometry review. See
+[the GridMap guide](gridmap/README.md) for editing, tiles, rebuilding and verification.
+
+Three existing guests at the main bar and north/south card tables now smoke ambient
+cigarettes; their transforms and hitboxes are unchanged. See
+[`casino_patrons/README.md`](../casino_patrons/README.md#ambient-smoking) for animation,
+visibility budgets and the opt-in `SalonGuestModel.smoking` flag.
+
+The live casino now uses a separate decor GridMap for the original framed paintings,
+brass sconces and chandeliers. Its warm local light pools, darker ambient fill and
+light-responsive casino shaders replace the previous fullbright presentation.
+Indoor lighting stays fixed across the day/night clock; only the bar and table
+accent lights cast shadows. Editing decor fixture cells also moves their lights.

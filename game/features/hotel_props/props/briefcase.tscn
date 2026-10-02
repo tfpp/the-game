@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/briefcase.tres" id="1_r5h8m"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/briefcase.res" id="2_6fxxb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_w0p28"]
+size = Vector3(0.495, 0.395, 0.185)
+
+[node name="Briefcase" type="StaticBody3D" unique_id=1970045876]
+metadata/prop_id = "briefcase"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=361522580]
+material_override = ExtResource("1_r5h8m")
+mesh = ExtResource("2_6fxxb")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=2129018403]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1975, 0)
+shape = SubResource("BoxShape3D_w0p28")

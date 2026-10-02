@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/desk_telephone.tres" id="1_6pj81"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/desk_telephone.res" id="2_8iig0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e3cq3"]
+size = Vector3(0.2793643, 0.201, 0.2)
+
+[node name="DeskTelephone" type="StaticBody3D" unique_id=1008536728]
+metadata/prop_id = "desk_telephone"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=925884431]
+material_override = ExtResource("1_6pj81")
+mesh = ExtResource("2_8iig0")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1395348103]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.013682157, 0.1005, 0)
+shape = SubResource("BoxShape3D_e3cq3")

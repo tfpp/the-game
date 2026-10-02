@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_district/materials/narrow_office.tres" id="1_7y52f"]
+[ext_resource type="ArrayMesh" path="res://assets/street_district/models/narrow_office.res" id="2_ok8yq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3a17w"]
+size = Vector3(6.24, 13.24, 14.44)
+
+[node name="NarrowOffice" type="StaticBody3D" unique_id=1876779045]
+metadata/prop_id = "narrow_office"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1635352262]
+material_override = ExtResource("1_7y52f")
+mesh = ExtResource("2_ok8yq")
+
+[node name="@CollisionShape3D@12" type="CollisionShape3D" parent="." unique_id=289116481]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.62, 0)
+shape = SubResource("BoxShape3D_3a17w")

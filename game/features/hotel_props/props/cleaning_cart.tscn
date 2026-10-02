@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/cleaning_cart.tres" id="1_03dvd"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/cleaning_cart.res" id="2_d807r"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5nfoj"]
+size = Vector3(1.1099999, 0.8877976, 0.57732046)
+
+[node name="CleaningCart" type="StaticBody3D" unique_id=254582913]
+metadata/prop_id = "cleaning_cart"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1608072631]
+material_override = ExtResource("1_03dvd")
+mesh = ExtResource("2_d807r")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=664138915]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15499994, 0.4438988, -0.028660268)
+shape = SubResource("BoxShape3D_5nfoj")

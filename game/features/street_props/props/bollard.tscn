@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/bollard.tres" id="1_pxxol"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/bollard.res" id="2_eh4nx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oa7f7"]
+size = Vector3(0.28, 1.005, 0.28)
+
+[node name="Bollard" type="StaticBody3D" unique_id=926299350]
+metadata/prop_id = "bollard"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1719551250]
+material_override = ExtResource("1_pxxol")
+mesh = ExtResource("2_eh4nx")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1958518404]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5025, 0)
+shape = SubResource("BoxShape3D_oa7f7")

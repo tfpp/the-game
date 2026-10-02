@@ -44,7 +44,10 @@ func test_losses_vary_pitch_and_duration_at_lower_volume() -> void:
 		assert_between(duration, 0.16, 0.26)
 		pitches[_audio.pitch_scale] = true
 	assert_gt(pitches.size(), 1, "Separate losses do not all use the same pitch")
-	assert_eq(_machine.get_node("Celebration").get_child_count(), 0)
+	var celebration := _machine.get_node("Celebration") as SlotCelebration
+	assert_false(celebration.is_processing())
+	assert_true(celebration._targets.is_empty())
+	assert_false((celebration.get_node("Coins") as CPUParticles3D).visible)
 
 
 func test_duplicate_and_stale_events_do_not_change_loss_profile() -> void:
@@ -58,12 +61,13 @@ func test_duplicate_and_stale_events_do_not_change_loss_profile() -> void:
 	assert_eq(_audio.volume_db, -14.0)
 
 
-func test_win_after_loss_restores_original_sound_pitch_and_volume() -> void:
+func test_win_after_loss_restores_mechanical_bell_pitch_and_volume() -> void:
 	_machine.play_result(1, false)
 	_machine.play_result(2, true)
 	assert_same(_audio.stream, _machine._win_sound)
+	assert_eq(_audio.stream.resource_path, "res://assets/slot_machine/audio/bell.wav")
 	assert_eq(_audio.pitch_scale, 1.0)
-	assert_eq(_audio.volume_db, 0.0)
+	assert_eq(_audio.volume_db, -10.0)
 
 
 func test_loss_only_plays_when_final_reel_stops() -> void:
@@ -97,4 +101,4 @@ func test_late_snapshot_is_silent_and_session_change_stops_audio() -> void:
 	assert_eq(_machine._last_sound_spin, 0)
 	_machine.play_result(1, true)
 	assert_eq(_audio.pitch_scale, 1.0)
-	assert_eq(_audio.volume_db, 0.0)
+	assert_eq(_audio.volume_db, -10.0)

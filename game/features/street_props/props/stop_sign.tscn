@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/stop_sign.tres" id="1_gownm"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/stop_sign.res" id="2_3hdbr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u86ov"]
+size = Vector3(0.6562828, 2.5500002, 0.2909754)
+
+[node name="StopSign" type="StaticBody3D" unique_id=1449090486]
+metadata/prop_id = "stop_sign"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=634306202]
+material_override = ExtResource("1_gownm")
+mesh = ExtResource("2_3hdbr")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1323874540]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2750001, 0.037999995)
+shape = SubResource("BoxShape3D_u86ov")

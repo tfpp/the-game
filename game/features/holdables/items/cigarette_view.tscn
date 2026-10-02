@@ -1,33 +1,12 @@
 [gd_scene format=3]
 
-[sub_resource type="StandardMaterial3D" id="paper"]
-albedo_color = Color(0.89, 0.85, 0.73, 1)
-roughness = 1.0
-[sub_resource type="StandardMaterial3D" id="filter"]
-albedo_color = Color(0.65, 0.36, 0.13, 1)
-roughness = 1.0
-[sub_resource type="StandardMaterial3D" id="ash"]
-albedo_color = Color(0.24, 0.22, 0.20, 1)
-roughness = 1.0
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/cigarette.res" id="mesh"]
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/cigarette.tres" id="material"]
+
 [sub_resource type="StandardMaterial3D" id="smoke_mat"]
 transparency = 1
 shading_mode = 0
 albedo_color = Color(0.7, 0.68, 0.62, 0.3)
-[sub_resource type="CylinderMesh" id="paper_mesh"]
-top_radius = 0.007
-bottom_radius = 0.007
-height = 0.08
-radial_segments = 6
-[sub_resource type="CylinderMesh" id="filter_mesh"]
-top_radius = 0.0075
-bottom_radius = 0.0075
-height = 0.03
-radial_segments = 6
-[sub_resource type="CylinderMesh" id="ash_mesh"]
-top_radius = 0.007
-bottom_radius = 0.007
-height = 0.007
-radial_segments = 6
 [sub_resource type="SphereMesh" id="puff"]
 material = SubResource("smoke_mat")
 radius = 0.018
@@ -36,23 +15,13 @@ radial_segments = 6
 rings = 3
 
 [node name="Cigarette" type="Node3D"]
-[node name="Paper" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0, -0.015)
-rotation = Vector3(1.5707963, 0, 0)
-mesh = SubResource("paper_mesh")
-material_override = SubResource("paper")
-[node name="Filter" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0, 0.04)
-rotation = Vector3(1.5707963, 0, 0)
-mesh = SubResource("filter_mesh")
-material_override = SubResource("filter")
-[node name="Ash" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0, -0.058)
-rotation = Vector3(1.5707963, 0, 0)
-mesh = SubResource("ash_mesh")
-material_override = SubResource("ash")
+[node name="Model" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.004, 0.015)
+rotation = Vector3(0, -1.5707963, 0)
+mesh = ExtResource("mesh")
+material_override = ExtResource("material")
 [node name="Smoke" type="CPUParticles3D" parent="."]
-position = Vector3(0, 0, -0.06)
+position = Vector3(0, 0, -0.025)
 emitting = false
 amount = 8
 lifetime = 1.2

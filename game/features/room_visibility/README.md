@@ -7,7 +7,7 @@ selected streamed interior and frees the previous one. Door interactions may
 preload the destination briefly so the arrival floor is ready.
 
 For distance culling, the client sets Godot's camera far plane to the farthest corner
-of the assigned room. The casino's bounds come from its world geometry; other
+of the assigned room. The casino's bounds come from its visible meshes and transformed GridMap cells; other
 rooms use their authored extents. This keeps always-loaded geometry in distant
 districts out of the draw list without fixed distance cutoffs. Shared gameplay
 nodes remain present on every peer, and the server never loads client-only
@@ -44,3 +44,30 @@ render classifier. No authority, balance, inventory or persistence changes.
 
 Tests: `tests/features/room_visibility/test_zone_rendering.gd`, plus existing
 room assignment, garage layout, portal, lift and enemy suites.
+
+## Teleport arrival protection
+
+A RoomDoor preloads its destination for the existing arrival hold before requesting
+travel. Room assignments received while that request is in flight preserve the
+held destination instead of deleting its floor. Unused preloads expire after the
+hold; an assignment selecting the destination removes its pending eviction.
+Procedural socket caps may also disappear before deferred render registration;
+the renderer resolves a weak reference and skips those freed visuals.
+
+Street network regression (dedicated server, visitor, late join, real gravity):
+
+```sh
+bash game/tests/features/street_district/network_test.sh
+```
+
+The probe deliberately delivers a stale departure assignment after preloading,
+checks standing floor contact after teleport, then verifies return/unloading.
+It also places two authenticated players on the street and verifies their bodies,
+nameplates, replicated positions and camera masks. With a display available,
+`STREET_RENDER_TEST=1` adds a framebuffer check that the remote body is actually
+drawn. Set `STREET_CAPTURE_DIR` to retain the in-game screenshots. Detached visuals
+are removed from the cache before their deferred deletion, so unloading a street
+cannot query transforms on nodes that have already left the scene tree.
+
+Moving visuals have a separate refresh cache. Static and moving visuals unregister
+on tree exit, restore their authored masks and can register again on reentry.

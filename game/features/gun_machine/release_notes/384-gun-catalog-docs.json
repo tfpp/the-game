@@ -1,0 +1,8 @@
+{
+  "title": "Gun catalog docs",
+  "summary": "Every gun-machine gun is now held in the player's hands, and a new guide lists every gun.",
+  "notes": [
+    "Put the player's hands on every procedural gun-machine gun, including the Ray Gun.",
+    "Document every gun and how it is held in docs/guns.md."
+  ]
+}

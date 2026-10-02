@@ -75,3 +75,8 @@ func unload_room() -> void:
 	remove_child(_content)
 	_content.queue_free()
 	_content = null
+
+
+## Room assignment may still describe the departure room while a teleport is in flight.
+func arrival_held() -> bool:
+	return is_loaded() and Time.get_ticks_msec() < _hold_until_msec

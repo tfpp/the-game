@@ -1,8 +1,8 @@
 extends GutTest
 
 const Model := preload("res://features/procedural_rooms/model_tools/elevator_model.gd")
-const CAB := preload("res://features/procedural_rooms/elevator_cab_model.tscn")
-const DOOR := preload("res://features/procedural_rooms/elevator_door_model.tscn")
+const CAB := preload("res://features/elevator/models/cab.tscn")
+const DOOR := preload("res://features/elevator/models/doors.tscn")
 const EXPORT := preload("res://assets/procedural_rooms/models/elevator/elevator.glb")
 
 

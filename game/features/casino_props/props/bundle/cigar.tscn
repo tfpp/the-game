@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/cigar.tres" id="1_g3lq8"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/cigar.res" id="2_dowx0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dwvgf"]
+size = Vector3(0.13, 0.022, 0.01905256)
+
+[node name="Cigar" type="StaticBody3D" unique_id=252893627]
+metadata/prop_id = "cigar"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=877740088]
+material_override = ExtResource("1_g3lq8")
+mesh = ExtResource("2_dowx0")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1693809238]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.011, 0)
+shape = SubResource("BoxShape3D_dwvgf")

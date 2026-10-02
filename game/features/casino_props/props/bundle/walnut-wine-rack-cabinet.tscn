@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/walnut-wine-rack-cabinet.tres" id="1_bm5qr"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/walnut-wine-rack-cabinet.res" id="2_466ow"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jpn62"]
+size = Vector3(0.64, 0.82, 0.34)
+
+[node name="WalnutWineRackCabinet" type="StaticBody3D" unique_id=596889700]
+metadata/prop_id = "walnut-wine-rack-cabinet"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=900839852]
+material_override = ExtResource("1_bm5qr")
+mesh = ExtResource("2_466ow")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1325310255]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41, 0)
+shape = SubResource("BoxShape3D_jpn62")

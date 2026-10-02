@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/waste_bin.tres" id="1_7abai"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/waste_bin.res" id="2_uvbex"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gkd8f"]
+size = Vector3(0.3, 0.365, 0.3)
+
+[node name="WasteBin" type="StaticBody3D" unique_id=737916180]
+metadata/prop_id = "waste_bin"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1676604575]
+material_override = ExtResource("1_7abai")
+mesh = ExtResource("2_uvbex")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1668405189]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1825, 0)
+shape = SubResource("BoxShape3D_gkd8f")

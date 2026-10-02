@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/casino_stool.tres" id="1_vpuly"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/casino_stool.res" id="2_earsc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_q5rgx"]
+size = Vector3(0.41, 0.809469, 0.41)
+
+[node name="CasinoStool" type="StaticBody3D" unique_id=384151020]
+metadata/prop_id = "casino_stool"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1450289558]
+material_override = ExtResource("1_vpuly")
+mesh = ExtResource("2_earsc")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1024671136]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4047345, 0)
+shape = SubResource("BoxShape3D_q5rgx")

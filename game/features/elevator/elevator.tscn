@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="MeshLibrary" path="res://features/elevator/gridmap/elevator_library.tres" id="library"]
+[ext_resource type="PackedScene" path="res://features/elevator/elevator_cab.tscn" id="cab"]
+[node name="Elevator" type="Node3D"]
+[node name="Bay" type="GridMap" parent="."]
+mesh_library = ExtResource("library")
+cell_size = Vector3(8, 5, 4)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+cell_octant_size = 1
+data = {"cells": PackedInt32Array(0, 0, 0)}
+[node name="Cab" parent="." instance=ExtResource("cab")]

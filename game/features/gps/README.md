@@ -1,6 +1,6 @@
 # GPS phone
 
-Press **P** (or pick **GPS** in the Esc menu, which is how touch and controller players
+Press **P** (or pick **Esc → Activities → GPS**, which is how touch and controller players
 open it) to raise a dual-screen phone. Search the place list on the left screen and
 pick one. The phone goes away and a purple route appears on the radar, with a direction
 arrow and a turn-by-turn line ("Turn left in 12 m", "Enter the lounge in 20 m") at the
@@ -14,7 +14,8 @@ Everything is client-side and private to each player: no RPCs, no shared state.
   `StreamedRoom`, like the parking garage).
 - `gps_route.gd` (`GpsRoute`): pure routing. `next_hop()` treats every `StreamedRoom`
   and destination `area` as a region and every `GarageDoor`/`RoomDoor` as a link, and
-  finds the next door to use. `grid_path()` walks a 0.5 m grid (50 m across) around
+  finds the next door to use. Operations van destinations also supply links, so the
+  separate gun shop routes through the garage and its van. `grid_path()` walks a 0.5 m grid (50 m across) around
   the radar's wall slice, then string-pulls the path into straight legs.
 - `gps.gd` (`Gps`): the P action, route state, radar overlay (`radar_overlays` group).
   The walkable path is re-planned every 2 m or 3 s.
@@ -54,3 +55,7 @@ Active routes clear on death/despawn/disconnect; reopened lists include respawns
 Moving targets replan on the existing distance/time budget and cancel the arrival
 countdown if they move away. No new RPCs, shared state, persistence, keys or world
 placements are introduced; entity owners retain all simulation and replication.
+
+Places with `dev_only = true` are listed only while `sv_cheats 1` is on, and doors with a
+`DevGate` child are left out of routing while they are locked (see
+[dev access](../dev_access/README.md)).

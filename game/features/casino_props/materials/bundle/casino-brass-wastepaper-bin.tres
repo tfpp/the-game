@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/casino_props/bundle/textures/bin-assets-casino-brass-wastepaper-bin-128.png" id="1_nx168"]
+
+[resource]
+albedo_texture = ExtResource("1_nx168")
+metallic_specular = 0.2
+roughness = 0.9
+texture_filter = 2
+texture_repeat = false

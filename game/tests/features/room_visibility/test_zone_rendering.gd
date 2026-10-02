@@ -154,3 +154,44 @@ func test_separate_garage_scenes_keep_paths_and_exclude_each_other() -> void:
 	_renderer.update_camera(camera)
 	assert_ne(camera.cull_mask & new_mesh.layers, 0)
 	assert_eq(camera.cull_mask & old_mesh.layers, 0)
+
+
+func test_socket_cap_freed_before_deferred_registration_is_ignored() -> void:
+	var cap := _mesh(_root, Vector3.ZERO)
+	var id := cap.get_instance_id()
+	cap.free()
+	await wait_physics_frames(2)
+	assert_false(_renderer._registered.has(id), "Freed procedural cap must not enter render cache")
+
+
+func test_streamed_visual_detached_before_queue_free_is_removed_from_cache() -> void:
+	var mesh := _mesh(_root, Vector3.ZERO)
+	_renderer._register(mesh, true)
+	var id := mesh.get_instance_id()
+	_root.remove_child(mesh)
+	_renderer.refresh_moving()
+	assert_false(_renderer._registered.has(id))
+	mesh.free()
+
+
+func test_static_visual_exit_restores_masks_and_reentry_registers_once() -> void:
+	var light := OmniLight3D.new()
+	light.layers = 3
+	light.light_cull_mask = 5
+	_zone.add_child(light)
+	_renderer._register(light, false)
+	var id := light.get_instance_id()
+	assert_false(_renderer._moving_visuals.has(id))
+	_zone.remove_child(light)
+	assert_false(_renderer._visuals.has(id), "Static exits do not wait for a moving scan")
+	assert_false(_renderer._registered.has(id))
+	assert_eq(light.layers, 3)
+	assert_eq(light.light_cull_mask, 5)
+	_root.add_child(light)
+	_renderer._register(light, true)
+	_renderer._register(light, true)
+	assert_true(_renderer._moving_visuals.has(id))
+	assert_eq(_renderer._visuals.size(), 1)
+	light.free()
+	assert_false(_renderer._moving_visuals.has(id))
+	assert_false(_renderer._visuals.has(id))

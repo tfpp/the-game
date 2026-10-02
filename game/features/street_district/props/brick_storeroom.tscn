@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_district/materials/brick_storeroom.tres" id="1_vvhnd"]
+[ext_resource type="ArrayMesh" path="res://assets/street_district/models/brick_storeroom.res" id="2_u2v5w"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l3lwv"]
+size = Vector3(6.24, 7.16, 14.44)
+
+[node name="BrickStoreroom" type="StaticBody3D" unique_id=107714742]
+metadata/prop_id = "brick_storeroom"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1385230546]
+material_override = ExtResource("1_vvhnd")
+mesh = ExtResource("2_u2v5w")
+
+[node name="@CollisionShape3D@23" type="CollisionShape3D" parent="." unique_id=774208613]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.58, 0)
+shape = SubResource("BoxShape3D_l3lwv")

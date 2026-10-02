@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/alarm_clock.tres" id="1_wucwi"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/alarm_clock.res" id="2_h1jsh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rsuvo"]
+size = Vector3(0.13, 0.13, 0.0705)
+
+[node name="AlarmClock" type="StaticBody3D" unique_id=1917325867]
+metadata/prop_id = "alarm_clock"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1249139217]
+material_override = ExtResource("1_wucwi")
+mesh = ExtResource("2_h1jsh")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=350100673]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.065, 0.0027500018)
+shape = SubResource("BoxShape3D_rsuvo")

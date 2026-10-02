@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/playing_card.tres" id="1_b71s7"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/playing_card.res" id="2_xg0ks"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_s4ot0"]
+size = Vector3(0.063, 0.004, 0.088)
+
+[node name="PlayingCard" type="StaticBody3D" unique_id=1419033286]
+metadata/prop_id = "playing_card"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1136613069]
+material_override = ExtResource("1_b71s7")
+mesh = ExtResource("2_xg0ks")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1990414634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0004, 0)
+shape = SubResource("BoxShape3D_s4ot0")

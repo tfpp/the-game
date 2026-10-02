@@ -1,0 +1,126 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/mariachi_band/mariachi_band.gd" id="band"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="entity"]
+[ext_resource type="Script" path="res://features/casino_patrons/stationary_patron.gd" id="patron"]
+[ext_resource type="Script" path="res://features/mariachi_band/musician_model.gd" id="musician"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/velvet.tres" id="velvet"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
+
+[node name="MariachiBand" type="Node3D"]
+position = Vector3(-20.8, 0, 0)
+rotation = Vector3(0, -1.5707963268, 0)
+script = ExtResource("band")
+
+[node name="Stage" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+use_collision = true
+radius = 2.6
+height = 0.2
+sides = 20
+material = ExtResource("wood")
+
+[node name="Rug" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.205, 0.1)
+radius = 2.25
+height = 0.01
+sides = 20
+material = ExtResource("velvet")
+
+[node name="Backdrop" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 1.25)
+use_collision = true
+size = Vector3(5, 2.8, 0.1)
+material = ExtResource("velvet")
+
+[node name="BackdropRail" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.05, 1.22)
+size = Vector3(5.1, 0.12, 0.16)
+material = ExtResource("brass")
+
+[node name="Title" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.55, 1.19)
+pixel_size = 0.006
+modulate = Color(0.95, 0.78, 0.36, 1)
+outline_modulate = Color(0.12, 0.03, 0.02, 1)
+text = "MARIACHI CORONA DE ORO"
+font_size = 48
+outline_size = 10
+
+[node name="NowPlaying" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 0.9)
+billboard = 1
+pixel_size = 0.004
+text = "Now playing"
+font_size = 40
+outline_size = 10
+
+[node name="Audio" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+unit_size = 6.0
+max_distance = 32.0
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")
+replicated_properties = Array[NodePath]([NodePath(".:net_song"), NodePath(".:net_take"), NodePath(".:net_stocky_member"), NodePath(".:net_banter")])
+interaction_range = 4.6
+interaction_offset = Vector3(0, 0.9, 0)
+
+[node name="Musicians" type="Node3D" parent="."]
+
+[node name="GuitarronPlayer" type="StaticBody3D" parent="Musicians"]
+position = Vector3(-1.8, 0.2, -0.4)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("patron")
+
+[node name="Body" type="Node3D" parent="Musicians/GuitarronPlayer"]
+script = ExtResource("musician")
+instrument = 3
+look = 3
+
+[node name="Violinist" type="StaticBody3D" parent="Musicians"]
+position = Vector3(-0.95, 0.2, -0.4)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("patron")
+
+[node name="Body" type="Node3D" parent="Musicians/Violinist"]
+script = ExtResource("musician")
+instrument = 1
+look = 1
+seed_phase = 1.3
+
+[node name="FirstTrumpet" type="StaticBody3D" parent="Musicians"]
+position = Vector3(0, 0.2, -0.4)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("patron")
+
+[node name="Body" type="Node3D" parent="Musicians/FirstTrumpet"]
+script = ExtResource("musician")
+seed_phase = 2.1
+
+[node name="SecondTrumpet" type="StaticBody3D" parent="Musicians"]
+position = Vector3(0.95, 0.2, -0.4)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("patron")
+
+[node name="Body" type="Node3D" parent="Musicians/SecondTrumpet"]
+script = ExtResource("musician")
+look = 2
+seed_phase = 0.7
+
+[node name="VihuelaPlayer" type="StaticBody3D" parent="Musicians"]
+position = Vector3(1.8, 0.2, -0.4)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("patron")
+
+[node name="Body" type="Node3D" parent="Musicians/VihuelaPlayer"]
+script = ExtResource("musician")
+instrument = 2
+look = 4
+seed_phase = 2.9

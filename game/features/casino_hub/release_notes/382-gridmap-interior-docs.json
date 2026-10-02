@@ -1,0 +1,5 @@
+{
+  "title": "GridMap interior building guide",
+  "summary": "Builders now learn to make interiors from GridMap tiles, using the casino as the example.",
+  "notes": ["Document how to build interiors with GridMaps and MeshLibraries instead of CSG walls."]
+}

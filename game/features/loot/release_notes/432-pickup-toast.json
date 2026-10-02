@@ -1,0 +1,5 @@
+{
+  "title": "Loot pickup toast",
+  "summary": "Taking loot from a stash now pops up what you grabbed and what it is worth.",
+  "notes": ["Show a short rarity-colored \"Picked up <name> ($<value>)\" message to the player who takes stash loot."]
+}

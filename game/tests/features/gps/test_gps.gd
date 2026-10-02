@@ -1,7 +1,12 @@
 extends GutTest
 
+const Cheats := preload("res://tests/features/dev_access/cheats_fixture.gd")
 const FEATURE := preload("res://features/gps/feature.tscn")
 const ROOM_SCENES: Array[String] = [
+	"res://features/pawn_shop/feature.tscn",
+	"res://features/starter_room/feature.tscn",
+	"res://features/hotel_props/feature.tscn",
+	"res://features/street_district/feature.tscn",
 	"res://features/room_doors/feature.tscn",
 	"res://features/hotel_annex/feature.tscn",
 	"res://features/apartments/feature.tscn",
@@ -72,6 +77,7 @@ func test_choosing_a_place_starts_a_route_and_closes_the_phone() -> void:
 
 func test_every_streamed_room_has_a_gps_destination() -> void:
 	# Future rooms must add a GpsDestination to features/gps/feature.tscn (see README).
+	Cheats.enable(self)
 	for path: String in ROOM_SCENES:
 		add_child_autofree(load(path).instantiate())
 	var rooms := get_tree().get_nodes_in_group(&"streamed_rooms")

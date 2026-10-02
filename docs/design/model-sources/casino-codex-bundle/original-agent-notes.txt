@@ -1,0 +1,17 @@
+# Casino prop project
+
+Read CODEX_PROMPT.txt for the complete current art direction, construction and UV workflow. It takes precedence over older per-batch prompts and READMEs for new work. Follow the current user's task.
+
+This project produces actual indexed low-poly models with realistic flat material atlases. PSX/GoldSrc is the aesthetic, not proof of engine-native MDL compatibility.
+
+Hard constraints: native texture maximum 256×256; ashtrays maximum 32×32; tiny props 16–32; medium props usually 64; 128 for wall-scale surfaces and 256 only large models. Earlier furniture/bin texture budgets are historical and must not set the budget for new props.
+
+Manufactured forms must be coherent, and real separate components must join convincingly. Never substitute stacked blocks for curved parts or believable handles. Inspect critical joins close-up from oblique, rear and underside angles. The old bin handles are historical rejected attempts, not approved reference designs.
+
+Build mesh/UVs first, then paint exact flat UV charts using ImageGen. Do not generate 3D object views inside UV maps. Downsample to native size, extrude edge colours into gutters, use half-texel-safe UVs and nearest filtering. Keep broad realistic detail at the native resolution.
+
+Preserve current assets unless requested otherwise. Current cigar: 130 mm long, 22 mm nominal diameter, lit at -X, 20 triangles, 16×16 colour plus isolated emission. Clock remains static, with unrigged hand vertex groups.
+
+Use local NumPy/Pillow build and validation scripts. Refer to each batch README for its commands. Treat high-resolution edit/guide PNGs as references, never final material textures. Do not regenerate existing painted textures from placeholders.
+
+Deliver GLB, OBJ/MTL/native PNG, editable source, UV guides, painting prompts, stats and an offline HTML viewer. Validate exported geometry/textures and inspect renders. Be explicit about any browser or engine conversion checks not performed.

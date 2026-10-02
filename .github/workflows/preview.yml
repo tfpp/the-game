@@ -104,8 +104,10 @@ jobs:
             };
           })();
           EOF
-          sed -i 's|<script src="index.js"></script>|<script src="wasm-gz.js"></script>&|' web/index.html
-          grep -q 'wasm-gz.js' web/index.html
+          # Install before any engine loader, including the cache-busting
+          # document.write loader in the game's custom HTML shell.
+          sed -i 's|</head>|<script src="wasm-gz.js"></script></head>|' web/index.html
+          grep -q '<script src="wasm-gz.js"></script>' web/index.html
           find web -type f -size +25M | grep . && exit 1 || true
       - name: Deploy to Cloudflare Pages
         env:

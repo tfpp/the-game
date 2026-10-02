@@ -1,0 +1,9 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://features/street_district/casino_marquee.gd" id="script"]
+[ext_resource type="ArrayMesh" path="res://assets/street_district/models/casino_marquee.res" id="mesh"]
+[ext_resource type="Material" path="res://features/street_district/materials/casino_marquee.tres" id="paint"]
+[node name="CasinoMarquee" type="Node3D"]
+script = ExtResource("script")
+[node name="PanelAndRaisedLetters" type="MeshInstance3D" parent="."]
+mesh = ExtResource("mesh")
+material_override = ExtResource("paint")

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/tea_saucer.tres" id="1_0bf73"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/tea_saucer.res" id="2_mkc7m"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_q1fvj"]
+size = Vector3(0.14, 0.014, 0.14)
+
+[node name="TeaSaucer" type="StaticBody3D" unique_id=1764535143]
+metadata/prop_id = "tea_saucer"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1050013731]
+material_override = ExtResource("1_0bf73")
+mesh = ExtResource("2_mkc7m")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1385545047]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.007, 0)
+shape = SubResource("BoxShape3D_q1fvj")

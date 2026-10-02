@@ -1,0 +1,197 @@
+[
+	{
+		"bounds": [
+			"Vector3(-0.4675, 0.015, -0.415)",
+			"Vector3(0.935, 0.995, 0.83)"
+		],
+		"name": "casino-lounge-chair",
+		"scene": "res://features/casino_props/props/bundle/casino-lounge-chair.tscn",
+		"source": "casino-assets/meshes.json",
+		"source_texture": "casino-assets/casino-atlas-256.png",
+		"texture_size": 128,
+		"triangles": 116,
+		"vertices": 226
+	},
+	{
+		"bounds": [
+			"Vector3(-0.8, 0.015, -0.415)",
+			"Vector3(1.6, 0.995, 0.83)"
+		],
+		"name": "casino-two-seat-couch",
+		"scene": "res://features/casino_props/props/bundle/casino-two-seat-couch.tscn",
+		"source": "casino-assets/meshes.json",
+		"source_texture": "casino-assets/casino-atlas-256.png",
+		"texture_size": 128,
+		"triangles": 150,
+		"vertices": 288
+	},
+	{
+		"bounds": [
+			"Vector3(-0.15, 0.015, -0.15)",
+			"Vector3(0.3, 0.38000003, 0.3)"
+		],
+		"name": "casino-brass-wastepaper-bin",
+		"scene": "res://features/casino_props/props/bundle/casino-brass-wastepaper-bin.tscn",
+		"source": "bin-assets/meshes.json",
+		"source_texture": "bin-assets/casino-brass-wastepaper-bin-128.png",
+		"texture_size": 128,
+		"triangles": 60,
+		"vertices": 112
+	},
+	{
+		"bounds": [
+			"Vector3(-0.29198444, 0.025, -0.275)",
+			"Vector3(0.5839689, 0.6817941, 0.55)"
+		],
+		"name": "galvanised-rubbish-bin",
+		"scene": "res://features/casino_props/props/bundle/galvanised-rubbish-bin.tscn",
+		"source": "bin-assets/meshes.json",
+		"source_texture": "bin-assets/galvanised-rubbish-bin-256.png",
+		"texture_size": 128,
+		"triangles": 160,
+		"vertices": 312
+	},
+	{
+		"bounds": [
+			"Vector3(-0.14, 0.012, -0.12124356)",
+			"Vector3(0.28, 0.729, 0.24248712)"
+		],
+		"name": "standing-ashtray-with-cigarette",
+		"scene": "res://features/casino_props/props/bundle/standing-ashtray-with-cigarette.tscn",
+		"source": "casino-props/meshes.json",
+		"source_texture": "casino-props/ashtray-32.png",
+		"texture_size": 32,
+		"triangles": 104,
+		"vertices": 204
+	},
+	{
+		"bounds": [
+			"Vector3(-0.04, 0, -0.004)",
+			"Vector3(0.08, 0.008, 0.008)"
+		],
+		"name": "cigarette",
+		"scene": "res://features/casino_props/props/bundle/cigarette.tscn",
+		"source": "casino-props/meshes.json",
+		"source_texture": "casino-props/ashtray-32.png",
+		"texture_size": 32,
+		"triangles": 12,
+		"vertices": 24
+	},
+	{
+		"bounds": [
+			"Vector3(-0.03031089, 0.008, -0.035)",
+			"Vector3(0.06062178, 0.3, 0.07)"
+		],
+		"name": "wine-bottle",
+		"scene": "res://features/casino_props/props/bundle/wine-bottle.tscn",
+		"source": "casino-props/meshes.json",
+		"source_texture": "casino-props/bottle-32.png",
+		"texture_size": 32,
+		"triangles": 44,
+		"vertices": 84
+	},
+	{
+		"bounds": [
+			"Vector3(-0.117, 0.008, -0.117)",
+			"Vector3(0.234, 0.228, 0.234)"
+		],
+		"name": "wine-bucket",
+		"scene": "res://features/casino_props/props/bundle/wine-bucket.tscn",
+		"source": "casino-props/meshes.json",
+		"source_texture": "casino-props/bucket-32.png",
+		"texture_size": 32,
+		"triangles": 76,
+		"vertices": 144
+	},
+	{
+		"bounds": [
+			"Vector3(-0.32, 0, -0.17)",
+			"Vector3(0.64, 0.82, 0.34)"
+		],
+		"name": "walnut-wine-rack-cabinet",
+		"scene": "res://features/casino_props/props/bundle/walnut-wine-rack-cabinet.tscn",
+		"source": "casino-props/meshes.json",
+		"source_texture": "casino-props/cabinet-64.png",
+		"texture_size": 64,
+		"triangles": 154,
+		"vertices": 308
+	},
+	{
+		"bounds": [
+			"Vector3(-0.36, 0, -0.31176916)",
+			"Vector3(0.72, 1.045, 0.6235383)"
+		],
+		"name": "walnut-pedestal-cocktail-table",
+		"scene": "res://features/casino_props/props/bundle/walnut-pedestal-cocktail-table.tscn",
+		"source": "casino-props-02/meshes.json",
+		"source_texture": "casino-props-02/table-64.png",
+		"texture_size": 64,
+		"triangles": 68,
+		"vertices": 132
+	},
+	{
+		"bounds": [
+			"Vector3(-0.23, 0, -0.19918585)",
+			"Vector3(0.46, 0.752, 0.3983717)"
+		],
+		"name": "burgundy-pedestal-bar-stool",
+		"scene": "res://features/casino_props/props/bundle/burgundy-pedestal-bar-stool.tscn",
+		"source": "casino-props-02/meshes.json",
+		"source_texture": "casino-props-02/stool-32.png",
+		"texture_size": 32,
+		"triangles": 134,
+		"vertices": 264
+	},
+	{
+		"bounds": [
+			"Vector3(-0.13858193, -0.13858193, 0)",
+			"Vector3(0.27716386, 0.27716386, 0.036)"
+		],
+		"name": "brass-wall-clock",
+		"scene": "res://features/casino_props/props/bundle/brass-wall-clock.tscn",
+		"source": "casino-props-02/meshes.json",
+		"source_texture": "casino-props-02/clock-32.png",
+		"texture_size": 32,
+		"triangles": 48,
+		"vertices": 88
+	},
+	{
+		"bounds": [
+			"Vector3(-0.051961523, 0, -0.06)",
+			"Vector3(0.103923045, 0.15, 0.12)"
+		],
+		"name": "martini-glass",
+		"scene": "res://features/casino_props/props/bundle/martini-glass.tscn",
+		"source": "casino-props-02/meshes.json",
+		"source_texture": "casino-props-02/glass-16.png",
+		"texture_size": 16,
+		"triangles": 68,
+		"vertices": 132
+	},
+	{
+		"bounds": [
+			"Vector3(-0.065, 0, -0.00952628)",
+			"Vector3(0.13, 0.022, 0.01905256)"
+		],
+		"name": "cigar",
+		"scene": "res://features/casino_props/props/bundle/cigar.tscn",
+		"source": "casino-props-03/meshes.json",
+		"source_texture": "casino-props-03/cigar-16.png",
+		"texture_size": 16,
+		"triangles": 20,
+		"vertices": 36
+	},
+	{
+		"bounds": [
+			"Vector3(-0.026846787, 0, -0.031)",
+			"Vector3(0.053693574, 0.264, 0.062)"
+		],
+		"name": "amber-beer-bottle",
+		"scene": "res://features/casino_props/props/bundle/amber-beer-bottle.tscn",
+		"source": "casino-props-03/meshes.json",
+		"source_texture": "casino-props-03/beer-32.png",
+		"texture_size": 32,
+		"triangles": 68,
+		"vertices": 132
+	}
+]

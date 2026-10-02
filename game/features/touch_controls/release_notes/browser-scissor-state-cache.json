@@ -1,0 +1,5 @@
+{
+  "title": "Smoother browser rendering",
+  "summary": "Avoid a browser graphics state query that can stall each frame.",
+  "notes": ["Cache WebGL2 scissor state independently for each context and reset it after graphics context restoration."]
+}

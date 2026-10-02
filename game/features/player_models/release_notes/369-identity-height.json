@@ -1,0 +1,8 @@
+{
+  "title": "ID-based player heights",
+  "summary": "Players have stable ID-based heights, and Sor stands eight inches tall.",
+  "notes": [
+    "Vary player height by authenticated ID and keep Sor eight inches tall in every body.",
+    "Match feet-anchored avatars, collision, eyes and held equipment across peers and respawns."
+  ]
+}

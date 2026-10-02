@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/jerry_can.tres" id="1_6kfjy"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/jerry_can.res" id="2_7sh4l"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ysdnb"]
+size = Vector3(0.31, 0.59, 0.169)
+
+[node name="JerryCan" type="StaticBody3D" unique_id=877302861]
+metadata/prop_id = "jerry_can"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=815315676]
+material_override = ExtResource("1_6kfjy")
+mesh = ExtResource("2_7sh4l")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=924308882]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.295, 0.0045000017)
+shape = SubResource("BoxShape3D_ysdnb")

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/wall_clock.tres" id="1_7quc3"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/wall_clock.res" id="2_phw0n"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1da3e"]
+size = Vector3(0.3, 0.3, 0.047)
+
+[node name="WallClock" type="StaticBody3D" unique_id=1050916402]
+metadata/prop_id = "wall_clock"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1247331935]
+material_override = ExtResource("1_7quc3")
+mesh = ExtResource("2_phw0n")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=208245035]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0.0034999996)
+shape = SubResource("BoxShape3D_1da3e")

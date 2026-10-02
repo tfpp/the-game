@@ -1,0 +1,105 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/dev_access/dev_gate.gd" id="dev_gate"]
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
+[ext_resource type="Script" path="res://features/hotel_props/hotel_portal.gd" id="portal"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="interaction"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
+
+[sub_resource type="StandardMaterial3D" id="Brass"]
+albedo_color = Color(0.55, 0.4, 0.18, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Door"]
+albedo_color = Color(0.23, 0.115, 0.06, 1)
+roughness = 1.0
+
+[node name="HotelProps" type="Node3D"]
+
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(311, 1.0, -294)
+
+[node name="Entrance" type="CSGBox3D" parent="."]
+position = Vector3(311, 1.1, -291.8)
+size = Vector3(1.4, 2.2, 0.12)
+use_collision = true
+material = SubResource("Door")
+script = ExtResource("portal")
+destination = NodePath("../Room/Arrival")
+door_label = "Teleport to the hotel prop room"
+
+[node name="NetworkedEntity" type="Node" parent="Entrance"]
+script = ExtResource("interaction")
+interaction_range = 2.5
+
+[node name="Sign" type="Label3D" parent="Entrance"]
+position = Vector3(0, 1.45, -0.12)
+rotation = Vector3(0, 3.14159265, 0)
+text = "HOTEL PROPS"
+font_size = 44
+pixel_size = 0.0035
+modulate = Color(1, 0.84, 0.52, 1)
+
+[node name="FrameLeft" type="CSGBox3D" parent="Entrance"]
+position = Vector3(-0.77, 0, 0)
+size = Vector3(0.1, 2.4, 0.16)
+material = SubResource("Brass")
+
+[node name="FrameRight" type="CSGBox3D" parent="Entrance"]
+position = Vector3(0.77, 0, 0)
+size = Vector3(0.1, 2.4, 0.16)
+material = SubResource("Brass")
+
+[node name="FrameTop" type="CSGBox3D" parent="Entrance"]
+position = Vector3(0, 1.15, 0)
+size = Vector3(1.64, 0.1, 0.16)
+material = SubResource("Brass")
+
+[node name="Room" type="Node3D" parent="."]
+position = Vector3(0, 0, -1800)
+script = ExtResource("room")
+room_scene = "res://features/hotel_props/interior.tscn"
+bounds = AABB(-10.3, -1, -8.3, 20.6, 6.2, 16.6)
+
+[node name="Arrival" type="Marker3D" parent="Room"]
+position = Vector3(0, 1.0, 6.0)
+
+[node name="Return" type="CSGBox3D" parent="Room"]
+position = Vector3(0, 1.1, 7.85)
+size = Vector3(1.4, 2.2, 0.12)
+use_collision = true
+material = SubResource("Door")
+script = ExtResource("portal")
+destination = NodePath("../../CasinoArrival")
+door_label = "Return to the dev room"
+
+[node name="NetworkedEntity" type="Node" parent="Room/Return"]
+script = ExtResource("interaction")
+interaction_range = 2.5
+
+[node name="Sign" type="Label3D" parent="Room/Return"]
+position = Vector3(0, 1.4, -0.12)
+rotation = Vector3(0, 3.14159265, 0)
+text = "DEV ROOM"
+font_size = 40
+pixel_size = 0.004
+modulate = Color(1, 0.84, 0.52, 1)
+
+[node name="Destinations" type="Node3D" parent="."]
+
+[node name="Room" type="Marker3D" parent="Destinations"]
+position = Vector3(0, 0.1, -1794)
+script = ExtResource("gps")
+label = "Hotel Prop Room"
+dev_only = true
+hint = "Fifty vintage hotel props. Use HOTEL PROPS on the dev room's south wall."
+
+[node name="Teleport" type="Marker3D" parent="Destinations"]
+position = Vector3(311, 0.1, -294)
+script = ExtResource("gps")
+label = "Hotel Props Teleport"
+dev_only = true
+hint = "In the dev room beside HOTEL WING."
+
+[node name="DevGate" type="Node" parent="Entrance"]
+script = ExtResource("dev_gate")

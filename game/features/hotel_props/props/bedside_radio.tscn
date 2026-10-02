@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/bedside_radio.tres" id="1_7nhw1"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/bedside_radio.res" id="2_ix5qy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_g571a"]
+size = Vector3(0.31, 0.295, 0.117)
+
+[node name="BedsideRadio" type="StaticBody3D" unique_id=1218286192]
+metadata/prop_id = "bedside_radio"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1726174210]
+material_override = ExtResource("1_7nhw1")
+mesh = ExtResource("2_ix5qy")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=158435136]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1475, 0.0034999996)
+shape = SubResource("BoxShape3D_g571a")

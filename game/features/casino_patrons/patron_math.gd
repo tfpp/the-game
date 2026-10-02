@@ -3,7 +3,7 @@ class_name PatronMath
 ## Kept free of nodes so tests can check them directly.
 
 ## Floor height of the gaming floor (features/casino_hub/README.md).
-const FLOOR_Y := -1.5
+const FLOOR_Y := -1.25
 const WALK_SPEED := 1.3
 const PAUSE_MIN_S := 1.2
 const PAUSE_MAX_S := 3.5

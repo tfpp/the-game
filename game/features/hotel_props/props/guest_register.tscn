@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/guest_register.tres" id="1_efys5"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/guest_register.res" id="2_mpjnv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lc2i0"]
+size = Vector3(0.49, 0.0622821, 0.32)
+
+[node name="GuestRegister" type="StaticBody3D" unique_id=437389827]
+metadata/prop_id = "guest_register"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=388890138]
+material_override = ExtResource("1_efys5")
+mesh = ExtResource("2_mpjnv")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=596783344]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03114105, 0)
+shape = SubResource("BoxShape3D_lc2i0")

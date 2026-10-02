@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/room_kits/brass_pit_railing/rail_span.res" id="span"]
+[ext_resource type="ArrayMesh" path="res://assets/room_kits/brass_pit_railing/rail_post.res" id="post"]
+[ext_resource type="Material" path="res://features/room_kits/brass_railing_material.tres" id="finish"]
+
+[sub_resource type="BoxShape3D" id="span_shape"]
+size = Vector3(2, 1.105, 0.15)
+
+[sub_resource type="BoxShape3D" id="post_shape"]
+size = Vector3(0.15, 1.105, 0.15)
+
+[node name="WalnutBrassRailing" type="Node3D"]
+
+[node name="RailSpan" type="MeshInstance3D" parent="."]
+mesh = ExtResource("span")
+material_override = ExtResource("finish")
+
+[node name="Body" type="StaticBody3D" parent="RailSpan"]
+
+[node name="Shape" type="CollisionShape3D" parent="RailSpan/Body"]
+position = Vector3(1, 0.5525, 0)
+shape = SubResource("span_shape")
+
+[node name="RailPost" type="MeshInstance3D" parent="."]
+mesh = ExtResource("post")
+material_override = ExtResource("finish")
+
+[node name="Body" type="StaticBody3D" parent="RailPost"]
+
+[node name="Shape" type="CollisionShape3D" parent="RailPost/Body"]
+position = Vector3(0, 0.5525, 0)
+shape = SubResource("post_shape")

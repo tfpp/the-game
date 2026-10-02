@@ -39,6 +39,9 @@ func _process(_delta: float) -> void:
 				_emote_peer = peer
 				_emote_started = float(_models.emotes[peer]["started"])
 				var age := _models.emote_elapsed(peer)
+				if _models.emote_name(peer) != str(Network.args.get("emote-name", "flip_off")):
+					push_error("Replicated emote name differs from requested selection")
+					get_tree().quit(1)
 				if peer == 1 or (_role == "late" and (age < 0.4 or age > 2.5)):
 					push_error("Emote identity or late-join phase invalid: %d age=%f" % [peer, age])
 					get_tree().quit(1)
@@ -55,8 +58,27 @@ func _process(_delta: float) -> void:
 			and _models.type_for(peer) == "girl"
 			and not _observed
 		):
+			if not _models.heights.has(peer):
+				continue
+			var emote := str(Network.args.get("emote-name", "flip_off"))
+			var account_name := "Sor" if emote in ["flip_off", "salute"] else "driver"
+			var expected := PlayerHeight.for_identity(peer, account_name)
+			if not is_equal_approx(float(_models.heights[peer]), expected):
+				push_error("Identity height did not replicate")
+				get_tree().quit(1)
+			var player := get_node_or_null("EmotePeer%d" % peer) as Player
+			if player == null or not player.has_node("Body/Avatar"):
+				continue
+			var avatar := player.get_node("Body/Avatar") as BlockPlayerModel
+			var factor := _models.height_scale_for(peer)
+			if not is_equal_approx(avatar.height_scale(), factor):
+				continue
+			var capsule := (player.get_node("Collider") as CollisionShape3D).shape as CapsuleShape3D
+			if not is_equal_approx(capsule.height, factor * PlayerHeight.BASE_METERS):
+				push_error("Replicated height did not reach the avatar/capsule")
+				get_tree().quit(1)
 			_observed = true
-			print("AVATAR_OBSERVED peer=%d" % peer)
+			print("AVATAR_OBSERVED peer=%d height=%f" % [peer, float(_models.heights[peer])])
 	var stop := str(Network.args.get("probe-stop", ""))
 	if FileAccess.file_exists(stop + ".pause") and not _paused:
 		get_tree().multiplayer_poll = false
@@ -81,21 +103,23 @@ func _run() -> void:
 	_models.entity.request_action(
 		&"appearance", {"skin": 999999, "hair": "bald", "hair_color": 0, "eyes": 0}
 	)
-	while _results.size() < 4:
+	_models.entity.request_action(&"height", {"value": 100, "peer_id": 1})
+	while _results.size() < 5:
 		await get_tree().process_frame
 	var peer := multiplayer.get_unique_id()
 	while _models.appearance_for(peer) != LOOK or _models.type_for(peer) != "girl":
 		await get_tree().process_frame
-	if _results != [0, 0, 3, 3] or _models.appearances.has(1):
+	if _results != [0, 0, 3, 3, 1] or _models.appearances.has(1):
 		push_error("Appearance request identity/validation failed: %s" % [_results])
 		get_tree().quit(1)
 		return
 	if Network.has_flag("emote-probe"):
 		_emote_player(peer)
 		_models.entity.request_action(&"emote", {"name": "unknown"})
-		_models.entity.request_action(&"emote", {"name": "flip_off", "peer_id": 1})
-		_models.entity.request_action(&"emote", {"name": "flip_off"})
-		_models.entity.request_action(&"emote", {"name": "flip_off"})
+		var emote := str(Network.args.get("emote-name", "flip_off"))
+		_models.entity.request_action(&"emote", {"name": emote, "peer_id": 1})
+		_models.entity.request_action(&"emote", {"name": emote})
+		_models.entity.request_action(&"emote", {"name": emote})
 		while _emote_results.size() < 4:
 			await get_tree().process_frame
 		if _emote_results != [3, 3, 0, 3]:

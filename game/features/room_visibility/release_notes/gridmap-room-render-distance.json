@@ -1,0 +1,7 @@
+{
+  "title": "GridMap room visibility",
+  "summary": "GridMap rooms remain visible across their full footprint when the camera moves.",
+  "notes": [
+    "Include visible GridMap cell meshes, rotations and library offsets when calculating room bounds and camera render distance."
+  ]
+}

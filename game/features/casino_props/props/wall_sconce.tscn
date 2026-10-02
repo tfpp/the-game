@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/wall_sconce.tres" id="1_n36a2"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/wall_sconce.res" id="2_rrd5u"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_02t0g"]
+size = Vector3(0.16, 0.34, 0.205)
+
+[node name="WallSconce" type="StaticBody3D" unique_id=1052643713]
+metadata/prop_id = "wall_sconce"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=992879095]
+material_override = ExtResource("1_n36a2")
+mesh = ExtResource("2_rrd5u")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=654187568]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17, 0.0425)
+shape = SubResource("BoxShape3D_02t0g")

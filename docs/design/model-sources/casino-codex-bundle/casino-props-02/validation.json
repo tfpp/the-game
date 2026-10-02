@@ -1,0 +1,38 @@
+[
+  {
+    "asset": "walnut-pedestal-cocktail-table",
+    "triangles": 68,
+    "texture": [
+      64,
+      64
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  },
+  {
+    "asset": "burgundy-pedestal-bar-stool",
+    "triangles": 134,
+    "texture": [
+      32,
+      32
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  },
+  {
+    "asset": "brass-wall-clock",
+    "triangles": 48,
+    "texture": [
+      32,
+      32
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  },
+  {
+    "asset": "martini-glass",
+    "triangles": 68,
+    "texture": [
+      16,
+      16
+    ],
+    "checks": "finite data, UV bounds, unit normals, winding, triangle areas, edge padding, GLB structure and embedded texture passed"
+  }
+]

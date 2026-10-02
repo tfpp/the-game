@@ -16,6 +16,8 @@ const GUN_RIG_SCENE := preload("res://features/gun_machine/gun_rig.tscn")
 const PROJECTILE_SCENE := preload("res://features/gun_machine/projectile.tscn")
 
 var _next_projectile_id := 0
+var _buying: Dictionary[int, bool] = {}
+var _generation := 0
 
 @onready var _rigs: Node3D = $Rigs
 @onready var _rig_spawner: MultiplayerSpawner = $RigSpawner
@@ -50,25 +52,58 @@ func price_cents() -> int:
 	return PRICE_CENTS
 
 
-## Server: sells `peer` a fresh gun, deducting PRICE_CENTS from their wallet. Called
-## by the machine kiosk (gun_machine_kiosk.gd) once it has confirmed range. Returns
-## an error string on failure, or "" on success.
-func purchase(peer: int) -> String:
+## Server: sells a catalog choice, or a random gun for PRICE_CENTS when omitted.
+## The kiosk validates range; the buy menu validates its sender and stock payload.
+## Returns an error/notice string, or "" on successful delivery.
+# gdlint: disable=max-returns
+func purchase(peer: int, choice: String = "") -> String:
 	if not multiplayer.is_server():
 		return "Server only"
+	if _buying.has(peer):
+		return "Purchase already pending"
+	var entry := GunBuyCatalog.find(choice) if not choice.is_empty() else {}
+	if not choice.is_empty() and entry.is_empty():
+		return "Unknown gun"
 	var rig := GunRig.for_peer(get_tree(), peer)
-	if rig == null:
+	var hand := Hand.for_peer(get_tree(), peer)
+	var fixed := entry.has("id") and not entry.has("ammo")
+	if fixed:
+		if hand == null or not hand.inventory().can_collect(choice):
+			return "Inventory full or loading"
+	elif rig == null:
 		return "No gun rig"
+	if hand != null and (hand.inventory().loading or hand.consumption.active()):
+		return "Finish loading or using your item first"
 	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
 	if wallet == null:
 		return "Wallet unavailable"
+	_buying[peer] = true
+	var generation := _generation
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
-	var result: Dictionary = await wallet.charge(peer, id, PRICE_CENTS)
+	var price := int(entry.get("price", PRICE_CENTS))
+	var spot := hand.global_position if hand != null else Vector3.ZERO
+	var result: Dictionary = await wallet.charge(peer, id, price)
+	if generation != _generation or not is_inside_tree():
+		return "Session ended"
+	_buying.erase(peer)
 	if result.has("error"):
 		return str(result["error"])
+	if fixed:
+		if is_instance_valid(hand) and Hand.for_peer(get_tree(), peer) == hand:
+			if hand.inventory().collect(choice):
+				return ""
+		# Like the pawn shop, a paid fixed gun is dropped if capacity changed.
+		var holdables := get_tree().get_first_node_in_group(&"holdables_root")
+		if holdables != null:
+			holdables.call("spawn_thrown_item", choice, spot + Vector3.UP, spot)
+		return "Paid gun dropped at your purchase location"
+	if not is_instance_valid(rig) or GunRig.for_peer(get_tree(), peer) != rig:
+		return "Player left before delivery"
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
-	rig.equip(GunGenerator.generate(rng))
+	rig.equip(
+		GunBuyCatalog.stats(entry, rng) if not entry.is_empty() else GunGenerator.generate(rng)
+	)
 	return ""
 
 
@@ -93,6 +128,8 @@ func spawn_projectile(data: Dictionary) -> void:
 
 
 func _on_mode_changed(_mode: Network.Mode) -> void:
+	_generation += 1
+	_buying.clear()
 	_clear(_rigs)
 	_clear(_projectiles)
 	if Network.is_authoritative():

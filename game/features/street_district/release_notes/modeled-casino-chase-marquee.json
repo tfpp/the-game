@@ -1,0 +1,5 @@
+{
+  "title": "Modeled casino marquee with chase lights",
+  "summary": "Spot the casino by its raised gold letters, flashing bulbs and red accent lights.",
+  "notes": ["Replace the flat casino text label with a UV-mapped metal sign and physically raised GOLDEN CROWN / CASINO lettering.", "Generate a dedicated 64x64 material atlas after building the sign mesh and UVs.", "Animate two groups of warm bulbs and pulsing red trim with cosmetic local lighting."]
+}

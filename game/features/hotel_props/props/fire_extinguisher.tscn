@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/fire_extinguisher.tres" id="1_ptv0v"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/fire_extinguisher.res" id="2_fr8d4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8ja0k"]
+size = Vector3(0.1913923, 0.414, 0.1522803)
+
+[node name="FireExtinguisher" type="StaticBody3D" unique_id=1041403742]
+metadata/prop_id = "fire_extinguisher"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=847402032]
+material_override = ExtResource("1_ptv0v")
+mesh = ExtResource("2_fr8d4")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=783485904]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.019696154, 0.207, 0.0038598478)
+shape = SubResource("BoxShape3D_8ja0k")

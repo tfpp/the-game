@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/leather_sofa.tres" id="1_drsgi"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/leather_sofa.res" id="2_63c5v"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_27hg3"]
+size = Vector3(1.76, 0.96, 0.82)
+
+[node name="LeatherSofa" type="StaticBody3D" unique_id=57372932]
+metadata/prop_id = "leather_sofa"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=697312319]
+material_override = ExtResource("1_drsgi")
+mesh = ExtResource("2_63c5v")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=304880987]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, -0.00999999)
+shape = SubResource("BoxShape3D_27hg3")

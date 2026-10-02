@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/tissue_box.tres" id="1_jubxi"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/tissue_box.res" id="2_yir4w"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mdaro"]
+size = Vector3(0.23, 0.1891983, 0.12)
+
+[node name="TissueBox" type="StaticBody3D" unique_id=1114495139]
+metadata/prop_id = "tissue_box"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1511086132]
+material_override = ExtResource("1_jubxi")
+mesh = ExtResource("2_yir4w")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=437681336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09459915, 0)
+shape = SubResource("BoxShape3D_mdaro")

@@ -1,4 +1,5 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
+[ext_resource type="Script" path="res://features/dev_access/dev_gate.gd" id="dev_gate"]
 [ext_resource type="Script" path="res://features/procedural_rooms/portal.gd" id="2_portal"]
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="3_net"]
 [ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="4_gps"]
@@ -43,7 +44,8 @@ modulate = Color(0.6, 1, 1, 1)
 position = Vector3(294, 0, -305.9)
 script = ExtResource("4_gps")
 label = "Garage Teleporter"
-hint = "In the dev room, behind the DEV ROOM booth in the south lobby. Use the cyan teleporter."
+dev_only = true
+hint = "In the dev room, behind the DEV ROOM booth in the north promenade. Use the cyan teleporter."
 
 [node name="Garage" type="Marker3D" parent="Destinations"]
 position = Vector3(32, 0, -25)
@@ -51,3 +53,6 @@ script = ExtResource("4_gps")
 label = "Procedural Garage"
 hint = "Service elevator at the east doorway. C is the casino; B1–B5 are basement garages."
 area = AABB(-100, -23, -125, 250, 21, 230)
+
+[node name="DevGate" type="Node" parent="Entrance"]
+script = ExtResource("dev_gate")

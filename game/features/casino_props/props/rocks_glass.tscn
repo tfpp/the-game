@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/rocks_glass.tres" id="1_shbvo"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/rocks_glass.res" id="2_sd1ia"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cemxl"]
+size = Vector3(0.088, 0.094, 0.088)
+
+[node name="RocksGlass" type="StaticBody3D" unique_id=1992430293]
+metadata/prop_id = "rocks_glass"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=451970218]
+material_override = ExtResource("1_shbvo")
+mesh = ExtResource("2_sd1ia")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1088493704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.047, 0)
+shape = SubResource("BoxShape3D_cemxl")

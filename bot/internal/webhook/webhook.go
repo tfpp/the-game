@@ -100,6 +100,12 @@ func (h *Handler) handle(ctx context.Context, d delivery) error {
 			return nil
 		}
 		return h.Service.Comment(ctx, ev.Issue.Number, ev.Comment)
+	case "issues":
+		var ev github.IssuesEvent
+		if err := json.Unmarshal(d.body, &ev); err != nil {
+			return err
+		}
+		return h.Service.Issue(ctx, ev.Action, ev.Issue.Number)
 	case "pull_request":
 		var ev github.PullRequestEvent
 		if err := json.Unmarshal(d.body, &ev); err != nil {

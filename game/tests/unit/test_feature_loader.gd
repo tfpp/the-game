@@ -35,6 +35,14 @@ func test_feature_keeps_its_own_transform() -> void:
 	assert_eq(alpha.global_position, Vector3(4, 0, -2))
 
 
+func test_map_exclusions_skip_instancing_but_keep_features_discoverable() -> void:
+	var parent: Node3D = add_child_autofree(Node3D.new())
+	parent.set_meta("excluded_features", PackedStringArray(["alpha"]))
+	assert_eq(FeatureLoader.load_features(parent, FIXTURES), ["zeta"] as Array[String])
+	assert_null(parent.get_node_or_null("alpha"))
+	assert_eq(FeatureLoader.find_features(FIXTURES), ["alpha", "zeta"] as Array[String])
+
+
 func test_broken_feature_is_skipped_with_an_error() -> void:
 	var parent: Node3D = add_child_autofree(Node3D.new())
 	var loaded := FeatureLoader.load_features(parent, "res://tests/fixtures/broken_features/")

@@ -43,6 +43,7 @@ var peer_id := 0
 
 var _mounted_signature := ""
 var _view: Node3D
+var _arms := HeldArms.new()
 var _flash_timer := 0.0
 var _fire_cooldown := 0.0
 ## Throttles how often an automatic gun's held-trigger poll (`_maybe_auto_fire`)
@@ -54,6 +55,9 @@ var _auto_fire_cooldown := 0.0
 
 
 func _ready() -> void:
+	_arms.name = "Arms"
+	add_child(_arms)
+	_arms.visible = false
 	add_to_group(&"gun_rigs")
 	# Player updates at priority 0; third-person camera updates at 10. Mount after
 	# both so this frame's camera transform is current, not one frame stale (the
@@ -79,8 +83,13 @@ func _process(delta: float) -> void:
 		_rebuild_view()
 	var player := _player()
 	visible = player != null and is_active()
+	_arms.visible = false
 	if player != null:
 		global_transform = _mount_transform(player)
+		if has_hand_grips():
+			var hand := Hand.for_peer(get_tree(), peer_id)
+			var skin := hand.skin_tone_index() if hand != null else 0
+			_arms.pose_for_player(player, support_grip(), PlayerSkin.TONES[skin])
 	if _flash_timer > 0.0:
 		_flash_timer -= delta
 		if _flash_timer <= 0.0:
@@ -195,6 +204,8 @@ func request_fire() -> void:
 	var gun_machine := get_tree().get_first_node_in_group(&"gun_machine_root")
 	if player == null or gun_machine == null:
 		return
+	if SafeZone.covers(get_tree(), player.global_position):
+		return
 	var barrel_count := int(net_stats["barrel_count"])
 	_fire_cooldown = 1.0 / maxf(float(net_stats["fire_rate"]), 0.01)
 	net_ammo_in_mag -= barrel_count
@@ -284,15 +295,24 @@ func _player() -> Player:
 ## (yaw *and* pitch, unlike features/holdables/hand.gd's fixed-orientation puppets),
 ## for everyone else watching one.
 func _mount_transform(player: Player) -> Transform3D:
+	if has_hand_grips():
+		return HeldItemPose.player_mount(player, GunView.PLASMA_FIRST_PERSON_OFFSET)
+	var factor := PlayerHeight.eye_scale(player)
 	if player.is_local():
 		var camera := player.get_node("Camera") as Node3D
-		return camera.global_transform * LOCAL_OFFSET
+		return (
+			camera.global_transform
+			* Transform3D(
+				LOCAL_OFFSET.basis.scaled(Vector3.ONE * factor), LOCAL_OFFSET.origin * factor
+			)
+		)
 	var body := player.get_node("Body") as Node3D
 	var aim := Basis.from_euler(Vector3(player.net_pitch, player.net_yaw, 0.0))
 	var shoulder := (
 		body.global_transform.origin + body.global_transform.basis * REMOTE_SHOULDER_OFFSET
 	)
-	return Transform3D(aim, shoulder)
+	var feet := player.global_position - Vector3.UP * player.movement.hull_height_m() * 0.5
+	return Transform3D(aim.scaled(Vector3.ONE * factor), feet + (shoulder - feet) * factor)
 
 
 ## Where this rig's barrel tip is for whoever's watching it right now — the FPS
@@ -334,6 +354,7 @@ func _rebuild_view() -> void:
 		return
 	_view = GunView.build(net_stats)
 	_mount.add_child(_view)
+	HeldItemPose.align_grip(_view)
 
 
 func _set_flash(active: bool) -> void:
@@ -344,7 +365,8 @@ func _set_flash(active: bool) -> void:
 		return
 	var existing := muzzle.get_node_or_null("MuzzleFlash")
 	if active and existing == null:
-		var glow := GunFx.flash(Color(1.0, 0.85, 0.5, 0.9), 0.12)
+		var color := Color(0.7, 0.25, 1.0, 0.9) if has_hand_grips() else Color(1.0, 0.85, 0.5, 0.9)
+		var glow := GunFx.flash(color, 0.12)
 		glow.name = "MuzzleFlash"
 		muzzle.add_child(glow)
 	elif not active and existing != null:
@@ -353,3 +375,12 @@ func _set_flash(active: bool) -> void:
 
 func _signature(stats: Dictionary) -> String:
 	return JSON.stringify(stats)
+
+
+## Generated views carry `Grip` markers, so every active gun uses the hand rig.
+func has_hand_grips() -> bool:
+	return is_active() and _view != null and _view.has_node("Grip")
+
+
+func support_grip() -> Node3D:
+	return _view.get_node_or_null("SupportGrip") as Node3D if has_hand_grips() else null

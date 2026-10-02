@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/room_kits/wood_panel_wall/wood_panel_wall.res" id="1_mesh"]
+[ext_resource type="Texture2D" path="res://assets/room_kits/wood_panel_wall/wood_panel_wall_albedo.png" id="2_wood"]
+
+[sub_resource type="StandardMaterial3D" id="Material_wood"]
+resource_name = "AgedWalnut"
+albedo_texture = ExtResource("2_wood")
+roughness = 0.78
+texture_filter = 2
+metadata/per_pixel_lighting = true
+
+[sub_resource type="BoxShape3D" id="Shape_wall"]
+size = Vector3(1, 2.5, 0.2)
+
+[node name="WoodPanelWall" type="MeshInstance3D"]
+mesh = ExtResource("1_mesh")
+material_override = SubResource("Material_wood")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+position = Vector3(0, 1.25, 0)
+shape = SubResource("Shape_wall")

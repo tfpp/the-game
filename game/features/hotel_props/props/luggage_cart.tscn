@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/luggage_cart.tres" id="1_cq2td"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/luggage_cart.res" id="2_6uo11"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h42kg"]
+size = Vector3(0.8, 1.5057975, 0.52)
+
+[node name="LuggageCart" type="StaticBody3D" unique_id=298059610]
+metadata/prop_id = "luggage_cart"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=388736118]
+material_override = ExtResource("1_cq2td")
+mesh = ExtResource("2_6uo11")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=583016988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75289875, 0)
+shape = SubResource("BoxShape3D_h42kg")

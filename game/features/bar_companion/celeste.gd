@@ -131,7 +131,7 @@ func _advance(delta: float) -> void:
 		_return_home()
 		return
 	# Follow the player's route around furniture rather than cutting straight across tables.
-	var flat := Vector3(point.x, -1.5, point.z)
+	var flat := Vector3(point.x, _home.y, point.z)
 	if _trail.is_empty() or _trail.back().distance_to(flat) > 0.6:
 		_trail.append(flat)
 	if _trail.size() > 128:

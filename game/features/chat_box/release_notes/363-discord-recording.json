@@ -1,0 +1,8 @@
+{
+  "title": "Discord game chat recording",
+  "summary": "Public game chat can be recorded in a dedicated Discord channel once configured by a maintainer.",
+  "notes": [
+    "Relay public text chat to a configured Discord channel without pings.",
+    "Keep private notices, slash commands, voice chat and offline previews out of the recording."
+  ]
+}

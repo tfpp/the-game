@@ -1,0 +1,5 @@
+{
+  "title": "Temporary animation profiling switches",
+  "summary": "Freeze character animation groups locally to compare frame times.",
+  "notes": ["Add temporary console switches for guest, dealer, musician, patron and player avatar animations, shared finger curls and the main human skeleton-pose pass."]
+}

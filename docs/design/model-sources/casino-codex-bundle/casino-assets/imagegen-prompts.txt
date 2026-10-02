@@ -1,0 +1,23 @@
+Use case: precise-object-edit.
+Asset type: flat base-colour UV texture atlas for actual low-poly 1970s casino lounge chair and matching sofa meshes.
+Edit target: supplied 1024x1024 image. This image is ALREADY the flattened mesh UV painting template. Keep its canvas and EVERY rectangle at the EXACT SAME pixel location. You are a texture painter working directly on a 2D canvas. Do not generate a furniture render.
+Paint inside these existing regions with late 1990s PSX / GoldSrc hand-painted game materials. Restrained burgundy oxblood leather with subtle patina, warm walnut, muted aged brass. Texture will be reduced to 256x256, so use broad readable details rather than microdetail.
+Coordinates on the supplied 1024x1024 canvas:
+Top left x16..496 y16..336: flat seat cushion leather panel. Rounded/chamfered outline. Paint a restrained tailored perimeter seam and 3 broad lengthwise stitched channels oriented vertically in image space. Light shallow wear, subtle creases, no buttons.
+Top right x528..1008 y16..336: flat upholstered back cushion panel. Burgundy, 3 broad vertical stitched channels, shallow soft creases, slightly aged edges. All channels parallel, no perspective.
+Middle left x16..336 y368..672: flat outer arm leather, fine broad seams around perimeter, lightly worn burgundy.
+Middle centre x368..688 y368..672: flat inner arm leather, broad plain burgundy with subtle worn edges, no seams crossing centre.
+Middle right x720..1008 y368..672: flat rear upholstery, plain burgundy with a simple vertical stitched seam.
+Long strip x16..688 y704..784: flat burgundy cushion edge upholstery with a horizontal stitched seam running lengthwise.
+Short strip x720..1008 y704..784: flat brighter burgundy leather piping, consistent colour.
+Bottom left x16..496 y816..1008: dark walnut wood grain running HORIZONTALLY across the rectangle, restrained light-dark wood bands.
+Bottom centre x528..752 y816..1008: flat warm dull brass with subtle VERTICAL colour variation, no reflections depicting surroundings.
+Bottom right x784..1008 y816..1008: dark plum-black underside fabric, nearly plain.
+Replace pale boundary guide lines with the adjacent material colour and extend material colours a little into the padding. Preserve the positions and shapes of all regions and the dark neutral background between them. No text, labels, drawn grid, guide lines, furniture silhouettes, 3D objects, assembled furniture, isometric drawings, perspective, scene, lights, cast shadows, or model previews. Surface patina may have shallow local shading, but every material region must remain visually flat. Output ONLY this flat rectangular texture atlas.
+
+EDGE PADDING EDIT
+
+Use case: precise-object-edit. Edit target: supplied flat casino furniture UV texture atlas. Perform ONLY UV edge padding / colour extrusion into the unused dark charcoal gutters and outer canvas borders. Preserve every existing painted material island at exactly the same position, dimensions, orientation, appearance, colour, and detail. Do not move, resize, repaint, or rearrange any material region.
+Replace the UNUSED charcoal background OUTSIDE the islands by streaking the adjacent island's edge colours straight outward: top and bottom edges extend vertically, side edges horizontally, corners extend outward from the nearest corner. Fill the entire former background with these nearest-edge colours. Where padding from different islands meets, meet halfway between the islands. The result should look like the same flat atlas with all black gutter gaps replaced by extruded material edge colours. Do not draw outlines around the islands.
+The dark plum fabric RECTANGLE at bottom RIGHT is a real material island: preserve its dark fabric interior and extend its own dark fabric edge colours into its surrounding gutter. It must not be recoloured burgundy, wood or brass.
+All burgundy upholstery interiors, horizontal walnut grain interior, aged brass interior, and fabric interior are protected and must stay identical. This is technical texture edge extrusion, not new artwork. Output the same square FLAT 2D texture atlas with edge padding. No 3D view, object, perspective, scene, text, labels or guide lines.

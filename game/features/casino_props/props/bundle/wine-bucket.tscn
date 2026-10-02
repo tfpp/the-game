@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/wine-bucket.tres" id="1_ba8i5"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/wine-bucket.res" id="2_ktm2g"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o6n7t"]
+size = Vector3(0.234, 0.228, 0.234)
+
+[node name="WineBucket" type="StaticBody3D" unique_id=1369863419]
+metadata/prop_id = "wine-bucket"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=778231607]
+material_override = ExtResource("1_ba8i5")
+mesh = ExtResource("2_ktm2g")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1566375649]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.122, 0)
+shape = SubResource("BoxShape3D_o6n7t")

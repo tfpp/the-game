@@ -1,88 +1,78 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene format=3]
 
 [ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="1_wood"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="2_wall"]
-[ext_resource type="Material" path="res://features/casino_hub/materials/ceiling.tres" id="3_ceiling"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="4_brass"]
 [ext_resource type="PackedScene" path="res://features/pawn_shop/wall_gun.tscn" id="6_gun"]
 [ext_resource type="PackedScene" path="res://features/pawn_shop/rusty_hogg.tscn" id="7_rusty"]
 
+[ext_resource type="PackedScene" path="res://features/signage/sign_board.tscn" id="sign"]
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
+[ext_resource type="Script" path="res://features/hotel_props/hotel_portal.gd" id="portal"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
+
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/service_door.res" id="door_mesh"]
+[ext_resource type="Material" path="res://features/street_props/materials/service_door.tres" id="door_material"]
+
+[sub_resource type="StandardMaterial3D" id="door_paint"]
+transparency = 1
+albedo_color = Color(0, 0, 0, 0)
+roughness = 0.9
+
 [node name="PawnShop" type="Node3D"]
+position = Vector3(0, 0, -4000)
 
-[node name="Hall" type="CSGCombiner3D" parent="."]
-use_collision = true
-
-[node name="Floor" type="CSGBox3D" parent="Hall"]
-position = Vector3(-9, -0.5, 39.75)
-size = Vector3(12, 1, 9.5)
-material = ExtResource("1_wood")
-
-[node name="WallWest" type="CSGBox3D" parent="Hall"]
-position = Vector3(-15, 3, 38)
-size = Vector3(1, 6, 6)
-material = ExtResource("2_wall")
-
-[node name="Ceiling" type="CSGBox3D" parent="Hall"]
-position = Vector3(-9, 6, 39.75)
-size = Vector3(12, 1, 9.5)
-material = ExtResource("3_ceiling")
+[node name="Hall" type="Node3D" parent="."]
 
 [node name="GunBoard" type="CSGBox3D" parent="Hall"]
-position = Vector3(-9, 1.75, 35.05)
+position = Vector3(-9, 1.75, 20.14)
 size = Vector3(7, 1.5, 0.1)
 material = ExtResource("1_wood")
 
-[node name="EntranceSign" type="Label3D" parent="."]
-position = Vector3(-2.44, 3.75, 41.5)
-rotation = Vector3(0, 1.5707964, 0)
-pixel_size = 0.01
-double_sided = false
-modulate = Color(1, 0.84, 0.4, 1)
-outline_modulate = Color(0.16, 0.04, 0.02, 1)
-text = "PAWN SHOP"
-font_size = 72
-outline_size = 18
+[node name="EntranceSign" parent="." instance=ExtResource("sign")]
+position = Vector3(-9, 3.45, 29.85)
+rotation = Vector3(0, 3.14159265, 0)
+text = "RUSTY HOGG'S
+PAWN & GUN"
+letter_height = 0.36
+style = 1
+neon_color = Color(0.85, 0.42, 0.12, 1)
 
-[node name="GunWallSign" type="Label3D" parent="."]
-position = Vector3(-9, 2.9, 35.03)
-pixel_size = 0.01
-double_sided = false
-modulate = Color(1, 0.84, 0.4, 1)
-outline_modulate = Color(0.16, 0.04, 0.02, 1)
-text = "GUNS — CASH ONLY"
-font_size = 40
-outline_size = 12
+[node name="GunWallSign" parent="." instance=ExtResource("sign")]
+position = Vector3(-9, 2.9, 20.12)
+text = "FIREARMS - CASH ONLY"
+letter_height = 0.17
 
 [node name="SignRail" type="CSGBox3D" parent="."]
-position = Vector3(-9, 2.6, 35.03)
+position = Vector3(-9, 2.6, 20.2)
 size = Vector3(6, 0.06, 0.04)
 material = ExtResource("4_brass")
 
 [node name="GunWall" type="Node3D" parent="."]
-position = Vector3(-9, 1.85, 35.25)
+position = Vector3(-9, 1.85, 20.25)
 
 [node name="Pistol" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(-2.25, 0, 0)
 item_id = "pistol"
-price_cents = 1000
+price_cents = 3000
 
 [node name="Smg" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(-0.75, 0, 0)
 item_id = "smg"
-price_cents = 2500
+price_cents = 7500
 
 [node name="Shotgun" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(0.75, 0, 0)
 item_id = "shotgun"
-price_cents = 3000
+price_cents = 9000
 
 [node name="Awp" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(2.25, 0, 0)
 item_id = "awp"
-price_cents = 5000
+price_cents = 15000
 
 [node name="HatStand" type="CSGBox3D" parent="."]
-position = Vector3(-13.6, 0.55, 36.4)
+position = Vector3(-13.6, 0.55, 21.4)
 use_collision = true
 size = Vector3(0.5, 1.1, 0.5)
 material = ExtResource("1_wood")
@@ -100,5 +90,54 @@ price_cents = 1000000
 tag_position = Vector3(0, 0.55, 0)
 
 [node name="RustyHogg" parent="." instance=ExtResource("7_rusty")]
-position = Vector3(-12.7, 0, 40.2)
+position = Vector3(-12.7, 0, 25.200000000000003)
 rotation = Vector3(0, 1.5707964, 0)
+
+[node name="Room" type="Node3D" parent="."]
+script = ExtResource("room")
+room_scene = "res://features/pawn_shop/interior.tscn"
+bounds = AABB(-16.2, -1, 19.8, 14.4, 6.5, 10.4)
+
+[node name="Arrival" type="Marker3D" parent="Room"]
+position = Vector3(-3.5, 1, 27)
+
+[node name="Destination" type="Marker3D" parent="Room"]
+position = Vector3(-9, 0, 24.5)
+script = ExtResource("gps")
+label = "Gun Shop · Rusty Hogg's"
+hint = "Take the operations garage van. Guns, pawn counter and Gun-O-Matic."
+
+[node name="Exit" type="CSGBox3D" parent="Room"]
+position = Vector3(-3, 1.25, 29.9)
+size = Vector3(2, 2.5, 0.2)
+material = SubResource("door_paint")
+use_collision = true
+script = ExtResource("portal")
+destination = NodePath("../../../starter_room/Room/Arrival")
+door_label = "Take the van back to the operations garage"
+
+[node name="LeftDoor" type="MeshInstance3D" parent="Room/Exit"]
+position = Vector3(-0.5, -1.25, 0)
+rotation = Vector3(0, 3.14159265, 0)
+scale = Vector3(-0.98, 1.1723, 1)
+mesh = ExtResource("door_mesh")
+material_override = ExtResource("door_material")
+
+[node name="RightDoor" type="MeshInstance3D" parent="Room/Exit"]
+position = Vector3(0.5, -1.25, 0)
+rotation = Vector3(0, 3.14159265, 0)
+scale = Vector3(0.98, 1.1723, 1)
+mesh = ExtResource("door_mesh")
+material_override = ExtResource("door_material")
+
+[node name="NetworkedEntity" type="Node" parent="Room/Exit"]
+script = ExtResource("net")
+interaction_range = 2.5
+
+[node name="Sign" parent="Room/Exit" instance=ExtResource("sign")]
+position = Vector3(0, 1.55, -0.12)
+rotation = Vector3(0, 3.14159265, 0)
+text = "RETURN TO GARAGE
+VIA VAN - E / USE"
+letter_height = 0.1
+padding = 0.04

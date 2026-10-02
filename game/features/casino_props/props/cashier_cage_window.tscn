@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/cashier_cage_window.tres" id="1_bcxqp"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/cashier_cage_window.res" id="2_j5hek"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e50s1"]
+size = Vector3(1.78, 1.5550001, 0.2)
+
+[node name="CashierCageWindow" type="StaticBody3D" unique_id=105405721]
+metadata/prop_id = "cashier_cage_window"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=513503424]
+material_override = ExtResource("1_bcxqp")
+mesh = ExtResource("2_j5hek")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1963327709]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77750003, 0.040000003)
+shape = SubResource("BoxShape3D_e50s1")

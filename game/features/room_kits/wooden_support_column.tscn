@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/room_kits/wooden_support_column/wooden_support_column.res" id="mesh"]
+[ext_resource type="Material" path="res://features/room_kits/wooden_support_column_material.tres" id="finish"]
+
+[sub_resource type="BoxShape3D" id="shape"]
+size = Vector3(1, 5, 1)
+
+[node name="WoodenSupportColumn" type="Node3D"]
+
+[node name="Column" type="MeshInstance3D" parent="."]
+mesh = ExtResource("mesh")
+material_override = ExtResource("finish")
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+position = Vector3(0, 2.5, 0)
+shape = SubResource("shape")
+
+[node name="StackTop" type="Marker3D" parent="."]
+position = Vector3(0, 5, 0)

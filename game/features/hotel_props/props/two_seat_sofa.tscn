@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/two_seat_sofa.tres" id="1_eal8c"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/two_seat_sofa.res" id="2_3an3s"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7y28d"]
+size = Vector3(1.57, 0.965, 0.805)
+
+[node name="TwoSeatSofa" type="StaticBody3D" unique_id=700265089]
+metadata/prop_id = "two_seat_sofa"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1964253432]
+material_override = ExtResource("1_eal8c")
+mesh = ExtResource("2_3an3s")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=843491969]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4825, -0.007499993)
+shape = SubResource("BoxShape3D_7y28d")

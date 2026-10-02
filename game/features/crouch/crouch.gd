@@ -80,7 +80,9 @@ func _physics_process(delta: float) -> void:
 		_adopt(player)
 	if not is_instance_valid(_player):
 		return
-	var target := EYE_HEIGHT if _local_crouched else _standing_eye
+	var target := (
+		(EYE_HEIGHT if _local_crouched else _standing_eye) * PlayerHeight.eye_scale(_player)
+	)
 	var t := 1.0 - exp(-EYE_SPEED * delta)
 	_player.movement.eye_height = lerpf(_player.movement.eye_height, target, t)
 
@@ -90,7 +92,7 @@ func _adopt(player: Player) -> void:
 	if is_instance_valid(_player):
 		if _local_crouched:
 			_apply_speed(_player, false)
-		_player.movement.eye_height = _standing_eye
+		_player.movement.eye_height = _standing_eye * PlayerHeight.eye_scale(_player)
 	var was_crouched := _local_crouched
 	_local_crouched = false
 	_player = player
@@ -98,7 +100,7 @@ func _adopt(player: Player) -> void:
 		return
 	# Each player must own its resource; never modify the scene's shared default.
 	player.movement = player.movement.duplicate() as MovementConfig
-	_standing_eye = player.movement.eye_height
+	_standing_eye = player.movement.eye_height / PlayerHeight.eye_scale(player)
 	if was_crouched:
 		entity.request_action(ACTION, {"crouched": false})
 

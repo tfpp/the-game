@@ -82,19 +82,13 @@ hint = "Boarded shops, dumpsters and failing streetlights beyond the Crown"
 area = AABB(-25, -1, 875, 50, 20, 50)
 
 [node name="FoodCourt" type="Marker3D" parent="Destinations"]
-position = Vector3(12, 0, 43)
+position = Vector3(12, 0, 28)
 script = ExtResource("2_dest")
 label = "Food Court"
 hint = "Booths and the kebab counter, through the south door and left off the corridor"
 
-[node name="PawnShop" type="Marker3D" parent="Destinations"]
-position = Vector3(-9, 0, 39.5)
-script = ExtResource("2_dest")
-label = "Pawn Shop"
-hint = "Rusty Hogg's guns, the Gun-O-Matic and the loot counter, right off the south corridor"
-
 [node name="KebabShop" type="Marker3D" parent="Destinations"]
-position = Vector3(28.7, 0, 44.35)
+position = Vector3(28.7, 0, 29.35)
 script = ExtResource("2_dest")
 label = "İstanbul Kebab"
 hint = "Free Turkish kebabs from Aylin in the food court (south wing)"

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/dumpster.tres" id="1_wn0pn"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/dumpster.res" id="2_jykk7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_81xoe"]
+size = Vector3(1.92, 1.24, 1.1373205)
+
+[node name="Dumpster" type="StaticBody3D" unique_id=953593291]
+metadata/prop_id = "dumpster"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1586078638]
+material_override = ExtResource("1_wn0pn")
+mesh = ExtResource("2_jykk7")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=494182749]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0.008660257)
+shape = SubResource("BoxShape3D_81xoe")

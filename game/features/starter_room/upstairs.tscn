@@ -1,0 +1,76 @@
+[gd_scene format=3]
+
+[ext_resource type="MeshLibrary" path="res://features/starter_room/garage_tiles.tres" id="1_su7xc"]
+[ext_resource type="MeshLibrary" path="res://features/starter_room/upstairs_tiles.tres" id="2_xp3od"]
+
+[node name="Upstairs" type="Node3D" unique_id=1753965707]
+
+[node name="Deck" type="GridMap" parent="." unique_id=376114302]
+mesh_library = ExtResource("1_su7xc")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_y = false
+data = {
+"cells": PackedInt32Array(720888, 65527, 0, 720888, 65528, 0, 720888, 65529, 0, 720888, 65530, 0, 720888, 65531, 0, 720889, 65527, 0, 720889, 65528, 0, 720889, 65529, 0, 720889, 65530, 0, 720889, 65531, 0, 720890, 65527, 0, 720890, 65528, 0, 720890, 65529, 0, 720890, 65530, 0, 720890, 65531, 0, 720891, 65527, 0, 720891, 65528, 0, 720891, 65529, 0, 720891, 65530, 0, 720891, 65531, 0, 720892, 65527, 0, 720892, 65528, 0, 720892, 65529, 0, 720892, 65530, 0, 720892, 65531, 0, 720893, 65527, 0, 720893, 65528, 0, 720893, 65529, 0, 720893, 65530, 0, 720893, 65531, 0)
+}
+
+[node name="Stairs" type="GridMap" parent="." unique_id=192919178]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5, 0, 0)
+mesh_library = ExtResource("2_xp3od")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_y = false
+data = {
+"cells": PackedInt32Array(0, 0, 15, 1, 0, 15, 327680, 2, 15, 327681, 2, 15)
+}
+
+[node name="StairRails" type="GridMap" parent="." unique_id=1366885166]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5, 0, 0)
+mesh_library = ExtResource("2_xp3od")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 16, 327680, 2, 16, 2, 0, 16, 327682, 2, 16)
+}
+
+[node name="Rails" type="GridMap" parent="." unique_id=1024617330]
+mesh_library = ExtResource("2_xp3od")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(720894, 65528, 1441801, 720894, 65530, 1441801, 720891, 65532, 9)
+}
+
+[node name="ShortRail8" type="GridMap" parent="." unique_id=158487609]
+transform = Transform3D(0.5, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -4)
+mesh_library = ExtResource("2_xp3od")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(655360, 0, 9)
+}
+
+[node name="ShortRail3" type="GridMap" parent="." unique_id=1868577492]
+transform = Transform3D(0.5, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -4)
+mesh_library = ExtResource("2_xp3od")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(655360, 0, 9)
+}
+
+[node name="Posts" type="GridMap" parent="." unique_id=714353973]
+mesh_library = ExtResource("2_xp3od")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(720894, 65528, 10, 720894, 65530, 10, 720894, 65532, 10, 720891, 65532, 10, 720889, 65532, 10)
+}

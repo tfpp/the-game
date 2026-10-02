@@ -1,0 +1,5 @@
+{
+  "title": "No more stray isometric casino view",
+  "summary": "The map no longer flashes a tilted top-down view of the casino while the page loads.",
+  "notes": ["Remove the review-only overview camera from the live casino scene."]
+}

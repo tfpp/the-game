@@ -5,7 +5,7 @@ extends Node3D
 const Kit := preload("res://features/procedural_rooms/example_kit.gd")
 const STEEL := preload("res://features/procedural_rooms/materials/grey.tres")
 const HAZARD := preload("res://features/procedural_rooms/materials/hazard.tres")
-const ELEVATOR_MODEL := preload("res://features/procedural_rooms/elevator_door_model.tscn")
+const ELEVATOR_MODEL := preload("res://features/elevator/models/doors.tscn")
 const LIFT := preload("res://features/procedural_rooms/materials/elevator.tres")
 @export var door_label := "garage door"
 @export var panel_material: StandardMaterial3D

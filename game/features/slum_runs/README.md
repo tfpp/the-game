@@ -6,6 +6,8 @@ map until everyone returns, dies or disconnects. A new excursion resets
 searchable containers. The old parking garage no longer has a casino staff
 door; only this gate reaches it.
 
+Runs are recorded in `features/zone_instances` as one instance.
+
 Each slum has a return door. Surviving players bring valuables back in their
 inventory. The pawn shop counter (`Fence`, `loot_fence.gd`) inside Rusty Hogg's pawn shop
 (`features/pawn_shop`, off the south corridor), marked by three gold balls and a glass display case, buys one valuable per Use press at

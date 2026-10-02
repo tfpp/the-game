@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/bus_stop_bench.tres" id="1_12jbu"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/bus_stop_bench.res" id="2_tbby8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7eq4j"]
+size = Vector3(1.8, 1.0799999, 0.5575)
+
+[node name="BusStopBench" type="StaticBody3D" unique_id=2016727924]
+metadata/prop_id = "bus_stop_bench"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1300844090]
+material_override = ExtResource("1_12jbu")
+mesh = ExtResource("2_tbby8")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=547908735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.53999996, -0.0037499964)
+shape = SubResource("BoxShape3D_7eq4j")

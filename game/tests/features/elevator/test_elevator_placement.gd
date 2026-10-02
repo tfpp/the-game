@@ -1,121 +1,105 @@
 extends GutTest
-## Where the two cabs stand: built into the casino's south lobby wall and the B1 garage
-## front wall, on real floors, with a clear approach. Geometry is probed with the
-## actual room/garage collision, the way test_casino_layout.gd and test_garage_layout.gd do.
+## Probe the current casino, rather than the retired CSG room.
 
-const FeatureScene := preload("res://features/elevator/feature.tscn")
-const RoomScene := preload("res://world/room.tscn")
-const GarageFeature := preload("res://features/procedural_rooms/feature.tscn")
-const SPAWN := Vector3(2, 0.2, 5)
-const SOUTH_WALL_FACE_Z := 34.0
-const BACK := Vector3(0, 1, -1.7)
-const GNOME_HOLE_XS: Array[float] = [-24.0, -6.0, 12.0, 30.0]
-
-var _feature: Node3D
+const ROOM := preload("res://features/casino_hub/gridmap/playable.tscn")
+const KIT := preload("res://features/elevator/elevator.tscn")
+var _room: Node3D
+var _cab: ElevatorCab
+var _bay: GridMap
 
 
 func before_each() -> void:
-	_feature = FeatureScene.instantiate() as Node3D
-	add_child_autofree(_feature)
-
-
-func _casino_cab() -> ElevatorCab:
-	return _feature.get_node("CasinoCab") as ElevatorCab
-
-
-func _garage_cab() -> ElevatorCab:
-	return _feature.get_node("GarageZone/GarageCab") as ElevatorCab
+	_room = ROOM.instantiate() as Node3D
+	add_child_autofree(_room)
+	_cab = _room.get_node("Casino/Elevator/Cab") as ElevatorCab
+	_bay = _room.get_node("Casino/Elevator/Bay") as GridMap
+	_cab.set_physics_process(false)
+	await wait_physics_frames(3)
 
 
 func _ray(from: Vector3, to: Vector3) -> Dictionary:
-	var query := PhysicsRayQueryParameters3D.create(from, to)
-	return _feature.get_world_3d().direct_space_state.intersect_ray(query)
+	return _room.get_world_3d().direct_space_state.intersect_ray(
+		PhysicsRayQueryParameters3D.create(from, to)
+	)
 
 
-## Take a cab out of ray queries so they probe the wall and floor it is built against.
-func _ghost(cab: ElevatorCab) -> void:
-	(cab.get_node("Shell") as CSGShape3D).collision_layer = 0
-	for body: Node in cab.find_children("*", "CollisionObject3D", true, false):
-		(body as CollisionObject3D).collision_layer = 0
+func test_single_stationary_elevator_centers_on_wall_opposite_spawn() -> void:
+	assert_eq(
+		(
+			_room
+			. find_children("*", "Node3D", true, false)
+			. filter(func(node: Node) -> bool: return node is ElevatorCab)
+			. size()
+		),
+		1
+	)
+	assert_eq(_bay.global_position, Vector3(0, 0, -20))
+	assert_gt((_room.get_node("Spawn") as Node3D).global_position.z, 0.0)
+	assert_almost_eq(_cab.global_basis.z, Vector3.BACK, Vector3.ONE * 0.0001)
+	assert_false(_cab.travel_enabled)
+	assert_true(_cab.destination.is_empty())
+	assert_eq(_room.find_children("*", "CSGShape3D", true, false).size(), 0)
+	var gps := _room.get_node("Casino/Destinations/Elevator") as GpsDestination
+	assert_eq(gps.label, "Golden Crown Elevator")
 
 
-func test_casino_cab_is_built_into_the_south_lobby_wall_facing_the_casino() -> void:
-	var room := RoomScene.instantiate() as Node3D
-	add_child_autofree(room)
-	await wait_physics_frames(3)
-	var cab := _casino_cab()
-	_ghost(cab)
-	await wait_physics_frames(2)
-	var back := cab.to_global(BACK)
-	var wall := _ray(Vector3(back.x, 1, 30), Vector3(back.x, 1, 40))
-	assert_false(wall.is_empty(), "South wall must be behind the cab")
-	assert_almost_eq((wall["position"] as Vector3).z, SOUTH_WALL_FACE_Z, 0.01)
-	assert_almost_eq(back.z, SOUTH_WALL_FACE_Z, 0.01, "Cab block sits flush on the wall")
-	var floor_hit := _ray(cab.global_position + Vector3.UP, cab.global_position + Vector3.DOWN)
-	assert_almost_eq((floor_hit["position"] as Vector3).y, cab.global_position.y, 0.01)
-	# Doors face north, into the lobby and back toward the gaming floor and spawn.
-	var facing := cab.global_basis.z
-	assert_almost_eq(facing.z, -1.0, 0.001)
-	assert_lt(cab.global_position.distance_to(SPAWN), 32.0)
-	for x: float in [-1.2, 0.0, 1.2]:
-		var from := cab.to_global(Vector3(x, 1, 1.6))
-		assert_true(_ray(from, from + facing * 4.0).is_empty(), "Approach must stay clear")
-
-
-func test_casino_cab_block_leaves_the_gnome_holes_open() -> void:
-	var cab := _casino_cab()
-	var ends := [cab.to_global(Vector3(-3.1, 0, 0)).x, cab.to_global(Vector3(3.1, 0, 0)).x]
-	for hole_x: float in GNOME_HOLE_XS:
+func test_module_fits_grid_dimensions_and_has_solid_floor_sides_and_back() -> void:
+	assert_eq(_bay.cell_size, Vector3(8, 5, 4))
+	assert_eq(_bay.get_used_cells().size(), 1)
+	assert_eq(_bay.mesh_library.get_item_name(0), "ElevatorBay")
+	assert_eq(_bay.mesh_library.get_item_shapes(0).size(), 14)
+	var bounds := _bay.mesh_library.get_item_mesh(0).get_aabb()
+	assert_lte(bounds.size.x, 8.01)
+	assert_lte(bounds.size.y, 5.01)
+	assert_lte(bounds.size.z, 4.2, "Front trim may project slightly")
+	var floor_hit := _ray(
+		_cab.car.global_position + Vector3.UP, _cab.car.global_position + Vector3.DOWN
+	)
+	assert_false(floor_hit.is_empty())
+	assert_almost_eq((floor_hit["position"] as Vector3).y, 0.0, 0.001)
+	for direction: Vector3 in [Vector3.LEFT * 3, Vector3.RIGHT * 3, Vector3.FORWARD * 3]:
 		assert_false(
-			hole_x > minf(ends[0], ends[1]) - 0.5 and hole_x < maxf(ends[0], ends[1]) + 0.5,
-			"Gnome hole at x %s must stay open" % hole_x
+			(
+				_ray(
+					_cab.car.global_position + Vector3.UP,
+					_cab.car.global_position + Vector3.UP + direction
+				)
+				. is_empty()
+			)
+		)
+	# The removed perimeter cells are filled by the module, including both flanks.
+	for x: float in [-3.5, 3.5]:
+		assert_false(_ray(Vector3(x, 1, -18), Vector3(x, 1, -22)).is_empty())
+
+
+func test_doors_block_when_closed_and_leave_walking_clearance_when_open() -> void:
+	var outside := Vector3(0.3, 1, -18)
+	var inside := _cab.car.to_global(Vector3(0.3, 1, -0.5))
+	assert_false(_ray(outside, inside).is_empty())
+	_cab.net_state = ElevatorCab.State.OPEN
+	_cab.net_aperture = 1.0
+	_cab._update_doors()
+	await wait_physics_frames(2)
+	for x: float in [-1.0, 0, 1.0]:
+		assert_true(_ray(Vector3(x, 1, -18), _cab.car.to_global(Vector3(x, 1, 0))).is_empty())
+	var hull := CapsuleShape3D.new()
+	hull.radius = 0.4064
+	hull.height = 1.8288
+	for z: float in [-18, -19.5, -20.5, -21.5, -22]:
+		var query := PhysicsShapeQueryParameters3D.new()
+		query.shape = hull
+		query.transform.origin = Vector3(0, 0.96, z)
+		assert_true(
+			_room.get_world_3d().direct_space_state.intersect_shape(query).is_empty(), str(z)
 		)
 
 
-func test_garage_cab_is_built_into_the_b1_front_wall() -> void:
-	var garage_feature := GarageFeature.instantiate() as Node3D
-	add_child_autofree(garage_feature)
-	await wait_physics_frames(3)
-	var garage := garage_feature.get_node("Garage") as Node3D
-	var zone := _feature.get_node("GarageZone") as Node3D
-	assert_true(
-		zone.global_transform.is_equal_approx(garage.global_transform),
-		"The render zone shares the B1–B5 garage's frame"
-	)
-	var cab := _garage_cab()
-	_ghost(cab)
-	await wait_physics_frames(2)
-	var local := garage.to_local(cab.global_position)
-	var wall := _ray(
-		garage.to_global(local + Vector3(0, 1.5, 3)), garage.to_global(local + Vector3(0, 1.5, -6))
-	)
-	assert_false(wall.is_empty(), "Garage wall must be behind the cab")
-	assert_almost_eq(garage.to_local(wall["position"]).z, local.z - 1.7, 0.01)
-	var floor_hit := _ray(cab.global_position + Vector3.UP, cab.global_position + Vector3.DOWN)
-	assert_almost_eq((floor_hit["position"] as Vector3).y, cab.global_position.y, 0.01)
-	var roof := _ray(cab.to_global(Vector3(2.5, 1, 1)), cab.to_global(Vector3(2.5, 6, 1)))
-	assert_almost_eq(
-		(roof["position"] as Vector3).y - cab.global_position.y, 3.5, 0.05, "B1 is 3.5 m tall"
-	)
-	var facing := cab.global_basis.z
-	for x: float in [-1.2, 0.0, 1.2]:
-		var from := cab.to_global(Vector3(x, 1, 1.6))
-		assert_true(_ray(from, from + facing * 4.0).is_empty(), "Exit must stay clear")
-	var zone_node := zone as RenderZone
-	assert_true(zone_node.contains(cab.to_global(Vector3(0, 1.6, 0))))
-	assert_true(zone_node.contains(cab.to_global(Vector3(0, 1.6, 2.5))))
-
-
-func test_doors_block_when_closed_and_open_for_boarding() -> void:
-	await wait_physics_frames(2)
-	var cab := _casino_cab()
-	var outside := cab.to_global(Vector3(0.3, 1, 2.5))
-	var inside := cab.to_global(Vector3(0.3, 1, -0.5))
-	assert_false(_ray(outside, inside).is_empty(), "Closed doors block the doorway")
-	cab.net_state = ElevatorCab.State.OPEN
-	cab._process(0.0)
-	await wait_physics_frames(2)
-	assert_true(_ray(outside, inside).is_empty(), "Open doors leave the doorway clear")
-	for x: float in [-1.1, 1.1]:
-		var side := cab.to_global(Vector3(x, 1, 2.5))
-		assert_true(_ray(side, cab.to_global(Vector3(x, 1, 0))).is_empty())
+func test_standalone_kit_has_same_cell_origin_and_controller_offset() -> void:
+	var kit := KIT.instantiate() as Node3D
+	add_child_autofree(kit)
+	assert_eq((kit.get_node("Bay") as GridMap).cell_size, _bay.cell_size)
+	assert_eq((kit.get_node("Cab") as Node3D).position, Vector3.ZERO)
+	assert_eq(_cab.position, Vector3.ZERO)
+	assert_eq((_cab.get_node("Car") as Node3D).position, Vector3(0, 0, -1.55))
+	assert_same((kit.get_node("Bay") as GridMap).mesh_library, _bay.mesh_library)
+	assert_eq((kit.get_node("Bay") as GridMap).get_used_cells().size(), 1)

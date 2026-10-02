@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/wheelie_bin.tres" id="1_y3bun"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/wheelie_bin.res" id="2_mifis"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_d45lg"]
+size = Vector3(0.53, 1.0150001, 0.61732054)
+
+[node name="WheelieBin" type="StaticBody3D" unique_id=1751982149]
+metadata/prop_id = "wheelie_bin"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1168196020]
+material_override = ExtResource("1_y3bun")
+mesh = ExtResource("2_mifis")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1736050381]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50750005, -0.008660227)
+shape = SubResource("BoxShape3D_d45lg")

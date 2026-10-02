@@ -34,10 +34,49 @@ The penguin NPC itself notices a nearby player wearing this costume and waves a
 flipper and hops in place at them; see `features/penguin/penguin.gd`.
 
 The girl body's collision capsule is 60% as wide and 75% as tall as the default
-capsule, with its bottom kept at the same height. It earns $4.25 instead of $5 per
+capsule, with its bottom kept at the same height. Its avatar and eyes now follow
+the same shortened height, and the penguin's capsule/eyes follow its costume. It earns $4.25 instead of $5 per
 minute connected; the $20 starting balance, map coins and game prizes are
 unchanged. Head and tail choices are purely cosmetic: they don't affect the
 collision capsule or income.
+
+## ID-based height
+
+Players automatically get one of eleven standing heights (**1–3 m**, in 20 cm steps) from
+their authenticated account ID. Reconnecting, respawning and server restarts
+recompute the same height; offline/dev-auth players use their peer ID instead.
+No menu or key is needed; **F3** shows your own size. This works on desktop,
+controller and touch without additional inputs.
+
+The server's account name **Sor** (case-insensitive, trimmed) overrides the ID
+height to **eight feet / 2.4384 m**.
+There is no known account ID for Sor in this repository, so the special case uses
+the authenticated name, not a client-supplied player label. Dev-auth preview
+servers can use `--name=Sor`; an ordinary offline peer 1 keeps the original height.
+Normal girl/penguin body multipliers compose with ID height, clamped to **1–3 m**
+so even the shortest normal costume is at least one metre tall. Sor remains eight
+feet in every body, preserving the deliberate exception. Crouching still lowers
+the capsule and eye further. Offline peer 1 without an account retains the original
+1.8288 m build; authenticated account ID 1 uses the same variety as other accounts.
+
+`PlayerModels.heights` replicates only derived metres via its existing
+`NetworkedEntity` (including late joins); account IDs stay server-side and no
+height request is registered. `height_scale_for(peer)` reports the final standing
+factor. `PlayerHeight.eye_scale(player)` reads the applied factor for camera,
+crouch and equipment integration. Each player gets a private movement resource:
+only eye height changes, not speed, jump, gravity, hull reference height or authority.
+Capsules and avatars scale about their feet, nameplates follow the new head level,
+and the camera near plane shrinks for tiny players so their scaled held items
+and first-person emotes remain visible. Both weapon systems keep their existing
+damage, ammo, range and inventory state.
+
+Height is derived session state, not new persistent storage. Disconnect/session
+cleanup clears it; server identity restores it when a player returns. Tests in
+`test_player_height.gd` cover identity stability, Sor in every body, crouch/respawn,
+feet/eyes/equipment and snapshots. The real-network probe checks both normal and Sor heights and their applied
+avatar/capsule scales on the server, owner and late observer, and rejects attempted
+height requests. Range regressions check both endpoints, every body type, repeated
+application, camera/equipment alignment and independent late-spawned players.
 
 ## Skin tones
 
@@ -77,7 +116,10 @@ Stride phase advances with horizontal speed, with reversed steps when backing up
 and side lean when strafing. The model blends pose transitions and turns its head
 with view pitch. This adds no sprint binding or gameplay speed changes. Accepted boxing swings
 layer a lead-arm extension and bent guard arm over locomotion, closing both fists
-on the skinned mesh. Jabs lead left; power punches lead right. Penguin flippers
+on the skinned mesh. Jabs lead left; power punches lead right. `Boxing.leg_pose(peer)` layers accepted
+kicks on the right thigh/calf without hiding or changing held-item arms. The same
+leg pivots move penguin feet; first-person kicking masks the existing human
+surface with the opt-in `right_leg_only` shader flag (normal avatars are unchanged). Penguin flippers
 use the same arm pivots. `Boxing.arm_pose(peer)` is the read-only source; held
 items retain priority and the arms blend back to locomotion after the swing.
 
@@ -107,6 +149,12 @@ replication and rebuilding without losing clothing or skin tone).
 
 ## Integration and verification
 
+`SkinnedHuman` caches the imported rig's fixed rest transforms and checks actual
+bone values before writing a pose, avoiding skeleton updates for unchanged bones.
+Reading actual values preserves the reset of item IK and emote overlays. Patron
+callers defer `BlockPlayerModel.animate()`'s skeleton pass until their NPC pose
+adjustments are complete; player callers retain the default immediate pass.
+
 `PlayerModels` owns appearance, body/head/tail choices and their session lifecycle.
 Its legacy RPC adapters now delegate to `NetworkedEntity`; the picker uses the
 component directly. No player movement or core scene changes are needed.
@@ -117,9 +165,9 @@ materials so held items, camera visibility and creature combinations still work.
 Disconnects clear all choices for that peer; local saved appearance is requested
 again in a new session. These preferences are per device, not account storage.
 
-Run `python3 game/tests/features/player_models/network_check.py --godot /path/to/godot`
-for real server/client appearance, sender identity, invalid payload and late-join
-checks. Run `game/tests/features/player_models/visual_probe.tscn` in Godot for a
+Run `game/tests/features/player_models/network_test.sh` for real server/client
+appearance and all four selectable emotes, sender identity, invalid payload and
+late-join checks (Godot and bash only). Run `game/tests/features/player_models/visual_probe.tscn` in Godot for a
 four-avatar contact sheet, optionally passing `-- --avatar-capture=/tmp/avatars.png`.
 
 
@@ -143,8 +191,20 @@ heads, tails and the penguin costume retain their existing appearance.
 
 ## Networked emotes
 
-Press **B** (controller left-stick click) to **Flip off**. Rebind it under
-**Esc → Settings → Controls → View → Emote: flip off**. The three-second gesture
+Hold **B** (controller left-stick click) to open the radial emote wheel. Move the
+mouse or left stick toward a slice, then release to perform **Flip off**, **Wave**,
+**Salute** or **Cheer**. The center, Esc or right-click cancels. The wheel pauses local
+movement/look/actions, not the server. On touch, open **Pause → Emotes** and tap a
+slice; this menu entry also supports mouse click or left-stick selection + A.
+Rebind under **Settings → Controls → View → Emote wheel (hold)**. The action ID
+`emote_flip_off` is retained so saved bindings still work. Focus loss, session
+changes and player replacement dismiss the wheel without sending a request.
+
+All gestures last three seconds with the existing 3.5-second per-player cooldown;
+requests during cooldown are ignored. Wave swings an open hand, Salute holds flat
+fingers to the brow, and Cheer pumps a raised fist. They use only the left hand,
+leaving the equipped right-hand item in place. Emotes are transient session state,
+not saved preferences. The original Flip off gesture
 raises the left hand, curls the thumb/index/ring/little fingers, holds the middle
 finger straight, then lowers the arm. It overlays walking and running without
 changing movement. The first-person hand follows the camera; third-person
@@ -167,7 +227,7 @@ its left flipper with the rigged gesture hand for the animation.
 Run the real server/client/late-join regression:
 
 ```sh
-python3 game/tests/features/player_models/network_check.py --emotes --godot /path/to/godot
+game/tests/features/player_models/network_test.sh
 ```
 
 `tests/features/player_models/emote_probe.tscn` renders third person; add

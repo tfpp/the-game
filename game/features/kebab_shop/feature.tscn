@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" path="res://features/kebab_shop/shop_view.tscn" id="3"]
 
 [node name="KebabShop" type="Node3D"]
-position = Vector3(30.2, 0, 43)
+position = Vector3(30.2, 0, 28.0)
 rotation = Vector3(0, -1.5707964, 0)
 script = ExtResource("1")
 

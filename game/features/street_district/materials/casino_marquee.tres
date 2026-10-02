@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3]
+[ext_resource type="Texture2D" path="res://assets/street_district/textures/casino_marquee.png" id="atlas"]
+[resource]
+albedo_texture = ExtResource("atlas")
+texture_filter = 2
+roughness = 0.85

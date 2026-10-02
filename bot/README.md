@@ -55,6 +55,7 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
      `preview.yml` deploys there (run name `preview #<pr> deploy`) post the preview link
      (`BOT_PREVIEW_URL`).
    - `pull_request`: merged or closed.
+   - `issues`: a feature's issue closed or reopened on GitHub before its PR exists.
    - **Live progress** (`/bot/progress`, optional): while a run is active, the agent job
      streams its reasoning and tool calls ([harness/progress.sh](../harness/README.md#live-progress)).
      Each run gets one 🧠 message in the thread, edited at most every 3 seconds with the
@@ -115,8 +116,9 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    `main` commit, and it's newer than the last one requested, the bot writes that commit to
    `$BOT_DEPLOY_DIR/request`. A host service deploys it (in the homelab repo:
    `the-game-deploy-server`) and writes the commit to `$BOT_DEPLOY_DIR/deployed`. The bot
-   then posts "🚀 PR #n is live" in the threads of the merged PRs it contains. Waiting for
-   both builds keeps the server from getting ahead of the web client.
+   then posts "🚀 PR #n is live" in the threads of the merged PRs it contains, whether
+   the bot merged them or someone merged on GitHub. Waiting for both builds keeps the
+   server from getting ahead of the web client.
    The accounts API deploys on its own: when `api-image.yml` succeeds for a newer `main`
    commit (it only runs when `api/` changes), the bot writes that commit to
    `$BOT_DEPLOY_DIR/api-request`, and the host deploys it (`the-game-deploy api`). The API
@@ -130,6 +132,13 @@ from the thread, and the bot merges approved PRs one at a time, then deploys the
    `## [edge]` section plus feature-owned `release_notes/*.json` files added since the
    latest live release, each once;
    the first check only records them.
+9. **Closing threads.** A feature's thread is closed (archived, not locked) once its work
+   is over: after `/close`, when its PR is closed without merging, when the bot closes an
+   issue the agent declined, when its issue is closed on GitHub before a PR exists, and
+   when its merged PR is live (right after "🚀 Live"). Merging alone doesn't close it. An
+   issue closed while the agent is running is left to the run's result; once a PR exists,
+   only the PR counts, since merging it closes the issue too. Any later post reopens the
+   thread, so a reopened PR or issue brings it back.
 
 **`/queue`** answers privately, to anyone: `/queue which:agent runs` lists the active runs, then
 the waiting ones in the order they'll start (issue or PR, mode, status, who started it, age,
@@ -177,6 +186,31 @@ opened right away; its thread says where it is in line, and again when it starts
 Messages never ping anyone except the requester, and only on their own job's results.
 Requests are copied into issues with `@` defused, so they can't ping GitHub users.
 
+## Game chat recording (optional)
+
+Create a `#game-chat` text channel in the configured Discord server and grant the bot
+View Channel and Send Messages there. Set `BOT_GAME_CHAT_CHANNEL_ID` to that channel's
+ID, and mount a dedicated random relay key (at least 32 ASCII bytes) at
+`BOT_GAME_CHAT_KEY_FILE` (default `/run/secrets/bot/game-chat-key`). The game server
+needs the same key file and `GAME_CHAT_BOT_URL=http://bot:8081/bot/game-chat`.
+Use private container networking; no new public tunnel route is needed. Use HTTPS if
+traffic crosses an untrusted network. This requires an operator deployment/restart;
+CI does not create the live Discord channel or provision secrets.
+
+`POST /bot/game-chat` accepts HMAC-signed, timestamped public text messages, not
+Discord replies. It posts the server-supplied display name/text as literal code blocks
+without allowed mentions, so players cannot ping users/roles or forge formatted bot
+notifications. It excludes slash commands, private notices and voice chat. Do not reuse
+any existing bot, account or agent credential as the relay key. Without a channel ID the
+endpoint is disabled; specifying a channel requires a readable key of at least 32 bytes.
+
+Delivery and replay tracking are bounded, in-memory and best effort, not a durable audit
+log. Discord retains successfully posted history; restarts/outages may lose messages,
+and ambiguous upstream failures can duplicate them. The bot does not store chat bodies
+in SQLite or logs. Review channel visibility and notify players that public chat is
+recorded. See [text chat](../game/features/chat_box/README.md) for protocol, queue/retry
+limits, setup and tests.
+
 ## Configuration
 
 Environment variables; secrets are files.
@@ -201,6 +235,8 @@ Environment variables; secrets are files.
 | `BOT_MAX_ACTIVE_RUNS` | `5` | Concurrent runs; `0` for no limit |
 | `BOT_DEPLOY_DIR` | off | Directory shared with the host's deploy service |
 | `BOT_RELEASE_CHANNEL_ID` | off | Channel for release and edge announcements (needs `BOT_DEPLOY_DIR`) |
+| `BOT_GAME_CHAT_CHANNEL_ID` | off | Operator-created text channel for public game chat; enables `/bot/game-chat` |
+| `BOT_GAME_CHAT_KEY_FILE` | `/run/secrets/bot/game-chat-key` | Dedicated server-to-bot relay key; required when game chat is enabled |
 | `BOT_REF`, `BOT_WORKFLOW`, `BOT_CI_WORKFLOW` | `main`, `agent.yml`, `game-ci.yml` | |
 | `BOT_AGENT` | `claude` | Fallback only for old jobs created before per-feature harness selection; new requests use their `harness` choice, or pi when omitted |
 | `BOT_SERVER_WORKFLOW`, `BOT_PAGES_WORKFLOW` | `server-image.yml`, `pages.yml` | Builds that gate a deploy |
@@ -219,7 +255,8 @@ Create it under the `tfpp` organization (Settings → Developer settings → Git
   results); Contents (merging, deleting merged branches, reading `CODEOWNERS`), Issues and
   Pull requests read and write; Metadata read. Leave **Workflows at no access**, so agents
   can't change CI.
-- **Events:** Issue comment, Pull request, Workflow run.
+- **Events:** Issue comment, Issues, Pull request, Workflow run. Without Issues, the bot
+  can't see issues closed on GitHub, but everything else works.
 - **Installable:** only on this account. Install it on `tfpp/the-game` only.
 - Generate a private key and note the **client ID**.
 
@@ -239,8 +276,10 @@ In the [developer portal](https://discord.com/developers/applications):
 
 - **Bot:** reset and copy the token. No privileged intents. Turn off "Public Bot".
 - **Installation:** guild install with scopes `bot` and `applications.commands`, and the
-  permissions View Channels, Send Messages, Create Public Threads and Send Messages in
-  Threads. Open the install link and add the bot to the server.
+  permissions View Channels, Send Messages, Create Public Threads, Send Messages in
+  Threads and Manage Threads (to close finished feature threads). Open the install link
+  and add the bot to the server. On an existing install, grant the bot's role Manage
+  Threads in the feature channel; without it, closing threads fails and is only logged.
 - With Developer Mode on (User Settings → Advanced), copy the server ID, the requester
   role's ID, the approver role's ID and, optionally, the feature channel's ID.
 

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/hotel_props/materials/round_side_table.tres" id="1_u2yc8"]
+[ext_resource type="ArrayMesh" path="res://assets/hotel_props/models/round_side_table.res" id="2_emtsv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0mg1m"]
+size = Vector3(0.56, 0.5775, 0.56)
+
+[node name="RoundSideTable" type="StaticBody3D" unique_id=236904745]
+metadata/prop_id = "round_side_table"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1287057034]
+material_override = ExtResource("1_u2yc8")
+mesh = ExtResource("2_emtsv")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=936994955]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28875, 0)
+shape = SubResource("BoxShape3D_0mg1m")

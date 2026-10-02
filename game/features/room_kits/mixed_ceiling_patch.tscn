@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://features/room_kits/tin_ceiling_tile.tscn" id="tin"]
+[ext_resource type="PackedScene" path="res://features/room_kits/basic_ceiling_tile.tscn" id="basic"]
+
+[node name="MixedCeilingPatch" type="Node3D"]
+
+[node name="Tile00" parent="." instance=ExtResource("basic")]
+position = Vector3(-1.5, 0, -1.5)
+
+[node name="Tile10" parent="." instance=ExtResource("basic")]
+position = Vector3(-0.5, 0, -1.5)
+
+[node name="Tile20" parent="." instance=ExtResource("basic")]
+position = Vector3(0.5, 0, -1.5)
+
+[node name="Tile30" parent="." instance=ExtResource("basic")]
+position = Vector3(1.5, 0, -1.5)
+
+[node name="Tile01" parent="." instance=ExtResource("basic")]
+position = Vector3(-1.5, 0, -0.5)
+
+[node name="Tile11" parent="." instance=ExtResource("tin")]
+position = Vector3(-0.5, 0, -0.5)
+
+[node name="Tile21" parent="." instance=ExtResource("tin")]
+position = Vector3(0.5, 0, -0.5)
+
+[node name="Tile31" parent="." instance=ExtResource("basic")]
+position = Vector3(1.5, 0, -0.5)
+
+[node name="Tile02" parent="." instance=ExtResource("basic")]
+position = Vector3(-1.5, 0, 0.5)
+
+[node name="Tile12" parent="." instance=ExtResource("tin")]
+position = Vector3(-0.5, 0, 0.5)
+
+[node name="Tile22" parent="." instance=ExtResource("tin")]
+position = Vector3(0.5, 0, 0.5)
+
+[node name="Tile32" parent="." instance=ExtResource("basic")]
+position = Vector3(1.5, 0, 0.5)
+
+[node name="Tile03" parent="." instance=ExtResource("basic")]
+position = Vector3(-1.5, 0, 1.5)
+
+[node name="Tile13" parent="." instance=ExtResource("basic")]
+position = Vector3(-0.5, 0, 1.5)
+
+[node name="Tile23" parent="." instance=ExtResource("basic")]
+position = Vector3(0.5, 0, 1.5)
+
+[node name="Tile33" parent="." instance=ExtResource("basic")]
+position = Vector3(1.5, 0, 1.5)
+

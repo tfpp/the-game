@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/galvanised-rubbish-bin.tres" id="1_wlduq"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/galvanised-rubbish-bin.res" id="2_sko7f"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xs3he"]
+size = Vector3(0.5839689, 0.6817941, 0.55)
+
+[node name="GalvanisedRubbishBin" type="StaticBody3D" unique_id=753258349]
+metadata/prop_id = "galvanised-rubbish-bin"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=155797600]
+material_override = ExtResource("1_wlduq")
+mesh = ExtResource("2_sko7f")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=842199997]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36589706, 0)
+shape = SubResource("BoxShape3D_xs3he")

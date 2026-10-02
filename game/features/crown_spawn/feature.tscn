@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[node name="CrownSpawn" type="Node3D"]
+
+[node name="Spawn" type="Marker3D" parent="." groups=["player_spawn"]]
+position = Vector3(0, 1, -16)

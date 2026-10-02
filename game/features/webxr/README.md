@@ -1,7 +1,7 @@
 # Quest 3 / WebXR
 
 Open the game's HTTPS URL in Quest Browser, join normally (or choose **Play
-offline**), then open the menu → **Quest / WebXR** → **Enter VR**. Accept the
+offline**), then open the menu → **More** → **Quest / WebXR** → **Enter VR**. Accept the
 browser's immersive-session permission. Desktop and unsupported browsers show an
 explanation and keep ordinary play available. Entry must be a button press; it
 never starts automatically.
@@ -11,7 +11,8 @@ This is a seated/standing-in-place mode using Touch controllers:
 - Left thumbstick walks in the direction you look, using the existing player hull.
 - Right thumbstick snaps 30 degrees; return it to centre before turning again.
 - A jumps. Either trigger uses the nearest eligible object; the headset shows its
-  existing interaction text. These are proximity interactions, not controller rays.
+  existing interaction text and optional color (including loot rarity and price).
+  These are proximity interactions, not controller rays.
 - Right grip fires, uses a held item or punches using existing action handlers.
   Left grip reloads generated guns. X opens the inventory.
 - B or Y leaves VR. The Quest system's exit control also works.

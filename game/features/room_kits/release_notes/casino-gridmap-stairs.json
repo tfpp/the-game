@@ -1,0 +1,5 @@
+{
+  "title": "Casino stair kit",
+  "summary": "Added reusable carpeted walnut stairs and matching sloped brass railings to the casino GridMap library.",
+  "notes": ["Each stair module rises 1.25 m over a 2 m run and uses a smooth walking collider."]
+}

@@ -34,6 +34,14 @@ func test_is_command_detects_a_leading_slash() -> void:
 	assert_false(ChatBox.is_command("hello"))
 
 
+func test_guns_alias_is_private_but_ordinary_exclamation_text_stays_public() -> void:
+	assert_true(ChatBox.is_command("!guns"))
+	assert_true(ChatBox.is_command("!GUNS"))
+	assert_eq(ChatBox.parse_command("!GUNS"), "guns")
+	assert_false(ChatBox.is_command("!hello"))
+	assert_false(ChatBox.is_command("hello !guns"))
+
+
 func test_parse_command_lowercases_the_first_word() -> void:
 	assert_eq(ChatBox.parse_command("/SUICIDE"), "suicide")
 

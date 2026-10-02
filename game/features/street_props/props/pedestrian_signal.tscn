@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/pedestrian_signal.tres" id="1_74i66"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/pedestrian_signal.res" id="2_colcl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1s6vj"]
+size = Vector3(0.35, 3.6, 0.384)
+
+[node name="PedestrianSignal" type="StaticBody3D" unique_id=562847921]
+metadata/prop_id = "pedestrian_signal"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1326292519]
+material_override = ExtResource("1_74i66")
+mesh = ExtResource("2_colcl")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1617869198]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0.062000006)
+shape = SubResource("BoxShape3D_1s6vj")

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/casino_props/materials/blackjack_table.tres" id="1_d3b51"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/blackjack_table.res" id="2_y52j5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_65rdj"]
+size = Vector3(2.6992867, 0.9, 1.3197228)
+
+[node name="BlackjackTable" type="StaticBody3D" unique_id=1136048661]
+metadata/prop_id = "blackjack_table"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=743154079]
+material_override = ExtResource("1_d3b51")
+mesh = ExtResource("2_y52j5")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=480058775]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0.6098614)
+shape = SubResource("BoxShape3D_65rdj")

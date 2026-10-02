@@ -1,0 +1,21 @@
+{
+  "props": 50,
+  "unique_texture_files": 50,
+  "texture_counts": {
+    "128": 17,
+    "64": 19,
+    "32": 13,
+    "16": 1
+  },
+  "total_triangles": 9320,
+  "checks": [
+    "finite mesh coordinates",
+    "triangulated OBJ faces",
+    "valid UV references and bounds",
+    "exact PNG texture dimensions",
+    "unique texture hashes",
+    "GLB geometry and UV attributes",
+    "embedded GLB texture dimensions",
+    "UV guides and previews present"
+  ]
+}

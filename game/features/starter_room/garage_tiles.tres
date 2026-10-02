@@ -1,0 +1,34 @@
+[gd_resource type="MeshLibrary" format=3]
+
+[ext_resource type="Material" path="res://features/procedural_rooms/materials/garage_floor.tres" id="1_d4jmb"]
+[ext_resource type="Material" path="res://features/procedural_rooms/materials/garage_wall.tres" id="2_o60ed"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_xiw8u"]
+material = ExtResource("1_d4jmb")
+size = Vector3(1, 0.25, 1)
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(1, 0.25, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2yiw6"]
+material = ExtResource("2_o60ed")
+size = Vector3(1, 2.5, 0.2)
+
+[sub_resource type="BoxShape3D" id="WallShape"]
+size = Vector3(1, 2.5, 0.2)
+
+[resource]
+item/0/name = "ConcreteFloor"
+item/0/mesh = SubResource("BoxMesh_xiw8u")
+item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
+item/0/mesh_cast_shadow = 1
+item/0/shapes = [SubResource("FloorShape"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)]
+item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/navigation_layers = 1
+item/1/name = "ConcreteWall"
+item/1/mesh = SubResource("BoxMesh_2yiw6")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -0.5)
+item/1/mesh_cast_shadow = 1
+item/1/shapes = [SubResource("WallShape"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -0.5)]
+item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/navigation_layers = 1

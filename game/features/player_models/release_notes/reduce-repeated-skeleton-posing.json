@@ -1,0 +1,5 @@
+{
+  "title": "Less repeated character posing",
+  "summary": "Reduce redundant character animation work while keeping the same poses and update rate.",
+  "notes": ["Apply patron locomotion and NPC adjustments before the main skeleton pass, cache fixed bone rest transforms, and skip unchanged bone writes while retaining item and emote restoration."]
+}

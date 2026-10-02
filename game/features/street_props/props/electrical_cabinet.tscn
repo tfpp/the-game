@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://features/street_props/materials/electrical_cabinet.tres" id="1_wck6v"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/electrical_cabinet.res" id="2_16o2i"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c5bcy"]
+size = Vector3(0.75, 1.5350001, 0.4373205)
+
+[node name="ElectricalCabinet" type="StaticBody3D" unique_id=198948354]
+metadata/prop_id = "electrical_cabinet"
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=2105930598]
+material_override = ExtResource("1_wck6v")
+mesh = ExtResource("2_16o2i")
+
+[node name="Collider" type="CollisionShape3D" parent="." unique_id=1905852312]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76750004, 0.013660252)
+shape = SubResource("BoxShape3D_c5bcy")
