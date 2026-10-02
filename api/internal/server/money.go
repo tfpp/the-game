@@ -50,18 +50,55 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req struct {
-		AccountID   int64  `json:"account_id"`
-		Action      string `json:"action"`
-		ID          string `json:"id"`
-		Timestamp   int64  `json:"timestamp"`
-		AmountCents int64  `json:"amount_cents"`
-		IncomeCents int64  `json:"income_cents"`
-		WagerCents  int64  `json:"wager_cents"`
-		PayoutCents int64  `json:"payout_cents"`
-		Blessings   int    `json:"blessings"`
+		AccountID   int64           `json:"account_id"`
+		Action      string          `json:"action"`
+		ID          string          `json:"id"`
+		Timestamp   int64           `json:"timestamp"`
+		AmountCents int64           `json:"amount_cents"`
+		IncomeCents int64           `json:"income_cents"`
+		WagerCents  int64           `json:"wager_cents"`
+		PayoutCents int64           `json:"payout_cents"`
+		Blessings   int             `json:"blessings"`
+		Revision    int64           `json:"revision"`
+		Delta       int64           `json:"delta"`
+		Document    json.RawMessage `json:"document"`
 	}
 	if json.Unmarshal(raw, &req) != nil || req.AccountID <= 0 || req.Timestamp < s.cfg.Now().Unix()-60 || req.Timestamp > s.cfg.Now().Unix()+60 {
 		writeError(w, 400, "bad_request", "invalid request")
+		return
+	}
+	if req.Action == "cosmetics_load" {
+		result, err := s.store.Cosmetics(r.Context(), req.AccountID)
+		if err != nil {
+			s.internalError(w, r, err)
+			return
+		}
+		writeJSON(w, 200, result)
+		return
+	}
+	if req.Action == "cosmetics" {
+		var document map[string]map[string]any
+		if len(req.ID) != 64 || req.Revision < 0 || req.Revision > 1_000_000_000 ||
+			req.Delta < -maxChargeCents || req.Delta > maxLootSaleCents ||
+			len(req.Document) > maxInventoryBytes || json.Unmarshal(req.Document, &document) != nil ||
+			len(document) != 3 || document["crates"] == nil || document["skins"] == nil || document["equipped"] == nil {
+			writeError(w, 400, "bad_request", "invalid cosmetic transaction")
+			return
+		}
+		result, err := s.store.CommitCosmetics(r.Context(), req.AccountID, req.ID, req.Revision, req.Delta, string(req.Document))
+		if errors.Is(err, store.ErrInsufficientMoney) {
+			writeError(w, 409, "insufficient_money", "You can't afford that crate.")
+			return
+		}
+		if errors.Is(err, store.ErrCosmeticConflict) {
+			writeError(w, 409, "cosmetic_conflict", "Collection changed; refresh and try again.")
+			return
+		}
+		if err != nil {
+			s.internalError(w, r, err)
+			return
+		}
+		writeJSON(w, 200, result)
 		return
 	}
 	if req.Action == "balance" {

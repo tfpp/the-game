@@ -194,6 +194,13 @@ $10–$30 for triples, with an 80% expected return. Charges, prizes, and spin re
 commit in one transaction. See [player money](../game/features/money/README.md) for
 protocol, income timing, offline behavior and deployment order.
 
+The money endpoint also provides signed `cosmetics_load` / `cosmetics` actions
+for [prawn crates](../game/features/pawn_shop/README.md#prawn-skin-crates).
+They atomically commit a revisioned cosmetic document and the existing wallet
+delta, with immutable operation IDs for retries. Separate `cosmetics` and
+`cosmetic_transactions` tables prevent ordinary delayed inventory saves from
+overwriting paid cosmetic rewards or equipment. Deploy the API before the game.
+
 `POST /api/game/inventory` stores one JSON inventory document per account for
 the game server (separate `game-inventory-v1` signature domain). See
 [inventory](../game/features/inventory/README.md#persistence).

@@ -157,6 +157,18 @@ var migrations = []string{
 		state TEXT NOT NULL CHECK(state IN ('armed', 'defused', 'exploded')),
 		next_attempt INTEGER NOT NULL DEFAULT 0
 	);`,
+	`CREATE TABLE cosmetics (
+		account_id INTEGER PRIMARY KEY REFERENCES accounts(id),
+		revision INTEGER NOT NULL,
+		document TEXT NOT NULL
+	);
+	CREATE TABLE cosmetic_transactions (
+		id TEXT PRIMARY KEY,
+		account_id INTEGER NOT NULL REFERENCES accounts(id),
+		revision INTEGER NOT NULL,
+		delta INTEGER NOT NULL,
+		document TEXT NOT NULL
+	);`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {
