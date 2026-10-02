@@ -28,3 +28,7 @@ east/west walls) and point its return door at a marker in front of it.
 
 `tests/features/dev_room/` checks the booth round trip, that every warp door sits
 inside the room and that each return marker lands inside it.
+
+The Street District, Hotel Props and procedural garage teleporters here are hidden
+and locked until `sv_cheats 1` ([dev access](../dev_access/README.md)). The booth and
+the lounge, hotel wing and apartment doors stay open for normal play.

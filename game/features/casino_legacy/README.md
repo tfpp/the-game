@@ -22,3 +22,7 @@ main casino world bounds and existing geometry/collision tests.
 Tests cover the validated door round trip, out-of-range rejection, floor support,
 arrival capsule clearance and presence of working gambling prefabs. Full game and
 multiplayer checks verify that the auto-loaded feature has matching peer paths.
+
+## Developer access
+
+Since issue #438 this entrance is a development door: it stays hidden and locked until `sv_cheats 1` (see [dev access](../dev_access/README.md)).

@@ -30,6 +30,7 @@ func _container() -> LootContainer:
 	var table := LootTable.new()
 	table.min_items = 2
 	table.max_items = 2
+	table.empty_chance = 0.0
 	table.item_ids = PackedStringArray(["watch"])
 	table.weights = PackedFloat32Array([1])
 	var container := CONTAINER.instantiate() as LootContainer

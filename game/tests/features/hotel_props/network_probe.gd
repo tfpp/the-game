@@ -50,6 +50,9 @@ func _run() -> void:
 			return _player != null
 	)
 	_player.set_physics_process(false)
+	var noclip := get_tree().get_first_node_in_group(&"noclip")
+	noclip.request_cheats.rpc_id(1, 1)
+	await _wait(func() -> bool: return bool(noclip.get(&"cheats_enabled")))
 	assert(not _room.is_loaded(), "A new peer starts outside the showroom")
 	_move(Vector3(2, 1, 5))
 	await get_tree().create_timer(0.8).timeout

@@ -10,7 +10,7 @@ func _ready() -> void:
 
 
 func _can_enter(player: Player) -> bool:
-	return entity.in_range(player) and is_instance_valid(_arrival)
+	return entity.in_range(player) and is_instance_valid(_arrival) and not DevGate.blocks(self)
 
 
 func _travel(player: Player) -> bool:

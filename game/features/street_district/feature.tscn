@@ -1,5 +1,6 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://features/dev_access/dev_gate.gd" id="dev_gate"]
 [ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
 [ext_resource type="Script" path="res://features/hotel_props/hotel_portal.gd" id="portal"]
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
@@ -71,12 +72,14 @@ pixel_size = 0.004
 position = Vector3(0, 0.1, -2197)
 script = ExtResource("gps")
 label = "Street District"
+dev_only = true
 hint = "Use STREET DISTRICT on the dev room's east wall. Explore streets, alleys, shop and workshop."
 
 [node name="Teleporter" type="Marker3D" parent="Destinations"]
 position = Vector3(312.4, 0.1, -300)
 script = ExtResource("gps")
 label = "Street District Teleporter"
+dev_only = true
 hint = "Dev room east wall. Enter through DEV ROOM in the casino north promenade."
 
 [node name="StreetObjects" parent="Room" instance=ExtResource("objects")]
@@ -132,4 +135,11 @@ pixel_size = 0.004
 position = Vector3(18.75, 0.1, -2166.7)
 script = ExtResource("gps")
 label = "Street Casino Entrance"
+dev_only = true
 hint = "Golden Crown frontage in the east block. Use its door to enter the main casino."
+
+[node name="DevGate" type="Node" parent="CasinoStreetEntrance"]
+script = ExtResource("dev_gate")
+
+[node name="DevGate" type="Node" parent="Entrance"]
+script = ExtResource("dev_gate")

@@ -12,6 +12,8 @@ const GROUP := &"gps_destinations"
 ## Optional global extent of an area that isn't a `StreamedRoom` but is only
 ## reachable through doors (e.g. the parking garage). Empty means none.
 @export var area := AABB()
+## Development-only place, listed only while `sv_cheats 1` is on (see DevGate).
+@export var dev_only := false
 
 ## Existing scene markers stay Places unless explicitly categorized.
 @export_enum("Places", "People", "Animals", "Objects") var category := "Places"
@@ -24,6 +26,12 @@ func _enter_tree() -> void:
 
 
 func available() -> bool:
+	if dev_only and not DevGate.cheats_enabled(get_tree()):
+		return false
+	return _source_available()
+
+
+func _source_available() -> bool:
 	if not tracks_source:
 		return is_inside_tree()
 	if not is_instance_valid(source) or not source.is_inside_tree():

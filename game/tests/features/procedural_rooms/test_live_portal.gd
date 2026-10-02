@@ -1,5 +1,6 @@
 extends GutTest
 
+const Cheats := preload("res://tests/features/dev_access/cheats_fixture.gd")
 const FEATURE := preload("res://features/procedural_rooms/feature.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
 var _feature: Node3D
@@ -13,6 +14,7 @@ func before_each() -> void:
 	_player.name = "1"
 	add_child(_player)
 	_player.set_physics_process(false)
+	Cheats.enable(self)
 
 
 func after_each() -> void:

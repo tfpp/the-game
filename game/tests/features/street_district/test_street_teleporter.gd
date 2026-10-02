@@ -1,5 +1,6 @@
 extends GutTest
 
+const Cheats := preload("res://tests/features/dev_access/cheats_fixture.gd")
 const FEATURE := preload("res://features/street_district/feature.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
 var _feature: Node3D
@@ -10,6 +11,7 @@ func before_each() -> void:
 	_feature = FEATURE.instantiate() as Node3D
 	add_child_autofree(_feature)
 	_room = _feature.get_node("Room") as StreamedRoom
+	Cheats.enable(self)
 
 
 func test_authenticated_round_trip_loads_geometry_before_arrival() -> void:
