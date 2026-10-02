@@ -8,6 +8,7 @@ script = ExtResource("1_script")
 id = "watch"
 display_name = "Watch"
 category = 2
+rarity = 4
 view_scene = ExtResource("2_view")
 weight = 0.15
 sale_value_cents = 1000

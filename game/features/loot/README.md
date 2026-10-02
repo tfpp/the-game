@@ -35,8 +35,12 @@ or `LootContainer.reset_all(get_tree())` for all of them (e.g. when slum travel
 starts a new visit); the next search rolls new loot. `regenerate()` rolls
 immediately instead.
 
-Placeholder valuables (`stolen_wallet`, `watch`, `jewelry`, `electronics`, `scrap`,
-`cash_bundle`) live in `features/holdables/items/` as ordinary `PROP` items; cash
-bundles are inventory items, not wallet money, for now.
+Five tiered valuables (scrap, stolen_wallet, electronics, watch, jewelry) live in
+features/holdables/items/ as ordinary PROP items. Their rarity and pawn price
+appear in stash entries and icon borders. The existing garage/alley table
+weights descend with rarity; floor-scaled tables are future B4 work. Cash bundles
+are separate $5 monetary loot, carried until redeemed at the pawn counter rather
+than a sixth valuable tier. See the holdables README for the price/color table.
+Claims, resets and replication remain unchanged.
 
 Tests: `tests/features/loot/`.

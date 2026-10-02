@@ -34,6 +34,32 @@ their ordinary size.
 No other code changes are needed — pickup, holding, replication and the primary
 action all key off the category.
 
+## Valuable tiers
+
+Phase 1 uses five valuables. IDs, prices and models remain compatible with saved
+inventories; ItemDefinition.rarity is static catalog metadata, not player state.
+
+| Item | Rarity | Icon / prompt color | Pawn price |
+| --- | --- | --- | --- |
+| Scrap Metal | Common | gray | $1 |
+| Wallet (stolen_wallet) | Uncommon | green | $3 |
+| Electronics | Rare | blue | $7 |
+| Watch | Epic | purple | $10 |
+| Jewelry | Legendary | gold | $15 |
+
+The existing garage and alley tables already weight each higher tier less often.
+Floor-dependent difficulty/drop rates remain Phase 1 B4 work. Cash Bundle is
+separate monetary loot, not a sixth valuable tier: it still redeems for $5 at the
+pawn counter, preserving saved cash and the existing server-idempotent sale path.
+There is no auto-credit on pickup or new wallet. All carried sellable loot,
+including cash, still drops on slum death.
+
+World and dropped-item prompts show rarity and pawn value on a second line using
+ItemCatalog.pickup_text(); item_color() supplies the matching UI color.
+Inventory/stash icons add a small colored border without tinting model artwork.
+Rarity names accompany colors for accessibility; selected inventory items and
+stash entries show their sale values. Ordinary items keep their old prompts.
+
 ## How it works
 
 - `item_pickup.gd`: a world pickup. It's an `interactables` entry (see

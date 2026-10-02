@@ -71,6 +71,22 @@ static func find(id: String) -> ItemDefinition:
 	return null
 
 
+## Plain text stays usable by desktop, touch and the VR prompt.
+static func pickup_text(id: String) -> String:
+	var definition := find(id)
+	if definition == null:
+		return "Pick up " + id
+	var details := definition.loot_details()
+	return (
+		"Pick up %s%s" % [definition.display_name, "\n" + details if not details.is_empty() else ""]
+	)
+
+
+static func item_color(id: String) -> Color:
+	var definition := find(id)
+	return definition.rarity_color() if definition != null else Color.WHITE
+
+
 static func create_view(id: String) -> Node3D:
 	if not ClothingCatalog.slot(id).is_empty():
 		var clothing := ClothingModel.new()

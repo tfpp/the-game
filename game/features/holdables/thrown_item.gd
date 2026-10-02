@@ -119,8 +119,11 @@ func can_use(player: Player) -> bool:
 
 
 func interaction_text() -> String:
-	var def := ItemCatalog.find(item_id)
-	return "Pick up %s" % (def.display_name if def != null else item_id)
+	return ItemCatalog.pickup_text(item_id)
+
+
+func interaction_color() -> Color:
+	return ItemCatalog.item_color(item_id)
 
 
 func use() -> void:

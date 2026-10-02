@@ -21,8 +21,10 @@ procedural clothing. `ModelIconRenderer` automatically frames mesh bounds in a
 private transparent 128×128 viewport. Each item renders once, then shares a cached
 texture across controls; the viewport stops updating between jobs. The cache is
 limited to 128 textures and headless servers allocate no rendering viewport.
-`ItemDefinition.icon_view_direction` controls the viewing angle. The money balance
-keeps its separate coin symbol. [`loot-models.md`](../../../docs/design/loot-models.md)
+`ItemDefinition.icon_view_direction` controls the viewing angle. Valuable icons have a rarity-colored border, leaving the actual model colors
+intact. Stash entries, backpack tooltips and the selected item's description show
+the rarity name and pawn price; tap/select an item on touch or controller to read
+it without needing hover. The money balance keeps its separate coin symbol. [`loot-models.md`](../../../docs/design/loot-models.md)
 includes actual inventory screenshots and a capture command.
 
 Shirts and pants have fixed colors. Find other colors to change your outfit;

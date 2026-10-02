@@ -3,6 +3,7 @@ extends CanvasLayer
 
 var _target: Node3D
 var _prompt: Label
+var _prompt_color := Color.WHITE
 
 
 func _ready() -> void:
@@ -34,6 +35,10 @@ func _physics_process(_delta: float) -> void:
 		elif Controls.touch_visible():
 			hint = "[USE]"
 		_prompt.text = "%s %s" % [hint, str(_target.call("interaction_text"))]
+	var color := target_color()
+	if color != _prompt_color:
+		_prompt_color = color
+		_prompt.add_theme_color_override("font_color", color)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -66,6 +71,13 @@ func _find_target() -> Node3D:
 			nearest = candidate
 			distance = next
 	return nearest
+
+
+## Optional cosmetic hook; every existing interactable keeps the white default.
+func target_color() -> Color:
+	if is_instance_valid(_target) and _target.has_method("interaction_color"):
+		return _target.call("interaction_color") as Color
+	return Color.WHITE
 
 
 ## Current eligible interaction, also shown by the immersive VR prompt.

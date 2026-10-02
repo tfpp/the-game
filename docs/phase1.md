@@ -137,11 +137,16 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
 ## Milestone C: loot and economy
 
 ### C1. Five loot tiers
-- [ ] Settle on five valuables with clear rarity and prices (e.g. scrap, stolen
+- [x] Settle on five valuables with clear rarity and prices (e.g. scrap, stolen
   wallet, electronics, watch, jewelry; cash bundle as money). Show rarity color in
   the inventory icon and pickup prompt. Keep the pawn counter as the sale path
   (Phase 1 in `phases.md` asked for direct money; selling already works, so keep it
   and note the decision).
+- Completed in #430: retain the existing $1/$3/$7/$10/$15 prices, add gray/green/
+  blue/purple/gold common-to-legendary metadata, icon borders and readable
+  rarity/price details. Cash bundles remain separate $5 monetary loot redeemed
+  at the pawn counter; saved cash items and sale/death-drop rules are preserved.
+  Garage/alley weights already decline by valuable tier; floor scaling stays B4.
 
 ### C2. Pickup feedback
 - [ ] When a player takes loot, show a short toast "Picked up <name> ($<value>)" and

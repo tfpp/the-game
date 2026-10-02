@@ -9,6 +9,8 @@ An interactable is a Node3D in the `interactables` group with these methods:
 - `can_use(player: Player) -> bool`: range/aim/visibility eligibility.
 - `interaction_text() -> String`: the local prompt.
 - `use() -> void`: sends a request to the server.
+- Optional `interaction_color() -> Color`: cosmetic prompt color, default white.
+  Valuable pickups use their catalog rarity color and retain plain-text names/prices.
 
 The feature selects the nearest eligible entity while gameplay is active. Every
 entity must independently validate the sender and eligibility on the server;

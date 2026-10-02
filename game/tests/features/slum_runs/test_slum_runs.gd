@@ -183,6 +183,31 @@ func test_fence_pays_once_for_a_reserved_valuable() -> void:
 	assert_eq(int(wallet.balances.get(1, 0)), 3000)
 
 
+func test_all_tiers_and_saved_cash_sell_once_at_the_catalog_price() -> void:
+	var features := _features()
+	var fence := _run(features).get_node("Fence") as LootFence
+	var player := _player(fence.global_position)
+	var hand := _hand()
+	var wallet := PlayerMoney.new()
+	add_child_autofree(wallet)
+	wallet.set_process(false)
+	wallet.balances = {1: 2000}
+	var total := 2000
+	for id: String in ["scrap", "stolen_wallet", "electronics", "watch", "jewelry", "cash_bundle"]:
+		assert_true(hand.inventory().collect(id))
+		player.net_position = fence.global_position + Vector3.RIGHT * 10
+		await fence.request_sell()
+		assert_eq(int(wallet.balances[1]), total, "Out-of-range sale is rejected")
+		assert_eq(hand.net_item_id, id)
+		player.net_position = fence.global_position
+		await fence.request_sell()
+		total += ItemCatalog.find(id).sale_value_cents
+		assert_eq(int(wallet.balances[1]), total)
+		assert_eq(hand.net_item_id, "")
+		await fence.request_sell()
+		assert_eq(int(wallet.balances[1]), total, "Repeated Use cannot duplicate a sale")
+
+
 func test_pawn_shop_storefront_sits_on_the_counter() -> void:
 	var runs := _run(_features())
 	var fence := runs.get_node("Fence") as LootFence

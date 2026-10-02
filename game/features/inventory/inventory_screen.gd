@@ -190,6 +190,9 @@ func _refresh() -> void:
 		_slots[index].text = "\n\n%s" % _item_name(id)
 		(_slots[index].get_child(0) as InventoryIcon).set_item(id)
 		_slots[index].tooltip_text = "Slot %d: %s" % [index + 1, _item_name(id)]
+		var definition := ItemCatalog.find(id)
+		if definition != null and not definition.loot_details().is_empty():
+			_slots[index].tooltip_text += "\n" + definition.loot_details()
 		_slots[index].button_pressed = _selected == index
 	_count.text = "BACKPACK   %d / %d" % [filled, PlayerInventory.CAPACITY]
 	var key_names := PackedStringArray()
@@ -205,6 +208,9 @@ func _refresh() -> void:
 		if clothing
 		else "Equip, store or drop your items here."
 	)
+	var definition := ItemCatalog.find(item)
+	if definition != null and not definition.loot_details().is_empty():
+		_description.text = definition.loot_details() + "\nSell at the Crown pawn counter."
 	if item.is_empty():
 		_description.text = "Find items around the level and press Use to pick them up."
 	_equip.disabled = _selected < 0 or item.is_empty()
@@ -243,6 +249,10 @@ func _refresh_stash() -> void:
 		var button := _button(_stash_items, _item_name(id), _take_stash_item.bind(index))
 		button.custom_minimum_size.y = 52
 		button.text = "          " + _item_name(id)
+		var definition := ItemCatalog.find(id)
+		if definition != null and not definition.loot_details().is_empty():
+			button.text += "\n          " + definition.loot_details()
+		button.tooltip_text = button.text.strip_edges()
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		var icon := InventoryIcon.new()
 		icon.position = Vector2(8, 8)
