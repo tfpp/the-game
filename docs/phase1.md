@@ -61,7 +61,7 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
 ## Milestone A: elevator and instanced zones
 
 ### A1. Zone instance registry (server)
-- [ ] Add a server-owned `ZoneInstances` service (new feature, e.g.
+- [x] Add a server-owned `ZoneInstances` service (new feature, e.g.
   `features/zone_instances/`) that creates an instance id for a group, records which
   peers and which slum scene belong to it, and frees it when the last member leaves,
   dies out or disconnects.
@@ -72,6 +72,9 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
 - Tests: two groups get two instances; leaving frees; disconnect frees; offline
   single peer works.
 - Touches only new feature code; explain any need for `game/core/net/` in the PR.
+- Completed in #443: `features/zone_instances` `ZoneRegistry` tracks members, slum,
+  far-apart slots (x = 4000 × slot) and frees on leave/death/disconnect; the slum gate
+  records its run there. Scene copies at the offset are not placed yet (A3/A4).
 
 ### A2. Per-zone network relevance (depends on A1)
 - [ ] Send player, enemy and loot replication only to peers in the same zone

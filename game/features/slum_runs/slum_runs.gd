@@ -2,11 +2,12 @@ class_name SlumRuns
 extends Node3D
 ## The server's current shared excursion. Everyone who enters while a run is
 ## active lands on the same map, so they can search, ambush and escape together.
+## Membership lives in the `ZoneInstances` registry as one gate instance.
 
 const SlumDestinations := preload("res://features/dev_elevator/slum_destinations.gd")
 
-var _active_peers: Dictionary = {}
-var _arrival: SlumArrivalPoint
+var _gate_instance: int = -1
+var _fallback_registry := ZoneRegistry.new()
 
 
 func _ready() -> void:
@@ -19,28 +20,36 @@ func _ready() -> void:
 
 
 func choose_arrival() -> SlumArrivalPoint:
-	return _arrival if _arrival != null else SlumDestinations.pick(get_tree())
+	var arrival := _registry().arrival_of(_gate_instance) as SlumArrivalPoint
+	return arrival if arrival != null else SlumDestinations.pick(get_tree())
 
 
 func begin(peer_id: int, arrival: SlumArrivalPoint) -> void:
 	if not multiplayer.is_server() or arrival == null:
 		return
-	if _active_peers.is_empty():
-		LootContainer.reset_all(get_tree())
-		_arrival = arrival
-	_active_peers[peer_id] = true
+	var registry := _registry()
+	if registry.join(_gate_instance, peer_id):
+		return
+	LootContainer.reset_all(get_tree())
+	var peers: Array[int] = [peer_id]
+	_gate_instance = registry.create(peers, arrival)
 
 
 func finish(peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
-	_active_peers.erase(peer_id)
-	if _active_peers.is_empty():
-		_arrival = null
+	var registry := _registry()
+	registry.leave(peer_id)
+	if not registry.has_instance(_gate_instance):
+		_gate_instance = -1
 
 
 func is_active(peer_id: int) -> bool:
-	return _active_peers.has(peer_id)
+	return _registry().instance_of(peer_id) != -1
+
+
+func _registry() -> ZoneRegistry:
+	return ZoneInstances.registry_for(get_tree(), _fallback_registry)
 
 
 func _on_player_died(victim_peer: int, _attacker_peer: int) -> void:
@@ -54,8 +63,8 @@ func _on_player_died(victim_peer: int, _attacker_peer: int) -> void:
 
 
 func _on_mode_changed(_mode: Network.Mode) -> void:
-	_active_peers.clear()
-	_arrival = null
+	_fallback_registry.clear()
+	_gate_instance = -1
 
 
 func _player_for_peer(peer_id: int) -> Player:
