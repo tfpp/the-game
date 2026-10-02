@@ -60,6 +60,60 @@ func test_large_prices_and_server_messages_fit_real_display_widths() -> void:
 		assert_lte(width, 1.69 if label == caption else 1.19)
 
 
+func test_refined_cabinet_preserves_collision_and_shared_painted_hardware() -> void:
+	var hull := (_machine.get_node("Collider") as CollisionShape3D).shape as BoxShape3D
+	assert_eq(hull.size, Vector3(2.2, 2.8, 1.2))
+	var cabinet := _view.get_node("SlotCabinet/Model") as MeshInstance3D
+	var lever := _view.get_node("Lever/Model") as MeshInstance3D
+	assert_same(cabinet.material_override, lever.material_override)
+	var finish := cabinet.material_override as StandardMaterial3D
+	assert_eq(finish.albedo_texture.get_size(), Vector2(128, 128))
+	assert_true(finish.albedo_texture.get_image().has_mipmaps())
+	for model: MeshInstance3D in [cabinet, lever]:
+		var mesh := model.mesh as ArrayMesh
+		assert_eq(mesh.get_surface_count(), 1)
+		var arrays := mesh.surface_get_arrays(0)
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+		var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+		assert_eq(indices.size() / 3, 844 if model == cabinet else 144)
+		for index: int in vertices.size():
+			assert_true(vertices[index].is_finite())
+			assert_almost_eq(normals[index].length(), 1.0, .001)
+			assert_true(uvs[index].is_finite())
+			assert_between(uvs[index].x, 0.0, 1.0)
+			assert_between(uvs[index].y, 0.0, 1.0)
+		for index: int in range(0, indices.size(), 3):
+			var a := vertices[indices[index]]
+			var b := vertices[indices[index + 1]]
+			var c := vertices[indices[index + 2]]
+			var cross := (c - a).cross(b - a)
+			assert_gt(cross.length(), .000001)
+			assert_gt(cross.normalized().dot(normals[indices[index]]), .99)
+	# Rays along the payline must hit the backing behind the reels, never the bezel.
+	var faces := cabinet.mesh.get_faces()
+	for x: float in [-.58, 0.0, .58]:
+		for index: int in range(0, faces.size(), 3):
+			var hit: Variant = Geometry3D.segment_intersects_triangle(
+				Vector3(x, 1.73, 1),
+				Vector3(x, 1.73, .43),
+				faces[index],
+				faces[index + 1],
+				faces[index + 2]
+			)
+			assert_null(hit, "The payline stays clear of static cabinet hardware")
+
+
+func test_refined_lever_still_pulls_with_the_spin_snapshot() -> void:
+	_machine.state = _snapshot(true, 0, [0, 1, 2])
+	_view._process(.2)
+	assert_gt((_view.get_node("Lever") as Node3D).rotation.x, .7)
+	_machine.state = _snapshot(false, 3, [0, 1, 2])
+	_view._process(.5)
+	assert_lt((_view.get_node("Lever") as Node3D).rotation.x, .01)
+
+
 func _snapshot(spinning: bool, stopped: int, reels: Array) -> Dictionary:
 	return {
 		"spin": 1,

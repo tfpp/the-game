@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3]
+[ext_resource type="Texture2D" path="res://assets/casino_props/glass_ashtray/glass_ashtray.png" id="paint"]
+[resource]
+transparency = 4
+albedo_color = Color(1, 1, 1, 0.72)
+albedo_texture = ExtResource("paint")
+roughness = 0.22
+metallic_specular = 0.7
+texture_filter = 2
+texture_repeat = false

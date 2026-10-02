@@ -24,8 +24,10 @@ script = ExtResource("2")
 
 [node name="Audio" type="AudioStreamPlayer3D" parent="."]
 position = Vector3(0, 1.65, 0.7)
-max_distance = 25.0
-unit_size = 5.0
+max_distance = 18.0
+unit_size = 2.0
+volume_db = -10.0
+bus = &"GameSFX"
 
 [node name="Sync" type="MultiplayerSynchronizer" parent="."]
 root_path = NodePath("..")
