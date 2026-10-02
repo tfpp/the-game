@@ -1,9 +1,5 @@
-[gd_scene load_steps=3 format=3]
-
-[ext_resource type="PackedScene" path="res://assets/casino_hub/models/casino_stool.glb" id="model"]
-[ext_resource type="Script" path="res://features/casino_hub/model_materials.gd" id="materials"]
-
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/burgundy-pedestal-bar-stool.tscn" id="model"]
 [node name="CasinoStool" type="Node3D"]
-script = ExtResource("materials")
-
 [node name="Model" parent="." instance=ExtResource("model")]
+scale = Vector3(1, 0.9840426, 1)
