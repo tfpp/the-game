@@ -14,6 +14,8 @@ const HAND_HEIGHT := 0.96
 const HAND_REACH := 0.5
 const HAND_SPREAD := 0.17
 const UPDATE_S := 0.1
+const POSE_PHASES := 7
+static var _next_pose_phase := 0
 
 @export var look := -1
 @export var seated := false
@@ -28,6 +30,8 @@ func _ready() -> void:
 	var chosen := look if look >= 0 else guest_look(global_position, lady)
 	build(chosen)
 	_time = chosen * 1.7
+	_since = float(_next_pose_phase) * UPDATE_S / POSE_PHASES
+	_next_pose_phase = (_next_pose_phase + 1) % POSE_PHASES
 	_update(UPDATE_S)
 
 

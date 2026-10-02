@@ -68,3 +68,6 @@ nameplates, replicated positions and camera masks. With a display available,
 drawn. Set `STREET_CAPTURE_DIR` to retain the in-game screenshots. Detached visuals
 are removed from the cache before their deferred deletion, so unloading a street
 cannot query transforms on nodes that have already left the scene tree.
+
+Moving visuals have a separate refresh cache. Static and moving visuals unregister
+on tree exit, restore their authored masks and can register again on reentry.

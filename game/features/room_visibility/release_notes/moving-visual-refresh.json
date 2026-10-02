@@ -1,0 +1,7 @@
+{
+  "title": "Cheaper room visibility updates",
+  "summary": "Reduce recurring visual-update work when exploring rooms.",
+  "notes": [
+    "Refresh moving visuals separately and remove static visuals from the cache when they leave the scene."
+  ]
+}

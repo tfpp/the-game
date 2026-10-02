@@ -172,3 +172,26 @@ func test_streamed_visual_detached_before_queue_free_is_removed_from_cache() -> 
 	_renderer.refresh_moving()
 	assert_false(_renderer._registered.has(id))
 	mesh.free()
+
+
+func test_static_visual_exit_restores_masks_and_reentry_registers_once() -> void:
+	var light := OmniLight3D.new()
+	light.layers = 3
+	light.light_cull_mask = 5
+	_zone.add_child(light)
+	_renderer._register(light, false)
+	var id := light.get_instance_id()
+	assert_false(_renderer._moving_visuals.has(id))
+	_zone.remove_child(light)
+	assert_false(_renderer._visuals.has(id), "Static exits do not wait for a moving scan")
+	assert_false(_renderer._registered.has(id))
+	assert_eq(light.layers, 3)
+	assert_eq(light.light_cull_mask, 5)
+	_root.add_child(light)
+	_renderer._register(light, true)
+	_renderer._register(light, true)
+	assert_true(_renderer._moving_visuals.has(id))
+	assert_eq(_renderer._visuals.size(), 1)
+	light.free()
+	assert_false(_renderer._moving_visuals.has(id))
+	assert_false(_renderer._visuals.has(id))
