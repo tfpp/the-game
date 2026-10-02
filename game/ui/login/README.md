@@ -24,6 +24,11 @@ compensate for the project's stretched design canvas on small windows; resizing
 or rotating updates the layout. Controller focus scrolls into view. The shared
 Kenney theme is not mutated. Other feature panels retain their own layouts.
 
+On first load (before the player has ever played), losing input shows a small
+**Click to play** prompt (Tap / Press A on touch / controller) over the scene instead
+of the full menu; pressing it captures the pointer inside the user gesture. Once the
+player has played, a lost pointer lock opens the menu as before.
+
 Authentication, silent reconnection, automatic joining for returning sessions,
 and press-time pointer-lock capture are unchanged. No new keys or saved preferences.
 
