@@ -128,7 +128,7 @@ GEM. Prompts and provenance are in `res://assets/casino_hub/textures/GENERATED_A
 The cabinet keeps its existing collision hull and interaction point. Materials
 are shared; each reel only owns its small animation shader state.
 
-The PS1 cabinet uses 844 triangles and flat, matte finishes. The reel texture imports
+The cabinet and lever use a shared painted atlas with matte finishes. The reel texture imports
 at 128×128 with nearest mipmap filtering; its five icons and server-selected results
 keep their original order. Drums use eight segments and idle reels skip redundant
 shader uploads. Labels and interaction prompts keep their normal readable fonts.
@@ -147,3 +147,13 @@ blessings for its 10 minutes, and each win gives the winner charisma once the re
 
 Lucky-night and Trump favor rerolls still apply only to temporary wallets;
 authenticated accounts receive the Kaaba blessing odds.
+
+### Refined mechanical cabinet
+
+The live cabinet now uses indexed native exports with continuous walnut side
+profiles, recessed metal reel framing, a coin throat and a folded payout tray.
+Its fixed side socket meets the moving faceted lever at the existing pivot.
+Cabinet and lever share one 128×128 painted atlas and material; their meshes are
+488 and 144 triangles respectively. Drum shaders, labels, prices, collision and
+payout behavior retain their established interfaces. The original GLB remains
+legacy source. See [the editable recipe and review guide](../../../docs/design/model-sources/slot-cabinet-v2/README.md).

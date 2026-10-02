@@ -4,7 +4,8 @@ extends Node3D
 const CABINET := preload("res://features/casino_hub/models/slot_cabinet.tscn")
 const REEL_SHADER := preload("res://features/slot_machine/reel.gdshader")
 const SYMBOL_TEXTURE := preload("res://assets/slot_machine/textures/reel_symbols.png")
-const CHROME := preload("res://features/casino_hub/materials/chrome.tres")
+const LEVER_MESH := preload("res://assets/slot_machine/cabinet_v2/lever.res")
+const CABINET_FINISH := preload("res://features/slot_machine/materials/cabinet_v2.tres")
 const SYMBOLS: Array[String] = ["7", "BAR", "STAR", "BELL", "GEM"]
 const GOLD := Color("f6c85f")
 const INK := Color("f9cc66")
@@ -22,7 +23,7 @@ var _last_state: Dictionary = {}
 
 func _ready() -> void:
 	add_child(CABINET.instantiate())
-	_label("LUCKY FIVE", Vector3(0, 2.49, 0.596), 48, INK, 0.004)
+	_label("LUCKY FIVE", Vector3(0, 2.50, 0.596), 48, INK, 0.0037)
 	_label("THE GOLDEN CROWN  •  EST. 1964", Vector3(0, 2.38, 0.596), 18, INK, 0.003)
 	var drum := SlotReelMesh.create()
 	for index: int in 3:
@@ -41,10 +42,10 @@ func _ready() -> void:
 	_label("▶", Vector3(-0.91, 1.73, 0.655), 25, Color("ba293a"), 0.003)
 	_label("◀", Vector3(0.91, 1.73, 0.655), 25, Color("ba293a"), 0.003)
 	_status = _label("TRY YOUR LUCK", Vector3(-0.18, 0.94, 0.56), 26, GOLD, 0.0025)
-	_caption = _label(_price_caption(), Vector3(0, 2.245, 0.56), 21, GOLD, 0.0025)
-	_label("7  ×30    BAR  ×20    STAR  ×10", Vector3(0, 0.72, 0.505), 18, GOLD, 0.0025)
-	_label("BELL  ×15    GEM  ×25    PAIRS  ×0", Vector3(0, 0.65, 0.505), 18, GOLD, 0.0025)
-	_label("THREE MATCHING SYMBOLS PAY", Vector3(0, 0.58, 0.505), 13, Color("ded2b9"), 0.0025)
+	_caption = _label(_price_caption(), Vector3(0, 2.225, 0.67), 21, GOLD, 0.0025)
+	_label("7  ×30    BAR  ×20    STAR  ×10", Vector3(0, 0.72, 0.519), 18, GOLD, 0.0025)
+	_label("BELL  ×15    GEM  ×25    PAIRS  ×0", Vector3(0, 0.65, 0.519), 18, GOLD, 0.0025)
+	_label("THREE MATCHING SYMBOLS PAY", Vector3(0, 0.58, 0.519), 13, Color("ded2b9"), 0.0025)
 	_build_lever()
 
 
@@ -101,34 +102,14 @@ func _price_caption() -> String:
 
 func _build_lever() -> void:
 	_lever = Node3D.new()
+	_lever.name = "Lever"
 	_lever.position = Vector3(1.14, 1.23, 0.0)
 	add_child(_lever)
-	var stem := MeshInstance3D.new()
-	var cylinder := CylinderMesh.new()
-	cylinder.top_radius = 0.038
-	cylinder.bottom_radius = 0.055
-	cylinder.height = 0.65
-	cylinder.radial_segments = 8
-	cylinder.rings = 1
-	stem.mesh = cylinder
-	stem.position.y = 0.3
-	stem.material_override = CHROME
-	_lever.add_child(stem)
-	var knob := MeshInstance3D.new()
-	var sphere := SphereMesh.new()
-	sphere.radial_segments = 8
-	sphere.rings = 4
-	sphere.radius = 0.115
-	sphere.height = 0.23
-	knob.mesh = sphere
-	knob.position.y = 0.67
-	var bakelite := StandardMaterial3D.new()
-	bakelite.albedo_color = Color("8d172c")
-	bakelite.roughness = 1.0
-	bakelite.metallic_specular = 0.0
-	bakelite.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
-	knob.material_override = bakelite
-	_lever.add_child(knob)
+	var model := MeshInstance3D.new()
+	model.name = "Model"
+	model.mesh = LEVER_MESH
+	model.material_override = CABINET_FINISH
+	_lever.add_child(model)
 
 
 func _label(
