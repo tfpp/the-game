@@ -1,0 +1,8 @@
+{
+  "title": "Classic weapon prices and dev-room kiosk",
+  "summary": "Classic weapons cost more, and the Gun-O-Matic now lives in the Dev Room.",
+  "notes": [
+    "Set pistol prices to $1,500, SMG and shotgun to $5,550, and AWP to $15,000 in the shop and buy menu.",
+    "Move the Gun-O-Matic and its trash can from the pawn shop to the Dev Room."
+  ]
+}

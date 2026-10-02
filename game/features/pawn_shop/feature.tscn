@@ -54,22 +54,22 @@ position = Vector3(-9, 1.85, 20.25)
 [node name="Pistol" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(-2.25, 0, 0)
 item_id = "pistol"
-price_cents = 3000
+price_cents = 150000
 
 [node name="Smg" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(-0.75, 0, 0)
 item_id = "smg"
-price_cents = 7500
+price_cents = 555000
 
 [node name="Shotgun" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(0.75, 0, 0)
 item_id = "shotgun"
-price_cents = 9000
+price_cents = 555000
 
 [node name="Awp" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(2.25, 0, 0)
 item_id = "awp"
-price_cents = 15000
+price_cents = 1500000
 
 [node name="HatStand" type="CSGBox3D" parent="."]
 position = Vector3(-13.6, 0.55, 21.4)
@@ -105,7 +105,7 @@ position = Vector3(-3.5, 1, 27)
 position = Vector3(-9, 0, 24.5)
 script = ExtResource("gps")
 label = "Gun Shop · Rusty Hogg's"
-hint = "Take the operations garage van. Guns, pawn counter and Gun-O-Matic."
+hint = "Take the operations garage van. Guns and pawn counter."
 
 [node name="Exit" type="CSGBox3D" parent="Room"]
 position = Vector3(-3, 1.25, 29.9)

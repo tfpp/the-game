@@ -1,6 +1,9 @@
 # Operations garage
 
 This shared concrete garage is reachable by its door on the casino north promenade.
+The whole garage, including the upstairs office, is a **safe zone**
+(`features/safe_zone`): no PvP damage or firearm use, and rejected shots spend no
+ammo. Self-damage commands retain the existing safe-zone exception.
 New joins, fall recovery and combat respawns start in the Crown (`../crown_spawn/`).
 Walk to the van's driver side and press **E / B or Circle / touch USE**. Pick a
 numbered destination on its schematic route map: **The Golden Crown**, **Basement
