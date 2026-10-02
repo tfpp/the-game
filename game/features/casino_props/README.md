@@ -48,3 +48,19 @@ include original artwork, mesh JSON, prompts, UV guides and offline viewers. The
 historical galvanised bin remains in the review kit; its rejected handle design
 is not an approved modelling reference. Collider boxes are for broad placement;
 small tabletop and wall decorations disable collision in the placement scene.
+
+## Live lounge seating
+
+`bundle_furnishings.tscn` places the reusable bundle props on the casino's saved
+GridMap floor. Six lounge chairs are distributed between the east lounge and
+pairs along the south-east/south-west walls. The east and west cocktail tables
+have two matching burgundy pedestal stools each. These are separate editable
+prop instances with their existing collision, not new floor tiles or seating
+interactions. Positions leave the central ramp mouths and shop corridor open.
+Actual saved-level renders live in `docs/design/previews/casino-seating/`.
+
+Both cocktail tables have a small translucent glass ashtray, a cigar resting on
+its rim and a wine bottle. The new 150 mm bowl uses 64 triangles and a 32×32
+painted UV atlas; its source and rebuild recipe are in
+`docs/design/model-sources/glass-ashtray/`. Tabletop props are static decoration
+with collision disabled, keeping furniture placement independent of pickups.

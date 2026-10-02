@@ -1,11 +1,15 @@
-Place optional, short, non-looping Ogg Vorbis clips here:
+# Mechanical slot sound effects
 
-- `win.ogg`: winning “cha-ching!” sound.
-- `lose.ogg`: losing/negative sound.
+The active WAV files are original deterministic sound designs, synthesized offline
+by `docs/design/model-sources/slot-cabinet-v2/audio/build.gd`. No downloaded samples
+or additional runtime dependencies. 22,050 Hz, mono, PCM16; each is at most 1.8 s.
 
-The slot machine loads these exact paths at startup. Restart/re-export after adding
-them. Missing clips are allowed; gameplay and visual results still work.
+- `lever.wav`: latch and spring engagement.
+- `motor.wav`: periodic motor/ratchet, loop enabled by the presentation controller.
+- `stop.wav`: short reel brake/detent, pitch varies with stop order.
+- `payout.wav`: short, bounded metallic coin cascade.
+- `bell.wav`: three inharmonic mechanical bell strikes.
+- `loss.wav`: quiet mechanism close, not a win fanfare.
 
-The codec must be **Vorbis**, not Opus. Both can use an `.ogg` extension, but
-Godot cannot import Opus clips through its Ogg Vorbis importer. Check downloaded
-clips with `ffprobe` or export them explicitly as Ogg Vorbis from your audio editor.
+All use GameSFX and spatial attenuation. Existing win.ogg/lose.ogg are legacy,
+unreferenced media retained for provenance; current code uses the WAV cues above.

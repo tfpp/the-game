@@ -32,8 +32,8 @@ var _lose_sound: AudioStream
 func _ready() -> void:
 	add_to_group(&"interactables")
 	Network.mode_changed.connect(_on_mode_changed)
-	_win_sound = _load_sound("res://assets/slot_machine/audio/win.ogg")
-	_lose_sound = _load_sound("res://assets/slot_machine/audio/lose.ogg")
+	_win_sound = preload("res://assets/slot_machine/audio/bell.wav")
+	_lose_sound = preload("res://assets/slot_machine/audio/loss.wav")
 
 
 static func initial_state() -> Dictionary:
@@ -230,6 +230,7 @@ func play_result(spin: int, won: bool, payout: int = 0) -> void:
 	if spin <= _last_sound_spin:
 		return
 	_last_sound_spin = spin
+	$View.feedback.result(won, spin)
 	if won:
 		$Celebration.celebrate(payout)
 	_audio.stream = _win_sound if won else _lose_sound
@@ -256,7 +257,3 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 	_last_sound_spin = 0
 	_audio.stop()
 	$Celebration.clear()
-
-
-func _load_sound(path: String) -> AudioStream:
-	return load(path) as AudioStream if ResourceLoader.exists(path) else null

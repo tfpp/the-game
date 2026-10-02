@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3]
+[ext_resource type="Texture2D" path="res://assets/slot_machine/cabinet_v2/atlas.png" id="paint"]
+[resource]
+albedo_texture = ExtResource("paint")
+roughness = 0.78
+metallic_specular = 0.25
+texture_filter = 2
+texture_repeat = false
