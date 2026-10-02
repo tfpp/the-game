@@ -1,12 +1,25 @@
 # Touch controls
 
-Phone overlay (`touch_controls.gd`): floating move stick on the left, drag-to-look on
-the right, JUMP, USE, FIRE, a small CAM button and a pause button. Shown only while
+Phone overlay (`touch_controls.gd`): floating move stick on the left and a fixed AIM
+stick on the right, aligned horizontally at rest. Smaller FIRE, USE and JUMP targets
+sit in a row above AIM; CAM and pause sit at the top right. Layout scales to leave
+separate thumb zones in portrait and short landscape viewports, respecting safe areas.
+Shown only while
 `Controls.touch_visible()`. CAM calls the existing third-person camera's guarded
 `toggle_camera()` through the `third_person_camera` group. Right-side swipes call
 `orbit_look()` in third person, falling back to normal player aim in first person (or
 if the feature is absent). Camera taps do not claim the look finger; move, look and
 action fingers remain independent. See `features/third_person/README.md`.
+
+Hold the AIM stick off-center for continuous player aim in either camera view; return
+to center or lift to stop. It uses the existing radial deadzone and Settings > Controls
+controller-stick sensitivity (radians/second), independent of rendering rate or viewport
+pixel scaling. Right-side swipes outside AIM retain drag look / third-person orbit.
+`aim_center()` and `move_center()` expose idle centers in the overlay's scaled UI space;
+button-center helpers use that same space for both drawing and hit testing. Cancel,
+resize, pause, focus loss, device changes and modal UI clear held touch input.
+This is local input only: Player keeps existing aim replication and combat keeps its
+server validation; no new RPC or saved state is introduced.
 
 `attack_input.gd` presses `primary_action` and `gun_fire` (what the left mouse button
 does) via `send_attack()`. The FIRE button holds them while touched, and the controller

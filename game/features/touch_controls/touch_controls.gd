@@ -1,15 +1,19 @@
 extends Control
-## Floating left joystick, independent right look pointer, jump, use, fire and menu targets.
+## Floating move stick, fixed aim stick, optional look swipes and independent action targets.
 
 const AttackInput := preload("res://features/touch_controls/attack_input.gd")
 
 const INK := Color(0.9, 0.96, 1.0)
 const ACCENT := Color(0.34, 0.94, 0.76)
+const STICK_RADIUS := 76.0
+const ACTION_RADIUS := 34.0
 var ui_scale := 1.0
 var ui_size := Vector2.ZERO
 var safe_bounds := Rect2()
 var move_finger := -1
 var look_finger := -1
+var aim_finger := -1
+var aim_value := Vector2.ZERO
 var jump_finger := -1
 var use_finger := -1
 var fire_finger := -1
@@ -30,6 +34,12 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	visible = Controls.touch_visible() and Controls.gameplay_active()
+	if visible:
+		Controls.look_delta += Controls.deadzone(aim_value) * Controls.stick_sensitivity * delta
+	elif [move_finger, look_finger, aim_finger, jump_finger, use_finger, fire_finger].any(
+		func(finger: int) -> bool: return finger != -1
+	):
+		_clear_fingers()
 	_safe_area_refresh -= delta
 	if _safe_area_refresh <= 0.0:
 		_update_safe_area()
@@ -39,7 +49,7 @@ func _process(delta: float) -> void:
 
 func _resize_layout() -> void:
 	# Reserve separate thumb zones even with the mobile portrait UI layout.
-	ui_scale = minf(1.0, maxf(size.x, 1.0) / 600.0)
+	ui_scale = minf(1.0, minf(maxf(size.x, 1.0) / 600.0, maxf(size.y, 1.0) / 540.0))
 	ui_size = size / ui_scale
 	_update_safe_area()
 	_clear_fingers()
@@ -64,6 +74,8 @@ func _update_safe_area() -> void:
 func _clear_fingers() -> void:
 	move_finger = -1
 	look_finger = -1
+	aim_finger = -1
+	aim_value = Vector2.ZERO
 	jump_finger = -1
 	use_finger = -1
 	if fire_finger != -1:
@@ -75,25 +87,33 @@ func _clear_fingers() -> void:
 
 
 func pause_button() -> Rect2:
-	return Rect2(safe_bounds.end.x - 100, safe_bounds.position.y + 100, 76, 64)
+	return Rect2(safe_bounds.end.x - 100, safe_bounds.position.y + 72 / ui_scale, 76, 48)
 
 
 ## Beside the menu, outside the movement and action targets.
 func camera_button() -> Rect2:
-	return Rect2(safe_bounds.end.x - 176, safe_bounds.position.y + 52, 64, 48)
+	return Rect2(safe_bounds.end.x - 176, safe_bounds.position.y + 72 / ui_scale, 64, 48)
+
+
+func move_center() -> Vector2:
+	return Vector2(safe_bounds.position.x + 132, safe_bounds.end.y - 132)
+
+
+func aim_center() -> Vector2:
+	return safe_bounds.end - Vector2(132, 132)
 
 
 func jump_center() -> Vector2:
-	return safe_bounds.end - Vector2(106, 150)
+	return use_center() + Vector2(82, 0)
 
 
 func use_center() -> Vector2:
-	return jump_center() - Vector2(145, 0)
+	return aim_center() - Vector2(0, 168)
 
 
-## Above USE, clear of JUMP and the pause button even on a short landscape phone.
+## Compact action row above the aim stick, clear of CAM and the menu.
 func fire_center() -> Vector2:
-	return use_center() - Vector2(0, 140)
+	return use_center() - Vector2(82, 0)
 
 
 func _input(event: InputEvent) -> void:
@@ -108,15 +128,19 @@ func _input(event: InputEvent) -> void:
 			get_tree().call_group(&"third_person_camera", "toggle_camera")
 		elif pause_button().has_point(point):
 			Controls.menu_requested.emit()
-		elif point.distance_to(use_center()) <= 54 and use_finger == -1:
+		elif point.distance_to(use_center()) <= ACTION_RADIUS and use_finger == -1:
 			use_finger = touch.index
 			get_tree().call_group(&"interaction", "use")
-		elif point.distance_to(fire_center()) <= 56 and fire_finger == -1:
+		elif point.distance_to(fire_center()) <= ACTION_RADIUS and fire_finger == -1:
 			fire_finger = touch.index
 			AttackInput.send_attack(true)
-		elif point.distance_to(jump_center()) <= 62 and jump_finger == -1:
+		elif point.distance_to(jump_center()) <= ACTION_RADIUS and jump_finger == -1:
 			jump_finger = touch.index
 			Controls.jump_queued = true
+		elif point.distance_to(aim_center()) <= STICK_RADIUS:
+			if aim_finger == -1:
+				aim_finger = touch.index
+				aim_value = ((point - aim_center()) / STICK_RADIUS).limit_length()
 		elif point.x < ui_size.x * 0.45 and move_finger == -1:
 			move_finger = touch.index
 			move_origin = point
@@ -128,6 +152,8 @@ func _input(event: InputEvent) -> void:
 		var drag := event as InputEventScreenDrag
 		if drag.index == move_finger:
 			Controls.touch_move = ((drag.position / ui_scale - move_origin) / 76.0).limit_length()
+		elif drag.index == aim_finger:
+			aim_value = ((drag.position / ui_scale - aim_center()) / STICK_RADIUS).limit_length()
 		elif drag.index == look_finger:
 			# Track each finger's position: web multitouch relative deltas can mix pointers.
 			var change := drag.position - look_position
@@ -146,6 +172,9 @@ func _release_finger(index: int) -> void:
 		Controls.touch_move = Vector2.ZERO
 	if index == look_finger:
 		look_finger = -1
+	if index == aim_finger:
+		aim_finger = -1
+		aim_value = Vector2.ZERO
 	if index == jump_finger:
 		jump_finger = -1
 	if index == use_finger:
@@ -158,8 +187,8 @@ func _release_finger(index: int) -> void:
 func _draw() -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE * ui_scale)
 	_draw_touch()
-	draw_circle(use_center(), 54, Color(0.06, 0.1, 0.14, 0.6))
-	draw_arc(use_center(), 54, 0, TAU, 48, ACCENT, 2, true)
+	draw_circle(use_center(), ACTION_RADIUS, Color(0.06, 0.1, 0.14, 0.6))
+	draw_arc(use_center(), ACTION_RADIUS, 0, TAU, 48, ACCENT, 2, true)
 	draw_string(
 		ThemeDB.fallback_font,
 		use_center() + Vector2(-20, 7),
@@ -169,8 +198,8 @@ func _draw() -> void:
 		20,
 		INK
 	)
-	draw_circle(fire_center(), 56, Color(0.2, 0.06, 0.06, 0.6))
-	draw_arc(fire_center(), 56, 0, TAU, 48, Color(1.0, 0.45, 0.4), 2, true)
+	draw_circle(fire_center(), ACTION_RADIUS, Color(0.2, 0.06, 0.06, 0.6))
+	draw_arc(fire_center(), ACTION_RADIUS, 0, TAU, 48, Color(1.0, 0.45, 0.4), 2, true)
 	draw_string(
 		ThemeDB.fallback_font,
 		fire_center() + Vector2(-22, 7),
@@ -185,16 +214,15 @@ func _draw() -> void:
 
 
 func _draw_touch() -> void:
-	var center := (
-		Vector2(safe_bounds.position.x + 132, safe_bounds.end.y - 132)
-		if move_finger == -1
-		else move_origin
-	)
+	var center := move_center() if move_finger == -1 else move_origin
 	draw_circle(center, 76, Color(0.06, 0.1, 0.14, 0.45))
 	draw_arc(center, 76, 0, TAU, 48, Color(0.9, 0.96, 1, 0.55), 2, true)
 	draw_circle(center + Controls.touch_move * 56, 28, Color(0.34, 0.94, 0.76, 0.65))
-	draw_circle(jump_center(), 62, Color(0.06, 0.1, 0.14, 0.6))
-	draw_arc(jump_center(), 62, 0, TAU, 48, ACCENT, 2, true)
+	draw_circle(aim_center(), STICK_RADIUS, Color(0.06, 0.1, 0.14, 0.45))
+	draw_arc(aim_center(), STICK_RADIUS, 0, TAU, 48, Color(0.9, 0.96, 1, 0.55), 2, true)
+	draw_circle(aim_center() + aim_value * 56, 28, Color(0.34, 0.94, 0.76, 0.65))
+	draw_circle(jump_center(), ACTION_RADIUS, Color(0.06, 0.1, 0.14, 0.6))
+	draw_arc(jump_center(), ACTION_RADIUS, 0, TAU, 48, ACCENT, 2, true)
 	draw_string(
 		ThemeDB.fallback_font,
 		jump_center() + Vector2(-26, 7),
@@ -206,8 +234,8 @@ func _draw_touch() -> void:
 	)
 	draw_string(
 		ThemeDB.fallback_font,
-		Vector2(safe_bounds.get_center().x - 54, safe_bounds.end.y - 230),
-		"DRAG TO LOOK",
+		aim_center() + Vector2(-16, 110),
+		"AIM",
 		HORIZONTAL_ALIGNMENT_LEFT,
 		-1,
 		16,

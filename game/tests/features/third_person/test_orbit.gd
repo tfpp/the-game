@@ -278,7 +278,7 @@ func test_camera_button_bounds_on_phone_sizes_and_safe_area() -> void:
 			_overlay.use_center(), _overlay.fire_center(), _overlay.jump_center()
 		]:
 			var closest := target.clamp(button.position, button.end)
-			assert_gt(target.distance_to(closest), 62.0)
+			assert_gt(target.distance_to(closest), Overlay.ACTION_RADIUS)
 
 
 func test_orbit_resets_when_local_player_is_replaced() -> void:

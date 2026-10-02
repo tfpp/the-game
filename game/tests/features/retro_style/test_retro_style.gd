@@ -204,10 +204,13 @@ func test_touch_targets_fit_portrait_and_landscape_without_overlapping() -> void
 	for bounds: Vector2 in [Vector2(480, 1039), Vector2(1168, 540)]:
 		controls.size = bounds
 		controls._resize_layout()
-		assert_gt(controls.use_center().x - 54.0, 132.0 + 76.0, "Use clears joystick")
-		assert_gt(controls.jump_center().x - 62.0, controls.use_center().x + 54.0)
-		assert_lt(controls.jump_center().x + 62.0, controls.ui_size.x)
-		assert_lt(controls.jump_center().y + 62.0, controls.ui_size.y - 70.0, "Clear wallet HUD")
+		var radius: float = controls.ACTION_RADIUS
+		assert_gt(controls.use_center().x - radius, 132.0 + 76.0, "Use clears joystick")
+		assert_gt(controls.jump_center().x - radius, controls.use_center().x + radius)
+		assert_lt(controls.jump_center().x + radius, controls.ui_size.x)
+		assert_lt(controls.jump_center().y + radius, controls.ui_size.y - 70.0, "Clear wallet HUD")
+		assert_eq(controls.move_center().y, controls.aim_center().y)
+		assert_lt(controls.use_center().y + radius, controls.aim_center().y - controls.STICK_RADIUS)
 		assert_true(Rect2(Vector2.ZERO, controls.ui_size).encloses(controls.pause_button()))
 	controls.free()
 

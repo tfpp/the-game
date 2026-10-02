@@ -61,10 +61,10 @@ func test_fire_button_clear_of_other_buttons_on_small_landscape() -> void:
 	overlay.size = Vector2(844, 390)
 	add_child_autofree(overlay)
 	var fire: Vector2 = overlay.fire_center()
-	assert_gt(fire.distance_to(overlay.jump_center()), 56.0 + 62.0)
-	assert_gt(fire.distance_to(overlay.use_center()), 56.0 + 54.0)
-	assert_false(overlay.pause_button().grow(56).has_point(fire))
-	assert_gt(fire.y - 56.0, 0.0)
+	assert_gt(fire.distance_to(overlay.jump_center()), Overlay.ACTION_RADIUS * 2)
+	assert_gt(fire.distance_to(overlay.use_center()), Overlay.ACTION_RADIUS * 2)
+	assert_false(overlay.pause_button().grow(Overlay.ACTION_RADIUS).has_point(fire))
+	assert_gt(fire.y - Overlay.ACTION_RADIUS, 0.0)
 
 
 func test_right_trigger_presses_once_and_releases() -> void:
