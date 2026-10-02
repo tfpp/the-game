@@ -6,6 +6,11 @@ Use (E, controller B/Circle or touch Use) on its door to arrive in the room at
 `(300, 0, -300)`. The **BACK TO THE CASINO** door on the south wall returns you to
 the booth.
 
+The Gun-O-Matic and its trash can stand on the east wall at (313, 0, -300)
+and (313, 0, -298.2), respectively, owned by `features/gun_machine`. Use the
+same E / B or Circle / touch USE controls; random guns still cost $20.
+The kiosk clears the warp-door paths and the room arrival/return route.
+
 Warp doors in the room (each still belongs to its own feature, which also owns its
 return marker):
 

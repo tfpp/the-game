@@ -106,9 +106,9 @@ The south casino opening and food court door are four metres wide with tiled
 headers above 2.5 m. The ceiling GridMap covers both rooms and the corridor, with
 room-sized box collision at y 5 m; the main hall ceiling is higher at y 8.75 m.
 
-The food court and kebab shop retain their original transforms. Rusty Hogg’s shop,
-Gun-O-Matic and loot fence now occupy the separate roadside storefront reached by
-the operations van (`features/pawn_shop/README.md`). The old west corridor opening
+The food court and kebab shop retain their original transforms. Rusty Hogg’s shop
+and loot fence occupy the separate roadside storefront reached by the operations
+van (`features/pawn_shop/README.md`). The Gun-O-Matic now stands in the Dev Room. The old west corridor opening
 is sealed with wood wall tiles; its unused floor and roof remain in the saved map. Shop geometry is serialized by the offline
 builder, so scene loading does not replace edits made in the GridMap editor.
 
