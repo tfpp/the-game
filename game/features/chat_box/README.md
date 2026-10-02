@@ -8,6 +8,16 @@ uses that private path to open the gun-machine buy menu. `/guns` works too. Othe
 exclamation-prefixed messages stay public. Neither command reaches the public log or
 Discord recording. Server `send_notice(peer_id, text)` remains private.
 
+## Join notices
+
+When an authenticated peer connects, the server broadcasts **<display name> joined
+the game.** as a green system line to everyone, including the newcomer. Names come
+from `Network.peer_name()` (with the existing player-name fallback), not a client
+chat payload, and are BBCode-escaped. Offline sessions show **Player 1 joined the
+game.** No host player is invented for dedicated servers. Notices fade like normal
+chat and are not persisted, replayed to late joiners or sent to Discord; respawns
+are not joins. Existing public messages and private notices keep their interfaces.
+
 ## Discord recording
 
 The dedicated server can forward public messages to the existing Discord bot, which

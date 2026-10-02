@@ -71,3 +71,7 @@ three-level garage):
 `tests/features/garage_enemies/` covers the tier rules, the server's sensing,
 line of sight, wind-up, damage, hits, respawn and session reset, and the
 placement of every enemy on real garage floor clear of cars and columns.
+
+Enemy posing also checks the active camera mask against the avatar surface layer.
+Entering a garage resumes posing; movement, collisions, AI and replication continue
+while the rig is masked. The existing 45 m animation limit remains.

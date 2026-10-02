@@ -34,3 +34,22 @@ floor as an ordinary thrown item, so money is never taken for nothing. Rusty's r
 ignores unfinished payments. Nothing is persisted beyond the wallet and inventory.
 
 Tests: `tests/features/pawn_shop/`.
+
+## Talking to Rusty
+
+Step beside the counter near Rusty until **Talk to Rusty Hogg** appears, then press
+E, controller B/Circle or touch USE. The nearest interaction still wins, so the
+front of the pawn counter continues to offer **Pawn a valuable**. Rusty gives one
+of twelve lines (the six requested in #397 plus six pawn-shop quips) as a private
+subtitle, without repeating his previous line. These are text-only conversation
+lines; the gun warning is a quip, not an aiming-triggered reaction.
+
+`rusty_hogg.gd` extends `StationaryPatron`; the inherited component still owns
+hitboxes, life replication and six-second respawn. Its separate `Talk`
+`NetworkedInteraction` validates sender, empty payload, 2.5 m range and living
+state on the server, with a shared 0.5 s cooldown. The server selects the line and
+sends a private transient `say` event through the existing subtitles feature.
+Late joiners see Rusty's current life state and can talk when he is alive, without
+replaying old dialogue. The last line is session-only and resets on session change;
+there are no per-player claims, pending payments or disconnect/respawn cleanup.
+Existing purchase receipts and loot sales retain their own behavior.

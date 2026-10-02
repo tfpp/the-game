@@ -42,6 +42,8 @@ func test_late_joiner_gets_the_song_and_requests_go_through_the_server() -> void
 	assert_eq(server_peer.create_server(0), OK)
 	var server := _branch("Server", server_peer)
 	server.advance()
+	server.net_stocky_member = 4
+	server.net_banter = 1
 	var take := server.net_take
 	var client_peer := ENetMultiplayerPeer.new()
 	assert_eq(client_peer.create_client("127.0.0.1", server_peer.host.get_local_port()), OK)
@@ -51,6 +53,27 @@ func test_late_joiner_gets_the_song_and_requests_go_through_the_server() -> void
 	await wait_process_frames(1)
 	assert_eq((client.get_node("NowPlaying") as Label3D).text, "Now playing: Jarabe Tapatío")
 	assert_eq(client.get_node("Audio").get("stream"), MariachiBand.STREAMS[1])
+	assert_eq(client.net_stocky_member, 4, "late join gets the same selected musician")
+	assert_eq(client.net_banter, 1, "late join sees the current backstage whisper")
+	var body := client.get_node("Musicians/VihuelaPlayer/Body") as Node3D
+	assert_eq(body.scale, MariachiBand.STOCKY_SCALE)
+	assert_true((client.get_node("Musicians/GuitarronPlayer/Whisper") as Label3D).visible)
+	client._reset_session(Network.Mode.OFFLINE)
+	client._process(16.0)
+	assert_eq(client.net_stocky_member, 4, "clients cannot reroll the shared selection")
+	assert_eq(client.net_banter, 1, "clients cannot advance the shared gossip clock")
+	server.net_banter = 2
+	var whispered := func() -> bool: return client.net_banter == 2
+	assert_true(await RealTime.wait_until(get_tree(), whispered, 5.0))
+	client.net_stocky_member = 0
+	client.net_banter = 0
+	await RealTime.wait(get_tree(), 0.1)
+	assert_eq(server.net_stocky_member, 4, "client state does not replicate to the server")
+	assert_eq(server.net_banter, 2)
+	server.net_stocky_member = 2
+	server.net_banter = 0
+	var restored := func() -> bool: return client.net_stocky_member == 2 and client.net_banter == 0
+	assert_true(await RealTime.wait_until(get_tree(), restored, 5.0))
 
 	client.advance()
 	client.net_song = 0
