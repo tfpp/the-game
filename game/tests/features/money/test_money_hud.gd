@@ -7,6 +7,13 @@ const PlayerScene := preload("res://core/player/player.tscn")
 const ModelsScene := preload("res://features/player_models/feature.tscn")
 
 
+class FixedIncome:
+	extends PlayerMoney
+
+	func _roll_income(units: int) -> int:
+		return IncomeRoll.sample(units, func(bound: int) -> int: return 4 if bound == 9 else 1)
+
+
 func test_wallet_text_waits_for_the_balance() -> void:
 	assert_eq(MoneyHud.wallet_text({}, 1), "…")
 	assert_eq(MoneyHud.wallet_text({1: 1250}, 1), "$12.50")
@@ -22,7 +29,7 @@ func test_hud_shows_the_local_balance() -> void:
 
 
 func test_temporary_income_follows_model_choice() -> void:
-	var money := MoneyScene.instantiate() as PlayerMoney
+	var money := FixedIncome.new()
 	add_child_autofree(money)
 	money.set_process(false)
 	var models := ModelsScene.instantiate() as PlayerModels

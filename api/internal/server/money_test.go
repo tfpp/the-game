@@ -116,8 +116,18 @@ func TestGameMoneyGirlIncomeRate(t *testing.T) {
 		if res.Code != 200 {
 			t.Fatal(res.Body.String())
 		}
-		if i == 12 && !strings.Contains(res.Body.String(), `"balance":2425`) {
+		var result struct {
+			Balance int64 `json:"balance"`
+		}
+		if err := json.Unmarshal(res.Body.Bytes(), &result); err != nil {
+			t.Fatal(err)
+		}
+		if i < 12 && result.Balance != 2000 || i == 12 && result.Balance < 2085 {
 			t.Fatal(res.Body.String())
+		}
+		// Replaying the same heartbeat must not reroll or pay again.
+		if replay := request(425); replay.Body.String() != res.Body.String() {
+			t.Fatal("heartbeat replay changed payout")
 		}
 		h.now = h.now.Add(5 * time.Second)
 	}

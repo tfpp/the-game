@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"math"
+	"math/rand/v2"
 )
 
 var ErrInsufficientMoney = errors.New("insufficient money")
@@ -209,6 +211,20 @@ func (s *Store) SettleRoulette(ctx context.Context, accountID int64, id string, 
 // play time; gaps over 15 seconds pause it, so offline time never earns money.
 // Keeping the timestamp and remainder in SQLite prevents reconnect/restart grants.
 func (s *Store) AccrueIncome(ctx context.Context, accountID, now, incomeCents int64) (int64, error) {
+	return s.accrueIncome(ctx, accountID, now, incomeCents, rand.Int64N)
+}
+
+// incomePrize matches game/features/money/income_roll.gd. No gameplay jackpot
+// cap: repeated 1-in-20 decade promotions stop only at the int64 boundary.
+func incomePrize(units int64, draw func(int64) int64) int64 {
+	cents := (draw(9) + 1) * 100
+	for cents <= math.MaxInt64/10 && draw(20) == 0 {
+		cents *= 10
+	}
+	return cents/30000*units + cents%30000*units/30000
+}
+
+func (s *Store) accrueIncome(ctx context.Context, accountID, now, incomeCents int64, draw func(int64) int64) (int64, error) {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return 0, err
@@ -224,9 +240,10 @@ func (s *Store) AccrueIncome(ctx context.Context, accountID, now, incomeCents in
 		units += elapsed * incomeCents
 	}
 	if seconds >= 60 {
-		balance += units / 60
+		prize := incomePrize(units*60/seconds, draw)
+		balance += min(prize, math.MaxInt64-balance)
 		seconds %= 60
-		units %= 60
+		units = seconds * incomeCents
 	}
 	if now < seen {
 		now = seen
