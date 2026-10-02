@@ -24,6 +24,7 @@ func before_each() -> void:
 	add_child_autofree(boxing)
 	boxing.set_process(false)
 	boxing._fists.set_process(false)
+	boxing._kicks.set_process(false)
 
 
 func test_accepted_jab_moves_connected_arm_and_closes_fingers() -> void:
@@ -102,6 +103,49 @@ func test_disconnect_and_session_change_clear_cosmetics() -> void:
 	boxing._fists.swing(1, true)
 	boxing._on_mode_changed(Network.Mode.OFFLINE)
 	assert_true(boxing.arm_pose(1).is_empty())
+
+
+func test_kick_moves_leg_for_human_girl_and_penguin_without_moving_item_arms() -> void:
+	for body: String in ["default", "girl", "penguin"]:
+		avatar.set_body_type(body)
+		boxing._ready_at_ms.clear()
+		boxing.punch(1, 1.0, true)
+		boxing._kicks._process(BoxingKicks.POWER_S * 0.35)
+		avatar.animate(0.01, Vector3.ZERO, true, 8.0, 0.0, true)
+		assert_almost_eq(avatar._right_leg.rotation.x, PI * 0.5, 0.001, body)
+		assert_almost_eq(avatar._right_shin.rotation.x, -0.08, 0.001, body)
+		assert_almost_eq(avatar._right_arm.rotation.x, 0.0, 0.001, body)
+		assert_true(boxing.leg_pose(7).is_empty())
+	boxing._kicks._process(1.0)
+	avatar.animate(1.0, Vector3.ZERO, true, 8.0)
+	assert_true(boxing.leg_pose(1).is_empty())
+	assert_almost_eq(avatar._right_leg.rotation.x, 0.0, 0.001)
+
+
+func test_first_person_kick_uses_appearance_and_hides_when_third_person() -> void:
+	var body := player.get_node("Body") as Node3D
+	body.hide()
+	avatar.set_body_type("girl")
+	avatar.set_skin_index(3)
+	boxing._kicks.swing(1, true)
+	boxing._kicks._process(BoxingKicks.POWER_S * 0.35)
+	var view := boxing._kicks._views[1]
+	var leg := view.get_node("Leg") as SkinnedHuman
+	assert_true(view.visible)
+	assert_true(bool(leg.material.get_shader_parameter("right_leg_only")))
+	assert_eq(leg.shape_weight("Feminine"), 1.0)
+	assert_eq(leg.material.get_shader_parameter("skin_tint"), avatar.skin_color)
+	body.show()
+	boxing._kicks._process(0.0)
+	assert_false(view.visible)
+	body.hide()
+	avatar.set_body_type("penguin")
+	boxing._kicks._process(0.0)
+	assert_false(leg.visible)
+	assert_true((view.get_node("Penguin") as Node3D).visible)
+	boxing._forget_peer(1)
+	assert_true(boxing.leg_pose(1).is_empty())
+	assert_false(boxing._kicks._views.has(1))
 
 
 func test_held_item_pose_keeps_priority() -> void:

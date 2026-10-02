@@ -1,0 +1,5 @@
+{
+  "title": "Charged kicks",
+  "summary": "Press X to kick, or hold and release for a stronger kick.",
+  "notes": ["Add charged kicks that work even with an item in hand.", "Allow rebinding Kick in Settings > Controls.", "Show kicking legs in first and third person and share punch cooldowns."]
+}

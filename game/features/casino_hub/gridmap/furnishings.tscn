@@ -104,6 +104,9 @@ shape = SubResource("shape24")
 position = Vector3(-7.161701, -1.25, -5.103984)
 rotation = Vector3(0, 3.926991, 0)
 
+[node name="Body" parent="Patron0_2" index="0"]
+smoking = true
+
 [node name="CardTable1" parent="." instance=ExtResource("card_table")]
 position = Vector3(-5.5, -1.25, -1.2)
 rotation = Vector3(0, 0, 0)
@@ -195,6 +198,9 @@ shape = SubResource("shape31")
 position = Vector3(-5.5, -1.25, 4.95)
 rotation = Vector3(0, 3.141593, 0)
 
+[node name="Body" parent="Patron2_1" index="0"]
+smoking = true
+
 [node name="ChairBody2_2" type="StaticBody3D" parent="."]
 position = Vector3(-7.161701, -0.65, 4.496016)
 rotation = Vector3(0, 0, 0)
@@ -224,6 +230,9 @@ rotation = Vector3(0, 0, 0)
 [node name="GuestAtBar" parent="." instance=ExtResource("guest")]
 position = Vector3(-8.2, -1.25, -8.25)
 rotation = Vector3(0, 3.141593, 0)
+
+[node name="Body" parent="GuestAtBar" index="0"]
+smoking = true
 
 [node name="GuestTalking" parent="." instance=ExtResource("guest")]
 position = Vector3(3.0, -1.25, 1)

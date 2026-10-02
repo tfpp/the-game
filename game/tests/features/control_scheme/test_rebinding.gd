@@ -126,6 +126,23 @@ func test_camera_orbit_binding_persists_and_resets_to_middle_mouse() -> void:
 	)
 
 
+func test_kick_is_labeled_rebindable_persistent_and_resettable() -> void:
+	var boxing := preload("res://features/boxing/feature.tscn").instantiate() as Boxing
+	add_child_autofree(boxing)
+	# Other tests may have registered the action already; start from its default.
+	Bindings.set_events(&"kick", [_key(KEY_X)])
+	assert_eq(_physical_keys("kick"), [KEY_X])
+	assert_true(Bindings.actions().has(&"kick"))
+	_node.begin_capture(&"kick", false)
+	assert_true(_node.settings_page_input(_key(KEY_O)))
+	assert_eq(_physical_keys("kick"), [KEY_O])
+	Bindings.set_events(&"kick", [_key(KEY_X)])
+	_new_node().apply_overrides()
+	assert_eq(_physical_keys("kick"), [KEY_O])
+	_node.reset_bindings()
+	assert_eq(_physical_keys("kick"), [KEY_X])
+
+
 func test_reset_restores_default_bindings() -> void:
 	_node.rebind(TEST_ACTION, false, _key(KEY_O))
 	_node.rebind(&"jump", false, _key(KEY_J))

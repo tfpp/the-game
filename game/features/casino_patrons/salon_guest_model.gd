@@ -5,7 +5,7 @@ extends PatronModel
 ## turn it to face +Z like the imported poses it replaced. The look comes from
 ## `look`, or from the guest's position when it is -1, so the salon's many guests
 ## differ without per-instance settings. Cosmetic only; posed ~10 times a second
-## while visible.
+## while visible (smokers use 30 Hz within 18 m of a camera).
 
 ## Salon chairs (the card table model) have 0.48 m seat tops.
 const CHAIR_HIP := 0.55
@@ -22,6 +22,10 @@ static var _next_pose_phase := 0
 @export var seated := false
 ## Pick an evening dress (girl body) rather than a dinner suit.
 @export var lady := false
+## Ambient smoking is opt-in; dealers, vendors and other guests stay unchanged.
+@export var smoking := false
+
+var _smoking: PatronSmoking
 
 var _time := 0.0
 var _since := 0.0
@@ -32,9 +36,14 @@ func _ready() -> void:
 	var chosen := look if look >= 0 else guest_look(global_position, lady)
 	build(chosen)
 	_time = chosen * 1.7
+	if smoking:
+		_smoking = PatronSmoking.new()
+		_smoking.name = "Smoking"
+		add_child(_smoking)
 	_update(UPDATE_S)
 	# Scheduling phase is independent of the visual idle phase and clothing look.
-	_until_update = float(_next_pose_phase + 1) * UPDATE_S / POSE_PHASES
+	var interval := 1.0 / 30.0 if smoking else UPDATE_S
+	_until_update = float(_next_pose_phase + 1) * interval / POSE_PHASES
 	_next_pose_phase = (_next_pose_phase + 1) % POSE_PHASES
 
 
@@ -44,26 +53,41 @@ func _process(delta: float) -> void:
 	_time += delta
 	_since += delta
 	_until_update -= delta
-	if _until_update > 0.0 or not is_visible_in_tree():
+	var interval := 1.0 / 30.0 if smoking else UPDATE_S
+	var nearby := is_visible_in_tree()
+	var camera := get_viewport().get_camera_3d()
+	if _smoking != null:
+		nearby = nearby and camera != null
+		if nearby:
+			nearby = (
+				global_position.distance_squared_to(camera.global_position)
+				< PatronSmoking.VIEW_DISTANCE * PatronSmoking.VIEW_DISTANCE
+			)
+		if not nearby:
+			_smoking.set_active(false)
+			_since = minf(_since, UPDATE_S)
+	if not nearby or _until_update > 0.0:
 		return
 	_update(_since)
 	_since = 0.0
 	# Keep the stagger when frames cross a deadline; resume hidden guests once.
-	_until_update = fposmod(_until_update, UPDATE_S)
+	_until_update = fposmod(_until_update, interval)
 	if is_zero_approx(_until_update):
-		_until_update = UPDATE_S
+		_until_update = interval
 
 
 func _update(delta: float) -> void:
 	if not seated:
 		pose(delta, 0.0, 0.0, 0.0, _time)
-		return
-	sit(delta, CHAIR_HIP, _time, 0.7, -0.5)
-	for right: bool in [false, true]:
-		var side := 1.0 if right else -1.0
-		var target := Vector3(side * HAND_SPREAD, HAND_HEIGHT, -HAND_REACH)
-		avatar.human.reach_grip(right, to_global(target))
-		avatar.human.set_finger_curl(right, 0.2)
+	else:
+		sit(delta, CHAIR_HIP, _time, 0.7, -0.5)
+		for right: bool in [false, true]:
+			var side := 1.0 if right else -1.0
+			var target := Vector3(side * HAND_SPREAD, HAND_HEIGHT, -HAND_REACH)
+			avatar.human.reach_grip(right, to_global(target))
+			avatar.human.set_finger_curl(right, 0.2)
+	if _smoking != null:
+		_smoking.present(self, _time)
 
 
 ## A guest look (after the named patrons) picked from a position hash: the
