@@ -94,5 +94,6 @@ func test_real_hitscan_weapon_kills_it() -> void:
 	_target.global_position = origin + Vector3(0, -0.9, -3)
 	await wait_physics_frames(2)
 	hand.net_item_id = "pistol"
+	hand.inventory().collect("ammo:pistol:1")
 	hand.request_primary_action()
 	assert_false(_target.net_alive, "a weapon must hit the target's real collider")

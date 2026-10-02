@@ -115,6 +115,7 @@ func test_eating_food_consumes_it() -> void:
 
 func test_firing_a_weapon_keeps_it_in_hand_and_starts_a_cooldown() -> void:
 	_hand.net_item_id = "pistol"
+	_hand.inventory().collect("ammo:pistol:1")
 	_hand.request_primary_action()
 	assert_eq(_hand.net_item_id, "pistol")
 	assert_gt(_hand._fire_cooldown, 0.0)
@@ -142,6 +143,7 @@ func test_dropping_a_weapon_empties_the_hand_and_asks_holdables_to_spawn_it() ->
 	stub.add_to_group(&"holdables_root")
 	add_child_autofree(stub)
 	_hand.net_item_id = "pistol"
+	_hand.inventory().collect("ammo:pistol:1")
 	_hand.request_drop_item()
 	assert_eq(_hand.net_item_id, "")
 	assert_eq(stub.spawned_item_id, "pistol")
@@ -178,6 +180,7 @@ func test_firing_a_weapon_damages_a_player_in_the_line_of_fire() -> void:
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	_hand.net_item_id = "pistol"
+	_hand.inventory().collect("ammo:pistol:1")
 	_hand.request_primary_action()
 	var expected := Combat.MAX_HEALTH - ItemCatalog.find("pistol").damage
 	assert_almost_eq(combat.health_for(2), expected, 0.01)
@@ -187,6 +190,7 @@ func test_firing_a_weapon_with_nobody_in_the_line_of_fire_does_not_error() -> vo
 	var combat := Combat.new()
 	add_child_autofree(combat)
 	_hand.net_item_id = "pistol"
+	_hand.inventory().collect("ammo:pistol:1")
 	_hand.request_primary_action()
 	assert_eq(combat.health_for(1), Combat.MAX_HEALTH)
 
@@ -198,5 +202,6 @@ func test_firing_a_weapon_kills_a_killable_target_in_the_line_of_fire() -> void:
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	_hand.net_item_id = "pistol"
+	_hand.inventory().collect("ammo:pistol:1")
 	_hand.request_primary_action()
 	assert_eq(target.hits, [1])

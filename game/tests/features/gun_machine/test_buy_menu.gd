@@ -149,13 +149,14 @@ func test_paid_generated_selection_holsters_classic_and_replaces_rig() -> void:
 	assert_true(GunGenerator.is_ray_gun(_rig.net_stats))
 
 
-func test_classic_purchase_uses_inventory_and_existing_prices() -> void:
+func test_classic_purchase_uses_inventory_and_higher_prices() -> void:
+	_wallet.balances[1] = 30000
 	assert_eq(await _machine.purchase(1, "smg"), "")
-	assert_eq(_wallet.balances[1], 17500)
+	assert_eq(_wallet.balances[1], 22500)
 	assert_eq(_hand.net_item_id, "smg")
 	assert_eq(await _machine.purchase(1, "awp"), "")
 	assert_eq(_hand.inventory().backpack[0], "awp")
-	assert_eq(_wallet.balances[1], 12500)
+	assert_eq(_wallet.balances[1], 7500)
 
 
 func test_insufficient_funds_full_inventory_and_loading_do_not_charge() -> void:
@@ -192,10 +193,32 @@ func test_pending_kiosk_and_menu_share_one_lock_and_paid_full_bag_drops_gun() ->
 		assert_true(_hand.inventory().collect("banana"))
 	delayed.finish.emit()
 	await get_tree().process_frame
-	assert_eq(delayed.balances[1], 19000)
+	assert_eq(delayed.balances[1], 17000)
 	assert_eq(sink.items, ["pistol"])
 	assert_false(_machine._buying.has(1))
 	assert_false(_menu._pending)
+
+
+func test_paid_ammo_drops_instead_of_disappearing_if_backpack_fills_during_payment() -> void:
+	_wallet.remove_from_group(&"player_money")
+	var delayed := DelayedWallet.new()
+	add_child_autofree(delayed)
+	delayed.set_process(false)
+	delayed.balances = {1: 20000}
+	var sink := DropSink.new()
+	sink.add_to_group(&"holdables_root")
+	add_child_autofree(sink)
+	_menu._select("ammo:shotgun:8")
+	assert_true(_machine._buying.has(1))
+	assert_ne(await _machine.purchase(1, "ammo:shotgun:8"), "")
+	for index: int in 8:
+		assert_true(_hand.inventory().collect_into_slot("banana", index))
+	delayed.finish.emit()
+	await get_tree().process_frame
+	assert_eq(delayed.balances[1], 18000)
+	assert_eq(sink.items, ["ammo:shotgun:8"])
+	assert_eq(_hand.net_item_id, "", "empty hand cannot absorb paid ammo")
+	assert_false(_machine._buying.has(1))
 
 
 func test_session_switch_invalidates_pending_delivery() -> void:

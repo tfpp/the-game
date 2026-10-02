@@ -75,6 +75,7 @@ func test_real_hitscan_kills_the_imported_model() -> void:
 	_npc.position = hand._aim_origin(player) + Vector3(0, -1.3, -3)
 	await wait_physics_frames(2)
 	hand.net_item_id = "pistol"
+	hand.inventory().collect("ammo:pistol:1")
 	hand.request_primary_action()
 	assert_false(_npc.net_alive)
 

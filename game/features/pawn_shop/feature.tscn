@@ -11,8 +11,12 @@
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
 [ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
 
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/service_door.res" id="door_mesh"]
+[ext_resource type="Material" path="res://features/street_props/materials/service_door.tres" id="door_material"]
+
 [sub_resource type="StandardMaterial3D" id="door_paint"]
-albedo_color = Color(0.22, 0.3, 0.29, 1)
+transparency = 1
+albedo_color = Color(0, 0, 0, 0)
 roughness = 0.9
 
 [node name="PawnShop" type="Node3D"]
@@ -50,22 +54,22 @@ position = Vector3(-9, 1.85, 20.25)
 [node name="Pistol" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(-2.25, 0, 0)
 item_id = "pistol"
-price_cents = 1000
+price_cents = 3000
 
 [node name="Smg" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(-0.75, 0, 0)
 item_id = "smg"
-price_cents = 2500
+price_cents = 7500
 
 [node name="Shotgun" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(0.75, 0, 0)
 item_id = "shotgun"
-price_cents = 3000
+price_cents = 9000
 
 [node name="Awp" parent="GunWall" instance=ExtResource("6_gun")]
 position = Vector3(2.25, 0, 0)
 item_id = "awp"
-price_cents = 5000
+price_cents = 15000
 
 [node name="HatStand" type="CSGBox3D" parent="."]
 position = Vector3(-13.6, 0.55, 21.4)
@@ -112,12 +116,26 @@ script = ExtResource("portal")
 destination = NodePath("../../../starter_room/Room/Arrival")
 door_label = "Take the van back to the operations garage"
 
+[node name="LeftDoor" type="MeshInstance3D" parent="Room/Exit"]
+position = Vector3(-0.5, -1.25, 0)
+rotation = Vector3(0, 3.14159265, 0)
+scale = Vector3(-0.98, 1.1723, 1)
+mesh = ExtResource("door_mesh")
+material_override = ExtResource("door_material")
+
+[node name="RightDoor" type="MeshInstance3D" parent="Room/Exit"]
+position = Vector3(0.5, -1.25, 0)
+rotation = Vector3(0, 3.14159265, 0)
+scale = Vector3(0.98, 1.1723, 1)
+mesh = ExtResource("door_mesh")
+material_override = ExtResource("door_material")
+
 [node name="NetworkedEntity" type="Node" parent="Room/Exit"]
 script = ExtResource("net")
 interaction_range = 2.5
 
 [node name="Sign" parent="Room/Exit" instance=ExtResource("sign")]
-position = Vector3(0, 0.2, -0.12)
+position = Vector3(0, 1.55, -0.12)
 rotation = Vector3(0, 3.14159265, 0)
 text = "RETURN TO GARAGE
 VIA VAN - E / USE"
