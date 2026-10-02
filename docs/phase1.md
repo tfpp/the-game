@@ -191,10 +191,13 @@ Use `docs/design/prop-generation.md`: textures at most 128×128, scaled to size.
 Replace one area per task so each PR stays reviewable.
 
 ### E1. Shared sign kit
-- [ ] Add a small `features/signage/` kit: backing board, brass/neon frame, wall
+- [x] Add a small `features/signage/` kit: backing board, brass/neon frame, wall
   bracket and hanging variants, with letters baked into a small texture or built
   from a shared letter-tile atlas (instanced quads on a mesh, no `Label3D`). Include
   a test that every sign has a backing mesh and sits flush on its wall.
+- Completed in #441: `SignBoard` (`features/signage/sign_board.tscn`) builds a
+  backing box, frame bars and flush/bracket/hanging mounts in brass or neon; letters
+  are quads into the runtime-painted 64×64 `SignLetterAtlas`. No signs replaced yet.
 
 ### E2. Casino signs (depends on E1)
 - [ ] Replace the 15 `Label3D` signs in `casino_hub/interior.tscn` (THE GOLDEN CROWN,
