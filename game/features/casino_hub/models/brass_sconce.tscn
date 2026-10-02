@@ -1,7 +1,7 @@
 [gd_scene format=3]
-[ext_resource type="ArrayMesh" path="res://assets/casino_hub/fixtures_v2/chandelier.res" id="mesh"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_hub/fixtures_v2/sconce.res" id="mesh"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/fixtures_v2/finish.tres" id="finish"]
-[node name="BrassChandelier" type="Node3D"]
+[node name="BrassSconce" type="Node3D"]
 [node name="Model" type="MeshInstance3D" parent="."]
 mesh = ExtResource("mesh")
 material_override = ExtResource("finish")

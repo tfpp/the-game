@@ -24,7 +24,7 @@ func test_railings_share_small_meshes_and_one_wood_brass_material() -> void:
 	for id: int in [9, 10]:
 		var mesh := grid.mesh_library.get_item_mesh(id)
 		assert_eq(mesh.get_surface_count(), 1)
-		assert_eq(mesh.get_faces().size() / 3, 56 if id == 9 else 104)
+		assert_eq(mesh.get_faces().size() / 3, 168 if id == 9 else 144)
 		assert_same(mesh.surface_get_material(0), FINISH)
 		var arrays := mesh.surface_get_arrays(0)
 		var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
@@ -35,6 +35,8 @@ func test_railings_share_small_meshes_and_one_wood_brass_material() -> void:
 			assert_between(uv.y, 0.0, 1.0)
 			wood = wood or uv.x > 0.5
 			brass = brass or uv.x < 0.5
+			if uv.x < 0.5:
+				assert_lt(uv.y, 0.5, "Brass stays inside one swatch without a colour break")
 		assert_true(wood and brass, "Both finishes are mapped on each shared mesh")
 	var texture := FINISH.get_shader_parameter("albedo_texture") as Texture2D
 	assert_eq(texture.get_size(), Vector2(32, 32))

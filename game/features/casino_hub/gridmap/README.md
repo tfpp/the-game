@@ -182,10 +182,17 @@ Blockbench with walnut uprights and polished gold brass fittings/crossbars. The
 leaving both six-metre ramp mouths open. The guard is 1.105 m high and has simple
 box collision. Separate direction grids prevent corner cells overwriting a span.
 
-The parts share one 32×32 atlas and opaque material; 56 triangles per span and
-104 per post. Brass catches real light with a restrained gold highlight; no new
+The parts share one 32×32 atlas and opaque material; 168 triangles per span and
+144 per post in the mesh-first revision. Brass catches real light with a restrained gold highlight; no new
 lights or emission are added. Authoring/export instructions and validation are in
 [the source guide](../../../../docs/design/model-sources/brass-pit-railing/README.md).
+
+The current wall sconces and hanging four-arm chandeliers use connected native
+profile/sweep meshes and a shared 64×64 brass/opal atlas painted from their exact
+UV template. Railing spans/posts share the existing 32×32 walnut/brass atlas;
+the balcony and stair variants inherit the replacement through items 9/10/16.
+See [the current generation recipe](../../../../docs/design/model-sources/casino-fixtures-v2/README.md)
+for geometry, UV budgets, rebuild commands and front/rear/underside review.
 
 ## Stationary elevator
 
