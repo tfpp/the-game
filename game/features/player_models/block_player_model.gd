@@ -170,6 +170,13 @@ func animate(
 				elbow.rotation.x = lerpf(1.4, 0.05, extension)
 				guard.rotation.x = 0.45
 				guard_elbow.rotation.x = 1.6
+	if player != null:
+		var melee := get_tree().get_first_node_in_group(&"boxing") as Boxing
+		if melee != null:
+			var kick := melee.leg_pose(player.get_multiplayer_authority())
+			if not kick.is_empty():
+				_right_leg.rotation.x = kick["thigh"]
+				_right_shin.rotation.x = kick["shin"]
 	if human.visible and apply_skeleton:
 		human.pose(self, left_held, right_held)
 		if punching:
