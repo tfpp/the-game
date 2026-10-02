@@ -89,10 +89,23 @@ func _capture() -> void:
 	var computer := room.get_node("JobTerminal") as GarageJobTerminal
 	player.net_position = computer.to_global(Vector3(0, 0, .8))
 	computer.panel.open(computer)
+	await _save("crown-desktop")
+	computer.panel.desktop.launch_app("Jobs")
 	await _save("jobs-application")
 	root.size = Vector2i(390, 844)
 	await _save("jobs-phone")
+	computer.panel.desktop.launch_app("Notes")
+	computer.panel.desktop._filename.text = "Van plan"
+	computer.panel.desktop._editor.text = "Meet upstairs, then take the van."
+	computer.panel.desktop._save_note()
+	await _save("notes-phone")
+	computer.panel.desktop.launch_app("Files")
+	await _save("files-phone")
+	root.size = Vector2i(844, 390)
+	computer.panel.desktop.launch_app("Calculator")
+	await _save("calculator-landscape")
 	computer.panel.close(false)
+	root.size = Vector2i(390, 844)
 	computer._store(1, {"job": 0, "ready": true, "done": [], "xp": 0})
 	computer.panel._update()
 	await _save("jobs-pin-phone")

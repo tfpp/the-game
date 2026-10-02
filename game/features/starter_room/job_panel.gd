@@ -1,11 +1,12 @@
 class_name GarageJobPanel
 extends CanvasLayer
-## Green-screen in-world computer application and a private pinned job readout.
+## Private desktop shell, existing jobs application and pinned job readout.
 
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 
 var terminal: GarageJobTerminal
 var message := ""
+var desktop: GarageDesktop
 var _body_font: Font = preload("res://assets/fonts/inter/Inter-Regular.ttf").duplicate()
 var _root: ColorRect
 var _list: VBoxContainer
@@ -23,7 +24,12 @@ func _ready() -> void:
 	layer = 21
 	_build()
 	Controls.menu_requested.connect(func() -> void: close(false))
-	Network.mode_changed.connect(func(_mode: Network.Mode) -> void: close(false))
+	Network.mode_changed.connect(_session_changed)
+
+
+func _session_changed(_mode: Network.Mode) -> void:
+	close(false)
+	desktop.reset_session()
 
 
 func open(computer: GarageJobTerminal) -> void:
@@ -34,14 +40,7 @@ func open(computer: GarageJobTerminal) -> void:
 	add_to_group(&"modal_ui")
 	Controls.pause()
 	_update()
-	for button: Button in _buttons:
-		if not button.disabled:
-			button.grab_focus()
-			return
-	if not _claim_button.disabled:
-		_claim_button.grab_focus()
-	else:
-		_back.grab_focus()
+	desktop.minimize()
 
 
 func close(resume := true) -> void:
@@ -71,6 +70,7 @@ func _process(delta: float) -> void:
 	):
 		_pin.hide()
 		close(false)
+		desktop.reset_session()
 		return
 	_update()
 	if not is_open():
@@ -159,10 +159,12 @@ func _build() -> void:
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
 	margin.add_child(scroll)
-	_list = VBoxContainer.new()
-	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_list.add_theme_constant_override("separation", 12)
-	scroll.add_child(_list)
+	desktop = GarageDesktop.new()
+	desktop.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	desktop.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.add_child(desktop)
+	desktop.exit_requested.connect(close)
+	_list = desktop.app_body("Jobs")
 	_header = _label()
 	_details = _label()
 	for i: int in OperationsVan.ZONE_NAMES.size():
@@ -171,7 +173,7 @@ func _build() -> void:
 		_buttons.append(button)
 	_claim_button = _button("Submit report · collect $10 + 25 XP")
 	_claim_button.pressed.connect(_claim)
-	_back = _button("Exit application")
+	_back = _button("Log off computer")
 	_back.pressed.connect(close)
 	_pin = Label.new()
 	_pin.add_theme_font_override("font", _body_font)
@@ -225,6 +227,7 @@ func _resize() -> void:
 	var ui_scale := maxf(1.0, logical.x / maxf(physical.x, 1.0))
 	scale = Vector2.ONE * ui_scale
 	_body_font.set("oversampling", ui_scale)
+	desktop.body_font.set("oversampling", ui_scale)
 	_root.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	_root.size = logical / ui_scale
 	# Below the existing player-count / connection readout, above touch actions.

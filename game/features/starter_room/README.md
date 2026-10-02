@@ -72,7 +72,7 @@ godot --rendering-method gl_compatibility --audio-driver Dummy \
 
 Climb the two-metre-wide west stairs (bottom at x -6, z 0) to the **2.5 m-high
 mezzanine**, and use the CRT on the desk with **E / B or Circle / touch USE**.
-The green-screen application offers three optional surveys, one for each existing
+The **Crown OS desktop** opens first. Launch **Jobs** for three optional surveys, one for each existing
 van destination. Select one, exit the application, travel there and stay within
 five metres of the arrival marker for three consecutive seconds. The job is pinned
 at the **top right**, below the connection readout. Return to this computer and
@@ -80,7 +80,7 @@ at the **top right**, below the connection readout. Return to this computer and
 casino assignment is involved. The van still works exactly as before.
 
 Buttons support controller focus and touch; the application scrolls on small screens.
-Exit application / Esc closes it, and walking out of range or dying closes it too.
+Log off / Esc closes it, and walking out of range or dying closes it too.
 An accepted contract survives death/respawn. Survey dwell resets if you leave its
 arrival area or die; once a report is ready it stays ready until submitted.
 
@@ -119,6 +119,34 @@ and a synthetic ready-job phone pin. Captures are under
 or browser performance. New tests cover validated jobs, continuous survey presence,
 existing wallet payout/retry, XP, lifecycle, private pin/modal behavior, actual stair
 walking/headroom and ENet authenticated requests/concurrent records/late joins.
+
+## Crown OS desktop
+
+The same upstairs CRT now runs a simulated personal desktop. The launcher opens
+**Jobs**, **Notes**, **Files**, **Calculator**, and **Help**. Windows are maximized
+rather than draggable, so the same interface works on phones. Multiple apps can
+remain running: **Minimize** returns to the desktop, the taskbar restores an app,
+and **Close** removes it from the taskbar. **Log off** or Esc leaves the computer.
+The whole desktop scrolls in short viewports and follows controller focus; app
+contents scroll separately. Text entry requires a physical or on-screen keyboard;
+controller users can navigate buttons and use the calculator keypad.
+
+Notes has explicit **Save document** and **New document** buttons. Files opens and
+deletes saved documents. Names are at most 32 characters; there are up to 12 private
+documents of 4096 characters each. Saving an existing name replaces that document.
+New/open can replace an unsaved draft: save first. Documents and drafts survive
+closing apps/logging off and death, but reset on disconnect, network-mode change
+or game restart. Nothing is uploaded, shared with other players or stored on disk.
+The calculator supports decimal +, -, *, / with left-to-right chaining, clear and
+division-by-zero handling (not expression precedence).
+
+`desktop.gd` owns only private UI and bounded session documents. GarageJobPanel
+retains the original modal/pin lifecycle and public open/close/request_result
+interfaces; Jobs uses the original validated terminal actions, replicated records,
+progress and wallet settlement unchanged. Opening the desktop still requires the
+server-authorized in-range use event. No new RPC, gameplay state, placement,
+persistence system, key or host OS/internet access is introduced. Late joins see
+existing job snapshots, never another player's desktop or documents.
 
 ## Heist planning wall
 

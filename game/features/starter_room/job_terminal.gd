@@ -31,7 +31,7 @@ func _ready() -> void:
 
 
 func interaction_text() -> String:
-	return "CRT computer · open jobs application"
+	return "CRT computer · open Crown OS desktop"
 
 
 func can_use(player: Player) -> bool:
@@ -184,3 +184,4 @@ func _reset(_mode: Network.Mode) -> void:
 	_paying.clear()
 	_operations.clear()
 	panel.close(false)
+	panel.desktop.reset_session()

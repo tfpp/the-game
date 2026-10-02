@@ -162,7 +162,7 @@ func test_all_three_routes_can_pay_once_and_accumulate_session_xp() -> void:
 	assert_eq(_terminal.record(1)["xp"], 75)
 	assert_eq(_terminal.record(1)["done"], [0, 1, 2])
 	_terminal.panel.open(_terminal)
-	assert_eq(get_viewport().gui_get_focus_owner(), _terminal.panel._back)
+	assert_eq(get_viewport().gui_get_focus_owner(), _terminal.panel.desktop._launchers["Jobs"])
 	_terminal._disconnect(1)
 	assert_eq(_terminal.record(1)["xp"], 0)
 
