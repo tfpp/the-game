@@ -1,0 +1,34 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/hotel_props/hotel_portal.gd" id="portal"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/service_door.res" id="mesh"]
+[ext_resource type="Material" path="res://features/street_props/materials/service_door.tres" id="material"]
+[ext_resource type="PackedScene" path="res://features/signage/sign_board.tscn" id="sign"]
+
+[sub_resource type="StandardMaterial3D" id="hidden"]
+transparency = 1
+albedo_color = Color(0, 0, 0, 0)
+
+[node name="MallDoor" type="CSGBox3D"]
+size = Vector3(1.4, 2.5, 0.2)
+use_collision = true
+material = SubResource("hidden")
+script = ExtResource("portal")
+
+[node name="Model" type="MeshInstance3D" parent="."]
+position = Vector3(0, -1.25, 0)
+scale = Vector3(1.35, 1.1723, 1)
+mesh = ExtResource("mesh")
+material_override = ExtResource("material")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("net")
+interaction_range = 2.5
+
+[node name="Sign" parent="." instance=ExtResource("sign")]
+position = Vector3(0, 1.5, 0.12)
+text = "STRIP MALL
+FOOD SHOPS - E / USE"
+letter_height = 0.12
+padding = 0.05

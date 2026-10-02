@@ -106,7 +106,12 @@ The south casino opening and food court door are four metres wide with tiled
 headers above 2.5 m. The ceiling GridMap covers both rooms and the corridor, with
 room-sized box collision at y 5 m; the main hall ceiling is higher at y 8.75 m.
 
-The food court and kebab shop retain their original transforms. Rusty Hogg’s shop,
+The former food hall is now vacant: food_court and kebab_shop load in the
+remote Crown Strip Mall at z -5000. Its modeled portal occupies the former food
+entrance at (1.8,1.25,25); GPS routes food shopping through that door. The saved
+casino shell is retained, not rebuilt or removed by the relocation. See
+`features/strip_mall/README.md` for the new feature-owned gridset.
+Rusty Hogg’s shop,
 Gun-O-Matic and loot fence now occupy the separate roadside storefront reached by
 the operations van (`features/pawn_shop/README.md`). The old west corridor opening
 is sealed with wood wall tiles; its unused floor and roof remain in the saved map. Shop geometry is serialized by the offline

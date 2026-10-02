@@ -8,33 +8,12 @@
 [ext_resource type="PackedScene" path="res://features/food_court/wendys_stand.tscn" id="8_wendys"]
 
 [node name="FoodCourt" type="Node3D"]
+position = Vector3(0, 0, -5000)
 script = ExtResource("1_court")
 
 [node name="NetworkedEntity" type="Node" parent="."]
 script = ExtResource("2_entity")
 replicated_properties = Array[NodePath]([NodePath(".:net_seats")])
-
-[node name="EntranceSign" type="Label3D" parent="."]
-position = Vector3(2.44, 3.75, 25.0)
-rotation = Vector3(0, -1.5707964, 0)
-pixel_size = 0.01
-double_sided = false
-modulate = Color(1, 0.84, 0.4, 1)
-outline_modulate = Color(0.16, 0.04, 0.02, 1)
-text = "FOOD COURT"
-font_size = 72
-outline_size = 18
-
-[node name="HallSign" type="Label3D" parent="."]
-position = Vector3(18, 4.3, 37.75)
-rotation = Vector3(0, 3.1415927, 0)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(1, 0.84, 0.4, 1)
-outline_modulate = Color(0.16, 0.04, 0.02, 1)
-text = "THE CROWN FOOD COURT"
-font_size = 96
-outline_size = 20
 
 [node name="WendysStand" parent="." instance=ExtResource("8_wendys")]
 position = Vector3(30, 0, 35)

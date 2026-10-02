@@ -1,0 +1,9 @@
+{
+  "title": "Crown Strip Mall",
+  "summary": "Visit the new strip mall through the south casino food-shops door for kebabs, poke bowls and Wendy's.",
+  "notes": [
+    "Move İstanbul Kebab, Poke Bowls and Wendy's into a shared shopping plaza while keeping their existing menus and prices.",
+    "Add a native GridMap kit with painted paving, brick storefronts, striped awnings, planted troughs and a parking forecourt.",
+    "Route GPS to the mall and food counters through the modeled casino entrance and return door."
+  ]
+}
