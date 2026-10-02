@@ -23,6 +23,7 @@ uniform bool hide_head = false;
 uniform bool hide_left_arm = false;
 uniform bool hide_right_arm = false;
 uniform bool arms_only = false;
+uniform bool right_leg_only = false;
 varying vec4 tags;
 varying vec2 rest_xy;
 varying float front;
@@ -34,6 +35,7 @@ void vertex() {
 }
 
 void fragment() {
+	if (right_leg_only && (rest_xy.x < 0.0 || rest_xy.y > -0.17 || tags.g < 0.2 || tags.g > 0.8)) { discard; }
 	if (arms_only && tags.g > 0.2 && tags.g < 0.8) { discard; }
 	if ((hide_head && tags.b > 0.5) || (hide_left_arm && tags.g < 0.2) || (hide_right_arm && tags.g > 0.8)) {
 		discard;

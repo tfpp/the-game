@@ -24,7 +24,10 @@ const DOOR_LOCKED := preload("res://assets/game_audio/audio/rpg-audio/metalLatch
 const DOOR_UNLOCK := preload("res://assets/game_audio/audio/rpg-audio/metalClick.ogg")
 const KEY_PICKUP := preload("res://assets/game_audio/audio/rpg-audio/handleCoins2.ogg")
 
+const VAN_DEPARTURE := preload("res://assets/starter_room/van_departure.wav")
+
 const PROFILES := {
+	&"van_departure": [VAN_DEPARTURE, -12.0, 1.0],
 	&"pistol": [SHOT, -9.0, 1.8],
 	&"smg": [SHOT, -12.0, 2.4],
 	&"shotgun": [HEAVY_SHOT, -8.0, 1.5],

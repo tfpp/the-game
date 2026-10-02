@@ -29,6 +29,7 @@ const SECTIONS: Array[Dictionary] = [
 		"actions":
 		[
 			[&"primary_action", "Use held item / punch (hold to power punch)"],
+			[&"kick", "Kick (hold to power kick)"],
 			[&"use", "Interact"],
 			[&"drop_item", "Drop item"],
 			[&"inventory", "Inventory"],
