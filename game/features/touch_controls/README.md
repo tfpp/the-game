@@ -21,3 +21,14 @@ When the server refuses a client for a version mismatch, the login screen's "Rel
 page" button reloads with `?v=<server build>`. The shell appends that `v` to the engine
 script and to same-origin `fetch()` requests (WASM, PCK), so browsers bypass their
 cached bundle instead of reloading the stale build forever (#371).
+
+The shell caches WebGL2 `getParameter(SCISSOR_TEST)` in JavaScript to avoid a
+driver synchronization stall during Emscripten's per-frame state save. Native
+`enable`/`disable` still execute; a WeakMap keeps each context independent. The
+first read initializes from native state, lost contexts retain native query
+behavior, and restoration resets the cached value. Other parameters are unchanged.
+
+Serve `game/` over HTTP and open
+`tests/features/touch_controls/scissor_cache.html` in a WebGL2 browser to run the
+regression against the actual inline shell implementation. It checks native state
+agreement, independent contexts, query counts, GL errors and context restoration.
