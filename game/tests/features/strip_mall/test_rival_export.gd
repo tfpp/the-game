@@ -19,6 +19,8 @@ func test_repacked_restaurants_keep_sushi_identity_costume_and_placement() -> vo
 	var junichi := sushi.get_node("Owner") as RivalModel
 	assert_eq((wok.get_node("Sign") as Label3D).text, "CITY WOK")
 	assert_eq((sushi.get_node("Sign") as Label3D).text, "CITY SUSHI")
+	assert_string_contains((wok.get_node("MenuBoard") as Label3D).text, "$12")
+	assert_string_contains((sushi.get_node("MenuBoard") as Label3D).text, "$15")
 	assert_eq(kim.character, 0)
 	assert_eq(junichi.character, 1)
 	assert_eq((kim.get_node("NameTag") as Label3D).text, "Tuong Lu Kim")

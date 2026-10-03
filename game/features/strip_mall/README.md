@@ -8,8 +8,7 @@ From the Crown's south promenade, walk down the south corridor and use the
 **STRIP MALL / FOOD SHOPS** door on your left at (1.8, 1.25, 25):
 **E / controller B or Circle / touch USE**. GPS lists Strip Mall, Food Court,
 İstanbul Kebab, Poke Bowls, Wendy's and Żabka. The return kiosk stands just behind the
-arrival point and takes you back to the same casino corridor. No new keys,
-prices or orders are added. Alternatively, use the operations garage van and
+arrival point and takes you back to the same casino corridor. No new keys are added. Alternatively, use the operations garage van and
 choose **5 · Strip Mall** for the same arrival and existing driving transition.
 The garage computer automatically offers the usual arrival survey for this route.
 
@@ -18,8 +17,22 @@ The garage computer automatically offers the usual arrival survey for this route
 Walk south past the dining booths to z=43, or select **City Wok / City Sushi**
 in GPS. The counters at (9,0,43) and (21,0,43) face each other across a
 10.7 m clear gap. Their owners stand beside them at (9,0,41) and (21,0,41).
-These are ambient restaurant displays, not purchase menus: no Use action, prices,
-healing, inventory or quests were invented. All devices can just walk up and watch.
+Use **E / controller B or Circle / touch USE** at the front of either counter,
+then choose **Buy bowl**. City Wok sells a **$12 salmon rice bowl** and City Sushi
+sells a **$15 salmon rice bowl**, with no added tip. Menu/prices were unspecified,
+so both reuse the existing salmon/rice/avocado `poke_bowl` item and held model.
+Close/Esc cancels without spending. Eat an equipped bowl with primary action
+(left click / right shoulder / touch FIRE); it uses ordinary food healing,
+backpack storage and drops. The owners still shout at each other while serving.
+
+`Room/CityWokShop` and `Room/CitySushiShop` remain loaded outside streamed Content
+at the visible counter transforms. They reuse food_court PokeStand and its local
+modal menu with scene-authored prices, labels and a single zero-tip choice. Server
+validation and async wallet/delivery, busy/cooldown, full-bag refusal, paid fallback
+pickup and session-reset rules are unchanged. No new wallet, inventory, RPC, stock
+or persistence system exists. Late joins use the existing server-owned wallet/Hand
+snapshots; room reloads cannot duplicate pending orders. Authenticated spending
+persists normally; food retains ordinary session inventory lifetime.
 
 Both reuse the existing PatronModel / BlockPlayerModel connected human rig:
 Tuong Lu Kim wears a white shirt, orange branded vest, red bow tie, blue pants,
@@ -43,7 +56,7 @@ costume accessories. Only streamed, camera-near rigs pose at 10 Hz.
 Content. Only the server advances six alternating four-second turns followed by
 a ten-second rest; bubbles last 3.2 seconds, with a raised-arm gesture.
 Turn/countdown snapshots allow late joiners and reloaded bodies to see the current
-argument. No client-callable action exists. The authority-only transient yell event
+argument. The rivalry scheduler has no client-callable action. The authority-only transient yell event
 plays only for current visitors with the room loaded; no sounds replay on arrival.
 Two original one-second harmonic, wordless arcade yells use GameAudio's existing
 bounded positional pool/bus. Bubbles supply the original restaurant-rivalry lines:
@@ -64,7 +77,7 @@ validates the sender, empty request, range and destination through
 `NetworkedInteraction`; `RoomDoor` preloads the destination before an
 owner-only teleport. Offline uses that same server path. Simultaneous arrivals
 serialize through the inherited half-second door cooldown; retry Use if busy.
-There is no mutable shop transaction state. The frog colony uses the existing
+Paid rival-counter orders use the existing food service described above. The frog colony uses the existing
 server spawner and synchronized movement/alive state; see the habitat notes below.
 
 `food_court` and `kebab_shop` still load independently at their unchanged
@@ -117,6 +130,20 @@ Preserve hand edits in the offline recipe before rebuilding. Mesh/paint budgets,
 exact UV template, generated painting and prompt are in
 `docs/design/model-sources/strip-mall/`. Native builders are used because no
 Blockbench tool connection is available.
+
+Paid service regressions: `tests/features/strip_mall/test_rival_food.gd`.
+The real-peer probe also buys at both counters, rejects forged prices/repeats and
+checks the first buyer's bowl snapshot on the late visitor. Review native menus
+and purchased bowls in both camera modes with:
+
+```sh
+xvfb-run -a godot --path game --rendering-method gl_compatibility --audio-driver Dummy \
+  res://tests/features/strip_mall/food_probe.tscn
+```
+
+This writes `/tmp/CityWokShop-*.png` and `/tmp/CitySushiShop-*.png`; it uses actual
+offline Use/menu/wallet/inventory paths, not mocked food. Browser and physical
+touch/controller behavior still need device review.
 
 Tests: `tests/features/strip_mall/`, original food-court/kebab ordering and seat
 suites, GPS and the casino layout suite. For actual main-game rendered review:

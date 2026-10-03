@@ -13,6 +13,8 @@ position = Vector3(21, 0, 43)
 rotation = Vector3(0, -1.5707964, 0)
 [node name="Sign" parent="CitySushi" index="7"]
 text = "CITY SUSHI"
+[node name="MenuBoard" parent="CitySushi" index="8"]
+text = "SALMON RICE BOWL - $15\nE / USE TO ORDER"
 [node name="Owner" parent="CitySushi" index="9"]
 position = Vector3(-2, 0, 0)
 character = 1

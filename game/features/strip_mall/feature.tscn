@@ -8,6 +8,8 @@
 [ext_resource type="Script" path="res://features/strip_mall/rivalry.gd" id="rivalry"]
 [ext_resource type="Script" path="res://core/net/networked_entity.gd" id="net"]
 
+[ext_resource type="PackedScene" path="res://features/strip_mall/rival_food_service.tscn" id="food"]
+
 [node name="StripMall" type="Node3D"]
 
 [node name="Room" type="Node3D" parent="."]
@@ -15,6 +17,20 @@ position = Vector3(0, 0, -5000)
 script = ExtResource("room")
 room_scene = "res://features/strip_mall/interior.tscn"
 bounds = AABB(-8.5, -1, 17.5, 42.5, 7, 29.5)
+
+[node name="CityWokShop" parent="Room" instance=ExtResource("food")]
+position = Vector3(9, 0, 43)
+rotation = Vector3(0, 1.5707964, 0)
+price_cents = 1200
+menu_title = "CITY WOK"
+food_label = "City Wok salmon rice bowl"
+
+[node name="CitySushiShop" parent="Room" instance=ExtResource("food")]
+position = Vector3(21, 0, 43)
+rotation = Vector3(0, -1.5707964, 0)
+price_cents = 1500
+menu_title = "CITY SUSHI"
+food_label = "City Sushi salmon rice bowl"
 
 [node name="Rivalry" type="Node3D" parent="Room"]
 script = ExtResource("rivalry")
@@ -29,13 +45,13 @@ replication_interval = 0.25
 position = Vector3(11, 0, 43)
 script = ExtResource("gps")
 label = "City Wok"
-hint = "Strip Mall south plaza: Tuong Lu Kim faces City Sushi. Ambient restaurant rivalry."
+hint = "Strip Mall south plaza: Tuong Lu Kim faces City Sushi. Use for a $12 salmon rice bowl."
 
 [node name="CitySushiDestination" type="Marker3D" parent="Room"]
 position = Vector3(19, 0, 43)
 script = ExtResource("gps")
 label = "City Sushi"
-hint = "Strip Mall south plaza: Junichi Takayama faces City Wok. Ambient restaurant rivalry."
+hint = "Strip Mall south plaza: Junichi Takayama faces City Wok. Use for a $15 salmon rice bowl."
 
 [node name="Arrival" type="Marker3D" parent="Room"]
 position = Vector3(4, 1, 28)

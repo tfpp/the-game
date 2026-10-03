@@ -60,7 +60,7 @@ outline_modulate = Color(0.2, 0.015, 0.01, 1)
 double_sided = false
 [node name="MenuBoard" type="Label3D" parent="."]
 position = Vector3(0, 0.55, 0.635)
-text = "RESTAURANT RIVALRY\nDISPLAY ONLY"
+text = "SALMON RICE BOWL - $12\nE / USE TO ORDER"
 font_size = 40
 pixel_size = 0.0035
 modulate = Color(1, 0.92, 0.76, 1)
