@@ -123,6 +123,7 @@ func _process(_delta: float) -> void:
 	var interaction := get_tree().get_first_node_in_group(&"interaction")
 	var text := str(interaction.call("target_text")) if interaction != null else ""
 	prompt.text = "Trigger: " + text if not text.is_empty() else "B / Y: leave VR"
+	prompt.modulate = interaction.call("target_color") if interaction != null else Color.WHITE
 
 
 func _button(button: StringName, right_hand: bool) -> void:

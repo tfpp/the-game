@@ -59,6 +59,32 @@ payout together, rejecting both if the wallet can't cover the wager. It's the `r
 action (`wager_cents` up to the slot cap, `payout_cents` at most 36 times the wager); see
 `features/roulette/README.md`.
 
+## Atomic cosmetic transactions
+
+`PlayerMoney.cosmetics(peer, id, revision, document, delta, load = false)` is a
+server-only interface for the pawn shop's cosmetic collection. It shares the
+existing wallet lock, replicated balance, signed transport and gain notices.
+The feature validates its catalog, rolls rewards and retains immutable retry
+payloads; this method does not accept client-authored documents or own collection
+rules. A negative `delta` buys a crate; positive values exchange duplicates; zero
+changes only collection/equipment. `load = true` reads current account state.
+
+The signed `/api/game/money` actions `cosmetics_load` and `cosmetics` return
+`{revision, document, balance}`. A commit adds `revision`, `document` and
+`delta` to the ordinary account/ID/timestamp payload. The API bounds documents
+at 8 KiB, requires the crate/skin/equipment maps, and atomically commits a
+revision CAS, wallet delta, document and immutable transaction ID in SQLite.
+Mismatched retries or stale revisions return 409 without spending. A successful
+replay returns current account state, not an old balance. Real-account collection
+saves cannot be separated from the debit/credit; see
+[crate lifecycle and configuration](../pawn_shop/README.md#prawn-skin-crates).
+
+Temporary wallets retain idempotent cosmetic receipts in session memory.
+They do not acquire persistent currency or account state. Deploy the API first;
+older ordinary charge, sale, spin, roulette, income and inventory actions stay
+unchanged. Tests include fake account transport through this actual interface,
+SQLite rollback/reopen/concurrency and the original wallet/slot network suites.
+
 ## Animated slot payouts
 
 `spin()` keeps its existing immediate-settlement behavior. Slots use the server-only

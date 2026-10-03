@@ -31,6 +31,8 @@ func _on_sound(cue: StringName, positional: bool, at: Vector3) -> void:
 
 func test_accepted_shot_plays_once_and_cooldown_rejects_extra_audio() -> void:
 	_hand.net_item_id = "smg"
+	_hand.inventory().collect("ammo:smg:1")
+	_events.clear()
 	_hand.request_primary_action()
 	_hand.request_primary_action()
 	assert_eq(_events.size(), 1)
@@ -57,6 +59,8 @@ func test_shotgun_surface_impact_plays_once_at_hit_position() -> void:
 	add_child_autofree(wall)
 	await wait_physics_frames(2)
 	_hand.net_item_id = "shotgun"
+	_hand.inventory().collect("ammo:shotgun:1")
+	_events.clear()
 	_hand.request_primary_action()
 	assert_eq(_events.size(), 2, "One report and one impact, not eight copies per pellet")
 	assert_eq(_events[1].cue, &"impact")

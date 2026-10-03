@@ -125,7 +125,7 @@ func test_use_bindings_and_touch_target() -> void:
 	var overlay := Touch.new()
 	overlay.size = Vector2(1280, 720)
 	add_child_autofree(overlay)
-	assert_gt(overlay.use_center().distance_to(overlay.jump_center()), 116.0)
+	assert_gt(overlay.use_center().distance_to(overlay.jump_center()), Touch.ACTION_RADIUS * 2)
 	assert_true(overlay.safe_bounds.has_point(overlay.use_center()))
 	assert_true(overlay.safe_bounds.has_point(overlay.jump_center()))
 
@@ -177,6 +177,8 @@ func test_mobile_use_starts_spin_without_moving_looking_or_jumping() -> void:
 	assert_eq(_machine.state["spin"], 1)
 	assert_eq(overlay.use_finger, 7)
 	assert_eq(overlay.look_finger, -1)
+	assert_eq(overlay.aim_finger, -1)
+	assert_eq(Controls.consume_look(0.016), Vector2.ZERO)
 	assert_eq(Controls.movement(), Vector2.ZERO)
 	assert_false(Controls.consume_jump())
 	press.pressed = false

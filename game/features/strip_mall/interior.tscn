@@ -1,0 +1,96 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/strip_mall/structure.tscn" id="structure"]
+[ext_resource type="PackedScene" path="res://features/signage/sign_board.tscn" id="sign"]
+[ext_resource type="PackedScene" path="res://features/starter_room/van_model.tscn" id="car"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/street_lamp.tscn" id="lamp"]
+[ext_resource type="PackedScene" path="res://features/street_district/props/brick_tenement.tscn" id="tenement"]
+
+[node name="MallInterior" type="Node3D"]
+
+[node name="Structure" parent="." instance=ExtResource("structure")]
+
+[node name="Marquee" parent="." instance=ExtResource("sign")]
+position = Vector3(32.7, 4.75, 28.5)
+rotation = Vector3(0, -1.5707964, 0)
+text = "CROWN STRIP MALL"
+letter_height = 0.45
+style = 1
+neon_color = Color(0.84, 0.69, 0.4, 1)
+
+[node name="PokeSign" parent="." instance=ExtResource("sign")]
+position = Vector3(28.7, 3.65, 22)
+rotation = Vector3(0, -1.5707964, 0)
+text = "01 - POKE BOWLS"
+letter_height = 0.2
+
+[node name="KebabSign" parent="." instance=ExtResource("sign")]
+position = Vector3(28.7, 3.65, 28.5)
+rotation = Vector3(0, -1.5707964, 0)
+text = "02 - ISTANBUL KEBAB"
+letter_height = 0.2
+
+[node name="WendysSign" parent="." instance=ExtResource("sign")]
+position = Vector3(28.7, 3.65, 35.5)
+rotation = Vector3(0, -1.5707964, 0)
+text = "03 - WENDY'S"
+letter_height = 0.2
+
+[node name="ReturnKioskSign" parent="." instance=ExtResource("sign")]
+position = Vector3(2.15, 3.5, 28)
+rotation = Vector3(0, 1.5707964, 0)
+text = "CROWN ACCESS"
+letter_height = 0.16
+
+[node name="Directory" parent="." instance=ExtResource("sign")]
+position = Vector3(-7.85, 1.8, 28)
+rotation = Vector3(0, 1.5707964, 0)
+text = "CROWN STRIP MALL
+01 POKE - 02 KEBAB - 03 WENDY'S
+DINING PLAZA - PARKING"
+letter_height = 0.12
+
+[node name="DeliveryVan" parent="." instance=ExtResource("car")]
+position = Vector3(-4, 0, 22)
+rotation = Vector3(0, 1.5707964, 0)
+
+[node name="DeliveryVan2" parent="." instance=ExtResource("car")]
+position = Vector3(-4, 0, 34)
+rotation = Vector3(0, 1.5707964, 0)
+
+[node name="WestBackdrop" parent="." instance=ExtResource("tenement")]
+position = Vector3(-18, 0, 24)
+
+[node name="WestBackdrop2" parent="." instance=ExtResource("tenement")]
+position = Vector3(-18, 0, 39)
+
+[node name="NorthBackdrop" parent="." instance=ExtResource("tenement")]
+position = Vector3(17, 0, 8)
+rotation = Vector3(0, 1.5707964, 0)
+
+[node name="PlazaLamp" parent="." instance=ExtResource("lamp")]
+position = Vector3(3, 0, 20)
+
+[node name="PlazaLight" type="OmniLight3D" parent="."]
+position = Vector3(3.64, 4.9, 20)
+light_color = Color(0.64, 0.72, 0.8, 1)
+light_energy = 1.1
+omni_range = 28.0
+
+[node name="PokeLight" type="OmniLight3D" parent="."]
+position = Vector3(30, 3, 22)
+light_color = Color(1, 0.85, 0.63, 1)
+light_energy = 1.5
+omni_range = 7.5
+
+[node name="KebabLight" type="OmniLight3D" parent="."]
+position = Vector3(30, 3, 28.5)
+light_color = Color(1, 0.85, 0.63, 1)
+light_energy = 1.5
+omni_range = 7.5
+
+[node name="WendysLight" type="OmniLight3D" parent="."]
+position = Vector3(30, 3, 35)
+light_color = Color(1, 0.85, 0.63, 1)
+light_energy = 1.5
+omni_range = 7.5

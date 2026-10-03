@@ -37,6 +37,7 @@ func after_each() -> void:
 func test_equip_slot_swaps_the_backpack_item_into_the_hand() -> void:
 	_hand.inventory().backpack[2] = "pistol"
 	_hotbar._equip_slot(_hand, 2)
+	_finish_swap()
 	assert_eq(_hand.net_item_id, "pistol")
 	assert_eq(_hand.inventory().backpack[2], "")
 
@@ -45,8 +46,10 @@ func test_cycle_advances_through_every_occupied_slot_and_stashes_the_previous_it
 	_hand.inventory().backpack[1] = "pistol"
 	_hand.inventory().backpack[4] = "smg"
 	_hotbar._cycle(_hand, 1)
+	_finish_swap()
 	assert_eq(_hand.net_item_id, "pistol")
 	_hotbar._cycle(_hand, 1)
+	_finish_swap()
 	assert_eq(_hand.net_item_id, "smg")
 	assert_eq(
 		_hand.inventory().backpack[4], "pistol", "The slot just pulled from holds what was in hand"
@@ -57,6 +60,7 @@ func test_cycle_backward_wraps_to_the_previous_occupied_slot() -> void:
 	_hand.inventory().backpack[1] = "pistol"
 	_hand.inventory().backpack[4] = "smg"
 	_hotbar._cycle(_hand, -1)
+	_finish_swap()
 	assert_eq(_hand.net_item_id, "smg")
 
 
@@ -70,6 +74,7 @@ func test_equip_rig_selects_a_holstered_gun_machine_gun() -> void:
 	rig.equip(GunGenerator.generate(RandomNumberGenerator.new()))
 	rig.holster()
 	_hotbar._equip_rig(_hand)
+	_finish_swap()
 	assert_true(rig.is_active())
 
 
@@ -84,11 +89,53 @@ func test_cycle_reaches_the_rig_slot_after_the_backpack_and_holsters_the_hand() 
 	rig.equip(GunGenerator.generate(RandomNumberGenerator.new()))
 	_hand.inventory().backpack[1] = "pistol"
 	_hotbar._cycle(_hand, 1)
+	_finish_swap()
 	assert_eq(_hand.net_item_id, "pistol")
 	_hotbar._cycle(_hand, 1)
+	_finish_swap()
 	assert_eq(_hand.net_item_id, "", "The rig gun took over the hand")
 	assert_true(rig.is_active())
 	assert_true(_hand.inventory().backpack.has("pistol"), "The pistol was stowed, not lost")
+
+
+func _finish_swap() -> void:
+	var overlay := _player.get_node("FirstPersonView") as FirstPersonView
+	overlay._advance_swap(FirstPersonView.SWAP_LOWER_SECONDS + FirstPersonView.SWAP_RAISE_SECONDS)
+
+
+func test_fps_swap_defers_equip_and_blocks_firing_until_raised() -> void:
+	_hand.inventory().backpack[2] = "pistol"
+	_hotbar._equip_slot(_hand, 2)
+	var overlay := _player.get_node("FirstPersonView") as FirstPersonView
+	overlay.set_process(false)
+	assert_eq(_hand.net_item_id, "", "Equip waits for the lowering phase")
+	assert_true(FirstPersonView.firing_blocked(get_tree(), 1))
+	overlay._advance_swap(FirstPersonView.SWAP_LOWER_SECONDS)
+	assert_eq(_hand.net_item_id, "pistol")
+	assert_eq(_hand.inventory().backpack[2], "")
+	assert_true(FirstPersonView.firing_blocked(get_tree(), 1), "Still raising the new item")
+	overlay._advance_swap(FirstPersonView.SWAP_RAISE_SECONDS)
+	assert_false(FirstPersonView.firing_blocked(get_tree(), 1))
+	assert_eq(FirstPersonView.swap_pose(_player), Transform3D.IDENTITY)
+
+
+func test_rapid_fps_selections_replace_the_pending_request() -> void:
+	_hand.inventory().backpack[1] = "pistol"
+	_hand.inventory().backpack[4] = "smg"
+	_hotbar._cycle(_hand, 1)
+	_hotbar._cycle(_hand, 1)
+	_finish_swap()
+	assert_eq(_hand.net_item_id, "smg")
+	assert_eq(_hand.inventory().backpack[1], "pistol", "Superseded selection stays stored")
+	assert_eq(_hand.inventory().backpack[4], "")
+
+
+func test_third_person_equips_without_waiting_for_fps_animation() -> void:
+	(_player.get_node("Body") as Node3D).visible = true
+	_hand.inventory().backpack[2] = "pistol"
+	_hotbar._equip_slot(_hand, 2)
+	assert_eq(_hand.net_item_id, "pistol")
+	assert_false(FirstPersonView.firing_blocked(get_tree(), 1))
 
 
 func _spawn_rig() -> GunRig:
@@ -101,6 +148,7 @@ func _spawn_rig() -> GunRig:
 
 func test_firing_starts_a_recoil_kick_that_moves_the_held_view() -> void:
 	_hand.net_item_id = "pistol"
+	_hand.inventory().collect("ammo:pistol:1")
 	_hand._process(0.0)
 	var view := _hand.held_view()
 	assert_not_null(view)
@@ -113,6 +161,7 @@ func test_firing_starts_a_recoil_kick_that_moves_the_held_view() -> void:
 
 func test_recoil_settles_back_to_the_rest_pose_once_it_finishes() -> void:
 	_hand.net_item_id = "pistol"
+	_hand.inventory().collect("ammo:pistol:1")
 	_hand._process(0.0)
 	var view := _hand.held_view()
 	var base := view.transform

@@ -21,14 +21,34 @@ procedural clothing. `ModelIconRenderer` automatically frames mesh bounds in a
 private transparent 128×128 viewport. Each item renders once, then shares a cached
 texture across controls; the viewport stops updating between jobs. The cache is
 limited to 128 textures and headless servers allocate no rendering viewport.
-`ItemDefinition.icon_view_direction` controls the viewing angle. The money balance
-keeps its separate coin symbol. [`loot-models.md`](../../../docs/design/loot-models.md)
+`ItemDefinition.icon_view_direction` controls the viewing angle. Valuable icons have a rarity-colored border, leaving the actual model colors
+intact. Stash entries, backpack tooltips and the selected item's description show
+the rarity name and pawn price; tap/select an item on touch or controller to read
+it without needing hover. The money balance keeps its separate coin symbol. [`loot-models.md`](../../../docs/design/loot-models.md)
 includes actual inventory screenshots and a capture command.
 
 Shirts and pants have fixed colors. Find other colors to change your outfit;
 there are no dye controls. Two clothing pickups sit near spawn, two to the west,
 and two to the east. Clothes keep their color through swaps, drops and pickups.
 White underwear reappears when pants are removed; it cannot be stored or dropped.
+
+## Weapon skin collection
+
+Choose **Prawn skin collection** in this screen, or **Esc → Activities → Prawn skins**.
+Rusty Hogg's pawn shop owns this separate account cosmetic collection and its atomic
+wallet transactions; it does not consume backpack slots or alter these ordinary
+inventory documents. Buy crates beside the pawn-shop gun wall, then open, equip,
+unequip or exchange extra skin copies through that collection panel.
+See [prawn crates](../pawn_shop/README.md#prawn-skin-crates) for odds, persistence
+and temporary offline behavior. Classic guns and ammunition still use the normal
+inventory. Closing Inventory to open the collection transfers modal input control
+without resuming gameplay underneath it.
+
+`ModelIconRenderer.request_model(key, factory, direction)` allows cosmetic
+preview factories to share the same bounded render-once viewport/cache as
+`request_item` and `request_scene`. Keys receive the `model:` namespace,
+so skinned previews cannot replace ordinary item icons. The factory must return
+a fresh Node3D; all framing, headless guards and cleanup remain in the renderer.
 
 ## Multiplayer
 
@@ -38,6 +58,11 @@ Clients request slot operations; they cannot supply new item IDs or target peers
 The server checks sender ownership, slot bounds, bag capacity and pickup distance.
 Repeated pickup/drop requests cannot duplicate items. The avatar and held arms
 read replicated clothing, so other players see equipment changes too.
+
+Classic ammunition packs automatically collect into the backpack and consume a slot.
+The held matching gun draws one round per shot; partial pack IDs preserve the exact
+remaining count through storage, drops and persistence. See
+[ammunition prices and controls](../gun_machine/README.md#classic-ammunition).
 
 Inventory survives an in-session combat respawn. World pickups follow the existing
 one-use pickup system.

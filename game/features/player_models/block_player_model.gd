@@ -12,6 +12,7 @@ const PENGUIN_HEIGHT_SCALE := 0.58
 const HUMAN_HAT_OFFSET := Vector3(0, 0.31, 0.02)
 ## Top of each box-built head above the head pivot, where a worn hat sits.
 const HEAD_TOPS := {&"frog": 0.34, &"bird": 0.38, &"penguin": 0.36}
+const AnimationBisect := preload("res://features/profiler/animation_bisect.gd")
 
 var player: Player
 var skin_color := PlayerSkin.TONES[0]
@@ -68,6 +69,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if not AnimationBisect.players:
+		return
 	if not is_instance_valid(player):
 		return
 	var motion := player.velocity if player.is_local() else player.net_velocity
@@ -105,6 +108,7 @@ func _process(delta: float) -> void:
 	animate(delta, local_motion, grounded, player.movement.max_speed_m(), pitch, holding, support)
 
 
+## NPC callers can defer the skeleton pass until after their rig pose adjustments.
 func animate(
 	delta: float,
 	motion: Vector3,
@@ -112,7 +116,8 @@ func animate(
 	max_speed: float,
 	pitch: float = 0.0,
 	right_held: bool = false,
-	left_held: bool = false
+	left_held: bool = false,
+	apply_skeleton: bool = true
 ) -> void:
 	var speed := Vector2(motion.x, motion.z).length()
 	if grounded and speed > BlockPlayerMotion.IDLE_SPEED:
@@ -165,7 +170,14 @@ func animate(
 				elbow.rotation.x = lerpf(1.4, 0.05, extension)
 				guard.rotation.x = 0.45
 				guard_elbow.rotation.x = 1.6
-	if human.visible:
+	if player != null:
+		var melee := get_tree().get_first_node_in_group(&"boxing") as Boxing
+		if melee != null:
+			var kick := melee.leg_pose(player.get_multiplayer_authority())
+			if not kick.is_empty():
+				_right_leg.rotation.x = kick["thigh"]
+				_right_shin.rotation.x = kick["shin"]
+	if human.visible and apply_skeleton:
 		human.pose(self, left_held, right_held)
 		if punching:
 			human.set_finger_curl(false, 1.0)

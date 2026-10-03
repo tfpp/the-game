@@ -36,6 +36,8 @@ func item_at(slot: int) -> String:
 func can_collect(id: String) -> bool:
 	if loading:
 		return false
+	if not ItemCatalog.ammo_weapon(id).is_empty():
+		return backpack.has("")
 	var definition := ItemCatalog.find(id)
 	if definition != null and definition.category == ItemDefinition.Category.KEY:
 		return not has_key(id)
@@ -54,7 +56,9 @@ func collect(id: String) -> bool:
 		keys = next
 		hand()._play_inventory.rpc_id(hand().peer_id, &"key_pickup")
 		return true
-	var target := _equipment_slot(id)
+	var target := (
+		backpack.find("") if not ItemCatalog.ammo_weapon(id).is_empty() else _equipment_slot(id)
+	)
 	if not item_at(target).is_empty():
 		target = backpack.find("")
 	_set_item(target, id)
@@ -77,6 +81,27 @@ func collect_into_slot(id: String, slot: int) -> bool:
 	_set_item(slot, id)
 	hand()._play_inventory.rpc_id(hand().peer_id, &"pickup")
 	return true
+
+
+## Read-only count for the HUD. Packs in the backpack feed the held stock gun.
+func ammo_for(weapon: String) -> int:
+	var rounds := 0
+	for id: String in backpack:
+		if ItemCatalog.ammo_weapon(id) == weapon:
+			rounds += ItemCatalog.ammo_rounds(id)
+	return rounds
+
+
+## Server-only: spend one round per trigger, including a shotgun's whole pellet burst.
+func spend_ammo(weapon: String) -> bool:
+	if not multiplayer.is_server() or loading or hand().consumption.active():
+		return false
+	for slot: int in CAPACITY:
+		var id := backpack[slot]
+		if ItemCatalog.ammo_weapon(id) == weapon:
+			_set_item(slot, ItemCatalog.ammo_id(weapon, ItemCatalog.ammo_rounds(id) - 1))
+			return true
+	return false
 
 
 func has_key(id: String) -> bool:
@@ -102,20 +127,26 @@ func take_first_valuable() -> String:
 ## for the killer or any other survivor to collect. Clothing, weapons and keys
 ## remain with the player after respawn.
 func drop_valuables(at: Vector3) -> int:
+	return drop_valuable_ids(at).size()
+
+
+## Server-only: like `drop_valuables`, but returns the dropped item ids so the
+## death message can name them.
+func drop_valuable_ids(at: Vector3) -> Array[String]:
+	var dropped: Array[String] = []
 	if not multiplayer.is_server():
-		return 0
+		return dropped
 	var holdables := get_tree().get_first_node_in_group(&"holdables_root")
 	if holdables == null:
-		return 0
-	var count := 0
+		return dropped
 	while true:
 		var id := take_first_valuable()
 		if id.is_empty():
 			break
 		var offset := Vector3(randf_range(-0.6, 0.6), 0.0, randf_range(-0.6, 0.6))
 		holdables.call("spawn_thrown_item", id, at + Vector3.UP * 0.7, at + offset)
-		count += 1
-	return count
+		dropped.append(id)
+	return dropped
 
 
 @rpc("any_peer", "call_local", "reliable")

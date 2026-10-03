@@ -20,6 +20,7 @@ var _animated_spins: Dictionary = {}
 var _generation := 0
 var _poll_elapsed := 5.0
 var _unresolved: Dictionary = {}
+var _cosmetic_results: Dictionary = {}
 var _temporary_seconds: Dictionary = {}
 var _temporary_income_units: Dictionary = {}
 var _starting_cents := DEV_STARTING_CENTS if local_dev() else STARTING_CENTS
@@ -38,6 +39,7 @@ func _reset(_mode: Network.Mode) -> void:
 	_temporary_seconds.clear()
 	_temporary_income_units.clear()
 	_unresolved.clear()
+	_cosmetic_results.clear()
 	_poll_elapsed = 5.0
 
 
@@ -424,6 +426,74 @@ static func parse_response(body: String) -> Variant:
 		if found != null:
 			parsed["balance"] = found.get_string(1).to_int()
 	return parsed
+
+
+## Server-only atomic wallet + cosmetic-document transaction. The pawn shop owns
+## collection rules and retains the exact ID/document for unresolved retries.
+## Load never changes the document. Real accounts commit both sides in SQLite.
+func cosmetics(
+	peer: int, id: String, revision: int, document: Dictionary, delta: int, load: bool = false
+) -> Dictionary:
+	if not multiplayer.is_server():
+		return {"error": "Wallet unavailable"}
+	var generation := _generation
+	var account := _account(peer)
+	# Initial account loads often overlap the first wallet heartbeat. Wait instead
+	# of leaving a persisted equipped skin unloaded until a manual menu refresh.
+	while load and _busy.has(peer):
+		await get_tree().process_frame
+		if generation != _generation or _account(peer) != account:
+			return {"error": "Session changed"}
+	if _busy.has(peer):
+		return {"error": "Wallet loading — try again"}
+	_busy[peer] = true
+	var result: Dictionary
+	var replayed := false
+	if _temporary() and account <= 0:
+		if _cosmetic_results.has(id):
+			var receipt: Dictionary = _cosmetic_results[id]
+			if (
+				receipt["peer"] != peer
+				or receipt["revision"] != revision
+				or receipt["delta"] != delta
+				or receipt["document"] != document
+			):
+				result = {"error": "Cosmetic transaction changed", "rejected": true}
+			else:
+				replayed = true
+				result = receipt["result"].duplicate(true)
+				# Income and other purchases since settlement remain additive.
+				result["balance"] = int(balances.get(peer, _starting_cents))
+		else:
+			var balance := int(balances.get(peer, _starting_cents))
+			if load:
+				result = {"revision": 0, "document": {}, "balance": balance}
+			elif balance + delta < 0:
+				result = {"error": "You can't afford that crate", "rejected": true}
+			else:
+				result = {
+					"revision": revision + 1, "document": document, "balance": balance + delta
+				}
+				_cosmetic_results[id] = {
+					"peer": peer,
+					"revision": revision,
+					"delta": delta,
+					"document": document.duplicate(true),
+					"result": result.duplicate(true),
+				}
+	else:
+		var action := "cosmetics_load" if load else "cosmetics"
+		result = await _request(
+			account, action, id, {"revision": revision, "document": document, "delta": delta}
+		)
+	if generation != _generation:
+		return {"error": "Session changed"}
+	if _account(peer) == account and result.has("balance"):
+		_set_balance(peer, int(result["balance"]))
+		if delta > 0 and not load and not replayed:
+			announce_gain(peer, delta, "Duplicate prawn skin exchange")
+	_busy.erase(peer)
+	return result
 
 
 func _request(account: int, action: String, id: String, extra: Dictionary = {}) -> Dictionary:

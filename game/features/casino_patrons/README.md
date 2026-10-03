@@ -42,6 +42,33 @@ walk back in from the start of their route 6 s later.
 
 Nothing is persisted.
 
+## Shared locomotion clips
+
+Ordinary roaming patrons (looks 0–3) use shared idle/walk bone tracks baked from
+the existing steady gait. `animation/patron_locomotion.gd` owns an AnimationTree
+per character, blends walking and stopping, and advances it manually once before
+applying head turning/flinch to the head bone. The AnimationPlayer only supplies
+the shared library and has no separate automatic playback. Necessary torso/head
+accessory anchors remain; leg and arm pivots are no longer the intermediate pose
+representation for this path. Root motion stays with the existing NPC controller.
+
+Knockdown/recovery and seated or named characters retain their procedural pose
+ownership. Recovery seeks the clip to the current stride phase. Salon guests keep
+10 Hz posing with independent staggered deadlines and accumulated elapsed time.
+
+Rebuild the shared native clip library from the repository root:
+
+```sh
+godot --headless --path game res://features/casino_patrons/animation/bake_clips.tscn
+```
+
+The output is `game/assets/casino_patrons/animations/locomotion.tres`. See
+[animation architecture](../../../docs/animation.md) and
+[profiling results](../../../docs/profiling-animation.md). Native graphical
+measurements, behavior tests and exported Chrome playback cover this first
+migration. Both web paths reached roughly 60 FPS in the isolated test; real casino,
+mobile and other browser workloads still need comparisons before expanding it.
+
 ## Stationary characters
 
 `stationary_patron.gd` wraps the salon characters in layer-2 hitboxes fitted to their
@@ -65,6 +92,42 @@ does not affect the respawn. The apartment clerk lives outside streamed Content,
 so unloading the lobby cannot reset its state or remove its server hitbox. The desk
 still allocates apartments during the respawn delay. Existing gun controls apply
 (left click or controller right shoulder); no new touch firing control is added.
+
+## Ambient smoking
+
+Three existing guests in the **live GridMap casino** smoke: the standing guest at
+the main bar (-8.2, -1.25, -8.25), the west seat of the northern card table
+(-7.16, -1.25, -5.10), and the lady at the southern table (-5.5, -1.25, 4.95).
+Just walk over and watch; no controls, purchases or inventory changes are involved.
+Other guests, dealers, named roaming patrons and vendors keep their existing poses.
+
+`SalonGuestModel.smoking` is an opt-in presentation flag set on those bodies in
+`casino_hub/gridmap/furnishings.tscn`. `PatronSmoking` reuses the painted holdables
+cigarette, its Mouth/Grip markers, the avatar's `mouth_transform()` and existing
+arm/finger IK. Each ten-second loop eases the cigarette to the mouth, holds a draw,
+lowers the hand and exhales. Seated guests retain their seat/feet pose and left hand
+on the felt. Timings are offset by the existing guest look seed.
+
+Smoke uses two small world-space CPU emitters (8 tip wisps + 20 exhale wisps per
+smoker), camera-facing procedural soft quads, growth and alpha fade curves.
+There are no new textures, lights, shadows, colliders or model exports.
+Smoker posing runs at up to 30 Hz within 18 m of a camera; distant, hidden and
+headless guests stop emitting and clear old clouds. Death follows the existing
+replicated `net_alive` visibility; respawning resumes presentation without stale
+smoke. These are local cosmetic loops, like dealer hand motion: peers may see
+different puff timing, and late joiners see a fresh loop, never a replayed event.
+No new RPC, shared state or persistence is introduced.
+
+Coverage: `tests/features/casino_patrons/test_smoking.gd`, original rig/life tests
+and the existing ENet stationary life test. To inspect the actual rig and shader:
+
+```sh
+godot --path game res://tests/features/casino_patrons/smoking_probe.tscn -- \
+  --smoking-capture=/tmp/smoking.png
+```
+
+Add `--smoking-exhale`, `--smoking-seated` or `--smoking-back` for other views.
+The capture needs a graphical renderer; it is not a browser performance benchmark.
 
 ## Donald Trump
 
@@ -131,3 +194,6 @@ The bartender, apartment clerk and roulette croupier (`stationary_dealer.tscn`) 
 the same tux with `dealing = false`: they stand at ease and glance around.
 `tests/features/casino_patrons/dealer_probe.tscn` renders a close-up
 (`-- --dealer-capture=/tmp/dealer.png`, add `--dealer-back` for the back).
+
+Salon guests keep their immediate initial pose, then stagger their 10 Hz updates
+across seven phases to avoid posing every seated/standing rig in the same frame.

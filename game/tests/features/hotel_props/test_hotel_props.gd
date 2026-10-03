@@ -1,5 +1,6 @@
 extends GutTest
 
+const Cheats := preload("res://tests/features/dev_access/cheats_fixture.gd")
 const FEATURE := preload("res://features/hotel_props/feature.tscn")
 const INTERIOR := preload("res://features/hotel_props/interior.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
@@ -13,6 +14,7 @@ func before_each() -> void:
 	_feature = FEATURE.instantiate() as Node3D
 	add_child_autofree(_feature)
 	_room = _feature.get_node("Room") as StreamedRoom
+	Cheats.enable(self)
 
 
 func _player_at(at: Vector3) -> Player:

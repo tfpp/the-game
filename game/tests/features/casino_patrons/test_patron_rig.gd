@@ -126,3 +126,21 @@ func test_salon_uses_rig_characters_only() -> void:
 		if body is SalonGuestModel:
 			guests += 1
 	assert_eq(guests, 13, "nine seated and four standing guests")
+
+
+func test_guest_pose_timers_spread_updates_without_delaying_initial_pose() -> void:
+	var phases: Array[float] = []
+	for index: int in SalonGuestModel.POSE_PHASES:
+		var guest := SEATED.instantiate() as StationaryPatron
+		add_child_autofree(guest)
+		var model := guest.get_node("Body") as SalonGuestModel
+		phases.append(model._until_update)
+		assert_eq(model._since, 0.0, "Scheduling offsets do not add animation time")
+		assert_gt(model.bone_position("Head").y, 0.8, "Initial seated pose is ready")
+	phases.sort()
+	for index: int in phases.size():
+		assert_almost_eq(
+			phases[index],
+			float(index + 1) * SalonGuestModel.UPDATE_S / SalonGuestModel.POSE_PHASES,
+			0.00001
+		)

@@ -1,0 +1,8 @@
+{
+  "title": "Modeled sign kit",
+  "summary": "Signs can now be real framed boards with letters instead of floating text.",
+  "notes": [
+    "Add a signage kit with brass and neon framed boards for wall, bracket and hanging mounts.",
+    "Draw sign letters from a shared 64×64 letter-tile atlas instead of Label3D text."
+  ]
+}

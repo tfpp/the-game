@@ -34,6 +34,8 @@ var _view: Node3D
 var _arms := HeldArms.new()
 var _flash_timer := 0.0
 var _fire_cooldown := 0.0
+var _motion := FirstPersonMotion.new()
+var _first_person := false
 
 @onready var consumption: ConsumableUse = $Consumption
 
@@ -71,7 +73,13 @@ func _process(delta: float) -> void:
 	var player := _player()
 	visible = player != null and not consumption.view_id().is_empty()
 	if player != null:
-		global_transform = consumption.pose(player, _mount_transform(player))
+		FirstPersonView.ensure_for(player)
+		var first_person := FirstPersonView.is_first_person(player)
+		if first_person != _first_person:
+			_first_person = first_person
+			FirstPersonView.set_visuals(self, first_person)
+		var resting := _motion.apply(player, _mount_transform(player), delta, visible)
+		global_transform = consumption.pose(player, resting)
 		_pose_arms(player)
 		consumption.pose_fingers(player)
 		var models := get_tree().get_first_node_in_group(&"player_models") as PlayerModels
@@ -91,8 +99,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if net_item_id.is_empty():
 		return
 	if event.is_action_pressed(&"primary_action"):
-		request_primary_action.rpc_id(1)
 		get_viewport().set_input_as_handled()
+		if not FirstPersonView.firing_blocked(get_tree(), peer_id):
+			request_primary_action.rpc_id(1)
 	elif event.is_action_pressed(&"drop_item"):
 		request_drop_item.rpc_id(1)
 		get_viewport().set_input_as_handled()
@@ -101,6 +110,8 @@ func _unhandled_input(event: InputEvent) -> void:
 @rpc("any_peer", "call_local", "reliable")
 func request_primary_action() -> void:
 	if not multiplayer.is_server() or not _is_own_request():
+		return
+	if FirstPersonView.firing_blocked(get_tree(), peer_id):
 		return
 	if consumption.active():
 		return
@@ -163,6 +174,10 @@ func _fire(def: ItemDefinition) -> void:
 		return
 	var player := _player()
 	if player == null:
+		return
+	if def.damage > 0.0 and SafeZone.covers(get_tree(), player.global_position):
+		return
+	if ItemCatalog.AMMO_PACKS.has(def.id) and not inventory().spend_ammo(def.id):
 		return
 	_fire_cooldown = def.fire_cooldown_s
 	var origin := _aim_origin(player)
@@ -304,7 +319,9 @@ func held_view() -> Node3D:
 
 func _pose_arms(player: Player) -> void:
 	if _view != null:
-		_arms.pose_for_player(player, support_grip(), PlayerSkin.TONES[skin_tone_index()])
+		_arms.pose_for_player(
+			player, support_grip(), PlayerSkin.TONES[skin_tone_index()], _motion.camera_motion
+		)
 
 
 func _player() -> Player:
@@ -316,6 +333,7 @@ func _player() -> Player:
 
 
 func _rebuild_view() -> void:
+	_motion.reset()
 	_mounted_item_id = consumption.view_id()
 	for child: Node in _mount.get_children():
 		_mount.remove_child(child)
@@ -326,6 +344,7 @@ func _rebuild_view() -> void:
 		_view = def.view_scene.instantiate() as Node3D
 		_mount.add_child(_view)
 		HeldItemPose.align_grip(_view)
+		FirstPersonView.set_visuals(_view, _first_person)
 		var smoke := _view.get_node_or_null("Smoke") as CPUParticles3D
 		if smoke != null:
 			smoke.emitting = consumption.active()

@@ -14,19 +14,33 @@ no new default controller binding because existing buttons are occupied.
 
 Orbit is an offset from player aim and stays where you leave it, including on mouse
 release. Ordinary mouse/controller look still turns the player and carries that offset
-with it. Toggle to first person to reset the orbit (on phones, also use first person
-to change character aim). Pitch is limited to ±89 degrees. Pause/focus loss, modal
+with it. Toggle to first person to reset the orbit. On phones the AIM joystick changes
+character aim in third person; swipes outside it still orbit without turning the player.
+First-person AIM is off by default and can be enabled in Settings > Touch controls;
+first-person swipes always remain available. Pitch is limited to ±89 degrees. Pause/focus loss, modal
 menus and XR immersion clear the held modifier; press it again after resuming.
 Switching from touch/controller to a mouse or rebound key keeps the new hold intact.
 Replacing/disconnecting the local player resets orbit but keeps the F3
 preference. Camera mode and angles are session-local, not saved or replicated. Remote
-players, movement direction and authoritative weapon aim are unaffected.
+players and authoritative weapon aim are unaffected. Movement follows the camera's
+horizontal heading: forward goes away into the view, back comes toward the camera,
+and strafing goes screen-left/right, even when orbit faces the character. This applies
+to keyboard bindings, controller movement and the touch left stick. Camera pitch does
+not change movement speed or add vertical movement. Character facing is still aim,
+not automatically turned toward movement.
 
 The feature joins `third_person_camera`: `toggle_camera()` is the shared guarded
 F3/touch entry point; `orbit_look(change: Vector2) -> bool` accepts sensitivity-scaled
 radians and returns true only when it consumed local third-person look. TouchControls
 falls back to `Controls.look_delta` otherwise. Mouse orbit consumes motion in `_input`
-before Player's `_unhandled_input` aim handler; no core player/input API changes.
+before Player's `_unhandled_input` aim handler.
+
+`movement_yaw(player: Player) -> float` supplies the current local camera heading to
+Player's existing movement tick, after its look input is consumed. It uses live yaw
+plus orbit rather than a potentially stale rendered camera transform. First person,
+XR and other players return their unchanged aim yaw; without this feature Player
+also falls back to aim yaw. SourceMovement acceleration, analog input strength and
+owner-authoritative position/velocity replication remain unchanged.
 
 During WebXR immersion this feature leaves the headset camera and hidden local body
 alone. Toggles/orbit are ignored in VR, and the same preference resumes when the

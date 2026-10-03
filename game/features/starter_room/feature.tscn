@@ -1,0 +1,124 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/starter_room/starter_room.gd" id="starter"]
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
+[ext_resource type="Script" path="res://features/hotel_props/hotel_portal.gd" id="portal"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="Script" path="res://features/starter_room/van.gd" id="van"]
+[ext_resource type="Script" path="res://features/starter_room/travel_panel.gd" id="panel"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
+[ext_resource type="PackedScene" path="res://features/starter_room/van_model.tscn" id="model"]
+
+[ext_resource type="Script" path="res://features/starter_room/job_terminal.gd" id="jobs"]
+[ext_resource type="Script" path="res://features/starter_room/job_panel.gd" id="job_panel"]
+
+[sub_resource type="StandardMaterial3D" id="door_paint"]
+albedo_color = Color(0.27, 0.37, 0.35, 1)
+roughness = 1.0
+
+[node name="StarterRoom" type="Node3D"]
+script = ExtResource("starter")
+
+[node name="Room" type="Node3D" parent="."]
+position = Vector3(0, 0, -3000)
+script = ExtResource("room")
+room_scene = "res://features/starter_room/interior.tscn"
+bounds = AABB(-8.2, -1, -9.2, 16.4, 7, 18.4)
+
+[node name="Spawn" type="Marker3D" parent="Room"]
+position = Vector3(0, 1, 4)
+
+[node name="Arrival" type="Marker3D" parent="Room"]
+position = Vector3(-4.5, 1, 6)
+
+[node name="Van" type="Node3D" parent="Room"]
+position = Vector3(3, 0, -3)
+script = ExtResource("van")
+arrivals = Array[NodePath]([NodePath("../../CasinoArrival"), NodePath("../../../procedural_rooms/Garage/Arrival"), NodePath("../../../street_district/Room/Arrival"), NodePath("../../../pawn_shop/Room/Arrival"), NodePath("../../../strip_mall/Room/Arrival")])
+panel_path = NodePath("../../TravelPanel")
+
+[node name="NetworkedEntity" type="Node" parent="Room/Van"]
+script = ExtResource("net")
+interaction_offset = Vector3(-1.6, 1, 1)
+interaction_range = 2.5
+
+[node name="Model" parent="Room/Van" instance=ExtResource("model")]
+
+[node name="Sign" type="Label3D" parent="Room/Van"]
+position = Vector3(-1.4, 2.8, 0)
+billboard = 1
+text = "TRAVEL VAN\nE / USE · ROUTE MAP"
+font_size = 34
+pixel_size = 0.006
+
+[node name="WalkingExit" type="CSGBox3D" parent="Room"]
+position = Vector3(-6, 1.1, 7.8)
+size = Vector3(1.4, 2.2, 0.12)
+material = SubResource("door_paint")
+use_collision = true
+script = ExtResource("portal")
+destination = NodePath("../../CasinoArrival")
+door_label = "Walking exit · The Golden Crown"
+
+[node name="NetworkedEntity" type="Node" parent="Room/WalkingExit"]
+script = ExtResource("net")
+
+[node name="Sign" type="Label3D" parent="Room/WalkingExit"]
+position = Vector3(0, 1.5, 0)
+billboard = 1
+text = "WALK TO CASINO\nE / USE"
+font_size = 32
+pixel_size = 0.004
+
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(-7, 1, -17.8)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="CasinoReturn" type="CSGBox3D" parent="."]
+position = Vector3(-7, 1.1, -19.7)
+size = Vector3(1.4, 2.2, 0.12)
+material = SubResource("door_paint")
+use_collision = true
+script = ExtResource("portal")
+destination = NodePath("../Room/Arrival")
+door_label = "Return to the operations garage"
+
+[node name="NetworkedEntity" type="Node" parent="CasinoReturn"]
+script = ExtResource("net")
+
+[node name="Sign" type="Label3D" parent="CasinoReturn"]
+position = Vector3(0, 1.5, 0)
+billboard = 1
+text = "OPERATIONS GARAGE\nE / USE"
+font_size = 32
+pixel_size = 0.004
+
+[node name="TravelPanel" type="CanvasLayer" parent="."]
+script = ExtResource("panel")
+
+[node name="Destination" type="Marker3D" parent="Room"]
+position = Vector3(0, 0.1, 4)
+script = ExtResource("gps")
+label = "Operations Garage"
+hint = "Starter base. Use the van for travel; climb the west stairs for jobs."
+
+[node name="JobTerminal" type="Node3D" parent="Room"]
+position = Vector3(-4, 3.5, -7.8)
+script = ExtResource("jobs")
+van_path = NodePath("../Van")
+panel_path = NodePath("../../JobPanel")
+
+[node name="NetworkedEntity" type="Node" parent="Room/JobTerminal"]
+script = ExtResource("net")
+replicated_properties = Array[NodePath]([NodePath(".:records")])
+interaction_offset = Vector3(0, 0, 0.8)
+interaction_range = 1.8
+
+[node name="JobsDestination" type="Marker3D" parent="Room"]
+position = Vector3(-4, 2.5, -6.5)
+script = ExtResource("gps")
+label = "Garage Jobs Computer"
+hint = "Climb the west stairs in the operations garage; use the upstairs CRT."
+
+[node name="JobPanel" type="CanvasLayer" parent="."]
+script = ExtResource("job_panel")

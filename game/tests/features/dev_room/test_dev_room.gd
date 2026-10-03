@@ -133,6 +133,54 @@ func test_warp_doors_are_spread_along_the_walls() -> void:
 			assert_gt(a.distance_to(b), 4.0, "%s vs %s" % [spots[i], spots[j]])
 
 
+func test_gun_o_matic_and_can_have_floor_clear_approaches_and_work_in_range() -> void:
+	var machine := preload("res://features/gun_machine/feature.tscn").instantiate() as GunMachine
+	add_child_autofree(machine)
+	var kiosk := machine.get_node("Kiosk") as GunMachineKiosk
+	var can := machine.get_node("TrashCan") as GunMachineTrashCan
+	assert_eq(kiosk.global_position, Vector3(313, 0, -300))
+	assert_eq(can.global_position, Vector3(313, 0, -298.2))
+	var player := _player_at(Vector3(311.5, 0.95, -300))
+	player.set_physics_process(false)
+	var rig := preload("res://features/gun_machine/gun_rig.tscn").instantiate() as GunRig
+	rig.peer_id = 1
+	add_child_autofree(rig)
+	rig.set_process(false)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 460
+	rig.equip(GunGenerator.generate(rng))
+	await wait_physics_frames(3)
+	var space := _room.get_world_3d().direct_space_state
+	var hull := CapsuleShape3D.new()
+	hull.radius = 0.4064
+	hull.height = 1.8288
+	for prop: Node3D in [kiosk, can]:
+		assert_true(INTERIOR.has_point(prop.global_position))
+		var spot := prop.global_position + Vector3(-1.5, 0.95, 0)
+		var query := PhysicsShapeQueryParameters3D.new()
+		query.shape = hull
+		query.collision_mask = 1
+		query.exclude = [player.get_rid()]
+		query.transform.origin = spot
+		assert_true(space.intersect_shape(query).is_empty(), "Approach clears walls/props")
+		query.transform.origin = Vector3(300, 0.95, -294)
+		query.motion = spot - query.transform.origin
+		assert_almost_eq(space.cast_motion(query)[0], 1.0, 0.001, "Arrival route is clear")
+		var ray := PhysicsRayQueryParameters3D.create(spot, spot - Vector3(0, 3, 0), 1)
+		var hit := space.intersect_ray(ray)
+		assert_false(hit.is_empty(), "Approach has a floor")
+		if not hit.is_empty():
+			assert_almost_eq((hit["position"] as Vector3).y, 0.0, 0.001)
+		player.net_position = spot
+		assert_true(prop.can_use(player))
+	player.net_position = Vector3(-6.5, 0.95, -3971.6)
+	assert_false(kiosk.can_use(player), "Old shop position cannot buy from kiosk")
+	assert_false(can.can_use(player), "Old shop position cannot discard")
+	var sign := kiosk.get_node("Sign") as Label3D
+	assert_false(sign.fixed_size)
+	assert_lt(sign.font_size * sign.pixel_size, 0.25)
+
+
 func test_dev_room_has_a_gps_area() -> void:
 	var destination := _room.get_node("Destination") as GpsDestination
 	assert_eq(destination.label, "Dev Room")

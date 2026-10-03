@@ -63,7 +63,7 @@ max_distance = 32.0
 
 [node name="NetworkedEntity" type="Node" parent="."]
 script = ExtResource("entity")
-replicated_properties = Array[NodePath]([NodePath(".:net_song"), NodePath(".:net_take")])
+replicated_properties = Array[NodePath]([NodePath(".:net_song"), NodePath(".:net_take"), NodePath(".:net_stocky_member"), NodePath(".:net_banter")])
 interaction_range = 4.6
 interaction_offset = Vector3(0, 0.9, 0)
 

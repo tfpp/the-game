@@ -32,6 +32,9 @@ func _branch(title: String, peer: ENetMultiplayerPeer) -> GunMachine:
 	var feature := FEATURE.instantiate() as GunMachine
 	feature.name = "Guns"
 	root.add_child(feature)
+	var holdables := preload("res://features/holdables/feature.tscn").instantiate()
+	holdables.name = "Holdables"
+	root.add_child(holdables)
 	var chat := CHAT.new()
 	chat.name = "Chat"
 	root.add_child(chat)
@@ -83,13 +86,18 @@ func test_private_command_purchase_sender_and_late_join_snapshot() -> void:
 	var other_menu := other.get_node("BuyMenu") as CanvasLayer
 	var server_menu := server.get_node("BuyMenu") as CanvasLayer
 	var chat := client.get_parent().get_node("Chat")
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return chat._log.get_child_count() == 2, 5.0
+		)
+	)
 	chat.request_chat_command.rpc_id(1, "guns")
 	assert_true(
 		await RealTime.wait_until(get_tree(), func() -> bool: return menu._panel.visible, 5.0)
 	)
 	assert_false(other_menu._panel.visible)
 	assert_false(server_menu._panel.visible)
-	assert_eq(chat._log.get_child_count(), 0)
+	assert_eq(chat._log.get_child_count(), 2, "private commands add no lines beyond join notices")
 	menu.entity.request_action(&"buy", {"id": "ray", "peer": other_peer})
 	await RealTime.wait(get_tree(), 0.1)
 	assert_eq(wallet.balances[peer], 6000)
@@ -116,6 +124,35 @@ func test_private_command_purchase_sender_and_late_join_snapshot() -> void:
 	)
 	assert_eq(rig.net_stats["ammo_type"], GunGenerator.AmmoType.PLASMA)
 	assert_eq(rig.net_stats["barrel_count"], 2)
+	# The same validated stock menu delivers ammo through inventory replication.
+	await RealTime.wait(get_tree(), 0.3)
+	menu._select("ammo:pistol:20")
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool: return not menu._pending and wallet.balances[peer] == 3000,
+			5.0
+		)
+	)
+	var server_hand := server.get_parent().get_node("Holdables/Hands/%d" % peer) as Hand
+	server_hand.net_item_id = "pistol"
+	var client_hand := client.get_parent().get_node("Holdables/Hands/%d" % peer) as Hand
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return client_hand.inventory().ammo_for("pistol") == 20, 5.0
+		)
+	)
+	var foreign := other.get_parent().get_node("Holdables/Hands/%d" % peer) as Hand
+	foreign.request_primary_action.rpc_id(1)
+	await RealTime.wait(get_tree(), 0.1)
+	assert_eq(server_hand.inventory().ammo_for("pistol"), 20, "foreign firing spends nothing")
+	client_hand.request_primary_action.rpc_id(1)
+	client_hand.request_primary_action.rpc_id(1)
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return client_hand.inventory().ammo_for("pistol") == 19, 5.0
+		)
+	)
 	var late := _client(port, "Late")
 	assert_true(
 		await RealTime.wait_until(
@@ -129,6 +166,15 @@ func test_private_command_purchase_sender_and_late_join_snapshot() -> void:
 	var late_rig := late.get_node("Rigs/%d" % peer) as GunRig
 	assert_eq(late_rig.net_stats, rig.net_stats)
 	assert_eq(late_rig.net_ammo_in_mag, rig.net_ammo_in_mag)
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool:
+				var hand := late.get_parent().get_node_or_null("Holdables/Hands/%d" % peer) as Hand
+				return hand != null and hand.inventory().ammo_for("pistol") == 19,
+			5.0
+		)
+	)
 	assert_false(late.get_node("BuyMenu")._panel.visible, "menus are never replayed")
 	# The production Network switch tears down this client immediately on disconnect.
 	client.get_parent().process_mode = Node.PROCESS_MODE_DISABLED

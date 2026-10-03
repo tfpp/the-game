@@ -1,0 +1,8 @@
+{
+  "title": "Safe firing after weapon swaps",
+  "summary": "Weapons wait until the swap animation finishes before firing.",
+  "notes": [
+    "Block single shots and automatic firing throughout the weapon swap animation.",
+    "Discard recoil safely when swapping frees the previous weapon model."
+  ]
+}

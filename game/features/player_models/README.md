@@ -116,7 +116,10 @@ Stride phase advances with horizontal speed, with reversed steps when backing up
 and side lean when strafing. The model blends pose transitions and turns its head
 with view pitch. This adds no sprint binding or gameplay speed changes. Accepted boxing swings
 layer a lead-arm extension and bent guard arm over locomotion, closing both fists
-on the skinned mesh. Jabs lead left; power punches lead right. Penguin flippers
+on the skinned mesh. Jabs lead left; power punches lead right. `Boxing.leg_pose(peer)` layers accepted
+kicks on the right thigh/calf without hiding or changing held-item arms. The same
+leg pivots move penguin feet; first-person kicking masks the existing human
+surface with the opt-in `right_leg_only` shader flag (normal avatars are unchanged). Penguin flippers
 use the same arm pivots. `Boxing.arm_pose(peer)` is the read-only source; held
 items retain priority and the arms blend back to locomotion after the swing.
 
@@ -145,6 +148,12 @@ replication and rebuilding without losing clothing or skin tone).
 
 
 ## Integration and verification
+
+`SkinnedHuman` caches the imported rig's fixed rest transforms and checks actual
+bone values before writing a pose, avoiding skeleton updates for unchanged bones.
+Reading actual values preserves the reset of item IK and emote overlays. Patron
+callers defer `BlockPlayerModel.animate()`'s skeleton pass until their NPC pose
+adjustments are complete; player callers retain the default immediate pass.
 
 `PlayerModels` owns appearance, body/head/tail choices and their session lifecycle.
 Its legacy RPC adapters now delegate to `NetworkedEntity`; the picker uses the

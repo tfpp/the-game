@@ -1,0 +1,102 @@
+[
+  {
+    "name": "VAN_LEFT",
+    "rect": "[P: (2, 2), S: (85, 29)]",
+    "rotated": false
+  },
+  {
+    "name": "VAN_0",
+    "rect": "[P: (78, 49), S: (9, 3)]",
+    "rotated": false
+  },
+  {
+    "name": "VAN_1",
+    "rect": "[P: (2, 120), S: (34, 5)]",
+    "rotated": false
+  },
+  {
+    "name": "VAN_2",
+    "rect": "[P: (40, 100), S: (34, 7)]",
+    "rotated": false
+  },
+  {
+    "name": "VAN_3",
+    "rect": "[P: (2, 109), S: (34, 7)]",
+    "rotated": false
+  },
+  {
+    "name": "VAN_4",
+    "rect": "[P: (111, 64), S: (5, 34)]",
+    "rotated": true
+  },
+  {
+    "name": "VAN_5",
+    "rect": "[P: (2, 64), S: (34, 41)]",
+    "rotated": true
+  },
+  {
+    "name": "VAN_6",
+    "rect": "[P: (78, 56), S: (9, 2)]",
+    "rotated": false
+  },
+  {
+    "name": "VAN_7",
+    "rect": "[P: (40, 111), S: (34, 7)]",
+    "rotated": false
+  },
+  {
+    "name": "VAN_8",
+    "rect": "[P: (91, 92), S: (7, 34)]",
+    "rotated": true
+  },
+  {
+    "name": "VAN_9",
+    "rect": "[P: (120, 64), S: (5, 34)]",
+    "rotated": true
+  },
+  {
+    "name": "VAN_10",
+    "rect": "[P: (78, 92), S: (9, 34)]",
+    "rotated": true
+  },
+  {
+    "name": "VAN_11",
+    "rect": "[P: (40, 84), S: (34, 12)]",
+    "rotated": false
+  },
+  {
+    "name": "VAN_12",
+    "rect": "[P: (40, 65), S: (34, 15)]",
+    "rotated": false
+  },
+  {
+    "name": "VAN_13",
+    "rect": "[P: (2, 35), S: (34, 18)]",
+    "rotated": false
+  },
+  {
+    "name": "VAN_14",
+    "rect": "[P: (91, 2), S: (34, 58)]",
+    "rotated": true
+  },
+  {
+    "name": "VAN_15",
+    "rect": "[P: (102, 92), S: (5, 34)]",
+    "rotated": true
+  },
+  {
+    "name": "VAN_16",
+    "rect": "[P: (40, 35), S: (34, 26)]",
+    "rotated": false
+  },
+  {
+    "name": "HUB",
+    "rect": "[P: (78, 64), S: (24, 24)]",
+    "rotated": false
+  },
+  {
+    "name": "TREAD",
+    "rect": "[P: (78, 35), S: (8, 10)]",
+    "rotated": true
+  }
+]

@@ -22,6 +22,7 @@ root_path = NodePath("..")
 replication_config = SubResource("Replication")
 
 [node name="Hud" type="CanvasLayer" parent="."]
+layer = 20
 script = ExtResource("2")
 
 [node name="Health" type="TextureProgressBar" parent="Hud"]
@@ -61,16 +62,23 @@ text = "100 HP"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Died" type="Label" parent="Hud"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -150.0
-offset_top = 90.0
-offset_right = 150.0
-offset_bottom = 130.0
+[node name="DeathScreen" type="ColorRect" parent="Hud"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.01, 0.015, 0.96)
+
+[node name="Died" type="Label" parent="Hud/DeathScreen"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
+text = "u died gg"
 theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6

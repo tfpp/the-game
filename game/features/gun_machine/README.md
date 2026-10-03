@@ -1,8 +1,9 @@
 # Gun machine
 
 A machine that sells a randomly generated gun for $20, and a trash can next to it
-that gets rid of your current one. Both stand in Rusty Hogg's pawn shop
-(`features/pawn_shop`), west off the south corridor. Its holding, firing and projectile system is
+that gets rid of your current one. Both stand along the east wall of the existing
+**Dev Room**, reached through the DEV ROOM booth on the casino north promenade.
+Use E, controller B/Circle or touch USE as before. Its holding, firing and projectile system is
 independent of `features/holdables` (which has its own fixed pistol/SMG/shotgun/AWP):
 a generated gun's stats vary per instance, so it can't reuse `holdables`' static
 `ItemDefinition` catalog. The two are still mutually exclusive, though — equipping a
@@ -13,14 +14,14 @@ ever in hand. See `gun_rig.gd`'s `holster`/`net_equipped` and
 ## Chat buy menu
 
 Type **!guns** (or **/guns**) in in-game chat, or open **Esc → Activities → Buy guns**.
-The CS 1.6-inspired olive-and-gold menu uses numbered categories: **1–8** select,
+The CS 1.6-inspired olive-and-gold menu uses numbered categories: **1–9** select,
 **0** exits, and **Esc** returns to categories then closes. Click/tap also works;
 controller focus navigation and A select rows. The Activities link lets touch players
 open it without a chat keyboard. Scrollable rows scale to phone-sized screens.
 These shortcuts are modal only and do not replace weapon-hotbar bindings.
 
-Buy anywhere: classic pistol $10, SMG $25, shotgun $30 and AWP $50 match the pawn
-shop prices. Classic guns fill the hand if empty, otherwise a free backpack slot;
+Buy anywhere: classic pistol $1,500, SMG/shotgun $5,550 and AWP $15,000 match the pawn
+shop prices. All four ship empty, including previously saved guns. Classic guns fill the hand if empty, otherwise a free backpack slot;
 use Inventory to equip stored guns. Generated families (buckshot, rifle, low-caliber,
 rocket, grenade, plasma) and Ray Gun cost the existing machine price of $20.
 Select barrels and automatic/semi-auto mode for generated families; other stats
@@ -45,12 +46,38 @@ Respawns retain the existing carried weapons. Disconnect removes generated rigs
 (as before, including a purchase that finishes after leaving); a paid classic gun
 can drop locally if its buyer has left. Session switches invalidate pending delivery.
 Classic gun persistence follows Inventory; generated rigs remain session-only.
-No map placement, combat safety, wallet persistence or weapon damage changes.
+Wallet persistence and weapon damage are unchanged. Moving the physical kiosk does
+not restrict this existing buy-anywhere menu.
 
 Tests: `tests/features/gun_machine/test_buy_menu.gd` and `test_buy_network.gd`
 cover catalog variants, chat dispatch, payment/capacity guards, holstering, modal
 cleanup, two real clients, private events, rejected forged payloads, late-join
 weapon snapshots and disconnect removal.
+
+## Classic ammunition
+
+Choose **9. Classic ammunition** in the same buy menu. Packs cost $10 for 20 pistol
+rounds, $20 for 40 SMG rounds, $20 for 8 shotgun shells, and $25 for 5 AWP rounds.
+Packs automatically enter a free backpack slot, even if your hand is empty. Equip
+the matching gun and fire normally (left click / controller right shoulder / touch
+FIRE): one round is drawn from the first matching backpack pack per accepted shot.
+A shotgun burst costs one shell, not one per pellet. There is no manual reload for
+classic guns; generated guns keep their existing ammunition and R reload.
+
+The existing ammo HUD shows available rounds and where to buy more. Empty guns
+stay equipped but produce no shots, recoil or firing sound. Wrong ammo, cooldown,
+loading and safe-zone rejections spend nothing. If you equip a pack, stow it again
+to feed your gun; primary action throws the pack like an ordinary prop.
+Packs reuse the existing small green bundle view, with weapon/round labels in
+inventory and pickup prompts. They have no pawn value.
+
+Partial IDs (`ammo:pistol:19`, for example) carry remaining rounds through the
+ordinary backpack, stow, drop, pickup and saved inventory paths, like partially used
+beer/cigarettes. Server-owned Hand firing spends them through
+`PlayerInventory.spend_ammo(weapon)`; `ammo_for(weapon)` is a read-only HUD count.
+Replication includes late joins, respawns retain ammo, and signed-in inventories
+persist it. Offline/dev inventories reset with the session. No extra ammo RPC,
+save schema, timer or balance is introduced.
 
 ## How it works
 
@@ -141,7 +168,8 @@ roll: `AmmoType.RAY`, semi-auto green bolts with a small splash, 20-round magazi
 ## Adding to the price or ranges
 
 `GunMachine.PRICE_CENTS` and `GunGenerator.AMMO_PROFILES`' ranges are the only
-numbers to tune for balance; nothing else needs to change.
+numbers to tune for generated-gun balance. Classic prices live in
+`GunBuyCatalog.FIXED_PRICES`, shared by the buy menu and pawn-shop wall tags.
 
 ## Performance
 

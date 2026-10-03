@@ -71,6 +71,18 @@ func test_melee_winds_up_then_damages_through_combat() -> void:
 	assert_eq(int(_combat.call("kills_for", 5)), 0)
 
 
+func test_melee_skips_a_combat_that_is_being_freed() -> void:
+	var dying := COMBAT.instantiate()
+	add_child(dying)
+	move_child(dying, 0)
+	dying.queue_free()
+	assert_eq(get_tree().get_first_node_in_group(&"combat"), dying, "the dying one comes first")
+	_place(Vector3(0, 0.95, -1.0))
+	_enemy._sense()
+	_enemy._physics_process(1.0)
+	assert_eq(_health(), 100.0 - float(_enemy.profile()["damage"]), "the live Combat is hit")
+
+
 func test_player_who_escapes_during_windup_is_not_hit() -> void:
 	_place(Vector3(0, 0.95, -1.0))
 	_enemy._sense()
@@ -119,3 +131,18 @@ func test_walls_block_line_of_sight() -> void:
 	assert_false(_enemy.can_see(_player))
 	_enemy._sense()
 	assert_eq(_enemy.target_peer, 0)
+
+
+func test_enemy_pose_resumes_when_camera_can_render_its_layer() -> void:
+	var camera := Camera3D.new()
+	add_child_autofree(camera)
+	camera.global_position = _enemy.global_position + Vector3(0, 2, 3)
+	camera.make_current()
+	var surface := _enemy._model.avatar.human.surface
+	surface.layers = 1 << 18
+	camera.cull_mask = 1
+	assert_false(_enemy._near_camera(), "Nearby masked enemies skip rig posing")
+	camera.cull_mask = surface.layers
+	assert_true(_enemy._near_camera(), "Entering the garage resumes posing")
+	camera.global_position += Vector3(100, 0, 0)
+	assert_false(_enemy._near_camera(), "Keep the existing distance limit")

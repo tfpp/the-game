@@ -1,0 +1,7 @@
+{
+  "title": "Player join notices",
+  "summary": "See who just joined the game in chat.",
+  "notes": [
+    "Announce joining players to everyone in chat, including offline play."
+  ]
+}

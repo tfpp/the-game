@@ -106,7 +106,8 @@ func _process(delta: float) -> void:
 	super._process(delta)
 	_patting = maxf(_patting - delta, 0.0)
 	_bubble.visible = _patting > 0.0 and net_alive
-	_body.reach(clampf(_patting * 2.0, 0.0, 1.0) * (0.8 + 0.2 * sin(_patting * 18.0)))
+	if AnimationBisect.patrons:
+		_body.reach(clampf(_patting * 2.0, 0.0, 1.0) * (0.8 + 0.2 * sin(_patting * 18.0)))
 
 
 func is_patting() -> bool:

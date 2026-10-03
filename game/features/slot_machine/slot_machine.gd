@@ -7,6 +7,9 @@ const USE_RANGE := 3.5
 const FIRST_STOP_S := 1.2
 const STOP_INTERVAL_S := 0.9
 const FRAME_S := 0.1
+const LOSS_VOLUME_DB := -14.0
+const LOSS_PITCH_MIN := 0.85
+const LOSS_PITCH_MAX := 1.35
 
 ## Each machine instance in feature.tscn sets its own price; every peer loads
 ## the same scene, so this needs no replication.
@@ -32,8 +35,8 @@ var _lose_sound: AudioStream
 func _ready() -> void:
 	add_to_group(&"interactables")
 	Network.mode_changed.connect(_on_mode_changed)
-	_win_sound = _load_sound("res://assets/slot_machine/audio/win.ogg")
-	_lose_sound = _load_sound("res://assets/slot_machine/audio/lose.ogg")
+	_win_sound = preload("res://assets/slot_machine/audio/bell.wav")
+	_lose_sound = preload("res://assets/slot_machine/audio/toot.wav")
 
 
 static func initial_state() -> Dictionary:
@@ -230,9 +233,14 @@ func play_result(spin: int, won: bool, payout: int = 0) -> void:
 	if spin <= _last_sound_spin:
 		return
 	_last_sound_spin = spin
+	$View.feedback.result(won, spin)
 	if won:
 		$Celebration.celebrate(payout)
 	_audio.stream = _win_sound if won else _lose_sound
+	# Pitch also changes the short clip's duration (about 0.16–0.26 seconds).
+	# Reset both properties for wins so a preceding loss cannot alter the chime.
+	_audio.pitch_scale = 1.0 if won else randf_range(LOSS_PITCH_MIN, LOSS_PITCH_MAX)
+	_audio.volume_db = -10.0 if won else LOSS_VOLUME_DB
 	if _audio.stream != null:
 		_audio.play()
 
@@ -256,7 +264,3 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 	_last_sound_spin = 0
 	_audio.stop()
 	$Celebration.clear()
-
-
-func _load_sound(path: String) -> AudioStream:
-	return load(path) as AudioStream if ResourceLoader.exists(path) else null

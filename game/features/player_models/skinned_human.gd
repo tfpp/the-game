@@ -15,12 +15,17 @@ const LEATHER := preload("res://assets/player_models/textures/leather.png")
 const DIGITS: Array[String] = ["Thumb", "Index", "Middle", "Ring", "Little"]
 ## Hand rotation for the 6-7 pose: fingers forward, palm facing the sky.
 const PALM_UP := Basis(Vector3.RIGHT, PI / 2.0)
+const AnimationBisect := preload("res://features/profiler/animation_bisect.gd")
 
 var skeleton: Skeleton3D
 var surface: MeshInstance3D
 var material := ShaderMaterial.new()
 var _bones: Dictionary = {}
 var _shapes: Dictionary = {}
+## The imported rig's rest transforms never change during avatar animation.
+var _rests: Array[Transform3D] = []
+var _rest_bases: Array[Basis] = []
+var _parent_rest_inverse: Array[Basis] = []
 
 
 func _ready() -> void:
@@ -41,6 +46,13 @@ func _ready() -> void:
 	surface.material_override = material
 	for index: int in skeleton.get_bone_count():
 		_bones[skeleton.get_bone_name(index)] = index
+		_rests.append(skeleton.get_bone_rest(index))
+		_rest_bases.append(skeleton.get_bone_global_rest(index).basis.orthonormalized())
+	for index: int in skeleton.get_bone_count():
+		var parent := skeleton.get_bone_parent(index)
+		_parent_rest_inverse.append(
+			_rest_bases[parent].inverse() if parent >= 0 else Basis.IDENTITY
+		)
 	for index: int in surface.mesh.get_blend_shape_count():
 		_shapes[surface.mesh.get_blend_shape_name(index)] = index
 
@@ -88,6 +100,9 @@ func shape_weight(label: String) -> float:
 func pose(model: BlockPlayerModel, left_held: bool, right_held: bool) -> void:
 	material.set_shader_parameter("hide_left_arm", left_held)
 	material.set_shader_parameter("hide_right_arm", right_held)
+	# Leave animation calculations and shader writes active for this narrower bisect.
+	if not AnimationBisect.skeleton:
+		return
 	_bone("Spine", model._torso.rotation)
 	_bone("Head", model._head.rotation)
 	_bone("UpperArmL", model._left_arm.rotation)
@@ -99,29 +114,31 @@ func pose(model: BlockPlayerModel, left_held: bool, right_held: bool) -> void:
 	_bone("CalfL", model._left_shin.rotation)
 	_bone("CalfR", model._right_shin.rotation)
 	for right: bool in [false, true]:
-		var hand := skeleton.find_bone("HandR" if right else "HandL")
-		var forearm := skeleton.find_bone("ForearmR" if right else "ForearmL")
-		skeleton.set_bone_pose_position(forearm, skeleton.get_bone_rest(forearm).origin)
-		skeleton.set_bone_pose_position(hand, skeleton.get_bone_rest(hand).origin)
-		skeleton.set_bone_pose_rotation(
-			hand, skeleton.get_bone_rest(hand).basis.get_rotation_quaternion()
-		)
+		var hand := int(_bones["HandR" if right else "HandL"])
+		var forearm := int(_bones["ForearmR" if right else "ForearmL"])
+		for index: int in [forearm, hand]:
+			if skeleton.get_bone_pose_position(index) != _rests[index].origin:
+				skeleton.set_bone_pose_position(index, _rests[index].origin)
+		_set_bone_rotation(hand, _rests[hand].basis.get_rotation_quaternion())
 		set_finger_curl(right, 0.12)
 
 
 func _bone(label: String, rotation: Vector3) -> void:
 	var index := int(_bones[label])
-	var rest := skeleton.get_bone_global_rest(index).basis.orthonormalized()
-	var parent_index := skeleton.get_bone_parent(index)
-	var parent := Basis.IDENTITY
-	if parent_index >= 0:
-		parent = skeleton.get_bone_global_rest(parent_index).basis.orthonormalized()
 	var desired := Basis.from_euler(rotation)
 	# Godot bone poses include the local rest rotation; identity would flip limbs
 	# whose rest bones point down. Apply animation while retaining that orientation.
-	skeleton.set_bone_pose_rotation(
-		index, (parent.inverse() * desired * rest).get_rotation_quaternion()
+	_set_bone_rotation(
+		index,
+		(_parent_rest_inverse[index] * desired * _rest_bases[index]).get_rotation_quaternion()
 	)
+
+
+func _set_bone_rotation(index: int, rotation: Quaternion) -> void:
+	# Rewriting an identical pose still dirties the skeleton in Godot. Read the
+	# actual pose so IK/emote overlays are reset correctly on the next body pass.
+	if skeleton.get_bone_pose_rotation(index) != rotation:
+		skeleton.set_bone_pose_rotation(index, rotation)
 
 
 ## Reach an item grip by bending the existing weighted arm vertices.
@@ -167,11 +184,15 @@ func reach_grip(right: bool, world_target: Vector3, fit_item: bool = false) -> v
 
 ## Every phalanx has its own weighted bone, editable independently in Blender.
 func set_finger_curl(right: bool, amount: float) -> void:
+	if not AnimationBisect.fingers:
+		return
 	for digit: String in DIGITS:
 		set_digit_curl(right, digit, amount)
 
 
 func set_digit_curl(right: bool, digit: String, amount: float) -> void:
+	if not AnimationBisect.fingers:
+		return
 	if digit not in DIGITS:
 		return
 	var suffix := "R" if right else "L"
@@ -187,7 +208,7 @@ func set_digit_curl(right: bool, digit: String, amount: float) -> void:
 		var angle := curl * ([0.75, 1.05, 0.85][segment] as float)
 		if digit == "Thumb":
 			angle *= 0.65
-		skeleton.set_bone_pose_rotation(index, rest * Quaternion(local_axis.normalized(), angle))
+		_set_bone_rotation(index, rest * Quaternion(local_axis.normalized(), angle))
 
 
 ## Layer the gesture over locomotion or item poses. The middle finger stays straight.

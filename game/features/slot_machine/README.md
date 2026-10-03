@@ -1,6 +1,6 @@
 # Slot machine
 
-Eight machines stand in two rows outside the initial spawn area, each with its own
+Eight machines stand along the casino’s east wall, each with its own
 buy-in. Approach a machine's front, look at it within 3.5 metres, then press **E**,
 **Circle / B**, or mobile **USE**. The on-screen prompt and cabinet show that
 machine's price. Menus and chat suppress interaction.
@@ -78,14 +78,36 @@ frame times still require visual profiling.
 
 ## Sound assets
 
-Place these two **Ogg Vorbis** files in `res://assets/slot_machine/audio/`:
+The machine uses original 22,050 Hz mono WAV effects: a lever latch,
+looping mechanical ratchet, individual reel-stop clunks, a payout coin cascade,
+three bell strikes for a win, and a short fart-like toot for a loss. Only the
+motor loops. All voices use `GameSFX`, so the existing effects slider and mute
+settings apply. Mechanical sources and rebuild instructions live alongside the
+cabinet recipe; toot synthesis provenance is in the audio asset README.
+The previous optional Ogg files and `loss.wav` remain legacy assets and are no longer used.
 
-- `win.ogg` — the winning “cha-ching!” sound.
-- `lose.ogg` — the negative/losing sound.
+`toot.wav` is 0.22 seconds, played at -14 dB. Each new loss picks a local random
+pitch from 0.85–1.35, also varying its length to roughly 0.16–0.26 seconds.
+Duplicate results do not reroll or replay it. Wins restore normal pitch and the
+mechanical bell's -10 dB volume. No shared state or new RPC is needed for cosmetic
+pitch variation; listeners may hear slightly different pitches on the same loss.
 
-Use short, non-looping clips. Restart/re-export after adding or replacing them.
-They play spatially from the cabinet for nearby players. Missing files are silently
-optional, so the feature works before assets are supplied. No code edits are needed.
+`slot_feedback.gd` owns three reusable positional voices (motor, mechanism, coins).
+The existing reliable result event owns the bell/loss voice and celebration.
+Snapshots initialize without replaying historical lever/stop sounds; an ongoing
+spin can resume its motor loop for a late joiner. A result event stops that loop
+even if it arrives before the final snapshot. Session resets stop all voices.
+Mechanical playback is skipped beyond 25 m; attenuation ends at 18 m.
+
+## Lights and motion
+
+A single MultiMesh draws the 24 warm marquee bulbs. Idle chasing is slow; spinning
+accelerates it, and genuine win events produce a three-second green wave and beacon.
+The lever springs back during the spin. The first two reels ease into a small detent;
+the final snapshot immediately aligns the result so payout never precedes its symbols.
+Thin glass and edge highlights work in Compatibility without relying on bloom.
+A shadow-free, short-range light illuminates the nearby cabinet while its viewer
+is within 10 m. Dedicated servers allocate no feedback lights or voices.
 
 ## Layout
 
@@ -128,7 +150,7 @@ GEM. Prompts and provenance are in `res://assets/casino_hub/textures/GENERATED_A
 The cabinet keeps its existing collision hull and interaction point. Materials
 are shared; each reel only owns its small animation shader state.
 
-The PS1 cabinet uses 844 triangles and flat, matte finishes. The reel texture imports
+The cabinet and lever use a shared painted atlas with matte finishes. The reel texture imports
 at 128×128 with nearest mipmap filtering; its five icons and server-selected results
 keep their original order. Drums use eight segments and idle reels skip redundant
 shader uploads. Labels and interaction prompts keep their normal readable fonts.
@@ -147,3 +169,13 @@ blessings for its 10 minutes, and each win gives the winner charisma once the re
 
 Lucky-night and Trump favor rerolls still apply only to temporary wallets;
 authenticated accounts receive the Kaaba blessing odds.
+
+### Refined mechanical cabinet
+
+The live cabinet now uses indexed native exports with continuous walnut side
+profiles, recessed metal reel framing, a coin throat and a folded payout tray.
+Its fixed side socket meets the moving faceted lever at the existing pivot.
+Cabinet and lever share one 128×128 painted atlas and material; their meshes are
+844 and 144 triangles respectively. Drum shaders, labels, prices, collision and
+payout behavior retain their established interfaces. The original GLB remains
+legacy source. See [the editable recipe and review guide](../../../docs/design/model-sources/slot-cabinet-v2/README.md).

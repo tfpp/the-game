@@ -1,0 +1,5 @@
+{
+  "title": "Fewer casino rendering calls",
+  "summary": "Render the casino with fewer geometry and shadow draw calls.",
+  "notes": ["Group casino GridMap tiles into eight-cell batches while preserving geometry, collision and the existing lights."]
+}

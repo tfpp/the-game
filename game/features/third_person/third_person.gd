@@ -75,6 +75,14 @@ func toggle_camera() -> void:
 	_reset_hold()
 
 
+## Horizontal camera heading for movement; aim and replicated facing stay unchanged.
+## Read live angles, not the rendered camera (which may be a frame behind physics).
+func movement_yaw(player: Player) -> float:
+	if player != _local_player() or not enabled or get_viewport().use_xr:
+		return player.yaw
+	return player.yaw + _orbit.x
+
+
 func _local_player() -> Player:
 	var player := get_tree().get_first_node_in_group(&"local_player") as Player
 	var id := player.get_instance_id() if is_instance_valid(player) else 0
@@ -111,7 +119,7 @@ func _process(_delta: float) -> void:
 	body.rotation.y = player.yaw
 	var camera := player.get_node("Camera") as Camera3D
 	camera.global_rotation = Vector3(
-		clampf(player.pitch + _orbit.y, -PITCH_LIMIT, PITCH_LIMIT), player.yaw + _orbit.x, 0.0
+		clampf(player.pitch + _orbit.y, -PITCH_LIMIT, PITCH_LIMIT), movement_yaw(player), 0.0
 	)
 	var motion := camera.global_basis.z * DISTANCE
 	var query := PhysicsShapeQueryParameters3D.new()

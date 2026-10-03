@@ -1,0 +1,79 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://features/horse_betting/horse_betting.gd" id="1"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="2"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/security_monitor.tscn" id="3"]
+[ext_resource type="Script" path="res://features/horse_betting/race_display.gd" id="4"]
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/security_monitor.res" id="5"]
+[ext_resource type="Material" path="res://features/casino_props/materials/security_monitor.tres" id="6"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="7"]
+
+[ext_resource type="PackedScene" path="res://features/street_props/props/wooden_crate.tscn" id="8"]
+
+[sub_resource type="BoxShape3D" id="TerminalShape"]
+size = Vector3(0.8, 0.712, 0.6648)
+
+[sub_resource type="QuadMesh" id="ScreenMesh"]
+size = Vector2(5.2, 2.8)
+
+[node name="HorseBetting" type="StaticBody3D"]
+position = Vector3(23.3, 0, -5)
+rotation = Vector3(0, -1.5707963, 0)
+script = ExtResource("1")
+
+[node name="Terminal" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.7975, 0.95)
+scale = Vector3(1.6, 1.6, 1.6)
+mesh = ExtResource("5")
+material_override = ExtResource("6")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+position = Vector3(0, 1.1535, 0.9704)
+shape = SubResource("TerminalShape")
+
+[node name="Pedestal" parent="." instance=ExtResource("8")]
+position = Vector3(0, 0, 0.95)
+
+[node name="Monitor" parent="." instance=ExtResource("3")]
+position = Vector3(0, 1.4, 0)
+scale = Vector3(12, 8, 1)
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("2")
+interaction_range = 3.5
+interaction_offset = Vector3(0, 1.35, 0.95)
+replicated_properties = Array[NodePath]([NodePath(".:state"), NodePath(".:seconds_left")])
+continuous_properties = Array[NodePath]([NodePath(".:progress")])
+replication_interval = 0.1
+
+[node name="Display" type="Node3D" parent="."]
+script = ExtResource("4")
+
+[node name="Screen" type="MeshInstance3D" parent="Display"]
+position = Vector3(0, 3.18, 0.224)
+mesh = SubResource("ScreenMesh")
+
+[node name="Heading" type="Label3D" parent="Display"]
+position = Vector3(0, 5.35, 0.25)
+text = "CROWN TURF CLUB\nUse terminal below — $1 / $5 / $10"
+font_size = 48
+pixel_size = 0.005
+no_depth_test = false
+
+[node name="Legend" type="Label3D" parent="Display"]
+position = Vector3(0, 1.65, 0.25)
+text = "1 Crown Jewel · 2 Rusty Rocket\n3 Velvet Thunder · 4 Last Orders"
+font_size = 36
+pixel_size = 0.004
+no_depth_test = false
+
+[node name="Broadcast" type="SubViewport" parent="Display"]
+size = Vector2i(128, 128)
+transparent_bg = false
+render_target_update_mode = 1
+
+[node name="HorseRacing" type="Marker3D" parent="."]
+position = Vector3(0, 0, 3)
+script = ExtResource("7")
+label = "Horse Betting"
+hint = "Crown Turf Club · east casino promenade"

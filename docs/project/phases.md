@@ -67,6 +67,6 @@ This phase is focused on developing a fun gameplay loop that keeps people intere
 
 ### Basic Loot System
 
-- [ ] For phase 1 simply add loot item value to the players money, no shops or selling for this phase of the project to keep things simple
-- [ ] Create 5 types of loot. The rarer the more valuable but harder and less likely to find, the more common the cheaper but more plentiful
+- [x] Convert loot value to the player's money through the existing pawn counter (retain selling rather than replace the shipped loop; Phase 1 C1, #430).
+- [x] Create 5 types of loot. The rarer the more valuable but harder and less likely to find, the more common the cheaper but more plentiful
 - [ ] When the user interacts with a loot item it shows a message on the screen "Pickup <item_name> ($<Item_value>)"

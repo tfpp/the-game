@@ -36,3 +36,7 @@ godot --headless --path game -s res://features/hotel_props/tools/import_props.gd
 Edit `interior.tscn` to furnish the room; feature loading needs no central scene edits.
 Tests cover mesh UVs, texture allocations, individual atlases, clear supported
 arrival, room loading/unloading, GPS links, authenticated travel and late joins.
+
+## Developer access
+
+Since issue #438 this entrance is a development door: it stays hidden and locked until `sv_cheats 1` (see [dev access](../dev_access/README.md)).

@@ -1,0 +1,5 @@
+{
+  "title": "Mobile aim joystick",
+  "summary": "Aim with a second mobile joystick below smaller, raised action buttons.",
+  "notes": ["Add a right-thumb aim joystick aligned with the movement stick.", "Shrink and raise FIRE, USE and JUMP above the new joystick while preserving independent touch actions.", "Keep first-person swipe aim and make its joystick opt-in through the saved Settings > Touch controls toggle."]
+}

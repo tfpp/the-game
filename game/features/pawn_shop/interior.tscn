@@ -1,0 +1,69 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/pawn_shop/structure.tscn" id="structure"]
+[ext_resource type="PackedScene" path="res://features/pawn_shop/street.tscn" id="street"]
+[ext_resource type="PackedScene" path="res://features/pawn_shop/dressing.tscn" id="dressing"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/chrome.tres" id="metal"]
+
+[sub_resource type="StandardMaterial3D" id="glass"]
+transparency = 1
+albedo_color = Color(0.4, 0.62, 0.65, 0.12)
+roughness = 0.15
+cull_mode = 2
+
+[sub_resource type="BoxMesh" id="glass_mesh"]
+size = Vector3(12, 2, 0.06)
+material = SubResource("glass")
+
+[sub_resource type="BoxShape3D" id="window_collision"]
+size = Vector3(12, 2.5, 0.2)
+
+[sub_resource type="BoxMesh" id="mullion"]
+size = Vector3(0.07, 2, 0.12)
+material = ExtResource("metal")
+
+[node name="StoreInterior" type="Node3D"]
+
+[node name="Structure" parent="." instance=ExtResource("structure")]
+
+[node name="Street" parent="." instance=ExtResource("street")]
+
+[node name="Dressing" parent="." instance=ExtResource("dressing")]
+
+[node name="Windows" type="StaticBody3D" parent="."]
+position = Vector3(-10, 1.5, 30)
+
+[node name="Glass" type="MeshInstance3D" parent="Windows"]
+mesh = SubResource("glass_mesh")
+
+[node name="Collision" type="CollisionShape3D" parent="Windows"]
+position = Vector3(0, -0.25, 0)
+shape = SubResource("window_collision")
+
+[node name="Frame1" type="MeshInstance3D" parent="Windows"]
+position = Vector3(-6, 0, 0)
+mesh = SubResource("mullion")
+
+[node name="Frame2" type="MeshInstance3D" parent="Windows"]
+position = Vector3(-2, 0, 0)
+mesh = SubResource("mullion")
+
+[node name="Frame3" type="MeshInstance3D" parent="Windows"]
+position = Vector3(2, 0, 0)
+mesh = SubResource("mullion")
+
+[node name="Frame4" type="MeshInstance3D" parent="Windows"]
+position = Vector3(6, 0, 0)
+mesh = SubResource("mullion")
+
+[node name="CounterLight" type="OmniLight3D" parent="."]
+position = Vector3(-12, 3.8, 23)
+light_color = Color(0.95, 0.92, 0.81, 1)
+light_energy = 2.0
+omni_range = 9.0
+
+[node name="ShopLight" type="OmniLight3D" parent="."]
+position = Vector3(-5, 3.8, 25)
+light_color = Color(0.92, 0.94, 0.86, 1)
+light_energy = 1.6
+omni_range = 9.0

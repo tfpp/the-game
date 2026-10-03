@@ -3,8 +3,10 @@
 `main.tscn` now loads `playable.tscn`, which wraps the saved
 `res://features/casino_hub/casino_gridmap.tscn` with the game's stable `Room/Spawn`
 marker. F5 runs the normal game with login, HUD, multiplayer, eight functional slot
-machines and roaming NPCs supplied by the existing feature loader. The overview
-camera is disabled in this wrapper so the local player's camera controls the view.
+machines and roaming NPCs supplied by the existing feature loader. The live casino
+scene has no camera of its own: Godot makes the first camera in a viewport current
+when none is, so a level camera would show a stray isometric view before the local
+player spawns. The orthographic overview camera lives only in `preview.tscn`.
 `world/room.tscn` retains the original casino for reference during migration.
 
 Open `casino_gridmap.tscn` to edit its saved cells with Godot's GridMap editor.
@@ -97,17 +99,22 @@ casino patrons and the bar companion continue to load normally.
 
 ## South shops
 
-`shops.gd` adds a pawn shop (x -16…-2, z 20…30), food court (x 2…34,
+`shops.gd` retains a sealed former shop unit (x -16…-2, z 20…30), food court (x 2…34,
 z 20…38) and the connecting four-metre corridor (x -2…2, z 20…30).
 Floors share the main floor GridMap; two additional GridMaps hold shop walls.
-The south casino opening and both shop doors are four metres wide with tiled
+The south casino opening and food court door are four metres wide with tiled
 headers above 2.5 m. The ceiling GridMap covers both rooms and the corridor, with
 room-sized box collision at y 5 m; the main hall ceiling is higher at y 8.75 m.
 
-The food court, kebab shop, pawn shop, Gun-O-Matic and loot-fence features keep
-their original transforms, networking and prices. Only their obsolete food/pawn
-room shells are removed; props and booth collisions remain. GPS destinations
-still point to the same counters. Shop geometry is serialized by the offline
+The former food hall is now vacant: food_court and kebab_shop load in the
+remote Crown Strip Mall at z -5000. Its modeled portal occupies the former food
+entrance at (1.8,1.25,25); GPS routes food shopping through that door. The saved
+casino shell is retained, not rebuilt or removed by the relocation. See
+`features/strip_mall/README.md` for the new feature-owned gridset.
+Rusty Hogg’s shop and loot fence occupy the separate roadside storefront reached by
+the operations van (`features/pawn_shop/README.md`). The Gun-O-Matic now stands in
+the Dev Room. The old west corridor opening
+is sealed with wood wall tiles; its unused floor and roof remain in the saved map. Shop geometry is serialized by the offline
 builder, so scene loading does not replace edits made in the GridMap editor.
 
 ## Rebuild and verification
@@ -131,7 +138,7 @@ day/night feature from changing this scene's ambient light or adding a global su
 Maps without that metadata retain the existing clock behavior.
 
 The Compatibility renderer limits local lights per mesh. Structural and decor
-GridMaps use four-cell render batches, and ceiling quads replace the former whole
+GridMaps use eight-cell render batches, and ceiling quads replace the former whole
 room mesh. 13 m perimeter sconces and 8 m chandeliers keep each batch within the eight-light budget
 without raising project limits. Thirty authored positional lights also stay below the
 32-light frame limit, leaving space for player lights. `test_decor_lighting.gd` audits overlaps across all
@@ -264,3 +271,28 @@ Vivienne's main-bar stool share this wrapper. A 0.9840426 vertical scale fits th
 0.752 m source to the established 0.74 m seat height, preserving her seated pose.
 Rebuilding the balcony uses this same wrapper. The bundle retains authoritative
 mesh, paint and UV sources; no duplicate model or texture is needed.
+
+## Rendering batch regression
+
+The saved casino, its authoring source and generated pit/balcony maps use an
+eight-cell octant size. The existing light-overlap test audits every resulting
+batch against the eight-light budget. Sixteen-cell batches exceed that budget
+on the floor and ceiling, so keep the size at eight. Cells, meshes, collision,
+materials and shadow lights are unchanged. Larger batches can submit more
+offscreen tiles; the tradeoff favors fewer calls in this compact interior.
+
+With a display, compare the old and current sizes using:
+
+```sh
+godot --path game --audio-driver Dummy --rendering-method gl_compatibility \
+  -s res://tests/features/casino_hub/render_batch_probe.gd
+```
+
+The probe freezes furnishings and compares four views at 960×540, saving images
+to `/tmp/batch-<view>-<size>.png`. In Godot 4.7.2 Compatibility on Mesa llvmpipe,
+visible draw counts changed from 451→251, 52→26, 275→172 and 127→63. Only
+0–8 pixels per view differed by more than 0.01; the largest channel difference
+was 0.032. These are native renderer measurements, not RTX/Edge FPS results.
+The separate shadow draw counter reports zero on this renderer, so it cannot
+attribute shadow savings. The same batched geometry remains available to both
+shadow pools.

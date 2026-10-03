@@ -14,7 +14,8 @@ Everything is client-side and private to each player: no RPCs, no shared state.
   `StreamedRoom`, like the parking garage).
 - `gps_route.gd` (`GpsRoute`): pure routing. `next_hop()` treats every `StreamedRoom`
   and destination `area` as a region and every `GarageDoor`/`RoomDoor` as a link, and
-  finds the next door to use. `grid_path()` walks a 0.5 m grid (50 m across) around
+  finds the next door to use. Operations van destinations also supply links, so the
+  separate gun shop routes through the garage and its van. `grid_path()` walks a 0.5 m grid (50 m across) around
   the radar's wall slice, then string-pulls the path into straight legs.
 - `gps.gd` (`Gps`): the P action, route state, radar overlay (`radar_overlays` group).
   The walkable path is re-planned every 2 m or 3 s.
@@ -30,6 +31,14 @@ route should end. Rooms built as `StreamedRoom`s with `RoomDoor`s route automati
 for another closed-off area reached by a `GarageDoor`, also set `area` to its world
 extent. `tests/features/gps/test_gps.gd` fails if a streamed room in its `ROOM_SCENES`
 list has no destination inside; add new room feature scenes to that list.
+
+## Strip mall food shops
+
+The retained Food Court and İstanbul Kebab markers now point into the remote mall.
+The strip_mall feature adds Strip Mall, Poke Bowls and Wendy's markers within its
+StreamedRoom; its two existing RoomDoor endpoints provide the casino/return links.
+GPS therefore routes through the south casino FOOD SHOPS door without a new routing
+interface or van destination. The static old food-wing shell has no food marker.
 
 ## People, animals and objects
 
@@ -54,3 +63,7 @@ Active routes clear on death/despawn/disconnect; reopened lists include respawns
 Moving targets replan on the existing distance/time budget and cancel the arrival
 countdown if they move away. No new RPCs, shared state, persistence, keys or world
 placements are introduced; entity owners retain all simulation and replication.
+
+Places with `dev_only = true` are listed only while `sv_cheats 1` is on, and doors with a
+`DevGate` child are left out of routing while they are locked (see
+[dev access](../dev_access/README.md)).

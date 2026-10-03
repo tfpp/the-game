@@ -1,0 +1,9 @@
+{
+  "title": "First-person handheld motion",
+  "summary": "Handheld items stay visible near walls and sway naturally as you look and move.",
+  "notes": [
+    "Render first-person items and arms on a separate camera layer to prevent wall clipping.",
+    "Add slower aim sway and velocity-driven movement bob to all handheld items and generated guns.",
+    "Layer whole-viewmodel momentum drift, jump lag and springy landing recovery over handheld bob and look sway."
+  ]
+}

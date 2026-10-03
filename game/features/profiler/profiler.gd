@@ -3,6 +3,10 @@ extends CanvasLayer
 
 const Capture := preload("res://features/profiler/frame_capture.gd")
 const Graph := preload("res://features/profiler/frame_graph.gd")
+const AnimationBisect := preload("res://features/profiler/animation_bisect.gd")
+
+## Temporary experiment: graphical debug runs start with the suspect animations frozen.
+@export var freeze_animations_on_start := false
 
 var capture := Capture.new()
 var graph: Graph
@@ -22,10 +26,25 @@ func _ready() -> void:
 	_build()
 	Controls.menu_requested.connect(_menu_requested)
 	set_process(false)
+	if (
+		freeze_animations_on_start
+		and OS.is_debug_build()
+		and DisplayServer.get_name() != "headless"
+	):
+		_freeze_initial_animations()
+
+
+func _freeze_initial_animations() -> void:
+	# Let every feature and the local avatar establish an initial pose first.
+	await get_tree().process_frame
+	await get_tree().process_frame
+	AnimationBisect.set_group("all", false)
+	print("Animation bisect: frozen. Console: profile_animations all 1 restores animations.")
 
 
 func _exit_tree() -> void:
 	_disconnect_capture()
+	AnimationBisect.reset()
 	if is_in_group(&"modal_ui"):
 		remove_from_group(&"modal_ui")
 		Controls.start()

@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/safe_zone/safe_zone.gd" id="1_zone"]
+
+[node name="SafeZone" type="Node3D"]
+
+[node name="GoldenCrown" type="Node3D" parent="."]
+script = ExtResource("1_zone")
+bounds = AABB(-70, -3, -70, 140, 40, 125)
+
+[node name="OperationsGarage" type="Node3D" parent="."]
+script = ExtResource("1_zone")
+bounds = AABB(-8.2, -1, -3009.2, 16.4, 7, 18.4)
+
+[node name="PawnShop" type="Node3D" parent="."]
+script = ExtResource("1_zone")
+bounds = AABB(-16.2, -1, -3980.2, 14.4, 6.5, 10.4)
+
+[node name="Lounge" type="Node3D" parent="."]
+script = ExtResource("1_zone")
+bounds = AABB(-5, -1, -604, 10, 6, 8)
+
+[node name="WineCellar" type="Node3D" parent="."]
+script = ExtResource("1_zone")
+bounds = AABB(36, -1, -604, 8, 5, 8)
+
+[node name="HotelWing" type="Node3D" parent="."]
+script = ExtResource("1_zone")
+bounds = AABB(-106, -7, -1411, 211, 18, 60)
+
+[node name="Atrium" type="Node3D" parent="."]
+script = ExtResource("1_zone")
+bounds = AABB(-21, -1, -1501, 56, 18, 36)

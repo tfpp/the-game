@@ -1,0 +1,9 @@
+{
+  "title": "Five readable valuable tiers",
+  "summary": "Identify slum valuables by rarity color and see their pawn price before collecting.",
+  "notes": [
+    "Mark scrap, wallets, electronics, watches and jewelry with five rising rarity tiers.",
+    "Show rarity-colored inventory icon borders and pickup prompts with pawn prices.",
+    "Keep existing loot prices, cash bundles and pawn-counter sales compatible with saved inventories."
+  ]
+}

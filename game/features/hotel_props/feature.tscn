@@ -1,5 +1,6 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://features/dev_access/dev_gate.gd" id="dev_gate"]
 [ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
 [ext_resource type="Script" path="res://features/hotel_props/hotel_portal.gd" id="portal"]
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="interaction"]
@@ -90,10 +91,15 @@ modulate = Color(1, 0.84, 0.52, 1)
 position = Vector3(0, 0.1, -1794)
 script = ExtResource("gps")
 label = "Hotel Prop Room"
+dev_only = true
 hint = "Fifty vintage hotel props. Use HOTEL PROPS on the dev room's south wall."
 
 [node name="Teleport" type="Marker3D" parent="Destinations"]
 position = Vector3(311, 0.1, -294)
 script = ExtResource("gps")
 label = "Hotel Props Teleport"
+dev_only = true
 hint = "In the dev room beside HOTEL WING."
+
+[node name="DevGate" type="Node" parent="Entrance"]
+script = ExtResource("dev_gate")

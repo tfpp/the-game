@@ -13,6 +13,15 @@ enum Category {
 	KEY,  ## Stored in the inventory key ring; cannot be thrown, eaten or dropped.
 }
 
+## NONE is for equipment and monetary loot, not a valuable tier.
+enum Rarity { NONE, COMMON, UNCOMMON, RARE, EPIC, LEGENDARY }
+
+const RARITY_NAMES := ["", "Common", "Uncommon", "Rare", "Epic", "Legendary"]
+const RARITY_COLORS: Array[Color] = [
+	Color.WHITE, Color("c5c7c9"), Color("88c999"), Color("8ebcf0"), Color("c7a0e8"), Color("e5bf72")
+]
+
+@export var rarity: Rarity = Rarity.NONE
 @export var id := ""
 @export var display_name := ""
 @export var category: Category = Category.PROP
@@ -41,3 +50,19 @@ enum Category {
 @export var spread_degrees := 0.0
 ## FOOD only: health restored when eaten, capped at features/combat's maximum.
 @export var heal_amount := 0.0
+
+
+func rarity_name() -> String:
+	return RARITY_NAMES[rarity]
+
+
+func rarity_color() -> Color:
+	return RARITY_COLORS[rarity]
+
+
+## Prices come from the same integer cents used by the pawn sale.
+func loot_details() -> String:
+	if sale_value_cents <= 0:
+		return ""
+	var tier := rarity_name() if rarity != Rarity.NONE else "Cash"
+	return "%s · $%d.%02d" % [tier, sale_value_cents / 100, sale_value_cents % 100]

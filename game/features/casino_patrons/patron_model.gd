@@ -34,6 +34,7 @@ const RIG_MAX_SPEED := 5.0
 ## Rig-space accessory anchors: face front, chest front.
 const FACE_Z := -0.09
 const CHEST_Z := -0.118
+const ClipLocomotion := preload("res://features/casino_patrons/animation/patron_locomotion.gd")
 
 ## skin: PlayerSkin index; hair: PlayerAppearance style and color; shirt/pants:
 ## ClothingCatalog color index (-1 for none); tie: ClothingCatalog color index or -1.
@@ -59,6 +60,12 @@ var avatar: BlockPlayerModel
 ## Accessory holders on the rig's torso and head pivots.
 var torso_items: Node3D
 var head_items: Node3D
+var _clip_locomotion: ClipLocomotion
+
+
+func enable_clip_locomotion() -> void:
+	if _clip_locomotion == null:
+		_clip_locomotion = ClipLocomotion.new(avatar)
 
 
 ## Builds the avatar with the look picked from `look` (the patron's index).
@@ -148,9 +155,23 @@ func dress_up(data: Dictionary) -> void:
 func pose(delta: float, walk: float, limp: float, flinch: float, idle: float) -> void:
 	if avatar == null:
 		return
+	if _clip_locomotion != null and limp <= 0.0:
+		_clip_locomotion.pose(delta, walk, flinch, idle)
+		return
+	if _clip_locomotion != null:
+		_clip_locomotion.suspend()
 	avatar.seated = false
 	var alive := 1.0 - limp
-	avatar.animate(delta, Vector3(0, 0, -walk * alive * PatronMath.WALK_SPEED), true, RIG_MAX_SPEED)
+	avatar.animate(
+		delta,
+		Vector3(0, 0, -walk * alive * PatronMath.WALK_SPEED),
+		true,
+		RIG_MAX_SPEED,
+		0.0,
+		false,
+		false,
+		false
+	)
 	avatar._head.rotation = Vector3(
 		flinch * 0.5 - limp * 0.3, sin(idle * 0.7) * 0.5 * (1.0 - walk) * alive, limp * 0.6
 	)
@@ -181,8 +202,10 @@ func sit(
 ) -> void:
 	if avatar == null:
 		return
+	if _clip_locomotion != null:
+		_clip_locomotion.suspend()
 	avatar.seated = true
-	avatar.animate(delta, Vector3.ZERO, true, RIG_MAX_SPEED)
+	avatar.animate(delta, Vector3.ZERO, true, RIG_MAX_SPEED, 0.0, false, false, false)
 	var thigh := seated_thigh(hip_height)
 	for leg: Node3D in [avatar._left_leg, avatar._right_leg]:
 		leg.rotation = Vector3(thigh, 0, 0)

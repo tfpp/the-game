@@ -7,6 +7,15 @@ wheel to cycle to the next or previous slot in either system. A strip at the bot
 of the screen shows all nine slots and highlights whichever one is actually in your
 hand. Guns also kick back when they fire.
 
+In first person, number-key and mouse-wheel swaps lower the handheld and arms for
+0.12 seconds, send the existing equip request, then raise the selected item over
+0.22 seconds: a 0.34-second animation layered over sway and bob. Rapid selections
+replace the pending choice and continue from the current pose. Clothing equips
+and third-person switching retain their immediate behavior.
+Firing is blocked through both phases. Clicks during the swap are ignored; an
+automatic gun's held trigger resumes firing after the animation finishes. Recoil
+keeps weak references to weapon views so replacing a model safely clears its recoil.
+
 ## How it works
 
 - `weapon_hotbar.gd` binds number keys 1-8 to one backpack slot each, 9 to

@@ -254,3 +254,7 @@ The live structure uses the weathered 128×128 textures in
 ```sh
 godot --headless --path game -s res://features/procedural_rooms/tools/build_garage_textures.gd
 ```
+
+## Developer access
+
+Since issue #438 this entrance is a development door: it stays hidden and locked until `sv_cheats 1` (see [dev access](../dev_access/README.md)).

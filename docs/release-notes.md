@@ -18,6 +18,43 @@ contains one or more single-line imperative bullets without a bullet prefix. JSO
 handles quotes and Unicode. These are the only fields. Use the nearest affected feature
 for cross-cutting work; release tooling belongs to `changelog`.
 
+## Spoiler-free questline announcements
+
+When announcing a questline or a change to one, use ambiguous, intriguing language
+that preserves the surprise of playing it. Apply this to **every field**: `title`,
+`summary`, and every `notes` bullet. The in-game panel shows titles and summaries;
+release changelogs and Discord announcements publish the bullets, so a vague summary
+cannot protect a revealing bullet.
+
+- Say that something new awaits, or that a quest experience has improved. You may
+  mention an already-public starting area or interaction so players can find it,
+  but omit even that hint if discovering the start is part of the surprise.
+- Do not reveal plot twists, hidden identities or locations, later objectives,
+  puzzle solutions, step-by-step routes, endings, or surprise rewards and unlocks.
+  Do not put spoilers behind Discord spoiler markup: the same text ships elsewhere.
+- Keep ordinary controls, accessibility changes and non-story fixes clear. For a
+  quest bug fix, describe the improvement without exposing the secret trigger or
+  solution (for example, "Improve reliability during a later quest encounter.").
+- Keep implementation details in developer documentation and tests, not in the
+  player-facing release note. Before posting, read all three fields as someone who
+  has not started the quest: would any line give away a discovery?
+
+For example, a fictional quest announcement could use:
+
+```json
+{
+  "title": "A new lead",
+  "summary": "Something new awaits curious visitors to the Crown.",
+  "notes": ["Add a new questline to discover at the Golden Crown."]
+}
+```
+
+This is an authoring and review policy, not automatic spoiler filtering. Apply it to
+new notes and revisions of this PR's own unreleased notes; keep released history
+immutable as described below.
+
+## Collection and release history
+
 Do not append to `CHANGELOG.md` or `game/features/changelog/entries.gd`. Both retain legacy
 history, including old branches during the transition. Old release tags remain readable.
 

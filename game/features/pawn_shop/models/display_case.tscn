@@ -1,0 +1,58 @@
+[gd_scene format=3]
+[ext_resource type="ArrayMesh" path="res://assets/pawn_shop/display_case.res" id="mesh"]
+[ext_resource type="Material" path="res://features/pawn_shop/models/furniture.tres" id="paint"]
+[ext_resource type="PackedScene" path="res://features/holdables/items/watch_view.tscn" id="watch"]
+[ext_resource type="PackedScene" path="res://features/holdables/items/jewelry_view.tscn" id="jewel"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/rotary_phone.tscn" id="phone"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/guest_register.tscn" id="ledger"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/service_bell.tscn" id="bell"]
+[ext_resource type="PackedScene" path="res://features/signage/sign_board.tscn" id="sign"]
+
+[sub_resource type="StandardMaterial3D" id="glass"]
+transparency = 1
+albedo_color = Color(0.55, 0.75, 0.7, 0.12)
+roughness = 0.18
+cull_mode = 2
+
+[sub_resource type="BoxMesh" id="glass_mesh"]
+size = Vector3(2.68, 0.59, 0.68)
+material = SubResource("glass")
+
+[node name="DisplayCase" type="Node3D"]
+
+[node name="Frame" type="MeshInstance3D" parent="."]
+mesh = ExtResource("mesh")
+material_override = ExtResource("paint")
+
+[node name="Glass" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.795, 0)
+mesh = SubResource("glass_mesh")
+
+[node name="Watch1" parent="." instance=ExtResource("watch")]
+position = Vector3(-0.7, 0.52, 0.15)
+scale = Vector3(2, 2, 2)
+
+[node name="Watch2" parent="." instance=ExtResource("watch")]
+position = Vector3(-0.4, 0.52, 0.15)
+scale = Vector3(2, 2, 2)
+
+[node name="Silver" parent="." instance=ExtResource("jewel")]
+position = Vector3(0.3, 0.56, 0.1)
+scale = Vector3(2, 2, 2)
+
+[node name="Phone" parent="." instance=ExtResource("phone")]
+position = Vector3(-0.95, 1.15, -0.03)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="Ledger" parent="." instance=ExtResource("ledger")]
+position = Vector3(0, 1.15, -0.05)
+rotation = Vector3(0, 3.14159265, 0)
+
+[node name="Bell" parent="." instance=ExtResource("bell")]
+position = Vector3(0.95, 1.15, 0)
+
+[node name="CashSign" parent="." instance=ExtResource("sign")]
+position = Vector3(0, 0.3, 0.361)
+text = "BUY - SELL - TRADE"
+letter_height = 0.08
+padding = 0.03

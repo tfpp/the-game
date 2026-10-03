@@ -74,6 +74,15 @@ reel settling during a win.
 ramps join both elevations, side doors stay open, the entire ferry hull route has
 clearance, landings have floors, and the main rooms have solid ceilings.
 
+## Operations garage starter point
+
+The main scene retains its original `Room/Spawn` marker as a fallback. The
+`crown_spawn` feature supplies the `player_spawn` marker for joins, fall recovery and
+combat respawns, in front of the elevator. The operations garage is reached by door. Its walking exit and van route map
+reach the casino; the return doorway is on the north promenade at (-7,1.1,-19.7),
+clear of the existing street/dev portals. Casino geometry and other entrances are
+unchanged. See `../starter_room/README.md`.
+
 ## Reference salon assets
 
 `salon.tscn` is checked in; edit it for layout changes. Its original meshes have adult proportions,
@@ -119,11 +128,19 @@ The main game now loads `gridmap/playable.tscn`, wrapping `casino_gridmap.tscn`.
 It preserves the 30 × 24 m pit at y -1.5, continuous surrounding floor at y 0 and two
 six-metre-wide ramps, using the Blockbench wood wall. The bar and stationary NPCs
 are restored; slots and roaming NPCs use their existing feature scenes. The
-food court and pawn shop now also use GridMap rooms off the south corridor, with
-their existing seating, counters, merchant and buying/selling interactions. The old
+former food court and pawn shop shells use GridMap rooms off the south corridor.
+Their shops have since moved: the food counters and booths now occupy the separate
+Crown Strip Mall, reached by its FOOD SHOPS portal in the south corridor, while
+the gun/pawn store uses the operations van. Existing shopping/seating behavior is
+unchanged; see `features/strip_mall/README.md` and `features/pawn_shop/README.md`. The old
 architecture described above remains in `world/room.tscn` for reference. Press F5
 to play, or open `gridmap/preview.tscn` for isolated geometry review. See
 [the GridMap guide](gridmap/README.md) for editing, tiles, rebuilding and verification.
+
+Three existing guests at the main bar and north/south card tables now smoke ambient
+cigarettes; their transforms and hitboxes are unchanged. See
+[`casino_patrons/README.md`](../casino_patrons/README.md#ambient-smoking) for animation,
+visibility budgets and the opt-in `SalonGuestModel.smoking` flag.
 
 The live casino now uses a separate decor GridMap for the original framed paintings,
 brass sconces and chandeliers. Its warm local light pools, darker ambient fill and

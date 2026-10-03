@@ -13,6 +13,14 @@ each musician under People.
   buttons, red moños and gold-trimmed sombreros. Hands follow the music: strums and
   guitarrón plucks land on the beat, the violin bows each note, and the trumpets and
   violin raise or lower their instruments as they trade the tune.
+- Each session the server randomly picks exactly one musician to be 10% shorter
+  and 15% broader/deeper. Feet stay on the stage; suit, hat, instrument, hand IK and
+  gun hitbox follow the same proportions. The choice survives deaths and respawns.
+- Every 36 seconds, starting 12 seconds into the session, that member turns to the
+  backdrop to check his tuning. Two different bandmates exchange four-second
+  whispered captions behind his back, teasing his shorter suit and fuller belly.
+  Captions appear above the speakers within 12 m, only while both speaker and target
+  are alive. He faces the audience again afterwards. No controls or audio are added.
 - Songs (`MariachiSongs`): *La Cucaracha* and *Jarabe Tapatío* (the Mexican Hat Dance),
   both traditional and public domain, arranged in C. Each plays twice, then the band
   moves on. Trumpets take the first strain in thirds, the violin the second.
@@ -30,7 +38,11 @@ each musician under People.
 starts) on change and in spawn snapshots. The server advances the song on its own clock
 or on an accepted `use` request (sender resolved by the component, range checked from
 the stage centre, no payload). Every peer restarts the clip when `net_take` changes,
-so late joiners start the current song from the top. Musician deaths use the existing
+so late joiners start the current song from the top. The same component replicates
+`net_stocky_member` (0–4, or -1 pending a snapshot) and `net_banter` (0 performing,
+1/2 whispered lines). Late joiners see the same build, turn and current caption;
+clients cannot reroll or schedule banter. The server resets the banter clock and
+rerolls the member on a session change. No request action is exposed for either. Musician deaths use the existing
 `StationaryPatron` replication. Nothing is persisted; a session change starts over
 from the first song.
 
@@ -61,4 +73,7 @@ server requests, cooldown, downed band, rotation, late-join snapshot and hand re
 (`test_mariachi_network.gd`), and placement against the real room collision
 (`test_mariachi_placement.gd`). `band_probe.tscn` renders the band (needs a window):
 `godot res://tests/features/mariachi_band/band_probe.tscn -- --band-capture=/tmp/band.png`
-(`--band-camera=x,y,z`, `--band-target=x,y,z`, `--band-time=seconds`).
+(`--band-camera=x,y,z`, `--band-target=x,y,z`, `--band-time=seconds`,
+`--band-member=0..4`, `--band-banter=0..2`). `test_band_banter.gd` covers all five
+variants, transformed hitboxes/grips, schedule, captions, deaths/respawns and snapshots;
+the ENet test also checks variant/banter replication and client authority rejection.

@@ -10,9 +10,10 @@ const CATEGORIES: Array[String] = [
 	"Rockets",
 	"Grenades",
 	"Plasma",
-	"Ray Gun"
+	"Ray Gun",
+	"Classic ammunition"
 ]
-const FIXED_PRICES := {"pistol": 1000, "smg": 2500, "shotgun": 3000, "awp": 5000}
+const FIXED_PRICES := {"pistol": 150000, "smg": 555000, "shotgun": 555000, "awp": 1500000}
 
 
 static func entries(category: int) -> Array[Dictionary]:
@@ -49,6 +50,13 @@ static func entries(category: int) -> Array[Dictionary]:
 				"automatic": 0
 			}
 		)
+	elif category == 8:
+		for weapon: String in ItemCatalog.AMMO_PACKS:
+			var pack: Dictionary = ItemCatalog.AMMO_PACKS[weapon]
+			var id := ItemCatalog.ammo_id(weapon, pack["rounds"])
+			result.append(
+				{"id": id, "name": ItemCatalog.find(id).display_name, "price": pack["price"]}
+			)
 	return result
 
 

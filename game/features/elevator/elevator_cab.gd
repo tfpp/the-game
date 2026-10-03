@@ -13,12 +13,16 @@ const CAB_HALF_DEPTH := 1.35
 const CAB_HEIGHT := 2.9
 const DOOR_CLOSED_X := 0.75
 const DOOR_MAX_OFFSET := 1.5
+## More riders than this keep the doors open and light the weight lamps.
+const MAX_RIDERS := 4
+const LAMP_ON_ENERGY := 4.0
 
 @export var destination: NodePath
 @export var travel_enabled := false
 @export var sign_text := "ELEVATOR"
 @export var net_state: State = State.CLOSED
 @export var net_aperture := 0.0
+@export var net_overloaded := false
 
 var _state_elapsed := 0.0
 var _trip_pending := false
@@ -27,6 +31,9 @@ var _trip_pending := false
 @onready var car: Node3D = $Car
 @onready var _door_left: Node3D = $Car/Doors/LeftLeaf
 @onready var _door_right: Node3D = $Car/Doors/RightLeaf
+@onready var _lamp: StandardMaterial3D = (
+	($Car/HallLamp/Lens as MeshInstance3D).material_override as StandardMaterial3D
+)
 
 
 func _ready() -> void:
@@ -34,12 +41,14 @@ func _ready() -> void:
 	entity.session_reset.connect(_reset)
 	entity.event_received.connect(_event)
 	_update_doors()
+	_update_lamps()
 
 
 func _physics_process(delta: float) -> void:
 	if entity.is_authority():
 		_server_advance(delta)
 	_update_doors()
+	_update_lamps()
 
 
 ## Both hall and cab plates use the same authenticated interaction policy.
@@ -50,7 +59,7 @@ func request_doors() -> bool:
 		_trip_pending = true
 		_open()
 		return true
-	if net_state == State.OPEN and not doorway_occupied():
+	if net_state == State.OPEN and not doorway_occupied() and not net_overloaded:
 		net_state = State.CLOSING
 		_trip_pending = true
 		_state_elapsed = 0.0
@@ -74,6 +83,7 @@ func _open() -> void:
 func _server_advance(delta: float) -> void:
 	if not entity.is_authority():
 		return
+	net_overloaded = _collect_occupants().size() > MAX_RIDERS
 	match net_state:
 		State.OPENING:
 			net_aperture = move_toward(net_aperture, 1.0, delta / DOOR_SLIDE_S)
@@ -83,12 +93,12 @@ func _server_advance(delta: float) -> void:
 		State.OPEN:
 			_state_elapsed += delta
 			if _state_elapsed >= BOARDING_S:
-				if doorway_occupied():
+				if doorway_occupied() or net_overloaded:
 					_state_elapsed = 0.0
 				else:
 					net_state = State.CLOSING
 		State.CLOSING:
-			if doorway_occupied():
+			if doorway_occupied() or net_overloaded:
 				_open()
 				return
 			net_aperture = move_toward(net_aperture, 0.0, delta / DOOR_SLIDE_S)
@@ -154,11 +164,22 @@ func _update_doors() -> void:
 func _reset(_mode: Network.Mode) -> void:
 	net_state = State.CLOSED
 	net_aperture = 0.0
+	net_overloaded = false
 	_trip_pending = false
 	_state_elapsed = 0.0
 	_update_doors()
+	_update_lamps()
 
 
 func _event(event: StringName, _payload: Dictionary) -> void:
 	if event == &"arrival_bell":
 		GameAudio.play_at(self, &"elevator_ding", global_position)
+
+
+## Riders whose replicated position is inside the cab, as the server counts them.
+func rider_count() -> int:
+	return _collect_occupants().size()
+
+
+func _update_lamps() -> void:
+	_lamp.emission_energy_multiplier = LAMP_ON_ENERGY if net_overloaded else 0.0

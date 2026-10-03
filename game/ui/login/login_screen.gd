@@ -51,6 +51,11 @@ var _menu_open := false
 var _idle_s := 0.0
 ## Fires a silent reconnect attempt after a dropped connection.
 var _reconnect_timer: Timer
+## Becomes true the first time gameplay is active. Until then, losing input shows the
+## small play prompt instead of the full menu, so the first frame shows the Crown.
+var _has_played := false
+var _play_layer: CanvasLayer
+var _play_prompt: Button
 
 
 func _ready() -> void:
@@ -84,12 +89,45 @@ func _process(delta: float) -> void:
 	# mode rather than the key. The grace period covers a lock request still in flight.
 	# Another modal (e.g. the chat box) also reads as "not playing" via gameplay_active,
 	# but it isn't a lost pointer lock, so don't pop the menu open on top of it.
+	if Controls.gameplay_active():
+		_has_played = true
 	if Controls.gameplay_active() or _other_modal_ui_open():
+		_play_layer.visible = false
 		_idle_s = 0.0
 		return
 	_idle_s += delta
 	if _idle_s >= IDLE_MENU_DELAY_S:
+		_idle_timeout()
+
+
+## Pointer lock or touch play stopped with no screen up. Before the player has ever
+## played, ask for the click (browsers need a gesture) with a small prompt over the
+## scene; afterwards a lost lock opens the menu as before.
+func _idle_timeout() -> void:
+	if _has_played:
 		open_menu()
+	else:
+		_show_play_prompt()
+
+
+func _show_play_prompt() -> void:
+	var verb := "Click"
+	if Controls.device == Controls.Device.TOUCH:
+		verb = "Tap"
+	elif Controls.device == Controls.Device.GAMEPAD:
+		verb = "Press A"
+	_play_prompt.text = "%s to play" % verb
+	_play_layer.visible = true
+	if Controls.device == Controls.Device.GAMEPAD and not _play_prompt.has_focus():
+		_play_prompt.grab_focus()
+
+
+func _on_play_prompt_pressed() -> void:
+	# Pressing inside the user gesture lets the browser grant pointer lock.
+	get_viewport().set_input_as_handled()
+	_play_layer.visible = false
+	_idle_s = 0.0
+	Controls.start()
 
 
 ## True while a different feature owns the modal_ui group (this screen removes itself
@@ -535,6 +573,7 @@ func _sign_out() -> void:
 
 func _open() -> void:
 	visible = true
+	_play_layer.visible = false
 	add_to_group(MODAL_GROUP)
 	Controls.pause()
 
@@ -593,6 +632,7 @@ func _build() -> void:
 	_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_box.add_theme_constant_override("separation", 12)
 	_scroll.add_child(_box)
+	_build_play_prompt()
 	get_viewport().size_changed.connect(_resize_panel)
 	_resize_panel()
 
@@ -710,3 +750,24 @@ func _focus_default_button() -> void:
 		if child is Button and not (child as Button).disabled:
 			(child as Button).grab_focus()
 			return
+
+
+## Small first-load prompt near the bottom of the screen, on its own layer so it shows
+## while the menu is hidden. A full-screen transparent button accepts a click anywhere.
+func _build_play_prompt() -> void:
+	_play_layer = CanvasLayer.new()
+	_play_layer.layer = layer
+	_play_layer.visible = false
+	add_child(_play_layer)
+	_play_prompt = Button.new()
+	_play_prompt.theme = _theme
+	_play_prompt.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+	_play_prompt.flat = true
+	_play_prompt.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_play_prompt.add_theme_font_size_override("font_size", 28)
+	_play_prompt.add_theme_color_override("font_color", Color.WHITE)
+	_play_prompt.add_theme_color_override("font_hover_color", Color(1, 0.85, 0.4))
+	_play_prompt.add_theme_color_override("font_outline_color", Color.BLACK)
+	_play_prompt.add_theme_constant_override("outline_size", 8)
+	_play_prompt.pressed.connect(_on_play_prompt_pressed)
+	_play_layer.add_child(_play_prompt)

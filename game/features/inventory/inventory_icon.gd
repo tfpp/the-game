@@ -22,7 +22,15 @@ func set_item(id: String) -> void:
 		queue_redraw()
 
 
+## Used for all backpack/stash icons without tinting the rendered model.
+func rarity_color() -> Color:
+	return ItemCatalog.item_color(_item)
+
+
 func _draw() -> void:
+	var definition := ItemCatalog.find(_item)
+	if definition != null and definition.rarity != ItemDefinition.Rarity.NONE:
+		draw_rect(Rect2(Vector2.ONE, size - Vector2.ONE * 2), rarity_color(), false, 2)
 	if _texture != null:
 		var side := minf(size.x, size.y)
 		draw_texture_rect(

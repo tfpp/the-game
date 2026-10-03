@@ -31,7 +31,16 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	var rig := _local_rig()
 	if rig == null or not rig.is_active():
-		_ammo_label.text = ""
+		var hand := Hand.for_peer(get_tree(), multiplayer.get_unique_id())
+		var weapon := hand.net_item_id if hand != null else ""
+		_ammo_label.text = (
+			(
+				"%s — %d rounds\nAmmo: Activities → Buy guns"
+				% [ItemCatalog.find(weapon).display_name, hand.inventory().ammo_for(weapon)]
+			)
+			if ItemCatalog.AMMO_PACKS.has(weapon)
+			else ""
+		)
 		if _is_open():
 			_close()
 		return

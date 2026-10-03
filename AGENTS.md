@@ -45,6 +45,7 @@ After the required reading, follow the documents relevant to the task:
 | [docs/design/zones/slums/parking-garage.md](docs/design/zones/slums/parking-garage.md) | Garage layout, vertical progression, combat, loot and atmosphere. |
 | [docs/design/zones/casinos/the-golden-crown.md](docs/design/zones/casinos/the-golden-crown.md) | Casino-specific document; currently a placeholder. Use lore and gameplay for established casino requirements. |
 | [docs/project/phases.md](docs/project/phases.md) | Delivery phases, dependencies and progress checklist. Consult before feature planning; check prerequisite work in code before moving to a later phase. |
+| [docs/phase1.md](docs/phase1.md) | Actionable Phase 1 polish task list (elevator, instancing, garage, loot, safe casino, modeled signs). Pick a task from here for MVP work. |
 | [docs/architecture.md](docs/architecture.md) | Service boundaries, networking, accounts, deployment and the agent pipeline. Read for implementation context. |
 | [docs/guns.md](docs/guns.md) | Every gun, its owning feature and whether it uses the player hand rig or floats. |
 | [docs/controls.md](docs/controls.md) | Player inputs across keyboard/mouse, controller and touch, plus device checks. |
@@ -80,7 +81,10 @@ files before editing the corresponding code.
   `game/features/<name>/release_notes/` directory. Use a unique issue-prefixed or
   descriptive filename, even when several PRs change the same feature. See
   `docs/release-notes.md` for the schema. The same file supplies the in-game entry,
-  release bullets and Discord edge announcements. For cross-cutting tooling/docs work,
+  release bullets and Discord edge announcements. Questline titles, summaries and bullets
+  must use spoiler-free, ambiguous language: announce discovery without revealing twists,
+  solutions, later objectives or surprise rewards (see `docs/release-notes.md`).
+  For cross-cutting tooling/docs work,
   use the nearest affected feature (release tooling belongs to `changelog`).
 - Do not edit the shared `game/features/changelog/entries.gd` or `CHANGELOG.md` lists
   to record new changes. They retain legacy history; release automation updates

@@ -1,9 +1,7 @@
-[gd_scene load_steps=3 format=3]
-
-[ext_resource type="PackedScene" path="res://assets/casino_hub/models/slot_cabinet.glb" id="model"]
-[ext_resource type="Script" path="res://features/casino_hub/model_materials.gd" id="materials"]
-
+[gd_scene format=3]
+[ext_resource type="ArrayMesh" path="res://assets/slot_machine/cabinet_v3/cabinet.res" id="mesh"]
+[ext_resource type="Material" path="res://features/slot_machine/materials/cabinet_v2.tres" id="material"]
 [node name="SlotCabinet" type="Node3D"]
-script = ExtResource("materials")
-
-[node name="Model" parent="." instance=ExtResource("model")]
+[node name="Model" type="MeshInstance3D" parent="."]
+mesh = ExtResource("mesh")
+material_override = ExtResource("material")

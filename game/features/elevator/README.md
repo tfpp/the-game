@@ -1,7 +1,7 @@
 # Golden Crown elevator
 
 The current casino has one stationary elevator in the center of its north wall,
-opposite the south spawn. Its eight-meter facade replaces four two-meter wall
+opposite the south lobby. New players spawn just in front of it (`../crown_spawn/`). Its eight-meter facade replaces four two-meter wall
 panels. A broad brass-lettered sign, matching wood facade and flanking sconces make
 it a landmark. The entrance is recessed 20 cm behind the wall; the header and roof
 have separate front planes to avoid z fighting. The floor remains at y = 0.
@@ -10,6 +10,13 @@ Press Use at the hall plate to open the doors. They stay open for 4.5 seconds be
 closing. Both the hall and interior plates can close them sooner. A player in the
 threshold holds the doors open or reverses a closing door. Doors and buttons use
 the existing keyboard, controller and touch interaction system.
+
+The cab carries at most **four riders**. The server counts players inside the cab
+every tick; with five or more the doors refuse to close (the plates show "Over
+capacity") and closing doors reopen. A small brass lamp with a red emissive lens
+lights above the hall doors (right of the floor indicator) and on the cab's back
+wall. The replicated `net_overloaded` flag drives both lamps, so late joiners see
+the current state. `rider_count()` exposes the server count.
 
 **Travel is disabled in the casino.** There is no destination cab or basement trip
 loaded by this feature. The elevator car never translates vertically.

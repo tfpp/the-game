@@ -1,0 +1,9 @@
+{
+  "title": "Safe Golden Crown",
+  "summary": "The casino is now a safe zone: guns stay silent and players can't hurt each other inside.",
+  "notes": [
+    "Block player-versus-player damage while either player is inside the Golden Crown, its lounge, cellar or hotel wing.",
+    "Stop held guns and gun-machine guns from firing inside the Crown.",
+    "Keep killable toys, the shooting gallery and slum combat working as before."
+  ]
+}

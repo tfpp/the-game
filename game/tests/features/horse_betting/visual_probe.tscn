@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://tests/features/horse_betting/visual_probe.gd" id="1"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/casino_gridmap.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://features/horse_betting/feature.tscn" id="3"]
+
+[node name="Review" type="Node3D"]
+script = ExtResource("1")
+
+[node name="Casino" parent="." instance=ExtResource("2")]
+
+[node name="Race" parent="." instance=ExtResource("3")]
+
+[node name="Camera" type="Camera3D" parent="." groups=["local_player"]]
+position = Vector3(14.5, 2.5, -1)
+current = true

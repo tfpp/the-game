@@ -1,0 +1,8 @@
+{
+  "title": "Elevator capacity lamp",
+  "summary": "The casino elevator now holds four riders; a red lamp lights and the doors stay open when it's overloaded.",
+  "notes": [
+    "Keep the elevator doors open while more than four players are inside.",
+    "Add red over-capacity lamps above the hall doors and inside the cab."
+  ]
+}

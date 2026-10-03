@@ -1,0 +1,14 @@
+{
+	"atlas_size": 64,
+	"charts": [
+		"walnut veneer",
+		"aged cream steel",
+		"dark green felt",
+		"dull brass"
+	],
+	"display_case_triangles": 144,
+	"front": "+Z",
+	"padding": 2,
+	"pivot": "floor center",
+	"shelves_triangles": 108
+}

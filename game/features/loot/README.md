@@ -35,8 +35,21 @@ or `LootContainer.reset_all(get_tree())` for all of them (e.g. when slum travel
 starts a new visit); the next search rolls new loot. `regenerate()` rolls
 immediately instead.
 
-Placeholder valuables (`stolen_wallet`, `watch`, `jewelry`, `electronics`, `scrap`,
-`cash_bundle`) live in `features/holdables/items/` as ordinary `PROP` items; cash
-bundles are inventory items, not wallet money, for now.
+Five tiered valuables (scrap, stolen_wallet, electronics, watch, jewelry) live in
+features/holdables/items/ as ordinary PROP items. Their rarity and pawn price
+appear in stash entries and icon borders. The existing garage/alley table
+weights descend with rarity; floor-scaled tables are future B4 work. Cash bundles
+are separate $5 monetary loot, carried until redeemed at the pawn counter rather
+than a sixth valuable tier. See the holdables README for the price/color table.
+Claims, resets and replication remain unchanged.
 
 Tests: `tests/features/loot/`.
+
+## Pickup feedback
+
+A successful take sends the taker an owner-only `picked_up` event through the
+container's `NetworkedEntity`. The client shows `LootToast` (`loot_toast.gd`):
+"Picked up <name> ($<value>)" in the item's rarity color for 2.5 seconds near
+the top of the screen. Newer pickups replace the text rather than stacking. The
+sound is the existing owner-only `pickup` cue played by `PlayerInventory`.
+Events are not replayed to late joiners; dedicated servers show nothing.

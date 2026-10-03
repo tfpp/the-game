@@ -14,6 +14,7 @@ const HAND_SPREAD := 0.2
 ## Hand motion stays small: a few centimetres, with a slow ~2 s cycle.
 const SWAY := Vector3(0.07, 0.05, 0.06)
 const PERIOD_S := 2.2
+const AnimationBisect := preload("res://features/profiler/animation_bisect.gd")
 
 @export var seed_phase := 0.0
 @export var skin_index := 3
@@ -46,6 +47,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if not AnimationBisect.dealers:
+		return
 	if not is_visible_in_tree():
 		return
 	_time += delta

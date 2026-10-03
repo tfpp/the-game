@@ -6,6 +6,11 @@ Use (E, controller B/Circle or touch Use) on its door to arrive in the room at
 `(300, 0, -300)`. The **BACK TO THE CASINO** door on the south wall returns you to
 the booth.
 
+The Gun-O-Matic and its trash can stand on the east wall at (313, 0, -300)
+and (313, 0, -298.2), respectively, owned by `features/gun_machine`. Use the
+same E / B or Circle / touch USE controls; random guns still cost $20.
+The kiosk clears the warp-door paths and the room arrival/return route.
+
 Warp doors in the room (each still belongs to its own feature, which also owns its
 return marker):
 
@@ -28,3 +33,7 @@ east/west walls) and point its return door at a marker in front of it.
 
 `tests/features/dev_room/` checks the booth round trip, that every warp door sits
 inside the room and that each return marker lands inside it.
+
+The Street District, Hotel Props and procedural garage teleporters here are hidden
+and locked until `sv_cheats 1` ([dev access](../dev_access/README.md)). The booth and
+the lounge, hotel wing and apartment doors stay open for normal play.

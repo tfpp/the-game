@@ -1,0 +1,8 @@
+{
+  "title": "Zone instance registry",
+  "summary": "The server now keeps track of which players are on each slum excursion, ready for the elevator.",
+  "notes": [
+    "Add a server-owned registry of slum zone instances with members, slum and world slot.",
+    "Record slum gate excursions in the registry and free them on return, death or disconnect."
+  ]
+}

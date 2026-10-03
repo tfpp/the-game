@@ -28,8 +28,7 @@ static func populate(floors: GridMap, walls: GridMap, sides: GridMap) -> void:
 		walls.set_cell_item(Vector3i(x + 1, 0, 29), Layout.WOOD_WALL, south)
 	for z: int in range(20, 30, 2):
 		sides.set_cell_item(Vector3i(-16, 0, z + 1), Layout.WOOD_WALL, west)
-		var item := HEADER if z >= 24 and z < 28 else Layout.WOOD_WALL
-		sides.set_cell_item(Vector3i(-3, 0, z), item, east)
+		sides.set_cell_item(Vector3i(-3, 0, z), Layout.WOOD_WALL, east)
 	for z: int in range(20, 38, 2):
 		sides.set_cell_item(Vector3i(33, 0, z), Layout.WOOD_WALL, east)
 		var item := HEADER if z >= 24 and z < 28 else Layout.WOOD_WALL
@@ -37,7 +36,7 @@ static func populate(floors: GridMap, walls: GridMap, sides: GridMap) -> void:
 	# The corridor faces need the decorated back of each shop partition too.
 	for z: int in range(20, 30, 2):
 		var item := HEADER if z >= 24 and z < 28 else Layout.WOOD_WALL
-		sides.set_cell_item(Vector3i(-2, 0, z + 1), item, west)
+		sides.set_cell_item(Vector3i(-2, 0, z + 1), Layout.WOOD_WALL, west)
 		sides.set_cell_item(Vector3i(1, 0, z), item, east)
 
 

@@ -11,3 +11,9 @@ script = ExtResource("review")
 [node name="Casino" parent="." instance=ExtResource("casino")]
 
 [node name="MariachiBand" parent="." instance=ExtResource("band")]
+
+[node name="Overview" type="Camera3D" parent="."]
+transform = Transform3D(0.7518398, -0.35280922, 0.5570122, 0, 0.8447952, 0.5350898, -0.6593458, -0.40230182, 0.6351507, 50, 48, 57)
+projection = 1
+current = true
+size = 85.0
