@@ -1,0 +1,71 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://features/strip_mall/rival_model.gd" id="model"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/cream.tres" id="cream"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
+[ext_resource type="Texture2D" path="res://assets/casino_hub/textures/prop_grain.png" id="grain"]
+[sub_resource type="StandardMaterial3D" id="red"]
+albedo_color = Color(0.55, 0.055, 0.04, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.9
+[sub_resource type="BoxMesh" id="counter"]
+size = Vector3(2.8, 1, 1.2)
+[sub_resource type="BoxShape3D" id="collision"]
+size = Vector3(2.8, 1.08, 1.3)
+[sub_resource type="BoxMesh" id="top"]
+size = Vector3(3, 0.08, 1.3)
+[sub_resource type="BoxMesh" id="panel"]
+size = Vector3(2.6, 0.7, 0.025)
+[sub_resource type="BoxMesh" id="post"]
+size = Vector3(0.07, 1.25, 0.07)
+[sub_resource type="BoxMesh" id="header"]
+size = Vector3(3, 0.7, 0.15)
+[node name="RivalStand" type="Node3D"]
+[node name="Counter" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.5, 0)
+mesh = SubResource("counter")
+material_override = ExtResource("wood")
+[node name="Body" type="StaticBody3D" parent="."]
+[node name="Collision" type="CollisionShape3D" parent="Body"]
+position = Vector3(0, 0.54, 0)
+shape = SubResource("collision")
+[node name="Top" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.04, 0)
+mesh = SubResource("top")
+material_override = ExtResource("cream")
+[node name="FrontPanel" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.55, 0.615)
+mesh = SubResource("panel")
+material_override = SubResource("red")
+[node name="PostLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-1.3, 1.705, -0.4)
+mesh = SubResource("post")
+material_override = ExtResource("brass")
+[node name="PostRight" type="MeshInstance3D" parent="."]
+position = Vector3(1.3, 1.705, -0.4)
+mesh = SubResource("post")
+material_override = ExtResource("brass")
+[node name="Header" type="MeshInstance3D" parent="."]
+position = Vector3(0, 2.68, -0.4)
+mesh = SubResource("header")
+material_override = SubResource("red")
+[node name="Sign" type="Label3D" parent="."]
+position = Vector3(0, 2.68, -0.315)
+text = "CITY WOK"
+font_size = 96
+pixel_size = 0.005
+modulate = Color(1, 0.92, 0.76, 1)
+outline_modulate = Color(0.2, 0.015, 0.01, 1)
+double_sided = false
+[node name="MenuBoard" type="Label3D" parent="."]
+position = Vector3(0, 0.55, 0.635)
+text = "SALMON RICE BOWL - $12\nE / USE TO ORDER"
+font_size = 40
+pixel_size = 0.0035
+modulate = Color(1, 0.92, 0.76, 1)
+double_sided = false
+[node name="Owner" type="Node3D" parent="."]
+position = Vector3(2, 0, 0)
+rotation = Vector3(0, 3.1415927, 0)
+script = ExtResource("model")

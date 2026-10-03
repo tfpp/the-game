@@ -1,0 +1,16 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://features/food_court/poke_stand.gd" id="stand"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="Script" path="res://features/food_court/poke_menu.gd" id="menu"]
+
+[node name="RivalFoodService" type="Node3D"]
+script = ExtResource("stand")
+tip_choices = Array[int]([0])
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("net")
+interaction_offset = Vector3(0, 1, 0.6)
+interaction_range = 2.5
+
+[node name="Menu" type="CanvasLayer" parent="."]
+script = ExtResource("menu")
