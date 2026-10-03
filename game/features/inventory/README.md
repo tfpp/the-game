@@ -32,6 +32,24 @@ there are no dye controls. Two clothing pickups sit near spawn, two to the west,
 and two to the east. Clothes keep their color through swaps, drops and pickups.
 White underwear reappears when pants are removed; it cannot be stored or dropped.
 
+## Weapon skin collection
+
+Choose **Prawn skin collection** in this screen, or **Esc → Activities → Prawn skins**.
+Rusty Hogg's pawn shop owns this separate account cosmetic collection and its atomic
+wallet transactions; it does not consume backpack slots or alter these ordinary
+inventory documents. Buy crates beside the pawn-shop gun wall, then open, equip,
+unequip or exchange extra skin copies through that collection panel.
+See [prawn crates](../pawn_shop/README.md#prawn-skin-crates) for odds, persistence
+and temporary offline behavior. Classic guns and ammunition still use the normal
+inventory. Closing Inventory to open the collection transfers modal input control
+without resuming gameplay underneath it.
+
+`ModelIconRenderer.request_model(key, factory, direction)` allows cosmetic
+preview factories to share the same bounded render-once viewport/cache as
+`request_item` and `request_scene`. Keys receive the `model:` namespace,
+so skinned previews cannot replace ordinary item icons. The factory must return
+a fresh Node3D; all framing, headless guards and cleanup remain in the renderer.
+
 ## Multiplayer
 
 `PlayerInventory` is a child of the existing server-spawned `Hand`. Its inventory

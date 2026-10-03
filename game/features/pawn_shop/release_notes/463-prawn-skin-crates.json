@@ -1,0 +1,9 @@
+{
+  "title": "Prawn skin crates",
+  "summary": "Inspect prawn-themed crates at Rusty Hogg's, collect weapon finishes and exchange duplicate skins.",
+  "notes": [
+    "Add two cosmetic crates with visible drop odds, animated reveals and ten classic-weapon skins.",
+    "Save signed-in skin collections and equipped finishes between sessions.",
+    "Let players exchange extra copies for currency without losing their last or equipped skin."
+  ]
+}

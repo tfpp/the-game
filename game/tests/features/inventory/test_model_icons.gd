@@ -35,8 +35,11 @@ func test_renderer_is_shared_even_before_deferred_viewport_attachment() -> void:
 	await get_tree().process_frame
 	assert_true(first.is_inside_tree())
 	assert_null(first.request_item("not-an-item"))
+	assert_null(first.request_model("", ItemCatalog.create_view.bind("pistol")))
+	assert_null(first.request_model("bad-factory", Callable()))
 	if DisplayServer.get_name() == "headless":
 		assert_null(first.request_item("scrap"))
+		assert_null(first.request_model("prawn-preview", ItemCatalog.create_view.bind("pistol")))
 		assert_null(first._viewport, "Server/headless checks allocate no rendering viewport")
 		assert_true(first._jobs.is_empty())
 	first.queue_free()

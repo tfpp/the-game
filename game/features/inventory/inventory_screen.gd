@@ -433,10 +433,18 @@ func _build() -> void:
 	_equip = _button(actions, "Equip", _action.bind("equip"))
 	_stow = _button(actions, "Store", _action.bind("stow"))
 	_drop = _button(actions, "Drop", _action.bind("drop"))
+	_button(box, "Prawn skin collection", _open_skins)
 	_close_button = _button(box, "Back to game", _close)
 	_close_button.theme_type_variation = &"Button"
 	get_viewport().size_changed.connect(_resize.bind(panel, scroll, columns, bag))
 	_resize(panel, scroll, columns, bag)
+
+
+func _open_skins() -> void:
+	var menu := get_tree().get_first_node_in_group(&"prawn_skin_menu")
+	if menu != null:
+		_close(false)
+		menu.esc_menu_open()
 
 
 func _resize(
