@@ -106,9 +106,10 @@ func test_order_drink_must_come_from_bar_and_go_to_correct_patron() -> void:
 
 func test_ninth_dirty_glass_fails_without_prize_and_clears_cargo() -> void:
 	_use("Bar")
-	for count: int in 8:
+	assert_eq(_shift.dirty, [0], "first task is ready immediately")
+	for count: int in 7:
 		_shift.spawn_empty()
-		assert_eq(_shift.dirty.size(), count + 1)
+		assert_eq(_shift.dirty.size(), count + 2)
 		assert_eq(_shift.phase, "active")
 	assert_eq(_shift.dirty.size(), 8)
 	_shift.spawn_empty()
@@ -164,9 +165,9 @@ func test_timers_start_slow_ramp_and_large_steps_cannot_skip_failure() -> void:
 	assert_lt(BusboyShift.order_interval(90), BusboyShift.order_interval(30))
 	_use("Bar")
 	_shift.advance(11.0)
-	assert_true(_shift.dirty.is_empty())
+	assert_eq(_shift.dirty, [0])
 	_shift.advance(1.0)
-	assert_eq(_shift.dirty.size(), 1)
+	assert_eq(_shift.dirty.size(), 2)
 	assert_true(_shift.orders.is_empty())
 	_shift.advance(120.0)
 	assert_eq(_shift.phase, "failed", "cannot skip backlog failure with a long frame")
@@ -260,7 +261,7 @@ func test_stale_reward_callback_cannot_change_new_session() -> void:
 
 func test_late_snapshot_presents_glasses_orders_cargo_and_server_owned_spawn_fields() -> void:
 	_use("Bar")
-	_shift.dirty = [0, 1, 5]
+	_shift.dirty = [0, 1, 5, 21]
 	_shift.orders = {1: 12.0}
 	_shift.cargo = -2
 	_shift._publish()
@@ -271,6 +272,9 @@ func test_late_snapshot_presents_glasses_orders_cargo_and_server_owned_spawn_fie
 	late._present()
 	assert_true(late.get_node("Glass0").visible)
 	assert_true(late.get_node("Glass1").visible)
+	assert_true(late.get_node("Glass21").visible, "late join sees new table's task")
+	assert_string_contains(late.get_node("Glass21/Label").text, "table 8")
+	assert_eq(late.get_node("TableCard8").get("number"), 8)
 	assert_true(late.get_node("Glass0/Label").visible)
 	assert_false(late.get_node("Glass1/Label").visible, "one clear EMPTY marker per table")
 	assert_true(late.get_node("Order1").visible)

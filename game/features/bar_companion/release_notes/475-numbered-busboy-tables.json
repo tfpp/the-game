@@ -1,0 +1,9 @@
+{
+  "title": "A clearer busboy shift",
+  "summary": "Follow numbered table cards and start clearing glasses immediately at the salon bar.",
+  "notes": [
+    "Add two-sided number cards to all eight busboy tables and three cocktail tables around the casino promenade.",
+    "Start shifts with an empty glass at table 1 and show outstanding table numbers in the task HUD.",
+    "Include the west lounge table in shifts and hide counter prompts that cannot perform a task."
+  ]
+}

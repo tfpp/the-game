@@ -40,7 +40,7 @@ func can_use(player: Player) -> bool:
 func interaction_text() -> String:
 	var state := _shift.snapshot
 	if kind == 1:
-		return "Busboy — pick up empty glass"
+		return "Busboy — pick up empty glass from table %d" % (index / 3 + 1)
 	if kind == 2:
 		return "Deliver drink to table %d" % (index + 1)
 	var phase := str(state.get("phase", "idle"))
@@ -97,7 +97,7 @@ func present(state: Dictionary) -> void:
 		_label.text = caption
 	elif kind == 1:
 		visible = phase == "active" and index in (state.get("dirty", []) as Array)
-		_label.text = "EMPTY"
+		_label.text = "EMPTY — table %d" % (index / 3 + 1)
 		_label.visible = true
 		for other: int in state.get("dirty", []) as Array:
 			if other >= index - index % 3 and other < index:
