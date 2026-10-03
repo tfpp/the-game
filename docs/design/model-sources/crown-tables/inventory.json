@@ -1,0 +1,20 @@
+[
+	{
+		"bounds": "[P: (-1.53, 0.0, -0.77), S: (3.06, 1.1925, 1.6)]",
+		"id": "craps_table",
+		"surfaces": 2,
+		"textures": [
+			{
+				"height": 128,
+				"path": "res://assets/casino_props/textures/craps_table.png",
+				"width": 128
+			},
+			{
+				"height": 32,
+				"path": "res://assets/casino_props/textures/craps_dice.png",
+				"width": 32
+			}
+		],
+		"triangles": 192
+	}
+]

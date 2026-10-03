@@ -168,3 +168,17 @@ reason)`, which shows `+$10.00: <reason>` to that player only in the chat log
 (`features/chat_box`'s `send_notice()`). `credit_coin()` and `sell_loot()` take a required
 `reason` and announce on success; minute income and slot wins announce too (a slot win only
 once the reels stop). Features that pay out must pass a player-facing reason.
+
+## Casino table reservations
+
+`reserve_table(peer, id, maximum_cents)` locks spending for a table hand without
+debiting money. Holds capture the account and maximum stake; another table, slot,
+roulette spin or paid operation cannot use that wallet until release/settlement.
+Income heartbeats continue. `release_table(peer, id)` only releases the matching
+hold. `settle_table(peer, account, id, wager, payout)` validates the captured account,
+maximum wager and existing 36x gross payout cap, then uses `settle_roulette`'s atomic
+persisted transaction. A transient error restores the hold for the same-ID retry;
+a terminal result releases it. Disconnected temporary wallets with holds survive
+cleanup until settlement. Mode changes clear holds. See
+[table games](../table_games/README.md) for rules and the cross-account poker
+settlement limitation.

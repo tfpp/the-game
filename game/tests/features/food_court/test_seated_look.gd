@@ -4,6 +4,7 @@ extends GutTest
 const COURT := preload("res://features/food_court/feature.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
 const CAMERA := preload("res://features/third_person/third_person.gd")
+const SUITES := preload("res://features/table_games/feature.tscn")
 
 var _court: FoodCourt
 
@@ -80,6 +81,42 @@ func test_local_first_and_third_person_keep_body_fixed_and_camera_free() -> void
 	assert_true(is_nan(_court.seated_yaw(1)))
 	assert_almost_eq(model._head.rotation.y, 0.0, 0.001)
 	assert_almost_eq((model.get_parent() as Node3D).rotation.y, player.yaw, 0.001)
+
+
+func test_gaming_suite_provider_preserves_pose_and_cross_system_exclusivity() -> void:
+	var suites := SUITES.instantiate()
+	add_child_autofree(suites)
+	var seats := suites.get_node("Room/Poker/Seats") as CrownTableSeating
+	seats.set_physics_process(false)
+	assert_eq(get_tree().get_first_node_in_group(&"seating"), _court)
+	for peer: int in [1, 2]:
+		var model := _avatar(peer)
+		var player := model.player
+		var snapshot := seats.net_seats.duplicate()
+		snapshot[0] = peer
+		seats.net_seats = snapshot
+		var heading := seats.sit_yaw(0)
+		player.yaw = heading + 0.7
+		player.net_yaw = player.yaw
+		player.pitch = 0.2
+		player.net_pitch = player.pitch
+		player._process(1.0)
+		model._process(1.0)
+		assert_true(model.seated, "Find the occupied provider after the empty food court")
+		_assert_pose(model, heading, 0.7)
+		player.net_position = _court.seats[0].global_position
+		assert_false(_court._may_sit(peer, {"seat": 0}), "Cannot claim a booth while at a table")
+		seats._free_peer(peer)
+		assert_true(_court._may_sit(peer, {"seat": 0}))
+		_occupy(peer, 0)
+		player.net_position = seats.seats[0].global_position
+		assert_false(seats._may_sit(peer, {"seat": 0}), "Cannot claim a table while in a booth")
+		_court._free_peer(peer)
+		assert_true(seats._may_sit(peer, {"seat": 0}))
+		player._process(1.0)
+		model._process(1.0)
+		assert_false(model.seated)
+		assert_almost_eq(model._head.rotation.y, 0.0, 0.001)
 
 
 func test_remote_snapshot_locks_body_across_wrap_and_restores_on_stand() -> void:

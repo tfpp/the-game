@@ -1,0 +1,8 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://features/table_games/seating.gd" id="seating"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[node name="Seats" type="Node3D"]
+script = ExtResource("seating")
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("net")
+replicated_properties = Array[NodePath]([NodePath(".:net_seats")])

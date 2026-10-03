@@ -99,17 +99,21 @@ func _process(delta: float) -> void:
 	if gun != null and gun.has_hand_grips():
 		holding = true
 		support = gun.support_grip() != null
-	var seating := get_tree().get_first_node_in_group(&"seating")
-	seated = seating != null and bool(seating.call("is_seated", player.get_multiplayer_authority()))
+	seated = false
 	_head_yaw = 0.0
-	if seated and seating.has_method("seated_yaw"):
-		var body_yaw: float = seating.call("seated_yaw", player.get_multiplayer_authority())
-		if not is_nan(body_yaw):
-			# Runs after Player and third_person: neither view yaw nor remote smoothing
-			# may turn the seated body. Late joins derive the same heading from the seat.
-			(get_parent() as Node3D).global_rotation.y = body_yaw
-			var view_yaw := player.yaw if player.is_local() else player.net_yaw
-			_head_yaw = wrapf(view_yaw - body_yaw, -PI, PI)
+	for seating: Node in get_tree().get_nodes_in_group(&"seating"):
+		if not bool(seating.call("is_seated", player.get_multiplayer_authority())):
+			continue
+		seated = true
+		if seating.has_method("seated_yaw"):
+			var body_yaw: float = seating.call("seated_yaw", player.get_multiplayer_authority())
+			if not is_nan(body_yaw):
+				# Runs after Player and third_person: view yaw and remote smoothing
+				# cannot turn the body. Derive heading from the occupied provider.
+				(get_parent() as Node3D).global_rotation.y = body_yaw
+				var view_yaw := player.yaw if player.is_local() else player.net_yaw
+				_head_yaw = wrapf(view_yaw - body_yaw, -PI, PI)
+		break
 	var crouch := get_tree().get_first_node_in_group(&"crouching")
 	crouched = (
 		crouch != null and bool(crouch.call("is_crouching", player.get_multiplayer_authority()))
