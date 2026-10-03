@@ -1,0 +1,4 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://../docs/design/model-sources/crown-tables/bake_dealer.gd" id="bake"]
+[node name="BakeDealer" type="Node"]
+script = ExtResource("bake")

@@ -1,0 +1,44 @@
+{
+	"charts": {
+		"BASE WALNUT": "[P: (64, 84), S: (40, 16)]",
+		"BLACKJACK FELT": "[P: (80, 4), S: (44, 40)]",
+		"BRASS": "[P: (108, 84), S: (16, 16)]",
+		"PADDED BURGUNDY RAIL": "[P: (4, 48), S: (120, 12)]",
+		"PEDESTAL WALNUT": "[P: (4, 84), S: (56, 36)]",
+		"POKER FELT": "[P: (4, 4), S: (72, 40)]",
+		"UNDERSIDE": "[P: (64, 104), S: (60, 16)]",
+		"WALNUT APRON": "[P: (4, 64), S: (120, 16)]"
+	},
+	"models": [
+		{
+			"bounds": "[P: (-1.21, 0.0, -0.71), S: (2.42, 0.98, 1.42)]",
+			"front": "+Z",
+			"id": "poker_table",
+			"pivot": "floor-centred",
+			"surfaces": 1,
+			"texture": "res://assets/table_games/textures/card_tables.png",
+			"texture_size": "128x128",
+			"triangles": 248
+		},
+		{
+			"bounds": "[P: (-1.35, 0.0, -0.66), S: (2.7, 0.98, 1.32)]",
+			"front": "+Z",
+			"id": "blackjack_table",
+			"pivot": "floor-centred",
+			"surfaces": 1,
+			"texture": "res://assets/table_games/textures/card_tables.png",
+			"texture_size": "128x128",
+			"triangles": 212
+		},
+		{
+			"bounds": "[P: (-1.8375, 0.0, -0.86625), S: (3.675, 0.98, 1.7325)]",
+			"front": "+Z",
+			"id": "baccarat_table",
+			"pivot": "floor-centred",
+			"surfaces": 1,
+			"texture": "res://assets/table_games/textures/card_tables.png",
+			"texture_size": "128x128",
+			"triangles": 248
+		}
+	]
+}
