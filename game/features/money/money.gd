@@ -21,6 +21,7 @@ var _generation := 0
 var _poll_elapsed := 5.0
 var _unresolved: Dictionary = {}
 var _cosmetic_results: Dictionary = {}
+var _account_adjustments: Dictionary = {}
 var _temporary_seconds: Dictionary = {}
 var _temporary_income_units: Dictionary = {}
 var _starting_cents := DEV_STARTING_CENTS if local_dev() else STARTING_CENTS
@@ -40,6 +41,7 @@ func _reset(_mode: Network.Mode) -> void:
 	_temporary_income_units.clear()
 	_unresolved.clear()
 	_cosmetic_results.clear()
+	_account_adjustments.clear()
 	_poll_elapsed = 5.0
 
 
@@ -475,6 +477,47 @@ func cosmetics(
 		_set_balance(peer, int(result["balance"]))
 		if delta > 0 and not load and not replayed:
 			announce_gain(peer, delta, "Duplicate prawn skin exchange")
+	_busy.erase(peer)
+	return result
+
+
+## Server-only debit/credit against a captured account, including after disconnect.
+## Caller owns eligibility and immutable retry IDs; never accepts client-chosen amounts.
+## Used by the chicken book's upfront wagers and interruption refunds.
+func adjust_account(peer: int, account: int, id: String, delta: int, reason: String) -> Dictionary:
+	if not multiplayer.is_server() or _busy.has(peer):
+		return {"error": "Wallet loading — try again"}
+	if delta == 0 or id.length() != 64 or account < 0:
+		return {"error": "Invalid wallet adjustment", "rejected": true}
+	_busy[peer] = true
+	var generation := _generation
+	var result: Dictionary
+	var replayed := false
+	if account <= 0:
+		if not _temporary() or not balances.has(peer):
+			result = {"error": "Wallet unavailable", "rejected": true}
+		elif _account_adjustments.has(id):
+			var receipt: Array = _account_adjustments[id]
+			if receipt != [peer, delta]:
+				result = {"error": "Transaction changed", "rejected": true}
+			else:
+				replayed = true
+				result = {"balance": balances[peer]}
+		elif int(balances[peer]) + delta < 0:
+			result = {"error": "Insufficient funds", "rejected": true}
+		else:
+			result = {"balance": int(balances[peer]) + delta}
+			_account_adjustments[id] = [peer, delta]
+	else:
+		result = await _request(
+			account, "charge" if delta < 0 else "sell", id, {"amount_cents": absi(delta)}
+		)
+	if generation != _generation:
+		return {"error": "Session changed"}
+	if _account(peer) == account and result.has("balance"):
+		_set_balance(peer, int(result["balance"]))
+		if delta > 0 and not replayed:
+			announce_gain(peer, delta, reason)
 	_busy.erase(peer)
 	return result
 

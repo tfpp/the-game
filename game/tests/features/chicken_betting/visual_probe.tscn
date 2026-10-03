@@ -1,0 +1,9 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://tests/features/chicken_betting/visual_probe.gd" id="probe"]
+[ext_resource type="PackedScene" path="res://features/chicken_betting/feature.tscn" id="feature"]
+[node name="Review" type="Node3D"]
+script = ExtResource("probe")
+[node name="Feature" parent="." instance=ExtResource("feature")]
+[node name="Camera" type="Camera3D" parent="."]
+position = Vector3(80, 2, -596.5)
+current = true
