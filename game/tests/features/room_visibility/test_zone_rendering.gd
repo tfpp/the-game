@@ -86,6 +86,41 @@ func test_new_player_visuals_follow_teleport_and_respawn_camera() -> void:
 	assert_eq(_renderer._visuals.size(), 0, "Disconnected/freed avatars are removed")
 
 
+func test_handheld_layer_survives_zone_refresh_and_restores_world_classification() -> void:
+	var item := _mesh(_root, Vector3(0, -6, 0))
+	FirstPersonView.set_visuals(item, true)
+	_renderer._register(item, true)
+	_renderer.refresh_moving()
+	assert_eq(item.layers, FirstPersonView.MASK)
+	FirstPersonView.set_visuals(item, false)
+	_renderer.refresh_moving()
+	assert_eq(item.layers, _zone.render_mask())
+	item.position = Vector3.ZERO
+	_renderer.refresh_moving()
+	assert_eq(item.layers, 1, "Authored mask must survive registration during FPS")
+
+
+func test_only_the_current_rooms_lights_illuminate_the_handheld_layer() -> void:
+	var casino := DirectionalLight3D.new()
+	_root.add_child(casino)
+	var garage := OmniLight3D.new()
+	_zone.add_child(garage)
+	var camera := Camera3D.new()
+	_root.add_child(camera)
+	camera.make_current()
+	camera.position = Vector3(0, -6, 0)
+	_renderer.update_camera(camera)
+	_renderer._register(casino, false)
+	_renderer._register(garage, false)
+	assert_eq(casino.light_cull_mask & FirstPersonView.MASK, 0)
+	assert_ne(garage.light_cull_mask & FirstPersonView.MASK, 0)
+	assert_ne(garage.layers & FirstPersonView.MASK, 0, "Overlay camera must see its lights")
+	camera.position = Vector3.ZERO
+	_renderer._process(0.0)
+	assert_ne(casino.light_cull_mask & FirstPersonView.MASK, 0)
+	assert_eq(garage.light_cull_mask & FirstPersonView.MASK, 0)
+
+
 func test_shared_lift_visuals_remain_visible_on_both_sides() -> void:
 	var cab := Node3D.new()
 	cab.add_to_group(&"render_zone_shared")

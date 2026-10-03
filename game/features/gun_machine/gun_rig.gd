@@ -50,6 +50,8 @@ var _fire_cooldown := 0.0
 ## sends a fresh `request_fire` request, separately from `_fire_cooldown` (which is
 ## only ever set on the server — see that var's uses in `request_fire`).
 var _auto_fire_cooldown := 0.0
+var _motion := FirstPersonMotion.new()
+var _first_person := false
 
 @onready var _mount: Node3D = $Mount
 
@@ -85,11 +87,16 @@ func _process(delta: float) -> void:
 	visible = player != null and is_active()
 	_arms.visible = false
 	if player != null:
-		global_transform = _mount_transform(player)
+		FirstPersonView.ensure_for(player)
+		var first_person := FirstPersonView.is_first_person(player)
+		if first_person != _first_person:
+			_first_person = first_person
+			FirstPersonView.set_visuals(self, first_person)
+		global_transform = _motion.apply(player, _mount_transform(player), delta, visible)
 		if has_hand_grips():
 			var hand := Hand.for_peer(get_tree(), peer_id)
 			var skin := hand.skin_tone_index() if hand != null else 0
-			_arms.pose_for_player(player, support_grip(), PlayerSkin.TONES[skin])
+			_arms.pose_for_player(player, support_grip(), PlayerSkin.TONES[skin], _motion.camera_motion)
 	if _flash_timer > 0.0:
 		_flash_timer -= delta
 		if _flash_timer <= 0.0:
@@ -108,6 +115,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed(&"gun_fire"):
 		get_viewport().set_input_as_handled()
+		if FirstPersonView.firing_blocked(get_tree(), peer_id):
+			return
 		# Automatic guns fire from the held-trigger poll below instead, so every tick
 		# it's held gets a shot rather than just the initial press.
 		if not bool(net_stats.get("is_automatic", false)):
@@ -123,6 +132,8 @@ func _unhandled_input(event: InputEvent) -> void:
 ## semi-automatic gun's single-shot-per-press does.
 func _maybe_auto_fire() -> void:
 	if peer_id != multiplayer.get_unique_id() or not Controls.gameplay_active():
+		return
+	if FirstPersonView.firing_blocked(get_tree(), peer_id):
 		return
 	if net_stats.is_empty():
 		return
@@ -197,6 +208,8 @@ func request_equip_rig() -> void:
 @rpc("any_peer", "call_local", "reliable")
 func request_fire() -> void:
 	if not multiplayer.is_server() or not _is_own_request() or _fire_cooldown > 0.0:
+		return
+	if FirstPersonView.firing_blocked(get_tree(), peer_id):
 		return
 	if not is_active() or not has_ammo_to_fire():
 		return
@@ -298,7 +311,7 @@ func _mount_transform(player: Player) -> Transform3D:
 	if has_hand_grips():
 		return HeldItemPose.player_mount(player, GunView.PLASMA_FIRST_PERSON_OFFSET)
 	var factor := PlayerHeight.eye_scale(player)
-	if player.is_local():
+	if FirstPersonView.is_first_person(player):
 		var camera := player.get_node("Camera") as Node3D
 		return (
 			camera.global_transform
@@ -345,6 +358,7 @@ func _aim_origin(player: Player) -> Vector3:
 
 
 func _rebuild_view() -> void:
+	_motion.reset()
 	_mounted_signature = _signature(net_stats)
 	for child: Node in _mount.get_children():
 		_mount.remove_child(child)
@@ -355,6 +369,7 @@ func _rebuild_view() -> void:
 	_view = GunView.build(net_stats)
 	_mount.add_child(_view)
 	HeldItemPose.align_grip(_view)
+	FirstPersonView.set_visuals(_view, _first_person)
 
 
 func _set_flash(active: bool) -> void:
@@ -369,6 +384,7 @@ func _set_flash(active: bool) -> void:
 		var glow := GunFx.flash(color, 0.12)
 		glow.name = "MuzzleFlash"
 		muzzle.add_child(glow)
+		FirstPersonView.set_visuals(glow, _first_person)
 	elif not active and existing != null:
 		existing.queue_free()
 

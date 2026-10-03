@@ -1,0 +1,8 @@
+{
+  "title": "Quick first-person weapon swaps",
+  "summary": "Weapons lower and rise in a snappy 0.34-second swap animation.",
+  "notes": [
+    "Add a quick lower-and-raise animation to first-person hotbar swaps, including generated guns and their arms.",
+    "Keep rapid scrolling responsive by replacing pending selections instead of queuing animations."
+  ]
+}
