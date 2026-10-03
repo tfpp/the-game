@@ -52,6 +52,12 @@ func _client() -> void:
 			await get_tree().process_frame
 		_check(_reply == NetworkedEntity.Result.DENIED, "Occupied stool request accepted")
 		_check(_court.net_seats[_index] == occupant, "Late snapshot lost occupant")
+		var remote := _court.entity.player_for_peer(occupant)
+		while remote == null or remote.get_node_or_null("Body/Avatar") == null:
+			await get_tree().process_frame
+			remote = _court.entity.player_for_peer(occupant)
+		await get_tree().create_timer(0.4).timeout
+		_check_facing(remote)
 		print("SEAT_LATE_REJECTED")
 		while _court.net_seats[_index] != 0:
 			await get_tree().process_frame
@@ -64,7 +70,13 @@ func _client() -> void:
 		_court.request_sit(_index)
 		while not _court.is_seated(multiplayer.get_unique_id()):
 			await get_tree().process_frame
+		while _court._pinned_index != _index:
+			await get_tree().process_frame
 		_check(not player.is_physics_processing(), "Owning visitor not pinned")
+		player.yaw = _court.sit_yaw(_index) + 0.7
+		player.pitch = -0.2
+		await get_tree().create_timer(0.4).timeout
+		_check_facing(player)
 		print("SEAT_VISITOR_OCCUPIED")
 		while multiplayer.get_peers().size() < 2:
 			await get_tree().process_frame
@@ -75,6 +87,16 @@ func _client() -> void:
 		while not player.is_physics_processing():
 			await get_tree().process_frame
 		print("SEAT_VISITOR_FREE")
+
+
+func _check_facing(player: Player) -> void:
+	var model := player.get_node("Body/Avatar") as BlockPlayerModel
+	var body := player.get_node("Body") as Node3D
+	_check(
+		absf(wrapf(body.global_rotation.y - _court.sit_yaw(_index), -PI, PI)) < 0.01,
+		"Looking turned the seated body"
+	)
+	_check(absf(model._head.rotation.y - 0.7) < 0.02, "Seated head did not follow look")
 
 
 func _on_reply(_action: StringName, result: NetworkedEntity.Result) -> void:

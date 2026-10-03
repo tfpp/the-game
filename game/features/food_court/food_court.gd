@@ -111,6 +111,12 @@ func is_seated(peer: int) -> bool:
 	return seat_of(peer) >= 0
 
 
+## Fixed body heading from authoritative occupancy; view/aim yaw remains independent.
+func seated_yaw(peer: int) -> float:
+	var index := seat_of(peer)
+	return sit_yaw(index) if index >= 0 else NAN
+
+
 func request_sit(index: int) -> void:
 	entity.request_action(&"sit", {"seat": index})
 

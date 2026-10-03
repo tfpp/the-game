@@ -75,6 +75,10 @@ The same owner now registers 25 casino seats: six lounge chairs, two couch
 places, five main-floor bar/cocktail stools, nine card-table chairs and three
 stools at the upstairs Mariachi Balcony Bar. Use (E / B / Circle / touch USE)
 sits or stands; movement or Jump also stands, including queued touch jumps.
+While seated, the body stays facing the chair's authored heading and only the
+head follows look yaw/pitch. Camera and replicated aim stay independent; the
+avatar derives body heading through `seated_yaw(peer)` (NAN when standing), so
+other players and late joiners see the same fixed body facing.
 Decorative card guests yield their chair while occupied and return afterward.
 Staff/dealer positions and Vivienne's quest stool remain reserved.
 

@@ -4,6 +4,7 @@
   "notes": [
     "Add shared casino seating with Use to sit or stand and movement or Jump to get up.",
     "Keep occupied chairs exclusive and release them when players leave.",
+    "Lock seated bodies to their chair facing while looking around turns only the head.",
     "Handle refused browser mouse capture safely and focus the game canvas before requesting it."
   ]
 }
