@@ -1,0 +1,153 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/strip_mall/zabka_sign.gd" id="sign"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/amber-beer-bottle.tscn" id="bottle"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/coffee_cup.tscn" id="cup"]
+[ext_resource type="Texture2D" path="res://assets/casino_hub/textures/prop_grain.png" id="grain"]
+[sub_resource type="StandardMaterial3D" id="green"]
+albedo_color = Color(0.03, 0.48, 0.22, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.9
+[sub_resource type="StandardMaterial3D" id="white"]
+albedo_color = Color(0.88, 0.9, 0.82, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="FasciaMesh"]
+size = Vector3(0.12,0.8,6)
+
+[sub_resource type="BoxMesh" id="CounterMesh"]
+size = Vector3(1.1,1,1.5)
+[sub_resource type="BoxShape3D" id="CounterShape"]
+size = Vector3(1.1,1,1.5)
+
+[sub_resource type="BoxMesh" id="CounterTopMesh"]
+size = Vector3(1.3,0.08,1.6)
+
+[sub_resource type="BoxMesh" id="ShelfBackMesh"]
+size = Vector3(0.12,2.3,1.3)
+[sub_resource type="BoxShape3D" id="ShelfBackShape"]
+size = Vector3(0.12,2.3,1.3)
+
+[sub_resource type="BoxMesh" id="ShelfLowMesh"]
+size = Vector3(0.55,0.08,1.3)
+
+[sub_resource type="BoxMesh" id="ShelfMidMesh"]
+size = Vector3(0.55,0.08,1.3)
+
+[sub_resource type="BoxMesh" id="ShelfTopMesh"]
+size = Vector3(0.55,0.08,1.3)
+
+[node name="ZabkaDecor" type="Node3D"]
+
+[node name="Fascia" type="MeshInstance3D" parent="."]
+position = Vector3(26.82,3.55,42.5)
+mesh = SubResource("FasciaMesh")
+material_override = SubResource("green")
+
+[node name="Counter" type="MeshInstance3D" parent="."]
+position = Vector3(30.5,0.5,44.7)
+mesh = SubResource("CounterMesh")
+material_override = SubResource("green")
+[node name="CounterBody" type="StaticBody3D" parent="."]
+position = Vector3(30.5,0.5,44.7)
+[node name="Collision" type="CollisionShape3D" parent="CounterBody"]
+shape = SubResource("CounterShape")
+
+[node name="CounterTop" type="MeshInstance3D" parent="."]
+position = Vector3(30.5,1.04,44.7)
+mesh = SubResource("CounterTopMesh")
+material_override = SubResource("white")
+
+[node name="ShelfBack" type="MeshInstance3D" parent="."]
+position = Vector3(32.65,1.15,44.6)
+mesh = SubResource("ShelfBackMesh")
+material_override = SubResource("green")
+[node name="ShelfBackBody" type="StaticBody3D" parent="."]
+position = Vector3(32.65,1.15,44.6)
+[node name="Collision" type="CollisionShape3D" parent="ShelfBackBody"]
+shape = SubResource("ShelfBackShape")
+
+[node name="ShelfLow" type="MeshInstance3D" parent="."]
+position = Vector3(32.4,0.55,44.6)
+mesh = SubResource("ShelfLowMesh")
+material_override = SubResource("white")
+
+[node name="ShelfMid" type="MeshInstance3D" parent="."]
+position = Vector3(32.4,1.15,44.6)
+mesh = SubResource("ShelfMidMesh")
+material_override = SubResource("white")
+
+[node name="ShelfTop" type="MeshInstance3D" parent="."]
+position = Vector3(32.4,1.75,44.6)
+mesh = SubResource("ShelfTopMesh")
+material_override = SubResource("white")
+
+[node name="Wordmark" type="Node3D" parent="."]
+position = Vector3(26.74,3.55,42.5)
+rotation = Vector3(0, -1.5707964, 0)
+script = ExtResource("sign")
+text = "żabka"
+letter_height = 0.52
+style = 1
+neon_color = Color(1, 1, 1, 1)
+
+[node name="Cafe" type="Node3D" parent="."]
+position = Vector3(29.8,2.7,44.1)
+scale = Vector3(0.8, 0.8, 0.8)
+rotation = Vector3(0, -1.5707964, 0)
+script = ExtResource("sign")
+text = "KAWA - HOT DOG"
+letter_height = 0.16
+style = 1
+neon_color = Color(1, 1, 1, 1)
+
+[node name="DisplaySign" type="Node3D" parent="."]
+position = Vector3(29.71,0.45,41.5)
+rotation = Vector3(0, -1.5707964, 0)
+script = ExtResource("sign")
+text = "MAŁE ŻABKI\nLIVE FROGS"
+letter_height = 0.14
+style = 1
+neon_color = Color(1, 1, 1, 1)
+
+[node name="Notice" type="Node3D" parent="."]
+position = Vector3(30.5,0.55,45.46)
+rotation = Vector3(0, 0, 0)
+script = ExtResource("sign")
+text = "POLSKI SKLEP\nDISPLAY ONLY"
+letter_height = 0.09
+style = 1
+neon_color = Color(1, 1, 1, 1)
+
+[node name="Bottle0" parent="." instance=ExtResource("bottle")]
+position = Vector3(32.35, 0.59, 44.2)
+
+[node name="Bottle1" parent="." instance=ExtResource("bottle")]
+position = Vector3(32.35, 0.59, 44.550000000000004)
+
+[node name="Bottle2" parent="." instance=ExtResource("bottle")]
+position = Vector3(32.35, 0.59, 44.900000000000006)
+
+[node name="Bottle3" parent="." instance=ExtResource("bottle")]
+position = Vector3(32.35, 1.19, 44.2)
+
+[node name="Bottle4" parent="." instance=ExtResource("bottle")]
+position = Vector3(32.35, 1.19, 44.550000000000004)
+
+[node name="Bottle5" parent="." instance=ExtResource("bottle")]
+position = Vector3(32.35, 1.19, 44.900000000000006)
+
+[node name="Bottle6" parent="." instance=ExtResource("bottle")]
+position = Vector3(32.35, 1.79, 44.2)
+
+[node name="Bottle7" parent="." instance=ExtResource("bottle")]
+position = Vector3(32.35, 1.79, 44.550000000000004)
+
+[node name="Bottle8" parent="." instance=ExtResource("bottle")]
+position = Vector3(32.35, 1.79, 44.900000000000006)
+
+[node name="Coffee" parent="." instance=ExtResource("cup")]
+position = Vector3(30.45, 1.08, 44.55)

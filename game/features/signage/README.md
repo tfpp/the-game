@@ -29,6 +29,10 @@ Keep `Label3D` only for dynamic text that must change at runtime (names over
 heads, live counters). Replacing existing labels is Phase 1 tasks E2–E4
 (`docs/phase1.md`); list any kept labels here as they are decided.
 
+The shared atlas also supports **Ż** and **Ł** (and their lowercase inputs),
+used by the Strip Mall's Polish storefront. Existing ASCII and fallback glyphs
+keep their original behavior.
+
 Tests: `tests/features/signage/test_sign_board.gd` checks the atlas size and
 glyphs, the letter quads, and that every mount has a backing and sits flush on its
 wall or ceiling.

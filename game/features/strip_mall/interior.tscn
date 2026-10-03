@@ -6,7 +6,11 @@
 [ext_resource type="PackedScene" path="res://features/street_props/props/street_lamp.tscn" id="lamp"]
 [ext_resource type="PackedScene" path="res://features/street_district/props/brick_tenement.tscn" id="tenement"]
 
+[ext_resource type="PackedScene" path="res://features/strip_mall/zabka_decor.tscn" id="zabka"]
+
 [node name="MallInterior" type="Node3D"]
+
+[node name="Zabka" parent="." instance=ExtResource("zabka")]
 
 [node name="Structure" parent="." instance=ExtResource("structure")]
 
@@ -47,7 +51,7 @@ position = Vector3(-7.85, 1.8, 28)
 rotation = Vector3(0, 1.5707964, 0)
 text = "CROWN STRIP MALL
 01 POKE - 02 KEBAB - 03 WENDY'S
-DINING PLAZA - PARKING"
+04 ŻABKA - DINING - PARKING"
 letter_height = 0.12
 
 [node name="DeliveryVan" parent="." instance=ExtResource("car")]
@@ -86,6 +90,12 @@ omni_range = 7.5
 [node name="KebabLight" type="OmniLight3D" parent="."]
 position = Vector3(30, 3, 28.5)
 light_color = Color(1, 0.85, 0.63, 1)
+light_energy = 1.5
+omni_range = 7.5
+
+[node name="ZabkaLight" type="OmniLight3D" parent="."]
+position = Vector3(30, 3, 42.5)
+light_color = Color(0.9, 1, 0.9, 1)
 light_energy = 1.5
 omni_range = 7.5
 

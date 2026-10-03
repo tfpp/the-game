@@ -130,6 +130,7 @@ func test_streaming_never_removes_food_rpc_owners_or_duplicates_seats() -> void:
 			)
 		)
 		_room.unload_room()
+		await wait_physics_frames(1)
 		assert_true(is_instance_valid(entity))
 		assert_eq(kebab.entity, entity)
 		assert_eq(court.seats.size(), 32)
@@ -145,7 +146,7 @@ func test_gps_routes_old_food_markers_and_new_shop_places_through_mall_door() ->
 			gps.regions(), gps.links(), Vector3(0, 0, 16), goal.global_position
 		)
 		assert_eq(hop["position"], _entrance.global_position)
-	for path: String in ["Destination", "PokeDestination", "WendysDestination"]:
+	for path: String in ["Destination", "PokeDestination", "WendysDestination", "ZabkaDestination"]:
 		assert_true(_room.contains((_room.get_node(path) as Node3D).global_position))
 
 

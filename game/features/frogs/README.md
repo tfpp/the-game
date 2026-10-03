@@ -1,10 +1,23 @@
 # Frogs
 
-Six server-spawned frogs explore the level. Each spawn carries a fixed skin color,
+Twelve server-spawned frogs explore the level in maps that load the default colony. Each spawn carries a fixed skin color,
 size, hop distance, height, duration, and idle interval to every peer, including
 late joiners. The model uses low-poly meshes, separate skin materials, spotted
 backs, webbed feet, and animated hind legs. The server synchronizes position,
 facing, hop phase, and alive state; clients only smooth and animate these values.
+
+## Authored colonies
+
+Instance `feature.tscn` with a different root transform and optionally set
+`spawn_points` (PackedVector3Array, relative to `Pond`) to spawn one frog per point.
+Empty points retain the original twelve random pond starts. `profile_scale` defaults
+to 1 and scales size, hop distance and hop height before the server sends the spawn
+profile; color, durations and rests retain the original indexed profiles.
+The Strip Mall uses three half-size frogs in a display habitat, outside streamed
+Content. Its persistent collision supports dedicated-server navigation. This is
+the same spawner, session reset, replication, death and respawn implementation,
+not a separate animal simulation. Fixed spawn appearance and current snapshots
+arrive for late joiners; clients never simulate or independently spawn a colony.
 
 ## Movement
 

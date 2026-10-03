@@ -5,6 +5,10 @@ extends Node3D
 const FROG_SCENE := preload("res://features/frogs/frog.tscn")
 const FROG_COUNT := 12
 
+## Optional authored colony; empty keeps the original random pond spawning.
+@export var spawn_points := PackedVector3Array()
+@export_range(0.1, 2.0) var profile_scale := 1.0
+
 @onready var _pond: Node3D = $Pond
 @onready var _spawner: MultiplayerSpawner = $FrogSpawner
 
@@ -21,14 +25,22 @@ func _on_mode_changed(_mode: Network.Mode) -> void:
 
 
 func _spawn_frogs() -> void:
-	for index: int in FROG_COUNT:
-		var start := FrogHop.pick_target(Vector3.ZERO, FrogHop.HOP_RADIUS, randf() * TAU, randf())
+	var count := FROG_COUNT if spawn_points.is_empty() else spawn_points.size()
+	for index: int in count:
+		var start := (
+			FrogHop.pick_target(Vector3.ZERO, FrogHop.HOP_RADIUS, randf() * TAU, randf())
+			if spawn_points.is_empty()
+			else spawn_points[index]
+		)
+		var profile := FrogHop.profile_for_index(index)
+		for key: String in ["size", "distance", "height"]:
+			profile[key] *= profile_scale
 		_spawner.spawn(
 			{
 				"index": index,
 				"position": start,
 				"color": FrogHop.color_for_index(index),
-				"profile": FrogHop.profile_for_index(index)
+				"profile": profile
 			}
 		)
 
