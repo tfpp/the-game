@@ -10,8 +10,74 @@ func append_mesh(mesh: Mesh, transform: Transform3D, height: float) -> void:
 	append_faces(mesh.get_faces(), transform, height)
 
 
-func append_faces(faces: PackedVector3Array, transform: Transform3D, height: float) -> void:
-	for index: int in range(0, faces.size(), 3):
+static func box_faces(size: Vector3) -> PackedVector3Array:
+	var corners := PackedVector3Array(
+		[
+			Vector3(-1, -1, -1),
+			Vector3(1, -1, -1),
+			Vector3(1, 1, -1),
+			Vector3(-1, 1, -1),
+			Vector3(-1, -1, 1),
+			Vector3(1, -1, 1),
+			Vector3(1, 1, 1),
+			Vector3(-1, 1, 1)
+		]
+	)
+	var indices := PackedInt32Array(
+		[
+			4,
+			7,
+			6,
+			4,
+			6,
+			5,
+			1,
+			2,
+			3,
+			1,
+			3,
+			0,
+			5,
+			6,
+			2,
+			5,
+			2,
+			1,
+			0,
+			3,
+			7,
+			0,
+			7,
+			4,
+			3,
+			2,
+			6,
+			3,
+			6,
+			7,
+			0,
+			4,
+			5,
+			0,
+			5,
+			1
+		]
+	)
+	var faces := PackedVector3Array()
+	for index: int in indices:
+		faces.append(corners[index] * size * .5)
+	return faces
+
+
+func append_faces(
+	faces: PackedVector3Array,
+	transform: Transform3D,
+	height: float,
+	first_face: int = 0,
+	face_count: int = -1
+) -> void:
+	var end := faces.size() if face_count < 0 else mini(faces.size(), (first_face + face_count) * 3)
+	for index: int in range(first_face * 3, end, 3):
 		var a := transform * faces[index]
 		var b := transform * faces[index + 1]
 		var c := transform * faces[index + 2]

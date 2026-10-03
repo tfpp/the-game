@@ -5,6 +5,7 @@ extends Node3D
 ## its own palette without submitting dozens of individual sphere meshes.
 
 const VISIBILITY_RANGE_M := 35.0
+const SPHERE_SOURCE := preload("res://assets/frogs/models/sphere_source.tres")
 
 var _size := 1.0
 var _clock := 0.0
@@ -97,7 +98,7 @@ func _queue_part(
 
 
 func _batched_part(parent: Node3D, label: String, parts: Array[Dictionary]) -> void:
-	var source := _sphere.surface_get_arrays(0)
+	var source: Array = SPHERE_SOURCE.arrays
 	var vertices: PackedVector3Array = source[Mesh.ARRAY_VERTEX]
 	var normals: PackedVector3Array = source[Mesh.ARRAY_NORMAL]
 	var indices: PackedInt32Array = source[Mesh.ARRAY_INDEX]

@@ -1,0 +1,5 @@
+{
+  "title": "Smoother frog model loading",
+  "summary": "Keep frog construction from reading mesh data back from the GPU.",
+  "notes": ["Reuse baked CPU geometry when building frog details, preserving their appearance."]
+}
