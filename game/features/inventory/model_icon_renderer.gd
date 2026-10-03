@@ -70,6 +70,13 @@ func request_item(id: String) -> Texture2D:
 	return _request("item:" + id, ItemCatalog.create_view.bind(id), definition.icon_view_direction)
 
 
+## Cosmetic callers share the same bounded viewport/cache with ordinary items.
+func request_model(key: String, factory: Callable, direction := Vector3(1, .9, 1)) -> Texture2D:
+	if key.is_empty() or not factory.is_valid():
+		return null
+	return _request("model:" + key, factory, direction)
+
+
 func request_scene(key: String, scene: PackedScene, direction := Vector3(1, .9, 1)) -> Texture2D:
 	if key.is_empty() or scene == null:
 		return null
