@@ -106,7 +106,7 @@ func _process(delta: float) -> void:
 	var mask := _camera.cull_mask & ~FirstPersonView.MASK if _camera != null else 0
 	if mask != _handheld_light_mask:
 		_handheld_light_mask = mask
-		for entry: Dictionary in _visuals:
+		for entry: Dictionary in _visuals.values():
 			if is_instance_valid(entry["node"]) and entry["node"] is Light3D:
 				_apply(entry)
 	_elapsed += delta

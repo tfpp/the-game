@@ -8,6 +8,9 @@ to camera-relative velocity. Acceleration, jumps and landings kick this spring,
 giving a visible lag, landing dip and recovery over the existing bob and look sway.
 Stopping lets the rig settle back to rest. Switching items or leaving FPS resets it. This is cosmetic;
 shots and drops still use their existing authoritative origins.
+`tests/features/holdables/test_first_person_motion.gd` separately covers horizontal bob
+and vertical momentum: rising/falling shifts the rig even without horizontal travel,
+and stopping settles it back to rest.
 
 `FirstPersonView` renders items, arms and item particles in a transparent shared-world
 viewport on layer 18, below the HUD. Its camera follows the player camera after

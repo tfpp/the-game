@@ -119,6 +119,10 @@ func test_only_the_current_rooms_lights_illuminate_the_handheld_layer() -> void:
 	_renderer._process(0.0)
 	assert_ne(casino.light_cull_mask & FirstPersonView.MASK, 0)
 	assert_eq(garage.light_cull_mask & FirstPersonView.MASK, 0)
+	camera.position = Vector3(0, -6, 0)
+	_renderer._process(0.0)
+	assert_eq(casino.light_cull_mask & FirstPersonView.MASK, 0)
+	assert_ne(garage.light_cull_mask & FirstPersonView.MASK, 0)
 
 
 func test_shared_lift_visuals_remain_visible_on_both_sides() -> void:
