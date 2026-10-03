@@ -1,0 +1,4 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://tests/features/food_court/capture.gd" id="script"]
+[node name="SeatingCapture" type="Node"]
+script = ExtResource("script")

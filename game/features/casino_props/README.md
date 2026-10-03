@@ -55,8 +55,9 @@ small tabletop and wall decorations disable collision in the placement scene.
 GridMap floor. Six lounge chairs are distributed between the east lounge and
 pairs along the south-east/south-west walls. The east and west cocktail tables
 have two matching burgundy pedestal stools each. These are separate editable
-prop instances with their existing collision, not new floor tiles or seating
-interactions. Positions leave the central ramp mouths and shop corridor open.
+prop instances with their existing collision, not new floor tiles. Placement-owned
+seat anchors now connect them to the food-court seating registry (see
+`../food_court/README.md`); the reusable asset prefabs remain static. Positions leave the central ramp mouths and shop corridor open.
 Actual saved-level renders live in `docs/design/previews/casino-seating/`.
 
 Both cocktail tables have a small translucent glass ashtray, a cigar resting on

@@ -119,6 +119,17 @@ static func configure(level: Node3D) -> void:
 		stool.position = Vector3(-28.2, 5, z)
 		area.add_child(stool)
 		stool.owner = level
+		var seat := Node3D.new()
+		seat.name = "Seat"
+		seat.set_script(load("res://features/food_court/booth_seat.gd"))
+		seat.position.y = 0.74
+		seat.rotation.y = PI / 2
+		seat.set("casino_seat", true)
+		seat.set("exit_offset", Vector3(0, -0.74, 1.05))
+		seat.set("seat_label", "Sit on the balcony stool")
+		seat.add_to_group(&"casino_seats", true)
+		stool.add_child(seat)
+		seat.owner = level
 	var destination := Marker3D.new()
 	destination.name = "BalconyBar"
 	destination.position = Vector3(-25, 5, 0)

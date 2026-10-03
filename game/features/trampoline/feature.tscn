@@ -1,14 +1,3 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://features/trampoline/trampoline_pad.tscn" id="1"]
-
-[node name="Trampolines" type="Node3D"]
-
-[node name="PadA" parent="." instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.15, 25)
-
-[node name="PadB" parent="." instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.15, 28.5)
-
-[node name="PadC" parent="." instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.15, 32)
+[node name="RetiredTrampolines" type="Node3D"]
