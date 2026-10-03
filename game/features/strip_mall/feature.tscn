@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
 [ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
 [ext_resource type="PackedScene" path="res://features/strip_mall/door.tscn" id="door"]
+[ext_resource type="PackedScene" path="res://features/strip_mall/frog_display.tscn" id="frogs"]
 
 [node name="StripMall" type="Node3D"]
 
@@ -10,7 +11,7 @@
 position = Vector3(0, 0, -5000)
 script = ExtResource("room")
 room_scene = "res://features/strip_mall/interior.tscn"
-bounds = AABB(-8.5, -1, 17.5, 42.5, 7, 22.5)
+bounds = AABB(-8.5, -1, 17.5, 42.5, 7, 29.5)
 
 [node name="Arrival" type="Marker3D" parent="Room"]
 position = Vector3(4, 1, 28)
@@ -20,7 +21,7 @@ rotation = Vector3(0, -1.5707964, 0)
 position = Vector3(4, 0, 28)
 script = ExtResource("gps")
 label = "Strip Mall"
-hint = "South casino corridor: use the FOOD SHOPS door. Kebab, poke and Wendy's."
+hint = "South casino corridor: use the FOOD SHOPS door. Food shops and Żabka."
 
 [node name="PokeDestination" type="Marker3D" parent="Room"]
 position = Vector3(28.3, 0, 22.5)
@@ -33,6 +34,15 @@ position = Vector3(28.3, 0, 35)
 script = ExtResource("gps")
 label = "Wendy's"
 hint = "Strip Mall: complimentary cheeseburgers."
+
+[node name="ZabkaDestination" type="Marker3D" parent="Room"]
+position = Vector3(28, 0, 42.5)
+script = ExtResource("gps")
+label = "Żabka"
+hint = "Strip Mall: green-and-white Polish shop beside Wendy's. Live frog display."
+
+[node name="FrogDisplay" parent="Room" instance=ExtResource("frogs")]
+position = Vector3(31.25, 0, 41.5)
 
 [node name="Exit" parent="Room" instance=ExtResource("door")]
 position = Vector3(2.3, 1.25, 28)
