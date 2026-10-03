@@ -161,7 +161,7 @@ func start_server(port: int) -> Error:
 		return ERR_UNCONFIGURED
 	if insecure_auth:
 		print("WARNING: --dev-insecure-auth: accepting unsigned dev tickets")
-	var peer := WebSocketMultiplayerPeer.new()
+	var peer := create_transport()
 	var err := peer.create_server(port)
 	if err != OK:
 		push_error("Failed to listen on port %d: %s" % [port, error_string(err)])
@@ -184,7 +184,7 @@ func join(url: String, ticket: String) -> Error:
 	_auth_error = ""
 	server_version_mismatch = ""
 	pending_url = ""
-	var peer := WebSocketMultiplayerPeer.new()
+	var peer := create_transport()
 	var err := peer.create_client(url)
 	if err != OK:
 		connection_failed.emit(error_string(err))
@@ -201,6 +201,16 @@ func join(url: String, ticket: String) -> Error:
 	print("Connecting to %s" % url)
 	_set_mode(Mode.CLIENT)
 	return OK
+
+
+## Browser message callbacks can run between game frames. Allow bounded headroom
+## for world snapshots and short frame stalls on both ends of the connection.
+static func create_transport() -> WebSocketMultiplayerPeer:
+	var peer := WebSocketMultiplayerPeer.new()
+	peer.inbound_buffer_size = 1024 * 1024
+	peer.outbound_buffer_size = 1024 * 1024
+	peer.max_queued_packets = 4096
+	return peer
 
 
 func start_offline() -> void:

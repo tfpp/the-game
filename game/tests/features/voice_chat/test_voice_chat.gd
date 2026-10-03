@@ -35,3 +35,28 @@ func test_encode_produces_two_bytes_per_frame() -> void:
 
 func test_decode_of_empty_bytes_is_empty() -> void:
 	assert_eq(VoiceChat.decode_pcm16(PackedByteArray()).size(), 0)
+
+
+func test_capture_resamples_device_rates_to_one_network_chunk() -> void:
+	for rate: int in [16000, 44100, 48000]:
+		var source := PackedVector2Array()
+		for i: int in int(rate * VoiceChat.CHUNK_DURATION_S):
+			source.append(Vector2.ONE * float(i) / rate)
+		var frames := VoiceChat.resample_chunk(source, rate)
+		assert_eq(frames.size(), VoiceChat.CHUNK_FRAMES)
+		assert_almost_eq(frames[800].x, .05, .00001)
+
+
+func test_relay_rejects_oversized_and_burst_audio_per_sender() -> void:
+	var voice := VoiceChat.new()
+	autofree(voice)
+	var chunk := PackedByteArray()
+	chunk.resize(VoiceChat.CHUNK_FRAMES * 2)
+	assert_false(voice._accept_chunk(2, PackedByteArray([1]), 0))
+	assert_true(voice._accept_chunk(2, chunk, 0))
+	assert_true(voice._accept_chunk(2, chunk, 1))
+	assert_false(voice._accept_chunk(2, chunk, 2))
+	assert_true(voice._accept_chunk(3, chunk, 1))
+	assert_true(voice._accept_chunk(2, chunk, 100))
+	voice._forget_peer(2)
+	assert_true(voice._accept_chunk(2, chunk, 101))

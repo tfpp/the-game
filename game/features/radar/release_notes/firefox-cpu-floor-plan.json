@@ -1,0 +1,5 @@
+{
+  "title": "Smoother desktop floor plans",
+  "summary": "Build the radar map without reading rendered geometry back from the GPU.",
+  "notes": ["Use CPU collision geometry for the radar floor plan.", "Spread large map rebuilds over frames, including individual large rooms."]
+}

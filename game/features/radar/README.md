@@ -44,3 +44,14 @@ Run the full-world CPU discovery comparison (no GPU/browser FPS claim):
 `godot --headless --path game res://tests/features/radar/scan_probe.tscn`.
 It compares the former recursive traversal with indexed discovery on the same
 loaded scene, asserts identical nearby roots, and reports median/p95 microseconds.
+
+Browser map builds now slice CPU collision faces directly: CSG roots use
+`bake_collision_shape()`, concave colliders expose their stored faces, and boxes
+use analytic CPU triangles. The production path does not call `get_meshes()` or
+read render mesh arrays back from WebGL. Individual large roots are sliced in
+128-triangle chunks, with at most 2,048 triangles and 16 completed roots per
+frame, checking a 2 ms time budget between chunks. Collision snapshot copying
+and final floor-mesh upload are indivisible, so this is a work budget rather than
+a hard guarantee on frame duration. Unloading a partially sliced source discards
+its unpublished work. Regression tests preserve CSG subtraction openings and
+transformed box slices and compare chunked versus uninterrupted slicing.

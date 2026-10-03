@@ -9,6 +9,9 @@ const ACCENT := Color("7ce8c2")
 const FLOOR_COLOR := Color("2b4148")
 const WALL_COLOR := Color("819698")
 const ROOTS_PER_FRAME := 16
+const TRIANGLES_PER_FRAME := 2048
+const SLICE_CHUNK := 128
+const BUILD_BUDGET_USEC := 2000
 ## Nodes in this group draw on the map: `draw_radar_overlay(radar: Control)`, using
 ## `map_point()` and the radar's draw calls (the GPS route does this).
 const OVERLAY_GROUP := &"radar_overlays"
@@ -29,6 +32,10 @@ var _roots: Array[Node3D] = []
 var _sources: Dictionary[int, Node3D] = {}
 var _source_root: Node
 var _source_tree: SceneTree
+var _slice: RadarGeometry
+var _slice_faces := PackedVector3Array()
+var _slice_transform := Transform3D.IDENTITY
+var _slice_offset := 0
 
 
 func _ready() -> void:
@@ -178,36 +185,65 @@ func _append_source(node: Node3D, result: Array[Node3D]) -> void:
 func _build_step() -> void:
 	if _building == null:
 		return
-	for index: int in mini(ROOTS_PER_FRAME, _pending.size()):
-		var shape: Node3D = _pending.pop_back()
-		if not is_instance_valid(shape) or not shape.is_inside_tree():
+	var started := Time.get_ticks_usec()
+	var triangles := 0
+	var roots := 0
+	while not _pending.is_empty() and triangles < TRIANGLES_PER_FRAME and roots < ROOTS_PER_FRAME:
+		var source: Variant = _pending.back()
+		if not is_instance_valid(source):
+			_pending.pop_back()
+			_clear_slice()
+			roots += 1
 			continue
-		if shape is CollisionShape3D:
-			# Generated worlds mark their structural collision, omitting decorative
-			# mouldings and furniture meshes from the floor plan.
-			var collider := shape as CollisionShape3D
-			if collider.shape is ConcavePolygonShape3D:
-				_building.append_faces(
-					(collider.shape as ConcavePolygonShape3D).get_faces(),
-					shape.global_transform,
-					_build_height
-				)
-			elif collider.shape is BoxShape3D:
-				var box := BoxMesh.new()
-				box.size = (collider.shape as BoxShape3D).size
-				_building.append_mesh(box, shape.global_transform, _build_height)
-		else:
-			var meshes := (shape as CSGShape3D).get_meshes()
-			if meshes.size() == 2:
-				_building.append_mesh(
-					meshes[1] as Mesh,
-					shape.global_transform * (meshes[0] as Transform3D),
-					_build_height
-				)
+		var shape := source as Node3D
+		if not shape.is_inside_tree():
+			_pending.pop_back()
+			_clear_slice()
+			roots += 1
+			continue
+		if _slice == null:
+			_slice = Geometry.new()
+			_slice_faces = _collision_faces(shape)
+			_slice_transform = shape.global_transform
+		var count := mini(
+			SLICE_CHUNK,
+			mini(TRIANGLES_PER_FRAME - triangles, _slice_faces.size() / 3 - _slice_offset)
+		)
+		_slice.append_faces(_slice_faces, _slice_transform, _build_height, _slice_offset, count)
+		_slice_offset += count
+		triangles += count
+		if _slice_offset * 3 >= _slice_faces.size():
+			_building.walls.append_array(_slice.walls)
+			_building.floors.append_array(_slice.floors)
+			_pending.pop_back()
+			_clear_slice()
+			roots += 1
+		if Time.get_ticks_usec() - started >= BUILD_BUDGET_USEC:
+			break
 	if _pending.is_empty():
 		_geometry = _building
 		_floor_mesh = _geometry.floor_mesh()
 		_building = null
+
+
+func _clear_slice() -> void:
+	_slice = null
+	_slice_faces = PackedVector3Array()
+	_slice_offset = 0
+
+
+## Keep map construction on CPU collision data. Reading CSG render meshes invokes
+## WebGL getBufferSubData and can synchronize the browser with the GPU.
+static func _collision_faces(shape: Node3D) -> PackedVector3Array:
+	if shape is CSGShape3D:
+		var collision := (shape as CSGShape3D).bake_collision_shape()
+		return collision.get_faces() if collision != null else PackedVector3Array()
+	var collider := shape as CollisionShape3D
+	if collider.shape is ConcavePolygonShape3D:
+		return (collider.shape as ConcavePolygonShape3D).get_faces()
+	if collider.shape is BoxShape3D:
+		return Geometry.box_faces((collider.shape as BoxShape3D).size)
+	return PackedVector3Array()
 
 
 ## Wall segments (pairs of ground-plane points) of the current storey slice, or

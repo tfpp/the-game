@@ -1,4 +1,5 @@
 extends GutTest
+
 ## Login screen behavior (ui/login/login_screen.gd):
 ## - Skips the sign-in "ready" screen for a returning, already-authenticated player.
 ## - Idle-menu detection. Regression for #14: opening the chat box also popped the pause
@@ -139,3 +140,10 @@ func test_cache_bust_reload_sets_version_query_and_replaces_location() -> void:
 func test_cache_bust_reload_escapes_version() -> void:
 	var js := Login.cache_bust_reload_js("a\"b')")
 	assert_string_contains(js, '"a\\"b\')"')
+
+
+func test_async_browser_callbacks_require_keyboard_capture_gesture() -> void:
+	assert_true(Controls.needs_pointer_gesture(true, Controls.Device.KEYBOARD))
+	assert_false(Controls.needs_pointer_gesture(false, Controls.Device.KEYBOARD))
+	assert_false(Controls.needs_pointer_gesture(true, Controls.Device.TOUCH))
+	assert_false(Controls.needs_pointer_gesture(true, Controls.Device.GAMEPAD))

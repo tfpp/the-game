@@ -402,7 +402,8 @@ static func cache_bust_reload_js(version: String) -> String:
 func _show_ready(message: String, auto_play: bool = false) -> void:
 	var version_mismatch := OS.has_feature("web") and not Network.server_version_mismatch.is_empty()
 	if should_auto_play(auto_play, message, version_mismatch):
-		Controls.start()
+		if not Controls.needs_pointer_gesture(OS.has_feature("web"), Controls.device):
+			Controls.start()
 		_play()
 		return
 	_clear("Signed in as %s" % _account.get("display_name", ""), message)

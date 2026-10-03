@@ -11,6 +11,81 @@ func test_desktop_only_even_with_a_mobile_keyboard_or_gamepad() -> void:
 	assert_false(Radar.desktop_visible(false, false, true))
 
 
+func test_cpu_box_faces_preserve_floor_and_wall_slice() -> void:
+	var old := Geometry.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(8, 4, 6)
+	var placement := Transform3D(Basis(Vector3.UP, .7), Vector3(9, 1, -4))
+	old.append_mesh(box, placement, 2.0)
+	var current := Geometry.new()
+	current.append_faces(Geometry.box_faces(box.size), placement, 2.0)
+	assert_eq(current.floors.size(), old.floors.size())
+	assert_eq(current.walls.size(), old.walls.size())
+	for point: Vector2 in current.walls:
+		assert_true(old.walls.has(point), "CPU box has the same transformed wall intersections")
+
+
+func test_large_collision_is_sliced_across_frames_and_unloading_discards_partial_work() -> void:
+	var faces := PackedVector3Array()
+	for i: int in 1000:
+		faces.append_array(Geometry.box_faces(Vector3(2, 4, 2)))
+	var shape := ConcavePolygonShape3D.new()
+	shape.set_faces(faces)
+	var body := StaticBody3D.new()
+	var collider := CollisionShape3D.new()
+	collider.shape = shape
+	body.add_child(collider)
+	add_child(body)
+	var radar := Radar.new()
+	autofree(radar)
+	radar._build_height = 1.0
+	radar._building = Geometry.new()
+	radar._pending = [collider]
+	radar._build_step()
+	assert_eq(radar._pending.size(), 1, "One large root cannot monopolize a whole frame")
+	assert_gt(radar._slice_offset, 0)
+	assert_lte(radar._slice_offset, Radar.TRIANGLES_PER_FRAME)
+	assert_true(radar._building.walls.is_empty(), "Partial root stays private until complete")
+	body.free()
+	radar._build_step()
+	assert_true(radar._geometry.walls.is_empty(), "Unloaded partial roots are not published")
+	assert_true(radar._slice_faces.is_empty(), "Release the pending collision snapshot")
+
+
+func test_chunked_slicing_matches_uninterrupted_geometry() -> void:
+	var faces := PackedVector3Array()
+	for i: int in 500:
+		faces.append_array(Geometry.box_faces(Vector3(2, 4, 2)))
+	var whole := Geometry.new()
+	whole.append_faces(faces, Transform3D.IDENTITY, 1.0)
+	var split := Geometry.new()
+	for first: int in range(0, faces.size() / 3, Radar.SLICE_CHUNK):
+		split.append_faces(faces, Transform3D.IDENTITY, 1.0, first, Radar.SLICE_CHUNK)
+	assert_eq(split.walls, whole.walls)
+	assert_eq(split.floors, whole.floors)
+
+
+func test_csg_collision_slice_preserves_subtracted_openings() -> void:
+	var root := CSGBox3D.new()
+	root.size = Vector3(8, 4, 6)
+	root.use_collision = true
+	var opening := CSGBox3D.new()
+	opening.size = Vector3(2, 6, 8)
+	opening.operation = CSGShape3D.OPERATION_SUBTRACTION
+	root.add_child(opening)
+	add_child_autofree(root)
+	await wait_physics_frames(2)
+	var old := Geometry.new()
+	var meshes := root.get_meshes()
+	old.append_mesh(meshes[1], Transform3D.IDENTITY, 1.0)
+	var current := Geometry.new()
+	current.append_faces(Radar._collision_faces(root), Transform3D.IDENTITY, 1.0)
+	assert_eq(current.walls.size(), old.walls.size())
+	assert_eq(current.floors.size(), old.floors.size())
+	for point: Vector2 in current.walls:
+		assert_true(old.walls.has(point), "Collision slicing preserves the CSG doorway")
+
+
 func test_slice_shows_walls_and_floor_but_omits_roof_and_other_storeys() -> void:
 	var geometry := Geometry.new()
 	var floor_box := BoxMesh.new()

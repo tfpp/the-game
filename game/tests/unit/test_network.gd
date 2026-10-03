@@ -1,7 +1,49 @@
 extends GutTest
 ## Server URL resolution for the Network autoload (native build, so no web query).
 
+const RealTime := preload("res://tests/fixtures/real_time.gd")
 var _saved_args: Dictionary
+
+
+func test_websocket_buffers_handle_a_burst_larger_than_engine_defaults() -> void:
+	var server := Network.create_transport()
+	var client := Network.create_transport()
+	var port := randi_range(20000, 40000)
+	assert_eq(server.create_server(port), OK)
+	assert_eq(client.create_client("ws://127.0.0.1:%d" % port), OK)
+	var connected := await RealTime.wait_until(
+		get_tree(),
+		func() -> bool:
+			server.poll()
+			client.poll()
+			return client.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED,
+		5.0
+	)
+	assert_true(connected)
+	if connected:
+		var packet := PackedByteArray()
+		packet.resize(4096)
+		client.set_target_peer(1)
+		for i: int in 64:
+			packet.encode_u32(0, i)
+			assert_eq(client.put_packet(packet), OK)
+		var received: Array[int] = []
+		assert_true(
+			await RealTime.wait_until(
+				get_tree(),
+				func() -> bool:
+					client.poll()
+					server.poll()
+					while server.get_available_packet_count() > 0:
+						received.append(server.get_packet().decode_u32(0))
+					return received.size() == 64,
+				5.0
+			)
+		)
+		for i: int in received.size():
+			assert_eq(received[i], i)
+	client.close()
+	server.close()
 
 
 func before_each() -> void:
