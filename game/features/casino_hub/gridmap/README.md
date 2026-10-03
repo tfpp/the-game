@@ -51,6 +51,15 @@ Structural tiles have one collider; ceiling tiles use the existing room slab
 colliders. Collision uses world layer 1, matching player movement.
 Floor and ramp tiles reuse the existing casino carpet material and texture.
 
+The upper east wall has a recessed viewing pane at x 24, y 5–8.75, z -12–12.
+`vip_window.gd` replaces just those 24 upper stucco cells with a sealed one-way
+window prefab. Ground-level panels and adjacent upper panels remain intact. The
+Mirror Club's own GridMaps occupy x 24–32 behind it, with no deck over the main
+hall. The window belongs to the saved casino scene, so standalone previews keep
+collision and privacy even without the feature loader. The full builder preserves
+the inset; `features/vip_lounge/tools/recess_casino.gd` is the narrow saved-scene
+migration for this opening.
+
 Grid cells are **1 × 0.25 × 1 m**, centered in X/Z and floor-aligned in Y.
 Cell `(x, y, z)` has its origin at `(x + 0.5, y × 0.25, z + 0.5)`.
 Walls sit on the local negative-Z edge, face +Z and start at the cell's floor height.

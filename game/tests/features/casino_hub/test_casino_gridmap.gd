@@ -203,7 +203,7 @@ func test_full_and_upper_stucco_match_wall_heights_and_keep_square_texel_density
 		var grid := _level.get_node("PitStructure/" + name) as GridMap
 		assert_eq(grid.get_used_cells_by_item(3).size(), 0)
 		assert_eq(
-			grid.get_used_cells_by_item(14).size(), 96 if name.ends_with("NorthSouth") else 54
+			grid.get_used_cells_by_item(14).size(), 96 if name.ends_with("NorthSouth") else 30
 		)
 		assert_eq(grid.scale, Vector3.ONE)
 		assert_eq(grid.position.y, 5.0)

@@ -1,0 +1,8 @@
+{
+  "title": "A drink in hand",
+  "summary": "Special drinks now arrive as items you can carry and use.",
+  "notes": [
+    "Add held drink models and use the ordinary inventory, pickup and drinking controls.",
+    "Start drink benefits after finishing the drink and keep items when an active benefit prevents use."
+  ]
+}

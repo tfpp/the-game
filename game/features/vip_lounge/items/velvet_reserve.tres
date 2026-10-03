@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://features/holdables/item_definition.gd" id="definition"]
+[ext_resource type="PackedScene" path="res://features/vip_lounge/items/velvet_reserve_view.tscn" id="view"]
+
+[resource]
+script = ExtResource("definition")
+id = "velvet_reserve"
+display_name = "Velvet Reserve"
+category = 1
+view_scene = ExtResource("view")
+weight = 0.3
+ground_clearance = 0.1
+first_person_offset = Vector3(0.22, -0.20, -0.40)
+consumption_group = &"vip_drinks"
