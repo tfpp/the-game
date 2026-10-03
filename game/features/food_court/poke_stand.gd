@@ -5,6 +5,11 @@ extends Node3D
 const PRICE_CENTS := 2900
 const TIPS: Array[int] = [15, 20, 25, 30, 35, 40]
 
+@export var price_cents := PRICE_CENTS
+@export var menu_title := "POKE BOWLS"
+@export var food_label := "Poke bowl"
+@export var tip_choices: Array[int] = [15, 20, 25, 30, 35, 40]
+
 var _busy: Dictionary[int, bool] = {}
 var _next_order: Dictionary[int, int] = {}
 var _generation := 0
@@ -24,12 +29,17 @@ static func total_cents(tip: int) -> int:
 	return PRICE_CENTS + PRICE_CENTS * tip / 100
 
 
+func order_total(tip: int) -> int:
+	return price_cents + price_cents * tip / 100
+
+
 func can_use(player: Player) -> bool:
 	return entity.in_range(player) and to_local(player.net_position).z > 0.65
 
 
 func interaction_text() -> String:
-	return "Poke bowl — $29 + tip (15–40%)"
+	var suffix := "" if tip_choices == [0] else " + tip"
+	return "%s — %s%s" % [food_label, PlayerMoney.format_money(price_cents), suffix]
 
 
 func use() -> void:
@@ -45,7 +55,7 @@ func _may_order(peer: int, payload: Dictionary) -> bool:
 	return (
 		payload.size() == 1
 		and payload.get("tip") is int
-		and payload["tip"] in TIPS
+		and payload["tip"] in tip_choices
 		and can_use(entity.player_for_peer(peer))
 		and not _busy.has(peer)
 		and Time.get_ticks_msec() >= _next_order.get(peer, 0)
@@ -71,7 +81,7 @@ func _order(peer: int, payload: Dictionary) -> bool:
 func _charge(wallet: PlayerMoney, hand: Hand, holdables: Node, peer: int, tip: int) -> void:
 	var generation := _generation
 	var player := entity.player_for_peer(peer)
-	var total := total_cents(tip)
+	var total := order_total(tip)
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
 	var result: Dictionary = await wallet.charge(peer, id, total)
 	if generation != _generation or not is_inside_tree():

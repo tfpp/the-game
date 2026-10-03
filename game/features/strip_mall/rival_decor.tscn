@@ -1,0 +1,24 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://features/strip_mall/rival_stand.tscn" id="stand"]
+[ext_resource type="PackedScene" path="res://features/food_court/poke_bowl_view.tscn" id="bowl"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/coffee_cup.tscn" id="cup"]
+[node name="RivalRestaurants" type="Node3D"]
+[node name="CityWok" parent="." instance=ExtResource("stand")]
+position = Vector3(9, 0, 43)
+rotation = Vector3(0, 1.5707964, 0)
+[node name="Bowl" parent="CityWok" instance=ExtResource("bowl")]
+position = Vector3(0, 1.08, 0.1)
+[node name="CitySushi" parent="." instance=ExtResource("stand")]
+position = Vector3(21, 0, 43)
+rotation = Vector3(0, -1.5707964, 0)
+[node name="Sign" parent="CitySushi" index="7"]
+text = "CITY SUSHI"
+[node name="MenuBoard" parent="CitySushi" index="8"]
+text = "SALMON RICE BOWL - $15\nE / USE TO ORDER"
+[node name="Owner" parent="CitySushi" index="9"]
+position = Vector3(-2, 0, 0)
+character = 1
+[node name="Tea" parent="CitySushi" instance=ExtResource("cup")]
+position = Vector3(0.4, 1.08, 0.1)
+
+[editable path="CitySushi"]
