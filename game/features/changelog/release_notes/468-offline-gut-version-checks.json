@@ -1,0 +1,5 @@
+{
+  "title": "Offline test-tool version checks",
+  "summary": "Development checks no longer request GUT version information from GitHub.",
+  "notes": ["Disable remote GUT version lookups to avoid GitHub API rate-limit errors."]
+}
