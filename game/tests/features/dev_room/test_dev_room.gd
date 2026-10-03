@@ -31,10 +31,8 @@ func _player_at(global_pos: Vector3) -> Player:
 	return player
 
 
-func test_casino_booth_replaces_the_old_staff_door() -> void:
-	assert_eq(_room.get_node("CasinoBooth").position, Vector3(12, 0, -18.4))
-	var door := _room.get_node("CasinoBooth/Door") as GarageDoor
-	assert_eq(door.door_label, "Enter the dev room")
+func test_casino_booth_is_removed() -> void:
+	assert_null(_room.get_node_or_null("CasinoBooth"))
 
 
 func test_casino_development_doors_and_return_landings_clear_shops_and_walls() -> void:
@@ -48,7 +46,7 @@ func test_casino_development_doors_and_return_landings_clear_shops_and_walls() -
 	hull.radius = 0.4064
 	hull.height = 1.8288
 	for pair: Array in [
-		[_room.get_node("CasinoBooth/Door"), _room.get_node("CasinoBooth/Arrival")],
+		[_room.get_node("CasinoArrival"), _room.get_node("CasinoArrival")],
 		[street.get_node("CasinoStreetEntrance"), street.get_node("MainCasinoArrival")]
 	]:
 		var door := pair[0] as Node3D
@@ -72,26 +70,18 @@ func test_casino_development_doors_and_return_landings_clear_shops_and_walls() -
 		assert_true(space.intersect_shape(query).is_empty(), "Door can be approached")
 
 
-func test_booth_and_return_door_round_trip() -> void:
-	var door := _room.get_node("CasinoBooth/Door") as GarageDoor
-	var back := _room.get_node("Room/ReturnDoor") as GarageDoor
-	var player := _player_at(door.global_position)
-	door.request_enter()
+func test_command_and_return_door_round_trip() -> void:
+	_room.name = "dev_room"
+	var player := _player_at(Vector3(0, 1.2, 0))
+	_room.handle_chat_command(1, "warp dev")
 	var arrival := (_room.get_node("Room/Arrival") as Marker3D).global_position
 	assert_true(player.net_position.is_equal_approx(arrival))
 	assert_true(INTERIOR.has_point(arrival))
+	var back := _room.get_node("Room/ReturnDoor") as GarageDoor
 	player.net_position = back.global_position
 	back.request_enter()
-	var casino := (_room.get_node("CasinoBooth/Arrival") as Marker3D).global_position
+	var casino := (_room.get_node("CasinoArrival") as Marker3D).global_position
 	assert_true(player.net_position.is_equal_approx(casino))
-
-
-func test_distant_player_cannot_use_the_booth() -> void:
-	var door := _room.get_node("CasinoBooth/Door") as GarageDoor
-	var player := _player_at(door.global_position + Vector3(20, 0, 0))
-	var start := player.net_position
-	door.request_enter()
-	assert_true(player.net_position.is_equal_approx(start))
 
 
 func test_every_warp_door_and_its_return_marker_is_in_the_room() -> void:

@@ -74,7 +74,7 @@ road. Regression coverage checks lamp and seating directions as well as clearanc
 
 ## In-game access
 
-Enter **DEV ROOM** in the casino north promenade, then use **STREET DISTRICT**
+Type `!warp dev` in chat, then use **STREET DISTRICT**
 on the east wall (E / controller Use / touch Use). The district loads before
 travel. Use **RETURN TO DEV ROOM** beside the street arrival to come back.
 Press P and search **Street District** for GPS directions to the door.
@@ -83,7 +83,7 @@ arrival markers remain present on every peer for multiplayer and late joins.
 
 The east block includes a gold-trimmed **GOLDEN CROWN CASINO** marquee and canopy.
 Its entrance teleports to the main casino north promenade. Use the unsigned street-casino portal
-beside the dev-room booth to return directly to this facade.
+on the north promenade to return directly to this facade.
 Six searchable dumpsters sit beside alley mouths and service streets, and six
 cars park along the curbs. These reuse the existing loot tables, animated dumpster
 lids and searchable car boots. They stay outside streamed geometry so every peer

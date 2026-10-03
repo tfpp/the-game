@@ -1,10 +1,13 @@
 # Dev room
 
-One sealed room that holds every warp door, so the casino floor stays tidy. The
-casino's north promenade has a single unsigned dev-room booth at world `(12, 0, -18.4)`; press
-Use (E, controller B/Circle or touch Use) on its door to arrive in the room at
-`(300, 0, -300)`. The **BACK TO THE CASINO** door on the south wall returns you to
-the booth.
+One sealed room holds the existing warp doors. The casino booth is removed;
+open chat with Enter and type `!warp dev`. `!warp` lists destinations:
+`dev`, `casino`, `lounge`, `cellar`, `hotel`, `apartments`, `props`, `garage`, `street`.
+`/warp <name>` also works. The return door lands on the clear north promenade.
+Commands are private (not public chat/Discord), server-validated and limited to
+one successful warp per second per player. They move only the requester and finish
+any active slum run, just like ordinary return doors. No arbitrary paths or coordinates
+are accepted. Streamed interiors preload on the owner before teleporting.
 
 The Gun-O-Matic and its trash can stand on the east wall at (313, 0, -300)
 and (313, 0, -298.2), respectively, owned by `features/gun_machine`. Use the
@@ -26,14 +29,16 @@ return marker):
 
 Each feature's "return to the casino" door now lands in front of its door here.
 The doors are ordinary `GarageDoor`s, so the server validates range and moves the
-player; there is no new networking or state. The room is a closed-off GPS area
-(**Dev Room**), so GPS routes to the lounge, hotel and other rooms go through the
-booth. To add another warp door, place it on a free wall slot (the
+player; there is no new networking or state. The room remains a closed-off GPS area
+(**Dev Room**); its hint explains `!warp dev` rather than routing through a removed booth. To add another warp door, place it on a free wall slot (the
 east/west walls) and point its return door at a marker in front of it.
 
-`tests/features/dev_room/` checks the booth round trip, that every warp door sits
+`tests/features/dev_room/` checks command/return round trips, validation, and that every warp door sits
 inside the room and that each return marker lands inside it.
 
 The Street District, Hotel Props and procedural garage teleporters here are hidden
-and locked until `sv_cheats 1` ([dev access](../dev_access/README.md)). The booth and
-the lounge, hotel wing and apartment doors stay open for normal play.
+and locked until `sv_cheats 1` ([dev access](../dev_access/README.md)). The same restriction applies to `!warp street`, `!warp props` and `!warp garage`.
+Dev, casino, lounge, cellar, hotel and apartment commands stay open for normal play.
+`warp_commands.gd` extends the authenticated chat command group instead of adding a
+second request RPC; NetworkedEntity supplies authority-only preload events and Player
+retains its existing owner-only teleport and movement replication.

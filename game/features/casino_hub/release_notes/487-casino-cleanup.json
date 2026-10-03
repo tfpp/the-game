@@ -3,6 +3,7 @@
   "summary": "The old casino is gone, and the Crown's doorways are free of overhead signs.",
   "notes": [
     "Remove the old casino room, entrance and GPS destination.",
-    "Clear overhead door signs in the main casino while keeping Use prompts and travel routes."
+    "Clear overhead door signs in the main casino while keeping ordinary Use prompts and travel routes.",
+    "Replace the dev-room booth with private !warp dev and named room commands; type !warp for help."
   ]
 }

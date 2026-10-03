@@ -47,10 +47,10 @@ func test_main_casino_overhead_signs_stay_absent_on_late_load_and_cheat_toggle()
 
 func test_unsigned_doors_keep_positions_prompts_and_destinations() -> void:
 	var paths: Array[String] = [
-		"CasinoBooth/Door", "CasinoReturn", "CasinoStreetEntrance", "Gate", "Entrance", "Entrance"
+		"CasinoArrival", "CasinoReturn", "CasinoStreetEntrance", "Gate", "Entrance", "Entrance"
 	]
 	var positions: Array[Vector3] = [
-		Vector3(12, 1.1, -19.55),
+		Vector3(12, 1.2, -17.4),
 		Vector3(-7, 1.1, -19.7),
 		Vector3(7, 1.1, -19.7),
 		Vector3(18, 1.1, 19.8),

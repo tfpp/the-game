@@ -5,59 +5,14 @@
 [ext_resource type="Material" path="res://world/materials/proto_dark.tres" id="3_floor"]
 [ext_resource type="Material" path="res://world/materials/proto_wall.tres" id="4_wall"]
 
+[ext_resource type="Script" path="res://features/dev_room/warp_commands.gd" id="warp"]
+
 [node name="DevRoom" type="Node3D"]
+script = ExtResource("warp")
 
-[node name="CasinoBooth" type="Node3D" parent="."]
-position = Vector3(12, 0, -18.4)
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(12, 1.2, -17.4)
 rotation = Vector3(0, 3.1415926536, 0)
-
-[node name="Floor" type="CSGBox3D" parent="CasinoBooth"]
-position = Vector3(0, -0.1, 0)
-size = Vector3(2.4, 0.2, 2.4)
-material = ExtResource("3_floor")
-use_collision = true
-
-[node name="Ceiling" type="CSGBox3D" parent="CasinoBooth"]
-position = Vector3(0, 2.6, 0)
-size = Vector3(2.4, 0.2, 2.4)
-material = ExtResource("4_wall")
-use_collision = true
-
-[node name="BackWall" type="CSGBox3D" parent="CasinoBooth"]
-position = Vector3(0, 1.3, 1.3)
-size = Vector3(2.4, 2.6, 0.2)
-material = ExtResource("4_wall")
-use_collision = true
-
-[node name="LeftWall" type="CSGBox3D" parent="CasinoBooth"]
-position = Vector3(-1.3, 1.3, 0)
-size = Vector3(0.2, 2.6, 2.4)
-material = ExtResource("4_wall")
-use_collision = true
-
-[node name="RightWall" type="CSGBox3D" parent="CasinoBooth"]
-position = Vector3(1.3, 1.3, 0)
-size = Vector3(0.2, 2.6, 2.4)
-material = ExtResource("4_wall")
-use_collision = true
-
-[node name="Door" type="CSGBox3D" parent="CasinoBooth"]
-position = Vector3(0, 1.1, 1.15)
-size = Vector3(1.1, 2.1, 0.08)
-material = ExtResource("4_wall")
-use_collision = true
-script = ExtResource("1_door")
-destination = NodePath("../../Room/Arrival")
-door_label = "Enter the dev room"
-
-[node name="Arrival" type="Marker3D" parent="CasinoBooth"]
-position = Vector3(0, 1.2, -1)
-
-[node name="Light" type="OmniLight3D" parent="CasinoBooth"]
-position = Vector3(0, 2.2, 0)
-light_color = Color(0.8, 0.85, 0.9, 1)
-light_energy = 0.8
-omni_range = 4.0
 
 [node name="Room" type="Node3D" parent="."]
 position = Vector3(300, 0, -300)
@@ -104,7 +59,7 @@ size = Vector3(1.1, 2.1, 0.08)
 material = ExtResource("3_floor")
 use_collision = true
 script = ExtResource("1_door")
-destination = NodePath("../../CasinoBooth/Arrival")
+destination = NodePath("../../CasinoArrival")
 door_label = "Back to the casino"
 
 [node name="ReturnSign" type="Label3D" parent="Room"]
@@ -139,5 +94,5 @@ omni_range = 12.0
 position = Vector3(300, 0, -294)
 script = ExtResource("2_gps")
 label = "Dev Room"
-hint = "Every warp door, behind the DEV ROOM booth in the north promenade"
+hint = "Use !warp dev in chat to reach the warp room"
 area = AABB(285.5, -1, -308.5, 29, 6, 17)

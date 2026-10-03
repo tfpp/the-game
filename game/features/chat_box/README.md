@@ -54,7 +54,8 @@ CI cannot provision the live channel or deployment mounts.
 `message_accepted(sender_name, text)` fires **only on the authoritative server**, after
 normal public-message validation and RPC broadcast. `DiscordRelay` subscribes locally;
 client receive RPCs and notices do not emit it. Existing RPC and notice signatures stay
-unchanged. Direct slash-text submissions to the public RPC are rejected; the existing
+unchanged. Direct slash-text, `!guns` and `!warp` submissions to the public RPC are rejected;
+`!warp <room>` and `/warp <room>` retain arguments for dev_room's validated travel handler; the existing
 command RPC/group handles commands separately.
 
 The relay sends signed JSON `{id, timestamp, sender, text}` to `POST /bot/game-chat`.

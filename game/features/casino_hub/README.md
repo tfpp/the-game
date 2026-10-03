@@ -5,7 +5,8 @@
 The old comparison casino is no longer loaded: its north-promenade entrance,
 remote room, duplicate gambling machines and GPS destination have been removed.
 Shared legacy scenes below remain authoring/test references, not live content.
-Main-casino overhead signs for the dev booth, operations garage, street casino,
+The dev booth is removed; type `!warp dev` in chat (or `!warp` for room names).
+Main-casino overhead signs for the operations garage, street casino,
 slum gate, mall and service door are gone. The doors keep their existing Use
 prompts, positions, validated travel and GPS routes; remote return signs, gaming
 displays and decorative artwork are unchanged. Inherited modeled signs are hidden
