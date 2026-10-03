@@ -49,6 +49,9 @@ func test_atlas_stays_within_texture_limit_and_has_every_glyph() -> void:
 func test_unknown_characters_fall_back_and_case_is_ignored() -> void:
 	assert_eq(SignLetterAtlas.uv_rect("a"), SignLetterAtlas.uv_rect("A"))
 	assert_eq(SignLetterAtlas.uv_rect("%"), SignLetterAtlas.uv_rect("?"))
+	for character: String in ["ż", "ł"]:
+		assert_ne(SignLetterAtlas.uv_rect(character), SignLetterAtlas.uv_rect("?"))
+		assert_eq(SignLetterAtlas.uv_rect(character), SignLetterAtlas.uv_rect(character.to_upper()))
 
 
 func test_letters_mesh_has_one_quad_per_visible_character() -> void:

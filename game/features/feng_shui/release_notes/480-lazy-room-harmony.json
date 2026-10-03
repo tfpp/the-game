@@ -1,0 +1,9 @@
+{
+  "title": "Room harmony foundations",
+  "summary": "Furnished rooms now have default elements and on-demand scores for future Feng Shui effects.",
+  "notes": [
+    "Add cached Feng Shui room scoring without changing current luck or health.",
+    "Evaluate room harmony only when requested, avoiding ongoing computation.",
+    "Assign default elements to existing furniture and allow scene metadata overrides for new decor."
+  ]
+}
