@@ -19,7 +19,10 @@ a changed account or amount. Offline/dev wallets use the same prices.
 
 If a player is killed during an excursion, the server drops their carried
 valuables at the death site as ordinary pickups. Other players can collect
-them. Weapons, clothes and keys remain with the respawned player. Deaths in
+them. Weapons, clothes and keys remain with the respawned player. After the
+respawn in the Crown, the victim sees a short toast naming each dropped valuable
+and confirming their weapons were kept (`SlumRuns.death_penalty_message`).
+The toast reuses `LootToast` with a longer duration. Deaths in
 the Crown and its other rooms do not drop valuables.
 
 New slum scenes register a `SlumArrivalPoint` on their arrival marker and

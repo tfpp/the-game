@@ -127,20 +127,26 @@ func take_first_valuable() -> String:
 ## for the killer or any other survivor to collect. Clothing, weapons and keys
 ## remain with the player after respawn.
 func drop_valuables(at: Vector3) -> int:
+	return drop_valuable_ids(at).size()
+
+
+## Server-only: like `drop_valuables`, but returns the dropped item ids so the
+## death message can name them.
+func drop_valuable_ids(at: Vector3) -> Array[String]:
+	var dropped: Array[String] = []
 	if not multiplayer.is_server():
-		return 0
+		return dropped
 	var holdables := get_tree().get_first_node_in_group(&"holdables_root")
 	if holdables == null:
-		return 0
-	var count := 0
+		return dropped
 	while true:
 		var id := take_first_valuable()
 		if id.is_empty():
 			break
 		var offset := Vector3(randf_range(-0.6, 0.6), 0.0, randf_range(-0.6, 0.6))
 		holdables.call("spawn_thrown_item", id, at + Vector3.UP * 0.7, at + offset)
-		count += 1
-	return count
+		dropped.append(id)
+	return dropped
 
 
 @rpc("any_peer", "call_local", "reliable")

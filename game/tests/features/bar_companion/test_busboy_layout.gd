@@ -18,12 +18,15 @@ func before_each() -> void:
 
 func test_glasses_rest_on_actual_tabletops_without_new_blocking_geometry() -> void:
 	var furniture := _room.get_node("Casino/Furnishings")
-	for table: int in 4:
+	for table: int in BusboyShift.TABLES.size():
 		var collider: CollisionShape3D
 		if table < 3:
 			collider = furniture.get_node("TableBody%d/Shape" % table) as CollisionShape3D
+		elif table < 5:
+			var label := "CocktailTable" if table == 3 else "CocktailTableWest"
+			collider = furniture.get_node("BundleFurnishings/%s/Collider" % label)
 		else:
-			collider = furniture.get_node("BundleFurnishings/CocktailTable/Collider")
+			collider = _shift.get_node("Table%d/Collider" % (table + 1))
 		var shape := collider.shape as BoxShape3D
 		var top := collider.global_position.y + shape.size.y * 0.5
 		for slot: int in 3:
@@ -70,6 +73,28 @@ func test_orders_mark_existing_patrons_and_all_stations_have_clear_approaches() 
 			"west-edge glasses are reachable without climbing on furniture"
 		)
 	_assert_standing_clear(Vector3(19.6, 0, 7.1))
+	for table: int in range(4, BusboyShift.TABLES.size()):
+		_assert_standing_clear(BusboyShift.TABLES[table] + Vector3(0, -1.045, -1.0))
+	# Existing main ramps, elevator approaches and lounge circulation stay open.
+	for x: float in [-17, 17]:
+		for z: float in [-15, -8, 0, 8, 14, 17]:
+			_assert_standing_clear(Vector3(x, 0, z))
+
+
+func test_permanent_two_sided_cards_rest_on_all_eight_tables() -> void:
+	assert_eq(BusboyShift.TABLES.size(), 8)
+	for table: int in BusboyShift.TABLES.size():
+		var card := _shift.get_node("TableCard%d" % (table + 1)) as Node3D
+		assert_true(card.visible)
+		assert_eq(card.get("number"), table + 1)
+		assert_almost_eq(card.global_position.y, BusboyShift.TABLES[table].y, 0.001)
+		var foot := card.get_node("Foot") as MeshInstance3D
+		assert_almost_eq(foot.position.y - (foot.mesh as BoxMesh).size.y / 2, 0.0, 0.001)
+		assert_true(card.has_node("NumberFront"))
+		assert_true(card.has_node("NumberBack"))
+		assert_true(card.find_children("*", "CollisionObject3D", true, false).is_empty())
+		var ink := (card.get_node("NumberFront") as MeshInstance3D).material_override
+		assert_eq((ink as StandardMaterial3D).albedo_texture.get_width(), 64)
 
 
 func _assert_standing_clear(feet: Vector3) -> void:

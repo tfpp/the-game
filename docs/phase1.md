@@ -159,8 +159,11 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
   The existing owner-only `pickup` cue from `PlayerInventory` provides the sound.
 
 ### C3. Clear death penalty messaging
-- [ ] On death in a slum, tell the player what was dropped and that weapons were
+- [x] On death in a slum, tell the player what was dropped and that weapons were
   kept. Respawn back in the Crown (not the operations garage).
+- Completed in #466: after the respawn, `slum_runs` sends the victim an owner-only
+  message naming each dropped valuable and confirming weapons were kept. Combat
+  already respawns at the Crown `player_spawn` marker (#436).
 
 ## Milestone D: safe casino
 

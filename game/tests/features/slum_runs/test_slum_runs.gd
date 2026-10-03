@@ -18,6 +18,11 @@ class FakeHoldables:
 		drops.append({"id": item_id, "from": from, "to": to})
 
 
+func after_each() -> void:
+	for toast: Node in get_tree().get_nodes_in_group(LootToast.GROUP):
+		toast.free()
+
+
 func _features() -> Node3D:
 	var features := Node3D.new()
 	add_child_autofree(features)
@@ -221,3 +226,52 @@ func test_pawn_shop_display_case_matches_counter_and_keeps_sale_prompt() -> void
 	assert_almost_eq(phone.global_position.y, fence.global_position.y + fence.size.y * .5, .001)
 	var sign := case_node.get_node("CashSign") as SignBoard
 	assert_string_contains(sign.text, "BUY - SELL - TRADE")
+
+
+func test_death_message_lists_dropped_valuables_and_kept_weapons() -> void:
+	var watch := ItemCatalog.find("watch").display_name
+	var scrap := ItemCatalog.find("scrap").display_name
+	assert_eq(
+		SlumRuns.death_penalty_message(PackedStringArray(["watch"])),
+		"You dropped %s. Your weapons were kept." % watch
+	)
+	assert_eq(
+		SlumRuns.death_penalty_message(PackedStringArray(["watch", "scrap", "watch"])),
+		"You dropped %s, %s and %s. Your weapons were kept." % [watch, scrap, watch]
+	)
+	assert_eq(
+		SlumRuns.death_penalty_message(PackedStringArray()),
+		"You had no valuables to drop. Your weapons were kept."
+	)
+
+
+func test_slum_death_message_waits_for_the_respawn() -> void:
+	var combat := Combat.new()
+	add_child_autofree(combat)
+	var features := _features()
+	var runs := _run(features)
+	var alley := _alley(features)
+	var arrival := alley.get_node("District/Arrival") as SlumArrivalPoint
+	_player(arrival.global_position)
+	var hand := _hand()
+	var holdables := FakeHoldables.new()
+	add_child_autofree(holdables)
+	assert_true(hand.inventory().collect("watch"))
+	runs.begin(1, arrival)
+	combat.apply_damage(1, Combat.MAX_HEALTH, 2)
+	var toast := get_tree().get_first_node_in_group(LootToast.GROUP) as LootToast
+	assert_true(toast == null or not toast.shown_text().begins_with("You dropped"))
+	combat._announce_respawn(1)
+	toast = get_tree().get_first_node_in_group(LootToast.GROUP) as LootToast
+	assert_not_null(toast)
+	assert_eq(toast.shown_text(), SlumRuns.death_penalty_message(PackedStringArray(["watch"])))
+
+
+func test_crown_death_sends_no_slum_message() -> void:
+	var features := _features()
+	var runs := _run(features)
+	_player(Vector3.ZERO)
+	_hand()
+	runs._on_player_died(1, 2)
+	var toast := get_tree().get_first_node_in_group(LootToast.GROUP) as LootToast
+	assert_true(toast == null or toast.shown_text().is_empty())

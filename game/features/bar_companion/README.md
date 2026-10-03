@@ -73,9 +73,15 @@ At the **left end of the main salon bar**, use the glass marked **BUSBOY SHIFT**
 shop is unchanged, several metres to the right. One worker at a time takes the
 shared two-minute shift; other players can watch but cannot take its tasks.
 
-- Collect glasses marked EMPTY from the west edges of the three card tables and
-  the east lounge cocktail table (19.6, 1.045, 8). Return each to the station with
-  Use before collecting another. They are temporary shift cargo, not backpack loot.
+- Collect glasses marked EMPTY from the **numbered tables 1–8**. The first empty
+  appears immediately at table 1; the HUD lists tables with outstanding empties.
+  Tables 1–3 are the salon card tables (glasses on their west edges); 4 is the east
+  lounge table, 5 the existing southwest lounge table. New cocktail tables 6–8
+  stand on the northwest, northeast and southeast promenade. Return each empty
+  to the station with Use before collecting another. The counter only offers Use
+  when it can actually start, accept cargo, dispense an order or pay the prize;
+  it no longer advertises an action that silently does nothing. Cargo is a
+  temporary shift task, not backpack loot.
 - After 30 seconds, seated patrons at the east side of the card tables order drinks.
   Take a bottled drink from the station, then Use the matching numbered patron.
   Their labels show a 35-second deadline, including time spent carrying the drink.
@@ -83,7 +89,8 @@ shared two-minute shift; other players can watch but cannot take its tasks.
   remaining shift time, dirty backlog and pending orders. Empty cargo uses the
   existing hotel glass; ordered cargo uses the existing beer bottle, visible in
   first person, third person and to observers on the offhand side.
-- Empty spawns accelerate from 12 seconds to 4; orders from 24 seconds to 10.
+- After the immediate first empty, spawns accelerate from 12 seconds to 4;
+  orders from 24 seconds to 10.
   Slots are selected randomly from free table positions; living seated patrons
   are selected randomly for orders. Decorative table glasses are not objectives.
 - A ninth dirty glass or any overdue order fails with **no prize**. To win at
@@ -110,7 +117,19 @@ clear all tasks and release the station. Rounds and unclaimed prizes reset on
 server restart; claimed account money follows existing wallet persistence. Offline
 play runs the same authority path with the normal temporary wallet.
 
-Tests: `test_busboy.gd` and `test_busboy_layout.gd` cover rules, security, cargo,
+`table_card.tscn` is a reusable two-sided cream number card; set `number` before
+adding it to the tree. `table_card.gd` is the authoritative native geometry source:
+0.30 × 0.325 × 0.16 m, tabletop-centred pivot, faces ±Z, 28 triangles and two
+shared materials. Numbers reuse `SignBoard.letters_mesh()` and the existing
+64×64 `SignLetterAtlas` with its padded glyph UVs; no new artwork, atlas or lights.
+The paper card meets its broad foot without gaps; cards have no collision. Card
+faces on salon tables rotate toward the west/east approaches. All eight cards
+are always visible, even outside a shift. New tables reuse the existing painted
+walnut pedestal model/collider at y=0; existing furnishings remain unchanged.
+The three new table centres are (-20,0,-15), (20,0,-8), (20,0,14).
+
+Tests: `test_busboy.gd`, `test_busboy_use.gd` and `test_busboy_layout.gd` cover
+public Use selection at real standing heights, rules, security, cargo,
 wallet claims, lifecycle, snapshot presentation and supported placement in the
 actual live casino. Run `tests/features/bar_companion/busboy_network_test.sh` from
 `game/` for real WebSocket sender, competition, late-join, cargo and disconnect

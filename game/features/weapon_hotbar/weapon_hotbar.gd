@@ -23,7 +23,7 @@ const RIG_ACTION := &"hotbar_rig"
 ## index.
 const RIG_SLOT := PlayerInventory.CAPACITY
 
-## Hand -> {view: Node3D, base: Transform3D, t: float, kick: float}
+## Hand -> {view: WeakRef, base: Transform3D, t: float, kick: float}
 var _recoil: Dictionary = {}
 ## Hands whose `fired` signal we've already connected to — `Signal.is_connected`
 ## can't be used for that check since the connection binds each hand as an extra
@@ -60,10 +60,10 @@ func _process(delta: float) -> void:
 			_connected[hand] = true
 			hand.fired.connect(_on_fired.bind(hand))
 		_update_recoil(hand, delta)
-	for hand: Hand in _recoil.keys():
+	for hand: Variant in _recoil.keys():
 		if not seen.has(hand):
 			_recoil.erase(hand)
-	for hand: Hand in _connected.keys():
+	for hand: Variant in _connected.keys():
 		if not seen.has(hand):
 			_connected.erase(hand)
 
@@ -94,7 +94,16 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Equip whatever is in `slot`, swapping it with the currently held item — the same
 ## request a digit key or the inventory screen's Equip button sends.
 func _equip_slot(hand: Hand, slot: int) -> void:
-	hand.inventory().request_equip.rpc_id(1, slot)
+	var id := hand.inventory().item_at(slot)
+	if id.is_empty():
+		return
+	var request := func() -> void:
+		if is_instance_valid(hand):
+			hand.inventory().request_equip.rpc_id(1, slot)
+	if not ClothingCatalog.slot(id).is_empty():
+		request.call()
+	else:
+		_request_swap(request)
 
 
 ## Re-equips features/gun_machine's rig for this hand's peer, if it has a holstered
@@ -103,7 +112,20 @@ func _equip_rig(hand: Hand) -> void:
 	var rig := GunRig.for_peer(get_tree(), hand.peer_id)
 	if rig == null or rig.net_stats.is_empty():
 		return
-	rig.request_equip_rig.rpc_id(1)
+	if rig.is_active():
+		return
+	var request := func() -> void:
+		if is_instance_valid(rig):
+			rig.request_equip_rig.rpc_id(1)
+	_request_swap(request)
+
+
+func _request_swap(request: Callable) -> void:
+	var player := get_tree().get_first_node_in_group(&"local_player") as Player
+	if player == null:
+		request.call()
+	else:
+		FirstPersonView.request_swap(player, request)
 
 
 ## Advances a per-session cursor to the next occupied slot in `direction` and equips
@@ -133,14 +155,18 @@ func _occupancy(hand: Hand) -> Array[bool]:
 
 
 func _on_fired(item_id: String, hand: Hand) -> void:
+	if FirstPersonView.firing_blocked(get_tree(), hand.peer_id):
+		return
 	var view := hand.held_view()
 	if view == null:
 		return
 	var entry: Dictionary = _recoil.get(hand, {})
-	var base: Transform3D = entry["base"] if entry.get("view") == view else view.transform
+	var previous := entry.get("view") as WeakRef
+	var same_view: bool = previous != null and previous.get_ref() == view
+	var base: Transform3D = entry["base"] if same_view else view.transform
 	var def := ItemCatalog.find(item_id)
 	_recoil[hand] = {
-		"view": view,
+		"view": weakref(view),
 		"base": base,
 		"t": 0.0,
 		"kick": WeaponHotbarMath.kick_for_damage(def.damage if def != null else 18.0),
@@ -151,7 +177,10 @@ func _update_recoil(hand: Hand, delta: float) -> void:
 	if not _recoil.has(hand):
 		return
 	var entry: Dictionary = _recoil[hand]
-	var view: Node3D = entry["view"]
+	# Resolve to null after a swap frees the old view, before assigning a typed
+	# Node3D. A raw freed reference raises an error before validity checks run.
+	var reference: WeakRef = entry["view"]
+	var view := reference.get_ref() as Node3D
 	if not is_instance_valid(view) or view != hand.held_view():
 		_recoil.erase(hand)
 		return

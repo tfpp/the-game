@@ -32,7 +32,9 @@ Static visuals are classified once, new visuals on arrival, and moving
 physics-body visuals (players, enemies, held items) at 10 Hz. Cosmetic additions
 outside zone roots are also refreshed so transient projectiles/effects follow
 their position. Freed visuals are removed from the cache. Lights use matching
-illumination masks. The physical basement cab and casino landing use the
+illumination masks. When the camera crosses between rooms, cached light entries are
+refreshed so only the current room illuminates the first-person handheld layer (18).
+The physical basement cab and casino landing use the
 `render_zone_shared` group so the crossing remains visible from either side.
 Do not use layers 19/20 for unrelated visuals.
 
