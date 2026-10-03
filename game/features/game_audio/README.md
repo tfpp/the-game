@@ -27,6 +27,11 @@ travel screen. It shares this feature’s GameSFX bus and bounded UI voice pool.
 original PCM source/builder is documented in `features/starter_room/README.md`;
 late joiners do not hear previous trips.
 
+The Strip Mall restaurant rivals use `city_wok_yell` / `city_sushi_yell` profiles
+in the same bounded world voice pool. These are original one-second wordless
+harmonic yells, authored by `strip_mall/tools/build_yells.gd`, not TV recordings;
+server events trigger them only for visitors already viewing the plaza.
+
 ## Assets
 
 Files copied unmodified from the downloaded Kenney All-in-1 pack:

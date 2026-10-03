@@ -122,6 +122,13 @@ one public bowl pickup beside the counter. A respawn keeps normal inventory deli
 a session reset ignores stale completions. Purchases have a one-second per-peer
 cooldown, and menu buttons disable after choosing to avoid accidental repeats.
 
+The service also supports scene-authored `price_cents`, `menu_title`, `food_label`
+and `tip_choices`; `order_total()` computes that instance's total. Defaults retain
+the Poke menu and `total_cents()` remains the original static $29 helper. The Strip
+Mall's two rival counters reuse this service with a single zero-tip choice and
+independent prices. All three sell the existing `poke_bowl`, with the same validated
+server payment/delivery implementation and local menu, not parallel shop logic.
+
 The counter is static on every peer. Held/backpack bowls and fallback pickups
 use existing server-owned replication, including late joins. Authenticated money
 persists normally; bowls have ordinary session inventory/pickup lifetime. No new

@@ -37,6 +37,15 @@ The shared web `shell.html` preserves browser reload and native macOS screenshot
 shortcuts before Godot's canvas handler can prevent their defaults. Mac pointer
 release and click-to-resume are owned by `features/control_scheme/system_shortcuts.gd`.
 
+Before Godot requests pointer capture, the shell focuses the canvas synchronously
+within the original gesture and checks document focus. Background pages stay unlocked;
+browser promise/synchronous refusals are handled without an unhandled rejection.
+No focus event or timer retries capture. The existing Click to play / Resume UI
+observes actual browser lock state and accepts a fresh click when focus returns.
+The guard is canvas-local; native, touch and controller input are unchanged.
+Run `node game/tests/features/touch_controls/pointer_lock_test.mjs` from the repository
+root for dependency-free focus/refusal/recovery tests of the shipped shell script.
+
 When the server refuses a client for a version mismatch, the login screen's "Reload
 page" button reloads with `?v=<server build>`. The shell appends that `v` to the engine
 script and to same-origin `fetch()` requests (WASM, PCK), so browsers bypass their

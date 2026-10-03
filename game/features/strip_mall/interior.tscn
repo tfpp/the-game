@@ -8,7 +8,11 @@
 
 [ext_resource type="PackedScene" path="res://features/strip_mall/zabka_decor.tscn" id="zabka"]
 
+[ext_resource type="PackedScene" path="res://features/strip_mall/rival_decor.tscn" id="rivals"]
+
 [node name="MallInterior" type="Node3D"]
+
+[node name="RivalRestaurants" parent="." instance=ExtResource("rivals")]
 
 [node name="Zabka" parent="." instance=ExtResource("zabka")]
 
@@ -51,7 +55,7 @@ position = Vector3(-7.85, 1.8, 28)
 rotation = Vector3(0, 1.5707964, 0)
 text = "CROWN STRIP MALL
 01 POKE - 02 KEBAB - 03 WENDY'S
-04 ŻABKA - DINING - PARKING"
+04 ŻABKA - CITY WOK - CITY SUSHI"
 letter_height = 0.12
 
 [node name="DeliveryVan" parent="." instance=ExtResource("car")]

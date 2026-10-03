@@ -33,9 +33,13 @@ spawn server
 wait_for "$tmp/server.log" 'Server listening'
 spawn visitor
 wait_for "$tmp/visitor.log" FROG_CLIENT_DEAD
+wait_for "$tmp/visitor.log" CITY_FOOD_PURCHASED
 spawn late
 wait_for "$tmp/late.log" FROG_CLIENT_DEAD
 wait_for "$tmp/server.log" FROG_SERVER_RESPAWNED
 wait_for "$tmp/visitor.log" FROG_CLIENT_RESPAWNED
 wait_for "$tmp/late.log" FROG_CLIENT_RESPAWNED
-echo "PASS: Żabka frog profiles, server authority, death, late join and respawn"
+wait_for "$tmp/visitor.log" RIVALRY_CLIENT_SYNCED
+wait_for "$tmp/late.log" RIVALRY_CLIENT_SYNCED
+wait_for "$tmp/late.log" CITY_FOOD_PURCHASED
+echo "PASS: Żabka frogs, City rivalry and purchases/forged prices/late-join food snapshots"

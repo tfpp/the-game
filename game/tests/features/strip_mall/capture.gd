@@ -36,6 +36,22 @@ func _capture() -> void:
 	await _save("wendys")
 	_view(room.to_global(Vector3(28.3, 1.65, 22.5)), room.to_global(Vector3(30, 1.7, 22.5)))
 	await _save("poke")
+	var restaurants := room.get_node("Content/RivalRestaurants")
+	assert(restaurants.get_node("CityWok/Sign").text == "CITY WOK")
+	assert(restaurants.get_node("CityWok/Owner").character == 0)
+	assert(restaurants.get_node("CitySushi/Sign").text == "CITY SUSHI")
+	assert(restaurants.get_node("CitySushi/Owner").character == 1)
+	var rivalry := room.get_node("Rivalry")
+	rivalry.set_physics_process(false)
+	rivalry.net_turn = 0
+	rivalry.net_remaining = 4.0
+	_view(room.to_global(Vector3(15, 4, 33)), room.to_global(Vector3(15, 1.5, 43)))
+	await _save("rival-plaza")
+	_view(room.to_global(Vector3(12, 1.65, 39)), room.to_global(Vector3(9, 1.3, 41)))
+	await _save("city-wok")
+	rivalry.net_turn = 1
+	_view(room.to_global(Vector3(18, 1.65, 39)), room.to_global(Vector3(21, 1.3, 41)))
+	await _save("city-sushi")
 	assert(room.get_node("FrogDisplay/Colony/Pond").get_child_count() == 3)
 	_view(room.to_global(Vector3(24, 1.65, 42.5)), room.to_global(Vector3(30, 2, 42.5)))
 	await _save("zabka")

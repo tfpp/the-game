@@ -45,7 +45,11 @@ func _event(event: StringName, payload: Dictionary) -> void:
 		_root.show()
 		add_to_group(&"modal_ui")
 		Controls.pause()
-		_status.text = "Choose your tip. Each button buys one bowl."
+		_status.text = (
+			"Buy one bowl. No added tip."
+			if stand.tip_choices == [0]
+			else "Choose your tip. Each button buys one bowl."
+		)
 		_waiting = false
 		for button: Button in _buttons:
 			button.disabled = false
@@ -104,15 +108,16 @@ func _build() -> void:
 	column.add_theme_constant_override("separation", 6)
 	panel.add_child(column)
 	var heading := Label.new()
-	heading.text = "POKE BOWLS — $29"
+	heading.text = "%s — %s" % [stand.menu_title, PlayerMoney.format_money(stand.price_cents)]
 	heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(heading)
 	var grid := GridContainer.new()
 	grid.columns = 2
 	column.add_child(grid)
-	for tip: int in PokeStand.TIPS:
+	for tip: int in stand.tip_choices:
 		var button := Button.new()
-		button.text = "%d%% — %s" % [tip, PlayerMoney.format_money(PokeStand.total_cents(tip))]
+		var total := PlayerMoney.format_money(stand.order_total(tip))
+		button.text = "Buy bowl — %s" % total if tip == 0 else "%d%% — %s" % [tip, total]
 		button.custom_minimum_size = Vector2(140, 44)
 		button.pressed.connect(_buy.bind(tip))
 		grid.add_child(button)

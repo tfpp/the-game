@@ -26,7 +26,12 @@ const KEY_PICKUP := preload("res://assets/game_audio/audio/rpg-audio/handleCoins
 
 const VAN_DEPARTURE := preload("res://assets/starter_room/van_departure.wav")
 
+const WOK_YELL := preload("res://assets/strip_mall/audio/wok_yell.wav")
+const SUSHI_YELL := preload("res://assets/strip_mall/audio/sushi_yell.wav")
+
 const PROFILES := {
+	&"city_wok_yell": [WOK_YELL, -15.0, 1.0],
+	&"city_sushi_yell": [SUSHI_YELL, -15.0, 1.0],
 	&"van_departure": [VAN_DEPARTURE, -12.0, 1.0],
 	&"pistol": [SHOT, -9.0, 1.8],
 	&"smg": [SHOT, -12.0, 2.4],
