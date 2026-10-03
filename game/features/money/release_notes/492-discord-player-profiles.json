@@ -1,0 +1,5 @@
+{
+  "title": "Discord player profiles",
+  "summary": "Use /profile on Discord to look up a linked player’s game name and recorded playtime.",
+  "notes": ["Add private Discord /profile user lookups for linked game accounts.", "Track connected game time persistently from this update onward."]
+}

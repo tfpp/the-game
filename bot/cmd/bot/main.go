@@ -33,6 +33,7 @@ import (
 	"github.com/tfpp/the-game/bot/internal/core"
 	"github.com/tfpp/the-game/bot/internal/discordbot"
 	"github.com/tfpp/the-game/bot/internal/github"
+	"github.com/tfpp/the-game/bot/internal/profile"
 	"github.com/tfpp/the-game/bot/internal/store"
 	"github.com/tfpp/the-game/bot/internal/webhook"
 )
@@ -207,6 +208,17 @@ func run(log *slog.Logger) error {
 		Deployer: deployer,
 		Logger:   log,
 	}, st, gh, dc)
+	// Optional read-only accounts API lookup. Never give the bot the game ticket key.
+	if profileURL := os.Getenv("BOT_PROFILE_API_URL"); profileURL != "" {
+		profileKey, err := secret(env("BOT_PROFILE_KEY_FILE", "/run/secrets/bot/profile-key"))
+		if err != nil {
+			return fmt.Errorf("profile key: %w", err)
+		}
+		dc.Profiles, err = profile.New(profileURL, profileKey)
+		if err != nil {
+			return err
+		}
+	}
 	dc.Service = svc
 	dc.Claude = claudeClient
 	// Read the optional auth file on cache misses so replacing a mounted login

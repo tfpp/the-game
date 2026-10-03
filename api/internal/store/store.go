@@ -169,6 +169,7 @@ var migrations = []string{
 		delta INTEGER NOT NULL,
 		document TEXT NOT NULL
 	);`,
+	`ALTER TABLE accounts ADD COLUMN playtime_seconds INTEGER NOT NULL DEFAULT 0 CHECK(playtime_seconds >= 0);`,
 }
 
 func (s *Store) migrate(ctx context.Context) error {

@@ -134,6 +134,7 @@ tunnel sends `game.chrisbox.dev/api/*` to the API and everything else to the gam
 | `POST /api/auth/discord/start` | optional | `{code_challenge, link}` → `{url}` |
 | `GET /api/auth/discord/callback` | | Discord redirect target |
 | `POST /api/auth/discord/exchange` | | `{code, code_verifier}` → session |
+| `GET /api/bot/profile/{user}` | dedicated bot key | Linked game display name and cumulative heartbeat playtime; no private account fields |
 | `GET /api/me` | bearer | The account |
 | `PUT /api/me/display-name` | bearer | `{display_name}`; 409 `name_taken` |
 | `POST /api/join-ticket` | bearer | `{ticket, expires_at}`; 409 without a display name |
@@ -142,7 +143,9 @@ tunnel sends `game.chrisbox.dev/api/*` to the API and everything else to the gam
 (`https://game.chrisbox.dev`, used for the Discord redirect URI), `API_CLIENT_URL`
 (`https://tfpp.github.io/the-game/`), `API_ALLOWED_ORIGINS` (comma-separated),
 `API_TRUST_CF_CONNECTING_IP`, `API_TICKET_KEY_FILE`, `DISCORD_CLIENT_ID`,
-`DISCORD_CLIENT_SECRET_FILE`, `RESEND_API_KEY_FILE`, `MAIL_FROM`. For local development,
+`DISCORD_CLIENT_SECRET_FILE`, `RESEND_API_KEY_FILE`, `MAIL_FROM`,
+`API_PROFILE_KEY_FILE` (optional dedicated read-only bot key; default
+`/run/secrets/api/profile-key`). See [Discord profile setup](../bot/README.md#player-profiles). For local development,
 `API_DEV_LOG_MAIL=true` logs emails (with their links) instead of sending them.
 
 ### Joining a game

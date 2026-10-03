@@ -211,12 +211,57 @@ in SQLite or logs. Review channel visibility and notify players that public chat
 recorded. See [text chat](../game/features/chat_box/README.md) for protocol, queue/retry
 limits, setup and tests.
 
+## Player profiles
+
+**`/profile user:<Discord user>`** answers privately to any guild member with the
+linked player's in-game display name and recorded playtime (hours, minutes, seconds).
+Use Discord sign-in in the game, or link Discord on an existing email account's
+account screen. A user without a verified Discord link gets instructions rather
+than a made-up zero-time profile. No email, account ID, wallet balance or login
+information is returned. It works from Discord on desktop and phones, with no
+in-game key or UI.
+
+Playtime is connected **game** time, not Discord presence. The accounts API stores
+cumulative seconds alongside its existing authenticated wallet heartbeat: accepted
+intervals of 1–15 seconds count once, regardless of avatar income rate; longer gaps
+pause tracking. Normal refreshes are every five seconds. API outages or prolonged
+wallet operations can lose intervals, and the last partial interval before leaving
+is not counted. Multiple sessions on one account count elapsed time once, not once
+per device. Respawns do not reset it. It persists across server/API restarts.
+Tracking begins with this API update; historical total time cannot be reconstructed
+from the old minute remainder. Guest/dev-auth/offline previews do not record time.
+
+### Operator setup
+
+Deploy the API first, retaining its persistent database volume. Provision a **new,
+dedicated** random key of at least 32 ASCII bytes in both API and bot secret mounts;
+do not reuse the game ticket key, Discord token or any other existing credential.
+Set `API_PROFILE_KEY_FILE` on the API (default
+`/run/secrets/api/profile-key`) and `BOT_PROFILE_KEY_FILE` on the bot (default
+`/run/secrets/bot/profile-key`). Set `BOT_PROFILE_API_URL=http://api:8080/api`
+on the bot for private container networking, then restart it to register the command.
+Use HTTPS if crossing an untrusted network. No new Discord intents or roles are needed.
+
+The API exposes `GET /api/bot/profile/{user}`, authenticated by
+`Authorization: Bearer <dedicated key>`, returning only
+`{display_name, playtime_seconds}`; missing links return 404. The key is read-only
+and cannot authorize wallet operations or account changes. Responses are not cached;
+the bot rejects redirects and bounds response size/time. Missing API key disables the
+endpoint; missing bot URL leaves the command available with a setup message.
+CI does not provision this key or configure the deployed services.
+
+Tests: `cd api && go test ./... && go vet ./...` and
+`cd bot && go test ./... && go vet ./...` cover the persisted heartbeat integration,
+schema upgrade, lookups, authentication, command registration, and upstream failures.
+
 ## Configuration
 
 Environment variables; secrets are files.
 
 | Variable | Default | |
 |---|---|---|
+| `BOT_PROFILE_API_URL` | off | Accounts API base URL including `/api`; enables read-only profile lookup |
+| `BOT_PROFILE_KEY_FILE` | `/run/secrets/bot/profile-key` | Dedicated profile API credential (at least 32 bytes) |
 | `BOT_ADDR` | `:8081` | HTTP listen address (`/bot/github`, `/bot/progress`, `/bot/health`) |
 | `BOT_DB` | `/data/bot.db` | SQLite database |
 | `BOT_REPO` | `tfpp/the-game` | Repository the App is installed on |
