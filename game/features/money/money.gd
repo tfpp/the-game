@@ -16,6 +16,7 @@ const DEV_STARTING_CENTS := 100_000_00
 
 @export var balances: Dictionary = {}
 var _busy: Dictionary = {}
+var _table_holds: Dictionary = {}
 var _animated_spins: Dictionary = {}
 var _generation := 0
 var _poll_elapsed := 5.0
@@ -36,6 +37,7 @@ func _reset(_mode: Network.Mode) -> void:
 	_generation += 1
 	balances = {}
 	_busy.clear()
+	_table_holds.clear()
 	_animated_spins.clear()
 	_temporary_seconds.clear()
 	_temporary_income_units.clear()
@@ -94,7 +96,12 @@ func _process(delta: float) -> void:
 		_poll_elapsed = 0.0
 		if multiplayer.is_server():
 			for peer: int in balances.keys():
-				if peer != 1 and not Network.peer_accounts.has(peer):
+				if (
+					peer != 1
+					and not Network.peer_accounts.has(peer)
+					and not _busy.has(peer)
+					and not _table_holds.has(peer)
+				):
 					balances = balances.duplicate()
 					balances.erase(peer)
 					_temporary_seconds.erase(peer)
@@ -222,7 +229,7 @@ func _refresh(peer: int) -> void:
 func spin(
 	peer: int, id: String, wager_cents: int = 100, rerolls: int = 0, blessings: int = 0
 ) -> Dictionary:
-	if not multiplayer.is_server() or _busy.has(peer):
+	if not multiplayer.is_server() or _busy.has(peer) or _table_holds.has(peer):
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
 	var generation := _generation
@@ -271,7 +278,7 @@ func spin(
 func spin_animated(
 	peer: int, id: String, wager_cents: int = 100, rerolls: int = 0, blessings: int = 0
 ) -> Dictionary:
-	if not multiplayer.is_server() or _busy.has(peer):
+	if not multiplayer.is_server() or _busy.has(peer) or _table_holds.has(peer):
 		return {"error": "Wallet loading — try again"}
 	_animated_spins[peer] = {"id": id}
 	return await spin(peer, id, wager_cents, rerolls, blessings)
@@ -294,7 +301,7 @@ func reveal_spin(peer: int, id: String) -> void:
 ## the same persisted, idempotent-retry path `spin()` uses for paid spins.
 ## `reason` is shown to the player in the chat log ("+$10.00 — reason").
 func credit_coin(peer: int, id: String, reason: String) -> Dictionary:
-	if not multiplayer.is_server() or _busy.has(peer):
+	if not multiplayer.is_server() or _busy.has(peer) or _table_holds.has(peer):
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
 	var generation := _generation
@@ -328,7 +335,12 @@ func sell_loot(peer: int, id: String, amount_cents: int, reason: String) -> Dict
 ## Server-chosen variable reward, using the existing signed, idempotent amount-credit
 ## transaction ("sell" on the API). No client payload may choose an amount.
 func credit_reward(peer: int, id: String, amount_cents: int, reason: String) -> Dictionary:
-	if not multiplayer.is_server() or _busy.has(peer) or amount_cents <= 0:
+	if (
+		not multiplayer.is_server()
+		or _busy.has(peer)
+		or _table_holds.has(peer)
+		or amount_cents <= 0
+	):
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
 	var generation := _generation
@@ -352,7 +364,7 @@ func credit_reward(peer: int, id: String, amount_cents: int, reason: String) -> 
 ## Rejects (without spending anything) if the wallet can't cover `amount_cents`.
 ## Used by paid one-off purchases like features/gun_machine's machine.
 func charge(peer: int, id: String, amount_cents: int) -> Dictionary:
-	if not multiplayer.is_server() or _busy.has(peer):
+	if not multiplayer.is_server() or _busy.has(peer) or _table_holds.has(peer):
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
 	var generation := _generation
@@ -388,7 +400,13 @@ func charge(peer: int, id: String, amount_cents: int) -> Dictionary:
 func settle_roulette(
 	peer: int, account: int, id: String, wager_cents: int, payout_cents: int
 ) -> Dictionary:
-	if not multiplayer.is_server() or _busy.has(peer) or wager_cents <= 0 or payout_cents < 0:
+	if (
+		not multiplayer.is_server()
+		or _busy.has(peer)
+		or _table_holds.has(peer)
+		or wager_cents <= 0
+		or payout_cents < 0
+	):
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
 	var generation := _generation
@@ -429,7 +447,7 @@ func cosmetics(
 		await get_tree().process_frame
 		if generation != _generation or _account(peer) != account:
 			return {"error": "Session changed"}
-	if _busy.has(peer):
+	if _busy.has(peer) or _table_holds.has(peer):
 		return {"error": "Wallet loading — try again"}
 	_busy[peer] = true
 	var result: Dictionary
@@ -485,7 +503,7 @@ func cosmetics(
 ## Caller owns eligibility and immutable retry IDs; never accepts client-chosen amounts.
 ## Used by the chicken book's upfront wagers and interruption refunds.
 func adjust_account(peer: int, account: int, id: String, delta: int, reason: String) -> Dictionary:
-	if not multiplayer.is_server() or _busy.has(peer):
+	if not multiplayer.is_server() or _busy.has(peer) or (delta < 0 and _table_holds.has(peer)):
 		return {"error": "Wallet loading — try again"}
 	if delta == 0 or id.length() != 64 or account < 0:
 		return {"error": "Invalid wallet adjustment", "rejected": true}
@@ -572,3 +590,38 @@ func _request(account: int, action: String, id: String, extra: Dictionary = {}) 
 		if int(response[1]) == 409 and parsed is Dictionary:
 			return {"error": str(parsed.get("message", "Spin rejected")), "rejected": true}
 	return {"error": "Wallet unavailable — try again"}
+
+
+## A casino round holds this wallet so its reserved stake cannot be spent elsewhere.
+## Nothing is debited until atomic settlement; an unfinished round costs nothing.
+func reserve_table(peer: int, id: String, maximum_cents: int) -> bool:
+	if (
+		not multiplayer.is_server()
+		or _busy.has(peer)
+		or _table_holds.has(peer)
+		or maximum_cents <= 0
+	):
+		return false
+	if int(balances.get(peer, 0)) < maximum_cents:
+		return false
+	_table_holds[peer] = {"id": id, "maximum": maximum_cents, "account": _account(peer)}
+	return true
+
+
+func release_table(peer: int, id: String) -> void:
+	if multiplayer.is_server() and (_table_holds.get(peer, {}) as Dictionary).get("id") == id:
+		_table_holds.erase(peer)
+
+
+func settle_table(peer: int, account: int, id: String, wager: int, payout: int) -> Dictionary:
+	var hold: Dictionary = _table_holds.get(peer, {})
+	if not multiplayer.is_server() or hold.get("id") != id or hold.get("account") != account:
+		return {"error": "Reservation unavailable", "rejected": true}
+	if wager <= 0 or wager > int(hold["maximum"]) or payout < 0 or payout > wager * 36:
+		return {"error": "Invalid table settlement", "rejected": true}
+	_table_holds.erase(peer)
+	var generation := _generation
+	var result := await settle_roulette(peer, account, id, wager, payout)
+	if generation == _generation and not result.has("balance") and not result.has("rejected"):
+		_table_holds[peer] = hold
+	return result

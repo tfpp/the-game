@@ -1,0 +1,113 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://features/table_games/table.tscn" id="table"]
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
+[ext_resource type="PackedScene" path="res://features/strip_mall/door.tscn" id="door"]
+[ext_resource type="ArrayMesh" path="res://assets/table_games/models/blackjack_table.res" id="blackjack"]
+[ext_resource type="ArrayMesh" path="res://assets/table_games/models/poker_table.res" id="poker"]
+[ext_resource type="ArrayMesh" path="res://assets/table_games/models/baccarat_table.res" id="baccarat"]
+[ext_resource type="ArrayMesh" path="res://assets/table_games/models/craps_table.res" id="craps"]
+[ext_resource type="ArrayMesh" path="res://assets/table_games/models/video_poker_machine.res" id="video"]
+[ext_resource type="Script" path="res://features/safe_zone/safe_zone.gd" id="safe"]
+[node name="CrownGamingSuites" type="Node3D"]
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(10, 1, -15)
+[node name="Entrance" parent="." instance=ExtResource("door")]
+position = Vector3(10, 1.25, -18.8)
+destination = NodePath("../Room/Arrival")
+door_label = "Visit the Crown gaming suites"
+[node name="Sign" parent="Entrance" index="2"]
+text = "GAMING SUITES
+CARDS · DICE · DRAW POKER"
+[node name="Room" type="Node3D" parent="."]
+position = Vector3(0, 0, -6000)
+script = ExtResource("room")
+room_scene = "res://features/table_games/interior.tscn"
+bounds = AABB(-19, -1, -7, 38, 7, 14)
+[node name="Arrival" type="Marker3D" parent="Room"]
+position = Vector3(0, 1, 4)
+[node name="Exit" parent="Room" instance=ExtResource("door")]
+position = Vector3(0, 1.25, 5.8)
+rotation = Vector3(0, 3.1415927, 0)
+destination = NodePath("../../CasinoArrival")
+door_label = "Return to The Golden Crown"
+[node name="Sign" parent="Room/Exit" index="2"]
+text = "THE GOLDEN CROWN
+RETURN - E / USE"
+[node name="CardGPS" type="Marker3D" parent="Room"]
+position = Vector3(-12, 0, 0)
+script = ExtResource("gps")
+label = "Crown Card Room"
+hint = "Gaming Suites door on the north promenade: blackjack and Texas Hold'em."
+[node name="DiceGPS" type="Marker3D" parent="Room"]
+script = ExtResource("gps")
+label = "Crown Dice Room"
+hint = "Gaming suites centre chamber: pass-line craps."
+[node name="VIPGPS" type="Marker3D" parent="Room"]
+position = Vector3(12, 0, 0)
+script = ExtResource("gps")
+label = "Crown Baccarat Lounge"
+hint = "Gaming suites east chamber: baccarat and Crown draw poker."
+[node name="Blackjack" parent="Room" instance=ExtResource("table")]
+position = Vector3(-14, 0, -2)
+game = "blackjack"
+[node name="Model" type="MeshInstance3D" parent="Room/Blackjack"]
+mesh = ExtResource("blackjack")
+[node name="Sign" type="Label3D" parent="Room/Blackjack"]
+position = Vector3(0, 1.6, 0)
+text = "BLACKJACK · $1
+3:2 · DEALER STANDS ON 17"
+billboard = 1
+font_size = 24
+pixel_size = 0.0025
+[node name="Poker" parent="Room" instance=ExtResource("table")]
+position = Vector3(-10, 0, 2)
+game = "poker"
+[node name="Model" type="MeshInstance3D" parent="Room/Poker"]
+mesh = ExtResource("poker")
+[node name="Sign" type="Label3D" parent="Room/Poker"]
+position = Vector3(0, 1.6, 0)
+text = "TEXAS HOLD'EM
+$1 ANTE · $0.50 LIMIT · 2–4 PLAYERS"
+billboard = 1
+font_size = 24
+pixel_size = 0.0025
+[node name="Craps" parent="Room" instance=ExtResource("table")]
+position = Vector3(0, 0, -1)
+game = "craps"
+[node name="Model" type="MeshInstance3D" parent="Room/Craps"]
+mesh = ExtResource("craps")
+[node name="Sign" type="Label3D" parent="Room/Craps"]
+position = Vector3(0, 1.7, 0)
+text = "CRAPS · $1 PASS LINE
+POINT BEFORE SEVEN"
+billboard = 1
+font_size = 24
+pixel_size = 0.0025
+[node name="Baccarat" parent="Room" instance=ExtResource("table")]
+position = Vector3(11, 0, -2)
+game = "baccarat"
+[node name="Model" type="MeshInstance3D" parent="Room/Baccarat"]
+mesh = ExtResource("baccarat")
+[node name="Sign" type="Label3D" parent="Room/Baccarat"]
+position = Vector3(0, 1.6, 0)
+text = "BACCARAT · $1
+PLAYER · BANKER · TIE"
+billboard = 1
+font_size = 24
+pixel_size = 0.0025
+[node name="VideoPoker" parent="Room" instance=ExtResource("table")]
+position = Vector3(14, 0, 2)
+game = "video_poker"
+[node name="Model" type="MeshInstance3D" parent="Room/VideoPoker"]
+mesh = ExtResource("video")
+[node name="Sign" type="Label3D" parent="Room/VideoPoker"]
+position = Vector3(0, 1.9, 0)
+text = "CROWN DRAW POKER · $1
+HOLD · DRAW · WIN"
+billboard = 1
+font_size = 24
+pixel_size = 0.0025
+[node name="SafeZone" type="Node3D" parent="Room"]
+script = ExtResource("safe")
+bounds = AABB(-19, -1, -7, 38, 7, 14)

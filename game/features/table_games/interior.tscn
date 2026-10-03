@@ -1,0 +1,7 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://features/table_games/interior.gd" id="script"]
+[ext_resource type="Script" path="res://features/table_games/decor.gd" id="decor"]
+[node name="GamingSuites" type="Node3D"]
+script = ExtResource("script")
+[node name="Decor" type="Node3D" parent="."]
+script = ExtResource("decor")
