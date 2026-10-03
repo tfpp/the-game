@@ -40,6 +40,8 @@ func _ready() -> void:
 	_body.sit(0.0, CompanionModel.SEATED_HIP, 0.0, 0.5, -0.9)
 	_talk.interaction_range = TALK_RANGE
 	_talk.register_use(can_use, _apply_use, 0.5)
+	_talk.register_action(&"conversation", _may_converse, _open_conversation, 0.2)
+	_talk.register_action(&"case", _may_case, _apply_case, 0.2)
 	_talk.event_received.connect(_on_event)
 	_talk.session_reset.connect(_on_session_reset)
 
@@ -47,7 +49,7 @@ func _ready() -> void:
 func interaction_text() -> String:
 	var peer := multiplayer.get_unique_id()
 	return (
-		"Offer %s a night out (-%s, charisma %d)"
+		"Talk to %s — story / night out (-%s, charisma %d)"
 		% [
 			CompanionModel.NAME,
 			PlayerMoney.format_money(CharmMath.price_cents(_companion.charisma_for(peer))),
@@ -61,7 +63,60 @@ func can_use(player: Player) -> bool:
 
 
 func use() -> void:
-	_talk.request_use()
+	_talk.request_action(&"conversation")
+
+
+func _case() -> VivienneCase:
+	return get_parent().get_node("VivienneCase") as VivienneCase
+
+
+func _may_converse(peer: int, payload: Dictionary) -> bool:
+	return (
+		payload.is_empty()
+		and can_use(_talk.player_for_peer(peer))
+		and _case().active_player(_talk.player_for_peer(peer))
+	)
+
+
+func _open_conversation(peer: int, _payload: Dictionary) -> bool:
+	_talk.send_event(
+		&"case_page",
+		{
+			"title": "VIVIENNE — TOPICS",
+			"text":
+			(
+				(VivienneCase.LINES[9] + "\n\n" if _case().stage(peer) == 9 else "")
+				+ _case().objective(peer)
+			),
+			"choices":
+			[
+				{"id": str(_case().stage(peer)), "label": _case().topic(peer)},
+				{
+					"id": "hire",
+					"label": "A night out — " + PlayerMoney.format_money(_companion.price_for(peer))
+				}
+			]
+		},
+		peer
+	)
+	return true
+
+
+func _may_case(peer: int, payload: Dictionary) -> bool:
+	return (
+		payload.size() == 1
+		and payload.get("step") is int
+		and int(payload["step"]) == _case().stage(peer)
+		and can_use(_talk.player_for_peer(peer))
+		and _case().active_player(_talk.player_for_peer(peer))
+	)
+
+
+func _apply_case(peer: int, _payload: Dictionary) -> bool:
+	if not _case().allowed(peer, -1):
+		_open_conversation(peer, {})
+		return true
+	return _case().act(_talk.player_for_peer(peer), -1, _talk)
 
 
 func is_seated() -> bool:
