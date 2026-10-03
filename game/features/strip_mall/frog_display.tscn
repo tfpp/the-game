@@ -1,0 +1,106 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/frogs/feature.tscn" id="colony"]
+[ext_resource type="Texture2D" path="res://assets/casino_hub/textures/prop_grain.png" id="grain"]
+[sub_resource type="StandardMaterial3D" id="base"]
+albedo_color = Color(0.12, 0.3, 0.16, 1)
+albedo_texture = ExtResource("grain")
+texture_filter = 4
+roughness = 0.9
+[sub_resource type="StandardMaterial3D" id="glass"]
+albedo_color = Color(0.6, 0.85, 0.72, 0.14)
+transparency = 1
+cull_mode = 2
+roughness = 0.25
+
+[sub_resource type="BoxMesh" id="BaseMesh"]
+size = Vector3(3,0.8,2.5)
+[sub_resource type="BoxShape3D" id="BaseShape"]
+size = Vector3(3,0.8,2.5)
+
+[sub_resource type="BoxMesh" id="FrontMesh"]
+size = Vector3(0.06,1.5,2.5)
+[sub_resource type="BoxShape3D" id="FrontShape"]
+size = Vector3(0.06,1.5,2.5)
+
+[sub_resource type="BoxMesh" id="BackMesh"]
+size = Vector3(0.06,1.5,2.5)
+[sub_resource type="BoxShape3D" id="BackShape"]
+size = Vector3(0.06,1.5,2.5)
+
+[sub_resource type="BoxMesh" id="NorthMesh"]
+size = Vector3(3,1.5,0.06)
+[sub_resource type="BoxShape3D" id="NorthShape"]
+size = Vector3(3,1.5,0.06)
+
+[sub_resource type="BoxMesh" id="SouthMesh"]
+size = Vector3(3,1.5,0.06)
+[sub_resource type="BoxShape3D" id="SouthShape"]
+size = Vector3(3,1.5,0.06)
+
+[sub_resource type="BoxMesh" id="LidMesh"]
+size = Vector3(3,0.06,2.5)
+[sub_resource type="BoxShape3D" id="LidShape"]
+size = Vector3(3,0.06,2.5)
+
+[node name="FrogDisplay" type="Node3D"]
+[node name="Habitat" type="StaticBody3D" parent="."]
+
+[node name="Base" type="MeshInstance3D" parent="Habitat"]
+position = Vector3(0,0.4,0)
+mesh = SubResource("BaseMesh")
+material_override = SubResource("base")
+cast_shadow = 0
+[node name="BaseCollision" type="CollisionShape3D" parent="Habitat"]
+position = Vector3(0,0.4,0)
+shape = SubResource("BaseShape")
+
+[node name="Front" type="MeshInstance3D" parent="Habitat"]
+position = Vector3(-1.5,1.55,0)
+mesh = SubResource("FrontMesh")
+material_override = SubResource("glass")
+cast_shadow = 0
+[node name="FrontCollision" type="CollisionShape3D" parent="Habitat"]
+position = Vector3(-1.5,1.55,0)
+shape = SubResource("FrontShape")
+
+[node name="Back" type="MeshInstance3D" parent="Habitat"]
+position = Vector3(1.5,1.55,0)
+mesh = SubResource("BackMesh")
+material_override = SubResource("glass")
+cast_shadow = 0
+[node name="BackCollision" type="CollisionShape3D" parent="Habitat"]
+position = Vector3(1.5,1.55,0)
+shape = SubResource("BackShape")
+
+[node name="North" type="MeshInstance3D" parent="Habitat"]
+position = Vector3(0,1.55,-1.25)
+mesh = SubResource("NorthMesh")
+material_override = SubResource("glass")
+cast_shadow = 0
+[node name="NorthCollision" type="CollisionShape3D" parent="Habitat"]
+position = Vector3(0,1.55,-1.25)
+shape = SubResource("NorthShape")
+
+[node name="South" type="MeshInstance3D" parent="Habitat"]
+position = Vector3(0,1.55,1.25)
+mesh = SubResource("SouthMesh")
+material_override = SubResource("glass")
+cast_shadow = 0
+[node name="SouthCollision" type="CollisionShape3D" parent="Habitat"]
+position = Vector3(0,1.55,1.25)
+shape = SubResource("SouthShape")
+
+[node name="Lid" type="MeshInstance3D" parent="Habitat"]
+position = Vector3(0,2.3,0)
+mesh = SubResource("LidMesh")
+material_override = SubResource("glass")
+cast_shadow = 0
+[node name="LidCollision" type="CollisionShape3D" parent="Habitat"]
+position = Vector3(0,2.3,0)
+shape = SubResource("LidShape")
+
+[node name="Colony" parent="." instance=ExtResource("colony")]
+position = Vector3(0, 0.84, 0)
+spawn_points = PackedVector3Array(-0.6, 0, -0.5, 0, 0, 0.45, 0.6, 0, -0.3)
+profile_scale = 0.5

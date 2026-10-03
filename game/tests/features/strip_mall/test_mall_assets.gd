@@ -61,4 +61,4 @@ func test_floor_roofs_and_planters_share_exact_grounding() -> void:
 	var canopies := scene.get_node("Awnings") as GridMap
 	var mesh := LIBRARY.get_item_mesh(4)
 	assert_gte(mesh.get_aabb().position.y, 2.7, "Standing capsule fits under the awning")
-	assert_eq(canopies.get_used_cells().size(), 22)
+	assert_eq(canopies.get_used_cells().size(), 29)

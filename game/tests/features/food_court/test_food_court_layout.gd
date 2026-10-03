@@ -38,7 +38,7 @@ func test_shop_bays_are_covered_but_dining_plaza_is_open_air() -> void:
 		_assert_floor(Vector3(30, 1, z))
 		assert_false(_ray(Vector3(30, 2, z), Vector3(30, 12, z)).is_empty(), "Shop roof")
 		assert_true(_ray(Vector3(18, 2, z), Vector3(18, 12, z)).is_empty(), "Open plaza")
-	for target: Vector3 in [Vector3(18, 1.5, 45), Vector3(40, 1.5, 28), Vector3(18, 1.5, 15)]:
+	for target: Vector3 in [Vector3(18, 1.5, 50), Vector3(40, 1.5, 28), Vector3(18, 1.5, 15)]:
 		assert_false(_ray(Vector3(18, 1.5, 28), target).is_empty(), "Site boundary")
 
 

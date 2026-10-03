@@ -21,7 +21,7 @@ func _initialize() -> void:
 	var planters := _grid(root, "Planters")
 	var west := walls.get_orthogonal_index_from_basis(Basis(Vector3.UP, PI / 2))
 	for x: int in range(2, 34):
-		for z: int in range(18, 40):
+		for z: int in range(18, 47):
 			floors.set_cell_item(Vector3i(x, 0, z), 0)
 	for x: int in range(-8, 2):
 		for z: int in range(18, 40):
@@ -33,17 +33,17 @@ func _initialize() -> void:
 				8,
 				parking.get_orthogonal_index_from_basis(Basis(Vector3.UP, PI / 2))
 			)
-	for z: int in range(18, 40):
+	for z: int in range(18, 47):
 		walls.set_cell_item(Vector3i(33, 0, z), 2, west)
 		fascia.set_cell_item(Vector3i(33, 0, z), 2, west)
 		canopies.set_cell_item(Vector3i(29, 0, z), 4)
 		for x: int in range(29, 34):
 			roof.set_cell_item(Vector3i(x, 16, z), 3)
-	for z: int in [18, 25, 32, 39]:
+	for z: int in [18, 25, 32, 39, 46]:
 		for x: int in range(29, 34):
 			partitions.set_cell_item(Vector3i(x, 0, z), 2)
 		posts.set_cell_item(Vector3i(27, 0, z), 6)
-	for z: int in [19, 24, 26, 31, 33, 38]:
+	for z: int in [19, 24, 26, 31, 33, 38, 40, 45]:
 		windows.set_cell_item(Vector3i(29, 0, z), 5, west)
 	for x: int in [5, 11, 17, 23]:
 		planters.set_cell_item(Vector3i(x, 0, 19), 7)
@@ -51,10 +51,14 @@ func _initialize() -> void:
 	# Brick site boundaries guard the remote scene edges without a ceiling.
 	var border := _grid(root, "Boundary")
 	for x: int in range(-8, 34):
-		for z: int in [18, 39]:
+		for z: int in [18, 46]:
 			border.set_cell_item(Vector3i(x, 0, z), 9)
-	for z: int in range(18, 40):
+	for z: int in range(18, 47):
 		border.set_cell_item(Vector3i(-8, 0, z), 9, west)
+	# Extend the parking floor too, without changing its existing bays.
+	for x: int in range(-8, 2):
+		for z: int in range(40, 47):
+			parking.set_cell_item(Vector3i(x, 0, z), 1)
 	# Solid return kiosk supports the modeled portal; it is not a floating door.
 	var kiosk := _grid(root, "ReturnKiosk")
 	for z: int in range(26, 31):
