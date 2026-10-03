@@ -192,15 +192,25 @@ func _capture(player: Player) -> void:
 	camera.make_current()
 	for canvas: Node in get_tree().root.find_children("*", "CanvasLayer", true, false):
 		(canvas as CanvasLayer).visible = false
-	await _view(camera, Vector3(21.5, 6.6, -9), Vector3(19, 6.2, 4), "/tmp/vip-lounge.png")
-	await _view(camera, Vector3(20, 6.65, -2), Vector3(-8, 0, 0), "/tmp/vip-view.png")
-	await _view(camera, Vector3(0, 1, 1), Vector3(16, 6.8, 0), "/tmp/vip-mirror-outside.png")
-	await _view(camera, Vector3(19.6, 6.6, 3), Vector3(23, 6.2, 0), "/tmp/vip-jade.png")
+	await _view(camera, Vector3(29.5, 6.6, -9), Vector3(27, 6.2, 4), "/tmp/vip-lounge.png")
+	await _view(camera, Vector3(28, 6.65, -2), Vector3(-8, 0, 0), "/tmp/vip-view.png")
+	await _view(camera, Vector3(0, 1, 1), Vector3(24, 6.8, 0), "/tmp/vip-mirror-outside.png")
+	await _view(camera, Vector3(-13, 3.5, 13), Vector3(11, 3, 0), "/tmp/vip-floor-clear.png")
+	await _view(camera, Vector3(27.6, 6.6, 3), Vector3(31, 6.2, 0), "/tmp/vip-jade.png")
+	var space := player.get_world_3d().direct_space_state
+	var old_deck := PhysicsRayQueryParameters3D.create(Vector3(18, 6, -8), Vector3(18, 4.8, -8), 1)
+	assert(space.intersect_ray(old_deck).is_empty(), "No VIP deck covers the casino floor")
+	var new_deck := PhysicsRayQueryParameters3D.create(
+		Vector3(29, 6, -11), Vector3(29, 4.8, -11), 1
+	)
+	assert(
+		is_equal_approx(space.intersect_ray(new_deck)["position"].y, 5.0), "Recess has a solid deck"
+	)
 	await _check_mirror(camera)
 	club.get_node("Menu").visible = true
 	var money := $Game/Features/money as PlayerMoney
 	money.balances = {1: 200_000}
-	_place(player, Vector3(21, 5.95, 0))
+	_place(player, Vector3(29, 5.95, 0))
 	club._admitted[1] = true
 	club.record(1)["discovered"] = true
 	club._publish()
@@ -222,11 +232,11 @@ func _check_mirror(camera: Camera3D) -> void:
 	box.material = finish
 	marker.mesh = box
 	add_child(marker)
-	marker.global_position = Vector3(18, 6.8, 0)
+	marker.global_position = Vector3(26, 6.8, 0)
 	await _view(camera, Vector3(10, 6.8, 0), marker.global_position, "/tmp/vip-privacy-outside.png")
 	assert(not _center_is_magenta(), "Casino-side mirror hides a guest behind it")
-	marker.global_position = Vector3(14, 6.8, 0)
-	await _view(camera, Vector3(20, 6.8, 0), marker.global_position, "/tmp/vip-privacy-inside.png")
+	marker.global_position = Vector3(22, 6.8, 0)
+	await _view(camera, Vector3(28, 6.8, 0), marker.global_position, "/tmp/vip-privacy-inside.png")
 	assert(_center_is_magenta(), "VIP-side pane allows a clear view of the floor")
 	marker.queue_free()
 	print("VIP_MIRROR_PRIVACY_PASS")

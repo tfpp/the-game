@@ -56,7 +56,7 @@ func after_each() -> void:
 func _enter() -> void:
 	var door := club.get_node("Entrance") as VipDoor
 	assert_eq(door.entity._evaluate(1, &"use", {}), NetworkedEntity.Result.ACCEPTED)
-	player.net_position = Vector3(21, 5.95, -9)
+	player.net_position = (club.get_node("UpstairsArrival") as Marker3D).global_position
 	player.global_position = player.net_position
 
 
@@ -387,8 +387,29 @@ func test_saved_gridmap_layout_and_window_barrier() -> void:
 	var deck := club.get_node("Interior/Deck") as GridMap
 	assert_eq(deck.get_used_cells().size(), 192)
 	assert_eq(deck.get_cell_item(Vector3i(20, 20, 0)), 6)
-	var barrier := club.get_node("Interior/WindowBarrier") as StaticBody3D
-	assert_eq(barrier.position, Vector3(16, 6.875, 0))
+	for cell: Vector3i in deck.get_used_cells():
+		assert_gte(deck.to_global(deck.map_to_local(cell)).x - 0.5, 24.0, "No overhang into casino")
+	var interior := club.get_node("Interior") as Node3D
+	assert_eq((interior.get_node("Ceiling") as GridMap).get_used_cells().size(), 192)
+	assert_eq((interior.get_node("OuterWall") as GridMap).get_used_cells().size(), 48)
+	assert_eq((interior.get_node("Roof") as StaticBody3D).global_position, Vector3(28, 8.85, 0))
+	assert_true(
+		VipLounge.BOUNDS.has_point((club.get_node("UpstairsArrival") as Node3D).global_position)
+	)
+	var casino := preload("res://features/casino_hub/casino_gridmap.tscn").instantiate() as Node3D
+	add_child_autofree(casino)
+	var window := casino.get_node("VipWindow") as Node3D
+	assert_eq(window.global_position, Vector3(24, 6.875, 0))
+	var barrier := window.get_node("WindowBarrier") as StaticBody3D
+	assert_eq((barrier.get_node("Shape") as CollisionShape3D).shape.size, Vector3(0.08, 3.75, 24))
+	var upper := casino.get_node("PitStructure/UpperWallsEastWest") as GridMap
+	for z: int in range(-12, 12):
+		assert_eq(upper.get_cell_item(Vector3i(23, 0, z)), GridMap.INVALID_CELL_ITEM)
+	for z: int in [-20, -13, 12, 19]:
+		assert_eq(upper.get_cell_item(Vector3i(23, 0, z)), 14, "Adjacent wall panels stay intact")
+	await get_tree().physics_frame
+	var ray := PhysicsRayQueryParameters3D.create(Vector3(23, 6.8, 0), Vector3(25, 6.8, 0), 1)
+	assert_eq(casino.get_world_3d().direct_space_state.intersect_ray(ray).get("collider"), barrier)
 	for name: String in ["Scarlett", "Jade", "Valentina"]:
 		assert_gte((club.get_node(name) as VipStation).age, 18)
 	assert_false(club.get_node("Destination").available())

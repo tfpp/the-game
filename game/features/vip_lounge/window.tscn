@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://features/vip_lounge/one_way_mirror.gdshader" id="shader"]
+
+[sub_resource type="ShaderMaterial" id="finish"]
+shader = ExtResource("shader")
+
+[sub_resource type="QuadMesh" id="pane"]
+size = Vector2(24, 3.75)
+
+[sub_resource type="BoxShape3D" id="barrier"]
+size = Vector3(0.08, 3.75, 24)
+
+[node name="VipWindow" type="Node3D"]
+
+[node name="OneWayMirror" type="MeshInstance3D" parent="."]
+rotation = Vector3(0, -1.5707963, 0)
+mesh = SubResource("pane")
+material_override = SubResource("finish")
+
+[node name="WindowBarrier" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="WindowBarrier"]
+shape = SubResource("barrier")

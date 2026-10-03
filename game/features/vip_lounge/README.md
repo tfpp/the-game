@@ -1,9 +1,13 @@
 # The Mirror Club
 
-An enclosed east-side mezzanine above the live Golden Crown, at x 16–24,
-y 5–8.75, z -12–12. The north/south ends and floor are saved, editable
-GridMaps using the casino's existing MeshLibrary. The main casino supplies its
-east wall and ceiling. Two bounded amber lights bring the casino's authored light
+An enclosed lounge recessed behind the Golden Crown's east wall, at x 24–32,
+y 5–8.75, z -12–12. Its deck has no overhang into the main casino floor. The
+north/south ends, outer wall, floor and ceiling are saved, editable GridMaps using
+the casino's existing MeshLibrary. A full-height outer shell encloses the recess;
+the ceiling has its own roof collision. The main casino's matching upper east
+wall panels are replaced by the shared, sealed one-way pane at x 24. The casino
+owns this window so standalone previews retain a closed hull. Two bounded amber
+lights bring the casino's authored light
 count to 32; no new shadow lights or large textures are introduced. Furniture,
 bar, stools, glasses and evening guests reuse existing native assets.
 
@@ -129,9 +133,13 @@ harness/verify.sh
 ```
 
 The furniture builder preserves prefab instances rather than flattening their
-children; loading the game never repaints the saved GridMaps. The horse-betting
-monitor is reduced vertically to keep its display below the five-metre deck,
-preserving the terminal, six-metre display width, interaction and ground route.
+children; loading the game never repaints the saved GridMaps. The room's original
+local coordinates are offset eight metres east by its `Interior` instance.
+To migrate only the casino's saved upper wall opening without rebuilding unrelated
+layout, run `godot --headless --path game -s res://features/vip_lounge/tools/recess_casino.gd`.
+The casino's full offline builder calls `gridmap/vip_window.gd` to retain the
+recess during future rebuilds. The entrance remains on the east promenade; its
+upstairs arrival, exit, stations and GPS bounds follow the moved room.
 
 Rendered review (requires a display):
 

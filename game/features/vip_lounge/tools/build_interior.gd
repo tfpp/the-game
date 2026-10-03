@@ -2,7 +2,6 @@ extends SceneTree
 ## Explicit offline build. Saved GridMap cells remain editable in the Godot editor.
 
 const TILES := preload("res://features/casino_hub/gridmap/casino_tiles.tres")
-const MIRROR := preload("res://features/vip_lounge/one_way_mirror.gdshader")
 const BAR := preload("res://assets/casino_hub/models/salon_bar.glb")
 const TABLE := preload("res://features/casino_props/props/blackjack_table.tscn")
 const COUCH := preload("res://features/casino_props/props/bundle/casino-two-seat-couch.tscn")
@@ -33,18 +32,18 @@ func _build() -> void:
 	for x: int in range(16, 24):
 		walls.set_cell_item(Vector3i(x, 20, -12), 14)
 		walls.set_cell_item(Vector3i(x, 20, 11), 14, reverse)
-	var glass_material := ShaderMaterial.new()
-	glass_material.shader = MIRROR
-	var pane := MeshInstance3D.new()
-	pane.name = "OneWayMirror"
-	var quad := QuadMesh.new()
-	quad.size = Vector2(24, 3.75)
-	pane.mesh = quad
-	pane.material_override = glass_material
-	pane.position = Vector3(16, 6.875, 0)
-	pane.rotation.y = -PI / 2
-	_add(pane)
-	_collision("WindowBarrier", Vector3(16, 6.875, 0), Vector3(0.08, 3.75, 24))
+		walls.set_cell_item(Vector3i(x, 0, -12), 13)
+		walls.set_cell_item(Vector3i(x, 0, 11), 13, reverse)
+	var back := _grid("OuterWall")
+	var inward := back.get_orthogonal_index_from_basis(Basis(Vector3.UP, -PI / 2))
+	for z: int in range(-12, 12):
+		back.set_cell_item(Vector3i(23, 20, z), 14, inward)
+		back.set_cell_item(Vector3i(23, 0, z), 13, inward)
+	var ceiling := _grid("Ceiling")
+	for x: int in range(16, 24):
+		for z: int in range(-12, 12):
+			ceiling.set_cell_item(Vector3i(x, 35, z), 8)
+	_collision("Roof", Vector3(20, 8.85, 0), Vector3(8, 0.2, 24))
 	var rails := _grid("WindowRail")
 	rails.cell_center_x = false
 	rails.cell_center_z = false

@@ -2,7 +2,7 @@ class_name VipLounge
 extends Node3D
 ## The Mirror Club owns eligibility and VIP records; PlayerMoney owns all currency.
 
-const BOUNDS := AABB(Vector3(16, 4.8, -12), Vector3(8, 4, 24))
+const BOUNDS := AABB(Vector3(24, 4.8, -12), Vector3(8, 4, 24))
 
 @export var profiles: Dictionary = {}
 var store := VipStore.new()

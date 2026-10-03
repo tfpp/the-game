@@ -19,6 +19,7 @@ script = ExtResource("entity")
 replicated_properties = Array[NodePath]([NodePath(".:profiles")])
 
 [node name="Interior" parent="." instance=ExtResource("interior")]
+position = Vector3(8, 0, 0)
 
 [node name="Entrance" type="CSGBox3D" parent="."]
 position = Vector3(23.7, 1.3, -15)
@@ -33,7 +34,7 @@ door_label = "Examine the unmarked mirror"
 script = ExtResource("interaction")
 
 [node name="Exit" type="CSGBox3D" parent="."]
-position = Vector3(23.7, 6.3, -10)
+position = Vector3(31.7, 6.3, -10)
 size = Vector3(0.15, 2.6, 1.6)
 use_collision = true
 material = ExtResource("mirror")
@@ -46,7 +47,7 @@ exiting = true
 script = ExtResource("interaction")
 
 [node name="UpstairsArrival" type="Marker3D" parent="."]
-position = Vector3(21.4, 5.95, -9.7)
+position = Vector3(29.4, 5.95, -9.7)
 rotation = Vector3(0, 1.5707963, 0)
 
 [node name="DownstairsArrival" type="Marker3D" parent="."]
@@ -54,7 +55,7 @@ position = Vector3(21.5, 0.95, -15)
 rotation = Vector3(0, 1.5707963, 0)
 
 [node name="Scarlett" type="Node3D" parent="."]
-position = Vector3(20.5, 5, -7.5)
+position = Vector3(28.5, 5, -7.5)
 rotation = Vector3(0, 3.1415927, 0)
 script = ExtResource("station")
 host_name = "Scarlett"
@@ -66,7 +67,7 @@ age = 28
 script = ExtResource("interaction")
 
 [node name="Jade" type="Node3D" parent="."]
-position = Vector3(22.6, 5, 0)
+position = Vector3(30.6, 5, 0)
 rotation = Vector3(0, 1.5707963, 0)
 script = ExtResource("station")
 host_name = "Jade"
@@ -78,7 +79,7 @@ age = 30
 script = ExtResource("interaction")
 
 [node name="Valentina" type="Node3D" parent="."]
-position = Vector3(22.5, 5, 8.5)
+position = Vector3(30.5, 5, 8.5)
 rotation = Vector3(0, 1.5707963, 0)
 script = ExtResource("station")
 host_name = "Valentina"
@@ -90,7 +91,7 @@ age = 29
 script = ExtResource("interaction")
 
 [node name="PrivateTable" type="Node3D" parent="."]
-position = Vector3(20.5, 5, 6)
+position = Vector3(28.5, 5, 6)
 script = ExtResource("station")
 host_name = "Private Table"
 
@@ -98,7 +99,7 @@ host_name = "Private Table"
 script = ExtResource("interaction")
 
 [node name="PrivateTableTwo" type="Node3D" parent="."]
-position = Vector3(20.5, 5, -4)
+position = Vector3(28.5, 5, -4)
 script = ExtResource("station")
 host_name = "Private Table"
 
@@ -106,7 +107,7 @@ host_name = "Private Table"
 script = ExtResource("interaction")
 
 [node name="CrownSymbol" type="Node3D" parent="."]
-position = Vector3(16.3, 5.8, 9.5)
+position = Vector3(24.3, 5.8, 9.5)
 script = ExtResource("station")
 host_name = "Crown Symbol"
 
@@ -129,11 +130,11 @@ font_size = 28
 modulate = Color(0.84, 0.73, 0.5, 1)
 
 [node name="Destination" type="Marker3D" parent="."]
-position = Vector3(20, 5, -8)
+position = Vector3(28, 5, -8)
 script = ExtResource("gps")
 label = "The Mirror Club"
-hint = "Your private view above the casino. Use the unmarked east-side mirror."
-area = AABB(16, 4.8, -12, 8, 4, 24)
+hint = "Your private view behind the east wall. Use the unmarked east-side mirror."
+area = AABB(24, 4.8, -12, 8, 4, 24)
 
 [node name="Menu" type="CanvasLayer" parent="."]
 script = ExtResource("menu")
