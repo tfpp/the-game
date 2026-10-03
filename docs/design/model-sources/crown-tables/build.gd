@@ -16,7 +16,7 @@ const OFFSETS: Array[Vector3] = [
 
 func _initialize() -> void:
 	var inventory: Array[Dictionary] = []
-	for i: int in range(2, IDS.size()):
+	for i: int in range(3, 4):
 		var mesh := ArrayMesh.new()
 		_append(
 			mesh,

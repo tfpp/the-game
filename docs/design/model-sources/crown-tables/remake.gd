@@ -46,14 +46,14 @@ func _initialize() -> void:
 					)
 		final.save_png(TEXTURE)
 	var manifest: Array[Dictionary] = []
-	for kind: String in ["poker", "blackjack"]:
+	for kind: String in ["poker", "blackjack", "baccarat"]:
 		_vertices.clear()
 		_normals.clear()
 		_uvs.clear()
 		_indices.clear()
 		var shape := _outline(kind)
 		# Upholstery is a single closed profile; the inner seam meets the felt exactly.
-		_cap(shape, .93, .86, "POKER FELT" if kind == "poker" else "BLACKJACK FELT", true)
+		_cap(shape, .93, .86, "BLACKJACK FELT" if kind == "blackjack" else "POKER FELT", true)
 		_join(shape, .86, .93, 1.0, .98, "PADDED BURGUNDY RAIL")
 		_join(shape, 1.0, .98, 1.0, .87, "PADDED BURGUNDY RAIL")
 		_join(shape, 1.0, .87, .96, .87, "PADDED BURGUNDY RAIL")
@@ -61,8 +61,8 @@ func _initialize() -> void:
 		_join(shape, .96, .76, .96, .74, "BRASS")
 		_cap(shape, .74, .96, "UNDERSIDE", false)
 		# Two solid pedestal assemblies, touching the apron underside and their bases.
-		for x: float in [-.66, .66]:
-			_pedestal(x)
+		for side: float in [-1, 1]:
+			_pedestal(side * (.95 if kind == "baccarat" else .66))
 		_validate()
 		var arrays: Array = []
 		arrays.resize(Mesh.ARRAY_MAX)
@@ -114,10 +114,15 @@ func _initialize() -> void:
 
 func _outline(kind: String) -> PackedVector2Array:
 	var points := PackedVector2Array()
-	if kind == "poker":
+	if kind != "blackjack":
 		for i: int in 16:
 			var angle := TAU * i / 16.0
-			points.append(Vector2(cos(angle) * 1.21, sin(angle) * .71))
+			points.append(
+				Vector2(
+					cos(angle) * (1.8375 if kind == "baccarat" else 1.21),
+					sin(angle) * (.86625 if kind == "baccarat" else .71)
+				)
+			)
 	else:
 		# D-shaped dealer table: straight rear edge and one continuous player-side arc.
 		for i: int in 13:

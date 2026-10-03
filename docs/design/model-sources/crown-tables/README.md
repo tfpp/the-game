@@ -3,8 +3,9 @@
 The poker and blackjack tables are authored from scratch in `remake.gd`, the
 native mesh-first source. They replace the earlier assembled kit tables.
 Blockbench MCP is unavailable; this uses the repository-supported Godot path.
-The baccarat, craps and draw-poker assemblies remain in `build.gd`, which deliberately
-skips the two remade models so a rebuild cannot restore the rejected furniture.
+Only the craps assembly remains in `build.gd`; it skips all remade models so a rebuild
+cannot restore the rejected furniture. See the final replacements below for baccarat
+and draw poker.
 
 The new card tables use continuous perimeter loops: inset felt meets the padded
 burgundy rail, the rail meets a walnut apron with thin brass edging, and two broad
@@ -38,7 +39,7 @@ Only when processing new approved paint, run the remake with `-- --paint`, impor
 again, then rerun without that argument to bind the imported texture. GLBs here
 are interchange exports; native ArrayMeshes in `game/assets/table_games/models/`
 remain runtime sources. `remake-inventory.json` records the new models; `inventory.json`
-records the other three assemblies.
+records the remaining craps assembly.
 
 Review actual exported meshes using a display and Compatibility renderer:
 
@@ -81,3 +82,32 @@ ffmpeg -y -framerate 12 -i /tmp/crown-dealer-frames/frame-%04d.png \
 
 The GIF shows the actual rig, mapped material and bone-attached props. It covers
 all eight native clips; the roll segment uses the craps croupier.
+
+## Final baccarat and draw-poker replacements
+
+`remake.gd` also authors the baccarat table from the same continuous mesh profile,
+with its original 3.675×1.7325 m floor footprint, two fitted pedestals and 248
+triangles in one material. It reuses the approved shared card-table atlas; the
+runtime view supplies Player and Banker labels on the felt. `build.gd` now rebuilds
+only craps and cannot overwrite any of the four remade models.
+
+`draw_poker.gd` is the cabinet's authoritative source: a closed nine-point side
+profile extruded across a 0.68 m width, with an integrated angled glass face and
+control deck. It preserves the 0.68×1.49×0.76 m footprint and uses 32 indexed triangles
+and one material. Its dedicated 128×128 opaque atlas is ImageGen-painted against
+`draw-poker-uv-guide.png`; the exact prompt is `draw-poker-paint-prompt.txt` and the
+full source painting is `draw-poker-painted.png`. The UV charts reuse the two side
+panels, isolate the screen and control deck, inset sampling by half a texel, and
+extrude two pixels of each chart's own colour into the gutters. Filtering uses
+nearest mipmaps. Live card labels follow the angled screen, rather than the
+horizontal card-table layout. GLB interchange export is `draw-poker.glb`.
+
+```sh
+godot --headless --path game -s ../docs/design/model-sources/crown-tables/remake.gd
+godot --headless --path game -s ../docs/design/model-sources/crown-tables/draw_poker.gd
+```
+
+The cabinet builder preserves approved paint by default. Add `-- --paint` only
+when processing new artwork, import, then rerun without the flag. Review renders
+now include the baccarat table and draw-poker cabinet from front, rear, side and
+underside, plus their room placement and live draw-poker controls.

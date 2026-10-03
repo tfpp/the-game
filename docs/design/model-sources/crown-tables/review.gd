@@ -30,8 +30,13 @@ func _run() -> void:
 	camera.make_current()
 	var visual := MeshInstance3D.new()
 	world.add_child(visual)
-	for kind: String in ["poker", "blackjack"]:
-		visual.mesh = load("res://assets/table_games/models/" + kind + "_table.res")
+	for kind: String in ["poker", "blackjack", "baccarat", "video_poker"]:
+		visual.mesh = load(
+			(
+				"res://assets/table_games/models/"
+				+ ("video_poker_machine.res" if kind == "video_poker" else kind + "_table.res")
+			)
+		)
 		for view: String in ["front", "back", "side", "underside", "checker"]:
 			visual.material_override = null
 			var eye := Vector3(2.6, 2.5, 3.2)

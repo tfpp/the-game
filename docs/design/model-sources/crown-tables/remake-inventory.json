@@ -29,6 +29,16 @@
 			"texture": "res://assets/table_games/textures/card_tables.png",
 			"texture_size": "128x128",
 			"triangles": 212
+		},
+		{
+			"bounds": "[P: (-1.8375, 0.0, -0.86625), S: (3.675, 0.98, 1.7325)]",
+			"front": "+Z",
+			"id": "baccarat_table",
+			"pivot": "floor-centred",
+			"surfaces": 1,
+			"texture": "res://assets/table_games/textures/card_tables.png",
+			"texture_size": "128x128",
+			"triangles": 248
 		}
 	]
 }
