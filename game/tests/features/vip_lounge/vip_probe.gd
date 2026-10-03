@@ -106,6 +106,23 @@ func _driver(player: Player) -> void:
 	await RealTime.wait(get_tree(), 4.0)
 	assert(club.admitted(peer), "Arrival grace expires without ejecting the guest")
 	assert(int(club.profile(peer)["luck_ready"]) > 1700)
+	var exit := club.get_node("Exit") as VipDoor
+	_place(player, exit.global_position + Vector3(-1, 0, 0))
+	await RealTime.wait(get_tree(), 0.7)
+	exit.use()
+	assert(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool:
+				return (
+					player.net_position.distance_to(
+						(club.get_node("DownstairsArrival") as Node3D).global_position
+					)
+					< 0.1
+				),
+			5.0
+		)
+	)
 	hand.request_drop_item.rpc_id(1)
 	assert(
 		await RealTime.wait_until(
@@ -137,7 +154,22 @@ func _observer(player: Player) -> void:
 	assert(not club.get_node("Menu").is_in_group(&"modal_ui"), "Private menus are not replayed")
 	var jade := club.get_node("Jade") as VipStation
 	_place(player, jade.global_position + Vector3(-1, 0.95, 0))
-	await RealTime.wait(get_tree(), 0.7)
+	assert(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool:
+				return (
+					player.net_position.distance_to(
+						(club.get_node("DownstairsArrival") as Node3D).global_position
+					)
+					< 0.1
+				),
+			5.0
+		)
+	)
+	assert(club.get_node("Menu").toast.text == "naughty naughty, ya stinky poor")
+	assert(not club.admitted(peer), "Noclip cannot grant admission")
+	print("VIP_NOCLIP_EJECTION_PASS")
 	jade.entity.request_action(&"service", {"action": "luck", "options": {}})
 	await RealTime.wait(get_tree(), 0.7)
 	assert(club.profile(peer).is_empty(), "An unadmitted peer cannot use the lounge")
@@ -219,6 +251,12 @@ func _capture(player: Player) -> void:
 	await RealTime.wait(get_tree(), 0.5)
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("/tmp/vip-menu.png")
+	club.leave(1)
+	_place(player, Vector3(29, 5.95, 0))
+	club._process(0)
+	assert(club.get_node("Menu").toast.text == "naughty naughty, ya stinky poor")
+	await RealTime.wait(get_tree(), 0.9)
+	await _view(camera, Vector3(21.5, 1.8, -14), Vector3(10, 1, -2), "/tmp/vip-ejected.png")
 	print("VIP_CAPTURE_PASS")
 
 

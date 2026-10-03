@@ -27,11 +27,20 @@ catalog only after discovery. The unique door leaf inherits GarageDoor's CSG;
 room architecture uses GridMaps. The inherited legacy RPC delegates to the same
 NetworkedInteraction validator, so it cannot bypass eligibility.
 
-The west-facing pane is opaque chrome from the casino and invisible from the VIP
-side, with a physical barrier. It uses no screen-buffer sampling, which could expose
-guests drawn behind the window. The finish is reflective metal rather than a live
-planar reflection. A rendered magenta-marker probe checks both viewing directions.
+The west-facing pane matches the adjacent white/beige stucco from the casino and
+is invisible from the VIP side, with a physical barrier. It samples the existing
+upper-wall atlas at the same 24 pixels/metre, roughness and cropped UV height.
+It uses no screen-buffer sampling, which could expose guests drawn behind the
+window. A rendered magenta-marker probe checks both viewing directions.
 The entire area lies inside the existing Golden Crown combat-free volume.
+
+The server ejects any player whose replicated position enters the room without
+admission, even if their wallet meets the threshold. It teleports only that owner
+back to `DownstairsArrival` and sends the private screen message
+“naughty naughty, ya stinky poor”. Repeated stale movement snapshots are throttled;
+returning to the main floor clears the throttle for a fresh intrusion. Ejection
+does not charge money or unlock discovery. Admitted guests retain their visit when
+their balance drops, as before.
 
 ## Hosts and services
 

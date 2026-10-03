@@ -85,6 +85,30 @@ func test_entry_threshold_free_admission_and_exit_with_lower_balance() -> void:
 	assert_false(club.admitted(1))
 
 
+func test_unadmitted_noclip_is_ejected_with_private_message_regardless_of_balance() -> void:
+	var arrival := club.get_node("DownstairsArrival") as Marker3D
+	var menu := club.get_node("Menu")
+	for balance: int in [0, 200_000]:
+		money.balances = {1: balance}
+		player.net_position = Vector3(29, 5.95, 0)
+		player.global_position = player.net_position
+		club._process(0)
+		assert_eq(player.net_position, arrival.global_position)
+		assert_eq(menu.toast.text, "naughty naughty, ya stinky poor")
+		assert_false(club.admitted(1))
+		assert_false(club.record(1)["discovered"], "Noclip does not unlock the room")
+		assert_eq(money.balances[1], balance, "Ejection has no fee")
+		club._process(0)
+	_enter()
+	money.balances = {1: 0}
+	club._arrival_until.erase(1)
+	menu.toast.text = ""
+	club._process(0)
+	assert_true(club.admitted(1), "Guests retain admission when their balance drops")
+	assert_true(VipLounge.BOUNDS.has_point(player.net_position))
+	assert_eq(menu.toast.text, "", "Authorized guests are not taunted")
+
+
 func test_exact_sixfold_odds_preserve_losses_and_prize_weights() -> void:
 	var ordinary := 0
 	var lucky := 0

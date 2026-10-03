@@ -1,9 +1,11 @@
 [gd_scene format=3]
 
 [ext_resource type="Shader" path="res://features/vip_lounge/one_way_mirror.gdshader" id="shader"]
+[ext_resource type="Texture2D" path="res://assets/room_kits/beige_stucco_wall_full/beige_stucco_wall_full_albedo.png" id="stucco"]
 
 [sub_resource type="ShaderMaterial" id="finish"]
 shader = ExtResource("shader")
+shader_parameter/stucco = ExtResource("stucco")
 
 [sub_resource type="QuadMesh" id="pane"]
 size = Vector2(24, 3.75)
@@ -14,6 +16,7 @@ size = Vector3(0.08, 3.75, 24)
 [node name="VipWindow" type="Node3D"]
 
 [node name="OneWayMirror" type="MeshInstance3D" parent="."]
+position = Vector3(-0.1, 0, 0)
 rotation = Vector3(0, -1.5707963, 0)
 mesh = SubResource("pane")
 material_override = SubResource("finish")

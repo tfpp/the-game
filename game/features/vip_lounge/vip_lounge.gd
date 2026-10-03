@@ -10,6 +10,7 @@ var clock := Callable()
 var _rows: Dictionary = {}
 var _admitted: Dictionary = {}
 var _arrival_until: Dictionary = {}
+var _ejected_until: Dictionary = {}
 var _pending: Dictionary = {}
 var _generation := 0
 var _publish_left := 0.0
@@ -310,6 +311,13 @@ func _settle(
 func _process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
+	for player: Player in get_tree().get_nodes_in_group(&"players"):
+		var peer := player.get_multiplayer_authority()
+		if not BOUNDS.has_point(player.net_position):
+			_ejected_until.erase(peer)
+		if not admitted(peer) and BOUNDS.has_point(player.net_position):
+			if Time.get_ticks_msec() >= int(_ejected_until.get(peer, 0)):
+				_eject(player)
 	# Leaving via another system or dying ends this visit; a lower wallet does not.
 	for peer: int in _admitted.keys():
 		var player := _player_for_peer(peer)
@@ -320,6 +328,15 @@ func _process(delta: float) -> void:
 	_publish_left -= delta
 	if _publish_left <= 0.0:
 		_publish()
+
+
+func _eject(player: Player) -> void:
+	var peer := player.get_multiplayer_authority()
+	_ejected_until[peer] = Time.get_ticks_msec() + 2000
+	var arrival := get_node("DownstairsArrival") as Marker3D
+	player.server_teleport.rpc_id(peer, arrival.global_position, arrival.global_rotation.y)
+	var entrance := get_node("Entrance") as VipDoor
+	entrance.entity.send_event(&"arrival", {"text": "naughty naughty, ya stinky poor"}, peer)
 
 
 func _publish() -> void:
@@ -353,6 +370,7 @@ func _forget(peer: int) -> void:
 	if multiplayer.is_server():
 		_admitted.erase(peer)
 		_arrival_until.erase(peer)
+		_ejected_until.erase(peer)
 		_rows.erase("session:%d" % peer)
 		profiles.erase(peer)
 
@@ -362,5 +380,6 @@ func _reset(_mode: Network.Mode) -> void:
 	_rows.clear()
 	_admitted.clear()
 	_arrival_until.clear()
+	_ejected_until.clear()
 	_pending.clear()
 	profiles = {}
