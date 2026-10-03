@@ -1,0 +1,8 @@
+{
+  "title": "Random connected-time jackpots",
+  "summary": "Each connected minute now pays a random prize with a tiny chance of a massive jackpot.",
+  "notes": [
+    "Replace fixed connected-time income with random $1–$9 prizes that can repeatedly multiply by ten.",
+    "Keep payouts server-owned and persisted for online accounts, with the existing model adjustment."
+  ]
+}

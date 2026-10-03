@@ -1,14 +1,24 @@
 # Player money
 
-Accounts start with **$20 once** and earn **$5 per minute connected** with the default
-model, or **$4.25 per minute** with the girl model. Amounts are
+Accounts start with **$20 once** and roll a **random prize each minute connected**.
+A prize starts at a uniform **$1–$9**; each independent **1-in-20** promotion multiplies
+it by ten and tries again. Thus 95% of prizes stay at $1–$9, while billion-dollar
+and larger jackpots remain possible (about 0.000000000195% for at least $1 billion
+before the model adjustment). The request's example odds are interpreted as
+illustrative, not an exact required probability. There is no gameplay prize ceiling:
+only the existing signed 64-bit cents representation stops promotions; additions
+saturate at its maximum rather than overflowing. API balance parsing preserves the
+integer cents token rather than rounding huge balances through JSON floats. The girl model retains its 15%
+reduction, weighted by time when switching models within a minute.
+Amounts are
 integer cents in the accounts API's existing SQLite database, keyed by immutable
 account ID. Renaming, disconnecting, and restarting do not reset money. Existing
 accounts receive the same initial $20 when the append-only migration runs.
 
 The game server sends an authenticated balance heartbeat every five seconds. The
-API accumulates elapsed seconds at the selected model's rate and awards them on
-reaching 60 seconds. The first heartbeat
+API accumulates elapsed seconds and weighted model units, then samples and commits
+one prize in the existing heartbeat transaction on reaching 60 seconds. Repeated or
+backdated heartbeats cannot reroll a committed prize. The first heartbeat
 starts the clock; awards can appear up to one heartbeat interval after a minute.
 The fractional minute and last heartbeat persist in SQLite. Gaps over 15 seconds
 pause accrual rather than granting offline income; short gaps between heartbeats
@@ -121,7 +131,10 @@ and records the ID so a retried request doesn't pay twice.
 
 Validation: Go store/API tests cover persistence, concurrent spending, replay,
 authentication, income and exact expected payouts. GUT covers offline wallets,
-income, labels, reel timing and interaction. The slot network test checks real
+random income, labels, reel timing and interaction. Deterministic sampling tests in
+`tests/features/money/test_random_income.gd` and
+`api/internal/store/income_random_test.go` cover matching decade rules, billion-dollar
+and larger wins, model scaling, minute gating, replay and overflow safety. The slot network test checks real
 server/two-client balance replication; `SLOT_TEST_DATABASE=1` includes the real API,
 SQLite and a full minute of income.
 

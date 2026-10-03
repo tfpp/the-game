@@ -51,11 +51,14 @@ func _process(delta: float) -> void:
 		if multiplayer.is_server() and _temporary() and _account(peer) <= 0:
 			var seconds := float(_temporary_seconds.get(peer, 0.0)) + delta
 			var units := float(_temporary_income_units.get(peer, 0.0)) + delta * _income_cents(peer)
-			if seconds >= 60.0:
-				_set_balance(peer, int(balances.get(peer, _starting_cents)) + int(units / 60.0))
-				announce_gain(peer, int(units / 60.0), INCOME_REASON)
-				seconds = fmod(seconds, 60.0)
-				units = fmod(units, 60.0)
+			while seconds >= 60.0:
+				var minute_units := roundi(units * 60.0 / seconds)
+				var balance := int(balances.get(peer, _starting_cents))
+				var prize := mini(_roll_income(minute_units), IncomeRoll.MAX_CENTS - balance)
+				_set_balance(peer, balance + prize)
+				announce_gain(peer, prize, INCOME_REASON)
+				units -= units * 60.0 / seconds
+				seconds -= 60.0
 			_temporary_seconds[peer] = seconds
 			_temporary_income_units[peer] = units
 		if multiplayer.is_server() and _poll_elapsed >= 5.0 and not _busy.has(peer):
@@ -180,6 +183,10 @@ func _account(peer: int) -> int:
 
 func _temporary() -> bool:
 	return Network.mode == Network.Mode.OFFLINE or Network.insecure_auth
+
+
+func _roll_income(units: int) -> int:
+	return IncomeRoll.sample(units, func(bound: int) -> int: return randi_range(0, bound - 1))
 
 
 func _income_cents(peer: int) -> int:
@@ -405,6 +412,22 @@ func settle_roulette(
 	return result
 
 
+## Godot JSON numbers are floats. Read the trusted API's integer balance token
+## directly so jackpots above 2^53 cents retain cents and cannot wrap at int64 max.
+static func parse_response(body: String) -> Variant:
+	var json := JSON.new()
+	if json.parse(body) != OK:
+		return null
+	var parsed: Variant = json.data
+	if parsed is Dictionary and parsed.has("balance"):
+		var token := RegEx.new()
+		token.compile('"balance"[[:space:]]*:[[:space:]]*(-?[0-9]+)')
+		var found := token.search(body)
+		if found != null:
+			parsed["balance"] = found.get_string(1).to_int()
+	return parsed
+
+
 ## Server-only atomic wallet + cosmetic-document transaction. The pawn shop owns
 ## collection rules and retains the exact ID/document for unresolved retries.
 ## Load never changes the document. Real accounts commit both sides in SQLite.
@@ -517,7 +540,7 @@ func _request(account: int, action: String, id: String, extra: Dictionary = {}) 
 		if int(response[0]) != HTTPRequest.RESULT_SUCCESS:
 			continue
 		var bytes: PackedByteArray = response[3]
-		var parsed: Variant = JSON.parse_string(bytes.get_string_from_utf8())
+		var parsed: Variant = parse_response(bytes.get_string_from_utf8())
 		if int(response[1]) == 200 and parsed is Dictionary:
 			return parsed as Dictionary
 		if int(response[1]) == 409 and parsed is Dictionary:

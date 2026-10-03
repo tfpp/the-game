@@ -187,7 +187,8 @@ client with a server configured (the web default) shows the login screen
 ### Player economy
 
 `features/money/` maintains server-owned replicated balances and the labels beneath
-player names. SQLite account wallets start at $20 and accrue $5 per connected minute.
+player names. SQLite account wallets start at $20 and roll a random connected-minute prize ($1–$9,
+with repeated 1-in-20 tenfold promotions; model adjustments still apply).
 `POST /api/game/money` accepts HMAC-authenticated game-server balance heartbeats and
 idempotent slot operations; client sessions cannot access it. Slots cost $1 and pay
 $10–$30 for triples, with an 80% expected return. Charges, prizes, and spin results
