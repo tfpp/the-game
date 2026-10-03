@@ -35,11 +35,12 @@ type Config struct {
 
 // Bot is the Discord side of the bot. Set Service (and optionally usage reporters) before Open.
 type Bot struct {
-	cfg     Config
-	client  *bot.Client
-	Service *core.Service
-	Claude  UsageReporter // nil: /usage says Claude isn't set up
-	Codex   UsageReporter // nil: /usage says Codex isn't set up
+	cfg      Config
+	client   *bot.Client
+	Service  *core.Service
+	Claude   UsageReporter // nil: /usage says Claude isn't set up
+	Codex    UsageReporter // nil: /usage says Codex isn't set up
+	Profiles ProfileLookup // nil: /profile says it isn't set up
 }
 
 // noMentions is the default: messages never ping anyone unless a call allows it.
@@ -129,6 +130,14 @@ var (
 			Name:        "usage",
 			Description: "Show the agent's Claude and Codex subscription usage limits",
 			Contexts:    []discord.InteractionContextType{discord.InteractionContextTypeGuild},
+		},
+		discord.SlashCommandCreate{
+			Name:        "profile",
+			Description: "Look up a player's game profile and recorded playtime",
+			Contexts:    []discord.InteractionContextType{discord.InteractionContextTypeGuild},
+			Options: []discord.ApplicationCommandOption{discord.ApplicationCommandOptionUser{
+				Name: "user", Description: "Discord user whose game profile to look up", Required: true,
+			}},
 		},
 	}
 )
@@ -307,6 +316,12 @@ func (b *Bot) onCommand(e *events.ApplicationCommandInteractionCreate) {
 		if text, err = b.Service.Queue(ctx, data.String("which")); err == nil {
 			err = r.Reject(ctx, text) // private
 		}
+	case "profile":
+		r = private
+		if err = r.Defer(ctx); err != nil {
+			break
+		}
+		err = r.Respond(ctx, b.profileReport(ctx, data.Snowflake("user").String()))
 	case "usage":
 		r = private
 		if err = r.Defer(ctx); err != nil {

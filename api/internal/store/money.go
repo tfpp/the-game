@@ -214,13 +214,14 @@ func (s *Store) AccrueIncome(ctx context.Context, accountID, now, incomeCents in
 		return 0, err
 	}
 	defer tx.Rollback()
-	var balance, seconds, seen, units int64
-	if err = tx.QueryRowContext(ctx, "SELECT money, income_seconds, income_seen, income_units FROM accounts WHERE id = ?", accountID).Scan(&balance, &seconds, &seen, &units); err != nil {
+	var balance, seconds, seen, units, playtime int64
+	if err = tx.QueryRowContext(ctx, "SELECT money, income_seconds, income_seen, income_units, playtime_seconds FROM accounts WHERE id = ?", accountID).Scan(&balance, &seconds, &seen, &units, &playtime); err != nil {
 		return 0, err
 	}
 	elapsed := now - seen
 	if seen > 0 && elapsed > 0 && elapsed <= 15 {
 		seconds += elapsed
+		playtime += elapsed
 		units += elapsed * incomeCents
 	}
 	if seconds >= 60 {
@@ -231,7 +232,7 @@ func (s *Store) AccrueIncome(ctx context.Context, accountID, now, incomeCents in
 	if now < seen {
 		now = seen
 	}
-	if _, err = tx.ExecContext(ctx, "UPDATE accounts SET money = ?, income_seconds = ?, income_seen = ?, income_units = ? WHERE id = ?", balance, seconds, now, units, accountID); err != nil {
+	if _, err = tx.ExecContext(ctx, "UPDATE accounts SET money = ?, income_seconds = ?, income_seen = ?, income_units = ?, playtime_seconds = ? WHERE id = ?", balance, seconds, now, units, playtime, accountID); err != nil {
 		return 0, err
 	}
 	return balance, tx.Commit()

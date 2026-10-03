@@ -79,6 +79,15 @@ func run(log *slog.Logger) error {
 		Logger:              log,
 	}
 
+	profileKey, err := secret(env("API_PROFILE_KEY_FILE", "/run/secrets/api/profile-key"))
+	if err != nil {
+		return fmt.Errorf("profile key: %w", err)
+	}
+	if profileKey != "" && len(profileKey) < 32 {
+		return errors.New("profile key must be at least 32 bytes")
+	}
+	cfg.ProfileKey = []byte(profileKey)
+
 	var mailer mail.Mailer
 	resendKey, err := secret(env("RESEND_API_KEY_FILE", "/run/secrets/api/resend-api-key"))
 	if err != nil {

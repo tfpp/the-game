@@ -113,6 +113,22 @@ original account; session reset clears holds and a removed cabinet releases its 
 Authenticated prizes survive disconnect/server crashes in the existing database;
 temporary offline wallets still reset with the session.
 
+## Discord profile playtime
+
+The existing signed account balance heartbeat also increments the API's persistent
+`playtime_seconds` counter in the same transaction. It counts accepted 1–15-second
+intervals once, independent of model income rate, and never resets at a minute payout.
+Long gaps, repeat or backdated calls add no time. This adds no game-side timer,
+balance or protocol field; old game servers already provide the necessary heartbeat.
+Temporary/offline wallets do not record account playtime. Totals begin with the API
+migration, not reconstructed historical playtime. The last partial interval and
+intervals lost to extended wallet busy periods/API outages are not counted.
+
+Discord `/profile user:<user>` reads a verified linked account's game name and
+cumulative time through a dedicated read-only API credential. See
+[bot profile setup](../../../bot/README.md#player-profiles) for deployment and privacy
+boundaries. Existing money signatures, rates, responses and callers stay unchanged.
+
 ## Server connection
 
 Deploy the updated **API first**, then the matching game server and web client. The bot

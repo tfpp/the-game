@@ -47,6 +47,7 @@ type Config struct {
 	// Enable only when every request arrives through Cloudflare (the tunnel).
 	TrustCFConnectingIP bool
 	TicketKey           []byte
+	ProfileKey          []byte // optional dedicated read-only bot key; never the ticket key
 	Logger              *slog.Logger
 	Now                 func() time.Time
 }
@@ -74,6 +75,7 @@ func New(cfg Config, st *store.Store, mailer mail.Mailer, d discord.Provider) *S
 		cfg: cfg, store: st, mailer: mailer, discord: d, log: cfg.Logger,
 		origins: map[string]bool{},
 		limits: map[string]*limiter{
+			"profile-bot":    newLimiter(30, time.Second),
 			"signup-ip":      newLimiter(5, 2*time.Minute),
 			"email-addr":     newLimiter(3, 20*time.Minute), // signup/reset mails per address
 			"login-ip":       newLimiter(20, 30*time.Second),
@@ -95,6 +97,7 @@ func (s *Server) WaitMail() { s.mailWG.Wait() }
 
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /api/bot/profile/{user}", s.botProfile)
 	mux.HandleFunc("POST /api/game/money", s.gameMoney)
 	mux.HandleFunc("POST /api/game/inventory", s.gameInventory)
 	mux.HandleFunc("POST /api/game/timed-bomb", s.gameTimedBomb)
