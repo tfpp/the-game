@@ -1,0 +1,142 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/vip_lounge/vip_lounge.gd" id="club"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="entity"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="interaction"]
+[ext_resource type="Script" path="res://features/vip_lounge/vip_station.gd" id="station"]
+[ext_resource type="Script" path="res://features/vip_lounge/vip_door.gd" id="door"]
+[ext_resource type="Script" path="res://features/vip_lounge/vip_menu.gd" id="menu"]
+[ext_resource type="Script" path="res://features/vip_lounge/vip_destination.gd" id="gps"]
+[ext_resource type="Script" path="res://features/vip_lounge/vip_effects.gd" id="effects"]
+[ext_resource type="PackedScene" path="res://features/vip_lounge/interior.tscn" id="interior"]
+[ext_resource type="Material" path="res://features/casino_hub/materials/chrome.tres" id="mirror"]
+
+[node name="MirrorClub" type="Node3D"]
+script = ExtResource("club")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")
+replicated_properties = Array[NodePath]([NodePath(".:profiles")])
+
+[node name="Interior" parent="." instance=ExtResource("interior")]
+
+[node name="Entrance" type="CSGBox3D" parent="."]
+position = Vector3(23.7, 1.3, -15)
+size = Vector3(0.15, 2.6, 1.6)
+use_collision = true
+material = ExtResource("mirror")
+script = ExtResource("door")
+destination = NodePath("../UpstairsArrival")
+door_label = "Examine the unmarked mirror"
+
+[node name="NetworkedEntity" type="Node" parent="Entrance"]
+script = ExtResource("interaction")
+
+[node name="Exit" type="CSGBox3D" parent="."]
+position = Vector3(23.7, 6.3, -10)
+size = Vector3(0.15, 2.6, 1.6)
+use_collision = true
+material = ExtResource("mirror")
+script = ExtResource("door")
+destination = NodePath("../DownstairsArrival")
+door_label = "Return to the casino floor"
+exiting = true
+
+[node name="NetworkedEntity" type="Node" parent="Exit"]
+script = ExtResource("interaction")
+
+[node name="UpstairsArrival" type="Marker3D" parent="."]
+position = Vector3(21.4, 5.95, -9.7)
+rotation = Vector3(0, 1.5707963, 0)
+
+[node name="DownstairsArrival" type="Marker3D" parent="."]
+position = Vector3(21.5, 0.95, -15)
+rotation = Vector3(0, 1.5707963, 0)
+
+[node name="Scarlett" type="Node3D" parent="."]
+position = Vector3(20.5, 5, -7.5)
+rotation = Vector3(0, 3.1415927, 0)
+script = ExtResource("station")
+host_name = "Scarlett"
+dress = 11
+hair_color = 2
+age = 28
+
+[node name="NetworkedEntity" type="Node" parent="Scarlett"]
+script = ExtResource("interaction")
+
+[node name="Jade" type="Node3D" parent="."]
+position = Vector3(22.6, 5, 0)
+rotation = Vector3(0, 1.5707963, 0)
+script = ExtResource("station")
+host_name = "Jade"
+dress = 2
+hair_color = 0
+age = 30
+
+[node name="NetworkedEntity" type="Node" parent="Jade"]
+script = ExtResource("interaction")
+
+[node name="Valentina" type="Node3D" parent="."]
+position = Vector3(22.5, 5, 8.5)
+rotation = Vector3(0, 1.5707963, 0)
+script = ExtResource("station")
+host_name = "Valentina"
+dress = 5
+hair_color = 3
+age = 29
+
+[node name="NetworkedEntity" type="Node" parent="Valentina"]
+script = ExtResource("interaction")
+
+[node name="PrivateTable" type="Node3D" parent="."]
+position = Vector3(20.5, 5, 6)
+script = ExtResource("station")
+host_name = "Private Table"
+
+[node name="NetworkedEntity" type="Node" parent="PrivateTable"]
+script = ExtResource("interaction")
+
+[node name="PrivateTableTwo" type="Node3D" parent="."]
+position = Vector3(20.5, 5, -4)
+script = ExtResource("station")
+host_name = "Private Table"
+
+[node name="NetworkedEntity" type="Node" parent="PrivateTableTwo"]
+script = ExtResource("interaction")
+
+[node name="CrownSymbol" type="Node3D" parent="."]
+position = Vector3(16.3, 5.8, 9.5)
+script = ExtResource("station")
+host_name = "Crown Symbol"
+
+[node name="NetworkedEntity" type="Node" parent="CrownSymbol"]
+script = ExtResource("interaction")
+
+[node name="Symbol" type="Label3D" parent="CrownSymbol"]
+text = "♛"
+rotation = Vector3(0, 1.5707963, 0)
+pixel_size = 0.01
+font_size = 48
+modulate = Color(0.9, 0.72, 0.3, 1)
+
+[node name="Invitation" type="Label3D" parent="."]
+position = Vector3(22.7, 1.9, -16.4)
+rotation = Vector3(0, 1.5707963, 0)
+text = "Some views are reserved.\nAsk the mirror."
+pixel_size = 0.0025
+font_size = 28
+modulate = Color(0.84, 0.73, 0.5, 1)
+
+[node name="Destination" type="Marker3D" parent="."]
+position = Vector3(20, 5, -8)
+script = ExtResource("gps")
+label = "The Mirror Club"
+hint = "Your private view above the casino. Use the unmarked east-side mirror."
+area = AABB(16, 4.8, -12, 8, 4, 24)
+
+[node name="Menu" type="CanvasLayer" parent="."]
+script = ExtResource("menu")
+
+[node name="Effects" type="Node3D" parent="."]
+script = ExtResource("effects")

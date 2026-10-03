@@ -1,0 +1,142 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/casino_hub/model_materials.gd" id="1_52taf"]
+[ext_resource type="MeshLibrary" path="res://features/casino_hub/gridmap/casino_tiles.tres" id="2_dvj66"]
+[ext_resource type="Shader" path="res://features/vip_lounge/one_way_mirror.gdshader" id="3_7ba3d"]
+[ext_resource type="PackedScene" path="res://assets/casino_hub/models/salon_bar.glb" id="4_vudki"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/casino_stool.tscn" id="5_8qmrp"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/blackjack_table.tscn" id="6_xj7if"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/martini-glass.tscn" id="7_r1cud"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/casino-two-seat-couch.tscn" id="8_ah0px"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/bundle/casino-lounge-chair.tscn" id="9_0ho0a"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/coffee_table.tscn" id="10_q5o5t"]
+[ext_resource type="PackedScene" path="res://features/casino_hub/models/brass_sconce.tscn" id="11_rnn6t"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4ntkj"]
+render_priority = 0
+shader = ExtResource("3_7ba3d")
+
+[sub_resource type="QuadMesh" id="QuadMesh_8rk48"]
+size = Vector2(24, 3.75)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yksnv"]
+size = Vector3(0.08, 3.75, 24)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jhmyw"]
+size = Vector3(0.4, 0.98, 7)
+
+[node name="Interior" type="Node3D" unique_id=1770067613]
+script = ExtResource("1_52taf")
+
+[node name="Deck" type="GridMap" parent="." unique_id=1282410000]
+mesh_library = ExtResource("2_dvj66")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_y = false
+data = {
+"cells": PackedInt32Array(1310736, 65524, 6, 1310736, 65525, 6, 1310736, 65526, 6, 1310736, 65527, 6, 1310736, 65528, 6, 1310736, 65529, 6, 1310736, 65530, 6, 1310736, 65531, 6, 1310736, 65532, 6, 1310736, 65533, 6, 1310736, 65534, 6, 1310736, 65535, 6, 1310736, 0, 6, 1310736, 1, 6, 1310736, 2, 6, 1310736, 3, 6, 1310736, 4, 6, 1310736, 5, 6, 1310736, 6, 6, 1310736, 7, 6, 1310736, 8, 6, 1310736, 9, 6, 1310736, 10, 6, 1310736, 11, 6, 1310737, 65524, 6, 1310737, 65525, 6, 1310737, 65526, 6, 1310737, 65527, 6, 1310737, 65528, 6, 1310737, 65529, 6, 1310737, 65530, 6, 1310737, 65531, 6, 1310737, 65532, 6, 1310737, 65533, 6, 1310737, 65534, 6, 1310737, 65535, 6, 1310737, 0, 6, 1310737, 1, 6, 1310737, 2, 6, 1310737, 3, 6, 1310737, 4, 6, 1310737, 5, 6, 1310737, 6, 6, 1310737, 7, 6, 1310737, 8, 6, 1310737, 9, 6, 1310737, 10, 6, 1310737, 11, 6, 1310738, 65524, 6, 1310738, 65525, 6, 1310738, 65526, 6, 1310738, 65527, 6, 1310738, 65528, 6, 1310738, 65529, 6, 1310738, 65530, 6, 1310738, 65531, 6, 1310738, 65532, 6, 1310738, 65533, 6, 1310738, 65534, 6, 1310738, 65535, 6, 1310738, 0, 6, 1310738, 1, 6, 1310738, 2, 6, 1310738, 3, 6, 1310738, 4, 6, 1310738, 5, 6, 1310738, 6, 6, 1310738, 7, 6, 1310738, 8, 6, 1310738, 9, 6, 1310738, 10, 6, 1310738, 11, 6, 1310739, 65524, 6, 1310739, 65525, 6, 1310739, 65526, 6, 1310739, 65527, 6, 1310739, 65528, 6, 1310739, 65529, 6, 1310739, 65530, 6, 1310739, 65531, 6, 1310739, 65532, 6, 1310739, 65533, 6, 1310739, 65534, 6, 1310739, 65535, 6, 1310739, 0, 6, 1310739, 1, 6, 1310739, 2, 6, 1310739, 3, 6, 1310739, 4, 6, 1310739, 5, 6, 1310739, 6, 6, 1310739, 7, 6, 1310739, 8, 6, 1310739, 9, 6, 1310739, 10, 6, 1310739, 11, 6, 1310740, 65524, 6, 1310740, 65525, 6, 1310740, 65526, 6, 1310740, 65527, 6, 1310740, 65528, 6, 1310740, 65529, 6, 1310740, 65530, 6, 1310740, 65531, 6, 1310740, 65532, 6, 1310740, 65533, 6, 1310740, 65534, 6, 1310740, 65535, 6, 1310740, 0, 6, 1310740, 1, 6, 1310740, 2, 6, 1310740, 3, 6, 1310740, 4, 6, 1310740, 5, 6, 1310740, 6, 6, 1310740, 7, 6, 1310740, 8, 6, 1310740, 9, 6, 1310740, 10, 6, 1310740, 11, 6, 1310741, 65524, 6, 1310741, 65525, 6, 1310741, 65526, 6, 1310741, 65527, 6, 1310741, 65528, 6, 1310741, 65529, 6, 1310741, 65530, 6, 1310741, 65531, 6, 1310741, 65532, 6, 1310741, 65533, 6, 1310741, 65534, 6, 1310741, 65535, 6, 1310741, 0, 6, 1310741, 1, 6, 1310741, 2, 6, 1310741, 3, 6, 1310741, 4, 6, 1310741, 5, 6, 1310741, 6, 6, 1310741, 7, 6, 1310741, 8, 6, 1310741, 9, 6, 1310741, 10, 6, 1310741, 11, 6, 1310742, 65524, 6, 1310742, 65525, 6, 1310742, 65526, 6, 1310742, 65527, 6, 1310742, 65528, 6, 1310742, 65529, 6, 1310742, 65530, 6, 1310742, 65531, 6, 1310742, 65532, 6, 1310742, 65533, 6, 1310742, 65534, 6, 1310742, 65535, 6, 1310742, 0, 6, 1310742, 1, 6, 1310742, 2, 6, 1310742, 3, 6, 1310742, 4, 6, 1310742, 5, 6, 1310742, 6, 6, 1310742, 7, 6, 1310742, 8, 6, 1310742, 9, 6, 1310742, 10, 6, 1310742, 11, 6, 1310743, 65524, 6, 1310743, 65525, 6, 1310743, 65526, 6, 1310743, 65527, 6, 1310743, 65528, 6, 1310743, 65529, 6, 1310743, 65530, 6, 1310743, 65531, 6, 1310743, 65532, 6, 1310743, 65533, 6, 1310743, 65534, 6, 1310743, 65535, 6, 1310743, 0, 6, 1310743, 1, 6, 1310743, 2, 6, 1310743, 3, 6, 1310743, 4, 6, 1310743, 5, 6, 1310743, 6, 6, 1310743, 7, 6, 1310743, 8, 6, 1310743, 9, 6, 1310743, 10, 6, 1310743, 11, 6)
+}
+
+[node name="EndWalls" type="GridMap" parent="." unique_id=1599253076]
+mesh_library = ExtResource("2_dvj66")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_y = false
+data = {
+"cells": PackedInt32Array(1310736, 65524, 14, 1310736, 11, 655374, 1310737, 65524, 14, 1310737, 11, 655374, 1310738, 65524, 14, 1310738, 11, 655374, 1310739, 65524, 14, 1310739, 11, 655374, 1310740, 65524, 14, 1310740, 11, 655374, 1310741, 65524, 14, 1310741, 11, 655374, 1310742, 65524, 14, 1310742, 11, 655374, 1310743, 65524, 14, 1310743, 11, 655374)
+}
+
+[node name="OneWayMirror" type="MeshInstance3D" parent="." unique_id=23695282]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 16, 6.875, 0)
+material_override = SubResource("ShaderMaterial_4ntkj")
+mesh = SubResource("QuadMesh_8rk48")
+
+[node name="WindowBarrier" type="StaticBody3D" parent="." unique_id=329034025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 6.875, 0)
+
+[node name="@CollisionShape3D@2" type="CollisionShape3D" parent="WindowBarrier" unique_id=979073618]
+shape = SubResource("BoxShape3D_yksnv")
+
+[node name="WindowRail" type="GridMap" parent="." unique_id=1262544818]
+mesh_library = ExtResource("2_dvj66")
+cell_size = Vector3(1, 0.25, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(1310736, 65524, 1441801, 1310736, 65526, 1441801, 1310736, 65528, 1441801, 1310736, 65530, 1441801, 1310736, 65532, 1441801, 1310736, 65534, 1441801, 1310736, 0, 1441801, 1310736, 2, 1441801, 1310736, 4, 1441801, 1310736, 6, 1441801, 1310736, 8, 1441801, 1310736, 10, 1441801)
+}
+
+[node name="PrivateBar" type="Node3D" parent="." unique_id=449588697 instance=ExtResource("4_vudki")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23, 5, 0)
+
+[node name="Counter" type="StaticBody3D" parent="." unique_id=101704156]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.9, 5.49, 0)
+
+[node name="@CollisionShape3D@3" type="CollisionShape3D" parent="Counter" unique_id=395250206]
+shape = SubResource("BoxShape3D_jhmyw")
+
+[node name="Stool_-2" type="Node3D" parent="." unique_id=214401985 instance=ExtResource("5_8qmrp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.7, 5, -2)
+
+[node name="Stool_0" type="Node3D" parent="." unique_id=1493761542 instance=ExtResource("5_8qmrp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.7, 5, 0)
+
+[node name="Stool_2" type="Node3D" parent="." unique_id=300293345 instance=ExtResource("5_8qmrp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.7, 5, 2)
+
+[node name="TripleTable_-4" type="StaticBody3D" parent="." unique_id=1136048661 instance=ExtResource("6_xj7if")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5, 5, -4)
+metadata/prop_id = "blackjack_table"
+
+[node name="TableGlass_-4" type="StaticBody3D" parent="." unique_id=1609363877 instance=ExtResource("7_r1cud")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.2, 5.92, -3.5)
+metadata/prop_id = "martini-glass"
+
+[node name="TripleTable_6" type="StaticBody3D" parent="." unique_id=1494570672 instance=ExtResource("6_xj7if")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5, 5, 6)
+metadata/prop_id = "blackjack_table"
+
+[node name="TableGlass_6" type="StaticBody3D" parent="." unique_id=955948692 instance=ExtResource("7_r1cud")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.2, 5.92, 6.5)
+metadata/prop_id = "martini-glass"
+
+[node name="VelvetBooth" type="StaticBody3D" parent="." unique_id=792193592 instance=ExtResource("8_ah0px")]
+transform = Transform3D(-4.8082526e-08, 0, 1.1, 0, 1.1, 0, -1.1, 0, -4.8082526e-08, 17.4, 5, -8)
+metadata/prop_id = "casino-two-seat-couch"
+
+[node name="WindowChair" type="StaticBody3D" parent="." unique_id=678280421 instance=ExtResource("9_0ho0a")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 17.5, 5, 2.8)
+metadata/prop_id = "casino-lounge-chair"
+
+[node name="CocktailTable" type="StaticBody3D" parent="." unique_id=1782150941 instance=ExtResource("10_q5o5t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.3, 5, -8)
+metadata/prop_id = "coffee_table"
+
+[node name="LuckyCoupe" type="StaticBody3D" parent="." unique_id=1276204214 instance=ExtResource("7_r1cud")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.3, 5.46, -8)
+metadata/prop_id = "martini-glass"
+
+[node name="Sconce_-6" type="Node3D" parent="." unique_id=1703008921 instance=ExtResource("11_rnn6t")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.8, 7.2, -6)
+
+[node name="AmberPool_-6" type="OmniLight3D" parent="." unique_id=1645545021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 7.3, -6)
+light_color = Color(1, 0.83137256, 0.627451, 1)
+light_energy = 0.8
+omni_range = 7.0
+
+[node name="Sconce_6" type="Node3D" parent="." unique_id=203843023 instance=ExtResource("11_rnn6t")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.8, 7.2, 6)
+
+[node name="AmberPool_6" type="OmniLight3D" parent="." unique_id=1912150668]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 7.3, 6)
+light_color = Color(1, 0.83137256, 0.627451, 1)
+light_energy = 0.8
+omni_range = 7.0
+
+[node name="ClubSign" type="Label3D" parent="." unique_id=50298329]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.75, 7.5, 0)
+pixel_size = 0.004
+modulate = Color(0.8745098, 0.74509805, 0.4862745, 1)
+text = "THE MIRROR CLUB
+What happens upstairs stays upstairs."
+font_size = 34

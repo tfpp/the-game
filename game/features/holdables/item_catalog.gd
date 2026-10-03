@@ -5,6 +5,9 @@ extends RefCounted
 ## feature needs to change.
 
 const DEFINITIONS: Array[ItemDefinition] = [
+	preload("res://features/vip_lounge/items/luck_cocktail.tres"),
+	preload("res://features/vip_lounge/items/golden_hour.tres"),
+	preload("res://features/vip_lounge/items/velvet_reserve.tres"),
 	preload("res://features/holdables/items/wendys_burger.tres"),
 	preload("res://features/holdables/items/cigarette.tres"),
 	preload("res://features/holdables/items/beer.tres"),
@@ -35,6 +38,9 @@ const AMMO_PACKS := {
 
 ## Remaining uses travel through the existing inventory/pickup ID transport.
 const CONSUMABLE_STAGES := {
+	"luck_cocktail": ["luck_cocktail"],
+	"golden_hour": ["golden_hour"],
+	"velvet_reserve": ["velvet_reserve"],
 	"beer": ["beer:1", "beer:2", "beer"],
 	"cigarette": ["cigarette:1", "cigarette:2", "cigarette"],
 }

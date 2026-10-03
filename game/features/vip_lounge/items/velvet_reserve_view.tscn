@@ -1,0 +1,59 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/cocktail_glass.res" id="glass"]
+[ext_resource type="Material" path="res://features/casino_props/materials/cocktail_glass.tres" id="finish"]
+
+[sub_resource type="StandardMaterial3D" id="drink"]
+albedo_color = Color(0.42, 0.07, 0.18, 1)
+roughness = 0.55
+
+[sub_resource type="CylinderMesh" id="liquid"]
+top_radius = 0.060
+bottom_radius = 0.060
+height = 0.004
+radial_segments = 12
+rings = 1
+material = SubResource("drink")
+
+[sub_resource type="StandardMaterial3D" id="garnish_finish"]
+albedo_color = Color(0.38, 0.43, 0.13, 1)
+roughness = 0.8
+
+[sub_resource type="SphereMesh" id="garnish"]
+radius = 0.009
+height = 0.015
+radial_segments = 8
+rings = 4
+material = SubResource("garnish_finish")
+
+[sub_resource type="StandardMaterial3D" id="pick_finish"]
+albedo_color = Color(0.66, 0.48, 0.25, 1)
+roughness = 0.9
+[sub_resource type="CylinderMesh" id="pick"]
+top_radius = 0.0015
+bottom_radius = 0.0015
+height = 0.13
+radial_segments = 6
+rings = 1
+material = SubResource("pick_finish")
+
+[node name="VelvetReserve" type="Node3D"]
+[node name="Glass" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.1, 0)
+scale = Vector3(1.4, 1.8, 1.4)
+mesh = ExtResource("glass")
+material_override = ExtResource("finish")
+[node name="Drink" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.12359999999999999, 0)
+mesh = SubResource("liquid")
+[node name="Garnish" type="MeshInstance3D" parent="."]
+position = Vector3(0.015, 0.1316, 0)
+rotation_degrees = Vector3(75, 0, 0)
+mesh = SubResource("garnish")
+[node name="CocktailPick" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.1336, 0)
+rotation_degrees = Vector3(0, 0, 90)
+mesh = SubResource("pick")
+[node name="Grip" type="Marker3D" parent="."]
+[node name="Mouth" type="Marker3D" parent="."]
+position = Vector3(0, 0.1286, 0.04)

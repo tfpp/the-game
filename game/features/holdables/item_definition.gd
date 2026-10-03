@@ -50,6 +50,9 @@ const RARITY_COLORS: Array[Color] = [
 @export var spread_degrees := 0.0
 ## FOOD only: health restored when eaten, capped at features/combat's maximum.
 @export var heal_amount := 0.0
+## Optional feature group implementing can_consume(peer, id) and consume(peer, id).
+## Resolved by the authoritative consumption component, never by a client payload.
+@export var consumption_group: StringName = &""
 
 
 func rarity_name() -> String:

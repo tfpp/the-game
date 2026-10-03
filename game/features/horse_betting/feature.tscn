@@ -14,7 +14,7 @@
 size = Vector3(0.8, 0.712, 0.6648)
 
 [sub_resource type="QuadMesh" id="ScreenMesh"]
-size = Vector2(5.2, 2.8)
+size = Vector2(5.2, 2.4)
 
 [node name="HorseBetting" type="StaticBody3D"]
 position = Vector3(23.3, 0, -5)
@@ -36,7 +36,7 @@ position = Vector3(0, 0, 0.95)
 
 [node name="Monitor" parent="." instance=ExtResource("3")]
 position = Vector3(0, 1.4, 0)
-scale = Vector3(12, 8, 1)
+scale = Vector3(12, 6, 1)
 
 [node name="NetworkedEntity" type="Node" parent="."]
 script = ExtResource("2")
@@ -50,11 +50,11 @@ replication_interval = 0.1
 script = ExtResource("4")
 
 [node name="Screen" type="MeshInstance3D" parent="Display"]
-position = Vector3(0, 3.18, 0.224)
+position = Vector3(0, 3.08, 0.224)
 mesh = SubResource("ScreenMesh")
 
 [node name="Heading" type="Label3D" parent="Display"]
-position = Vector3(0, 5.35, 0.25)
+position = Vector3(0, 4.65, 0.25)
 text = "CROWN TURF CLUB\nUse terminal below — $1 / $5 / $10"
 font_size = 48
 pixel_size = 0.005

@@ -36,8 +36,20 @@ func _may_consume(peer: int, payload: Dictionary) -> bool:
 		and peer == hand.peer_id
 		and hand._player() != null
 		and not active()
+		and not hand.inventory().loading
 		and ItemCatalog.uses_remaining(hand.net_item_id) > 0
+		and _effect_allowed(hand.net_item_id)
 	)
+
+
+func _effect_allowed(id: String) -> bool:
+	var definition := ItemCatalog.find(id)
+	if definition == null:
+		return false
+	if definition.consumption_group.is_empty():
+		return true
+	var handler := get_tree().get_first_node_in_group(definition.consumption_group)
+	return handler != null and bool(handler.call("can_consume", hand.peer_id, id))
 
 
 func _consume(_peer: int, _payload: Dictionary) -> bool:
@@ -79,7 +91,9 @@ func pose(player: Player, resting: Transform3D) -> Transform3D:
 		mouth = avatar.mouth_transform()
 	else:
 		mouth.origin += Vector3.UP * 0.35
-	var tilt := Basis(Vector3.RIGHT, deg_to_rad(70.0)) if view_id() == "beer" else Basis.IDENTITY
+	var tilt := (
+		Basis(Vector3.RIGHT, deg_to_rad(70.0)) if view_id() != "cigarette" else Basis.IDENTITY
+	)
 	var basis := mouth.basis.orthonormalized() * tilt
 	var view := hand.held_view()
 	if view == null:
@@ -92,7 +106,17 @@ func pose(player: Player, resting: Transform3D) -> Transform3D:
 func _finish(discard := false) -> void:
 	if multiplayer.is_server() and active():
 		if hand.net_item_id == state["item"]:
-			hand.net_item_id = "" if discard else ItemCatalog.after_use(hand.net_item_id)
+			var id := hand.net_item_id
+			var definition := ItemCatalog.find(id)
+			if discard:
+				hand.net_item_id = ""
+			elif _effect_allowed(id):
+				var applied := true
+				if not definition.consumption_group.is_empty():
+					var handler := get_tree().get_first_node_in_group(definition.consumption_group)
+					applied = bool(handler.call("consume", hand.peer_id, id))
+				if applied:
+					hand.net_item_id = ItemCatalog.after_use(id)
 		state = {}
 
 
