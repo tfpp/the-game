@@ -1,0 +1,8 @@
+{
+  "title": "Room harmony foundations",
+  "summary": "Rooms can now be scored on demand for future Feng Shui effects.",
+  "notes": [
+    "Add cached Feng Shui room scoring without changing current luck or health.",
+    "Evaluate room harmony only when requested, avoiding ongoing computation."
+  ]
+}
