@@ -142,6 +142,9 @@ func _capture(player: Player) -> void:
 	elif view == "east":
 		camera.global_position = Vector3(19.6, 2.1, 6.5)
 		camera.look_at(Vector3(19.6, 1.1, 8))
+	elif view == "new":
+		camera.global_position = Vector3(20, 2.1, 12.5)
+		camera.look_at(Vector3(20, 1.2, 14))
 	elif view == "first":
 		player.yaw = 0
 		camera.queue_free()

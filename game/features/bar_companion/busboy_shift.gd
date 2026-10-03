@@ -7,12 +7,20 @@ const DIRTY_LIMIT := 8
 const ORDER_DEADLINE := 35.0
 const GLASS := preload("res://features/hotel_props/props/drinking_glass.tscn")
 const POINT := preload("res://features/bar_companion/busboy_point.gd")
+const TABLE_CARD := preload("res://features/bar_companion/table_card.tscn")
+const COCKTAIL_TABLE := preload(
+	"res://features/casino_props/props/bundle/walnut-pedestal-cocktail-table.tscn"
+)
 # Tops: card table -0.78 + 0.94/2; cocktail table 0 + 1.045.
 const TABLES: Array[Vector3] = [
 	Vector3(-5.5, -0.31, -5.9),
 	Vector3(-5.5, -0.31, -0.9),
 	Vector3(-5.5, -0.31, 3.7),
-	Vector3(19.6, 1.045, 8)
+	Vector3(19.6, 1.045, 8),
+	Vector3(-20.5, 1.045, 15.5),
+	Vector3(-20, 1.045, -15),
+	Vector3(20, 1.045, -8),
+	Vector3(20, 1.045, 14)
 ]
 const PATRONS: Array[Vector3] = [
 	Vector3(-3.838299, -0.25, -5.103984),
@@ -49,6 +57,19 @@ func _ready() -> void:
 	_connect_combat.call_deferred()
 	_add_point("Bar", 0, Vector3(-9.9, -0.27, -9.6))
 	for table: int in TABLES.size():
+		if table >= 5:
+			var furniture := COCKTAIL_TABLE.instantiate() as Node3D
+			furniture.name = "Table%d" % (table + 1)
+			furniture.position = TABLES[table] - Vector3.UP * 1.045
+			add_child(furniture)
+		var card := TABLE_CARD.instantiate() as Node3D
+		card.name = "TableCard%d" % (table + 1)
+		card.set("number", table + 1)
+		card.position = (
+			TABLES[table] + (Vector3(-1.4, 0, -0.13) if table < 3 else Vector3(0, 0, 0.20))
+		)
+		card.rotation.y = -PI * 0.5 if table < 3 else 0.0
+		add_child(card)
 		for slot: int in 3:
 			_add_point(
 				"Glass%d" % (table * 3 + slot),
@@ -58,7 +79,7 @@ func _ready() -> void:
 					+ Vector3(
 						(slot - 1) * 0.13 - (1.4 if table < 3 else 0.0),
 						0,
-						-0.16 if table == 3 else 0.12
+						-0.16 if table >= 3 else 0.12
 					)
 				),
 				table * 3 + slot
@@ -127,7 +148,18 @@ func eligible(player: Player, kind: int, index: int) -> bool:
 	if peer != owner:
 		return false
 	if kind == 0:
-		return mode in ["active", "prize"] and not _pending
+		if mode == "prize":
+			return not _pending
+		return (
+			mode == "active"
+			and (
+				int(state.get("cargo", -1)) == -2
+				or (
+					int(state.get("cargo", -1)) == -1
+					and not (state.get("orders", {}) as Dictionary).is_empty()
+				)
+			)
+		)
 	if mode != "active":
 		return false
 	var held := int(state.get("cargo", -1))
@@ -176,6 +208,8 @@ func _start(player: Player) -> void:
 	_order_in = 30.0
 	phase = "active"
 	_prize_id = Crypto.new().generate_random_bytes(32).hex_encode()
+	# Start with visible, nearby work instead of twelve seconds of silent no-op Use.
+	dirty.append(0)
 
 
 func _process(delta: float) -> void:
