@@ -90,13 +90,17 @@ static func format_line(sender_name: String, text: String) -> String:
 	)
 
 
-## Slash commands and the exact !guns alias stay out of public chat/Discord.
+## Slash commands, !warp and the exact !guns alias stay out of public chat/Discord.
 static func is_command(text: String) -> bool:
-	return text.begins_with("/") or text.to_lower() == "!guns"
+	var word := text.to_lower().split(" ")[0]
+	return text.begins_with("/") or text.to_lower() == "!guns" or word == "!warp"
 
 
 ## Lowercase command word, e.g. "/Suicide now" -> "suicide", "!GUNS" -> "guns".
 static func parse_command(text: String) -> String:
+	var words := text.substr(1).to_lower().split(" ", false)
+	if not words.is_empty() and words[0] == "warp":
+		return " ".join(words)
 	return text.substr(1).split(" ")[0].to_lower()
 
 
@@ -143,7 +147,7 @@ func receive_notice(text: String) -> void:
 ## re-validates the real sender itself (the server here only trusts its own peer id).
 @rpc("any_peer", "call_local", "reliable")
 func request_chat_command(command: String) -> void:
-	if not multiplayer.is_server() or command.is_empty():
+	if not multiplayer.is_server() or command.is_empty() or command.length() > MAX_MESSAGE_LENGTH:
 		return
 	var sender_id := multiplayer.get_remote_sender_id()
 	var peer_id := sender_id if sender_id != 0 else multiplayer.get_unique_id()

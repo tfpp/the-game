@@ -23,8 +23,7 @@ destination = NodePath("../Room/Arrival")
 door_label = "Unmarked service door"
 
 [node name="Sign" parent="Entrance" index="2"]
-text = "STAFF ONLY"
-letter_height = 0.1
+visible = false
 
 [node name="Room" type="Node3D" parent="."]
 position = Vector3(80, 0, -600)

@@ -1,5 +1,8 @@
 # Slum excursions
 
+Main-casino overhead door signs were removed in issue #487. Door placement,
+Use prompts, GPS routing and remote return signs remain unchanged.
+
 The Golden Crown's south lobby gate starts a shared excursion. The first player
 through chooses a registered slum arrival point; later players join that same
 map until everyone returns, dies or disconnects. A new excursion resets

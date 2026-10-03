@@ -3,7 +3,6 @@ extends GutTest
 
 const Cheats := preload("res://tests/features/dev_access/cheats_fixture.gd")
 const PLAYER := preload("res://core/player/player.tscn")
-const LEGACY := preload("res://features/casino_legacy/feature.tscn")
 const STREET := preload("res://features/street_district/feature.tscn")
 const PROPS := preload("res://features/hotel_props/feature.tscn")
 const GARAGE := preload("res://features/procedural_rooms/feature.tscn")
@@ -12,7 +11,6 @@ const HIDDEN_PLACES: Array[String] = [
 	"Garage Teleporter",
 	"Hotel Prop Room",
 	"Hotel Props Teleport",
-	"Old Golden Crown Casino",
 	"Street Casino Entrance",
 	"Street District",
 	"Street District Teleporter",
@@ -45,28 +43,6 @@ func test_cheats_follow_the_noclip_switch() -> void:
 	assert_false(DevGate.cheats_enabled(get_tree()))
 
 
-func test_legacy_door_is_hidden_and_refuses_travel_until_cheats() -> void:
-	var access := LEGACY.instantiate() as Node3D
-	add_child_autofree(access)
-	var door := access.get_node("Entrance") as GarageDoor
-	var sign := access.get_node("EntranceSign") as Node3D
-	assert_false(door.visible)
-	assert_false(sign.visible)
-	assert_false(door.use_collision, "A hidden door does not block the promenade")
-	var player := _player_at(door.global_position)
-	assert_false(door.can_use(player))
-	door.request_enter()
-	assert_eq(player.net_position, door.global_position, "Server refuses a locked door")
-	Cheats.enable(self)
-	assert_true(door.visible and sign.visible and door.use_collision)
-	assert_true(door.can_use(player))
-	door.request_enter()
-	var arrival := access.get_node("Legacy/Arrival") as Marker3D
-	assert_eq(player.net_position, arrival.global_position)
-	var back := access.get_node("Legacy/ReturnDoor") as GarageDoor
-	assert_false(DevGate.blocks(back), "Return doors are never gated")
-
-
 func test_networked_portals_deny_use_until_cheats() -> void:
 	for scene: PackedScene in [STREET, PROPS, GARAGE]:
 		add_child_autofree(scene.instantiate())
@@ -94,7 +70,7 @@ func test_networked_portals_deny_use_until_cheats() -> void:
 func test_gps_lists_and_routes_dev_places_only_with_cheats() -> void:
 	var gps := GPS.instantiate() as Gps
 	add_child_autofree(gps)
-	for scene: PackedScene in [LEGACY, STREET, PROPS, GARAGE]:
+	for scene: PackedScene in [STREET, PROPS, GARAGE]:
 		add_child_autofree(scene.instantiate())
 	var labels := _labels(gps)
 	for place: String in HIDDEN_PLACES:

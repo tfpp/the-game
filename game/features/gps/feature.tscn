@@ -48,19 +48,19 @@ hint = "Doors to the lounge, hotel, apartments and garage"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -597)
 script = ExtResource("2_dest")
 label = "The Lounge"
-hint = "Through the booth door in the south lobby"
+hint = "Chat: !warp lounge, or !warp dev and use the lounge door"
 
 [node name="WineCellar" type="Marker3D" parent="Destinations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, -599)
 script = ExtResource("2_dest")
 label = "Wine Cellar"
-hint = "Below the lounge"
+hint = "Chat: !warp cellar, or through the lounge"
 
 [node name="HotelWing" type="Marker3D" parent="Destinations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.75, 0, -1396)
 script = ExtResource("2_dest")
 label = "Hotel Wing"
-hint = "Classic hotel and sewer-linked district, off the south lobby"
+hint = "Chat: !warp hotel, or !warp dev and use the hotel door"
 
 [node name="AtriumWing" type="Marker3D" parent="Destinations"]
 position = Vector3(8.75, 0, -1496)

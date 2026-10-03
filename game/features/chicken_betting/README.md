@@ -1,5 +1,8 @@
 # Backroom chicken book
 
+Main-casino overhead door signs were removed in issue #487. Door placement,
+Use prompts, GPS routing and remote return signs remain unchanged.
+
 Find the **STAFF ONLY** service door on the **north-west casino promenade**
 at **(-20, 1.25, -19.65)**; GPS → Places → **Backroom Book** routes through it.
 Use **E / B / Circle / touch USE** to enter, then use the monitor on the crate.

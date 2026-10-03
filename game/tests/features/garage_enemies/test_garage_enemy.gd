@@ -72,15 +72,24 @@ func test_melee_winds_up_then_damages_through_combat() -> void:
 
 
 func test_melee_skips_a_combat_that_is_being_freed() -> void:
+	# This tests service selection at strike time, not the AI's frame timing.
+	# Publish the fixture's new physics transforms before raycasting, then keep
+	# the queued Combat in-tree until the synchronous strike has completed.
+	_enemy.set_physics_process(false)
+	_place(Vector3(0, 0.95, -1.0))
+	await wait_physics_frames(2)
 	var dying := COMBAT.instantiate()
 	add_child(dying)
 	move_child(dying, 0)
 	dying.queue_free()
 	assert_eq(get_tree().get_first_node_in_group(&"combat"), dying, "the dying one comes first")
-	_place(Vector3(0, 0.95, -1.0))
+	assert_eq(_enemy._live_combat(), _combat, "lookup skips the queued Combat")
 	_enemy._sense()
-	_enemy._physics_process(1.0)
+	assert_true(_enemy.net_windup, "the fixture has an in-range visible target")
+	_enemy._strike()
+	assert_false(_enemy.net_windup, "the strike completes")
 	assert_eq(_health(), 100.0 - float(_enemy.profile()["damage"]), "the live Combat is hit")
+	assert_eq(float(dying.call("health_for", 5)), 100.0, "the queued Combat is untouched")
 
 
 func test_player_who_escapes_during_windup_is_not_hit() -> void:

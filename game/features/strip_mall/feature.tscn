@@ -61,7 +61,7 @@ rotation = Vector3(0, -1.5707964, 0)
 position = Vector3(4, 0, 28)
 script = ExtResource("gps")
 label = "Strip Mall"
-hint = "South casino corridor: use the FOOD SHOPS door. Food shops and Żabka."
+hint = "South casino corridor: use the door on the left for food shops and Żabka."
 
 [node name="PokeDestination" type="Marker3D" parent="Room"]
 position = Vector3(28.3, 0, 22.5)
@@ -103,3 +103,6 @@ position = Vector3(1.8, 1.25, 25)
 rotation = Vector3(0, -1.5707964, 0)
 destination = NodePath("../Room/Arrival")
 door_label = "Visit the Strip Mall · food shops"
+
+[node name="Sign" parent="Entrance" index="2"]
+visible = false
