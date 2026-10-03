@@ -1,9 +1,11 @@
 class_name FengShuiRoom
 extends RefCounted
 ## On-demand, deterministic room harmony. Inputs are snapshots in local X/Z metres.
-## No tree access, clock, processing, RPC, player state or automatic geometry scans.
+## No clock, processing, RPC or player state. Optional authored-scene snapshots are lazy.
 
-const MAX_FOOTPRINTS := 128
+const Furniture := preload("res://features/feng_shui/furniture.gd")
+const AuthoredScene := preload("res://features/feng_shui/authored_scene.gd")
+const MAX_FOOTPRINTS := 512
 const ELEMENT_COUNT := 5
 const ENTRY_CLEARANCE := 1.0
 
@@ -14,6 +16,8 @@ var _elements := PackedFloat64Array()
 var _configured := false
 var _dirty := true
 var _cached: Dictionary = {}
+var _scene: PackedScene
+var _scene_floor_height := 0.0
 
 
 ## Elements are wood, fire, earth, metal, water (nonnegative relative weights).
@@ -38,12 +42,46 @@ func set_layout(
 	for footprint: Rect2 in footprints:
 		if not _valid_rect(footprint):
 			return false
+	_scene = null
 	_floor = floor_rect
 	_entrance = entrance
 	_footprints = footprints.duplicate()
 	_elements = elements.duplicate()
 	_configured = true
 	_dirty = true
+	return true
+
+
+## Snapshot an already generated room, without retaining scene nodes.
+## Future furniture only needs metadata/feng_shui_element; geometry supplies its footprint.
+func set_furnished_layout(
+	floor_rect: Rect2, entrance: Vector2, root: Node3D, floor_height: float = 0.0
+) -> bool:
+	if root == null or not is_finite(floor_height):
+		return false
+	var snapshot := Furniture.snapshot(root, floor_rect, floor_height)
+	if not snapshot["valid"]:
+		return false
+	var footprints: Array[Rect2] = []
+	footprints.assign(snapshot["footprints"])
+	return set_layout(floor_rect, entrance, footprints, snapshot["elements"])
+
+
+## Static authored interiors, including unloaded StreamedRoom.room_scene.
+## No geometry scan until the first evaluation; never enter the tree or run scripts.
+## Runtime-generated furniture must instead use set_furnished_layout after generation.
+func set_scene_layout(
+	floor_rect: Rect2, entrance: Vector2, scene: PackedScene, floor_height: float = 0.0
+) -> bool:
+	if (
+		scene == null
+		or not is_finite(floor_height)
+		or not scene.can_instantiate()
+		or not set_layout(floor_rect, entrance, [], PackedFloat64Array([0, 0, 0, 0, 0]))
+	):
+		return false
+	_scene = scene.duplicate() as PackedScene
+	_scene_floor_height = floor_height
 	return true
 
 
@@ -65,6 +103,7 @@ func score() -> float:
 ## Discard session/layout data. The next query stays invalid until set_layout().
 func clear() -> void:
 	_configured = false
+	_scene = null
 	_dirty = true
 	_cached.clear()
 	_footprints.clear()
@@ -72,6 +111,14 @@ func clear() -> void:
 
 
 func _compute_evaluation() -> Dictionary:
+	if _scene != null:
+		var instance := AuthoredScene.geometry(_scene)
+		var accepted := set_furnished_layout(
+			_floor, _entrance, instance as Node3D, _scene_floor_height
+		)
+		instance.free()
+		if not accepted:
+			return {"valid": false, "score": 0.0, "components": {}}
 	var occupied: Array[Rect2] = []
 	var entry := 1.0
 	for footprint: Rect2 in _footprints:
