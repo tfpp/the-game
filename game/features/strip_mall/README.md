@@ -26,6 +26,10 @@ Tuong Lu Kim wears a white shirt, orange branded vest, red bow tie, blue pants,
 side hair/comb-over and a single tooth; Junichi Takayama wears a white gi with
 crossed lapels, a black sash, dark pants and black hair. This is a retro 3D
 interpretation of the South Park costumes, not an imported cartoon model.
+`rival_decor.tscn` marks CitySushi as an editable instance so export scene
+repacking preserves its CITY SUSHI sign, Junichi costume and opposite-side owner
+position. Keep this declaration when changing the shared City Wok stand prefab.
+`test_rival_export.gd` checks repacked instances, not just source scene loading.
 Appearance reference: https://southpark.wiki.gg/wiki/Tuong_Lu_Kim and
 https://southpark.wiki.gg/wiki/Junichi_Takiyama (display name follows the request).
 

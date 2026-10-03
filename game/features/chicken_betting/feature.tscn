@@ -1,0 +1,81 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
+[ext_resource type="PackedScene" path="res://features/strip_mall/door.tscn" id="door"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
+[ext_resource type="Script" path="res://features/chicken_betting/book.gd" id="book"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="Script" path="res://features/chicken_betting/presentation.gd" id="view"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/security_monitor.tscn" id="monitor"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/wooden_crate.tscn" id="crate"]
+
+[sub_resource type="BoxShape3D" id="shape"]
+size = Vector3(0.8, 0.7, 0.7)
+
+[node name="ChickenBetting" type="Node3D"]
+
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(-20, 1, -17.8)
+
+[node name="Entrance" parent="." instance=ExtResource("door")]
+position = Vector3(-20, 1.25, -19.65)
+destination = NodePath("../Room/Arrival")
+door_label = "Unmarked service door"
+
+[node name="Sign" parent="Entrance" index="2"]
+text = "STAFF ONLY"
+letter_height = 0.1
+
+[node name="Room" type="Node3D" parent="."]
+position = Vector3(80, 0, -600)
+script = ExtResource("room")
+room_scene = "res://features/chicken_betting/interior.tscn"
+bounds = AABB(-6, -1, -5, 12, 7, 10)
+
+[node name="Arrival" type="Marker3D" parent="Room"]
+position = Vector3(0, 1, 3)
+
+[node name="Exit" parent="Room" instance=ExtResource("door")]
+position = Vector3(0, 1.25, 4.7)
+rotation = Vector3(0, 3.1415927, 0)
+destination = NodePath("../../CasinoArrival")
+door_label = "Return to the casino (refund unfinished wager)"
+
+[node name="Sign" parent="Room/Exit" index="2"]
+text = "CASINO"
+
+[node name="Destination" type="Marker3D" parent="Room"]
+position = Vector3(-3, 0, 3)
+script = ExtResource("gps")
+label = "Backroom Book"
+hint = "An unmarked service door on the north-west casino promenade."
+
+[node name="Book" type="StaticBody3D" parent="Room"]
+position = Vector3(-3, 0, 2)
+script = ExtResource("book")
+
+[node name="NetworkedEntity" type="Node" parent="Room/Book"]
+script = ExtResource("net")
+interaction_range = 3.0
+interaction_offset = Vector3(0, 1, 0)
+replicated_properties = Array[NodePath]([NodePath(".:state")])
+
+[node name="Collider" type="CollisionShape3D" parent="Room/Book"]
+position = Vector3(0, 1.15, 0)
+shape = SubResource("shape")
+
+[node name="Crate" parent="Room/Book" instance=ExtResource("crate")]
+
+[node name="Terminal" parent="Room/Book" instance=ExtResource("monitor")]
+position = Vector3(0, 0.7975, 0)
+scale = Vector3(1.6, 1.6, 1.6)
+
+[node name="Sign" type="Label3D" parent="Room/Book"]
+position = Vector3(0, 1.8, 0)
+text = "BACKROOM BOOK\nE / USE — stats & wagers"
+font_size = 32
+pixel_size = 0.003
+
+[node name="Presentation" type="Node3D" parent="Room/Book"]
+position = Vector3(3, 0, -2)
+script = ExtResource("view")

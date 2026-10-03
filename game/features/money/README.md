@@ -59,6 +59,21 @@ is needed. Callers must validate eligibility, keep their ID through retries and
 block pending/duplicate claims. Temporary wallets still rely on the owning feature
 to prevent replay; the API additionally records idempotent transactions.
 
+## Captured-account wager adjustments
+
+`PlayerMoney.adjust_account(peer, account, id, delta, reason)` is server-only:
+negative cents use the existing signed `charge` transaction and positive cents
+use `sell`. It captures the account independently of the current peer mapping,
+so the chicken book can refund a wager after disconnect without crediting a
+replacement account's HUD. It shares the existing wallet busy lock and replicated
+balance; only a matching current account receives a balance update/gain notice.
+Temporary wallets retain immutable peer/delta receipts for idempotent retries,
+without overwriting income or spending since the first operation. Session reset
+clears those receipts. The caller must validate eligibility, preserve unique
+64-character operation IDs and exact amounts through retries, and guard temporary
+player identity/lifetime. Existing wallet methods and API contracts are unchanged.
+See `features/chicken_betting/README.md` for its durable ticket-intent/refund lifecycle.
+
 ## Atomic cosmetic transactions
 
 `PlayerMoney.cosmetics(peer, id, revision, document, delta, load = false)` is a

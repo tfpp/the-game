@@ -18,3 +18,5 @@ position = Vector3(-2, 0, 0)
 character = 1
 [node name="Tea" parent="CitySushi" instance=ExtResource("cup")]
 position = Vector3(0.4, 1.08, 0.1)
+
+[editable path="CitySushi"]

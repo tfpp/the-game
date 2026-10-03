@@ -1,7 +1,12 @@
 # City restaurant review
 
 Native Godot 4.7.2 Compatibility / Mesa llvmpipe captures from the real main
-scene, at 1280×720. These are rendered assets, not concept art.
+scene, at 1280×720. These are rendered assets, not concept art. Source renders alone did not catch
+export repacking discarding City Sushi's nested overrides: the Sushi instance now
+has an explicit editable declaration. The regression test repacks the scene and
+checks its sign, Junichi costume and owner placement; a Web export pack was also
+loaded headlessly to confirm CITY SUSHI, character=1 and position=(-2,0,0).
+These captures still describe native source rendering, not browser rendering.
 
 - `rival-plaza.png`: opposing counters, broad clear aisle, existing Żabka bay.
 - `city-wok.png`: orange vest, red bow, blue pants, balding hair and shout pose.
