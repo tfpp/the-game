@@ -1,0 +1,5 @@
+{
+  "title": "Slum death report",
+  "summary": "Dying in the slums now tells you which valuables you dropped and that your weapons were kept.",
+  "notes": ["Show a short message after a slum death respawn listing dropped valuables and confirming weapons were kept."]
+}

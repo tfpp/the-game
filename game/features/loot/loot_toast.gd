@@ -25,12 +25,14 @@ static func pickup_message(id: String) -> String:
 
 
 ## Shows `text` for this client only, reusing one toast per scene tree.
-static func show_text(tree: SceneTree, text: String, color := Color.WHITE) -> LootToast:
+static func show_text(
+	tree: SceneTree, text: String, color := Color.WHITE, duration := DURATION_S
+) -> LootToast:
 	var toast := tree.get_first_node_in_group(GROUP) as LootToast
 	if toast == null:
 		toast = LootToast.new()
 		tree.root.add_child(toast)
-	toast.display(text, color)
+	toast.display(text, color, duration)
 	return toast
 
 
@@ -49,12 +51,12 @@ func _init() -> void:
 	add_child(_label)
 
 
-func display(text: String, color := Color.WHITE) -> void:
+func display(text: String, color := Color.WHITE, duration := DURATION_S) -> void:
 	_label.text = text
 	_label.add_theme_color_override(&"font_color", color)
 	_label.modulate.a = 1.0
 	_label.visible = true
-	_remaining = DURATION_S
+	_remaining = duration
 
 
 func shown_text() -> String:
