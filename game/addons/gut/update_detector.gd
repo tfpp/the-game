@@ -203,16 +203,10 @@ func _is_branch_version(v : String):
 # Public
 #------------
 func fetch_remote_file():
-	var headers : PackedStringArray = [
-		"Accept: application/vnd.github.raw",
-		"X-GitHub-Api-Version: 2022-11-28"
-	]
-	var error = _http_request.request(REMOTE_FILE_URL, headers)
-	if error != OK:
-		var errtxt = str("[GUT] An error occurred requesting version data:  ", error, ".")
-		remote_data.data_issues.append(errtxt)
-		push_error(errtxt)
-	return error
+	# Project policy: version checks stay offline to avoid GitHub API rate limits.
+	# Defer completion so check_for_update_with_fetch() can connect its await first.
+	download_completed.emit.call_deferred()
+	return OK
 
 
 func get_gut_version_for_godot_version(godot_v=null):
