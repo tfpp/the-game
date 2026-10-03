@@ -13,6 +13,45 @@ prices or orders are added. Alternatively, use the operations garage van and
 choose **5 · Strip Mall** for the same arrival and existing driving transition.
 The garage computer automatically offers the usual arrival survey for this route.
 
+## City Wok and City Sushi
+
+Walk south past the dining booths to z=43, or select **City Wok / City Sushi**
+in GPS. The counters at (9,0,43) and (21,0,43) face each other across a
+10.7 m clear gap. Their owners stand beside them at (9,0,41) and (21,0,41).
+These are ambient restaurant displays, not purchase menus: no Use action, prices,
+healing, inventory or quests were invented. All devices can just walk up and watch.
+
+Both reuse the existing PatronModel / BlockPlayerModel connected human rig:
+Tuong Lu Kim wears a white shirt, orange branded vest, red bow tie, blue pants,
+side hair/comb-over and a single tooth; Junichi Takayama wears a white gi with
+crossed lapels, a black sash, dark pants and black hair. This is a retro 3D
+interpretation of the South Park costumes, not an imported cartoon model.
+Appearance reference: https://southpark.wiki.gg/wiki/Tuong_Lu_Kim and
+https://southpark.wiki.gg/wiki/Junichi_Takiyama (display name follows the request).
+
+The scene reuses Wendy's counter dimensions/meshes, the existing 128px prop grain,
+casino materials, poke display bowl and coffee cup; no new textures or lights.
+The native scenes/scripts are the editable sources. Each counter adds seven
+BoxMesh furniture pieces (84 triangles), plus two existing avatar rigs and small
+costume accessories. Only streamed, camera-near rigs pose at 10 Hz.
+
+`Room/Rivalry` and its NetworkedEntity remain loaded at stable paths outside
+Content. Only the server advances six alternating four-second turns followed by
+a ten-second rest; bubbles last 3.2 seconds, with a raised-arm gesture.
+Turn/countdown snapshots allow late joiners and reloaded bodies to see the current
+argument. No client-callable action exists. The authority-only transient yell event
+plays only for current visitors with the room loaded; no sounds replay on arrival.
+Two original one-second harmonic, wordless arcade yells use GameAudio's existing
+bounded positional pool/bus. Bubbles supply the original restaurant-rivalry lines:
+there is no sampled TV dialogue, voice imitation, accent joke or ethnic insult.
+Rebuild audio with `godot --headless --path game -s res://features/strip_mall/tools/build_yells.gd`.
+
+State is session memory, resetting on network mode changes/server restart.
+Disconnects, respawns and simultaneous visitors do not alter it; offline peer 1
+runs the same server scheduler. Tests cover authority, turns, snapshots,
+streaming, costumes, floor and capsule routes; the existing real-peer probe also
+checks late rivalry snapshots and client rejection without changing frog coverage.
+
 ## Ownership and streaming
 
 This feature owns a distinct shared `StreamedRoom`, its static tiled
@@ -60,8 +99,8 @@ The feature-owned MeshLibrary uses the casino's 1 × .25 × 1 m grid convention
 simple layer-1 collision. Tile IDs:
 0 paving, 1 asphalt, 2 brick wall, 3 roof, 4 canvas awning, 5 opaque shop window,
 6 canopy post, 7 planted trough, 8 parking stripe, 9 site fence.
-Five shadowless lights load only with the room. No per-frame mall code or new
-shadow lights are added.
+Five shadowless lights load only with the room. Only the small ambient rivalry
+scheduler and nearby cosmetic rigs add ongoing work; no new shadow lights are added.
 
 Rebuild approved meshes and saved cells from the repository root:
 

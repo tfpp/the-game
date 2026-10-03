@@ -38,4 +38,6 @@ wait_for "$tmp/late.log" FROG_CLIENT_DEAD
 wait_for "$tmp/server.log" FROG_SERVER_RESPAWNED
 wait_for "$tmp/visitor.log" FROG_CLIENT_RESPAWNED
 wait_for "$tmp/late.log" FROG_CLIENT_RESPAWNED
-echo "PASS: Żabka frog profiles, server authority, death, late join and respawn"
+wait_for "$tmp/visitor.log" RIVALRY_CLIENT_SYNCED
+wait_for "$tmp/late.log" RIVALRY_CLIENT_SYNCED
+echo "PASS: Żabka frog life and City restaurant authority/late-join snapshots"
