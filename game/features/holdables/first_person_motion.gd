@@ -12,6 +12,8 @@ const MOMENTUM_TRAVEL := Vector3(0.075, 0.065, 0.055)
 const MOMENTUM_LIMIT := Vector3(0.11, 0.13, 0.09)
 const VELOCITY_IMPULSE := Vector3(0.025, 0.045, 0.025)
 
+var camera_motion := Transform3D.IDENTITY
+
 var _ready := false
 var _angles := Vector2.ZERO
 var _lag := Vector2.ZERO
@@ -21,7 +23,6 @@ var _momentum := Vector3.ZERO
 var _momentum_velocity := Vector3.ZERO
 var _previous_velocity := Vector3.ZERO
 var _phase := 0.0
-var camera_motion := Transform3D.IDENTITY
 
 
 func reset() -> void:
@@ -43,9 +44,10 @@ func advance(angles: Vector2, velocity: Vector3, delta: float) -> Transform3D:
 		_ready = true
 	if delta <= 0.0:
 		return Transform3D.IDENTITY
-	var look := Vector2(
-		angle_difference(_angles.x, angles.x), angle_difference(_angles.y, angles.y)
-	) / delta
+	var look := (
+		Vector2(angle_difference(_angles.x, angles.x), angle_difference(_angles.y, angles.y))
+		/ delta
+	)
 	_angles = angles
 	look = look.limit_length(MAX_LOOK_SPEED)
 	var weight := 1.0 - exp(-RESPONSE * delta)
@@ -67,9 +69,7 @@ func advance(angles: Vector2, velocity: Vector3, delta: float) -> Transform3D:
 	_previous_velocity = velocity
 	_advance_momentum(target, delta)
 	var lean := Vector3(
-		_movement.z * 0.025 + _momentum.y * 0.4,
-		-_movement.x * 0.012,
-		_movement.x * 0.035
+		_movement.z * 0.025 + _momentum.y * 0.4, -_movement.x * 0.012, _movement.x * 0.035
 	)
 	return Transform3D(
 		Basis.from_euler(Vector3(-_lag.y, -_lag.x, -_lag.x * 0.4) * 0.012 + lean),

@@ -96,7 +96,9 @@ func _process(delta: float) -> void:
 		if has_hand_grips():
 			var hand := Hand.for_peer(get_tree(), peer_id)
 			var skin := hand.skin_tone_index() if hand != null else 0
-			_arms.pose_for_player(player, support_grip(), PlayerSkin.TONES[skin], _motion.camera_motion)
+			_arms.pose_for_player(
+				player, support_grip(), PlayerSkin.TONES[skin], _motion.camera_motion
+			)
 	if _flash_timer > 0.0:
 		_flash_timer -= delta
 		if _flash_timer <= 0.0:

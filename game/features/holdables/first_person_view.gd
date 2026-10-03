@@ -72,9 +72,7 @@ func _advance_swap(delta: float) -> void:
 		var request := _swap_request
 		_swap_request = Callable()
 		request.call()
-	var raise := smoothstep(
-		SWAP_LOWER_SECONDS, SWAP_LOWER_SECONDS + SWAP_RAISE_SECONDS, _swap_time
-	)
+	var raise := smoothstep(SWAP_LOWER_SECONDS, SWAP_LOWER_SECONDS + SWAP_RAISE_SECONDS, _swap_time)
 	_swap_weight = 1.0 - raise
 
 
