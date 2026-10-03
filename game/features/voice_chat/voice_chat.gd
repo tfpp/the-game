@@ -30,6 +30,7 @@ var _emitters: Node3D
 var _capture: AudioEffectCapture
 var _mic_player: AudioStreamPlayer
 var _talking := false
+var _relay_times: Dictionary = {}
 var _voices: Dictionary = {}  ## peer_id (int) -> _VoicePeer
 
 
@@ -39,6 +40,8 @@ func _ready() -> void:
 	_emitters.name = "Emitters"
 	add_child(_emitters)
 	_build_indicator()
+	multiplayer.peer_disconnected.connect(_forget_peer)
+	Network.mode_changed.connect(_reset_session)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -89,14 +92,20 @@ func request_voice_chunk(chunk: PackedByteArray) -> void:
 		return
 	var sender_id := multiplayer.get_remote_sender_id()
 	var peer_id := sender_id if sender_id != 0 else multiplayer.get_unique_id()
-	receive_voice_chunk.rpc(peer_id, chunk)
+	if not _accept_chunk(peer_id, chunk, Time.get_ticks_msec()):
+		return
+	for recipient: int in multiplayer.get_peers():
+		if recipient != peer_id:
+			receive_voice_chunk.rpc_id(recipient, peer_id, chunk)
+	if DisplayServer.get_name() != "headless":
+		receive_voice_chunk(peer_id, chunk)
 
 
-## Server -> everyone: play back a chunk from `sender_peer_id`. The sender gets its own
-## chunk too (call_local) and just ignores it to avoid hearing itself.
+## Server -> listeners: play back a chunk from `sender_peer_id` without echoing it
+## over the network to its sender or allocating audio on the dedicated server.
 @rpc("authority", "call_local", "unreliable_ordered")
 func receive_voice_chunk(sender_peer_id: int, chunk: PackedByteArray) -> void:
-	if sender_peer_id == multiplayer.get_unique_id():
+	if sender_peer_id == multiplayer.get_unique_id() or chunk.size() != CHUNK_FRAMES * 2:
 		return
 	_play_chunk(sender_peer_id, chunk)
 
@@ -134,9 +143,38 @@ func _stop_talking() -> void:
 
 
 func _pump_capture() -> void:
-	while _capture.get_frames_available() >= CHUNK_FRAMES:
-		var frames := _capture.get_buffer(CHUNK_FRAMES)
-		request_voice_chunk.rpc_id(1, encode_pcm16(frames))
+	var rate := float(AudioServer.get_mix_rate())
+	var source_count := int(round(rate * CHUNK_DURATION_S))
+	var available := _capture.get_frames_available()
+	if available < source_count:
+		return
+	# Drop stale audio rather than sending a catch-up burst after a slow frame.
+	if available >= source_count * 2:
+		_capture.get_buffer(available - source_count)
+	var frames := resample_chunk(_capture.get_buffer(source_count), rate)
+	request_voice_chunk.rpc_id(1, encode_pcm16(frames))
+
+
+static func resample_chunk(source: PackedVector2Array, rate: float) -> PackedVector2Array:
+	var frames := PackedVector2Array()
+	frames.resize(CHUNK_FRAMES)
+	for i: int in CHUNK_FRAMES:
+		var position := i * rate / SAMPLE_RATE
+		var left := mini(int(position), source.size() - 1)
+		var right := mini(left + 1, source.size() - 1)
+		frames[i] = source[left].lerp(source[right], position - int(position))
+	return frames
+
+
+func _accept_chunk(peer_id: int, chunk: PackedByteArray, now: int) -> bool:
+	if chunk.size() != CHUNK_FRAMES * 2:
+		return false
+	# Ten chunks/second with room for two adjacent deliveries due to network jitter.
+	var next := int(_relay_times.get(peer_id, now))
+	if now < next - 100:
+		return false
+	_relay_times[peer_id] = maxi(now, next) + 100
+	return true
 
 
 func _ensure_capture_ready() -> void:
@@ -149,8 +187,10 @@ func _ensure_capture_ready() -> void:
 	# capture effect below still needs to run.
 	AudioServer.set_bus_volume_db(bus_idx, -80.0)
 	_capture = AudioEffectCapture.new()
+	_capture.buffer_length = GENERATOR_BUFFER_S
 	AudioServer.add_bus_effect(bus_idx, _capture)
 	_mic_player = AudioStreamPlayer.new()
+	_mic_player.playback_type = AudioServer.PLAYBACK_TYPE_STREAM
 	_mic_player.stream = AudioStreamMicrophone.new()
 	_mic_player.bus = CAPTURE_BUS_NAME
 	add_child(_mic_player)
@@ -172,6 +212,7 @@ func _voice_for(peer_id: int) -> _VoicePeer:
 	generator.mix_rate = SAMPLE_RATE
 	generator.buffer_length = GENERATOR_BUFFER_S
 	var player3d := AudioStreamPlayer3D.new()
+	player3d.playback_type = AudioServer.PLAYBACK_TYPE_STREAM
 	player3d.name = "Voice%d" % peer_id
 	player3d.stream = generator
 	_emitters.add_child(player3d)
@@ -190,6 +231,18 @@ func _remove_voice(peer_id: int) -> void:
 		return
 	(voice as _VoicePeer).player.queue_free()
 	_voices.erase(peer_id)
+
+
+func _forget_peer(peer_id: int) -> void:
+	_relay_times.erase(peer_id)
+	_remove_voice(peer_id)
+
+
+func _reset_session(_mode: Network.Mode) -> void:
+	_talking = false
+	_relay_times.clear()
+	for peer_id: int in _voices.keys():
+		_remove_voice(peer_id)
 
 
 func _update_positions() -> void:

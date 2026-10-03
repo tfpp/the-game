@@ -1,0 +1,5 @@
+{
+  "title": "Smoother browser voice chat",
+  "summary": "Keep voice chat and multiplayer steadier during slow browser frames.",
+  "notes": ["Correct microphone audio speed and streaming playback in browsers.", "Limit voice traffic bursts and improve multiplayer buffering during brief stalls.", "Wait for a click before capturing the pointer after browser sign-in or refocusing."]
+}

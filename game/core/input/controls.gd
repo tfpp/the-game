@@ -264,12 +264,21 @@ func _joy_connection_changed(id: int, connected: bool) -> void:
 
 ## Losing OS focus (alt-tab, a screenshot tool, a disconnected gamepad) pauses input
 ## quietly rather than popping a menu open on the player's behalf. `_focus_regained`
-## resumes just as quietly, so only an explicit action (Esc, a menu button, ...) ever
-## opens a menu.
+## resumes native/touch/gamepad input quietly. Browser keyboard input waits for a
+## click because a focus notification cannot grant pointer lock.
 func _focus_lost() -> void:
 	pause()
 
 
 func _focus_regained() -> void:
-	if not playing and not get_tree().get_first_node_in_group(&"modal_ui"):
+	if (
+		not needs_pointer_gesture(OS.has_feature("web"), device)
+		and not playing
+		and not get_tree().get_first_node_in_group(&"modal_ui")
+	):
 		start()
+
+
+## Asynchronous login/focus callbacks cannot grant browser pointer lock.
+static func needs_pointer_gesture(web: bool, input_device: Device) -> bool:
+	return web and input_device == Device.KEYBOARD
