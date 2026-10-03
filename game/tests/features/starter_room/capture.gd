@@ -38,6 +38,9 @@ func _capture() -> void:
 	var shop := preload("res://features/pawn_shop/feature.tscn").instantiate() as Node3D
 	shop.name = "pawn_shop"
 	world.add_child(shop)
+	var mall := preload("res://features/strip_mall/feature.tscn").instantiate() as Node3D
+	mall.name = "strip_mall"
+	world.add_child(mall)
 	var feature := FEATURE.instantiate() as Node3D
 	feature.name = "starter_room"
 	world.add_child(feature)

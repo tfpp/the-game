@@ -32,6 +32,14 @@ for another closed-off area reached by a `GarageDoor`, also set `area` to its wo
 extent. `tests/features/gps/test_gps.gd` fails if a streamed room in its `ROOM_SCENES`
 list has no destination inside; add new room feature scenes to that list.
 
+## Strip mall food shops
+
+The retained Food Court and İstanbul Kebab markers now point into the remote mall.
+The strip_mall feature adds Strip Mall, Poke Bowls and Wendy's markers within its
+StreamedRoom; its two existing RoomDoor endpoints provide the casino/return links.
+GPS therefore routes through the south casino FOOD SHOPS door without a new routing
+interface or van destination. The static old food-wing shell has no food marker.
+
 ## People, animals and objects
 
 The list now has **Places**, **People**, **Animals**, and **Objects** headings.

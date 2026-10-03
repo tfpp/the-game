@@ -1,7 +1,7 @@
 extends GutTest
-## The counter lives in the food court wing (features/food_court), off the gaming floor.
+## The counter lives in the strip mall, with unchanged customer-facing geometry.
 
-const ROOM := preload("res://features/casino_hub/gridmap/playable.tscn")
+const ROOM := preload("res://features/strip_mall/interior.tscn")
 const COURT := preload("res://features/food_court/feature.tscn")
 const SHOP := preload("res://features/kebab_shop/feature.tscn")
 const GPS := preload("res://features/gps/feature.tscn")
@@ -10,7 +10,9 @@ var _shop: KebabShop
 
 
 func before_each() -> void:
-	add_child_autofree(ROOM.instantiate())
+	var room := ROOM.instantiate() as Node3D
+	room.position = Vector3(0, 0, -5000)
+	add_child_autofree(room)
 	add_child_autofree(COURT.instantiate())
 	_shop = SHOP.instantiate() as KebabShop
 	add_child_autofree(_shop)

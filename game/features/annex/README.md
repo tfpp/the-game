@@ -10,7 +10,9 @@ while keeping floors and ceilings intact. The round northwest room also has a cl
 where its outer wall otherwise protrudes into the adjoining corridor.
 
 The south corridor's east wall has one more cut, `FoodCourtDoorway` (x 3, z 38…42,
-3.2 m high), into the food court wing (`features/food_court`).
+3.2 m high), into the legacy food court wing. This annex is excluded from the
+active GridMap casino. Live food counters now occupy `features/strip_mall`, reached
+by the south casino FOOD SHOPS portal; the legacy corridor geometry is unchanged.
 
 Keep subtraction volumes after additive geometry in each combiner. New passages
 need continuous floors and standing-player clearance in both directions.

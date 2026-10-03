@@ -23,6 +23,9 @@ func test_all_routes_use_existing_arrivals_and_street_floor_preloads_before_trav
 	var shop := preload("res://features/pawn_shop/feature.tscn").instantiate() as Node3D
 	shop.name = "pawn_shop"
 	features.add_child(shop)
+	var mall := preload("res://features/strip_mall/feature.tscn").instantiate() as Node3D
+	mall.name = "strip_mall"
+	features.add_child(mall)
 	var van := starter.get_node("Room/Van") as OperationsVan
 	van.set_physics_process(false)
 	assert_eq(van.arrival(1), garage.get_node("Garage/Arrival"))
@@ -35,12 +38,24 @@ func test_all_routes_use_existing_arrivals_and_street_floor_preloads_before_trav
 	var slum := SlumArrivalPoint.new()
 	features.add_child(slum)
 	assert_eq(van.arrival(3), shop.get_node("Room/Arrival"))
-	for zone: int in 4:
+	assert_eq(van.arrival(4), mall.get_node("Room/Arrival"))
+	van.use()
+	assert_eq(van.panel._buttons.size(), 5)
+	assert_false(van.panel._buttons[4].disabled)
+	assert_true(van.panel._buttons[4].text.contains("Strip Mall"))
+	for zone: int in OperationsVan.ZONE_NAMES.size():
 		player.net_position = van.to_global(Vector3(-1.6, 1, 1))
 		player.global_position = player.net_position
 		runs.begin(1, slum)
 		assert_true(runs.is_active(1))
-		van.request_trip(zone)
+		if zone == 4:
+			van.panel.open_map(van)
+			van.panel._buttons[4].pressed.emit()
+		else:
+			van.request_trip(zone)
+		if zone == 4:
+			assert_true((mall.get_node("Room") as StreamedRoom).arrival_held())
+			assert_true(van.panel._travelling)
 		if zone == 2:
 			assert_true((street.get_node("Room") as StreamedRoom).arrival_held())
 		if zone == 3:
@@ -55,7 +70,7 @@ func test_all_routes_use_existing_arrivals_and_street_floor_preloads_before_trav
 			player.net_position, player.net_position - Vector3.UP * 2
 		)
 	)
-	assert_false(hit.is_empty(), "shop arrival's streamed floor exists before teleport")
+	assert_false(hit.is_empty(), "mall arrival's streamed floor exists before teleport")
 
 
 func test_casino_entrance_is_on_supported_north_promenade_with_clear_approach() -> void:

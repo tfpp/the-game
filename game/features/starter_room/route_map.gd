@@ -2,9 +2,11 @@ extends TextureRect
 ## Screen-only paper map. Normalized pins stay attached to landmarks on resize.
 
 const POINTS: Array[Vector2] = [
-	Vector2(.22, .23), Vector2(.76, .28), Vector2(.22, .68), Vector2(.76, .69)
+	Vector2(.22, .23), Vector2(.76, .23), Vector2(.22, .75), Vector2(.76, .75), Vector2(.5, .49)
 ]
-const LABELS: Array[String] = ["Golden Crown", "Garage · B1", "Street District", "Pawn & Gun"]
+const LABELS: Array[String] = [
+	"Golden Crown", "Garage · B1", "Street District", "Pawn & Gun", "Strip Mall"
+]
 var _pins: Array[Button] = []
 
 

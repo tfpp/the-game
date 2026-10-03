@@ -53,6 +53,29 @@ func test_discard_empties_the_rig() -> void:
 	assert_eq(_rig.net_ammo_reserve, 0)
 
 
+func test_generated_guns_and_flash_use_fps_layer_and_f3_returns_to_body() -> void:
+	_player.set_process(false)
+	_player.set_physics_process(false)
+	_rig.equip(_sample_stats())
+	_rig._process(0.0)
+	var meshes := _rig._view.find_children("*", "GeometryInstance3D", true, false)
+	assert_gt(meshes.size(), 0)
+	for mesh: GeometryInstance3D in meshes:
+		assert_eq(mesh.layers, FirstPersonView.MASK)
+	_rig._set_flash(true)
+	var flash := _rig._view.get_node("Muzzle/MuzzleFlash")
+	for mesh: GeometryInstance3D in flash.find_children("*", "GeometryInstance3D", true, false):
+		assert_eq(mesh.layers, FirstPersonView.MASK)
+	(_player.get_node("Body") as Node3D).visible = true
+	_rig._process(0.0)
+	var before := _rig.global_transform
+	(_player.get_node("Camera") as Camera3D).position += Vector3(0, 0, 5)
+	_rig._process(0.0)
+	assert_true(_rig.global_transform.is_equal_approx(before))
+	for mesh: GeometryInstance3D in meshes:
+		assert_eq(mesh.layers, 1)
+
+
 func test_firing_consumes_one_round_per_barrel_and_spawns_a_projectile_per_pellet() -> void:
 	var stub := _MachineStub.new()
 	stub.add_to_group(&"gun_machine_root")

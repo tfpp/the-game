@@ -17,9 +17,10 @@ func _run() -> void:
 	Controls.start()
 	for layer: Node in get_tree().root.find_children("*", "CanvasLayer", true, false):
 		(layer as CanvasLayer).visible = false
-	_view(Vector3(25.8, 1.65, 32), Vector3(30, 1.5, 35))
+	($Game/Features/strip_mall/Room as StreamedRoom).load_room(6000)
+	_view(Vector3(25.8, 1.65, -4968), Vector3(30, 1.5, -4965))
 	await _capture("/tmp/wendys-counter.png")
-	_view(Vector3(28.3, 1.65, 35), Vector3(30, 1.5, 35))
+	_view(Vector3(28.3, 1.65, -4965), Vector3(30, 1.5, -4965))
 	$Game/Features/food_court/WendysStand.use()
 	var hand := Hand.for_peer(get_tree(), 1)
 	assert(hand.net_item_id == "wendys_burger")

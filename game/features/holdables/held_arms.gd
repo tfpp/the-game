@@ -48,7 +48,9 @@ func pose(right_shoulder: Vector3, left_shoulder: Vector3, support: Node3D) -> v
 
 
 ## Shared by catalog items and generated weapons with authored grip markers.
-func pose_for_player(player: Player, support: Node3D, skin: Color) -> void:
+func pose_for_player(
+	player: Player, support: Node3D, skin: Color, view_motion: Transform3D = Transform3D.IDENTITY
+) -> void:
 	set_skin_color(skin)
 	var body := player.get_node("Body") as Node3D
 	var avatar := body.get_node_or_null("Avatar")
@@ -75,7 +77,7 @@ func pose_for_player(player: Player, support: Node3D, skin: Color) -> void:
 		return
 	var shoulders: Transform3D
 	if first_person:
-		shoulders = (player.get_node("Camera") as Node3D).global_transform
+		shoulders = (player.get_node("Camera") as Node3D).global_transform * view_motion
 		var factor := HeldItemPose.avatar_height_scale(body)
 		shoulders.basis = shoulders.basis.scaled(Vector3.ONE * factor)
 		shoulders.origin += shoulders.basis * Vector3(0, -0.36, 0.10)

@@ -1,0 +1,55 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
+[ext_resource type="PackedScene" path="res://features/strip_mall/door.tscn" id="door"]
+
+[node name="StripMall" type="Node3D"]
+
+[node name="Room" type="Node3D" parent="."]
+position = Vector3(0, 0, -5000)
+script = ExtResource("room")
+room_scene = "res://features/strip_mall/interior.tscn"
+bounds = AABB(-8.5, -1, 17.5, 42.5, 7, 22.5)
+
+[node name="Arrival" type="Marker3D" parent="Room"]
+position = Vector3(4, 1, 28)
+rotation = Vector3(0, -1.5707964, 0)
+
+[node name="Destination" type="Marker3D" parent="Room"]
+position = Vector3(4, 0, 28)
+script = ExtResource("gps")
+label = "Strip Mall"
+hint = "South casino corridor: use the FOOD SHOPS door. Kebab, poke and Wendy's."
+
+[node name="PokeDestination" type="Marker3D" parent="Room"]
+position = Vector3(28.3, 0, 22.5)
+script = ExtResource("gps")
+label = "Poke Bowls"
+hint = "Strip Mall: salmon bowls, $29 plus tip."
+
+[node name="WendysDestination" type="Marker3D" parent="Room"]
+position = Vector3(28.3, 0, 35)
+script = ExtResource("gps")
+label = "Wendy's"
+hint = "Strip Mall: complimentary cheeseburgers."
+
+[node name="Exit" parent="Room" instance=ExtResource("door")]
+position = Vector3(2.3, 1.25, 28)
+rotation = Vector3(0, 1.5707964, 0)
+destination = NodePath("../../CasinoArrival")
+door_label = "Return to The Golden Crown"
+
+[node name="Sign" parent="Room/Exit" index="2"]
+text = "THE GOLDEN CROWN
+RETURN - E / USE"
+
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(0, 1, 25)
+rotation = Vector3(0, 3.1415927, 0)
+
+[node name="Entrance" parent="." instance=ExtResource("door")]
+position = Vector3(1.8, 1.25, 25)
+rotation = Vector3(0, -1.5707964, 0)
+destination = NodePath("../Room/Arrival")
+door_label = "Visit the Strip Mall · food shops"

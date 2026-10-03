@@ -61,7 +61,7 @@ func test_all_objectives_have_clear_grounded_approaches_and_remain_in_range() ->
 		Vector3(-6.6, -1.25, -1.8),
 		Vector3(-6.6, -1.25, 2.8),
 		Vector3(-11, -1.25, -8.7),
-		Vector3(19.4, 0, 8.9)
+		Vector3(19.4, 0, 7.1)
 	]
 	for index: int in 5:
 		var feet := approaches[index]

@@ -1,0 +1,8 @@
+{
+  "title": "Weapon-sway verification repair",
+  "summary": "Keep handheld sway working while restoring the game's automated checks.",
+  "notes": [
+    "Fix handheld-layer light refresh after room changes.",
+    "Restore formatting and lint compliance and test vertical handheld momentum separately from horizontal bob."
+  ]
+}

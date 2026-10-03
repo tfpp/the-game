@@ -14,7 +14,7 @@ func before_each() -> void:
 	add_child_autofree(_court)
 	_player = _add_player(1)
 	# At the open end of the first booth, within reach of both benches' near seats.
-	_player.global_position = FoodCourt.BOOTHS[0] + Vector3(-1.2, 0.92, 0)
+	_player.global_position = _court.to_global(FoodCourt.BOOTHS[0] + Vector3(-1.2, 0.92, 0))
 	_player.net_position = _player.global_position
 
 

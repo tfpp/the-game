@@ -41,7 +41,15 @@ func _process(_delta: float) -> void:
 		_label.text = "Busboy: shift complete!\nReturn to the bar and Use for $10"
 	else:
 		var cargo := int(state.get("cargo", -1))
-		var goal := "Pick up EMPTY glasses"
+		var tables: Array[int] = []
+		for slot: int in state.get("dirty", []) as Array:
+			var number := slot / 3 + 1
+			if number not in tables:
+				tables.append(number)
+		tables.sort()
+		var goal := "Waiting for empty glasses"
+		if not tables.is_empty():
+			goal = "EMPTY glasses: tables %s" % str(tables)
 		if cargo == -2:
 			goal = "Return glass to bar"
 		elif cargo >= 0:

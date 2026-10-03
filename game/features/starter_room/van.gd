@@ -4,13 +4,18 @@ extends Node3D
 
 const TRAVEL_SECONDS := 2.0
 const ZONE_NAMES: Array[String] = [
-	"The Golden Crown", "Basement Garage · B1", "Street District", "Gun Shop · Rusty Hogg's"
+	"The Golden Crown",
+	"Basement Garage · B1",
+	"Street District",
+	"Gun Shop · Rusty Hogg's",
+	"Crown Strip Mall"
 ]
 const ZONE_HINTS: Array[String] = [
 	"Casino, shops and friends",
 	"Five floors · hostile enemies",
 	"Streets, alleys and searchable containers",
-	"Guns and pawn counter"
+	"Guns and pawn counter",
+	"Kebabs, poke bowls and Wendy's · outdoor dining"
 ]
 
 @export var arrivals: Array[NodePath] = []

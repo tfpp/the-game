@@ -148,7 +148,9 @@ func test_map_pins_stay_on_image_and_do_not_overlap_at_small_sizes() -> void:
 			for j: int in range(i + 1, _van.panel._buttons.size()):
 				assert_false(pin.get_rect().intersects(_van.panel._buttons[j].get_rect()))
 	assert_false(_van.panel._buttons[0].disabled)
+	assert_eq(_van.panel._buttons.size(), 5)
 	assert_true(_van.panel._buttons[3].disabled, "missing destination cannot be selected")
+	assert_true(_van.panel._buttons[4].disabled, "missing mall cannot be selected")
 
 
 func test_driving_vignette_animates_only_during_travel() -> void:

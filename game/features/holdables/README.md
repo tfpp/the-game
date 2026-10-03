@@ -1,5 +1,23 @@
 # Holdables
 
+First-person catalog items and generated guns share `FirstPersonMotion`: look-rate
+lag and a slower bob whose phase follows horizontal distance travelled and whose strength
+follows actual speed, including strafing and airborne momentum. A separate damped
+spring moves the whole item and arm rig sideways, vertically and in depth according
+to camera-relative velocity. Acceleration, jumps and landings kick this spring,
+giving a visible lag, landing dip and recovery over the existing bob and look sway.
+Stopping lets the rig settle back to rest. Switching items or leaving FPS resets it. This is cosmetic;
+shots and drops still use their existing authoritative origins.
+`tests/features/holdables/test_first_person_motion.gd` separately covers horizontal bob
+and vertical momentum: rising/falling shifts the rig even without horizontal travel,
+and stopping settles it back to rest.
+
+`FirstPersonView` renders items, arms and item particles in a transparent shared-world
+viewport on layer 18, below the HUD. Its camera follows the player camera after
+camera updates, with a separate depth buffer so nearby walls cannot cut through
+the handheld. F3 and remote items retain world rendering. Room visibility reserves
+layers 19/20 and routes the current room's lights to the handheld layer.
+
 Generic items players can pick up and hold: `pistol`, `smg`, `shotgun` and `awp`
 (weapons), `banana` (food) and `ball` (prop), plus the framework to add more.
 
