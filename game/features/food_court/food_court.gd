@@ -108,6 +108,9 @@ func request_stand() -> void:
 
 
 func _may_sit(peer: int, payload: Dictionary) -> bool:
+	for other: Node in get_tree().get_nodes_in_group(&"seating"):
+		if other != self and bool(other.call("is_seated", peer)):
+			return false
 	if payload.size() != 1 or typeof(payload.get("seat")) != TYPE_INT:
 		return false
 	var index: int = payload["seat"]

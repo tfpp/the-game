@@ -1,0 +1,23 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://features/table_games/table.gd" id="table"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="Script" path="res://features/table_games/view.gd" id="view"]
+[ext_resource type="PackedScene" path="res://features/table_games/seating.tscn" id="seating"]
+[ext_resource type="Script" path="res://features/table_games/dealer.gd" id="dealer"]
+[sub_resource type="BoxShape3D" id="shape"]
+size = Vector3(3, 1, 1.8)
+[node name="GameTable" type="StaticBody3D"]
+script = ExtResource("table")
+[node name="Collider" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.5, 0)
+shape = SubResource("shape")
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("net")
+interaction_range = 3.5
+interaction_offset = Vector3(0, 1, 0)
+replicated_properties = Array[NodePath]([NodePath(".:state")])
+[node name="View" type="Node3D" parent="."]
+script = ExtResource("view")
+[node name="Seats" parent="." instance=ExtResource("seating")]
+[node name="Dealer" type="Node3D" parent="."]
+script = ExtResource("dealer")

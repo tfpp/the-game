@@ -1,0 +1,9 @@
+{
+  "title": "Take a seat at the Crown",
+  "summary": "The gaming suites now have usable chairs and animated table staff.",
+  "notes": [
+    "Add four seats at blackjack, poker and baccarat, plus a chair at draw poker; sitting is free and wagers stay in the table controls.",
+    "Add dealers with idle, greeting, shuffle, deal, reveal, collection and payout animations, plus dice handling at craps.",
+    "Synchronize seat occupancy and dealer action timing for multiplayer and late arrivals."
+  ]
+}

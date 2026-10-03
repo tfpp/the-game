@@ -1,0 +1,56 @@
+[
+	{
+		"bounds": "[P: (-1.8375, 0.0, -0.86625), S: (3.675, 1.0475, 1.7325)]",
+		"id": "baccarat_table",
+		"surfaces": 2,
+		"textures": [
+			{
+				"height": 128,
+				"path": "res://assets/casino_props/textures/baccarat_table.png",
+				"width": 128
+			},
+			{
+				"height": 64,
+				"path": "res://assets/casino_props/textures/card_shoe.png",
+				"width": 64
+			}
+		],
+		"triangles": 368
+	},
+	{
+		"bounds": "[P: (-1.53, 0.0, -0.77), S: (3.06, 1.1925, 1.6)]",
+		"id": "craps_table",
+		"surfaces": 2,
+		"textures": [
+			{
+				"height": 128,
+				"path": "res://assets/casino_props/textures/craps_table.png",
+				"width": 128
+			},
+			{
+				"height": 32,
+				"path": "res://assets/casino_props/textures/craps_dice.png",
+				"width": 32
+			}
+		],
+		"triangles": 192
+	},
+	{
+		"bounds": "[P: (-0.34, 0.0, -0.32), S: (0.68, 1.4925, 0.761605)]",
+		"id": "video_poker_machine",
+		"surfaces": 2,
+		"textures": [
+			{
+				"height": 128,
+				"path": "res://assets/casino_props/textures/video_poker_machine.png",
+				"width": 128
+			},
+			{
+				"height": 32,
+				"path": "res://assets/casino_props/textures/card_deck.png",
+				"width": 32
+			}
+		],
+		"triangles": 96
+	}
+]

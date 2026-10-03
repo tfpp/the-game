@@ -98,8 +98,11 @@ func _process(delta: float) -> void:
 	if gun != null and gun.has_hand_grips():
 		holding = true
 		support = gun.support_grip() != null
-	var seating := get_tree().get_first_node_in_group(&"seating")
-	seated = seating != null and bool(seating.call("is_seated", player.get_multiplayer_authority()))
+	seated = false
+	for seating: Node in get_tree().get_nodes_in_group(&"seating"):
+		if bool(seating.call("is_seated", player.get_multiplayer_authority())):
+			seated = true
+			break
 	var crouch := get_tree().get_first_node_in_group(&"crouching")
 	crouched = (
 		crouch != null and bool(crouch.call("is_crouching", player.get_multiplayer_authority()))
