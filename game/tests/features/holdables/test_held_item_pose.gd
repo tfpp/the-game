@@ -102,6 +102,35 @@ func test_aim_and_drop_origins_do_not_depend_on_view_camera() -> void:
 	assert_lt(grip.origin.distance_to(_player.net_position), 0.6)
 
 
+func test_fps_items_and_arms_use_separate_depth_then_restore_in_third_person() -> void:
+	_equip("pistol")
+	var overlay := _player.get_node("FirstPersonView") as FirstPersonView
+	var camera := _player.get_node("Camera") as Camera3D
+	overlay._process(0.0)
+	assert_true(overlay.viewport.transparent_bg)
+	assert_eq(overlay.viewport.world_3d, _player.get_world_3d())
+	assert_eq(camera.cull_mask & FirstPersonView.MASK, 0)
+	assert_eq(overlay.camera.cull_mask, FirstPersonView.MASK)
+	_assert_visual_layers(_hand, FirstPersonView.MASK)
+	var aim := _hand._aim_origin(_player)
+	_player.yaw = 0.1
+	_player.velocity = Vector3(8, 0, 0)
+	_hand._process(1.0 / 60.0)
+	assert_eq(_hand._aim_origin(_player), aim, "Sway cannot change the shot origin")
+	(_player.get_node("Body") as Node3D).visible = true
+	_hand._process(1.0 / 60.0)
+	overlay._process(0.0)
+	_assert_visual_layers(_hand, 1)
+	assert_eq(overlay.viewport.render_target_update_mode, SubViewport.UPDATE_DISABLED)
+
+
+func _assert_visual_layers(node: Node, mask: int) -> void:
+	if node is GeometryInstance3D:
+		assert_eq((node as GeometryInstance3D).layers, mask, str(node.get_path()))
+	for child: Node in node.get_children():
+		_assert_visual_layers(child, mask)
+
+
 func test_every_weapon_muzzle_points_forward_and_is_attached_to_model() -> void:
 	for def: ItemDefinition in ItemCatalog.DEFINITIONS:
 		if def.category != ItemDefinition.Category.WEAPON:

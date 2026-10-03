@@ -11,6 +11,7 @@ var _registered: Dictionary[int, bool] = {}
 var _camera: Camera3D
 var _original_mask := 0
 var _elapsed := 0.0
+var _handheld_light_mask := -1
 
 
 func _ready() -> void:
@@ -57,7 +58,7 @@ func _register(node: Node, added: bool) -> void:
 		"node": visual,
 		"id": id,
 		"light_mask": (visual as Light3D).light_cull_mask if visual is Light3D else 0,
-		"original": visual.layers,
+		"original": visual.get_meta(FirstPersonView.LAYERS_META, visual.layers),
 		"zone": zone,
 		"shared": shared,
 		"moving": moving and zone == null
@@ -71,6 +72,9 @@ func _register(node: Node, added: bool) -> void:
 
 func _apply(entry: Dictionary) -> void:
 	var visual := entry["node"] as VisualInstance3D
+	if visual.get_meta(FirstPersonView.ACTIVE_META, false):
+		visual.layers = FirstPersonView.MASK
+		return
 	var zone := entry["zone"] as RenderZone
 	var mask: int = entry["original"]
 	if is_instance_valid(zone):
@@ -86,14 +90,25 @@ func _apply(entry: Dictionary) -> void:
 	visual.layers = mask
 	# Prevent garage lights illuminating other zones and vice versa.
 	if visual is Light3D:
+		visual.layers |= FirstPersonView.MASK
 		var lighting_mask := mask & ZONE_MASK
 		if mask & ~ZONE_MASK:
 			lighting_mask |= int(entry["light_mask"]) & ~ZONE_MASK
+		lighting_mask &= ~FirstPersonView.MASK
+		var camera := get_viewport().get_camera_3d()
+		if camera != null and camera.cull_mask & mask & ~FirstPersonView.MASK:
+			lighting_mask |= FirstPersonView.MASK
 		(visual as Light3D).light_cull_mask = lighting_mask
 
 
 func _process(delta: float) -> void:
 	update_camera(get_viewport().get_camera_3d())
+	var mask := _camera.cull_mask & ~FirstPersonView.MASK if _camera != null else 0
+	if mask != _handheld_light_mask:
+		_handheld_light_mask = mask
+		for entry: Dictionary in _visuals.values():
+			if is_instance_valid(entry["node"]) and entry["node"] is Light3D:
+				_apply(entry)
 	_elapsed += delta
 	if _elapsed < UPDATE_SECONDS:
 		return
