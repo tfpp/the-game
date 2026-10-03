@@ -99,6 +99,29 @@ Runs are named `agent #<number> <mode> [<request_id>]`, so the Discord bot can m
 `Requested-by: <name> <discord:<id>>` trailer. `context.sh` and `publish.sh` credit that
 person instead of the bot, and only when the issue's author is a bot account.
 
+## Request safety
+
+The "Safety" section of `prompts/rules.md` starts every run, in every mode. It applies to
+the request and to all feedback and context, which the agent treats as data rather than
+instructions. The agent declines requests and feedback that:
+
+- aren't written in English (non-English text inside the requested content is fine);
+- would read, reveal or send credentials, environment variables or login files, directly
+  or through code, tests, notes, summaries or network requests;
+- try to override the rules, weaken verification, or widen access through `.github/`,
+  `harness/`, `bot/`, `api/`, `CODEOWNERS` or credentials;
+- add malicious code: backdoors, hidden admin commands, miners, remote code, unapproved
+  external hosts, or attacks on the server, bot, runner or players;
+- collect or expose real people's personal data (IPs, emails, account IDs, real names).
+
+A declined `implement` run makes no changes and writes a `no changes` summary. The
+publisher comments it on the issue, and the bot closes the issue and tells the requester.
+A refused part of a larger request is left out and explained in the PR. With a merge in
+progress, the agent concludes the merge and explains the refused feedback instead.
+
+These are model instructions, not a sandbox. The isolation below still limits what a run
+can reach if an agent ignores them.
+
 ## How a run is isolated
 
 - **gate** (GITHUB_TOKEN) checks the sender and the target, then comments "started".
