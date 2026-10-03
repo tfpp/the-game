@@ -36,6 +36,18 @@ func test_loot_sale_logs_its_amount() -> void:
 	assert_eq(_chat.notices, [[1, "+$25.50: Sold loot to the fence"]])
 
 
+func test_variable_reward_uses_same_wallet_and_gain_notice() -> void:
+	var before := int(_wallet.balances.get(1, _wallet._starting_cents))
+	var result: Dictionary = await _wallet.credit_reward(1, "quest", 10000, "Helper fee")
+	assert_eq(int(result["balance"]), before + 10000)
+	assert_eq(_chat.notices, [[1, "+$100.00: Helper fee"]])
+	_wallet._busy[1] = true
+	assert_has(await _wallet.credit_reward(1, "busy", 10000, "Helper fee"), "error")
+	_wallet._busy.clear()
+	assert_has(await _wallet.credit_reward(1, "zero", 0, "Helper fee"), "error")
+	assert_eq(_chat.notices.size(), 1)
+
+
 func test_charges_and_zero_gains_are_not_logged() -> void:
 	await _wallet.charge(1, "one", 500)
 	_wallet.announce_gain(1, 0, "Nothing")

@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/bar_companion/vivienne_case.gd" id="case"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="entity"]
+
+[node name="VivienneCase" type="Node"]
+script = ExtResource("case")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")
+replicated_properties = Array[NodePath]([NodePath(".:progress")])
