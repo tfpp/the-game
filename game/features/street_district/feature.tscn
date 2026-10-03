@@ -101,13 +101,6 @@ door_label = "Visit the street casino entrance"
 script = ExtResource("net")
 interaction_range = 2.5
 
-[node name="Sign" type="Label3D" parent="CasinoStreetEntrance"]
-position = Vector3(0, 1.5, 0)
-billboard = 1
-text = "STREET CASINO\nE / USE TO TELEPORT"
-font_size = 36
-pixel_size = 0.004
-
 [node name="CasinoArrival" type="Marker3D" parent="Room"]
 position = Vector3(18.75, 1, 33.3)
 

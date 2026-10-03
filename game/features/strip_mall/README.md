@@ -5,7 +5,7 @@ The three dedicated food shops now share a small outdoor shopping plaza:
 convenience-store display. The casino's bars stay put.
 
 From the Crown's south promenade, walk down the south corridor and use the
-**STRIP MALL / FOOD SHOPS** door on your left at (1.8, 1.25, 25):
+unsigned door on your left at (1.8, 1.25, 25):
 **E / controller B or Circle / touch USE**. GPS lists Strip Mall, Food Court,
 İstanbul Kebab, Poke Bowls, Wendy's and Żabka. The return kiosk stands just behind the
 arrival point and takes you back to the same casino corridor. No new keys,

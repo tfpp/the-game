@@ -15,7 +15,6 @@ Gated today:
 
 | Door | Feature |
 | --- | --- |
-| OLD CASINO, north promenade | `casino_legacy/` (`Entrance`) |
 | STREET CASINO, north promenade | `street_district/` (`CasinoStreetEntrance`) |
 | Street District teleporter, dev room | `street_district/` (`Entrance`) |
 | Hotel Props teleporter, dev room | `hotel_props/` (`Entrance`) |

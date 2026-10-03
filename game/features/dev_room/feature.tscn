@@ -53,14 +53,6 @@ door_label = "Enter the dev room"
 [node name="Arrival" type="Marker3D" parent="CasinoBooth"]
 position = Vector3(0, 1.2, -1)
 
-[node name="Sign" type="Label3D" parent="CasinoBooth"]
-position = Vector3(0, 2.3, 1.15)
-billboard = 1
-text = "DEV ROOM
-WARP DOORS"
-font_size = 20
-outline_size = 6
-
 [node name="Light" type="OmniLight3D" parent="CasinoBooth"]
 position = Vector3(0, 2.2, 0)
 light_color = Color(0.8, 0.85, 0.9, 1)

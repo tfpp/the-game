@@ -13,7 +13,7 @@ focus; the list scrolls on small/landscape screens. Esc / Back to garage dismiss
 an unsubmitted map. There is no extra key or purchase.
 
 The walking exit reaches the casino without the driving screen. Return through
-**OPERATIONS GARAGE** on the casino north promenade at (-7, 1.1, -19.7), or find
+the unsigned garage door on the casino north promenade at (-7, 1.1, -19.7), or find
 **Operations Garage** in GPS. The street's existing casino entrance returns to the
 Crown; the basement garage's existing return portal reaches the dev room, whose
 exit reaches the casino. The gun shop door returns directly here; its street and parked van are scenery only.

@@ -1,5 +1,8 @@
 # Socket street district
 
+Main-casino overhead door signs were removed in issue #487. Door placement,
+Use prompts, GPS routing and remote return signs remain unchanged.
+
 A standalone, walkable street district using the garage's existing
 `ProceduralSocketAttachment`, `ProceduralSocketProfile` and canonical
 `shell_mesh.gd` builder. No shared socket or garage code is changed.
@@ -79,8 +82,8 @@ The static district streams locally; both authenticated portal endpoints and
 arrival markers remain present on every peer for multiplayer and late joins.
 
 The east block includes a gold-trimmed **GOLDEN CROWN CASINO** marquee and canopy.
-Its entrance teleports to the main casino north promenade. Use **STREET CASINO**
-beside the DEV ROOM booth to return directly to this facade.
+Its entrance teleports to the main casino north promenade. Use the unsigned street-casino portal
+beside the dev-room booth to return directly to this facade.
 Six searchable dumpsters sit beside alley mouths and service streets, and six
 cars park along the curbs. These reuse the existing loot tables, animated dumpster
 lids and searchable car boots. They stay outside streamed geometry so every peer
