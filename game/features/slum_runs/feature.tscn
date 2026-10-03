@@ -23,13 +23,6 @@ material = ExtResource("4_dark")
 use_collision = true
 script = ExtResource("2_gate")
 
-[node name="GateSign" type="Label3D" parent="."]
-position = Vector3(18, 2.5, 19.6)
-billboard = 1
-text = "THE GOLDEN CROWN\nSLUM GATE"
-font_size = 20
-outline_size = 6
-
 [node name="Fence" type="CSGBox3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -11.5, 0.575, -3975.5)
 size = Vector3(2.8, 1.15, 0.8)

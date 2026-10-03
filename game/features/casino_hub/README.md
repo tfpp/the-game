@@ -1,5 +1,17 @@
 # The Golden Crown
 
+## Casino cleanup (#487)
+
+The old comparison casino is no longer loaded: its north-promenade entrance,
+remote room, duplicate gambling machines and GPS destination have been removed.
+Shared legacy scenes below remain authoring/test references, not live content.
+The dev booth is removed; type `!warp dev` in chat (or `!warp` for room names).
+Main-casino overhead signs for the operations garage, street casino,
+slum gate, mall and service door are gone. The doors keep their existing Use
+prompts, positions, validated travel and GPS routes; remote return signs, gaming
+displays and decorative artwork are unchanged. Inherited modeled signs are hidden
+only on those casino entrance instances, leaving the shared door prefab intact.
+
 The active game uses the saved [casino GridMap](gridmap/README.md), with a **1.25 m**
 deep gaming pit, quarter-height retaining walls and six-metre ramps to ground level.
 The geometry below describes the retained legacy CSG room used for reference.
@@ -130,7 +142,7 @@ six-metre-wide ramps, using the Blockbench wood wall. The bar and stationary NPC
 are restored; slots and roaming NPCs use their existing feature scenes. The
 former food court and pawn shop shells use GridMap rooms off the south corridor.
 Their shops have since moved: the food counters and booths now occupy the separate
-Crown Strip Mall, reached by its FOOD SHOPS portal in the south corridor, while
+Crown Strip Mall, reached by its unsigned portal in the south corridor, while
 the gun/pawn store uses the operations van. Existing shopping/seating behavior is
 unchanged; see `features/strip_mall/README.md` and `features/pawn_shop/README.md`. The old
 architecture described above remains in `world/room.tscn` for reference. Press F5

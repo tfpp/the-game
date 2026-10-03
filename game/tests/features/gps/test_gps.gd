@@ -91,14 +91,15 @@ func test_every_streamed_room_has_a_gps_destination() -> void:
 		assert_true(covered, "%s needs a GpsDestination" % room.get_path())
 
 
-func test_real_doors_route_from_the_casino_to_the_wine_cellar() -> void:
+func test_remote_doors_route_to_cellar_without_a_removed_casino_booth() -> void:
 	for path: String in ROOM_SCENES:
 		add_child_autofree(load(path).instantiate())
 	var cellar := _find("Wine Cellar")
 	var hop := GpsRoute.next_hop(
 		_gps.regions(), _gps.links(), Vector3(0, -1.5, 0), cellar.global_position
 	)
-	assert_eq(hop["door"], "Enter the dev room")
+	assert_eq(hop["door"], "", "No walking route through the removed dev-room booth")
+	assert_true(_find("Dev Room").hint.contains("!warp dev"))
 	hop = GpsRoute.next_hop(
 		_gps.regions(), _gps.links(), _find("Dev Room").global_position, cellar.global_position
 	)

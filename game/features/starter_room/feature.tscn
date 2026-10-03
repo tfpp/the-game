@@ -86,13 +86,6 @@ door_label = "Return to the operations garage"
 [node name="NetworkedEntity" type="Node" parent="CasinoReturn"]
 script = ExtResource("net")
 
-[node name="Sign" type="Label3D" parent="CasinoReturn"]
-position = Vector3(0, 1.5, 0)
-billboard = 1
-text = "OPERATIONS GARAGE\nE / USE"
-font_size = 32
-pixel_size = 0.004
-
 [node name="TravelPanel" type="CanvasLayer" parent="."]
 script = ExtResource("panel")
 

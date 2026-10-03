@@ -265,7 +265,7 @@ The balcony reuses the salon bar and stool assets, matching counter collision an
 5 m support columns. GPS lists **Mariachi Balcony Bar**. `mariachi_balcony.gd`
 is the offline recipe called after the base layout and upper story are built.
 The review scene includes the stage and captures balcony/stair views. The old
-casino doorway is supplied by the separately loaded `casino_legacy` feature.
+casino comparison room and doorway were retired in issue #487.
 
 ## Burgundy pedestal bar stools
 
