@@ -64,6 +64,16 @@ func _ready() -> void:
 			seat.set("index", seats.size())
 			booth.add_child(seat)
 			seats.append(seat)
+	# Static casino anchors exist before the feature loader reaches food_court.
+	# Sort paths so every peer assigns identical indices; booth indices stay intact.
+	var anchors := get_tree().get_nodes_in_group(&"casino_seats")
+	anchors.sort_custom(
+		func(a: Node, b: Node) -> bool: return str(a.get_path()) < str(b.get_path())
+	)
+	for anchor: Node in anchors:
+		anchor.set("court", self)
+		anchor.set("index", seats.size())
+		seats.append(anchor as Node3D)
 	var empty := PackedInt32Array()
 	empty.resize(seats.size())
 	net_seats = empty
@@ -86,6 +96,8 @@ func sit_yaw(index: int) -> float:
 
 ## Floor point at the open end of the seat's bench.
 func stand_position(index: int) -> Vector3:
+	if bool(seats[index].get("casino_seat")):
+		return seats[index].to_global(seats[index].get("exit_offset"))
 	var local := seats[index].position
 	var booth := seats[index].get_parent() as Node3D
 	return booth.to_global(Vector3(signf(local.x) * BOOTH_SCRIPT.STEP_OUT, 0, local.z))
@@ -97,6 +109,12 @@ func seat_of(peer: int) -> int:
 
 func is_seated(peer: int) -> bool:
 	return seat_of(peer) >= 0
+
+
+## Fixed body heading from authoritative occupancy; view/aim yaw remains independent.
+func seated_yaw(peer: int) -> float:
+	var index := seat_of(peer)
+	return sit_yaw(index) if index >= 0 else NAN
 
 
 func request_sit(index: int) -> void:
@@ -194,7 +212,11 @@ func _update_local_pin(delta: float) -> void:
 		var look := Controls.consume_look(delta)
 		player.yaw -= look.x
 		player.pitch = clampf(player.pitch - look.y, deg_to_rad(-89.0), deg_to_rad(89.0))
-		if Input.is_action_just_pressed(&"jump") or Controls.movement().length() > 0.5:
+		if (
+			Input.is_action_just_pressed(&"jump")
+			or Controls.consume_jump()
+			or Controls.movement().length() > 0.5
+		):
 			_ask_to_stand()
 	_pin(player, sit_position(index))
 
@@ -225,6 +247,7 @@ func _release_pin(step_out: bool) -> void:
 			var spot := stand_position(_pinned_index)
 			spot.y += _pinned.movement.hull_height_m() * 0.5 + 0.02
 			_pin(_pinned, spot)
+		Controls.clear_input()
 		_pinned.set_physics_process(true)
 	_pinned = null
 	_pinned_index = -1

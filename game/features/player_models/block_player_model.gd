@@ -45,6 +45,7 @@ var _skin_material: StandardMaterial3D
 var _shirt_material: StandardMaterial3D
 var _trim_material: StandardMaterial3D
 var _pants_material: StandardMaterial3D
+var _head_yaw := 0.0
 var _phase := 0.0
 var _landing := 0.0
 var _drop := 0.0
@@ -99,10 +100,20 @@ func _process(delta: float) -> void:
 		holding = true
 		support = gun.support_grip() != null
 	seated = false
+	_head_yaw = 0.0
 	for seating: Node in get_tree().get_nodes_in_group(&"seating"):
-		if bool(seating.call("is_seated", player.get_multiplayer_authority())):
-			seated = true
-			break
+		if not bool(seating.call("is_seated", player.get_multiplayer_authority())):
+			continue
+		seated = true
+		if seating.has_method("seated_yaw"):
+			var body_yaw: float = seating.call("seated_yaw", player.get_multiplayer_authority())
+			if not is_nan(body_yaw):
+				# Runs after Player and third_person: view yaw and remote smoothing
+				# cannot turn the body. Derive heading from the occupied provider.
+				(get_parent() as Node3D).global_rotation.y = body_yaw
+				var view_yaw := player.yaw if player.is_local() else player.net_yaw
+				_head_yaw = wrapf(view_yaw - body_yaw, -PI, PI)
+		break
 	var crouch := get_tree().get_first_node_in_group(&"crouching")
 	crouched = (
 		crouch != null and bool(crouch.call("is_crouching", player.get_multiplayer_authority()))
@@ -154,6 +165,7 @@ func animate(
 	_torso.rotation.x = lerp_angle(_torso.rotation.x, pose["lean"], blend)
 	_torso.rotation.z = lerp_angle(_torso.rotation.z, pose["roll"], blend)
 	_head.rotation.x = lerp_angle(_head.rotation.x, pitch - _torso.rotation.x, blend)
+	_head.rotation.y = lerp_angle(_head.rotation.y, _head_yaw, blend)
 	_rig.scale = Vector3(_height_scale, _height_scale * (1.0 - _landing * 0.055), _height_scale)
 	_rig.position.y = float(pose["bob"]) - _landing * 0.049 - _drop * _height_scale
 	var punching := false

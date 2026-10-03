@@ -45,6 +45,7 @@ func _initialize() -> void:
 				ceiling.set_cell_item(Vector3i(x, 20, z), 8)
 	Structure.configure(level)
 	Balcony.configure(level)
+	preload("res://features/casino_hub/gridmap/retired_food_hall.gd").trim(level)
 	var packed := PackedScene.new()
 	assert(packed.pack(level) == OK)
 	assert(ResourceSaver.save(packed, SCENE_PATH) == OK)

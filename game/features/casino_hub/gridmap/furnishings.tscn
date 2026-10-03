@@ -1,5 +1,9 @@
 [gd_scene load_steps=23 format=3]
 
+[ext_resource type="Script" path="res://features/food_court/booth_seat.gd" id="seating"]
+
+
+
 [ext_resource type="Script" path="res://features/casino_hub/model_materials.gd" id="finishes"]
 [ext_resource type="PackedScene" path="res://assets/casino_hub/models/salon_card_table.glb" id="card_table"]
 [ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_dealer.tscn" id="dealer"]
@@ -248,3 +252,84 @@ rotation = Vector3(0, -0.5, 0)
 
 
 [node name="BundleFurnishings" parent="." instance=ExtResource("bundle")]
+
+[node name="PlayerSeat0_0" type="Node3D" parent="." groups=["casino_seats"]]
+position = Vector3(-3.838299, -0.75, -5.103984)
+rotation = Vector3(0, -0.7853986535897932, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.5, 1.1)
+seat_label = "Sit at the card table"
+guest_path = NodePath("../Patron0_0")
+
+[node name="PlayerSeat0_1" type="Node3D" parent="." groups=["casino_seats"]]
+position = Vector3(-5.5, -0.75, -4.65)
+rotation = Vector3(0, 3.4641020674186507e-7, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.5, 1.1)
+seat_label = "Sit at the card table"
+guest_path = NodePath("../Patron0_1")
+
+[node name="PlayerSeat0_2" type="Node3D" parent="." groups=["casino_seats"]]
+position = Vector3(-7.161701, -0.75, -5.103984)
+rotation = Vector3(0, 0.785398346410207, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.5, 1.1)
+seat_label = "Sit at the card table"
+guest_path = NodePath("../Patron0_2")
+
+[node name="PlayerSeat1_0" type="Node3D" parent="." groups=["casino_seats"]]
+position = Vector3(-3.838299, -0.75, -0.103984)
+rotation = Vector3(0, -0.7853986535897932, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.5, 1.1)
+seat_label = "Sit at the card table"
+guest_path = NodePath("../Patron1_0")
+
+[node name="PlayerSeat1_1" type="Node3D" parent="." groups=["casino_seats"]]
+position = Vector3(-5.5, -0.75, 0.35)
+rotation = Vector3(0, 3.4641020674186507e-7, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.5, 1.1)
+seat_label = "Sit at the card table"
+guest_path = NodePath("../Patron1_1")
+
+[node name="PlayerSeat1_2" type="Node3D" parent="." groups=["casino_seats"]]
+position = Vector3(-7.161701, -0.75, -0.103984)
+rotation = Vector3(0, 0.785398346410207, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.5, 1.1)
+seat_label = "Sit at the card table"
+guest_path = NodePath("../Patron1_2")
+
+[node name="PlayerSeat2_0" type="Node3D" parent="." groups=["casino_seats"]]
+position = Vector3(-3.838299, -0.75, 4.496016)
+rotation = Vector3(0, -0.7853986535897932, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.5, 1.1)
+seat_label = "Sit at the card table"
+guest_path = NodePath("../Patron2_0")
+
+[node name="PlayerSeat2_1" type="Node3D" parent="." groups=["casino_seats"]]
+position = Vector3(-5.5, -0.75, 4.95)
+rotation = Vector3(0, 3.4641020674186507e-7, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.5, 1.1)
+seat_label = "Sit at the card table"
+guest_path = NodePath("../Patron2_1")
+
+[node name="PlayerSeat2_2" type="Node3D" parent="." groups=["casino_seats"]]
+position = Vector3(-7.161701, -0.75, 4.496016)
+rotation = Vector3(0, 0.785398346410207, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.5, 1.1)
+seat_label = "Sit at the card table"
+guest_path = NodePath("../Patron2_2")

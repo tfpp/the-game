@@ -206,6 +206,33 @@ window.addEventListener('keydown', function (evt) {
 			<div id="status-notice"></div>
 		</div>
 
+		<script id="game-pointer-lock">
+// Capture remains synchronous inside Godot's user-gesture handler. The browser
+// may deliver a click before the document has focus, or reject a request after
+// focus changes. Never retry asynchronously: a fresh Click to play / Resume is
+// required, and Godot's real pointer-lock state drives that existing recovery UI.
+(function () {
+	const canvas = document.getElementById('canvas');
+	const request = canvas.requestPointerLock;
+	if (!request) return;
+	canvas.requestPointerLock = function (...args) {
+		if (!document.hasFocus()) window.focus();
+		canvas.focus({ preventScroll: true });
+		if (!document.hasFocus()) return;
+		try {
+			const pending = request.apply(canvas, args);
+			// Older browsers return void; newer ones reject a Promise on denial.
+			if (pending && typeof pending.catch === 'function') {
+				return pending.catch(function () {});
+			}
+			return pending;
+		} catch (error) {
+			// Legacy synchronous refusal also leaves the pointer free. Do not
+			// synthesize a successful lock or suppress pointerlockerror events.
+		}
+	};
+}());
+		</script>
 		<script>
 // Cache busting (#371): the version-mismatch "Reload page" button adds ?v=<server build>.
 // Pass it to the engine script and to the files the engine fetches (wasm, pck), so the

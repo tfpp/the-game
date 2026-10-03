@@ -99,17 +99,21 @@ casino patrons and the bar companion continue to load normally.
 
 ## South shops
 
-`shops.gd` retains a sealed former shop unit (x -16…-2, z 20…30), food court (x 2…34,
-z 20…38) and the connecting four-metre corridor (x -2…2, z 20…30).
+`shops.gd` provides a sealed former shop unit (x -16…-2, z 20…30) and
+the connecting four-metre corridor (x -2…2, z 20…30). The final offline recipe
+`retired_food_hall.gd` removes the vacant former food/mall hall at x 2…34,
+z 20…38: floor, walls, ceiling, roof collision and outward-facing fixtures.
+It seals the corridor's east wall behind the unchanged Strip Mall portal.
 Floors share the main floor GridMap; two additional GridMaps hold shop walls.
 The south casino opening and food court door are four metres wide with tiled
 headers above 2.5 m. The ceiling GridMap covers both rooms and the corridor, with
 room-sized box collision at y 5 m; the main hall ceiling is higher at y 8.75 m.
 
-The former food hall is now vacant: food_court and kebab_shop load in the
-remote Crown Strip Mall at z -5000. Its modeled portal occupies the former food
-entrance at (1.8,1.25,25); GPS routes food shopping through that door. The saved
-casino shell is retained, not rebuilt or removed by the relocation. See
+The former food hall and its three trampolines are removed (issue #486).
+food_court and kebab_shop still load in the remote Crown Strip Mall at z -5000.
+Its modeled portal occupies the former food entrance at (1.8,1.25,25); GPS routes
+food shopping through that door. The live mall, frog display and food booths are
+unchanged; the obsolete hall is not a second shopping destination. See
 `features/strip_mall/README.md` for the new feature-owned gridset.
 Rusty Hogg’s shop and loot fence occupy the separate roadside storefront reached by
 the operations van (`features/pawn_shop/README.md`). The Gun-O-Matic now stands in
@@ -267,7 +271,8 @@ casino comparison room and doorway were retired in issue #487.
 
 `models/casino_stool.tscn` reuses the imported bundle's burgundy-and-brass stool,
 including its matching collision and 32×32 atlas. The three balcony stools and
-Vivienne's main-bar stool share this wrapper. A 0.9840426 vertical scale fits the
+Vivienne's main-bar stool share this wrapper. The balcony stools now have Use
+seat anchors managed by food_court; Vivienne's quest stool remains reserved. A 0.9840426 vertical scale fits the
 0.752 m source to the established 0.74 m seat height, preserving her seated pose.
 Rebuilding the balcony uses this same wrapper. The bundle retains authoritative
 mesh, paint and UV sources; no duplicate model or texture is needed.

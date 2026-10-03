@@ -16,6 +16,8 @@
 
 [ext_resource type="PackedScene" path="res://features/casino_props/props/glass_ashtray.tscn" id="glass_ashtray"]
 
+[ext_resource type="Script" path="res://features/food_court/booth_seat.gd" id="seating"]
+
 [node name="BundleFurnishings" type="Node3D"]
 
 [node name="Sofa" parent="." instance=ExtResource("1")]
@@ -125,3 +127,107 @@ collision_mask = 0
 position = Vector3(-20.3, 1.071, 15.5)
 collision_layer = 0
 collision_mask = 0
+
+[node name="Seat" type="Node3D" parent="Chair" groups=["casino_seats"]]
+position = Vector3(0, 0.555, 0.03)
+rotation = Vector3(0, 3.141592653589793, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.555, -1.05)
+seat_label = "Sit down"
+
+[node name="Seat" type="Node3D" parent="LoungeChairEast" groups=["casino_seats"]]
+position = Vector3(0, 0.555, 0.03)
+rotation = Vector3(0, 3.141592653589793, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(1.1, -0.555, 0)
+seat_label = "Sit down"
+
+[node name="Seat" type="Node3D" parent="LoungeChairSouthEastA" groups=["casino_seats"]]
+position = Vector3(0, 0.555, 0.03)
+rotation = Vector3(0, 3.141592653589793, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.555, -1.05)
+seat_label = "Sit down"
+
+[node name="Seat" type="Node3D" parent="LoungeChairSouthEastB" groups=["casino_seats"]]
+position = Vector3(0, 0.555, 0.03)
+rotation = Vector3(0, 3.141592653589793, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.555, -1.05)
+seat_label = "Sit down"
+
+[node name="Seat" type="Node3D" parent="LoungeChairSouthWestA" groups=["casino_seats"]]
+position = Vector3(0, 0.555, 0.03)
+rotation = Vector3(0, 3.141592653589793, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.555, -1.05)
+seat_label = "Sit down"
+
+[node name="Seat" type="Node3D" parent="LoungeChairSouthWestB" groups=["casino_seats"]]
+position = Vector3(0, 0.555, 0.03)
+rotation = Vector3(0, 3.141592653589793, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.555, -1.05)
+seat_label = "Sit down"
+
+[node name="SeatLeft" type="Node3D" parent="Sofa" groups=["casino_seats"]]
+position = Vector3(-0.33, 0.555, 0.03)
+rotation = Vector3(0, 3.141592653589793, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.555, -1.05)
+seat_label = "Sit down"
+
+[node name="SeatRight" type="Node3D" parent="Sofa" groups=["casino_seats"]]
+position = Vector3(0.33, 0.555, 0.03)
+rotation = Vector3(0, 3.141592653589793, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.555, -1.05)
+seat_label = "Sit down"
+
+[node name="Seat" type="Node3D" parent="BarStool" groups=["casino_seats"]]
+position = Vector3(0, 0.752, 0)
+rotation = Vector3(0, 0, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.752, 0.95)
+seat_label = "Sit on the stool"
+
+[node name="Seat" type="Node3D" parent="CocktailStoolEastA" groups=["casino_seats"]]
+position = Vector3(0, 0.752, 0)
+rotation = Vector3(0, -1.5707963267948966, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.752, 0.95)
+seat_label = "Sit on the stool"
+
+[node name="Seat" type="Node3D" parent="CocktailStoolEastB" groups=["casino_seats"]]
+position = Vector3(0, 0.752, 0)
+rotation = Vector3(0, 0, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.752, 0.95)
+seat_label = "Sit on the stool"
+
+[node name="Seat" type="Node3D" parent="CocktailStoolWestA" groups=["casino_seats"]]
+position = Vector3(0, 0.752, 0)
+rotation = Vector3(0, 1.5707963267948966, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.752, 0.95)
+seat_label = "Sit on the stool"
+
+[node name="Seat" type="Node3D" parent="CocktailStoolWestB" groups=["casino_seats"]]
+position = Vector3(0, 0.752, 0)
+rotation = Vector3(0, -1.5707963267948966, 0)
+script = ExtResource("seating")
+casino_seat = true
+exit_offset = Vector3(0, -0.752, 0.95)
+seat_label = "Sit on the stool"

@@ -69,6 +69,41 @@ the player, it lets go and asks to stand. `is_seated(peer)` (group `seating`) le
 
 Nothing is persisted. Tests: `tests/features/food_court/`.
 
+### Casino furniture
+
+The same owner now registers 25 casino seats: six lounge chairs, two couch
+places, five main-floor bar/cocktail stools, nine card-table chairs and three
+stools at the upstairs Mariachi Balcony Bar. Use (E / B / Circle / touch USE)
+sits or stands; movement or Jump also stands, including queued touch jumps.
+While seated, the body stays facing the chair's authored heading and only the
+head follows look yaw/pitch. Camera and replicated aim stay independent; the
+avatar derives body heading through `seated_yaw(peer)` (NAN when standing), so
+other players and late joiners see the same fixed body facing.
+Decorative card guests yield their chair while occupied and return afterward.
+Staff/dealer positions and Vivienne's quest stool remain reserved.
+
+Placement scenes author `booth_seat.gd` anchors in `casino_seats`, on each
+cushion, with local -Z facing forward. `casino_seat = true` selects an authored
+`exit_offset` to a clear floor point; `seat_label` customizes the existing prompt.
+Optional `guest_path` temporarily hides a decorative guest without changing its
+networked alive state. Assets themselves remain reusable static props.
+
+FoodCourt gathers these static anchors once at startup, sorted by full node
+path, after the room and earlier features load. It appends them after the original
+32 booth indices. Keep anchors outside streamed content and available before
+food_court loads; do not insert/remove them during a session. The single
+`net_seats` snapshot, validation, `seating/is_seated(peer)`, local pinning,
+disconnect/death/teleport and session cleanup cover both areas unchanged.
+No duplicated occupancy, new RPC, binding, persistence or avatar query exists.
+
+Regression tests include every casino exit's floor/capsule clearance, balcony
+facing/height, competing occupants, decorative guest presentation and pose.
+Run `bash tests/features/food_court/network_test.sh` from game/ for a real
+WebSocket visitor, late visitor, denied seat theft and replicated stand.
+With a display, run `godot --audio-driver Dummy
+res://tests/features/food_court/capture.tscn` for native lounge/card/balcony renders
+at `/tmp/casino-seat-*.png`.
+
 ## Poke bowls
 
 The small **POKE BOWLS** stand at (30, 0, 22.5) faces west, beside the kebab

@@ -22,10 +22,10 @@ func test_decor_library_reuses_painting_and_fixtures_without_collision() -> void
 		assert_eq(_decor.mesh_library.get_item_shapes(id).size(), 0)
 	assert_eq(_decor.mesh_library.get_item_name(Decor.PAINTING), "FramedLandscape")
 	assert_eq(_decor.mesh_library.get_item_mesh(Decor.PAINTING).get_surface_count(), 2)
-	assert_gt(_decor.get_used_cells_by_item(Decor.PAINTING).size(), 10)
-	assert_eq(_decor.get_used_cells_by_item(Decor.WALL_LIGHT).size(), 21)
+	assert_gt(_decor.get_used_cells_by_item(Decor.PAINTING).size(), 8)
+	assert_eq(_decor.get_used_cells_by_item(Decor.WALL_LIGHT).size(), 17)
 	assert_eq(_decor.get_cell_item(Vector3i(-9, 12, 30)), Decor.PAINTING)
-	assert_eq(_decor.get_cell_item(Vector3i(13, 12, 38)), Decor.PAINTING)
+	assert_eq(_decor.get_cell_item(Vector3i(13, 12, 38)), GridMap.INVALID_CELL_ITEM)
 
 
 func test_saved_fixture_cells_have_local_lights_and_only_two_shadow_pools() -> void:
