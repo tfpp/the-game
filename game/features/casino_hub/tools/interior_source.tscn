@@ -1,5 +1,6 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
+[ext_resource type="PackedScene" path="res://features/signage/sign_board.tscn" id="sign_board"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/plaster.tres" id="plaster"]
@@ -752,15 +753,11 @@ size = Vector3(0.1, 0.08, 18)
 material = ExtResource("brass")
 use_collision = false
 
-[node name="WingSign-1" type="Label3D" parent="."]
+[node name="WingSign-1" parent="." instance=ExtResource("sign_board")]
 position = Vector3(-17.65, 4, 0)
 text = "PETTING ZOO"
-font_size = 42
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 1.5707963267948966, 0)
+letter_height = 0.353
 
 double_sided = false
 [node name="WingDoorLight-1" type="OmniLight3D" parent="."]
@@ -836,15 +833,11 @@ size = Vector3(0.1, 0.08, 18)
 material = ExtResource("brass")
 use_collision = false
 
-[node name="WingSign1" type="Label3D" parent="."]
+[node name="WingSign1" parent="." instance=ExtResource("sign_board")]
 position = Vector3(17.65, 4, 0)
 text = "HARBOR ROOM"
-font_size = 42
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, -1.5707963267948966, 0)
+letter_height = 0.353
 
 double_sided = false
 [node name="WingDoorLight1" type="OmniLight3D" parent="."]
@@ -888,26 +881,18 @@ material = ExtResource("wood")
 use_collision = true
 visible = false
 
-[node name="ZooTitle" type="Label3D" parent="."]
+[node name="ZooTitle" parent="." instance=ExtResource("sign_board")]
 position = Vector3(-26, 4.5, -20.7)
 text = "THE LUCKY PETTING PARLOR"
-font_size = 38
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.319
 
 double_sided = false
-[node name="ZooNotice" type="Label3D" parent="."]
+[node name="ZooNotice" parent="." instance=ExtResource("sign_board")]
 position = Vector3(-26, 2.9, -20.7)
 text = "FROGS & FRIENDS  /  PLEASE BE KIND"
-font_size = 23
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.193
 
 double_sided = false
 [node name="ZooLight-13" type="OmniLight3D" parent="."]
@@ -1051,26 +1036,18 @@ light_energy = 1.3
 omni_range = 13
 omni_attenuation = 1.4
 
-[node name="HarborTitle" type="Label3D" parent="."]
+[node name="HarborTitle" parent="." instance=ExtResource("sign_board")]
 position = Vector3(26, 4.6, -20.7)
 text = "NEW YORK  /  INDOOR FERRY"
-font_size = 34
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.286
 
 double_sided = false
-[node name="HarborNotice" type="Label3D" parent="."]
+[node name="HarborNotice" parent="." instance=ExtResource("sign_board")]
 position = Vector3(26, 3.2, -20.7)
 text = "BOARD AT EITHER END  -  TAKE THE WHEEL"
-font_size = 22
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.185
 
 double_sided = false
 [node name="MarqueeBacking" type="CSGBox3D" parent="."]
@@ -1079,48 +1056,32 @@ size = Vector3(20, 3.1, 0.4)
 material = ExtResource("wood")
 use_collision = true
 
-[node name="CasinoName" type="Label3D" parent="."]
+[node name="CasinoName" parent="." instance=ExtResource("sign_board")]
 position = Vector3(0, 5.2, -15.75)
 text = "THE GOLDEN CROWN"
-font_size = 90
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.756
 
 double_sided = false
-[node name="CasinoDate" type="Label3D" parent="."]
+[node name="CasinoDate" parent="." instance=ExtResource("sign_board")]
 position = Vector3(0, 3.9, -15.73)
 text = "MOTOR LODGE & CASINO  /  EST. 1964"
-font_size = 27
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.227
 
 double_sided = false
-[node name="Welcome" type="Label3D" parent="."]
+[node name="Welcome" parent="." instance=ExtResource("sign_board")]
 position = Vector3(0, 2.2, 29)
 text = "WELCOME BACK, HIGH ROLLER"
-font_size = 40
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 3.141592653589793, 0)
+letter_height = 0.336
 
 double_sided = false
-[node name="Directions" type="Label3D" parent="."]
+[node name="Directions" parent="." instance=ExtResource("sign_board")]
 position = Vector3(0, 5.5, 14.15)
 text = "PETTING ZOO  <     SLOTS & ROULETTE     >  HARBOR ROOM"
-font_size = 20
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.168
 
 double_sided = false
 [node name="LobbySofa-10" type="CSGBox3D" parent="."]
@@ -1223,15 +1184,11 @@ size = Vector3(10, 0.96, 1.2)
 material = ExtResource("wood")
 use_collision = true
 
-[node name="SecuritySign" type="Label3D" parent="."]
+[node name="SecuritySign" parent="." instance=ExtResource("sign_board")]
 position = Vector3(-10, 2.4, 16.7)
 text = "SECURITY / UNCLAIMED PROPERTY"
-font_size = 24
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.202
 
 double_sided = false
 [node name="WardrobeCounter" type="CSGBox3D" parent="."]
@@ -1240,48 +1197,32 @@ size = Vector3(10, 0.86, 1.2)
 material = ExtResource("teal")
 use_collision = true
 
-[node name="WardrobeSign" type="Label3D" parent="."]
+[node name="WardrobeSign" parent="." instance=ExtResource("sign_board")]
 position = Vector3(10, 2.3, 16.7)
 text = "COAT CHECK / LOST & FOUND"
-font_size = 25
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.210
 
 double_sided = false
-[node name="RecreationSign" type="Label3D" parent="."]
+[node name="RecreationSign" parent="." instance=ExtResource("sign_board")]
 position = Vector3(-24, 4, 24)
 text = "THE STARDUST REC ROOM"
-font_size = 30
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.252
 
 double_sided = false
-[node name="TrampolineSign" type="Label3D" parent="."]
+[node name="TrampolineSign" parent="." instance=ExtResource("sign_board")]
 position = Vector3(25, 4, 23)
 text = "JUMP LOUNGE"
-font_size = 35
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.294
 
 double_sided = false
-[node name="ExhibitSign" type="Label3D" parent="."]
+[node name="ExhibitSign" parent="." instance=ExtResource("sign_board")]
 position = Vector3(-25, 5.5, -28)
 text = "QUIET GALLERY"
-font_size = 30
-pixel_size = 0.012
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.10, 0.04, 0.025, 1)
-outline_size = 6
 rotation = Vector3(0, 0, 0)
+letter_height = 0.252
 
 double_sided = false
 [node name="CeilingSeam-30" type="CSGBox3D" parent="."]

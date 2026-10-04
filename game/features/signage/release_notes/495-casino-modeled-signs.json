@@ -1,0 +1,9 @@
+{
+  "title": "Modeled casino signs",
+  "summary": "The Golden Crown's signs and the elevator plaques are now real brass boards instead of floating text.",
+  "notes": [
+    "Replace the 15 floating casino sign labels with brass sign boards.",
+    "Turn the elevator sign and floor indicators into modeled plaques.",
+    "Add arrow glyphs to the shared sign letter atlas."
+  ]
+}

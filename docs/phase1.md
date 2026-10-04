@@ -212,8 +212,10 @@ Replace one area per task so each PR stays reviewable.
   are quads into the runtime-painted 64×64 `SignLetterAtlas`. No signs replaced yet.
 
 ### E2. Casino signs (depends on E1)
-- [ ] Replace the 15 `Label3D` signs in `casino_hub/interior.tscn` (THE GOLDEN CROWN,
+- [x] Replace the 15 `Label3D` signs in `casino_hub/interior.tscn` (THE GOLDEN CROWN,
   room names, directional sign) and the elevator's sign and floor indicators.
+- Completed in #495: all 15 interior labels and the elevator `Sign`, `Indicator` and
+  `CabIndicator` are flush brass `SignBoard`s at the old transforms; the atlas gained `<` `>`.
 
 ### E3. Shop and price signs (depends on E1)
 - [ ] Pawn shop (`pawn_shop`, `wall_gun.gd` price tags), kebab shop, food court

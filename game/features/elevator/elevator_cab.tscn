@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 [ext_resource type="Script" path="res://features/elevator/elevator_cab.gd" id="script"]
 [ext_resource type="Script" path="res://core/net/networked_entity.gd" id="network"]
 [ext_resource type="PackedScene" path="res://features/elevator/models/doors.tscn" id="doors"]
 [ext_resource type="PackedScene" path="res://features/elevator/call_button.tscn" id="button"]
 [ext_resource type="Material" path="res://features/elevator/models/painted_wood_brass.tres" id="brass"]
+[ext_resource type="PackedScene" path="res://features/signage/sign_board.tscn" id="sign_board"]
 [sub_resource type="BoxMesh" id="LampHousing"]
 size = Vector3(0.24, 0.16, 0.06)
 [sub_resource type="CylinderMesh" id="LampLens"]
@@ -30,27 +31,20 @@ position = Vector3(2, 1.5, 1.75)
 [node name="CabButton" parent="Car" instance=ExtResource("button")]
 position = Vector3(1.35, 1.5, -0.4)
 rotation = Vector3(0, -1.5707963, 0)
-[node name="Sign" type="Label3D" parent="Car"]
+[node name="Sign" parent="Car" instance=ExtResource("sign_board")]
 position = Vector3(0, 3.65, 1.70)
-modulate = Color(0.94, 0.73, 0.28, 1)
 text = "ELEVATOR"
-font_size = 56
-pixel_size = 0.006
-outline_size = 4
-[node name="Indicator" type="Label3D" parent="Car"]
+letter_height = 0.235
+[node name="Indicator" parent="Car" instance=ExtResource("sign_board")]
 position = Vector3(0, 3.3, 1.70)
-modulate = Color(0.85, 0.65, 0.26, 1)
 text = "C  /  THE GOLDEN CROWN"
-font_size = 24
-pixel_size = 0.004
-outline_size = 2
-[node name="CabIndicator" type="Label3D" parent="Car"]
+letter_height = 0.067
+padding = 0.03
+[node name="CabIndicator" parent="Car" instance=ExtResource("sign_board")]
 position = Vector3(0, 2.67, -1.32)
-modulate = Color(0.9, 0.69, 0.3, 1)
 text = "C"
-font_size = 48
-pixel_size = 0.004
-outline_size = 0
+letter_height = 0.134
+padding = 0.03
 [node name="HallLamp" type="MeshInstance3D" parent="Car"]
 position = Vector3(1.25, 3.3, 1.73)
 mesh = SubResource("LampHousing")
