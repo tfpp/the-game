@@ -56,6 +56,24 @@ casino's operations-garage door and then to the van.
   firearm use; rejected shots spend no ammo. The street scenery is outside the zone.
   Self-damage commands retain the existing safe-zone exception.
 
+## Street trees (#507)
+
+Six pixel-painted deciduous trees grow on the grass beside the frontage and in gaps
+across the road, visible through the shop windows. They are scenery, not new
+interactions or outdoor access. `tree.tscn` shares one 128×128 alpha-cutout texture,
+one material and a 48-triangle subdivided quad per instance. Its floor-centred
+pivot sits on the grass at y -0.42. The fixed-Y billboard stays upright in every
+camera view; GPU wind bends the canopy and flutters the upper edges while keeping
+the trunk base still. Position-based phases vary the six trees' motion.
+
+Wind is cosmetic client-local shader time, not synchronized gameplay/weather state.
+No RPCs, per-frame tree scripts, lights, collision or shadows are added. Trees load
+and unload with the existing streamed street, including offline and late arrivals.
+Road, pavements, van and building footprints remain clear even at maximum sway.
+Art source, exact prompt, UV guide and rebuild instructions:
+`docs/design/model-sources/pawn-tree/README.md`.
+Placement, shared resources and unload/reload coverage: `test_street_trees.gd`.
+
 ## Buying a gun
 
 `WallGun` uses `NetworkedInteraction`: the server resolves the sender, checks range

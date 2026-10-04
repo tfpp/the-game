@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://features/pawn_shop/tree.gdshader" id="shader"]
+[ext_resource type="Texture2D" path="res://assets/pawn_shop/textures/tree.png" id="texture"]
+
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+shader_parameter/tree_texture = ExtResource("texture")
+shader_parameter/sway_amplitude = 0.16
+shader_parameter/flutter_amplitude = 0.035
+
+[sub_resource type="QuadMesh" id="mesh"]
+material = SubResource("material")
+size = Vector2(4.8, 6)
+center_offset = Vector3(0, 3, 0)
+subdivide_width = 2
+subdivide_depth = 7
+
+[node name="Tree" type="MeshInstance3D"]
+cast_shadow = 0
+extra_cull_margin = 3.0
+mesh = SubResource("mesh")
