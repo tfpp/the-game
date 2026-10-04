@@ -1,0 +1,84 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/starter_room/garage_finishes.png" id="paint"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_shutter.res" id="shutter"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_window_frame.res" id="window"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_broom_cupboard.res" id="cupboard"]
+
+[sub_resource type="StandardMaterial3D" id="material"]
+albedo_texture = ExtResource("paint")
+roughness = 0.86
+texture_filter = 2
+texture_repeat = false
+
+[sub_resource type="StandardMaterial3D" id="glass"]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(0.65, 0.8, 0.84, 0.12)
+roughness = 0.32
+metallic_specular = 0.25
+
+[sub_resource type="BoxMesh" id="pane"]
+size = Vector3(2.98, 1.98, 0.018)
+
+[sub_resource type="BoxShape3D" id="pane_shape"]
+size = Vector3(2.98, 1.98, 0.045)
+
+[sub_resource type="BoxShape3D" id="cupboard_shape"]
+size = Vector3(1.3, 2.3, 0.6)
+
+[sub_resource type="BoxShape3D" id="leaf_shape"]
+size = Vector3(0.57, 2.18, 0.055)
+
+[node name="GarageFinishes" type="Node3D"]
+
+[node name="Shutter" type="MeshInstance3D" parent="."]
+position = Vector3(3, 0, -8.72)
+mesh = ExtResource("shutter")
+material_override = SubResource("material")
+
+[node name="AlleyWindow" type="Node3D" parent="."]
+position = Vector3(-8, 0, 3.5)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Frame" type="MeshInstance3D" parent="AlleyWindow"]
+mesh = ExtResource("window")
+material_override = SubResource("material")
+
+[node name="Glass" type="MeshInstance3D" parent="AlleyWindow"]
+position = Vector3(0, 2.25, -0.005)
+mesh = SubResource("pane")
+material_override = SubResource("glass")
+cast_shadow = 0
+
+[node name="Collision" type="StaticBody3D" parent="AlleyWindow"]
+
+[node name="Pane" type="CollisionShape3D" parent="AlleyWindow/Collision"]
+position = Vector3(0, 2.25, -0.005)
+shape = SubResource("pane_shape")
+
+[node name="WindowLight" type="OmniLight3D" parent="AlleyWindow"]
+position = Vector3(0, 2.3, 0.6)
+light_color = Color(0.66, 0.77, 0.86, 1)
+light_energy = 0.65
+omni_range = 4.0
+
+[node name="BroomCupboard" type="Node3D" parent="."]
+position = Vector3(-7.5, 0, 6.6)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Model" type="MeshInstance3D" parent="BroomCupboard"]
+mesh = ExtResource("cupboard")
+material_override = SubResource("material")
+
+[node name="Collision" type="StaticBody3D" parent="BroomCupboard"]
+
+[node name="Body" type="CollisionShape3D" parent="BroomCupboard/Collision"]
+position = Vector3(0, 1.15, 0)
+shape = SubResource("cupboard_shape")
+
+[node name="OpenLeaf" type="CollisionShape3D" parent="BroomCupboard/Collision"]
+position = Vector3(-0.45819225, 1.15, 0.5622156)
+rotation = Vector3(0, -1.05, 0)
+shape = SubResource("leaf_shape")
+

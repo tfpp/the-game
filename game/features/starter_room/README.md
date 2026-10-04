@@ -5,7 +5,8 @@ The whole garage, including the upstairs office, is a **safe zone**
 (`features/safe_zone`): no PvP damage or firearm use, and rejected shots spend no
 ammo. Self-damage commands retain the existing safe-zone exception.
 New joins, fall recovery and combat respawns start in the Crown (`../crown_spawn/`).
-Walk to the van's driver side and press **E / B or Circle / touch USE**. Pick a
+Walk to the route-map panel behind the van's driver door and press
+**E / B or Circle / touch USE**. Pick a
 numbered destination on its schematic route map: **The Golden Crown**,
 **Street District**, **Gun Shop · Rusty Hogg's**, or **Crown Strip Mall**. The old
 shared **Basement Garage B1** route is hidden and server-rejected unless
@@ -55,13 +56,24 @@ kiosk; use that kiosk to return to the casino.
 
 ## Assets and review
 
-Van: one indexed 176-triangle mesh, one 128×128 painted atlas, floor-centred pivot,
-5m long × 2.2m wheel width × 2.25m high, front **+Z**. The simple gameplay collider
-is separate. Rolling shutter: one static mesh using an existing small steel-like
-texture. Cabinet, crate and barrel reuse the procedural prop kit.
+Van: an armoured cash-in-transit model with two 128×128 painted atlases,
+floor-centred pivot and front **+Z**. The detailed ladder chassis has axles, leaf
+springs, driveshaft and exhaust. Both cab doors and rear cargo doors open outward
+with **E / controller Use / touch USE** when standing beside their handles.
+The cab doors have sloped inset windows, recessed handles, fitted inner panels
+and mirrors that follow their leaves. Their server-owned state replicates to all
+players, including late joiners.
+Moving leaf collision clears the cab and cargo openings. The route-map panel
+behind the driver door keeps the original travel interaction separate.
+Rolling shutter: one static mesh using an existing small steel-like
+texture. The service cabinet reuses the procedural prop kit; workshop equipment
+shares the lift enamel/steel atlas.
 
 Authoritative native builder, exact UV guide, original painting and prompt:
-`docs/design/model-sources/operations-van/`. Normal rebuilding preserves approved
+`docs/design/model-sources/operations-van/` (original shell/paint) and
+`docs/design/model-sources/armoured-operations-van/` (enhancement recipe).
+The new model review renders are under `docs/design/previews/armoured-operations-van/`.
+Normal rebuilding preserves approved
 paint. See that README for commands. Actual Compatibility renderer captures under
 `docs/design/previews/operations-garage/` include arrival, rear, underside, route map,
 phone layout and driving screen. No browser performance claim is made.
@@ -200,3 +212,63 @@ Tests cover spawn fallback/override, actual initial floor contact, spawn and app
 clearance, indexed winding/UVs/budget, all real arrival links, streamed floor preload,
 excursion finish, validated requests, cancellation, concurrent preparation, modal
 cleanup and real ENet sender/private-event/late-join/disconnect behavior.
+
+## Workshop lift and private rear stash
+
+Use the red lift control panel to raise, stop or lower the van. Stand outside the
+support-arm bay when lowering; it refuses and stops descent if another player
+enters underneath. Four pads support the chassis rails. The engine meets its
+gearbox and shaft, which reaches the rear differential and axle; both axles meet
+the wheel hubs. The lift raises 1.95m, leaving space to walk underneath. This is
+an inspection lift; vehicle upgrade/tuning mechanics are not added. Van travel
+requires the lift to be fully lowered; accepted trips lock its controls.
+
+Open either rear cargo door while the van is lowered, then use **PRIVATE STASH**
+at the rear opening. Each player has 24 individual item spaces (no stacking).
+Store and Take tabs use click/tap buttons and existing item icons; withdrawals
+use the first empty backpack slot. Carried equipment can also be deposited;
+keys remain on the key ring. Phones show two columns with 52px navigation
+buttons, at least 106px item buttons, a scrolling grid and fixed Back control.
+No drag or new input binding is required.
+
+Contents live only in server-side `PlayerInventory.van_stash`, excluded from
+Hand replication. Authenticated interaction events reveal contents only to the
+requester. Every transfer locks inventory, saves the complete carried/stashed
+snapshot, then applies and acknowledges it. Failed saves retain the old state;
+a lost save response is read back, and unresolved writes remain locked until
+reconnecting rather than permitting duplicate items. No client-supplied account
+or player identity is accepted. Raised/closed-door/distant access is rejected.
+
+Signed-in storage uses the existing signed accounts inventory API and SQLite
+record. Offline storage atomically replaces `user://offline-inventory.json`,
+including carried items to prevent a deposited item reappearing on restart.
+Once activated, the ordinary inventory is saved locally too. Preserve this file
+for offline saves and the accounts database for server saves. Anonymous dev-auth
+multiplayer has no stable account identity and cannot use saved stash storage.
+Old snapshots without `van_stash` load with empty storage. Unknown IDs and keys
+are filtered on restore; storage is capped at 24.
+
+New native model/paint authoring: `docs/design/model-sources/workshop-lift/`.
+Review: `docs/design/previews/workshop-lift/` and `docs/design/previews/van-stash/`.
+`test_van_stash.gd` covers real two-client privacy/late join, authentication,
+capacity, stale requests, transfer durability, response loss, account/local
+reload and phone tap controls. Existing inventory/loot/travel coverage remains.
+
+The cleaned workshop places its steel workbench below the mezzanine, with drawer
+banks, hanging tools, a vise and socket tray. A wheeled tool chest sits alongside;
+the compressor, tire rack and mechanic's creeper sit on the right wall, outside
+the lift bay. The floor jack parks near the bench. Loose crate/barrel clutter is
+removed and the service cabinet moves against the left wall. Hazard borders mark
+the service bay. These are inspection/set-dressing props; room architecture stays
+in its existing GridMaps. Equipment has seven indexed meshes, 2,528 triangles,
+one material and reuses the lift's approved 128px atlas. Native authoring and
+review: `docs/design/model-sources/garage-tools/`. Layout tests cover the original
+spawn/exit/van routes plus standing areas and the workbench approach.
+
+The framed side window overlooks a real streamed alley with wet asphalt, brick
+walls, service props, outdoor rain and lightning. `alley_weather.gd` reuses the
+pawn shop storm recordings through GameSFX, disables effects on dedicated servers,
+and stops ambience when the camera leaves the garage. The window glass seals the
+GridMap opening. `garage_finishes.tscn` owns the textured shutter and broom
+cupboard; floating world debug labels have been removed. Interaction prompts and
+functional screens remain available.

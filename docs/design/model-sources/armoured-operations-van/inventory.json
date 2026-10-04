@@ -1,0 +1,45 @@
+{
+  "front": "+Z",
+  "units": "metres",
+  "pivot": "floor centre",
+  "texture": "game/assets/starter_room/van.png",
+  "texture_size": [
+    128,
+    128
+  ],
+  "materials": 2,
+  "triangles": 1416,
+  "meshes": {
+    "van_armoured.res": 952,
+    "van_driver.res": 168,
+    "van_passenger.res": 168,
+    "van_rear_left.res": 64,
+    "van_rear_right.res": 64
+  },
+  "cab_hinges": [
+    [
+      -1,
+      0.85,
+      1.6
+    ],
+    [
+      1,
+      0.85,
+      1.6
+    ]
+  ],
+  "rear_hinges": [
+    [
+      -0.92,
+      0.7,
+      -2.5
+    ],
+    [
+      0.92,
+      0.7,
+      -2.5
+    ]
+  ],
+  "swing_degrees": 100,
+  "cab_texture": "game/assets/starter_room/van_cab.png"
+}

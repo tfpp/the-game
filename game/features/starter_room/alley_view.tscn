@@ -1,0 +1,90 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/starter_room/alley_weather.gd" id="weather"]
+
+[ext_resource type="PackedScene" path="res://features/starter_room/alley_structure.tscn" id="structure"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/dumpster.tscn" id="dumpster"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/service_door.tscn" id="door"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/wall_lamp.tscn" id="lamp"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/air_conditioner.tscn" id="aircon"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/garbage_bag.tscn" id="bag"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/wooden_pallet.tscn" id="pallet"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/storm_drain.tscn" id="drain"]
+
+[sub_resource type="StandardMaterial3D" id="pipe_steel"]
+albedo_color = Color(0.25, 0.31, 0.32, 1)
+roughness = 0.8
+
+[sub_resource type="CylinderMesh" id="downpipe"]
+top_radius = 0.06
+bottom_radius = 0.06
+height = 5.8
+radial_segments = 8
+rings = 1
+
+[sub_resource type="BoxMesh" id="pipe_clip"]
+size = Vector3(0.22, 0.055, 0.14)
+
+
+[node name="AlleyView" type="Node3D"]
+script = ExtResource("weather")
+
+[node name="Structure" parent="." instance=ExtResource("structure")]
+position = Vector3(-13, 0, -4)
+
+[node name="ServiceDoor" parent="." instance=ExtResource("door")]
+position = Vector3(-12.87, 0, 1.4)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Dumpster" parent="." instance=ExtResource("dumpster")]
+position = Vector3(-11.7, 0, 4.1)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="WallLamp" parent="." instance=ExtResource("lamp")]
+position = Vector3(-12.86, 2.7, 1.4)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="LampLight" type="OmniLight3D" parent="."]
+position = Vector3(-12.25, 2.95, 1.4)
+light_color = Color(1, 0.76, 0.46, 1)
+light_energy = 1.3
+omni_range = 5.0
+
+[node name="AlleyFill" type="OmniLight3D" parent="."]
+position = Vector3(-10.8, 4.5, 4.5)
+light_color = Color(0.53, 0.65, 0.76, 1)
+light_energy = 1.4
+omni_range = 8.0
+
+[node name="AirConditioner" parent="." instance=ExtResource("aircon")]
+position = Vector3(-12.8, 4.1, 4.8)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="GarbageBagA" parent="." instance=ExtResource("bag")]
+position = Vector3(-11.5, 0, 5.65)
+
+[node name="GarbageBagB" parent="." instance=ExtResource("bag")]
+position = Vector3(-11.9, 0, 5.9)
+rotation = Vector3(0, 0.6, 0)
+
+[node name="Pallet" parent="." instance=ExtResource("pallet")]
+position = Vector3(-11.9, 0, 8.2)
+
+[node name="Drain" parent="." instance=ExtResource("drain")]
+position = Vector3(-9.5, 0.02, 4.5)
+
+[node name="Downpipe" type="MeshInstance3D" parent="."]
+position = Vector3(-12.78, 2.9, -0.2)
+mesh = SubResource("downpipe")
+material_override = SubResource("pipe_steel")
+
+[node name="ClipA" type="MeshInstance3D" parent="."]
+position = Vector3(-12.87, 1.5, -0.2)
+mesh = SubResource("pipe_clip")
+material_override = SubResource("pipe_steel")
+
+[node name="ClipB" type="MeshInstance3D" parent="."]
+position = Vector3(-12.87, 4.5, -0.2)
+mesh = SubResource("pipe_clip")
+material_override = SubResource("pipe_steel")
+

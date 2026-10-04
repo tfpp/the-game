@@ -1,0 +1,133 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/starter_room/workshop_lift.png" id="texture"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_workbench.res" id="Workbench"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_tool_chest.res" id="ToolChest"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_compressor.res" id="Compressor"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_wheel_rack.res" id="WheelRack"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_floor_jack.res" id="FloorJack"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_creeper.res" id="Creeper"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_bay_markings.res" id="markings"]
+
+[sub_resource type="StandardMaterial3D" id="paint"]
+albedo_texture = ExtResource("texture")
+roughness = 1.0
+texture_filter = 2
+texture_repeat = false
+
+[sub_resource type="BoxShape3D" id="WorkbenchShape"]
+size = Vector3(4.4, 2.08, 0.85)
+
+[sub_resource type="BoxShape3D" id="ToolChestShape"]
+size = Vector3(1.08, 1.06, 0.6)
+
+[sub_resource type="BoxShape3D" id="CompressorShape"]
+size = Vector3(0.86, 1.13, 1.2)
+
+[sub_resource type="BoxShape3D" id="WheelRackShape"]
+size = Vector3(2.22, 1.8, 0.68)
+
+[sub_resource type="BoxShape3D" id="FloorJackShape"]
+size = Vector3(0.64, 1.23, 1.52)
+
+[sub_resource type="BoxShape3D" id="CreeperShape"]
+size = Vector3(0.7, 0.32, 1.35)
+
+[node name="WorkshopEquipment" type="Node3D"]
+
+[node name="Workbench" type="Node3D" parent="."]
+position = Vector3(-5, 0, -8.1)
+rotation = Vector3(0, 0, 0)
+
+[node name="Model" type="MeshInstance3D" parent="Workbench"]
+mesh = ExtResource("Workbench")
+material_override = SubResource("paint")
+
+[node name="Collision" type="StaticBody3D" parent="Workbench"]
+
+[node name="Shape" type="CollisionShape3D" parent="Workbench/Collision"]
+position = Vector3(0, 1.04, 0)
+shape = SubResource("WorkbenchShape")
+
+[node name="ToolChest" type="Node3D" parent="."]
+position = Vector3(-2.3, 0, -7.9)
+rotation = Vector3(0, 0, 0)
+
+[node name="Model" type="MeshInstance3D" parent="ToolChest"]
+mesh = ExtResource("ToolChest")
+material_override = SubResource("paint")
+
+[node name="Collision" type="StaticBody3D" parent="ToolChest"]
+
+[node name="Shape" type="CollisionShape3D" parent="ToolChest/Collision"]
+position = Vector3(0.12, 0.53, 0)
+shape = SubResource("ToolChestShape")
+
+[node name="Compressor" type="Node3D" parent="."]
+position = Vector3(7, 0, -6.9)
+rotation = Vector3(0, 0, 0)
+
+[node name="Model" type="MeshInstance3D" parent="Compressor"]
+mesh = ExtResource("Compressor")
+material_override = SubResource("paint")
+
+[node name="Collision" type="StaticBody3D" parent="Compressor"]
+
+[node name="Shape" type="CollisionShape3D" parent="Compressor/Collision"]
+position = Vector3(0.02, 0.565, 0)
+shape = SubResource("CompressorShape")
+
+[node name="WheelRack" type="Node3D" parent="."]
+position = Vector3(7.2, 0, -0.6)
+rotation = Vector3(0, -1.5707963267948966, 0)
+
+[node name="Model" type="MeshInstance3D" parent="WheelRack"]
+mesh = ExtResource("WheelRack")
+material_override = SubResource("paint")
+
+[node name="Collision" type="StaticBody3D" parent="WheelRack"]
+
+[node name="Shape" type="CollisionShape3D" parent="WheelRack/Collision"]
+position = Vector3(0, 0.9, 0)
+shape = SubResource("WheelRackShape")
+
+[node name="FloorJack" type="Node3D" parent="."]
+position = Vector3(-1.05, 0, -7.3)
+rotation = Vector3(0, 0, 0)
+
+[node name="Model" type="MeshInstance3D" parent="FloorJack"]
+mesh = ExtResource("FloorJack")
+material_override = SubResource("paint")
+
+[node name="Collision" type="StaticBody3D" parent="FloorJack"]
+
+[node name="Shape" type="CollisionShape3D" parent="FloorJack/Collision"]
+position = Vector3(0, 0.615, -0.22)
+shape = SubResource("FloorJackShape")
+
+[node name="Creeper" type="Node3D" parent="."]
+position = Vector3(6.65, 0, -4.4)
+rotation = Vector3(0, 0, 0)
+
+[node name="Model" type="MeshInstance3D" parent="Creeper"]
+mesh = ExtResource("Creeper")
+material_override = SubResource("paint")
+
+[node name="Collision" type="StaticBody3D" parent="Creeper"]
+
+[node name="Shape" type="CollisionShape3D" parent="Creeper/Collision"]
+position = Vector3(0, 0.16, 0)
+shape = SubResource("CreeperShape")
+
+[node name="BayMarkings" type="MeshInstance3D" parent="."]
+position = Vector3(3, 0, -3)
+mesh = ExtResource("markings")
+material_override = SubResource("paint")
+
+
+
+[node name="TaskLight" type="OmniLight3D" parent="."]
+position = Vector3(-5, 2.15, -7.3)
+light_color = Color(0.85, 0.91, 0.95, 1)
+light_energy = 1.1
+omni_range = 4.0

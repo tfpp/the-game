@@ -12,6 +12,15 @@
 [ext_resource type="Script" path="res://features/starter_room/job_terminal.gd" id="jobs"]
 [ext_resource type="Script" path="res://features/starter_room/job_panel.gd" id="job_panel"]
 
+[ext_resource type="Script" path="res://features/starter_room/van_route_map.gd" id="route_map"]
+
+[ext_resource type="Script" path="res://features/starter_room/van_door.gd" id="van_door"]
+
+[ext_resource type="PackedScene" path="res://features/starter_room/workshop_lift.tscn" id="lift_scene"]
+
+[ext_resource type="Script" path="res://features/starter_room/van_stash.gd" id="stash"]
+[ext_resource type="Script" path="res://features/starter_room/van_stash_screen.gd" id="stash_screen"]
+
 [sub_resource type="StandardMaterial3D" id="door_paint"]
 albedo_color = Color(0.27, 0.37, 0.35, 1)
 roughness = 1.0
@@ -24,6 +33,7 @@ position = Vector3(0, 0, -3000)
 script = ExtResource("room")
 room_scene = "res://features/starter_room/interior.tscn"
 bounds = AABB(-8.2, -1, -9.2, 16.4, 7, 18.4)
+render_bounds = AABB(-13.2, -1, -9.2, 21.4, 9, 20.4)
 
 [node name="Spawn" type="Marker3D" parent="Room"]
 position = Vector3(0, 1, 4)
@@ -44,12 +54,59 @@ interaction_range = 2.5
 
 [node name="Model" parent="Room/Van" instance=ExtResource("model")]
 
-[node name="Sign" type="Label3D" parent="Room/Van"]
-position = Vector3(-1.4, 2.8, 0)
-billboard = 1
-text = "TRAVEL VAN\nE / USE · ROUTE MAP"
-font_size = 34
-pixel_size = 0.006
+[node name="DriverDoor" parent="Room/Van/Model" index="2"]
+script = ExtResource("van_door")
+door_label = "Driver cab door"
+handle_offset = Vector3(-0.055, 0.43, -1.3)
+open_angle = 1.745329
+
+[node name="NetworkedEntity" type="Node" parent="Room/Van/Model/DriverDoor"]
+script = ExtResource("net")
+replicated_properties = Array[NodePath]([NodePath(".:net_open")])
+interaction_range = 1.4
+
+[node name="PassengerDoor" parent="Room/Van/Model" index="3"]
+script = ExtResource("van_door")
+door_label = "Passenger cab door"
+handle_offset = Vector3(0.055, 0.43, -1.3)
+open_angle = -1.745329
+
+[node name="NetworkedEntity" type="Node" parent="Room/Van/Model/PassengerDoor"]
+script = ExtResource("net")
+replicated_properties = Array[NodePath]([NodePath(".:net_open")])
+interaction_range = 1.4
+
+[node name="RearLeftDoor" parent="Room/Van/Model" index="4"]
+script = ExtResource("van_door")
+door_label = "Left cargo door"
+handle_offset = Vector3(0.52, 0.63, -0.09)
+open_angle = 1.745329
+
+[node name="NetworkedEntity" type="Node" parent="Room/Van/Model/RearLeftDoor"]
+script = ExtResource("net")
+replicated_properties = Array[NodePath]([NodePath(".:net_open")])
+interaction_range = 1.4
+
+[node name="RearRightDoor" parent="Room/Van/Model" index="5"]
+script = ExtResource("van_door")
+door_label = "Right cargo door"
+handle_offset = Vector3(-0.52, 0.63, -0.09)
+open_angle = -1.745329
+
+[node name="NetworkedEntity" type="Node" parent="Room/Van/Model/RearRightDoor"]
+script = ExtResource("net")
+replicated_properties = Array[NodePath]([NodePath(".:net_open")])
+interaction_range = 1.4
+
+[node name="RouteMap" type="Node3D" parent="Room/Van"]
+position = Vector3(-1.22, 1.3, -0.6)
+script = ExtResource("route_map")
+
+
+
+[node name="WorkshopLift" parent="Room" instance=ExtResource("lift_scene")]
+position = Vector3(3, 0, -3)
+van_path = NodePath("../Van")
 
 [node name="WalkingExit" type="CSGBox3D" parent="Room"]
 position = Vector3(-6, 1.1, 7.8)
@@ -63,12 +120,6 @@ door_label = "Walking exit · The Golden Crown"
 [node name="NetworkedEntity" type="Node" parent="Room/WalkingExit"]
 script = ExtResource("net")
 
-[node name="Sign" type="Label3D" parent="Room/WalkingExit"]
-position = Vector3(0, 1.5, 0)
-billboard = 1
-text = "WALK TO CASINO\nE / USE"
-font_size = 32
-pixel_size = 0.004
 
 [node name="CasinoArrival" type="Marker3D" parent="."]
 position = Vector3(-7, 1, -17.8)
@@ -115,3 +166,15 @@ hint = "Climb the west stairs in the operations garage; use the upstairs CRT."
 
 [node name="JobPanel" type="CanvasLayer" parent="."]
 script = ExtResource("job_panel")
+
+[node name="Stash" type="Node3D" parent="Room/Van"]
+position = Vector3(0, 1.05, -2.1)
+script = ExtResource("stash")
+
+[node name="NetworkedEntity" type="Node" parent="Room/Van/Stash"]
+script = ExtResource("net")
+interaction_range = 1.8
+
+
+[node name="StashScreen" type="CanvasLayer" parent="."]
+script = ExtResource("stash_screen")

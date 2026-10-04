@@ -58,12 +58,87 @@ func _capture() -> void:
 	_camera.position = room.to_global(Vector3(-2, 1.65, 4))
 	_camera.look_at(_van.global_position + Vector3.UP)
 	await _save("garage-arrival")
+	_camera.position = room.to_global(Vector3(-5.9, 1.72, 3.2))
+	_camera.look_at(room.to_global(Vector3(-11.5, 1.65, 3.8)))
+	await _save("alley-window")
+	_camera.position = room.to_global(Vector3(-6.1, 1.72, 1.7))
+	_camera.look_at(room.to_global(Vector3(-11.5, 1.65, 4.3)))
+	await _save("alley-window-oblique")
+	_camera.position = room.to_global(Vector3(-10.4, 2.2, 8.7))
+	_camera.look_at(room.to_global(Vector3(-11.8, 1.6, 1.8)))
+	await _save("alley-exterior")
+	_camera.position = room.to_global(Vector3(-5.7, 1.35, 5.8))
+	_camera.look_at(room.to_global(Vector3(-7.25, 1.25, 6.6)))
+	await _save("broom-cupboard")
+	_camera.position = room.to_global(Vector3(.2, 1.9, -5.9))
+	_camera.look_at(room.to_global(Vector3(3, 1.7, -8.72)))
+	await _save("garage-shutter")
+	_camera.position = room.to_global(Vector3(-1.3, 1.65, -4.8))
+	_camera.look_at(room.to_global(Vector3(-5, 1.3, -8)))
+	await _save("workshop-bench")
+	_camera.position = room.to_global(Vector3(5.8, 1.65, 1.5))
+	_camera.look_at(room.to_global(Vector3(7, .9, -4.2)))
+	await _save("workshop-equipment")
+	_camera.position = room.to_global(Vector3(5.8, 1.3, -4.8))
+	_camera.look_at(room.to_global(Vector3(7, .7, -6.9)))
+	await _save("workshop-compressor")
+	_camera.position = room.to_global(Vector3(0, 3.7, 7.6))
+	_camera.look_at(room.to_global(Vector3(0, 1.8, -3)))
+	await _save("workshop-overview")
 	_camera.position = _van.to_global(Vector3(-3.5, 2.8, -4))
 	_camera.look_at(_van.global_position + Vector3.UP)
 	await _save("van-rear")
 	_camera.position = _van.to_global(Vector3(-3, .15, 4))
 	_camera.look_at(_van.global_position + Vector3(0, .4, 0))
 	await _save("van-underside")
+	var lift := room.get_node("WorkshopLift") as WorkshopLift
+	lift.set_physics_process(false)
+	lift.net_height = WorkshopLift.MAX_HEIGHT
+	lift.net_target_height = WorkshopLift.MAX_HEIGHT
+	lift._physics_process(0)
+	_camera.position = room.to_global(Vector3(-1.8, 1.7, 3.5))
+	_camera.look_at(_van.global_position + Vector3(0, 2.3, 0))
+	await _save("workshop-lift-raised")
+	_camera.position = _van.to_global(Vector3(-1.8, 1.4, 3.1))
+	_camera.look_at(_van.to_global(Vector3(0, 2.3, .25)))
+	await _save("workshop-drivetrain-front")
+	_camera.position = _van.to_global(Vector3(-1.8, 1.4, -3.3))
+	_camera.look_at(_van.to_global(Vector3(0, 2.3, -.6)))
+	await _save("workshop-drivetrain-rear")
+	lift.net_height = 0
+	lift.net_target_height = 0
+	lift._physics_process(0)
+	var stash := _van.get_node("Stash") as VanStash
+	(_van.get_node("Model/RearLeftDoor") as OperationsVanDoor).net_open = true
+	(_van.get_node("Model/RearRightDoor") as OperationsVanDoor).net_open = true
+	player.net_position = stash.to_global(Vector3(0, 0, -1))
+	_camera.position = _van.to_global(Vector3(-2.4, 1.6, -4.4))
+	_camera.look_at(_van.to_global(Vector3(0, 1.3, -1.2)))
+	await _save("van-stash-access")
+	var hand := preload("res://features/holdables/hand.tscn").instantiate() as Hand
+	hand.peer_id = 1
+	world.add_child(hand)
+	hand.set_process(false)
+	hand.inventory()._set_item(0, "banana")
+	hand.inventory()._set_item(1, "pistol")
+	hand.inventory()._set_item(2, "cash_bundle")
+	stash.contents = PackedStringArray(
+		["pistol", "banana", "watch", "cash_bundle", "scrap", "shirt:2"]
+	)
+	stash.loaded = true
+	stash.message = "Only you can access these items."
+	stash.screen.call("open", stash)
+	stash.screen.call("_tab", false)
+	await _save("van-private-stash")
+	root.size = Vector2i(390, 844)
+	await _save("van-private-stash-phone")
+	stash.screen.call("_tab", true)
+	await _save("van-private-stash-store-phone")
+	stash.screen.call("close", false)
+	root.size = Vector2i(960, 540)
+	(_van.get_node("Model/RearLeftDoor") as OperationsVanDoor).net_open = false
+	(_van.get_node("Model/RearRightDoor") as OperationsVanDoor).net_open = false
+	player.net_position = _van.to_global(Vector3(-1.6, 1, 1))
 	_van.panel.open_map(_van)
 	await _save("route-map")
 	root.size = Vector2i(390, 844)

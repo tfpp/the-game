@@ -1,0 +1,9 @@
+{
+  "title": "Armoured garage transport",
+  "summary": "The operations van now has reinforced bodywork, a detailed undercarriage and doors you can open.",
+  "notes": [
+    "Add armour panels, heavy bumpers, mirrors, chassis rails, axles, suspension and exhaust to the operations van.",
+    "Open and close both cab doors and rear cargo doors with Use, with shared state for all players.",
+    "Reveal the cab seats and secure cargo compartment when the doors swing open."
+  ]
+}
