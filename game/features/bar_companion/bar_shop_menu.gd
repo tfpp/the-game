@@ -1,5 +1,14 @@
 extends CanvasLayer
-## A local menu opened only after a validated Use; each buy is validated again.
+## A local menu opened only after a validated Use; each buy is validated again. The
+## bartender greets you first in the shared NPC dialogue panel (ui/npc_dialogue):
+## Buy opens the shop, Ask answers with a line of bar talk, Leave walks away.
+
+const ASK_LINES: Array[String] = [
+	"Drinks are five, smokes are two. The house keeps the change.",
+	"The lift goes down to the garage. Whatever you bring back, spend it here.",
+	"Nobody fights in the Crown. Outside the gate, nobody promises anything.",
+	"Vivienne? She notices the lucky ones. Win a little first.",
+]
 
 var _font: Font = preload("res://assets/fonts/inter/Inter-Regular.ttf").duplicate()
 var _root: Control
@@ -7,6 +16,8 @@ var _status: Label
 var _buttons: Array[Button] = []
 var _waiting := false
 var _close_button: Button
+var _dialogue: NpcDialogue
+var _ask_index := 0
 
 @onready var stand: Node3D = get_parent()
 @onready var entity: NetworkedInteraction = get_parent().get_node("NetworkedEntity")
@@ -15,6 +26,9 @@ var _close_button: Button
 func _ready() -> void:
 	layer = 9
 	_build()
+	_dialogue = NpcDialogue.new()
+	_dialogue.name = "Dialogue"
+	add_child(_dialogue)
 	get_viewport().size_changed.connect(_resize)
 	_resize()
 	entity.event_received.connect(_event)
@@ -33,26 +47,52 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
-	if not _root.visible:
+	if not _root.visible and not _dialogue.is_open():
 		return
 	var player := entity.player_for_peer(multiplayer.get_unique_id())
 	if not stand.can_use(player):
+		_dialogue.close()
 		_close()
 
 
 func _event(event: StringName, payload: Dictionary) -> void:
 	if event == &"menu":
-		_root.show()
-		add_to_group(&"modal_ui")
-		Controls.pause()
-		_status.text = "Buy an item, then equip and use it with FIRE / primary action."
-		_waiting = false
-		for button: Button in _buttons:
-			button.disabled = false
-		_buttons[0].grab_focus()
+		_greet()
 	elif event == &"receipt":
 		_waiting = false
 		_status.text = str(payload.get("text", "")) + " Close and Use to order again."
+
+
+func _greet() -> void:
+	(
+		_dialogue
+		. open(
+			"Bartender",
+			"Evening. What'll it be?",
+			[
+				{"label": "Buy", "action": _open_shop},
+				{"label": "Ask", "action": _ask},
+				{"label": "Leave", "action": Callable(), "close": true},
+			]
+		)
+	)
+
+
+func _ask() -> void:
+	_dialogue.say(ASK_LINES[_ask_index % ASK_LINES.size()])
+	_ask_index += 1
+
+
+func _open_shop() -> void:
+	_dialogue.close(false)
+	_root.show()
+	add_to_group(&"modal_ui")
+	Controls.pause()
+	_status.text = "Buy an item, then equip and use it with FIRE / primary action."
+	_waiting = false
+	for button: Button in _buttons:
+		button.disabled = false
+	_buttons[0].grab_focus()
 
 
 func _buy(item: String) -> void:

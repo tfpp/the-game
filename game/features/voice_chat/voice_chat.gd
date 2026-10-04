@@ -24,8 +24,6 @@ class _VoicePeer:
 	var last_chunk_at := 0.0
 
 
-var _indicator: Control
-var _indicator_label: Label
 var _emitters: Node3D
 var _capture: AudioEffectCapture
 var _mic_player: AudioStreamPlayer
@@ -39,7 +37,7 @@ func _ready() -> void:
 	_emitters = Node3D.new()
 	_emitters.name = "Emitters"
 	add_child(_emitters)
-	_build_indicator()
+	add_to_group(&"voice_chat")
 	multiplayer.peer_disconnected.connect(_forget_peer)
 	Network.mode_changed.connect(_reset_session)
 
@@ -58,7 +56,6 @@ func _process(_delta: float) -> void:
 		_pump_capture()
 	_update_positions()
 	_cleanup_stale_voices()
-	_refresh_indicator()
 
 
 ## Mono float [-1, 1] stereo-frame pairs, packed as little-endian 16-bit PCM. Pure and
@@ -266,15 +263,15 @@ func _player_for_peer(peer_id: int) -> Player:
 	return null
 
 
-func _refresh_indicator() -> void:
-	var names: Array[String] = []
+## Who is talking right now ("You" first), shown by the HUD's top-right VOICE line
+## (ui/hud.gd), which finds this node through the `voice_chat` group.
+func speaker_names() -> PackedStringArray:
+	var names := PackedStringArray()
 	if _talking:
 		names.append("You")
 	for peer_id: int in _voices.keys():
 		names.append(_speaker_label(peer_id))
-	_indicator.visible = not names.is_empty()
-	if not names.is_empty():
-		_indicator_label.text = "Talking: " + ", ".join(names)
+	return names
 
 
 func _speaker_label(peer_id: int) -> String:
@@ -282,25 +279,6 @@ func _speaker_label(peer_id: int) -> String:
 	if player and not player.display_name.is_empty():
 		return player.display_name
 	return "Player %d" % peer_id
-
-
-func _build_indicator() -> void:
-	var layer := CanvasLayer.new()
-	layer.name = "Indicator"
-	add_child(layer)
-	var panel := Control.new()
-	panel.name = "Panel"
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	panel.position = Vector2(-268.0, -32.0)
-	panel.custom_minimum_size = Vector2(256.0, 20.0)
-	layer.add_child(panel)
-	_indicator_label = Label.new()
-	_indicator_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_indicator_label.custom_minimum_size = Vector2(256.0, 20.0)
-	panel.add_child(_indicator_label)
-	_indicator = panel
-	_indicator.visible = false
 
 
 func _key_event(keycode: Key) -> InputEventKey:

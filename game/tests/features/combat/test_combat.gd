@@ -99,7 +99,7 @@ func test_self_damage_does_not_award_a_kill() -> void:
 func test_hud_bar_tracks_local_health() -> void:
 	_combat.apply_damage(1, 30.0, 2)
 	await wait_process_frames(1)
-	var bar := _combat.get_node("Hud/Health") as TextureProgressBar
+	var bar := _combat.get_node("Hud/Health") as ProgressBar
 	assert_eq(bar.max_value, Combat.MAX_HEALTH)
 	assert_eq(bar.value, Combat.MAX_HEALTH - 30.0)
 	assert_eq((bar.get_node("Value") as Label).text, "70 HP")

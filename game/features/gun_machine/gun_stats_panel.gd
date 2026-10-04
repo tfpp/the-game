@@ -1,57 +1,51 @@
 extends CanvasLayer
-## Shows the local player's current generated gun: a small always-visible ammo
-## readout, and — press Tab — the full rolled stat sheet. The extra UI a randomly
-## generated weapon needs, since its specs aren't printed on a fixed item like
-## features/holdables' pistol or shotgun.
+## Shows the local player's current generated gun: `ammo_text()` feeds the ammo line of
+## the weapon panel (features/weapon_hotbar), and — press Tab — the full rolled stat
+## sheet. The extra UI a randomly generated weapon needs, since its specs aren't printed
+## on a fixed item like features/holdables' pistol or shotgun.
 
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
 const TOGGLE_ACTION := &"toggle_gun_stats"
 const MODAL_GROUP := &"modal_ui"
 
-var _ammo_label: Label
 var _backdrop: Control
 var _body: RichTextLabel
 
 
 func _ready() -> void:
 	Controls.ensure_action(TOGGLE_ACTION, [_key_event(KEY_TAB)])
-	_ammo_label = Label.new()
-	_ammo_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	_ammo_label.offset_left = 24
-	_ammo_label.offset_top = -84
-	_ammo_label.offset_right = 264
-	_ammo_label.offset_bottom = -20
-	_ammo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	_ammo_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-	_ammo_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_ammo_label.add_theme_font_size_override("font_size", 24)
-	_ammo_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	_ammo_label.add_theme_constant_override("outline_size", 6)
-	add_child(_ammo_label)
 	_build_panel()
 
 
 func _process(_delta: float) -> void:
 	var rig := _local_rig()
 	if rig == null or not rig.is_active():
-		var hand := Hand.for_peer(get_tree(), multiplayer.get_unique_id())
-		var weapon := hand.net_item_id if hand != null else ""
-		_ammo_label.text = (
-			("%d" % hand.inventory().ammo_for(weapon)) if ItemCatalog.AMMO_PACKS.has(weapon) else ""
-		)
-		var magazine := hand.magazine_for(weapon) if hand != null else null
-		if magazine != null:
-			var loaded := magazine.loaded()
-			var reserve := maxi(0, hand.inventory().ammo_for(weapon) - loaded)
-			_ammo_label.text = (
-				"%d / %d%s" % [loaded, reserve, "\nReloading…" if magazine.active() else ""]
-			)
 		if _is_open():
 			_close()
 		return
-	_ammo_label.text = ("%d / %d" % [rig.net_ammo_in_mag, rig.net_ammo_reserve])
 	if _is_open():
 		_body.text = _stats_text(rig)
+
+
+## "loaded / reserve" for the held gun (the active rig, or a holdable with a magazine),
+## a bare count for other ammo-fed holdables, plus "Reloading…" while reloading.
+## Empty when nothing ammo-fed is held.
+static func ammo_text(tree: SceneTree, peer: int) -> String:
+	var rig := GunRig.for_peer(tree, peer)
+	if rig != null and rig.is_active():
+		return "%d / %d" % [rig.net_ammo_in_mag, rig.net_ammo_reserve]
+	var hand := Hand.for_peer(tree, peer)
+	if hand == null:
+		return ""
+	var weapon := hand.net_item_id
+	var magazine := hand.magazine_for(weapon)
+	if magazine != null:
+		var loaded := magazine.loaded()
+		var reserve := maxi(0, hand.inventory().ammo_for(weapon) - loaded)
+		return "%d / %d%s" % [loaded, reserve, "  Reloading…" if magazine.active() else ""]
+	if ItemCatalog.AMMO_PACKS.has(weapon):
+		return "%d" % hand.inventory().ammo_for(weapon)
+	return ""
 
 
 func _input(event: InputEvent) -> void:
@@ -137,7 +131,7 @@ func _build_panel() -> void:
 	_body.fit_content = true
 	_body.scroll_active = false
 	_body.custom_minimum_size = Vector2(380, 0)
-	_body.add_theme_color_override("default_color", Color.WHITE)
+	_body.add_theme_color_override("default_color", Color(0.2, 0.12, 0.08))
 	box.add_child(_body)
 
 	var footer := Label.new()

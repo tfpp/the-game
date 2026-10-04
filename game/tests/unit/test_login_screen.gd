@@ -85,14 +85,14 @@ func test_leave_stops_a_pending_reconnect() -> void:
 	assert_true(menu._reconnect_timer.is_stopped())
 
 
-func test_more_menu_adds_a_link_for_each_registered_esc_menu_entry() -> void:
+func test_activities_menu_adds_a_link_for_each_registered_esc_menu_entry() -> void:
 	var menu := Login.new()
 	add_child_autofree(menu)
 	var entry := _EscMenuLinkStub.new()
 	entry.label = "Controls"
 	add_child_autofree(entry)
 	entry.add_to_group(&"esc_menu_links")
-	menu._show_menu_section("More")
+	menu._show_menu_section("Activities")
 	var found := false
 	for child: Node in menu._box.get_children():
 		if child is Button and (child as Button).text == "Controls":
@@ -104,19 +104,19 @@ func test_esc_menu_links_are_sorted_alphabetically_by_label() -> void:
 	var menu := Login.new()
 	add_child_autofree(menu)
 	var release_notes := _EscMenuLinkStub.new()
-	release_notes.label = "Release notes"
+	release_notes.label = "Prawn skins"
 	add_child_autofree(release_notes)
 	release_notes.add_to_group(&"esc_menu_links")
 	var controls := _EscMenuLinkStub.new()
 	controls.label = "Controls"
 	add_child_autofree(controls)
 	controls.add_to_group(&"esc_menu_links")
-	menu._show_menu_section("More")
+	menu._show_menu_section("Activities")
 	var labels: Array[String] = []
 	for child: Node in menu._box.get_children():
-		if child is Button and (child as Button).text in ["Controls", "Release notes"]:
+		if child is Button and (child as Button).text in ["Controls", "Prawn skins"]:
 			labels.append((child as Button).text)
-	assert_eq(labels, ["Controls", "Release notes"])
+	assert_eq(labels, ["Controls", "Prawn skins"])
 
 
 func test_opening_an_esc_menu_link_closes_the_menu_and_opens_the_entry() -> void:

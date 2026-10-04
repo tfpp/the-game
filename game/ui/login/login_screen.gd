@@ -27,6 +27,20 @@ const ERROR_COLOR := Color(0.8, 0.2, 0.2)
 const IDLE_MENU_DELAY_S := 0.25
 ## A dropped connection retries silently at this interval, with no menu in between.
 const RECONNECT_INTERVAL_S := 3.0
+## The pause menu is styled as the Golden Crown's hotel directory.
+const DIRECTORY_TITLE := "Hotel Directory"
+const BRAND := "THE GOLDEN CROWN"
+## Below this physical width the directory drops its ornament.
+const NARROW_PX := 480.0
+const ICONS := {
+	"Resume": preload("res://assets/kenney/game-icons/PNG/White/1x/forward.png"),
+	"Inventory": preload("res://assets/kenney/game-icons/PNG/White/1x/basket.png"),
+	"Activities": preload("res://assets/kenney/game-icons/PNG/White/1x/star.png"),
+	"Players": preload("res://assets/kenney/game-icons/PNG/White/1x/multiplayer.png"),
+	"Account": preload("res://assets/kenney/game-icons/PNG/White/1x/singleplayer.png"),
+	"Quit": preload("res://assets/kenney/game-icons/PNG/White/1x/exitRight.png"),
+	"Back": preload("res://assets/kenney/game-icons/PNG/White/1x/arrowLeft.png"),
+}
 
 const AUTH_ERRORS := {
 	"discord_cancelled": "Discord sign-in was cancelled.",
@@ -56,10 +70,13 @@ var _reconnect_timer: Timer
 var _has_played := false
 var _play_layer: CanvasLayer
 var _play_prompt: Button
+## Decorative nodes on the current screen, hidden on narrow screens.
+var _ornaments: Array[Control] = []
 
 
 func _ready() -> void:
-	layer = 10
+	# Above every gameplay HUD layer (combat 20, emote wheel 30) so pause covers all.
+	layer = 64
 	_build()
 	_close()
 	_reconnect_timer = Timer.new()
@@ -355,20 +372,42 @@ func _show_pick_name(message: String) -> void:
 
 ## In-game menu while connected to a server.
 func _show_game_menu(message: String) -> void:
-	var display_name := str(_account.get("display_name", ""))
-	_clear("Signed in as %s" % display_name if display_name else "Menu", message)
-	_menu_open = true
-	_resume_button()
-	_add_menu_sections()
+	_show_directory(message)
 
 
 ## Menu when no server is configured (native builds default to offline).
 func _show_offline_menu() -> void:
-	_clear("CASINO ROYALE", "")
-	_label("The Golden Crown is open. Gamble inside, or leave the gate to find your fortune.")
+	_show_directory("")
+
+
+## The Golden Crown hotel directory: branding, the guest's name, then one icon row per
+## destination. Ornament (brand line, rules, flavor text) hides on narrow screens.
+func _show_directory(message: String) -> void:
+	_clear(DIRECTORY_TITLE, message, true)
+	var guest := _label("Welcome, %s" % guest_name(_account, _local_display_name()))
+	guest.name = "Guest"
+	guest.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_ornament(_rule())
 	_menu_open = true
 	_resume_button()
 	_add_menu_sections()
+	_resize_panel()
+
+
+## "MenuTester" for a signed-in account, the in-world name offline, else "Guest".
+static func guest_name(account: Dictionary, local_name: String) -> String:
+	var account_name := str(account.get("display_name", ""))
+	if not account_name.is_empty():
+		return account_name
+	return local_name if not local_name.is_empty() else "Guest"
+
+
+func _local_display_name() -> String:
+	for node: Node in get_tree().get_nodes_in_group(&"players"):
+		var player := node as Player
+		if player != null and player.get_multiplayer_authority() == multiplayer.get_unique_id():
+			return player.display_name
+	return ""
 
 
 func _back_to_menu() -> void:
@@ -464,23 +503,31 @@ func _start_discord(link: bool) -> void:
 
 
 func _resume_button() -> void:
-	_game_button("Resume", _close, true)
+	_game_button("Resume", _close, true).icon = ICONS["Resume"]
 
 
-## Keep Settings direct; gameplay panels and less-used utilities live one level down.
+## Directory order: Resume, Inventory, Settings, Activities, Players, Account, Quit.
+## Inventory and Settings open directly; the rest are one level down.
 func _add_menu_sections() -> void:
+	_add_esc_menu_links("Inventory")
 	_add_esc_menu_links("Settings")
-	_link("Activities", _show_menu_section.bind("Activities"))
-	_link("More", _show_menu_section.bind("More"))
+	for section: String in ["Activities", "Players", "Account"]:
+		_link(section, _show_menu_section.bind(section)).icon = ICONS[section]
+	if Network.mode == Network.Mode.CLIENT:
+		_game_button("Leave server", _leave, false).icon = ICONS["Quit"]
+	elif not OS.has_feature("web"):
+		_link("Quit", get_tree().quit).icon = ICONS["Quit"]
 
 
 func _show_menu_section(section: String) -> void:
 	_clear(section, "")
 	_menu_open = true
 	_submenu = true
-	_link("Back to menu", open_menu)
+	_link("Back to menu", open_menu).icon = ICONS["Back"]
+	if section == "Players":
+		_add_guest_list()
 	_add_esc_menu_links(section)
-	if section == "More":
+	if section == "Account":
 		if _api != null and _api.has_session():
 			if OS.has_feature("web") and not _account.get("discord_linked", false):
 				_link("Link your Discord account", _start_discord.bind(true))
@@ -492,6 +539,26 @@ func _show_menu_section(section: String) -> void:
 			_link("Quit", get_tree().quit)
 
 
+## Everyone in this session, read from the local `players` group (no networking).
+func _add_guest_list() -> void:
+	var names := PackedStringArray()
+	for node: Node in get_tree().get_nodes_in_group(&"players"):
+		var player := node as Player
+		if player == null or node.is_queued_for_deletion():
+			continue
+		var display := player.display_name
+		if display.is_empty():
+			display = "Player %d" % player.get_multiplayer_authority()
+		if player.get_multiplayer_authority() == multiplayer.get_unique_id():
+			display += " (you)"
+		names.append(display)
+	names.sort()
+	var heading := _label("In the Crown tonight: %d" % names.size())
+	heading.theme_type_variation = &"BrandLabel"
+	for display: String in names:
+		_label("· " + display).name = "GuestEntry"
+
+
 func _menu_back() -> void:
 	if _submenu:
 		open_menu()
@@ -499,24 +566,30 @@ func _menu_back() -> void:
 		_resume()
 
 
+## Unknown/future links land in Activities so they stay reachable.
 static func _menu_section(label: String) -> String:
-	if label == "Settings":
-		return "Settings"
-	if label in ["Inventory", "GPS", "Leaderboard"]:
-		return "Activities"
-	return "More"
+	if label in ["Settings", "Inventory"]:
+		return label
+	if label in ["Leaderboard", "Player stats"]:
+		return "Players"
+	if label in ["Console", "Profiler", "Quest / WebXR", "Release notes"]:
+		return "Account"
+	return "Activities"
 
 
-## Sorted within each section. Unknown/future links remain reachable under More.
+## Sorted within each section.
 func _add_esc_menu_links(section: String) -> void:
 	var entries := get_tree().get_nodes_in_group(ESC_MENU_LINKS_GROUP)
 	entries.sort_custom(_esc_menu_label_is_before)
 	for entry: Node in entries:
 		if _menu_section(entry.esc_menu_label()) != section:
 			continue
-		var link := _link(entry.esc_menu_label(), _open_esc_menu_link.bind(entry))
+		var label: String = entry.esc_menu_label()
+		var link := _link(label, _open_esc_menu_link.bind(entry))
 		if entry.has_method(&"esc_menu_icon"):
 			link.icon = entry.esc_menu_icon()
+		elif ICONS.has(label):
+			link.icon = ICONS[label]
 
 
 ## Closes this menu and hands off to the feature panel's own open/close handling.
@@ -576,6 +649,7 @@ func _open() -> void:
 	visible = true
 	_play_layer.visible = false
 	add_to_group(MODAL_GROUP)
+	add_to_group(HudLayout.PAUSE_GROUP)
 	Controls.pause()
 
 
@@ -584,6 +658,8 @@ func _close() -> void:
 	_menu_open = false
 	if is_in_group(MODAL_GROUP):
 		remove_from_group(MODAL_GROUP)
+	if is_in_group(HudLayout.PAUSE_GROUP):
+		remove_from_group(HudLayout.PAUSE_GROUP)
 
 
 func _error_text(result: Dictionary) -> String:
@@ -615,7 +691,7 @@ func _take_fragment() -> Dictionary:
 
 func _build() -> void:
 	var backdrop := ColorRect.new()
-	backdrop.color = Color(0.05, 0.06, 0.08, 0.6)
+	backdrop.color = Color(0.08, 0.04, 0.03, 0.62)
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_theme = UI_THEME.duplicate()
 	backdrop.theme = _theme
@@ -651,12 +727,21 @@ func _resize_panel() -> void:
 			_theme.set_font_size(
 				font_size, type, roundi(UI_THEME.get_font_size(font_size, type) / _ui_scale)
 			)
+	_theme.set_constant(
+		"icon_max_width",
+		"Button",
+		roundi(UI_THEME.get_constant("icon_max_width", "Button") / _ui_scale)
+	)
 	var available := get_viewport().get_visible_rect().size - Vector2(24, 24) / _ui_scale
 	_panel.custom_minimum_size = Vector2(
 		minf(PANEL_WIDTH / _ui_scale, maxf(available.x, 0)),
-		minf(560 / _ui_scale, maxf(available.y, 0))
+		minf(680 / _ui_scale, maxf(available.y, 0))
 	)
 	_box.add_theme_constant_override("separation", roundi(12 / _ui_scale))
+	var narrow := get_viewport().get_visible_rect().size.x * _ui_scale < NARROW_PX
+	for ornament: Control in _ornaments:
+		if is_instance_valid(ornament):
+			ornament.visible = not narrow
 	for child: Node in _box.get_children():
 		if child is Button:
 			(child as Button).custom_minimum_size.y = 48 / _ui_scale
@@ -664,15 +749,24 @@ func _resize_panel() -> void:
 			(child as LineEdit).custom_minimum_size.y = 48 / _ui_scale
 
 
-func _clear(title: String, message: String) -> void:
+func _clear(title: String, message: String, branded: bool = false) -> void:
 	_menu_open = false
 	_submenu = false
 	_scroll.scroll_vertical = 0
+	_ornaments.clear()
 	for child: Node in _box.get_children():
 		_box.remove_child(child)
 		child.queue_free()
+	if branded:
+		var brand := _label(BRAND)
+		brand.name = "Brand"
+		brand.theme_type_variation = &"BrandLabel"
+		brand.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_ornament(brand)
 	var heading := _label(title)
 	heading.theme_type_variation = &"HeadingLabel"
+	if branded:
+		heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var status := _label(message)
 	status.name = "Message"
 	status.add_theme_color_override("font_color", ERROR_COLOR)
@@ -705,6 +799,18 @@ func _set_message(message: String, color: Color) -> void:
 		status.text = message
 		status.add_theme_color_override("font_color", color)
 		status.visible = not message.is_empty()
+
+
+func _ornament(control: Control) -> Control:
+	_ornaments.append(control)
+	return control
+
+
+## A thin brass rule under the directory header.
+func _rule() -> HSeparator:
+	var rule := HSeparator.new()
+	_box.add_child(rule)
+	return rule
 
 
 func _label(text: String) -> Label:
