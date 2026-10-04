@@ -4,6 +4,7 @@ extends Node
 ## Eight backpack slots plus hand, shirt, pants and hat. New players own no items.
 
 const CAPACITY := 8
+const VAN_STASH_CAPACITY := 24
 
 @export var backpack := PackedStringArray(["", "", "", "", "", "", "", ""])
 @export var shirt := ""
@@ -14,6 +15,8 @@ const CAPACITY := 8
 ## Server-only: true while features/inventory/inventory_persistence.gd loads this
 ## player's saved items, so nothing can change until they are merged in.
 var loading := false
+## Server-only private storage; never included in the Hand synchronizer.
+var van_stash := PackedStringArray()
 
 
 func hand() -> Hand:
@@ -71,7 +74,13 @@ func collect(id: String) -> bool:
 ## Server-only transfer into a chosen empty backpack slot. Stash drags use this
 ## so the player's drop target, rather than the automatic equipment slot, wins.
 func collect_into_slot(id: String, slot: int) -> bool:
-	if not multiplayer.is_server() or slot < 0 or slot >= CAPACITY:
+	if (
+		not multiplayer.is_server()
+		or loading
+		or hand().consumption.active()
+		or slot < 0
+		or slot >= CAPACITY
+	):
 		return false
 	var definition := ItemCatalog.find(id)
 	if definition == null or definition.category == ItemDefinition.Category.KEY:
@@ -112,7 +121,7 @@ func has_key(id: String) -> bool:
 ## Keeping it out of the inventory prevents a player from dropping or selling it
 ## twice while the accounts API is resolving the operation.
 func take_first_valuable() -> String:
-	if not multiplayer.is_server():
+	if not multiplayer.is_server() or loading:
 		return ""
 	for slot: int in [-1, 0, 1, 2, 3, 4, 5, 6, 7]:
 		var id := item_at(slot)
@@ -207,7 +216,7 @@ func request_drop(slot: int) -> void:
 ## holdable weapon can never both be equipped at once (see also
 ## `_holster_gun_rig_if_weapon`, which does the reverse).
 func holster_weapon() -> void:
-	if not multiplayer.is_server():
+	if not multiplayer.is_server() or loading:
 		return
 	var id := hand().net_item_id
 	var def := ItemCatalog.find(id)
@@ -280,6 +289,7 @@ func snapshot() -> Dictionary:
 		"hat": hat,
 		"backpack": Array(backpack),
 		"keys": Array(keys),
+		"van_stash": Array(van_stash),
 	}
 
 
@@ -289,6 +299,12 @@ func snapshot() -> Dictionary:
 func restore(saved: Dictionary) -> void:
 	if not multiplayer.is_server():
 		return
+	van_stash = PackedStringArray()
+	for id: Variant in _array(saved.get("van_stash")):
+		if van_stash.size() >= VAN_STASH_CAPACITY:
+			break
+		if id is String and _restorable(id, 0):
+			van_stash.append(id)
 	for id: Variant in _array(saved.get("keys")):
 		var definition := ItemCatalog.find(str(id))
 		if definition != null and definition.category == ItemDefinition.Category.KEY:

@@ -118,3 +118,13 @@ the band, the crown is always black silk (`top_hat.gd`). The only hat in the wor
 is the pawn shop's `ClothingCatalog.TOP_HAT` ("Top hat", $10,000). `BlockPlayerModel`
 wears it on the human head bone, or on the frog, bird or penguin head pivot, so
 everyone sees it; it is hidden with the rest of your body in first person.
+
+The operations van rear stash extends the saved inventory document with a
+server-only `van_stash` array, capped at 24 known non-key item IDs. It is never
+included in Hand replication. `InventoryPersistence.commit_inventory` serializes
+an entire carried/stashed transfer through the existing account save queue and
+waits for durable acknowledgement; uncertain HTTP results are read back before
+unlocking. Stash transfer UI and range/door/lift checks belong to starter_room.
+Offline first stash use activates atomic `user://offline-inventory.json` snapshots
+of carried and stored items, followed by the normal save interval and final Hand
+exit write. Dev-auth guests retain session inventory and cannot access saved stash.

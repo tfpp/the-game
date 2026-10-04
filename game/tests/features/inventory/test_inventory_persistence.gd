@@ -25,6 +25,7 @@ func before_each() -> void:
 	player.set_physics_process(false)
 	_persistence = InventoryPersistence.new()
 	_persistence.transport = _fake_api
+	_persistence.offline_path = ""
 	add_child_autofree(_persistence)
 
 
