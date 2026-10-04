@@ -32,6 +32,7 @@ const SECTIONS: Array[Dictionary] = [
 			[&"kick", "Kick (hold to power kick)"],
 			[&"use", "Interact"],
 			[&"drop_item", "Drop item"],
+			[&"gun_reload", "Reload gun"],
 			[&"inventory", "Inventory"],
 			[&"roulette_bets", "Roulette: bet view (while seated)"],
 		],

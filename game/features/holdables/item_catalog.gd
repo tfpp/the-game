@@ -16,6 +16,8 @@ const DEFINITIONS: Array[ItemDefinition] = [
 	preload("res://features/holdables/items/upper_study_key.tres"),
 	preload("res://features/holdables/items/pistol.tres"),
 	preload("res://features/holdables/items/smg.tres"),
+	preload("res://features/holdables/items/m4a4.tres"),
+	preload("res://features/holdables/items/ak47.tres"),
 	preload("res://features/holdables/items/shotgun.tres"),
 	preload("res://features/holdables/items/banana.tres"),
 	preload("res://features/holdables/items/ball.tres"),
@@ -32,8 +34,22 @@ const DEFINITIONS: Array[ItemDefinition] = [
 const AMMO_PACKS := {
 	"pistol": {"rounds": 20, "price": 1000},
 	"smg": {"rounds": 40, "price": 2000},
+	"m4a4": {"rounds": 60, "price": 3000},
+	"ak47": {"rounds": 60, "price": 3000},
 	"shotgun": {"rounds": 8, "price": 2000},
 	"awp": {"rounds": 5, "price": 2500},
+}
+
+const AMMO_VIEWS: Dictionary[String, PackedScene] = {
+	"pistol": preload("res://features/holdables/items/ammo_pistol_view.tscn"),
+	"smg": preload("res://features/holdables/items/ammo_smg_view.tscn"),
+	"m4a4": preload("res://features/holdables/items/ammo_m4a4_view.tscn"),
+	"ak47": preload("res://features/holdables/items/ammo_ak47_view.tscn"),
+	"shotgun": preload("res://features/holdables/items/ammo_shotgun_view.tscn"),
+	"awp": preload("res://features/holdables/items/ammo_awp_view.tscn"),
+}
+const AMMO_HEIGHTS := {
+	"pistol": .045, "smg": .055, "m4a4": .065, "ak47": .07, "shotgun": .11, "awp": .07
 }
 
 ## Remaining uses travel through the existing inventory/pickup ID transport.
@@ -91,6 +107,10 @@ static func find(id: String) -> ItemDefinition:
 		pack.id = id
 		pack.display_name = "%s ammo (%d rounds)" % [find(weapon).display_name, ammo_rounds(id)]
 		pack.sale_value_cents = 0
+		pack.view_scene = AMMO_VIEWS[weapon]
+		pack.ground_clearance = float(AMMO_HEIGHTS[weapon]) * .5
+		pack.icon_view_direction = Vector3(1, .8, 1.5)
+		pack.weight = .3
 		return pack
 	var kind := consumable_kind(id)
 	if not kind.is_empty() and id != kind:

@@ -1,0 +1,5 @@
+{
+  "title": "Ammunition boxes",
+  "summary": "Every calibre has its own modeled ammunition box.",
+  "notes": ["Replace placeholder ammo props with six painted carton models in inventories, shop previews and world pickups."]
+}

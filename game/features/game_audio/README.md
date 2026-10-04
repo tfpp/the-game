@@ -1,11 +1,11 @@
 # Gameplay audio
 
-Kenney sound effects for all four guns, bullet impacts, animal explosions, item
+Compact per-weapon gunshots plus Kenney effects for bullet impacts, animal explosions, item
 collection, equipping/stowing/dropping, and opening/closing inventory. Existing
 models and visual effects are unchanged.
 
-Shots use short arcade blasts with separate volume/pitch profiles for pistol,
-SMG, shotgun and AWP. World sounds are positional, audible within 48 metres and
+Shots use one distinct supplied recording per weapon, with volume profiles for
+pistol, MP5, M4A4, AK-47, shotgun and AWP. World sounds are positional, audible within 48 metres and
 attenuated with distance. Inventory cues are local to the owner and success cues
 only play after the server accepts the action. Gun cooldowns also gate sound;
 shotgun pellets produce one shot and at most one impact sound per trigger.
@@ -36,7 +36,7 @@ server events trigger them only for visitors already viewing the plaza.
 
 Files copied unmodified from the downloaded Kenney All-in-1 pack:
 
-- Sci-Fi Sounds: explosionCrunch_000 (pistol/SMG), _002 (shotgun/AWP), _004 (animals).
+- Sci-Fi Sounds: explosionCrunch_004 (animals).
 - Impact Sounds: impactGeneric_light_000 (surfaces), impactPunch_medium_000 (hits).
 - Interface Sounds: open_001, close_001, select_001, confirmation_001, drop_001.
 
@@ -53,3 +53,30 @@ There are no floating door labels or lock-status prompts. Late joins replay no s
 
 Run `harness/verify.sh`. Unit tests cover accepted and
 rejected actions, shot cooldowns, effect location, voice limits and cleanup.
+
+## Compact weapon sounds
+
+The user-provided Gun Sounds Pro - HD Remake pack supplies these clips:
+
+| Weapon / cue | Original recording |
+|---|---|
+| M1911 | Pistol Shot.wav |
+| MP5 | Machine Gun Shot.wav |
+| M4A4 | Assault Rifle Shot.wav |
+| AK-47 | Assault Rifle Shot 2.wav |
+| Shotgun | Shotgun Shot.wav |
+| AWP | Sniper Shot.wav |
+| Shared magazine removal | Mag Out.wav |
+| Shared magazine insertion | Mag In.wav |
+| Shared charging | Reload.wav |
+
+Each gun has one shooting sample. The nine WAV sources total about 55 KB, baked
+as mono 11025 Hz / 8-bit PCM and imported with IMA ADPCM compression. Clips have
+leading silence trimmed, normalized peaks and a 20 ms tail fade; duration is
+capped at 0.8 seconds. Rebuild using tools/compress_gun_shot.gd with the source
+folder after --. Source recordings stay outside the project.
+
+The M1911, MP5, M4A4 and AK-47 share reload cues timed to removal, insertion and
+charging. Accepted server reloads send transient events; cancellation stops
+later stages and late joining does not replay previous sounds. Existing firing
+events still play once per accepted shot, including automatic fire.

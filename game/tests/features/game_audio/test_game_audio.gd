@@ -123,9 +123,12 @@ func test_finished_voices_cleanup_and_assets_are_short_non_looping_clips() -> vo
 		&"key_pickup"
 	]:
 		var profile := _audio._profile(cue)
-		var stream := profile[0] as AudioStreamOggVorbis
+		var stream := profile[0] as AudioStream
 		assert_not_null(stream)
-		assert_false(stream.loop)
+		if stream is AudioStreamWAV:
+			assert_eq((stream as AudioStreamWAV).loop_mode, AudioStreamWAV.LOOP_DISABLED)
+		else:
+			assert_false((stream as AudioStreamOggVorbis).loop)
 		assert_gt(stream.get_length(), 0.01)
 		assert_lt(stream.get_length(), 3.0)
 	GameAudio.play_at(self, &"smg", Vector3.ZERO)
@@ -171,3 +174,46 @@ func test_door_feedback_replaces_status_text_and_only_follows_accepted_actions()
 	await RealTime.wait(get_tree(), 0.5)
 	door.use()
 	assert_eq(_events.size(), 5, "Out-of-range request is silent")
+
+
+func test_stock_weapons_use_six_distinct_compact_shot_samples() -> void:
+	var samples: Dictionary = {}
+	for cue: StringName in [&"pistol", &"smg", &"m4a4", &"ak47", &"shotgun", &"awp"]:
+		var stream := _audio._profile(cue)[0] as AudioStreamWAV
+		assert_not_null(stream)
+		assert_eq(stream.mix_rate, 11025)
+		assert_false(stream.stereo)
+		assert_lte(stream.get_length(), .81)
+		assert_eq(stream.format, AudioStreamWAV.FORMAT_IMA_ADPCM)
+		samples[stream.resource_path] = true
+	assert_eq(samples.size(), 6)
+
+
+func test_reload_cues_play_once_at_stages_and_stop_after_holstering() -> void:
+	_hand.set_process(false)
+	_hand.net_item_id = "pistol"
+	_hand.inventory().collect("ammo:pistol:20")
+	_hand.pistol.advance(0)
+	_hand.request_primary_action()
+	_events.clear()
+	assert_eq(_hand.pistol.entity._evaluate(2, &"reload", {}), NetworkedEntity.Result.DENIED)
+	assert_eq(_events.size(), 0)
+	assert_eq(_hand.pistol.entity._evaluate(1, &"reload", {}), NetworkedEntity.Result.ACCEPTED)
+	_hand.pistol.advance(.1)
+	assert_eq(_events.size(), 0)
+	_hand.pistol.advance(.3)
+	assert_eq(_events.size(), 1)
+	assert_eq(_events[0].cue, &"reload_mag_out")
+	_hand.pistol.advance(1.3)
+	assert_eq(_events.size(), 3)
+	assert_eq(_events[1].cue, &"reload_mag_in")
+	assert_eq(_events[2].cue, &"reload_charge")
+	_hand.pistol.advance(3)
+	assert_eq(_events.size(), 3)
+	_hand._fire_cooldown = 0
+	_hand.request_primary_action()
+	_events.clear()
+	_hand.pistol._reload(1, {})
+	_hand.net_item_id = "banana"
+	_hand.pistol.advance(3)
+	assert_eq(_events.size(), 0)

@@ -1,0 +1,297 @@
+[gd_scene load_steps=31 format=3]
+
+[sub_resource type="StandardMaterial3D" id="r0"]
+albedo_color = Color(0.23, 0.28, 0.32, 1)
+metallic = 0.4
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="r1"]
+albedo_color = Color(0.035, 0.045, 0.055, 1)
+metallic = 0
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="r2"]
+albedo_color = Color(0.012, 0.018, 0.022, 1)
+metallic = 0
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="r3"]
+albedo_color = Color(0.32, 0.37, 0.39, 1)
+metallic = 0.75
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="r4"]
+albedo_color = Color(0.31, 0.40, 0.24, 1)
+metallic = 0
+roughness = 0.65
+
+[sub_resource type="BoxMesh" id="r5"]
+size = Vector3(0.055, 0.14, 0.065)
+
+[sub_resource type="BoxMesh" id="r6"]
+size = Vector3(0.058, 0.008, 0.069)
+
+[sub_resource type="BoxMesh" id="r7"]
+size = Vector3(0.019, 0.013, 0.1)
+
+[sub_resource type="BoxMesh" id="r8"]
+size = Vector3(0.019, 0.08, 0.014)
+
+[sub_resource type="BoxMesh" id="r9"]
+size = Vector3(0.014, 0.045, 0.012)
+
+[sub_resource type="BoxMesh" id="r10"]
+size = Vector3(0.085, 0.095, 0.4)
+
+[sub_resource type="BoxMesh" id="r11"]
+size = Vector3(0.003, 0.037, 0.09)
+
+[sub_resource type="BoxMesh" id="r12"]
+size = Vector3(0.06, 0.055, 0.29)
+
+[sub_resource type="BoxMesh" id="r13"]
+size = Vector3(0.085, 0.13, 0.19)
+
+[sub_resource type="BoxMesh" id="r14"]
+size = Vector3(0.093, 0.145, 0.025)
+
+[sub_resource type="CylinderMesh" id="r15"]
+top_radius = 0.02
+bottom_radius = 0.02
+height = 0.78
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r16"]
+top_radius = 0.029
+bottom_radius = 0.029
+height = 0.035
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r17"]
+top_radius = 0.017
+bottom_radius = 0.017
+height = 0.002
+radial_segments = 12
+
+[sub_resource type="BoxMesh" id="r18"]
+size = Vector3(0.099, 0.067, 0.5)
+
+[sub_resource type="BoxMesh" id="r19"]
+size = Vector3(0.062, 0.12, 0.1)
+
+[sub_resource type="BoxMesh" id="r20"]
+size = Vector3(0.088, 0.042, 0.145)
+
+[sub_resource type="BoxMesh" id="r21"]
+size = Vector3(0.054, 0.048, 0.025)
+
+[sub_resource type="CylinderMesh" id="r22"]
+top_radius = 0.033
+bottom_radius = 0.033
+height = 0.31
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r23"]
+top_radius = 0.051
+bottom_radius = 0.051
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="r24"]
+albedo_color = Color(0.06, 0.27, 0.31, 1)
+metallic = 0.7
+roughness = 0.15
+
+[sub_resource type="CylinderMesh" id="r25"]
+top_radius = 0.043
+bottom_radius = 0.043
+height = 0.002
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r26"]
+top_radius = 0.042
+bottom_radius = 0.042
+height = 0.06
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r27"]
+top_radius = 0.024
+bottom_radius = 0.024
+height = 0.045
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="r28"]
+top_radius = 0.009
+bottom_radius = 0.009
+height = 0.07
+radial_segments = 12
+
+[sub_resource type="SphereMesh" id="r29"]
+radius = 0.022
+height = 0.044
+radial_segments = 16
+rings = 8
+
+[node name="AwpView" type="Node3D"]
+
+[node name="Grip" type="Marker3D" parent="."]
+position = Vector3(0, 0, 0)
+
+[node name="PistolGrip" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.008, 0.007)
+rotation = Vector3(-0.16, 0, 0)
+mesh = SubResource("r5")
+material_override = SubResource("r4")
+
+[node name="GripRib0" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.055, 0.008)
+mesh = SubResource("r6")
+material_override = SubResource("r1")
+
+[node name="GripRib1" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.028, 0.008)
+mesh = SubResource("r6")
+material_override = SubResource("r1")
+
+[node name="GripRib2" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.0010000000000000009, 0.008)
+mesh = SubResource("r6")
+material_override = SubResource("r1")
+
+[node name="GripRib3" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.026000000000000002, 0.008)
+mesh = SubResource("r6")
+material_override = SubResource("r1")
+
+[node name="GuardBase" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.05, -0.075)
+mesh = SubResource("r7")
+material_override = SubResource("r1")
+
+[node name="GuardFront" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.015, -0.12)
+mesh = SubResource("r8")
+material_override = SubResource("r1")
+
+[node name="Trigger" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.0, -0.065)
+rotation = Vector3(-0.22, 0, 0)
+mesh = SubResource("r9")
+material_override = SubResource("r3")
+
+[node name="Receiver" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.1, -0.11)
+mesh = SubResource("r10")
+material_override = SubResource("r0")
+
+[node name="EjectionPort" type="MeshInstance3D" parent="."]
+position = Vector3(0.043, 0.11, -0.12)
+mesh = SubResource("r11")
+material_override = SubResource("r2")
+
+[node name="StockSpine" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.085, 0.15)
+mesh = SubResource("r12")
+material_override = SubResource("r0")
+
+[node name="Stock" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.053, 0.31)
+rotation = Vector3(-0.1, 0, 0)
+mesh = SubResource("r13")
+material_override = SubResource("r4")
+
+[node name="ButtPad" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.045, 0.414)
+mesh = SubResource("r14")
+material_override = SubResource("r1")
+
+[node name="Barrel" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.108, -0.63)
+rotation = Vector3(1.5707963267948966, 0, 0)
+mesh = SubResource("r15")
+material_override = SubResource("r0")
+
+[node name="MuzzleCollar" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.108, -1.02)
+rotation = Vector3(1.5707963267948966, 0, 0)
+mesh = SubResource("r16")
+material_override = SubResource("r3")
+
+[node name="Bore" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.108, -1.038)
+rotation = Vector3(1.5707963267948966, 0, 0)
+mesh = SubResource("r17")
+material_override = SubResource("r2")
+
+[node name="Muzzle" type="Marker3D" parent="."]
+position = Vector3(0, 0.108, -1.042)
+
+[node name="Chassis" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.04, -0.17)
+mesh = SubResource("r18")
+material_override = SubResource("r4")
+
+[node name="Magazine" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.049, -0.16)
+mesh = SubResource("r19")
+material_override = SubResource("r1")
+
+[node name="CheekRest" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.137, 0.31)
+mesh = SubResource("r20")
+material_override = SubResource("r4")
+
+[node name="ScopeMount-0.03" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.174, -0.03)
+mesh = SubResource("r21")
+material_override = SubResource("r1")
+
+[node name="ScopeMount-0.22" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.174, -0.22)
+mesh = SubResource("r21")
+material_override = SubResource("r1")
+
+[node name="ScopeTube" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.22, -0.105)
+rotation = Vector3(1.5707963267948966, 0, 0)
+mesh = SubResource("r22")
+material_override = SubResource("r1")
+
+[node name="ScopeObjective" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.22, -0.28)
+rotation = Vector3(1.5707963267948966, 0, 0)
+mesh = SubResource("r23")
+material_override = SubResource("r1")
+
+[node name="ScopeGlass" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.22, -0.321)
+rotation = Vector3(1.5707963267948966, 0, 0)
+mesh = SubResource("r25")
+material_override = SubResource("r24")
+
+[node name="ScopeEyepiece" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.22, 0.077)
+rotation = Vector3(1.5707963267948966, 0, 0)
+mesh = SubResource("r26")
+material_override = SubResource("r1")
+
+[node name="ScopeTurret" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.269, -0.11)
+rotation = Vector3(0, 0, 0)
+mesh = SubResource("r27")
+material_override = SubResource("r3")
+
+[node name="BoltHandle" type="MeshInstance3D" parent="."]
+position = Vector3(0.07, 0.11, 0.015)
+rotation = Vector3(0, 0, 1.5707963267948966)
+mesh = SubResource("r28")
+material_override = SubResource("r3")
+
+[node name="BoltKnob" type="MeshInstance3D" parent="."]
+position = Vector3(0.104, 0.11, 0.015)
+mesh = SubResource("r29")
+material_override = SubResource("r1")
+
+[node name="SupportGrip" type="Marker3D" parent="."]
+position = Vector3(0, 0.022, -0.37)
+rotation = Vector3(1.5707963267948966, 0, 0)

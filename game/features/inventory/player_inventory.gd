@@ -123,6 +123,19 @@ func take_first_valuable() -> String:
 	return ""
 
 
+## Reserve the exact selected item; a stale menu must never sell its replacement.
+func take_valuable_at(slot: int, expected_id: String) -> String:
+	if not multiplayer.is_server() or loading or hand().consumption.active():
+		return ""
+	if slot < -1 or slot >= CAPACITY or item_at(slot) != expected_id:
+		return ""
+	var definition := ItemCatalog.find(expected_id)
+	if definition == null or definition.sale_value_cents <= 0:
+		return ""
+	_set_item(slot, "")
+	return expected_id
+
+
 ## Server-only: valuables are left where a slum player was killed, available
 ## for the killer or any other survivor to collect. Clothing, weapons and keys
 ## remain with the player after respawn.

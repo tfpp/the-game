@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 id = "smg"
-display_name = "SMG"
+display_name = "MP5"
 category = 0
 view_scene = ExtResource("2_view")
 weight = 3.0

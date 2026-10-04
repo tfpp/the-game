@@ -1,0 +1,60 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/holdables/models/ak47/frame.res" id="Frame"]
+[ext_resource type="ArrayMesh" path="res://assets/holdables/models/ak47/bolt.res" id="Bolt"]
+[ext_resource type="ArrayMesh" path="res://assets/holdables/models/ak47/magazine.res" id="Magazine"]
+[ext_resource type="ArrayMesh" path="res://assets/holdables/models/ak47/charging_handle.res" id="ChargingHandle"]
+[ext_resource type="Texture2D" path="res://assets/holdables/models/ak47/albedo.png" id="paint"]
+[ext_resource type="Texture2D" path="res://assets/holdables/models/ak47/skin_mask.png" id="mask"]
+[ext_resource type="Script" path="res://features/holdables/rifle_view.gd" id="script"]
+[ext_resource type="AnimationLibrary" path="res://features/holdables/animations/ak47.tres" id="animations"]
+
+[sub_resource type="StandardMaterial3D" id="material"]
+albedo_texture = ExtResource("paint")
+texture_filter = 2
+roughness = 0.9
+specular_mode = 2
+
+[node name="RifleView" type="Node3D"]
+script = ExtResource("script")
+weapon_id = "ak47"
+
+[node name="Grip" type="Marker3D" parent="."]
+
+[node name="SupportGrip" type="Marker3D" parent="."]
+position = Vector3(-0.018, 0.025, -0.255)
+
+[node name="Muzzle" type="Marker3D" parent="."]
+position = Vector3(0.0, 0.061, -0.518)
+
+[node name="Pose" type="Node3D" parent="."]
+
+[node name="RightGrip" type="Marker3D" parent="Pose"]
+
+[node name="SupportGrip" type="Marker3D" parent="Pose"]
+position = Vector3(-0.018, 0.025, -0.255)
+
+[node name="Frame" type="MeshInstance3D" parent="Pose"]
+mesh = ExtResource("Frame")
+material_override = SubResource("material")
+metadata/skin_mask = ExtResource("mask")
+
+[node name="Bolt" type="MeshInstance3D" parent="Pose"]
+mesh = ExtResource("Bolt")
+material_override = SubResource("material")
+metadata/skin_mask = ExtResource("mask")
+
+[node name="Magazine" type="MeshInstance3D" parent="Pose"]
+mesh = ExtResource("Magazine")
+material_override = SubResource("material")
+metadata/skin_mask = ExtResource("mask")
+
+[node name="ChargingHandle" type="MeshInstance3D" parent="Pose"]
+mesh = ExtResource("ChargingHandle")
+material_override = SubResource("material")
+metadata/skin_mask = ExtResource("mask")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": ExtResource("animations")
+}

@@ -1,0 +1,9 @@
+{
+  "title": "Compact weapon audio",
+  "summary": "Distinct recorded shooting sounds and shared timed reload cues.",
+  "notes": [
+    "Use one distinct shooting recording per gun from the supplied Gun Sounds Pro collection.",
+    "Bake nine clips to mono 11025 Hz / 8-bit audio with ADPCM compression for a small retro sound set.",
+    "Time shared magazine-out, magazine-in and charging sounds to accepted pistol and rifle reloads."
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "title": "Ammo with your gun",
+  "summary": "Stock gun purchases include one matching ammunition box.",
+  "notes": ["Include one matching ammo box with each stock gun purchase at the existing price, with inventory capacity checked before payment."]
+}

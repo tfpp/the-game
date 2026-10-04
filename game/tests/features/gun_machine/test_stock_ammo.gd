@@ -103,7 +103,7 @@ func test_ammo_collects_to_backpack_and_partial_ids_survive_store_and_restore() 
 	assert_eq(ItemCatalog.find("ammo:pistol:19").sale_value_cents, 0)
 
 
-func test_bad_pack_ids_cannot_be_bought_or_restored_and_no_free_ammo_with_guns() -> void:
+func test_bad_pack_ids_are_denied_and_guns_include_one_ammo_box() -> void:
 	for id: String in ["ammo:pistol:0", "ammo:pistol:21", "ammo:pistol:01", "ammo:ray:5"]:
 		assert_null(ItemCatalog.find(id))
 		assert_ne(await _machine.purchase(1, id), "")
@@ -111,13 +111,13 @@ func test_bad_pack_ids_cannot_be_bought_or_restored_and_no_free_ammo_with_guns()
 	_wallet.balances[1] = 150500
 	assert_eq(await _machine.purchase(1, "pistol"), "")
 	assert_eq(_wallet.balances[1], 500)
-	assert_eq(_hand.inventory().ammo_for("pistol"), 0)
+	assert_eq(_hand.inventory().ammo_for("pistol"), 20)
 	_hand.inventory().loading = true
 	assert_ne(await _machine.purchase(1, "ammo:pistol:20"), "")
 	_hand.inventory().loading = false
 	_wallet.balances[1] = 999
 	assert_ne(await _machine.purchase(1, "ammo:pistol:20"), "")
-	assert_eq(_hand.inventory().ammo_for("pistol"), 0)
+	assert_eq(_hand.inventory().ammo_for("pistol"), 20)
 
 
 func test_partial_pack_pickup_keeps_rounds_and_multiple_packs_feed_one_gun() -> void:
@@ -144,3 +144,48 @@ func test_ammo_needs_a_free_backpack_slot_even_with_empty_hand() -> void:
 	assert_ne(await _machine.purchase(1, "ammo:pistol:20"), "")
 	assert_eq(_wallet.balances[1], 100000)
 	assert_eq(_hand.net_item_id, "")
+
+
+func test_every_stock_gun_purchase_includes_one_matching_box_at_the_gun_price() -> void:
+	_wallet.balances[1] = 10000000
+	for weapon: String in ItemCatalog.AMMO_PACKS:
+		_hand.net_item_id = ""
+		_hand.inventory().backpack.fill("")
+		var balance := int(_wallet.balances[1])
+		assert_eq(await _machine.purchase(1, weapon), "")
+		assert_eq(_hand.net_item_id, weapon)
+		var pack: Dictionary = ItemCatalog.AMMO_PACKS[weapon]
+		assert_eq(_hand.inventory().ammo_for(weapon), int(pack["rounds"]))
+		assert_eq(_hand.inventory().backpack.count(ItemCatalog.ammo_id(weapon, pack["rounds"])), 1)
+		assert_eq(_wallet.balances[1], balance - int(GunBuyCatalog.FIXED_PRICES[weapon]))
+
+
+func test_bundle_requires_space_for_ammo_before_charging() -> void:
+	_wallet.balances[1] = 1000000
+	_hand.inventory().backpack.fill("banana")
+	assert_ne(await _machine.purchase(1, "pistol"), "")
+	assert_eq(_wallet.balances[1], 1000000)
+	assert_eq(_hand.net_item_id, "")
+	_hand.net_item_id = "banana"
+	_hand.inventory().backpack[0] = ""
+	assert_ne(await _machine.purchase(1, "pistol"), "")
+	assert_eq(_wallet.balances[1], 1000000)
+	_hand.inventory().backpack[1] = ""
+	assert_eq(await _machine.purchase(1, "pistol"), "")
+	assert_eq(_hand.inventory().ammo_for("pistol"), 20)
+
+
+func test_each_calibre_has_a_distinct_native_box_and_partial_packs_keep_the_model() -> void:
+	var scenes: Dictionary = {}
+	for weapon: String in ItemCatalog.AMMO_PACKS:
+		var definition := ItemCatalog.find(ItemCatalog.ammo_id(weapon, 1))
+		assert_eq(definition.view_scene, ItemCatalog.AMMO_VIEWS[weapon])
+		assert_eq(definition.sale_value_cents, 0)
+		var view := definition.view_scene.instantiate() as Node3D
+		var model := view.get_node("Carton") as MeshInstance3D
+		assert_eq(model.mesh.get_faces().size() / 3, 40)
+		assert_almost_eq(model.mesh.get_aabb().size.y * .5, definition.ground_clearance, .0001)
+		assert_lte((model.material_override as StandardMaterial3D).albedo_texture.get_width(), 128)
+		scenes[definition.view_scene.resource_path] = true
+		view.free()
+	assert_eq(scenes.size(), 6)
