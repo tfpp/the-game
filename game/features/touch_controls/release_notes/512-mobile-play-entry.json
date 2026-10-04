@@ -1,0 +1,5 @@
+{
+  "title": "Mobile play entry recovery",
+  "summary": "Tap to start playing even when your phone was not detected at startup.",
+  "notes": ["Recognize touch presses before starting or resuming play so phones do not require mouse capture."]
+}

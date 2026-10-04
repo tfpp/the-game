@@ -7,7 +7,11 @@ plate (`HudLayout.voice_rect()`). Taps on the weapon hotbar (`touch_hud` group) 
 to its slot buttons. The overlay hides while the pause menu is open. Layout scales to leave
 separate thumb zones in portrait and short landscape viewports, respecting safe areas.
 Shown only while
-`Controls.touch_visible()`. CAM calls the existing third-person camera's guarded
+`Controls.touch_visible()`. Controls also recognizes an actual touch press if the startup
+capability probe misses the phone: it selects touch before the play/Resume button starts
+input, so mobile play never depends on mouse capture. Canceled touches and releases do
+not select a device. Connected controllers keep priority, and XR input is unchanged.
+CAM calls the existing third-person camera's guarded
 `toggle_camera()` through the `third_person_camera` group. Right-side swipes call
 `orbit_look()` in third person, falling back to normal player aim in first person (or
 if the feature is absent). Camera taps do not claim the look finger; move, look and

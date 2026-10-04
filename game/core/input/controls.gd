@@ -167,7 +167,15 @@ func _input(event: InputEvent) -> void:
 	# Immersive input is supplied by WebXR, never browser mouse/gamepad emulation.
 	if device == Device.XR:
 		return
-	if event is InputEventJoypadMotion:
+	if event is InputEventScreenTouch:
+		var touch := event as InputEventScreenTouch
+		if touch.pressed and not touch.canceled:
+			# Browser capability detection can miss touch hardware. Select it before
+			# GUI buttons handle the emulated click and start (or resume) gameplay.
+			touch_available = true
+			if joypad < 0:
+				select_device(Device.TOUCH)
+	elif event is InputEventJoypadMotion:
 		var motion := event as InputEventJoypadMotion
 		if motion.axis <= JOY_AXIS_RIGHT_Y and absf(motion.axis_value) > DEADZONE:
 			joypad = motion.device
