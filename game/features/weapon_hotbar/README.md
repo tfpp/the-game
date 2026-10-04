@@ -3,9 +3,9 @@
 Quick access to every weapon you're carrying without opening the **I** screen: press
 **1**-**8** to grab a specific backpack slot (see `features/inventory`), **9** to
 bring back a holstered gun machine gun (`features/gun_machine`), or scroll the mouse
-wheel to cycle to the next or previous slot in either system. A strip at the bottom
-of the screen shows all nine slots and highlights whichever one is actually in your
-hand. Guns also kick back when they fire.
+wheel to cycle to the next or previous slot in either system. The weapon panel at the
+bottom of the screen (top on touch screens) shows what's in your hand with its ammo,
+then all nine slots, highlighting the rig while it's drawn. Guns also kick back when they fire.
 
 In first person, number-key and mouse-wheel swaps lower the handheld and arms for
 0.12 seconds, send the existing equip request, then raise the selected item over
@@ -35,9 +35,11 @@ keeps weak references to weapon views so replacing a model safely clears its rec
   it — the rig's `net_stats` survive, a holdable weapon just moves back to an empty
   backpack slot (or gets dropped if the backpack is full) — so switching away and
   back never costs you the weapon.
-- `weapon_hotbar_hud.gd` draws the bottom-center strip: the hand, backpack slots 1-8,
-  then the rig, each labeled with its contents and highlighted gold while it's the
-  weapon actually in hand.
+- `weapon_hotbar_hud.gd` draws the weapon panel: a header with the held item (gold while
+  it's a weapon) and its ammo (`gun_stats_panel.gd`'s `ammo_text()`), then backpack
+  slots 1-8 and the rig (9), each labeled with its contents. `ui/hud_layout.gd` places
+  it bottom-center, stacked under money and HP on narrow screens, or top-center for
+  touch; narrow screens hide slot names and keep the numbers.
 - `weapon_hotbar.gd` also plays a fire recoil animation on every hand's held item
   view: a quick backward-and-up kick that eases back to rest, driven by
   `features/holdables/hand.gd`'s `fired` signal (broadcast to every peer alongside

@@ -1,8 +1,11 @@
 extends CanvasLayer
 ## Local health bar and an automatic death screen. Only the server's respawn
-## completion closes the screen; clients cannot shorten the respawn delay.
+## completion closes the screen; clients cannot shorten the respawn delay. The bar is
+## placed by ui/hud_layout.gd under the wallet (features/money).
 
-@onready var _health: TextureProgressBar = $Health
+var _placed_for := ""
+
+@onready var _health: ProgressBar = $Health
 @onready var _health_value: Label = $Health/Value
 @onready var _death_screen: ColorRect = $DeathScreen
 
@@ -21,6 +24,10 @@ func _exit_tree() -> void:
 
 
 func _process(_delta: float) -> void:
+	var key := HudLayout.layout_key(self)
+	if key != _placed_for:
+		_placed_for = key
+		HudLayout.place(_health, HudLayout.Piece.HEALTH)
 	var combat := get_parent() as Combat
 	if combat != null:
 		var hp := combat.health_for(multiplayer.get_unique_id())
