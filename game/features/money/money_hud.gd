@@ -1,7 +1,7 @@
 extends CanvasLayer
-## Shows the local player's wallet just above features/combat's HP bar. Both are placed
-## by ui/hud_layout.gd: bottom-right on wide screens, stacked with the weapon panel on
-## narrow and touch screens.
+## Shows the local player's wallet as a small coin-and-balance chip in the top-left
+## corner, inside the safe area and apart from features/combat's HP bar. Placed by
+## ui/hud_layout.gd, which also hides it under the pause menu.
 
 var _placed_for := ""
 
@@ -10,6 +10,7 @@ var _placed_for := ""
 
 
 func _process(_delta: float) -> void:
+	_wallet.visible = not HudLayout.paused(get_tree())
 	var key := HudLayout.layout_key(self)
 	if key != _placed_for:
 		_placed_for = key

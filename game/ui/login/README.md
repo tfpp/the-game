@@ -28,6 +28,11 @@ feature API or networking changes are needed. Opening a feature removes this
 screen from `modal_ui` and hands off to that feature's existing modal lifecycle.
 Menu navigation is client-local and does not affect other players.
 
+While open, the screen joins `HudLayout.PAUSE_GROUP`, so the crosshair, VOICE plate,
+money chip, HP bar, weapon hotbar, radar and touch controls all hide, and it draws on
+canvas layer 64, above every gameplay HUD layer. `Controls.pause()` blocks gameplay
+input.
+
 All screens in this owner (including sign-in and account forms) scroll vertically
 inside a viewport-bounded panel. Fonts, spacing and 48-pixel button/field targets
 compensate for the project's stretched design canvas on small windows (icons

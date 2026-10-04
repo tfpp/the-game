@@ -48,6 +48,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	# The whole layer, crosshair included, hides under the pause menu.
+	visible = not HudLayout.paused(get_tree())
 	_refresh_in -= delta
 	if _refresh_in > 0.0:
 		return
@@ -59,13 +61,7 @@ func _process(delta: float) -> void:
 		"font_color", VOICE_LIVE if not speakers.is_empty() else VOICE_IDLE
 	)
 	_status.text = status_text(_nearby_count(), _player_count(), _connection_text())
-	var viewport := get_viewport().get_visible_rect().size
-	var stretch := get_viewport().get_stretch_transform().get_scale().x
-	var scale := HudLayout.hud_scale(stretch)
-	_version.visible = not HudLayout.is_narrow(viewport, scale)
-	# Grow from the top-right corner so the plate stays inside the screen.
-	_players.pivot_offset = Vector2(_players.size.x, 0)
-	_players.scale = Vector2.ONE * scale
+	_place_corners()
 
 
 ## "v0.3.0", shown next to the build's short commit hash.
@@ -134,3 +130,13 @@ func _connection_text() -> String:
 			return "server"
 		_:
 			return "offline"
+
+
+## VOICE plate top-right (shared with features/touch_controls through HudLayout) and the
+## version tag under features/money's top-left chip; narrow screens hide the version.
+func _place_corners() -> void:
+	HudLayout.place_voice(_players)
+	var m := HudLayout.metrics(self)
+	var money := HudLayout.rect_for(HudLayout.Piece.MONEY, m.canvas, m.scale, m.touch, m.inset)
+	_version.visible = not HudLayout.is_narrow(m.canvas, m.scale) and not m.touch
+	_version.position = Vector2(money.position.x, money.end.y + HudLayout.GAP)

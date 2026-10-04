@@ -21,7 +21,7 @@ replication_config = SubResource("Replication")
 script = ExtResource("2")
 
 [node name="Wallet" type="PanelContainer" parent="Hud"]
-offset_right = 200.0
+offset_right = 132.0
 offset_bottom = 28.0
 mouse_filter = 2
 theme = ExtResource("hud_theme")
@@ -31,7 +31,6 @@ theme_type_variation = &"HudPlate"
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
-alignment = 2
 
 [node name="Coin" type="TextureRect" parent="Hud/Wallet/Row"]
 modulate = Color(0.88, 0.72, 0.4, 1)
@@ -47,6 +46,6 @@ stretch_mode = 5
 layout_mode = 2
 theme_type_variation = &"HudTitle"
 theme_override_colors/font_color = Color(0.93, 0.8, 0.52, 1)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 15
 text = "…"
 vertical_alignment = 1

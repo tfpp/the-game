@@ -75,7 +75,8 @@ var _ornaments: Array[Control] = []
 
 
 func _ready() -> void:
-	layer = 10
+	# Above every gameplay HUD layer (combat 20, emote wheel 30) so pause covers all.
+	layer = 64
 	_build()
 	_close()
 	_reconnect_timer = Timer.new()
@@ -648,6 +649,7 @@ func _open() -> void:
 	visible = true
 	_play_layer.visible = false
 	add_to_group(MODAL_GROUP)
+	add_to_group(HudLayout.PAUSE_GROUP)
 	Controls.pause()
 
 
@@ -656,6 +658,8 @@ func _close() -> void:
 	_menu_open = false
 	if is_in_group(MODAL_GROUP):
 		remove_from_group(MODAL_GROUP)
+	if is_in_group(HudLayout.PAUSE_GROUP):
+		remove_from_group(HudLayout.PAUSE_GROUP)
 
 
 func _error_text(result: Dictionary) -> String:

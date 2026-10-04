@@ -1,7 +1,8 @@
 extends CanvasLayer
 ## Local health bar and an automatic death screen. Only the server's respawn
 ## completion closes the screen; clients cannot shorten the respawn delay. The bar is
-## placed by ui/hud_layout.gd under the wallet (features/money).
+## placed by ui/hud_layout.gd (bottom-right, or bottom-center on touch) and hides under
+## the pause menu.
 
 var _placed_for := ""
 
@@ -24,6 +25,7 @@ func _exit_tree() -> void:
 
 
 func _process(_delta: float) -> void:
+	_health.visible = not HudLayout.paused(get_tree())
 	var key := HudLayout.layout_key(self)
 	if key != _placed_for:
 		_placed_for = key

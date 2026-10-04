@@ -2,7 +2,9 @@
 
 Phone overlay (`touch_controls.gd`): floating move stick on the left and a fixed AIM
 stick on the right, aligned horizontally at rest. Smaller FIRE, USE and JUMP targets
-sit in a row above AIM; CAM and pause sit at the top right. Layout scales to leave
+sit in a row above AIM; CAM and pause are secondary buttons at the top right, just under the HUD's VOICE
+plate (`HudLayout.voice_rect()`). Taps on the weapon hotbar (`touch_hud` group) are left
+to its slot buttons. The overlay hides while the pause menu is open. Layout scales to leave
 separate thumb zones in portrait and short landscape viewports, respecting safe areas.
 Shown only while
 `Controls.touch_visible()`. CAM calls the existing third-person camera's guarded

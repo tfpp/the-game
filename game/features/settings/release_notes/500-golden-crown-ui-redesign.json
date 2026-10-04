@@ -4,10 +4,11 @@
   "notes": [
     "Restyle menus, buttons and panels in a 1960s Art Deco casino style with a teal highlight for the selected option.",
     "Turn the pause menu into a Golden Crown hotel directory with Resume, Inventory, Settings, Activities, Players, Account and Quit.",
+    "Hide the whole HUD and touch controls while the pause menu is open.",
     "Add a Players page listing everyone in the session alongside the leaderboard and player stats.",
-    "Show the held weapon, its ammo and slots 1-9 in one bottom-center weapon panel.",
-    "Keep money above a compact HP bar, and show voice activity with nearby players in the top-right corner.",
-    "Stack the HUD into one column on narrow screens and move it to the top of the screen for touch play.",
+    "Show the held weapon, its ammo and slots 1-9 in one weapon panel; tap or click a slot to equip it.",
+    "Keep weapon slots large and swipeable on phones and narrow screens instead of shrinking them.",
+    "Show money as a small coin chip in the top-left corner, a compact HP bar on its own, and voice activity with nearby players in the top-right corner.",
     "Greet guests at the bar with a portrait conversation panel offering Buy, Ask and Leave."
   ]
 }

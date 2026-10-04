@@ -5,7 +5,8 @@ Quick access to every weapon you're carrying without opening the **I** screen: p
 bring back a holstered gun machine gun (`features/gun_machine`), or scroll the mouse
 wheel to cycle to the next or previous slot in either system. The weapon panel at the
 bottom of the screen (top on touch screens) shows what's in your hand with its ammo,
-then all nine slots, highlighting the rig while it's drawn. Guns also kick back when they fire.
+then all nine slots. Tap or click a slot to equip it; the picked slot (or the rig)
+stays highlighted while you hold something. Guns also kick back when they fire.
 
 In first person, number-key and mouse-wheel swaps lower the handheld and arms for
 0.12 seconds, send the existing equip request, then raise the selected item over
@@ -38,8 +39,11 @@ keeps weak references to weapon views so replacing a model safely clears its rec
 - `weapon_hotbar_hud.gd` draws the weapon panel: a header with the held item (gold while
   it's a weapon) and its ammo (`gun_stats_panel.gd`'s `ammo_text()`), then backpack
   slots 1-8 and the rig (9), each labeled with its contents. `ui/hud_layout.gd` places
-  it bottom-center, stacked under money and HP on narrow screens, or top-center for
-  touch; narrow screens hide slot names and keep the numbers.
+  it bottom-center, across the bottom on narrow screens, or at the top for touch.
+  Every cell carries a flat `Tap` button that calls `weapon_hotbar.gd`'s
+  `equip_slot()`. Narrow and touch layouts keep 52-unit (44pt+) cells with short names
+  in a sideways-scrolling row; the panel joins the `touch_hud` group so
+  `features/touch_controls` leaves taps on it alone. It hides under the pause menu.
 - `weapon_hotbar.gd` also plays a fire recoil animation on every hand's held item
   view: a quick backward-and-up kick that eases back to rest, driven by
   `features/holdables/hand.gd`'s `fired` signal (broadcast to every peer alongside

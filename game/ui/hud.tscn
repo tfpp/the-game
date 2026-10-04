@@ -68,11 +68,15 @@ theme_override_constants/separation = 0
 
 [node name="Count" type="Label" parent="Corners/Players/Lines"]
 layout_mode = 2
+clip_text = true
+text_overrun_behavior = 3
 theme_type_variation = &"HudAccent"
 text = "VOICE"
 horizontal_alignment = 2
 
 [node name="Status" type="Label" parent="Corners/Players/Lines"]
 layout_mode = 2
+clip_text = true
+text_overrun_behavior = 3
 theme_type_variation = &"HudDetail"
 horizontal_alignment = 2
