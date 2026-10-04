@@ -74,6 +74,13 @@ tracks/5/keys = {
 "update": 0,
 "values": [Vector3(-0.018, 0.025, -0.225)]
 }
+tracks/6/type = "rotation_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Pose/SupportGrip")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
 
 [sub_resource type="Animation" id="Animation_inqf0"]
 length = 0.12
@@ -164,6 +171,13 @@ tracks/5/keys = {
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0.06), Vector3(0, 0, 0), Vector3(0, 0, 0)]
 }
+tracks/6/type = "rotation_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Pose/SupportGrip")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.25, 1, 0, 0, 0, 1, 0.45, 1, 0.5, 0.5, -0.5, 0.5, 1.45, 1, 0.5, 0.5, -0.5, 0.5, 1.7, 1, 0, 0, 0, 1, 1.85, 1, 0.5, 0.5, -0.5, 0.5, 2.08, 1, 0.5, 0.5, -0.5, 0.5, 2.25, 1, 0, 0, 0, 1)
 
 [resource]
 _data = {

@@ -16,6 +16,9 @@ func _initialize() -> void:
 		ProjectSettings.globalize_path("res://features/holdables/animations")
 	)
 	ResourceSaver.save(ANIMATIONS.library(), "res://features/holdables/animations/m1911.tres")
+	if "--animations-only" in OS.get_cmdline_user_args():
+		quit()
+		return
 	var definition := MODEL.definition()
 	var faces: Array[Dictionary] = definition["faces"]
 	var islands: Array[Dictionary] = definition["islands"]

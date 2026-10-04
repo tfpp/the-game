@@ -115,7 +115,7 @@ func test_import_has_two_surfaces_with_visible_energy_and_recessed_muzzles() -> 
 func _check_wrists(human: SkinnedHuman) -> void:
 	for right: bool in [true, false]:
 		var target := _rig as Node3D if right else _rig.support_grip()
-		var offset := Vector3(0.055 if right else -0.055, -0.04, 0.055)
+		var offset := Vector3(.045, -.03, .065) if right else Vector3(-.06, -.045, .01)
 		var bone := human.skeleton.find_bone("HandR" if right else "HandL")
 		var actual := human.skeleton.to_global(human.skeleton.get_bone_global_pose(bone).origin)
 		assert_almost_eq(actual, target.to_global(offset), Vector3.ONE * 0.002)

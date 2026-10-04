@@ -1,0 +1,8 @@
+{
+  "title": "Weapon hand alignment",
+  "summary": "Hands wrap around weapon grips and turn naturally during reloads.",
+  "notes": [
+    "Correct trigger and support hand rotations for stock and generated guns in first-person and world views.",
+    "Turn the support wrist when handling magazines and charging handles, restoring its ready pose after reloads."
+  ]
+}

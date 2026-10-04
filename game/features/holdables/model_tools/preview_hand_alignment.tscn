@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://features/holdables/model_tools/preview_hand_alignment.gd" id="script"]
+[node name="GripPreview" type="Node3D"]
+script = ExtResource("script")

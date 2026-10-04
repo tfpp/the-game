@@ -11,6 +11,11 @@ const TRACK := preload("res://features/holdables/model_tools/m1911_animations.gd
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
 	for kind: String in ["mp5", "m4a4", "ak47"]:
+		if "--animations-only" in args:
+			ResourceSaver.save(
+				_animations(kind), "res://features/holdables/animations/" + kind + ".tres"
+			)
+			continue
 		_build(kind, args[1] if args.size() > 1 and args[0] == kind else "")
 	quit()
 
@@ -147,6 +152,13 @@ static func _animations(kind: String) -> AnimationLibrary:
 		[Vector3.ZERO, Vector3.ZERO, Vector3(0, 0, .06), Vector3.ZERO, Vector3.ZERO]
 	)
 	result.add_animation(&"reload", reload)
+	var hold := Quaternion.IDENTITY
+	var grasp := TRACK.magazine_hand_rotation()
+	TRACK._rotation_track(
+		reload,
+		[0.0, .25, .45, 1.45, 1.7, 1.85, 2.08, 2.25],
+		[hold, hold, grasp, grasp, hold, grasp, grasp, hold]
+	)
 	var reset := Animation.new()
 	reset.length = .01
 	for path: String in [
@@ -158,6 +170,7 @@ static func _animations(kind: String) -> AnimationLibrary:
 	]:
 		TRACK._track(reset, path, [0.0], [Vector3.ZERO])
 	TRACK._track(reset, "Pose/SupportGrip:position", [0.0], [support])
+	TRACK._rotation_track(reset, [0.0], [hold])
 	result.add_animation(&"RESET", reset)
 	return result
 
