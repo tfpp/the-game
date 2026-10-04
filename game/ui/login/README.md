@@ -41,8 +41,10 @@ The shared theme (`ui/theme/ui_theme.tres`) is not mutated. Other feature panels
 
 On first load (before the player has ever played), losing input shows a small
 **Click to play** prompt (Tap / Press A on touch / controller) over the scene instead
-of the full menu; pressing it captures the pointer inside the user gesture. Once the
-player has played, a lost pointer lock opens the menu as before.
+of the full menu; pressing it captures the pointer inside the user gesture on desktop.
+An actual touch press selects touch input even if the initial hardware probe missed it;
+the same prompt starts mobile play without mouse capture. Once the player has played,
+a lost pointer lock opens the menu as before.
 
 Authentication, silent reconnection, automatic joining for returning sessions,
 and press-time pointer-lock capture are unchanged. No new keys or saved preferences.
