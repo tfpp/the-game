@@ -1,5 +1,16 @@
 # Holdables
 
+Weapon hands use a trigger grip with fingers facing forward and a palm-up
+support grip. `HeldArms` applies the same wrist transforms to first-person arms,
+the visible human avatar and creature-costume arms; other held items retain
+their own poses. Reload clips turn the support wrist for magazine and charging
+handle grasps, with matching RESET tracks for cancellation.
+
+Review the actual rigs with
+`godot --path game res://features/holdables/model_tools/preview_hand_alignment.tscn`.
+Native animation libraries can be rebuilt with either weapon builder's
+`-- --animations-only` argument.
+
 First-person catalog items and generated guns share `FirstPersonMotion`: look-rate
 lag and a slower bob whose phase follows horizontal distance travelled and whose strength
 follows actual speed, including strafing and airborne momentum. A separate damped

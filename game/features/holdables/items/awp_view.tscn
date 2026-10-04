@@ -294,4 +294,3 @@ material_override = SubResource("r1")
 
 [node name="SupportGrip" type="Marker3D" parent="."]
 position = Vector3(0, 0.022, -0.37)
-rotation = Vector3(1.5707963267948966, 0, 0)

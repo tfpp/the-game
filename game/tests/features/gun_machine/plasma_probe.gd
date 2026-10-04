@@ -28,7 +28,9 @@ func _ready() -> void:
 		arms.pose(
 			arms.to_local(Vector3(0.32, -0.36, 0.10)),
 			arms.to_local(Vector3(-0.32, -0.36, 0.10)),
-			model.get_node("SupportGrip") as Node3D
+			model.get_node("SupportGrip") as Node3D,
+			null,
+			true
 		)
 	else:
 		camera.projection = Camera3D.PROJECTION_ORTHOGONAL

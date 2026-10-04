@@ -33,7 +33,7 @@ func test_all_models_attach_the_primary_grip_to_the_right_hand() -> void:
 
 
 func test_support_hand_tracks_each_items_support_marker() -> void:
-	for id: String in ["pistol", "smg", "shotgun", "awp", "ball"]:
+	for id: String in ["pistol", "smg", "m4a4", "ak47", "shotgun", "awp", "ball"]:
 		_equip(id)
 		var support := _hand._view.get_node("SupportGrip") as Marker3D
 		var glove := _hand.get_node("Arms/LeftGlove") as Node3D
@@ -42,11 +42,51 @@ func test_support_hand_tracks_each_items_support_marker() -> void:
 		var human := _hand._arms.human
 		var wrist := human.skeleton.find_bone("HandL")
 		var position := human.skeleton.to_global(human.skeleton.get_bone_global_pose(wrist).origin)
-		assert_almost_eq(
-			position, support.to_global(Vector3(-0.055, -0.04, 0.055)), Vector3.ONE * 0.002, id
-		)
+		var offset := Vector3(-.055, -.04, .055) if id == "ball" else Vector3(-.06, -.045, .01)
+		assert_almost_eq(position, support.to_global(offset), Vector3.ONE * 0.002, id)
 	_equip("banana")
 	assert_false((_hand.get_node("Arms/LeftGlove") as Node3D).visible)
+
+
+func test_firearm_palms_face_the_grip_instead_of_hanging_down() -> void:
+	var camera := _player.get_node("Camera") as Camera3D
+	camera.global_basis = HeldItemPose.aim_basis(.8, -.25)
+	for id: String in ["pistol", "smg", "m4a4", "ak47", "shotgun", "awp"]:
+		_equip(id)
+		var rig := _hand._arms.human
+		var right := rig.skeleton.find_bone("HandR")
+		var left := rig.skeleton.find_bone("HandL")
+		var right_basis := (
+			rig.skeleton.global_basis * rig.skeleton.get_bone_global_pose(right).basis
+		)
+		var left_basis := rig.skeleton.global_basis * rig.skeleton.get_bone_global_pose(left).basis
+		assert_gt(
+			right_basis.y.normalized().dot(-_hand.global_basis.z), .95, id + " trigger fingers"
+		)
+		assert_gt(left_basis.y.normalized().dot(_hand.global_basis.x), .9, id + " support fingers")
+		assert_gt(right_basis.z.normalized().dot(-_hand.global_basis.x), .95, id + " inward palm")
+		assert_gt(left_basis.z.normalized().dot(_hand.global_basis.y), .9, id + " upward palm")
+
+
+func test_reload_wrist_rotation_returns_to_the_ready_pose() -> void:
+	for id: String in ["pistol", "smg", "m4a4", "ak47"]:
+		_equip(id)
+		var view := _hand.held_view()
+		view.set_process(false)
+		var animation := view.get_node("AnimationPlayer") as AnimationPlayer
+		var marker := view.get_node("Pose/SupportGrip") as Marker3D
+		var rest := marker.basis
+		animation.play("reload")
+		animation.pause()
+		animation.seek(.6, true)
+		assert_false(marker.basis.is_equal_approx(rest), id + " wrist turns to grasp magazine")
+		assert_almost_eq(marker.basis.determinant(), 1.0, .001)
+		animation.seek(animation.get_animation("reload").length, true)
+		assert_true(marker.basis.is_equal_approx(rest), id + " returns to support grip")
+		animation.play("RESET")
+		animation.advance(0.0)
+		animation.stop()
+		assert_true(marker.basis.is_equal_approx(rest), id + " interrupted reload resets wrist")
 
 
 func test_first_person_grip_follows_camera_after_its_update() -> void:

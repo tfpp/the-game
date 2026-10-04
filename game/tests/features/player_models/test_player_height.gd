@@ -263,7 +263,7 @@ func test_generated_gun_mount_and_aim_use_the_same_height_without_changing_stats
 		var human := rig._arms.human if rig._arms.visible else avatar.human
 		for right: bool in [true, false]:
 			var target := rig as Node3D if right else rig.support_grip()
-			var offset := Vector3(0.055 if right else -0.055, -0.04, 0.055)
+			var offset := Vector3(0.045, -0.03, 0.065) if right else Vector3(-0.06, -0.045, 0.01)
 			var bone := human.skeleton.find_bone("HandR" if right else "HandL")
 			var wrist := human.skeleton.to_global(human.skeleton.get_bone_global_pose(bone).origin)
 			assert_almost_eq(wrist, target.to_global(offset), Vector3.ONE * 0.002)

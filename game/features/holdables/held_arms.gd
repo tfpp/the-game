@@ -3,6 +3,14 @@ extends Node3D
 ## First-person hands use the same skinned human mesh and finger bones. Creature
 ## costumes also use this rig for their item grips, with non-arm surfaces masked.
 
+# Convert the imported hanging-hand pose into trigger and palm-up support poses.
+# The right fingers point forward and curl inward; the left fingers cross the
+# handguard and curl upward. These are rotations, never mirrored skeleton scales.
+const TRIGGER_ROTATION := Basis(Vector3.UP, Vector3.BACK, Vector3.RIGHT)
+const SUPPORT_ROTATION := Basis(Vector3.BACK, Vector3.LEFT, Vector3.DOWN)
+const TRIGGER_WRIST := Vector3(.045, -.03, .065)
+const SUPPORT_WRIST := Vector3(-.06, -.045, .01)
+
 var human := SkinnedHuman.new()
 var _right := Node3D.new()
 var _left := Node3D.new()
@@ -33,7 +41,11 @@ func set_skin_color(color: Color) -> void:
 
 
 func pose(
-	right_shoulder: Vector3, left_shoulder: Vector3, support: Node3D, primary: Node3D = null
+	right_shoulder: Vector3,
+	left_shoulder: Vector3,
+	support: Node3D,
+	primary: Node3D = null,
+	weapon_grip: bool = false
 ) -> void:
 	_right.transform = Transform3D.IDENTITY
 	if primary != null:
@@ -42,13 +54,11 @@ func pose(
 	if support != null:
 		_left.global_transform = support.global_transform
 	human.place_shoulder(true, to_global(right_shoulder))
-	human.reach_grip(true, _right.to_global(Vector3(0.055, -0.04, 0.055)), true)
-	human.orient_grip(true, _right.global_basis.orthonormalized())
+	_grip(human, true, _right.global_transform, weapon_grip)
 	human.material.set_shader_parameter("hide_left_arm", support == null)
 	if support != null:
 		human.place_shoulder(false, to_global(left_shoulder))
-		human.reach_grip(false, _left.to_global(Vector3(-0.055, -0.04, 0.055)), true)
-		human.orient_grip(false, _left.global_basis.orthonormalized())
+		_grip(human, false, _left.global_transform, weapon_grip)
 
 
 ## Shared by catalog items and generated weapons with authored grip markers.
@@ -57,7 +67,8 @@ func pose_for_player(
 	support: Node3D,
 	skin: Color,
 	view_motion: Transform3D = Transform3D.IDENTITY,
-	primary: Node3D = null
+	primary: Node3D = null,
+	weapon_grip: bool = false
 ) -> void:
 	set_skin_color(skin)
 	var body := player.get_node("Body") as Node3D
@@ -71,18 +82,17 @@ func pose_for_player(
 	if not first_person and avatar is BlockPlayerModel and avatar.human.visible:
 		visible = false
 		var right := primary.global_transform if primary != null else global_transform
-		avatar.human.reach_grip(true, right * Vector3(0.055, -0.04, 0.055), true)
-		avatar.human.orient_grip(true, right.basis.orthonormalized())
+		_grip(avatar.human, true, right, weapon_grip)
 		if support != null:
-			avatar.human.reach_grip(false, support.to_global(Vector3(-0.055, -0.04, 0.055)), true)
-			avatar.human.orient_grip(false, support.global_basis.orthonormalized())
+			_grip(avatar.human, false, support.global_transform, weapon_grip)
 		return
 	if not first_person and avatar != null and avatar.has_method("shoulder_position"):
 		pose(
 			to_local(avatar.call("shoulder_position", true)),
 			to_local(avatar.call("shoulder_position", false)),
 			support,
-			primary
+			primary,
+			weapon_grip
 		)
 		return
 	var shoulders: Transform3D
@@ -99,5 +109,18 @@ func pose_for_player(
 		to_local(shoulders * Vector3(0.32, 0, 0)),
 		to_local(shoulders * Vector3(-0.32, 0, 0)),
 		support,
-		primary
+		primary,
+		weapon_grip
 	)
+
+
+static func _grip(rig: SkinnedHuman, right: bool, anchor: Transform3D, weapon: bool) -> void:
+	var wrist := Vector3(.055 if right else -.055, -.04, .055)
+	var rotation := Basis.IDENTITY
+	if weapon:
+		wrist = TRIGGER_WRIST if right else SUPPORT_WRIST
+		rotation = TRIGGER_ROTATION if right else SUPPORT_ROTATION
+	rig.reach_grip(right, anchor * wrist, true)
+	rig.orient_grip(right, anchor.basis.orthonormalized() * rotation)
+	if weapon and right:
+		rig.set_digit_curl(true, "Index", .35)

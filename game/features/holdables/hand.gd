@@ -346,7 +346,8 @@ func _pose_arms(player: Player) -> void:
 			support_grip(),
 			PlayerSkin.TONES[skin_tone_index()],
 			_motion.camera_motion,
-			_view.get_node_or_null("Pose/RightGrip") as Node3D
+			_view.get_node_or_null("Pose/RightGrip") as Node3D,
+			ItemCatalog.find(consumption.view_id()).category == ItemDefinition.Category.WEAPON
 		)
 
 
