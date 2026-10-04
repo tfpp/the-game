@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://features/pawn_shop/street_atmosphere.gd" id="atmosphere"]
 [ext_resource type="Texture2D" path="res://assets/pawn_shop/textures/cityscape.png" id="cityscape"]
 [ext_resource type="Shader" path="res://features/pawn_shop/grass.gdshader" id="grass_shader"]
+[ext_resource type="PackedScene" path="res://features/pawn_shop/tree.tscn" id="tree"]
 
 [ext_resource type="Material" path="res://features/street_district/materials/asphalt.tres" id="asphalt"]
 [ext_resource type="Material" path="res://features/street_district/materials/sidewalk.tres" id="concrete"]
@@ -77,6 +78,30 @@ mesh = SubResource("skyline_mesh")
 position = Vector3(-9, -0.42, 20)
 cast_shadow = 0
 mesh = SubResource("grass_mesh")
+
+[node name="Trees" type="Node3D" parent="."]
+
+[node name="NearLeft" parent="Trees" instance=ExtResource("tree")]
+position = Vector3(-23, -0.42, 27)
+scale = Vector3(0.85, 0.85, 0.85)
+
+[node name="NearRight" parent="Trees" instance=ExtResource("tree")]
+position = Vector3(7, -0.42, 27)
+
+[node name="FarLeft" parent="Trees" instance=ExtResource("tree")]
+position = Vector3(-28, -0.42, 51.5)
+scale = Vector3(1.1, 1.1, 1.1)
+
+[node name="FarGap" parent="Trees" instance=ExtResource("tree")]
+position = Vector3(-13.75, -0.42, 50.5)
+scale = Vector3(0.75, 0.75, 0.75)
+
+[node name="FarRight" parent="Trees" instance=ExtResource("tree")]
+position = Vector3(10, -0.42, 51)
+
+[node name="OuterRight" parent="Trees" instance=ExtResource("tree")]
+position = Vector3(20, -0.42, 54)
+scale = Vector3(1.15, 1.15, 1.15)
 
 [node name="PublicRoad" type="MeshInstance3D" parent="."]
 position = Vector3(-9, -0.3, 39)
