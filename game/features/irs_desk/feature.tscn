@@ -1,0 +1,34 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://features/irs_desk/irs_desk.gd" id="desk_script"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="Script" path="res://features/irs_desk/tax_form.gd" id="form"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/writing_desk.tscn" id="desk"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/desk_chair.tscn" id="chair"]
+[ext_resource type="PackedScene" path="res://features/signage/sign_board.tscn" id="sign"]
+
+[node name="IRSDesk" type="Node3D"]
+position = Vector3(10, 0, 17.8)
+script = ExtResource("desk_script")
+
+[node name="Desk" parent="." instance=ExtResource("desk")]
+
+[node name="Chair" parent="." instance=ExtResource("chair")]
+position = Vector3(0, 0, 0.75)
+rotation = Vector3(0, 3.1415927, 0)
+
+[node name="Sign" parent="." instance=ExtResource("sign")]
+position = Vector3(0, 0.49, -0.30)
+rotation = Vector3(0, 3.1415927, 0)
+text = "IRS
+TAX DESK"
+letter_height = 0.075
+padding = 0.04
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("net")
+interaction_offset = Vector3(0, 0.6, -0.6)
+interaction_range = 2.5
+
+[node name="TaxForm" type="CanvasLayer" parent="."]
+script = ExtResource("form")
