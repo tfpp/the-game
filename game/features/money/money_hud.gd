@@ -1,12 +1,20 @@
 extends CanvasLayer
-## Shows the local player's wallet in the bottom-right corner, just above
-## features/combat's health bar (bottom 20-44 px); the two stay lined up by sharing
-## the corner's 16 px right margin.
+## Shows the local player's wallet as a small coin-and-balance chip in the top-left
+## corner, inside the safe area and apart from features/combat's HP bar. Placed by
+## ui/hud_layout.gd, which also hides it under the pause menu.
 
-@onready var _amount: Label = $Wallet/Amount
+var _placed_for := ""
+
+@onready var _wallet: Control = $Wallet
+@onready var _amount: Label = $Wallet/Row/Amount
 
 
 func _process(_delta: float) -> void:
+	_wallet.visible = not HudLayout.paused(get_tree())
+	var key := HudLayout.layout_key(self)
+	if key != _placed_for:
+		_placed_for = key
+		HudLayout.place(_wallet, HudLayout.Piece.MONEY)
 	var money := get_parent() as PlayerMoney
 	if money == null:
 		return

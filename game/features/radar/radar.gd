@@ -66,7 +66,7 @@ func _process(delta: float) -> void:
 	visible = desktop_visible(
 		_mobile, Controls.touch_visible(), Network.mode == Network.Mode.SERVER
 	)
-	visible = visible and is_instance_valid(_player)
+	visible = visible and is_instance_valid(_player) and not HudLayout.paused(get_tree())
 	if not visible:
 		return
 	_center = Vector2(_player.global_position.x, _player.global_position.z)

@@ -1,42 +1,88 @@
 [gd_resource type="Theme" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/kenney/ui-space/PNG/Extra/Default/panel_glass_notch_br.png" id="glass_br"]
-[ext_resource type="Texture2D" path="res://assets/kenney/ui-space/PNG/Extra/Default/panel_glass_notch_bl.png" id="glass_bl"]
-[ext_resource type="FontFile" path="res://assets/fonts/orbitron/Orbitron-Bold.ttf" id="font_heading"]
+[ext_resource type="FontFile" path="res://assets/fonts/barlow/Barlow-SemiBold.ttf" id="font_heading"]
 [ext_resource type="FontFile" path="res://assets/fonts/barlow/Barlow-Medium.ttf" id="font_detail"]
 
-[sub_resource type="StyleBoxTexture" id="glass_left"]
-content_margin_left = 16.0
-content_margin_top = 10.0
-content_margin_right = 22.0
-content_margin_bottom = 12.0
-texture = ExtResource("glass_br")
-texture_margin_left = 16.0
-texture_margin_top = 16.0
-texture_margin_right = 20.0
-texture_margin_bottom = 20.0
+[sub_resource type="FontVariation" id="caps"]
+base_font = ExtResource("font_heading")
+spacing_glyph = 2
 
-[sub_resource type="StyleBoxTexture" id="glass_right"]
-content_margin_left = 22.0
-content_margin_top = 10.0
-content_margin_right = 16.0
-content_margin_bottom = 12.0
-texture = ExtResource("glass_bl")
-texture_margin_left = 20.0
-texture_margin_top = 16.0
-texture_margin_right = 16.0
-texture_margin_bottom = 20.0
+[sub_resource type="StyleBoxFlat" id="plate"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.1, 0.06, 0.04, 0.72)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.66, 0.51, 0.25, 0.85)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="slot"]
+content_margin_left = 3.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(0.16, 0.1, 0.07, 0.6)
+border_width_bottom = 1
+border_color = Color(0.66, 0.51, 0.25, 0.4)
+
+[sub_resource type="StyleBoxFlat" id="slot_active"]
+content_margin_left = 3.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+bg_color = Color(0.43, 0.09, 0.09, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 2
+border_color = Color(0.88, 0.72, 0.4, 1)
+
+[sub_resource type="StyleBoxFlat" id="bar_under"]
+bg_color = Color(0.1, 0.06, 0.04, 0.72)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.66, 0.51, 0.25, 0.85)
+
+[sub_resource type="StyleBoxFlat" id="bar_fill"]
+bg_color = Color(0.55, 0.11, 0.1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 0)
 
 [resource]
 HudPanelLeft/base_type = &"PanelContainer"
-HudPanelLeft/styles/panel = SubResource("glass_left")
+HudPanelLeft/styles/panel = SubResource("plate")
 HudPanelRight/base_type = &"PanelContainer"
-HudPanelRight/styles/panel = SubResource("glass_right")
+HudPanelRight/styles/panel = SubResource("plate")
+HudPlate/base_type = &"PanelContainer"
+HudPlate/styles/panel = SubResource("plate")
+HudSlot/base_type = &"PanelContainer"
+HudSlot/styles/panel = SubResource("slot")
+HudSlotActive/base_type = &"PanelContainer"
+HudSlotActive/styles/panel = SubResource("slot_active")
+HudBar/base_type = &"ProgressBar"
+HudBar/styles/background = SubResource("bar_under")
+HudBar/styles/fill = SubResource("bar_fill")
 HudTitle/base_type = &"Label"
-HudTitle/colors/font_color = Color(0.2, 0.24, 0.33, 1)
-HudTitle/fonts/font = ExtResource("font_heading")
-HudTitle/font_sizes/font_size = 16
+HudTitle/colors/font_color = Color(0.94, 0.89, 0.77, 1)
+HudTitle/fonts/font = SubResource("caps")
+HudTitle/font_sizes/font_size = 15
 HudDetail/base_type = &"Label"
-HudDetail/colors/font_color = Color(0.3, 0.35, 0.45, 1)
+HudDetail/colors/font_color = Color(0.78, 0.68, 0.5, 1)
 HudDetail/fonts/font = ExtResource("font_detail")
-HudDetail/font_sizes/font_size = 13
+HudDetail/font_sizes/font_size = 12
+HudAccent/base_type = &"Label"
+HudAccent/colors/font_color = Color(0.45, 0.72, 0.68, 1)
+HudAccent/fonts/font = SubResource("caps")
+HudAccent/font_sizes/font_size = 12

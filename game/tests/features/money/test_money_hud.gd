@@ -18,7 +18,7 @@ func test_hud_shows_the_local_balance() -> void:
 	add_child_autofree(money)
 	money.balances = {multiplayer.get_unique_id(): 4200}
 	await wait_process_frames(1)
-	assert_eq((money.get_node("Hud/Wallet/Amount") as Label).text, "$42.00")
+	assert_eq((money.get_node("Hud/Wallet/Row/Amount") as Label).text, "$42.00")
 
 
 func test_temporary_income_follows_model_choice() -> void:

@@ -39,7 +39,9 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	visible = Controls.touch_visible() and Controls.gameplay_active()
+	visible = (
+		Controls.touch_visible() and Controls.gameplay_active() and not HudLayout.paused(get_tree())
+	)
 	_sync_aim()
 	if visible:
 		Controls.look_delta += Controls.deadzone(aim_value) * Controls.stick_sensitivity * delta
@@ -132,12 +134,38 @@ func _clear_fingers() -> void:
 
 
 func pause_button() -> Rect2:
-	return Rect2(safe_bounds.end.x - 100, safe_bounds.position.y + 72 / ui_scale, 76, 48)
+	return Rect2(safe_bounds.end.x - 100, _secondary_top(), 76, 48)
 
 
 ## Beside the menu, outside the movement and action targets.
 func camera_button() -> Rect2:
-	return Rect2(safe_bounds.end.x - 176, safe_bounds.position.y + 72 / ui_scale, 64, 48)
+	return Rect2(safe_bounds.end.x - 176, _secondary_top(), 64, 48)
+
+
+## Pause and CAM are secondary: they sit under the HUD's VOICE plate (ui/hud_layout.gd).
+func _secondary_top() -> float:
+	var top := safe_bounds.position.y + 72 / ui_scale
+	var viewport := get_viewport()
+	if viewport == null:
+		return top
+	var stretch := viewport.get_stretch_transform().get_scale().x
+	var voice := HudLayout.voice_rect(
+		size, HudLayout.hud_scale(stretch), HudLayout.safe_inset(viewport)
+	)
+	# Never push them down into the FIRE/USE/JUMP row on very short screens.
+	var lowest := use_center().y - ACTION_RADIUS - 56.0
+	return maxf(top, minf((voice.end.y + HudLayout.GAP) / ui_scale, lowest))
+
+
+## True when `screen_point` lands on a tappable HUD panel (the weapon slots), which then
+## gets the tap instead of the sticks and look swipe.
+func _on_touch_hud(screen_point: Vector2) -> bool:
+	for node: Node in get_tree().get_nodes_in_group(&"touch_hud"):
+		var control := node as Control
+		if control != null and control.is_visible_in_tree():
+			if control.get_global_rect().has_point(screen_point):
+				return true
+	return false
 
 
 func move_center() -> Vector2:
@@ -170,6 +198,8 @@ func _input(event: InputEvent) -> void:
 		var point := touch.position / ui_scale
 		if not touch.pressed or touch.canceled:
 			_release_finger(touch.index)
+		elif _on_touch_hud(touch.position):
+			return
 		elif camera_button().has_point(point):
 			get_tree().call_group(&"third_person_camera", "toggle_camera")
 		elif pause_button().has_point(point):

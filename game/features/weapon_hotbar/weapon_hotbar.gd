@@ -23,6 +23,9 @@ const RIG_ACTION := &"hotbar_rig"
 ## index.
 const RIG_SLOT := PlayerInventory.CAPACITY
 
+## Last cycle slot (backpack index, or `RIG_SLOT`) the player picked by key, wheel or a
+## tap on the HUD; weapon_hotbar_hud.gd highlights it while something is held.
+var selected := -1
 ## Hand -> {view: WeakRef, base: Transform3D, t: float, kick: float}
 var _recoil: Dictionary = {}
 ## Hands whose `fired` signal we've already connected to — `Signal.is_connected`
@@ -91,6 +94,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+## Equips a cycle slot (backpack index, or `RIG_SLOT`), as tapping it on the HUD does.
+func equip_slot(slot: int) -> void:
+	if not Controls.gameplay_active():
+		return
+	var hand := Hand.for_peer(get_tree(), multiplayer.get_unique_id())
+	if hand == null:
+		return
+	_cursor = slot
+	if slot == RIG_SLOT:
+		_equip_rig(hand)
+	elif slot >= 0 and slot < PlayerInventory.CAPACITY:
+		_equip_slot(hand, slot)
+
+
 ## Equip whatever is in `slot`, swapping it with the currently held item — the same
 ## request a digit key or the inventory screen's Equip button sends.
 func _equip_slot(hand: Hand, slot: int) -> void:
@@ -103,6 +120,7 @@ func _equip_slot(hand: Hand, slot: int) -> void:
 	if not ClothingCatalog.slot(id).is_empty():
 		request.call()
 	else:
+		selected = slot
 		_request_swap(request)
 
 
@@ -112,6 +130,7 @@ func _equip_rig(hand: Hand) -> void:
 	var rig := GunRig.for_peer(get_tree(), hand.peer_id)
 	if rig == null or rig.net_stats.is_empty():
 		return
+	selected = RIG_SLOT
 	if rig.is_active():
 		return
 	var request := func() -> void:
