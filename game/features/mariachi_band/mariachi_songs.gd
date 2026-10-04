@@ -1,5 +1,5 @@
 class_name MariachiSongs
-## The band's repertoire as pure data: two traditional, public-domain tunes in C,
+## The band's repertoire as pure data: traditional tunes and original compositions in C,
 ## arranged for trumpets, violin, vihuela and guitarrón. Every peer derives the
 ## same timings from here: the server rotates songs by `duration()`, the baking
 ## tool (`tools/bake_songs.gd`) renders the audio from `score()`, and the
@@ -8,17 +8,26 @@ class_name MariachiSongs
 
 enum Voice { TRUMPET, VIOLIN, VIHUELA, GUITARRON }
 
-const NAMES: Array[String] = ["La Cucaracha", "Jarabe Tapatío"]
+const NAMES: Array[String] = [
+	"La Cucaracha",
+	"Jarabe Tapatío",
+	"Brass at the Crown",
+	"Promenade Waltz",
+	"Last Chip Polka",
+]
 
 ## Chord pitch classes, root first.
 const CHORDS: Dictionary[String, Array] = {
 	"C": [0, 4, 7],
+	"F": [5, 9, 0],
+	"Am": [9, 0, 4],
 	"G7": [7, 11, 2, 5],
 	"D7": [2, 6, 9, 0],
 }
 ## Units within a bar for each accompaniment hit. "down"/"up" are vihuela strums.
 const POLKA := {"bar": 8, "bass": [0, 4], "down": [2, 6], "up": [3, 7]}
 const JIG := {"bar": 6, "bass": [0, 3], "down": [1, 4], "up": [2, 5]}
+const WALTZ := {"bar": 6, "bass": [0], "down": [2, 4], "up": [3, 5]}
 
 # La Cucaracha (4/4). The verse; the closing "G G G" is the pickup into the repeat.
 const CUCARACHA_A: Array[Vector2i] = [
@@ -159,6 +168,211 @@ const JARABE_B: Array[Vector2i] = [
 ]
 const JARABE_B_CHORDS: Array[String] = ["D7", "G7", "D7", "G7", "D7", "G7", "G7", "G7"]
 
+# Original compositions for Corona de Oro; each strain fills eight complete bars.
+const CROWN_A: Array[Vector2i] = [
+	Vector2i(72, 2),
+	Vector2i(76, 1),
+	Vector2i(79, 2),
+	Vector2i(76, 1),
+	Vector2i(74, 1),
+	Vector2i(76, 1),
+	Vector2i(79, 1),
+	Vector2i(84, 2),
+	Vector2i(0, 1),
+	Vector2i(81, 2),
+	Vector2i(77, 1),
+	Vector2i(76, 2),
+	Vector2i(77, 1),
+	Vector2i(79, 3),
+	Vector2i(76, 2),
+	Vector2i(72, 1),
+	Vector2i(76, 1),
+	Vector2i(81, 1),
+	Vector2i(79, 1),
+	Vector2i(76, 2),
+	Vector2i(72, 1),
+	Vector2i(74, 2),
+	Vector2i(78, 1),
+	Vector2i(81, 2),
+	Vector2i(78, 1),
+	Vector2i(79, 1),
+	Vector2i(77, 1),
+	Vector2i(74, 1),
+	Vector2i(71, 2),
+	Vector2i(74, 1),
+	Vector2i(72, 4),
+	Vector2i(0, 2),
+]
+const CROWN_B: Array[Vector2i] = [
+	Vector2i(76, 1),
+	Vector2i(79, 1),
+	Vector2i(76, 1),
+	Vector2i(72, 2),
+	Vector2i(67, 1),
+	Vector2i(72, 2),
+	Vector2i(74, 1),
+	Vector2i(76, 2),
+	Vector2i(79, 1),
+	Vector2i(77, 1),
+	Vector2i(81, 1),
+	Vector2i(84, 1),
+	Vector2i(81, 2),
+	Vector2i(77, 1),
+	Vector2i(76, 3),
+	Vector2i(72, 2),
+	Vector2i(0, 1),
+	Vector2i(69, 2),
+	Vector2i(72, 1),
+	Vector2i(76, 2),
+	Vector2i(81, 1),
+	Vector2i(78, 1),
+	Vector2i(81, 1),
+	Vector2i(78, 1),
+	Vector2i(74, 2),
+	Vector2i(72, 1),
+	Vector2i(71, 2),
+	Vector2i(74, 1),
+	Vector2i(77, 2),
+	Vector2i(71, 1),
+	Vector2i(72, 3),
+	Vector2i(67, 1),
+	Vector2i(72, 2),
+]
+const CROWN_CHORDS: Array[String] = ["C", "C", "F", "C", "Am", "D7", "G7", "C"]
+
+const WALTZ_A: Array[Vector2i] = [
+	Vector2i(76, 4),
+	Vector2i(79, 2),
+	Vector2i(81, 3),
+	Vector2i(79, 1),
+	Vector2i(76, 2),
+	Vector2i(77, 2),
+	Vector2i(81, 2),
+	Vector2i(79, 2),
+	Vector2i(76, 4),
+	Vector2i(72, 2),
+	Vector2i(77, 3),
+	Vector2i(76, 1),
+	Vector2i(74, 2),
+	Vector2i(74, 2),
+	Vector2i(78, 2),
+	Vector2i(81, 2),
+	Vector2i(79, 3),
+	Vector2i(77, 1),
+	Vector2i(74, 2),
+	Vector2i(72, 5),
+	Vector2i(0, 1),
+]
+const WALTZ_B: Array[Vector2i] = [
+	Vector2i(79, 2),
+	Vector2i(84, 3),
+	Vector2i(83, 1),
+	Vector2i(81, 4),
+	Vector2i(76, 2),
+	Vector2i(81, 3),
+	Vector2i(79, 1),
+	Vector2i(77, 2),
+	Vector2i(79, 2),
+	Vector2i(76, 2),
+	Vector2i(72, 2),
+	Vector2i(69, 2),
+	Vector2i(72, 2),
+	Vector2i(77, 2),
+	Vector2i(78, 3),
+	Vector2i(76, 1),
+	Vector2i(74, 2),
+	Vector2i(71, 2),
+	Vector2i(74, 2),
+	Vector2i(79, 2),
+	Vector2i(76, 2),
+	Vector2i(72, 4),
+]
+const WALTZ_CHORDS: Array[String] = ["C", "Am", "F", "C", "F", "D7", "G7", "C"]
+
+const CHIP_A: Array[Vector2i] = [
+	Vector2i(72, 1),
+	Vector2i(76, 1),
+	Vector2i(79, 2),
+	Vector2i(76, 1),
+	Vector2i(72, 1),
+	Vector2i(67, 2),
+	Vector2i(71, 2),
+	Vector2i(74, 1),
+	Vector2i(77, 1),
+	Vector2i(79, 2),
+	Vector2i(0, 2),
+	Vector2i(76, 1),
+	Vector2i(79, 1),
+	Vector2i(84, 2),
+	Vector2i(83, 1),
+	Vector2i(81, 1),
+	Vector2i(79, 2),
+	Vector2i(81, 2),
+	Vector2i(77, 2),
+	Vector2i(72, 3),
+	Vector2i(0, 1),
+	Vector2i(76, 1),
+	Vector2i(81, 1),
+	Vector2i(79, 2),
+	Vector2i(76, 2),
+	Vector2i(72, 2),
+	Vector2i(74, 1),
+	Vector2i(78, 1),
+	Vector2i(81, 2),
+	Vector2i(78, 1),
+	Vector2i(74, 1),
+	Vector2i(72, 2),
+	Vector2i(71, 2),
+	Vector2i(74, 2),
+	Vector2i(77, 1),
+	Vector2i(74, 1),
+	Vector2i(71, 2),
+	Vector2i(72, 6),
+	Vector2i(0, 2),
+]
+const CHIP_B: Array[Vector2i] = [
+	Vector2i(79, 2),
+	Vector2i(76, 1),
+	Vector2i(72, 1),
+	Vector2i(76, 2),
+	Vector2i(79, 2),
+	Vector2i(77, 1),
+	Vector2i(74, 1),
+	Vector2i(71, 2),
+	Vector2i(67, 2),
+	Vector2i(0, 2),
+	Vector2i(72, 2),
+	Vector2i(76, 2),
+	Vector2i(79, 1),
+	Vector2i(81, 1),
+	Vector2i(84, 2),
+	Vector2i(81, 1),
+	Vector2i(79, 1),
+	Vector2i(77, 2),
+	Vector2i(76, 1),
+	Vector2i(74, 1),
+	Vector2i(72, 2),
+	Vector2i(69, 2),
+	Vector2i(72, 1),
+	Vector2i(76, 1),
+	Vector2i(81, 2),
+	Vector2i(79, 2),
+	Vector2i(78, 2),
+	Vector2i(74, 1),
+	Vector2i(72, 1),
+	Vector2i(74, 2),
+	Vector2i(78, 2),
+	Vector2i(79, 1),
+	Vector2i(77, 1),
+	Vector2i(74, 2),
+	Vector2i(71, 2),
+	Vector2i(67, 2),
+	Vector2i(72, 4),
+	Vector2i(79, 2),
+	Vector2i(72, 2),
+]
+const CHIP_CHORDS: Array[String] = ["C", "G7", "C", "F", "Am", "D7", "G7", "C"]
+
 ## unit_s: seconds per eighth note; sections: [melody, chords, lead voice].
 const SONGS: Array[Dictionary] = [
 	{
@@ -177,6 +391,33 @@ const SONGS: Array[Dictionary] = [
 		[
 			[JARABE_A, JARABE_A_CHORDS, Voice.TRUMPET],
 			[JARABE_B, JARABE_B_CHORDS, Voice.VIOLIN],
+		],
+	},
+	{
+		"unit_s": 0.145,
+		"pattern": JIG,
+		"sections":
+		[
+			[CROWN_A, CROWN_CHORDS, Voice.TRUMPET],
+			[CROWN_B, CROWN_CHORDS, Voice.VIOLIN],
+		],
+	},
+	{
+		"unit_s": 0.235,
+		"pattern": WALTZ,
+		"sections":
+		[
+			[WALTZ_A, WALTZ_CHORDS, Voice.TRUMPET],
+			[WALTZ_B, WALTZ_CHORDS, Voice.VIOLIN],
+		],
+	},
+	{
+		"unit_s": 0.135,
+		"pattern": POLKA,
+		"sections":
+		[
+			[CHIP_A, CHIP_CHORDS, Voice.TRUMPET],
+			[CHIP_B, CHIP_CHORDS, Voice.VIOLIN],
 		],
 	},
 ]

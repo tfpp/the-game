@@ -55,7 +55,7 @@ func test_request_in_range_plays_the_next_song_for_everyone() -> void:
 	await wait_process_frames(1)
 	assert_eq((_band.get_node("NowPlaying") as Label3D).text, "Now playing: Jarabe Tapatío")
 	assert_eq(_band.get_node("Audio").get("stream"), MariachiBand.STREAMS[1])
-	assert_eq(_band.interaction_text(), "Request a song (next: La Cucaracha)")
+	assert_eq(_band.interaction_text(), "Request a song (next: Brass at the Crown)")
 
 
 func test_requests_from_afar_unknown_peers_or_with_payloads_are_denied() -> void:
@@ -76,7 +76,7 @@ func test_requests_share_a_cooldown_so_two_players_cannot_skip_twice() -> void:
 	assert_eq(_band.net_song, 1, "only one song change")
 	(_entity._actions[&"use"] as NetworkedEntity.Action).next_msec = 0
 	assert_eq(_entity._evaluate(2, &"use", {}), NetworkedEntity.Result.ACCEPTED)
-	assert_eq(_band.net_song, 0, "wraps back to the first song")
+	assert_eq(_band.net_song, 2, "the second accepted request reaches the new repertoire")
 
 
 func test_a_downed_band_takes_no_requests_and_goes_quiet() -> void:
@@ -105,6 +105,45 @@ func test_server_moves_on_after_each_song_plays_through() -> void:
 	_band._process(0.2)
 	assert_eq(_band.net_song, 1)
 	assert_almost_eq(_band.elapsed, 0.0, 0.0001)
+
+
+func test_full_repertoire_rotates_and_wraps_with_matching_presentation() -> void:
+	var take := _band.net_take
+	for song: int in MariachiSongs.count():
+		assert_eq(_band.net_song, song)
+		assert_eq(
+			_band.interaction_text(),
+			"Request a song (next: %s)" % MariachiSongs.song_name(song + 1)
+		)
+		var length := MariachiSongs.duration(song) * MariachiBand.PLAYS_PER_SONG
+		_band._process(length - 0.01)
+		assert_eq(_band.net_song, song, "each song gets two complete passes")
+		_band._process(0.02)
+		await wait_process_frames(1)
+		var next := posmod(song + 1, MariachiSongs.count())
+		assert_eq(_band.net_song, next)
+		assert_eq(_band.net_take, take + song + 1)
+		assert_eq(_band.get_node("Audio").get("stream"), MariachiBand.STREAMS[next])
+		assert_eq(
+			(_band.get_node("NowPlaying") as Label3D).text,
+			"Now playing: %s" % MariachiSongs.song_name(next)
+		)
+	assert_eq(_band.net_song, 0, "returns to the original opening tune")
+
+
+func test_new_song_snapshot_selects_its_clip_and_caption() -> void:
+	for song: int in range(2, MariachiSongs.count()):
+		var late := FEATURE.instantiate() as MariachiBand
+		late.net_song = song
+		late.net_take = 9
+		add_child_autofree(late)
+		late.set_process(false)
+		await wait_process_frames(1)
+		assert_eq(late.get_node("Audio").get("stream"), MariachiBand.STREAMS[song])
+		assert_eq(
+			(late.get_node("NowPlaying") as Label3D).text,
+			"Now playing: %s" % MariachiSongs.song_name(song)
+		)
 
 
 func test_session_reset_starts_over_from_the_first_song() -> void:
