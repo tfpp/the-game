@@ -29,6 +29,12 @@ func _initialize() -> void:
 		if stream == null:
 			quit(1)
 			return
+		# Godot's WAV writer does not insert RIFF padding for odd-sized data.
+		# An even sample count keeps clean imports from seeking past EOF.
+		if stream.data.size() % 2 != 0:
+			var data := stream.data
+			data.append(0)
+			stream.data = data
 		var result := stream.save_to_wav(
 			"res://assets/pawn_shop/audio/road_ambience_%d.wav" % index
 		)

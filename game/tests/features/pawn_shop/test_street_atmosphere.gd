@@ -1,6 +1,14 @@
 extends GutTest
 
 const STREET := preload("res://features/pawn_shop/street.tscn")
+const ATMOSPHERE := preload("res://features/pawn_shop/street_atmosphere.gd")
+
+
+func test_compact_wav_sources_have_complete_riff_padding() -> void:
+	for clip: AudioStreamWAV in ATMOSPHERE.CLIPS:
+		var bytes := FileAccess.get_file_as_bytes(clip.resource_path)
+		assert_eq(bytes.decode_u32(4) + 8, bytes.size(), clip.resource_path)
+		assert_eq(bytes.size() % 2, 0, "RIFF chunks must end on an even byte boundary")
 
 
 func test_leaving_and_unloading_restore_camera_and_stop_audio() -> void:
