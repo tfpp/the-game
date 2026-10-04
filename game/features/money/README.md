@@ -119,7 +119,7 @@ The existing signed account balance heartbeat also increments the API's persiste
 `playtime_seconds` counter in the same transaction. It counts accepted 1–15-second
 intervals once, independent of model income rate, and never resets at a minute payout.
 Long gaps, repeat or backdated calls add no time. This adds no game-side timer,
-balance or protocol field; old game servers already provide the necessary heartbeat.
+balance or accrual protocol; old game servers already provide the necessary heartbeat.
 Temporary/offline wallets do not record account playtime. Totals begin with the API
 migration, not reconstructed historical playtime. The last partial interval and
 intervals lost to extended wallet busy periods/API outages are not counted.
@@ -128,6 +128,21 @@ Discord `/profile user:<user>` reads a verified linked account's game name and
 cumulative time through a dedicated read-only API credential. See
 [bot profile setup](../../../bot/README.md#player-profiles) for deployment and privacy
 boundaries. Existing money signatures, rates, responses and callers stay unchanged.
+
+### In-game playtime display
+
+The signed `balance` response now additionally returns `playtime_seconds` from
+that same existing database counter, without incrementing it a second time or
+changing balance/income behavior. Old servers ignore the extra field; new servers
+accept missing fields from older APIs without inventing time. Deploy the API first
+for authenticated statue rankings; no migration or new credential is needed.
+
+`PlayerMoney.playtime_for(peer)` is server-only and returns the latest observed
+account total, or -1 until a matching account heartbeat arrives. It never replicates
+account IDs or accepts client time submissions. Peer reuse and session reset clear
+or invalidate snapshots. The leaderboard uses this read-only interface for its
+longest-online statue; temporary guest time remains session-only in leaderboard
+history, not persistent account time or another wallet.
 
 ## Server connection
 

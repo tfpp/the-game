@@ -15,6 +15,9 @@ const STARTING_CENTS := 2000
 const DEV_STARTING_CENTS := 100_000_00
 
 @export var balances: Dictionary = {}
+## Server-only account playtime snapshots from the existing signed heartbeat.
+var _playtime_seconds: Dictionary = {}
+var _playtime_accounts: Dictionary = {}
 var _busy: Dictionary = {}
 var _table_holds: Dictionary = {}
 var _animated_spins: Dictionary = {}
@@ -36,6 +39,8 @@ func _ready() -> void:
 func _reset(_mode: Network.Mode) -> void:
 	_generation += 1
 	balances = {}
+	_playtime_seconds.clear()
+	_playtime_accounts.clear()
 	_busy.clear()
 	_table_holds.clear()
 	_animated_spins.clear()
@@ -104,6 +109,8 @@ func _process(delta: float) -> void:
 				):
 					balances = balances.duplicate()
 					balances.erase(peer)
+					_playtime_seconds.erase(peer)
+					_playtime_accounts.erase(peer)
 					_temporary_seconds.erase(peer)
 					_temporary_income_units.erase(peer)
 
@@ -214,6 +221,7 @@ func _refresh(peer: int) -> void:
 		if generation != _generation:
 			return
 		if _account(peer) == account and result.has("balance"):
+			accept_playtime(peer, result)
 			var previous := int(balances.get(peer, -1))
 			_set_balance(peer, int(result["balance"]))
 			# Every other change settles through its own call, so a heartbeat
@@ -221,6 +229,24 @@ func _refresh(peer: int) -> void:
 			if previous >= 0 and int(result["balance"]) > previous:
 				announce_gain(peer, int(result["balance"]) - previous, INCOME_REASON)
 	_busy.erase(peer)
+
+
+## -1 means no matching account heartbeat yet (including reused peer IDs).
+func playtime_for(peer: int) -> int:
+	if not multiplayer.is_server() or _playtime_accounts.get(peer, -1) != _account(peer):
+		return -1
+	return int(_playtime_seconds.get(peer, -1))
+
+
+## Older API responses omit this optional field; never invent account time locally.
+func accept_playtime(peer: int, result: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+	var seconds: Variant = result.get("playtime_seconds")
+	if (seconds is int or seconds is float) and is_finite(float(seconds)):
+		if float(seconds) >= 0:
+			_playtime_seconds[peer] = int(seconds)
+			_playtime_accounts[peer] = _account(peer)
 
 
 ## wager_cents lets each slot machine set its own buy-in (default $1).
