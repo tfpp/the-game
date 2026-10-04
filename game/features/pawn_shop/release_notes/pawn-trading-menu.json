@@ -1,0 +1,12 @@
+{
+  "title": "Pawn shop trading menu",
+  "summary": "Trade with Rusty Hogg using a two-pane buy and sell menu.",
+  "notes": [
+    "Show your inventory on the left and shop stock on the right as inventory-style cards with model previews, prices and Buy/Sell buttons.",
+    "Buy guns and matching ammo, including the MP5, M4A4 and AK-47.",
+    "Frame the shop in dark metal and aged brass with the Prawn crate emblem.",
+    "Center a Nothing to sell message when the inventory contains no pawnable items.",
+    "Sell selected pawnable materials and valuables; weapons, ammo and clothing are not accepted.",
+    "Validate proximity and ownership on the server and reserve pending sales to prevent duplicate payouts."
+  ]
+}

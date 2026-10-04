@@ -71,7 +71,7 @@ func test_counter_stands_on_the_floor_with_rusty_behind_it() -> void:
 
 func test_guns_hang_on_the_wall_within_reach() -> void:
 	var wall := _shop.get_node("GunWall")
-	assert_eq(wall.get_child_count(), 4)
+	assert_eq(wall.get_child_count(), 6)
 	var board := _shop.get_node("Hall/GunBoard") as CSGBox3D
 	var board_front := board.global_position.z + board.size.z * 0.5
 	var customer := Vector3(0, 0.95, 21.4)
@@ -104,7 +104,7 @@ func test_rusty_talk_is_reachable_without_stealing_the_pawn_counter() -> void:
 	player.net_position = talk_spot
 	player.global_position = talk_spot
 	assert_same(interaction._find_target(), _shop.get_node("RustyHogg"))
-	assert_eq(interaction.target_text(), "Talk to Rusty Hogg")
+	assert_eq(interaction.target_text(), "Trade with Rusty Hogg")
 	Controls.device = device
 	Controls.playing = playing
 

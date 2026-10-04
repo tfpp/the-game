@@ -65,6 +65,7 @@ func test_buying_charges_the_wallet_and_equips_the_gun() -> void:
 	assert_eq(_request(1), NetworkedEntity.Result.ACCEPTED)
 	assert_eq(_wallet.balances[1], 645000)
 	assert_eq(_hand.net_item_id, "shotgun")
+	assert_eq(_hand.inventory().ammo_for("shotgun"), 8)
 	# Unlimited stock: a second purchase goes into the backpack.
 	assert_eq(_request(1), NetworkedEntity.Result.ACCEPTED)
 	assert_eq(_wallet.balances[1], 90000)
@@ -110,7 +111,7 @@ func test_bag_filling_during_payment_drops_the_paid_gun() -> void:
 	for index: int in 9:
 		_hand.inventory().collect("banana")
 	slow.complete.emit()
-	assert_eq(_drops.items, ["shotgun"])
+	assert_eq(_drops.items, ["shotgun", "ammo:shotgun:8"])
 
 
 func test_session_reset_ignores_an_old_payment() -> void:

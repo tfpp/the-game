@@ -27,7 +27,7 @@ func before_each() -> void:
 
 
 func test_use_shows_one_requested_or_extra_line_as_a_private_subtitle() -> void:
-	assert_eq(_rusty.call("interaction_text"), "Talk to Rusty Hogg")
+	assert_eq(_rusty.call("interaction_text"), "Trade with Rusty Hogg")
 	assert_true(_rusty.is_in_group(&"interactables"))
 	assert_true(_rusty.call("can_use", _player))
 	_rusty.call("use")

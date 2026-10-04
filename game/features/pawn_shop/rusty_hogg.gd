@@ -24,6 +24,7 @@ var _last_line := -1
 func _ready() -> void:
 	super._ready()
 	add_to_group(&"interactables")
+	add_to_group(&"pawn_broker")
 	_talk = NetworkedInteraction.new()
 	_talk.name = "Talk"
 	add_child(_talk)
@@ -37,7 +38,7 @@ func can_use(player: Player) -> bool:
 
 
 func interaction_text() -> String:
-	return "Talk to Rusty Hogg"
+	return "Trade with Rusty Hogg"
 
 
 func use() -> void:
@@ -57,3 +58,6 @@ func _apply_talk(player: Player) -> bool:
 func _on_talk_event(event: StringName, payload: Dictionary) -> void:
 	if event == &"say":
 		Subtitles.say(get_tree(), SPEAKER, str(payload.get("text", "")))
+		var counter := get_tree().get_first_node_in_group(&"pawn_counter")
+		if counter != null:
+			counter.get_node("TradeMenu").call("open_menu")

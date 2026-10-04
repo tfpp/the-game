@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/pawn_shop/models/skin_case/mesh.res" id="mesh"]
+[ext_resource type="Texture2D" path="res://assets/pawn_shop/models/skin_case/albedo.png" id="paint"]
+
+[sub_resource type="StandardMaterial3D" id="case_material"]
+texture_filter = 2
+albedo_texture = ExtResource("paint")
+roughness = 1.0
+
+[sub_resource type="BoxShape3D" id="collision"]
+size = Vector3(0.7, 0.7, 0.7)
+
+[node name="SkinCase" type="Node3D"]
+
+[node name="Visual" type="MeshInstance3D" parent="."]
+mesh = ExtResource("mesh")
+material_override = SubResource("case_material")
+
+[node name="Collision" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0, 0.35, 0)
+shape = SubResource("collision")

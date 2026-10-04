@@ -52,7 +52,7 @@ func can_use(player: Player) -> bool:
 	if not entity.in_range(player):
 		return false
 	var hand := Hand.for_peer(get_tree(), player.get_multiplayer_authority())
-	return hand != null and hand.inventory().can_collect(item_id)
+	return hand != null and GunBuyCatalog.can_collect_purchase(hand.inventory(), item_id)
 
 
 func use() -> void:
@@ -66,11 +66,11 @@ func _buy(player: Player) -> bool:
 	if wallet == null or holdables == null or _busy.has(peer):
 		return false
 	_busy[peer] = true
-	_charge(wallet, holdables, player, peer)
+	_charge(wallet, player, peer)
 	return true
 
 
-func _charge(wallet: PlayerMoney, holdables: Node, player: Player, peer: int) -> void:
+func _charge(wallet: PlayerMoney, player: Player, peer: int) -> void:
 	var generation := _generation
 	var hand := Hand.for_peer(get_tree(), peer)
 	var id := Crypto.new().generate_random_bytes(32).hex_encode()
@@ -83,15 +83,14 @@ func _charge(wallet: PlayerMoney, holdables: Node, player: Player, peer: int) ->
 		if same_player:
 			_say(peer, "%s. Come back with more cash." % str(result["error"]))
 		return
-	var delivered := false
-	if same_player and is_instance_valid(hand) and Hand.for_peer(get_tree(), peer) == hand:
-		delivered = hand.inventory().collect(item_id)
-	# A paid gun is never lost: if the bag filled or the buyer left mid-payment it
-	# lands on the shop floor as an ordinary pickup.
-	if not delivered and is_instance_valid(holdables):
-		var spot := global_position + global_basis.z.normalized() * 1.2
-		spot.y = 0.0
-		holdables.call(&"spawn_thrown_item", item_id, spot + Vector3.UP, spot)
+	var recipient := (
+		hand
+		if same_player and is_instance_valid(hand) and Hand.for_peer(get_tree(), peer) == hand
+		else null
+	)
+	var spot := global_position + global_basis.z.normalized() * 1.2
+	spot.y = 0.0
+	var delivered := GunMachine.deliver_fixed_purchase(self, recipient, item_id, spot)
 	if same_player:
 		var line := "Pleasure doing business." if delivered else "It's on the floor, friend."
 		_say(

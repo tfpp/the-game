@@ -14,25 +14,95 @@ const BALL_RADIUS_M := 0.1
 @export var storefront_scene: PackedScene
 
 var _pending: Dictionary = {}
+var _trade: NetworkedInteraction
 
 
 func _ready() -> void:
 	add_to_group(&"interactables")
+	add_to_group(&"pawn_counter")
+	var menu := CanvasLayer.new()
+	menu.set_script(preload("res://features/pawn_shop/trade_menu.gd"))
+	menu.name = "TradeMenu"
+	add_child(menu)
+	_trade = NetworkedInteraction.new()
+	_trade.name = "CounterTrade"
+	add_child(_trade)
+	_trade.register_use(can_use, _open_trade)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	Network.mode_changed.connect(_on_mode_changed)
 	_build_storefront()
 
 
 func interaction_text() -> String:
-	return "Pawn a valuable"
+	return "Trade · Buy guns and ammo / sell valuables"
 
 
 func can_use(player: Player) -> bool:
-	return global_position.distance_to(player.net_position) <= USE_RANGE_M
+	if global_position.distance_to(player.net_position) <= USE_RANGE_M:
+		return true
+	var broker := get_tree().get_first_node_in_group(&"pawn_broker")
+	return broker != null and bool(broker.call("can_use", player))
 
 
 func use() -> void:
-	request_sell.rpc_id(1)
+	_trade.request_use()
+
+
+func _open_trade(player: Player) -> bool:
+	var menu := get_node("TradeMenu")
+	(menu.get("entity") as NetworkedEntity).send_event(
+		&"open", {}, player.get_multiplayer_authority()
+	)
+	return true
+
+
+## Reuse the fence's idempotent reservation across retries, including API failures.
+func sell_selected(peer: int, slot: int, expected_id: String) -> String:
+	var player := _player_for_peer(peer)
+	var hand := Hand.for_peer(get_tree(), peer)
+	var wallet := get_tree().get_first_node_in_group(&"player_money") as PlayerMoney
+	if (
+		not multiplayer.is_server()
+		or player == null
+		or hand == null
+		or wallet == null
+		or not can_use(player)
+	):
+		return "Stay near the pawn counter."
+	if not _pending.has(peer):
+		var id := hand.inventory().take_valuable_at(slot, expected_id)
+		if id.is_empty():
+			return "Item unavailable or not accepted."
+		_pending[peer] = {
+			"item": id,
+			"amount": ItemCatalog.find(id).sale_value_cents,
+			"operation": Crypto.new().generate_random_bytes(32).hex_encode(),
+			"busy": false
+		}
+	var sale: Dictionary = _pending[peer]
+	if not expected_id.is_empty() and sale["item"] != expected_id:
+		return "Sale pending. Retry the reserved item before selling another."
+	if sale["busy"]:
+		return "A sale is already processing."
+	return await _resolve_sale(peer, sale, wallet)
+
+
+func _resolve_sale(peer: int, sale: Dictionary, wallet: PlayerMoney) -> String:
+	sale["busy"] = true
+	var result := await wallet.sell_loot(peer, sale["operation"], sale["amount"], "Pawn shop sale")
+	if not _pending.has(peer) or _pending[peer] != sale:
+		return "Session ended."
+	if result.has("balance"):
+		_pending.erase(peer)
+		return (
+			"Sold %s for %s."
+			% [
+				ItemCatalog.find(sale["item"]).display_name,
+				PlayerMoney.format_money(sale["amount"])
+			]
+		)
+	sale["busy"] = false
+	return "Sale pending. Use the counter again to retry; your item is reserved."
 
 
 @rpc("any_peer", "call_local", "reliable")
