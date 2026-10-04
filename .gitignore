@@ -24,3 +24,13 @@ game/features/changelog/releases.gd.uid
 
 game/features/console/repo_snapshot.gd
 game/features/console/repo_snapshot.gd.uid
+
+# Local visual review captures
+/docs/design/previews/**/*.png
+/docs/design/previews/**/*.jpg
+/docs/design/previews/**/*.jpeg
+/docs/design/previews/**/*.webp
+/docs/design/previews/**/*.gif
+/docs/design/previews/**/*.bmp
+/docs/design/previews/**/*.tga
+/docs/design/previews/**/*.svg

@@ -11,6 +11,8 @@ edge bullets into the next version section. See [Release notes](docs/release-not
 
 ## [edge]
 
+- Keep visual preview images local and exclude them from Git tracking.
+
 ## [0.8.0](https://github.com/tfpp/the-game/releases/tag/v0.8.0) - 2026-09-29
 
 - Brand the game Casino Royale and dress the Rain Alleys with original vertex-authored OBJ dumpsters, boarded facades, fire escapes, lamps and fence wire.
