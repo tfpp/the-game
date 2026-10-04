@@ -1,5 +1,6 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://features/signage/sign_board.tscn" id="sign_board"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="1_0li85"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="2_frjm8"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="3_s0u5k"]
@@ -282,15 +283,10 @@ use_collision = true
 size = Vector3(16, 8, 0.4)
 material = ExtResource("6_5ffdp")
 
-[node name="WingSign-1" type="Label3D" parent="." unique_id=732922039]
+[node name="WingSign-1" parent="." unique_id=732922039 instance=ExtResource("sign_board")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -17.65, 4, 0)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "PETTING ZOO"
-font_size = 42
-outline_size = 6
+letter_height = 0.353
 
 [node name="WingDoorLight-1" type="OmniLight3D" parent="." unique_id=761517946]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 4, 0)
@@ -341,15 +337,10 @@ use_collision = true
 size = Vector3(16, 8, 0.4)
 material = ExtResource("6_5ffdp")
 
-[node name="WingSign1" type="Label3D" parent="." unique_id=1754652146]
+[node name="WingSign1" parent="." unique_id=1754652146 instance=ExtResource("sign_board")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 17.65, 4, 0)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "HARBOR ROOM"
-font_size = 42
-outline_size = 6
+letter_height = 0.353
 
 [node name="WingDoorLight1" type="OmniLight3D" parent="." unique_id=1533499037]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 4, 0)
@@ -386,25 +377,15 @@ use_collision = true
 size = Vector3(0.18, 1.2, 4)
 material = ExtResource("2_frjm8")
 
-[node name="ZooTitle" type="Label3D" parent="." unique_id=2062186257]
+[node name="ZooTitle" parent="." unique_id=2062186257 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 4.5, -20.7)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "THE LUCKY PETTING PARLOR"
-font_size = 38
-outline_size = 6
+letter_height = 0.319
 
-[node name="ZooNotice" type="Label3D" parent="." unique_id=2042246369]
+[node name="ZooNotice" parent="." unique_id=2042246369 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 2.9, -20.7)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "FROGS & FRIENDS  /  PLEASE BE KIND"
-font_size = 23
-outline_size = 6
+letter_height = 0.193
 
 [node name="ZooLight-13" type="OmniLight3D" parent="." unique_id=2115396041]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 5, -13)
@@ -485,25 +466,15 @@ light_energy = 1.3
 omni_range = 13.0
 omni_attenuation = 1.4
 
-[node name="HarborTitle" type="Label3D" parent="." unique_id=1882197327]
+[node name="HarborTitle" parent="." unique_id=1882197327 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 4.6, -20.7)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "NEW YORK  /  INDOOR FERRY"
-font_size = 34
-outline_size = 6
+letter_height = 0.286
 
-[node name="HarborNotice" type="Label3D" parent="." unique_id=523928100]
+[node name="HarborNotice" parent="." unique_id=523928100 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 3.2, -20.7)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "BOARD AT EITHER END  -  TAKE THE WHEEL"
-font_size = 22
-outline_size = 6
+letter_height = 0.185
 
 [node name="MarqueeBacking" type="CSGBox3D" parent="." unique_id=213476343]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.8, -16)
@@ -511,45 +482,25 @@ use_collision = true
 size = Vector3(20, 3.1, 0.4)
 material = ExtResource("2_frjm8")
 
-[node name="CasinoName" type="Label3D" parent="." unique_id=1310364929]
+[node name="CasinoName" parent="." unique_id=1310364929 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.2, -15.75)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "THE GOLDEN CROWN"
-font_size = 90
-outline_size = 6
+letter_height = 0.756
 
-[node name="CasinoDate" type="Label3D" parent="." unique_id=380083166]
+[node name="CasinoDate" parent="." unique_id=380083166 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9, -15.73)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "MOTOR LODGE & CASINO  /  EST. 1964"
-font_size = 27
-outline_size = 6
+letter_height = 0.227
 
-[node name="Welcome" type="Label3D" parent="." unique_id=1250382980]
+[node name="Welcome" parent="." unique_id=1250382980 instance=ExtResource("sign_board")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.2, 29)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "WELCOME BACK, HIGH ROLLER"
-font_size = 40
-outline_size = 6
+letter_height = 0.336
 
-[node name="Directions" type="Label3D" parent="." unique_id=28343790]
+[node name="Directions" parent="." unique_id=28343790 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 14.15)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "PETTING ZOO  <     SLOTS & ROULETTE     >  HARBOR ROOM"
-font_size = 20
-outline_size = 6
+letter_height = 0.168
 
 [node name="LobbySofa-10" type="CSGBox3D" parent="." unique_id=826226934]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.45, 24)
@@ -635,15 +586,10 @@ use_collision = true
 size = Vector3(10, 0.96, 1.2)
 material = ExtResource("2_frjm8")
 
-[node name="SecuritySign" type="Label3D" parent="." unique_id=1972677789]
+[node name="SecuritySign" parent="." unique_id=1972677789 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.4, 16.7)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "SECURITY / UNCLAIMED PROPERTY"
-font_size = 24
-outline_size = 6
+letter_height = 0.202
 
 [node name="WardrobeCounter" type="CSGBox3D" parent="." unique_id=1275042437]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.43, 17)
@@ -651,45 +597,25 @@ use_collision = true
 size = Vector3(10, 0.86, 1.2)
 material = ExtResource("5_qsuj4")
 
-[node name="WardrobeSign" type="Label3D" parent="." unique_id=1954715748]
+[node name="WardrobeSign" parent="." unique_id=1954715748 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.3, 16.7)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "COAT CHECK / LOST & FOUND"
-font_size = 25
-outline_size = 6
+letter_height = 0.210
 
-[node name="RecreationSign" type="Label3D" parent="." unique_id=91122181]
+[node name="RecreationSign" parent="." unique_id=91122181 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 4, 24)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "THE STARDUST REC ROOM"
-font_size = 30
-outline_size = 6
+letter_height = 0.252
 
-[node name="TrampolineSign" type="Label3D" parent="." unique_id=2022950612]
+[node name="TrampolineSign" parent="." unique_id=2022950612 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 4, 23)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "JUMP LOUNGE"
-font_size = 35
-outline_size = 6
+letter_height = 0.294
 
-[node name="ExhibitSign" type="Label3D" parent="." unique_id=353036611]
+[node name="ExhibitSign" parent="." unique_id=353036611 instance=ExtResource("sign_board")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 5.5, -28)
-pixel_size = 0.012
-double_sided = false
-modulate = Color(0.92, 0.69, 0.36, 1)
-outline_modulate = Color(0.1, 0.04, 0.025, 1)
 text = "QUIET GALLERY"
-font_size = 30
-outline_size = 6
+letter_height = 0.252
 
 [node name="SconceLight-28_-33.9" type="OmniLight3D" parent="." unique_id=1975528213]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28, 3.4, -32.9)

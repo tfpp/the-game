@@ -37,7 +37,7 @@ var _trip_pending := false
 
 
 func _ready() -> void:
-	($Car/Sign as Label3D).text = sign_text
+	($Car/Sign as SignBoard).text = sign_text
 	entity.session_reset.connect(_reset)
 	entity.event_received.connect(_event)
 	_update_doors()

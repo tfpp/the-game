@@ -28,6 +28,8 @@ state changes and no extra lights.
 Keep `Label3D` only for dynamic text that must change at runtime (names over
 heads, live counters). Replacing existing labels is Phase 1 tasks E2–E4
 (`docs/phase1.md`); list any kept labels here as they are decided.
+E2 is done: the casino interior and elevator cab use `SignBoard`s and keep no
+`Label3D`s. The atlas includes `<` and `>` for directional signs.
 
 The shared atlas also supports **Ż** and **Ł** (and their lowercase inputs),
 used by the Strip Mall's Polish storefront. Existing ASCII and fallback glyphs
