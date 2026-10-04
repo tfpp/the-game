@@ -1,238 +1,60 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene format=3]
 
-[sub_resource type="StandardMaterial3D" id="r0"]
-albedo_color = Color(0.23, 0.28, 0.32, 1)
-metallic = 0.4
-roughness = 0.35
+[ext_resource type="ArrayMesh" path="res://assets/holdables/models/mp5/frame.res" id="Frame"]
+[ext_resource type="ArrayMesh" path="res://assets/holdables/models/mp5/bolt.res" id="Bolt"]
+[ext_resource type="ArrayMesh" path="res://assets/holdables/models/mp5/magazine.res" id="Magazine"]
+[ext_resource type="ArrayMesh" path="res://assets/holdables/models/mp5/charging_handle.res" id="ChargingHandle"]
+[ext_resource type="Texture2D" path="res://assets/holdables/models/mp5/albedo.png" id="paint"]
+[ext_resource type="Texture2D" path="res://assets/holdables/models/mp5/skin_mask.png" id="mask"]
+[ext_resource type="Script" path="res://features/holdables/rifle_view.gd" id="script"]
+[ext_resource type="AnimationLibrary" path="res://features/holdables/animations/mp5.tres" id="animations"]
 
-[sub_resource type="StandardMaterial3D" id="r1"]
-albedo_color = Color(0.035, 0.045, 0.055, 1)
-metallic = 0
-roughness = 0.65
+[sub_resource type="StandardMaterial3D" id="material"]
+albedo_texture = ExtResource("paint")
+texture_filter = 2
+roughness = 0.9
+specular_mode = 2
 
-[sub_resource type="StandardMaterial3D" id="r2"]
-albedo_color = Color(0.012, 0.018, 0.022, 1)
-metallic = 0
-roughness = 0.65
-
-[sub_resource type="StandardMaterial3D" id="r3"]
-albedo_color = Color(0.32, 0.37, 0.39, 1)
-metallic = 0.75
-roughness = 0.3
-
-[sub_resource type="BoxMesh" id="r4"]
-size = Vector3(0.055, 0.14, 0.065)
-
-[sub_resource type="BoxMesh" id="r5"]
-size = Vector3(0.058, 0.008, 0.069)
-
-[sub_resource type="BoxMesh" id="r6"]
-size = Vector3(0.019, 0.013, 0.1)
-
-[sub_resource type="BoxMesh" id="r7"]
-size = Vector3(0.019, 0.08, 0.014)
-
-[sub_resource type="BoxMesh" id="r8"]
-size = Vector3(0.014, 0.045, 0.012)
-
-[sub_resource type="BoxMesh" id="r9"]
-size = Vector3(0.085, 0.095, 0.34)
-
-[sub_resource type="BoxMesh" id="r10"]
-size = Vector3(0.003, 0.037, 0.09)
-
-[sub_resource type="BoxMesh" id="r11"]
-size = Vector3(0.06, 0.055, 0.29)
-
-[sub_resource type="BoxMesh" id="r12"]
-size = Vector3(0.085, 0.13, 0.19)
-
-[sub_resource type="BoxMesh" id="r13"]
-size = Vector3(0.093, 0.145, 0.025)
-
-[sub_resource type="CylinderMesh" id="r14"]
-top_radius = 0.02
-bottom_radius = 0.02
-height = 0.25
-radial_segments = 12
-
-[sub_resource type="CylinderMesh" id="r15"]
-top_radius = 0.029
-bottom_radius = 0.029
-height = 0.035
-radial_segments = 12
-
-[sub_resource type="CylinderMesh" id="r16"]
-top_radius = 0.017
-bottom_radius = 0.017
-height = 0.002
-radial_segments = 12
-
-[sub_resource type="BoxMesh" id="r17"]
-size = Vector3(0.09, 0.1, 0.16)
-
-[sub_resource type="BoxMesh" id="r18"]
-size = Vector3(0.099, 0.014, 0.009)
-
-[sub_resource type="BoxMesh" id="r19"]
-size = Vector3(0.049, 0.205, 0.072)
-
-[sub_resource type="BoxMesh" id="r20"]
-size = Vector3(0.063, 0.018, 0.078)
-
-[sub_resource type="BoxMesh" id="r21"]
-size = Vector3(0.05, 0.105, 0.058)
-
-[sub_resource type="BoxMesh" id="r22"]
-size = Vector3(0.06, 0.025, 0.025)
-
-[sub_resource type="BoxMesh" id="r23"]
-size = Vector3(0.025, 0.035, 0.025)
-
-[node name="SmgView" type="Node3D"]
+[node name="RifleView" type="Node3D"]
+script = ExtResource("script")
+weapon_id = "smg"
 
 [node name="Grip" type="Marker3D" parent="."]
-position = Vector3(0, 0, 0)
-
-[node name="PistolGrip" type="MeshInstance3D" parent="."]
-position = Vector3(0, -0.008, 0.007)
-rotation = Vector3(-0.16, 0, 0)
-mesh = SubResource("r4")
-material_override = SubResource("r1")
-
-[node name="GripRib0" type="MeshInstance3D" parent="."]
-position = Vector3(0, -0.055, 0.008)
-mesh = SubResource("r5")
-material_override = SubResource("r1")
-
-[node name="GripRib1" type="MeshInstance3D" parent="."]
-position = Vector3(0, -0.028, 0.008)
-mesh = SubResource("r5")
-material_override = SubResource("r1")
-
-[node name="GripRib2" type="MeshInstance3D" parent="."]
-position = Vector3(0, -0.0010000000000000009, 0.008)
-mesh = SubResource("r5")
-material_override = SubResource("r1")
-
-[node name="GripRib3" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.026000000000000002, 0.008)
-mesh = SubResource("r5")
-material_override = SubResource("r1")
-
-[node name="GuardBase" type="MeshInstance3D" parent="."]
-position = Vector3(0, -0.05, -0.075)
-mesh = SubResource("r6")
-material_override = SubResource("r1")
-
-[node name="GuardFront" type="MeshInstance3D" parent="."]
-position = Vector3(0, -0.015, -0.12)
-mesh = SubResource("r7")
-material_override = SubResource("r1")
-
-[node name="Trigger" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.0, -0.065)
-rotation = Vector3(-0.22, 0, 0)
-mesh = SubResource("r8")
-material_override = SubResource("r3")
-
-[node name="Receiver" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.1, -0.11)
-mesh = SubResource("r9")
-material_override = SubResource("r0")
-
-[node name="EjectionPort" type="MeshInstance3D" parent="."]
-position = Vector3(0.043, 0.11, -0.12)
-mesh = SubResource("r10")
-material_override = SubResource("r2")
-
-[node name="StockSpine" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.085, 0.15)
-mesh = SubResource("r11")
-material_override = SubResource("r0")
-
-[node name="Stock" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.053, 0.31)
-rotation = Vector3(-0.1, 0, 0)
-mesh = SubResource("r12")
-material_override = SubResource("r1")
-
-[node name="ButtPad" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.045, 0.414)
-mesh = SubResource("r13")
-material_override = SubResource("r1")
-
-[node name="Barrel" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.108, -0.365)
-rotation = Vector3(1.5707963267948966, 0, 0)
-mesh = SubResource("r14")
-material_override = SubResource("r0")
-
-[node name="MuzzleCollar" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.108, -0.49)
-rotation = Vector3(1.5707963267948966, 0, 0)
-mesh = SubResource("r15")
-material_override = SubResource("r3")
-
-[node name="Bore" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.108, -0.508)
-rotation = Vector3(1.5707963267948966, 0, 0)
-mesh = SubResource("r16")
-material_override = SubResource("r2")
-
-[node name="Muzzle" type="Marker3D" parent="."]
-position = Vector3(0, 0.108, -0.512)
-
-[node name="Handguard" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.082, -0.33)
-mesh = SubResource("r17")
-material_override = SubResource("r1")
-
-[node name="HandguardRib0" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.137, -0.27)
-mesh = SubResource("r18")
-material_override = SubResource("r3")
-
-[node name="HandguardRib1" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.137, -0.306)
-mesh = SubResource("r18")
-material_override = SubResource("r3")
-
-[node name="HandguardRib2" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.137, -0.342)
-mesh = SubResource("r18")
-material_override = SubResource("r3")
-
-[node name="HandguardRib3" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.137, -0.378)
-mesh = SubResource("r18")
-material_override = SubResource("r3")
-
-[node name="Magazine" type="MeshInstance3D" parent="."]
-position = Vector3(0, -0.049, -0.175)
-rotation = Vector3(-0.12, 0, 0)
-mesh = SubResource("r19")
-material_override = SubResource("r1")
-
-[node name="MagazineBase" type="MeshInstance3D" parent="."]
-position = Vector3(0, -0.15, -0.16)
-mesh = SubResource("r20")
-material_override = SubResource("r3")
-
-[node name="Foregrip" type="MeshInstance3D" parent="."]
-position = Vector3(0, -0.01, -0.33)
-mesh = SubResource("r21")
-material_override = SubResource("r1")
 
 [node name="SupportGrip" type="Marker3D" parent="."]
-position = Vector3(0, -0.015, -0.33)
+position = Vector3(-0.018, 0.025, -0.225)
 
-[node name="RearSight" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.163, 0.025)
-mesh = SubResource("r22")
-material_override = SubResource("r1")
+[node name="Muzzle" type="Marker3D" parent="."]
+position = Vector3(0.0, 0.052, -0.34)
 
-[node name="FrontSight" type="MeshInstance3D" parent="."]
-position = Vector3(0, 0.163, -0.375)
-mesh = SubResource("r23")
-material_override = SubResource("r1")
+[node name="Pose" type="Node3D" parent="."]
+
+[node name="RightGrip" type="Marker3D" parent="Pose"]
+
+[node name="SupportGrip" type="Marker3D" parent="Pose"]
+position = Vector3(-0.018, 0.025, -0.225)
+
+[node name="Frame" type="MeshInstance3D" parent="Pose"]
+mesh = ExtResource("Frame")
+material_override = SubResource("material")
+metadata/skin_mask = ExtResource("mask")
+
+[node name="Bolt" type="MeshInstance3D" parent="Pose"]
+mesh = ExtResource("Bolt")
+material_override = SubResource("material")
+metadata/skin_mask = ExtResource("mask")
+
+[node name="Magazine" type="MeshInstance3D" parent="Pose"]
+mesh = ExtResource("Magazine")
+material_override = SubResource("material")
+metadata/skin_mask = ExtResource("mask")
+
+[node name="ChargingHandle" type="MeshInstance3D" parent="Pose"]
+mesh = ExtResource("ChargingHandle")
+material_override = SubResource("material")
+metadata/skin_mask = ExtResource("mask")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": ExtResource("animations")
+}

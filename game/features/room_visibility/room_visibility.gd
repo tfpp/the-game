@@ -80,7 +80,7 @@ func _room_at(position: Vector3) -> Dictionary:
 		var bounds := room.global_bounds()
 		var volume := bounds.get_volume()
 		if volume < best_volume:
-			best = {"path": room.get_path(), "bounds": bounds}
+			best = {"path": room.get_path(), "bounds": room.global_render_bounds()}
 			best_volume = volume
 	for node: Node in get_tree().get_nodes_in_group(GpsDestination.GROUP):
 		var destination := node as GpsDestination

@@ -40,6 +40,9 @@ func _capture() -> void:
 	_camera.position = shop.to_global(Vector3(-4.5, 1.65, 27))
 	_camera.look_at(shop.to_global(Vector3(-3, 1.5, 29.8)))
 	await _save("garage-return")
+	_camera.position = shop.to_global(Vector3(-5.1, 1.2, 22.6))
+	_camera.look_at(shop.to_global(Vector3(-4, 0.35, 21.1)))
+	await _save("prawn-skin-case")
 	get_tree().quit()
 
 

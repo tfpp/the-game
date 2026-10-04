@@ -32,8 +32,12 @@ func set_skin_color(color: Color) -> void:
 	human.material.set_shader_parameter("skin_tint", color)
 
 
-func pose(right_shoulder: Vector3, left_shoulder: Vector3, support: Node3D) -> void:
+func pose(
+	right_shoulder: Vector3, left_shoulder: Vector3, support: Node3D, primary: Node3D = null
+) -> void:
 	_right.transform = Transform3D.IDENTITY
+	if primary != null:
+		_right.global_transform = primary.global_transform
 	_left.visible = support != null
 	if support != null:
 		_left.global_transform = support.global_transform
@@ -49,7 +53,11 @@ func pose(right_shoulder: Vector3, left_shoulder: Vector3, support: Node3D) -> v
 
 ## Shared by catalog items and generated weapons with authored grip markers.
 func pose_for_player(
-	player: Player, support: Node3D, skin: Color, view_motion: Transform3D = Transform3D.IDENTITY
+	player: Player,
+	support: Node3D,
+	skin: Color,
+	view_motion: Transform3D = Transform3D.IDENTITY,
+	primary: Node3D = null
 ) -> void:
 	set_skin_color(skin)
 	var body := player.get_node("Body") as Node3D
@@ -62,8 +70,9 @@ func pose_for_player(
 	visible = true
 	if not first_person and avatar is BlockPlayerModel and avatar.human.visible:
 		visible = false
-		avatar.human.reach_grip(true, to_global(Vector3(0.055, -0.04, 0.055)), true)
-		avatar.human.orient_grip(true, global_basis.orthonormalized())
+		var right := primary.global_transform if primary != null else global_transform
+		avatar.human.reach_grip(true, right * Vector3(0.055, -0.04, 0.055), true)
+		avatar.human.orient_grip(true, right.basis.orthonormalized())
 		if support != null:
 			avatar.human.reach_grip(false, support.to_global(Vector3(-0.055, -0.04, 0.055)), true)
 			avatar.human.orient_grip(false, support.global_basis.orthonormalized())
@@ -72,7 +81,8 @@ func pose_for_player(
 		pose(
 			to_local(avatar.call("shoulder_position", true)),
 			to_local(avatar.call("shoulder_position", false)),
-			support
+			support,
+			primary
 		)
 		return
 	var shoulders: Transform3D
@@ -88,5 +98,6 @@ func pose_for_player(
 	pose(
 		to_local(shoulders * Vector3(0.32, 0, 0)),
 		to_local(shoulders * Vector3(-0.32, 0, 0)),
-		support
+		support,
+		primary
 	)

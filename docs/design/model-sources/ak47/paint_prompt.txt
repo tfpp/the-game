@@ -1,0 +1,14 @@
+Paint the PROVIDED EXACT square UV template as a flat diffuse color atlas for a detailed retro low-poly AK47 game weapon. Keep every rectangle EXACTLY in place, same proportions and boundaries. The supplied guide is1024px; coordinates below are in128pixel atlas units, multiplyby8. No gun render, no perspective, no object silhouettes, no labels, no text, no logos, no invented geometry. Fill whole rectangular regions with the specified material. Broad restrained hand-painted material variation that survives final128x128pixel reduction, GoldSrc style, avoid micro noise and excessive wear. Use matched material tones across repeated islands and keep dark charcoal padding.
+RECEIVER_LEFT: rectangle x40 y2 width70 height22, unrotated; dark graphite blued gunmetal with restrained smooth brushed highlights.
+RECEIVER_RIGHT: rectangle x40 y28 width70 height22, unrotated; dark graphite blued gunmetal with restrained smooth brushed highlights.
+EDGE: rectangle x120 y86 width5 height24, rotated 90degrees; dark graphite blued gunmetal with restrained smooth brushed highlights.
+STOCK_LEFT: rectangle x40 y54 width28 height54, rotated 90degrees; warm reddish walnut wood with broad lengthwise grain.
+STOCK_RIGHT: rectangle x72 y54 width54 height28, unrotated; warm reddish walnut wood with broad lengthwise grain.
+HANDGUARD_LEFT: rectangle x34 y112 width34 height13, unrotated; warm reddish walnut wood with broad lengthwise grain.
+HANDGUARD_RIGHT: rectangle x103 y86 width13 height34, rotated 90degrees; warm reddish walnut wood with broad lengthwise grain.
+WOOD: rectangle x72 y86 width27 height32, rotated 90degrees; warm reddish walnut with broad lengthwise grain matching stock and handguard.
+MAGAZINE_LEFT: rectangle x2 y2 width34 height49, unrotated; blue-black stamped steel with three broad curved magazine ribs.
+MAGAZINE_RIGHT: rectangle x2 y55 width34 height49, unrotated; blue-black stamped steel with three broad curved magazine ribs.
+METAL: rectangle x2 y108 width28 height16, unrotated; dark graphite blued gunmetal with restrained smooth brushed highlights.
+DARK: rectangle x72 y122 width4 height4, unrotated; uniform near-black charcoal, no detail.
+For magazines, lengthwise pressed ribs run along the magazine's longest physical dimension, accounting for atlas rotation. Stock texture and handguard texture are separate named patches. Receiver left and right are consistent blue-black steel; small inset rivets and receiver seams, with muted details, no large painted holes. Return only the flat square UV atlas.

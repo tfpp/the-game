@@ -1,5 +1,7 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://features/pawn_shop/creepy_doll_passer.tscn" id="doll"]
+
 [ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="1_wood"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="4_brass"]
 [ext_resource type="PackedScene" path="res://features/pawn_shop/wall_gun.tscn" id="6_gun"]
@@ -22,6 +24,8 @@ roughness = 0.9
 
 [node name="PawnShop" type="Node3D"]
 position = Vector3(0, 0, -4000)
+
+[node name="CreepyDollPasser" parent="." instance=ExtResource("doll")]
 
 [node name="PrawnSkins" parent="." instance=ExtResource("skins")]
 position = Vector3(-4, 0, 21.1)
@@ -56,24 +60,34 @@ material = ExtResource("4_brass")
 position = Vector3(-9, 1.85, 20.25)
 
 [node name="Pistol" parent="GunWall" instance=ExtResource("6_gun")]
-position = Vector3(-2.25, 0, 0)
+position = Vector3(-2.8, 0.15, 0)
 item_id = "pistol"
 price_cents = 150000
 
 [node name="Smg" parent="GunWall" instance=ExtResource("6_gun")]
-position = Vector3(-0.75, 0, 0)
+position = Vector3(-1.7, 0.15, 0)
 item_id = "smg"
 price_cents = 555000
 
 [node name="Shotgun" parent="GunWall" instance=ExtResource("6_gun")]
-position = Vector3(0.75, 0, 0)
+position = Vector3(-0.6, 0.15, 0)
 item_id = "shotgun"
 price_cents = 555000
 
 [node name="Awp" parent="GunWall" instance=ExtResource("6_gun")]
-position = Vector3(2.25, 0, 0)
+position = Vector3(2.7, 0.15, 0)
 item_id = "awp"
 price_cents = 1500000
+
+[node name="M4A4" parent="GunWall" instance=ExtResource("6_gun")]
+position = Vector3(0.5, 0.15, 0)
+item_id = "m4a4"
+price_cents = 850000
+
+[node name="AK47" parent="GunWall" instance=ExtResource("6_gun")]
+position = Vector3(1.6, 0.15, 0)
+item_id = "ak47"
+price_cents = 800000
 
 [node name="HatStand" type="CSGBox3D" parent="."]
 position = Vector3(-13.6, 0.55, 21.4)
@@ -101,6 +115,7 @@ rotation = Vector3(0, 1.5707964, 0)
 script = ExtResource("room")
 room_scene = "res://features/pawn_shop/interior.tscn"
 bounds = AABB(-16.2, -1, 19.8, 14.4, 6.5, 10.4)
+render_bounds = AABB(-170, -30, -141, 322, 164, 322)
 
 [node name="Arrival" type="Marker3D" parent="Room"]
 position = Vector3(-3.5, 1, 27)

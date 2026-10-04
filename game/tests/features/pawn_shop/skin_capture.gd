@@ -57,6 +57,7 @@ func _capture() -> void:
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png(_output.path_join("reveal.png"))
 	await get_tree().create_timer(2.6).timeout
+	await _save("unlocked-reward")
 	get_tree().root.size = Vector2i(390, 844)
 	get_tree().root.content_scale_size = Vector2i(390, 844)
 	_menu._navigate("contents", "night")

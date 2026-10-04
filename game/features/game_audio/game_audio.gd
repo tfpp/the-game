@@ -8,8 +8,15 @@ signal sound_started(cue: StringName, positional: bool, at: Vector3)
 const BUS := &"GameSFX"
 const MAX_WORLD_VOICES := 24
 const MAX_UI_VOICES := 4
-const SHOT := preload("res://assets/game_audio/audio/sci-fi-sounds/explosionCrunch_000.ogg")
-const HEAVY_SHOT := preload("res://assets/game_audio/audio/sci-fi-sounds/explosionCrunch_002.ogg")
+const PISTOL_SHOT := preload("res://assets/game_audio/audio/pistol_shot.wav")
+const MP5_SHOT := preload("res://assets/game_audio/audio/mp5_shot.wav")
+const M4A4_SHOT := preload("res://assets/game_audio/audio/m4a4_shot.wav")
+const AK47_SHOT := preload("res://assets/game_audio/audio/ak47_shot.wav")
+const SHOTGUN_SHOT := preload("res://assets/game_audio/audio/shotgun_shot.wav")
+const AWP_SHOT := preload("res://assets/game_audio/audio/awp_shot.wav")
+const RELOAD_MAG_OUT := preload("res://assets/game_audio/audio/reload_mag_out.wav")
+const RELOAD_MAG_IN := preload("res://assets/game_audio/audio/reload_mag_in.wav")
+const RELOAD_CHARGE := preload("res://assets/game_audio/audio/reload_charge.wav")
 const EXPLOSION := preload("res://assets/game_audio/audio/sci-fi-sounds/explosionCrunch_004.ogg")
 const IMPACT := preload("res://assets/game_audio/audio/impact-sounds/impactGeneric_light_000.ogg")
 const HIT := preload("res://assets/game_audio/audio/impact-sounds/impactPunch_medium_000.ogg")
@@ -33,10 +40,15 @@ const PROFILES := {
 	&"city_wok_yell": [WOK_YELL, -15.0, 1.0],
 	&"city_sushi_yell": [SUSHI_YELL, -15.0, 1.0],
 	&"van_departure": [VAN_DEPARTURE, -12.0, 1.0],
-	&"pistol": [SHOT, -9.0, 1.8],
-	&"smg": [SHOT, -12.0, 2.4],
-	&"shotgun": [HEAVY_SHOT, -8.0, 1.5],
-	&"awp": [HEAVY_SHOT, -7.0, 1.0],
+	&"pistol": [PISTOL_SHOT, -9.0, 1.0],
+	&"smg": [MP5_SHOT, -12.0, 1.0],
+	&"m4a4": [M4A4_SHOT, -10.0, 1.0],
+	&"ak47": [AK47_SHOT, -10.0, 1.0],
+	&"shotgun": [SHOTGUN_SHOT, -8.0, 1.0],
+	&"awp": [AWP_SHOT, -7.0, 1.0],
+	&"reload_mag_out": [RELOAD_MAG_OUT, -18.0, 1.0],
+	&"reload_mag_in": [RELOAD_MAG_IN, -18.0, 1.0],
+	&"reload_charge": [RELOAD_CHARGE, -18.0, 1.0],
 	&"explosion": [EXPLOSION, -10.0, 1.0],
 	&"impact": [IMPACT, -16.0, 1.0],
 	&"hit": [HIT, -16.0, 1.0],

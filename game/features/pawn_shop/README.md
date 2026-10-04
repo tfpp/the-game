@@ -1,5 +1,21 @@
 # Pawn shop
 
+The streamed street uses four flat, unshaded panels sharing one 128×64 cityscape
+around its buildings, with grass ground below the road and sidewalks. The panels
+meet at the corners and extend below the ground to conceal their lower edges.
+The original painting and prompt live in `docs/design/model-sources/pawn-street/`;
+`tools/build_cityscape.gd` downsamples it for runtime. A camera-local cloudy sky
+replaces the dark background while visiting the shop and restores the previous
+environment on departure. One spatial voice cycles through the five user-supplied
+road and thunder recordings through the GameSFX bus. Godot imports them with QOA
+compression. The source clips are baked to mono 11025 Hz / 8-bit PCM (about
+710 KiB total); `tools/compress_city_audio.gd` rebuilds them from a supplied folder.
+Dedicated
+servers skip audio; unloading the room restores the camera and stops the voices.
+The shop's `render_bounds` include the skyline while its membership bounds remain
+the interior. Outdoor rain stays beyond the windows; occasional lightning lights
+the street, painted backdrop and cloudy sky while the shop is active.
+
 Rusty Hogg's gun and pawn shop is a separate street-facing store. From the
 operations garage, use the van and choose **Gun Shop · Rusty Hogg's**. The shop's
 front door returns directly to the operations garage, with its floor preloaded.
@@ -28,7 +44,8 @@ casino's operations-garage door and then to the van.
   (`features/casino_patrons`): shootable like the salon characters, back in 6 s.
 - **Gun wall** on the north wall: `wall_gun.tscn` (`WallGun`) instances hang the
   holdables pistol ($1,500), SMG/shotgun ($5,550) and AWP ($15,000) with price tags.
-  Use one to buy an empty copy; stock is unlimited. Prices share GunBuyCatalog.
+  Use one to buy a gun plus one matching ammunition box; stock is unlimited.
+  Prices share GunBuyCatalog and the bundle keeps the existing gun price.
   Buy separate ammo with **!guns → 9. Classic ammunition** or **Esc → Activities →
   Buy guns**; packs feed the held matching gun from the backpack.
 - **Top hat stand** in the north-west corner at (-13.6, 0, 21.4): a wood plinth with a
@@ -98,8 +115,11 @@ tier. Default tier chances are **60% / 25% / 10% / 4% / 1%**, exactly 100%; ther
 one skin per tier, so those are also the individual skin odds. The ten original
 finishes use muted brine, kelp, reef, bisque, pearl and aged-gold palettes, coarse
 curled-prawn stamps and segmented-shell bands on the existing classic models.
-The world crate reuses the existing painted wooden crate with a small cream prawn
-stencil; no new model or runtime texture is introduced.
+The world display uses a rugged yellow weapon case with a prawn emblem, raised lid
+ribs, two latches, hinges and a carry handle. It shares one 128×128 painted atlas
+across a 172-triangle mesh and keeps the old crate's collision footprint.
+The model builder, exact UV guide and saved painting prompt are documented in
+`docs/design/model-sources/prawn-skin-case/README.md`.
 
 Open **Esc → Activities → Prawn skins**, or **Inventory → Prawn skin collection**,
 to manage anywhere. These menus work with mouse/touch buttons and controller focus.
@@ -112,7 +132,11 @@ are not compatible. Weapon ownership, backpack slots, ammunition, prices and all
 weapon stats remain unchanged.
 
 Opening plays a 2.4-second decelerating cosmetic reel **after** the skin is safely
-saved. Closing the menu cannot lose the reward. Duplicates increment a count;
+committed, inside a focused dark-steel and brass case-opening panel with framed
+rarity cards. The result shows a larger weapon preview and an unlock heading.
+The panel's generated artwork and prompt are retained in
+`docs/design/model-sources/prawn-skin-ui/`; controls and text remain native UI.
+Closing the menu cannot lose the reward. Duplicates increment a count;
 **Exchange ONE duplicate** credits the shared wallet and keeps the last copy,
 including an equipped copy. Default exchange values by tier are
 **$0.50 / $1 / $2 / $5 / $10**. Empty inventories, insufficient money, loading,
@@ -198,3 +222,24 @@ Rebuild the editable dressing with:
 ```sh
 godot --headless --path game -s res://features/pawn_shop/tools/build_dressing.gd
 ```
+
+## Trading
+
+Interact with Rusty or the pawn counter to open the two-pane menu. Your items are
+on the left; gun and ammo stock is on the right. Prices and your wallet update
+after transactions. Only items with a positive catalog sale value can be sold.
+Selected sales reserve the exact slot and item before the wallet request. An
+unresolved sale remains reserved and can be retried using the same operation ID.
+Purchases reuse GunMachine; sales reuse LootFence and PlayerMoney. The server
+checks the requesting player, range and catalog prices. Escape closes the menu.
+
+
+Trade cards reuse InventoryIcon and the shared ModelIconRenderer cache, so the
+shop displays the actual item models with the same rarity borders as inventory.
+Each pane uses a two-column grid on desktop and one column at narrower widths.
+
+Gun purchases include one matching ammo box. Both menu and wall purchases check
+space for the full bundle before payment and drop any undeliverable paid items
+nearby if inventory changes during payment. Six painted carton models replace
+the old placeholder ammo props. The panel uses aged brass and dark metal with
+the skin crate's curled prawn emblem; labels and controls remain native UI.

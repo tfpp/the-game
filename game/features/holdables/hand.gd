@@ -34,10 +34,12 @@ var _view: Node3D
 var _arms := HeldArms.new()
 var _flash_timer := 0.0
 var _fire_cooldown := 0.0
+var _auto_request_left := 0.0
 var _motion := FirstPersonMotion.new()
 var _first_person := false
 
 @onready var consumption: ConsumableUse = $Consumption
+@onready var pistol: PistolMechanism = $PistolMechanism
 
 @onready var _mount: Node3D = $Mount
 
@@ -64,6 +66,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	consumption.advance(delta)
+	for id: String in ["pistol", "smg", "m4a4", "ak47"]:
+		magazine_for(id).advance(delta)
 	if consumption.view_id() != _mounted_item_id:
 		_rebuild_view()
 	if _view != null:
@@ -91,6 +95,17 @@ func _process(delta: float) -> void:
 			_set_flash(false)
 	if _fire_cooldown > 0.0:
 		_fire_cooldown -= delta
+	_auto_request_left = maxf(0.0, _auto_request_left - delta)
+	if (
+		net_item_id in ["smg", "m4a4", "ak47"]
+		and peer_id == multiplayer.get_unique_id()
+		and Controls.gameplay_active()
+		and Input.is_action_pressed(&"primary_action")
+		and _auto_request_left == 0.0
+		and not FirstPersonView.firing_blocked(get_tree(), peer_id)
+	):
+		_auto_request_left = ItemCatalog.find(net_item_id).fire_cooldown_s
+		request_primary_action.rpc_id(1)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -101,6 +116,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"primary_action"):
 		get_viewport().set_input_as_handled()
 		if not FirstPersonView.firing_blocked(get_tree(), peer_id):
+			var definition := ItemCatalog.find(net_item_id)
+			_auto_request_left = definition.fire_cooldown_s if definition != null else 0.0
 			request_primary_action.rpc_id(1)
 	elif event.is_action_pressed(&"drop_item"):
 		request_drop_item.rpc_id(1)
@@ -177,8 +194,13 @@ func _fire(def: ItemDefinition) -> void:
 		return
 	if def.damage > 0.0 and SafeZone.covers(get_tree(), player.global_position):
 		return
+	var magazine := magazine_for(def.id)
+	if magazine != null and not magazine.can_fire():
+		return
 	if ItemCatalog.AMMO_PACKS.has(def.id) and not inventory().spend_ammo(def.id):
 		return
+	if magazine != null:
+		magazine.record_shot()
 	_fire_cooldown = def.fire_cooldown_s
 	var origin := _aim_origin(player)
 	_play_fire.rpc(def.id, origin)
@@ -320,7 +342,11 @@ func held_view() -> Node3D:
 func _pose_arms(player: Player) -> void:
 	if _view != null:
 		_arms.pose_for_player(
-			player, support_grip(), PlayerSkin.TONES[skin_tone_index()], _motion.camera_motion
+			player,
+			support_grip(),
+			PlayerSkin.TONES[skin_tone_index()],
+			_motion.camera_motion,
+			_view.get_node_or_null("Pose/RightGrip") as Node3D
 		)
 
 
@@ -370,6 +396,19 @@ func _set_flash(active: bool) -> void:
 
 func inventory() -> PlayerInventory:
 	return $Inventory as PlayerInventory
+
+
+func magazine_for(id: String) -> PistolMechanism:
+	match id:
+		"pistol":
+			return $PistolMechanism as PistolMechanism
+		"smg":
+			return $MP5Mechanism as PistolMechanism
+		"m4a4":
+			return $M4Mechanism as PistolMechanism
+		"ak47":
+			return $AKMechanism as PistolMechanism
+	return null
 
 
 ## Spawn first; the inventory removes the source item only after this succeeds.

@@ -213,10 +213,10 @@ func test_all_tiers_and_saved_cash_sell_once_at_the_catalog_price() -> void:
 		assert_eq(int(wallet.balances[1]), total, "Repeated Use cannot duplicate a sale")
 
 
-func test_pawn_shop_display_case_matches_counter_and_keeps_sale_prompt() -> void:
+func test_pawn_shop_display_case_matches_counter_and_offers_trading() -> void:
 	var runs := _run(_features())
 	var fence := runs.get_node("Fence") as LootFence
-	assert_eq(fence.interaction_text(), "Pawn a valuable")
+	assert_eq(fence.interaction_text(), "Trade · Buy guns and ammo / sell valuables")
 	var case_node := fence.get_node("DisplayCase") as Node3D
 	var frame := case_node.get_node("Frame") as MeshInstance3D
 	var bounds := frame.mesh.get_aabb()

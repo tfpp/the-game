@@ -13,7 +13,14 @@ const CATEGORIES: Array[String] = [
 	"Ray Gun",
 	"Classic ammunition"
 ]
-const FIXED_PRICES := {"pistol": 150000, "smg": 555000, "shotgun": 555000, "awp": 1500000}
+const FIXED_PRICES := {
+	"pistol": 150000,
+	"smg": 555000,
+	"shotgun": 555000,
+	"m4a4": 850000,
+	"ak47": 800000,
+	"awp": 1500000
+}
 
 
 static func entries(category: int) -> Array[Dictionary]:
@@ -70,3 +77,20 @@ static func find(id: String) -> Dictionary:
 
 static func stats(entry: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
 	return GunGenerator.generate_selected(rng, entry["ammo"], entry["barrels"], entry["automatic"])
+
+
+## One ordinary matching ammo box is included in every stock weapon purchase.
+static func delivery_items(id: String) -> PackedStringArray:
+	var items := PackedStringArray([id])
+	if ItemCatalog.AMMO_PACKS.has(id):
+		items.append(ItemCatalog.ammo_id(id, int(ItemCatalog.AMMO_PACKS[id]["rounds"])))
+	return items
+
+
+static func can_collect_purchase(inventory: PlayerInventory, id: String) -> bool:
+	if not inventory.can_collect(id):
+		return false
+	if not ItemCatalog.AMMO_PACKS.has(id):
+		return true
+	var needed := 1 if inventory.hand().net_item_id.is_empty() else 2
+	return inventory.backpack.count("") >= needed

@@ -1,0 +1,11 @@
+{
+  "title": "City beyond the pawn shop",
+  "summary": "The pawn shop windows now overlook a distant city skyline with quiet street ambience.",
+  "notes": [
+    "Replace the dark void beyond the street buildings with a painted cityscape and cloudy sky.",
+    "Add five road and thunder ambience recordings as a quiet spatial background playlist.",
+    "Keep the outside street visible from the shop with a separate scenery render boundary.",
+    "Add outdoor rain streaks and occasional lightning that lights the sky and street.",
+    "Surround the street with cityscape panels and a grass ground plane to cover the backdrop edges."
+  ]
+}

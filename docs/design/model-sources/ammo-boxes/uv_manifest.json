@@ -1,0 +1,164 @@
+[
+  {
+    "name": "pistol_FRONT",
+    "rect_px": [
+      2,
+      2,
+      64,
+      16
+    ]
+  },
+  {
+    "name": "pistol_TOP",
+    "rect_px": [
+      70,
+      2,
+      32,
+      16
+    ]
+  },
+  {
+    "name": "pistol_SIDE",
+    "rect_px": [
+      106,
+      2,
+      20,
+      16
+    ]
+  },
+  {
+    "name": "smg_FRONT",
+    "rect_px": [
+      2,
+      22,
+      64,
+      16
+    ]
+  },
+  {
+    "name": "smg_TOP",
+    "rect_px": [
+      70,
+      22,
+      32,
+      16
+    ]
+  },
+  {
+    "name": "smg_SIDE",
+    "rect_px": [
+      106,
+      22,
+      20,
+      16
+    ]
+  },
+  {
+    "name": "m4a4_FRONT",
+    "rect_px": [
+      2,
+      42,
+      64,
+      16
+    ]
+  },
+  {
+    "name": "m4a4_TOP",
+    "rect_px": [
+      70,
+      42,
+      32,
+      16
+    ]
+  },
+  {
+    "name": "m4a4_SIDE",
+    "rect_px": [
+      106,
+      42,
+      20,
+      16
+    ]
+  },
+  {
+    "name": "ak47_FRONT",
+    "rect_px": [
+      2,
+      62,
+      64,
+      16
+    ]
+  },
+  {
+    "name": "ak47_TOP",
+    "rect_px": [
+      70,
+      62,
+      32,
+      16
+    ]
+  },
+  {
+    "name": "ak47_SIDE",
+    "rect_px": [
+      106,
+      62,
+      20,
+      16
+    ]
+  },
+  {
+    "name": "shotgun_FRONT",
+    "rect_px": [
+      2,
+      82,
+      64,
+      16
+    ]
+  },
+  {
+    "name": "shotgun_TOP",
+    "rect_px": [
+      70,
+      82,
+      32,
+      16
+    ]
+  },
+  {
+    "name": "shotgun_SIDE",
+    "rect_px": [
+      106,
+      82,
+      20,
+      16
+    ]
+  },
+  {
+    "name": "awp_FRONT",
+    "rect_px": [
+      2,
+      102,
+      64,
+      16
+    ]
+  },
+  {
+    "name": "awp_TOP",
+    "rect_px": [
+      70,
+      102,
+      32,
+      16
+    ]
+  },
+  {
+    "name": "awp_SIDE",
+    "rect_px": [
+      106,
+      102,
+      20,
+      16
+    ]
+  }
+]

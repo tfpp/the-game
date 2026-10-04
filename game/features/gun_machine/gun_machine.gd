@@ -68,7 +68,7 @@ func purchase(peer: int, choice: String = "") -> String:
 	var hand := Hand.for_peer(get_tree(), peer)
 	var fixed := entry.has("id") and not entry.has("ammo")
 	if fixed:
-		if hand == null or not hand.inventory().can_collect(choice):
+		if hand == null or not GunBuyCatalog.can_collect_purchase(hand.inventory(), choice):
 			return "Inventory full or loading"
 	elif rig == null:
 		return "No gun rig"
@@ -89,14 +89,12 @@ func purchase(peer: int, choice: String = "") -> String:
 	if result.has("error"):
 		return str(result["error"])
 	if fixed:
-		if is_instance_valid(hand) and Hand.for_peer(get_tree(), peer) == hand:
-			if hand.inventory().collect(choice):
-				return ""
-		# Like the pawn shop, a paid fixed gun is dropped if capacity changed.
-		var holdables := get_tree().get_first_node_in_group(&"holdables_root")
-		if holdables != null:
-			holdables.call("spawn_thrown_item", choice, spot + Vector3.UP, spot)
-		return "Paid gun dropped at your purchase location"
+		var recipient := (
+			hand if is_instance_valid(hand) and Hand.for_peer(get_tree(), peer) == hand else null
+		)
+		if deliver_fixed_purchase(self, recipient, choice, spot):
+			return ""
+		return "Paid items dropped at your purchase location"
 	if not is_instance_valid(rig) or GunRig.for_peer(get_tree(), peer) != rig:
 		return "Player left before delivery"
 	var rng := RandomNumberGenerator.new()
@@ -105,6 +103,23 @@ func purchase(peer: int, choice: String = "") -> String:
 		GunBuyCatalog.stats(entry, rng) if not entry.is_empty() else GunGenerator.generate(rng)
 	)
 	return ""
+
+
+## Shared delivery for menus and wall purchases; changed capacity cannot lose paid items.
+static func deliver_fixed_purchase(source: Node, hand: Hand, id: String, spot: Vector3) -> bool:
+	if not source.multiplayer.is_server():
+		return false
+	var all_collected := true
+	var holdables := source.get_tree().get_first_node_in_group(&"holdables_root")
+	var index := 0
+	for item: String in GunBuyCatalog.delivery_items(id):
+		if not is_instance_valid(hand) or not hand.inventory().collect(item):
+			all_collected = false
+			if holdables != null:
+				var landing := spot + Vector3(index * .2, 0, 0)
+				holdables.call("spawn_thrown_item", item, landing + Vector3.UP, landing)
+		index += 1
+	return all_collected
 
 
 ## Server: empties `peer`'s rig with no refund. Called by the trash can

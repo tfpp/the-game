@@ -1,0 +1,157 @@
+{
+  "atlas": 128,
+  "islands": [
+    {
+      "name": "RECEIVER_LEFT",
+      "paintable": true,
+      "rect_px": [
+        2,
+        40,
+        22,
+        64
+      ],
+      "rotated": true
+    },
+    {
+      "name": "RECEIVER_RIGHT",
+      "paintable": true,
+      "rect_px": [
+        28,
+        40,
+        22,
+        64
+      ],
+      "rotated": true
+    },
+    {
+      "name": "EDGE",
+      "paintable": false,
+      "rect_px": [
+        79,
+        98,
+        5,
+        22
+      ],
+      "rotated": true
+    },
+    {
+      "name": "STOCK_LEFT",
+      "paintable": true,
+      "rect_px": [
+        2,
+        2,
+        48,
+        34
+      ],
+      "rotated": false
+    },
+    {
+      "name": "STOCK_RIGHT",
+      "paintable": true,
+      "rect_px": [
+        54,
+        2,
+        48,
+        34
+      ],
+      "rotated": false
+    },
+    {
+      "name": "METAL",
+      "paintable": false,
+      "rect_px": [
+        79,
+        66,
+        20,
+        28
+      ],
+      "rotated": true
+    },
+    {
+      "name": "DARK",
+      "paintable": false,
+      "rect_px": [
+        103,
+        90,
+        16,
+        16
+      ],
+      "rotated": false
+    },
+    {
+      "name": "HANDGUARD_LEFT",
+      "paintable": true,
+      "rect_px": [
+        2,
+        108,
+        52,
+        17
+      ],
+      "rotated": false
+    },
+    {
+      "name": "HANDGUARD_RIGHT",
+      "paintable": true,
+      "rect_px": [
+        58,
+        66,
+        17,
+        52
+      ],
+      "rotated": true
+    },
+    {
+      "name": "MAGAZINE_LEFT",
+      "paintable": true,
+      "rect_px": [
+        54,
+        40,
+        46,
+        22
+      ],
+      "rotated": true
+    },
+    {
+      "name": "MAGAZINE_RIGHT",
+      "paintable": true,
+      "rect_px": [
+        104,
+        40,
+        22,
+        46
+      ],
+      "rotated": false
+    },
+    {
+      "name": "POLYMER",
+      "paintable": false,
+      "rect_px": [
+        106,
+        2,
+        19,
+        30
+      ],
+      "rotated": false
+    }
+  ],
+  "padding": 2,
+  "parts": [
+    {
+      "name": "Frame",
+      "triangles": 696
+    },
+    {
+      "name": "Bolt",
+      "triangles": 24
+    },
+    {
+      "name": "Magazine",
+      "triangles": 20
+    },
+    {
+      "name": "ChargingHandle",
+      "triangles": 12
+    }
+  ],
+  "triangles": 752
+}

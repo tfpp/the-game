@@ -21,7 +21,8 @@ open it without a chat keyboard. Scrollable rows scale to phone-sized screens.
 These shortcuts are modal only and do not replace weapon-hotbar bindings.
 
 Buy anywhere: classic pistol $1,500, SMG/shotgun $5,550 and AWP $15,000 match the pawn
-shop prices. All four ship empty, including previously saved guns. Classic guns fill the hand if empty, otherwise a free backpack slot;
+shop prices. Each stock gun purchase includes one matching ammo box at the
+existing price. Classic guns fill the hand if empty, otherwise a free backpack slot;
 use Inventory to equip stored guns. Generated families (buckshot, rifle, low-caliber,
 rocket, grenade, plasma) and Ray Gun cost the existing machine price of $20.
 Select barrels and automatic/semi-auto mode for generated families; other stats
@@ -196,3 +197,8 @@ barrels from `GunView.build`, so every generated gun is hand-rigged. Holstering
 disables the hand pose.
 `Muzzle` remains the cosmetic shot origin, with separate left/right markers for
 future barrel-specific effects; authoritative projectile origins remain at the eye.
+
+The always-visible ammo counter is anchored bottom-left with loaded / reserve
+rounds only (or the remaining shell count for guns without a magazine). It shows
+Reloading during stock magazine reloads. Gun names and control hints appear in
+the inventory/stat sheet rather than the ammo readout.

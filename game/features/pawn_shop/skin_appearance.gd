@@ -19,22 +19,37 @@ static func apply(view: Node3D, skin: String) -> void:
 			continue
 		if not mesh.has_meta("prawn_original"):
 			mesh.set_meta("prawn_original", {"material": mesh.material_override})
-		mesh.material_override = (
-			material(skin) if not skin.is_empty() else mesh.get_meta("prawn_original")["material"]
-			as Material
+		var original: Material = mesh.get_meta("prawn_original")["material"]
+		var standard := original as StandardMaterial3D
+		var texture := standard.albedo_texture if standard != null else null
+		var mask := mesh.get_meta("skin_mask") as Texture2D if mesh.has_meta("skin_mask") else null
+		mesh.material_override = material(skin, texture, mask) if not skin.is_empty() else original
+
+
+static func material(
+	skin: String, texture: Texture2D = null, mask: Texture2D = null
+) -> ShaderMaterial:
+	var key := (
+		skin
+		+ (
+			":" + str(texture.get_instance_id()) + ":" + str(mask.get_instance_id())
+			if texture != null and mask != null
+			else ""
 		)
-
-
-static func material(skin: String) -> ShaderMaterial:
-	if not _materials.has(skin):
+	)
+	if not _materials.has(key):
 		var data: Array = PrawnSkinCatalog.SKINS[skin]
 		var paint := ShaderMaterial.new()
 		paint.shader = PAINT
 		paint.set_shader_parameter("paint", data[3])
 		paint.set_shader_parameter("shell", data[4])
 		paint.set_shader_parameter("pattern", float(data[2]))
-		_materials[skin] = paint
-	return _materials[skin]
+		paint.set_shader_parameter("use_atlas", texture != null and mask != null)
+		if texture != null and mask != null:
+			paint.set_shader_parameter("base_texture", texture)
+			paint.set_shader_parameter("skin_mask", mask)
+		_materials[key] = paint
+	return _materials[key]
 
 
 static func create_view(skin: String) -> Node3D:

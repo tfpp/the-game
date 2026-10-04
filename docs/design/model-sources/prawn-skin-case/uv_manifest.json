@@ -1,0 +1,72 @@
+[
+  {
+    "name": "YELLOW_SMALL",
+    "rect": [
+      76,
+      110,
+      35,
+      15
+    ],
+    "rotated": false
+  },
+  {
+    "name": "BODY_SIDE",
+    "rect": [
+      80,
+      2,
+      40,
+      28
+    ],
+    "rotated": false
+  },
+  {
+    "name": "BODY_FRONT",
+    "rect": [
+      2,
+      72,
+      70,
+      49
+    ],
+    "rotated": false
+  },
+  {
+    "name": "DARK_HARDWARE",
+    "rect": [
+      99,
+      34,
+      11,
+      69
+    ],
+    "rotated": true
+  },
+  {
+    "name": "LID_TOP",
+    "rect": [
+      2,
+      2,
+      74,
+      66
+    ],
+    "rotated": false
+  },
+  {
+    "name": "LID_SIDE",
+    "rect": [
+      115,
+      34,
+      9,
+      41
+    ],
+    "rotated": true
+  },
+  {
+    "name": "LID_FRONT",
+    "rect": [
+      80,
+      34,
+      15,
+      72
+    ],
+    "rotated": true
+  }
+]

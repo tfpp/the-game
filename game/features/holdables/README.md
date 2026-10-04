@@ -30,7 +30,21 @@ their ordinary size.
 
 ## Adding an item
 
-1. Drop a view scene under `items/` — just meshes, no script (see `pistol_view.tscn`,
+The pistol is an M1911-inspired five-part UV-mapped model. It holds seven rounds;
+reload with **R** or controller **X** (rebindable as Reload gun). Reload takes
+1.65 seconds, blocks firing and moves the magazine, slide and both hands.
+The HUD shows loaded / reserve ammo. The existing backpack ammo remains the total
+round count; each accepted shot spends one round. Holstering cancels a reload
+and preserves the remaining magazine. Safe-zone firing restrictions still apply.
+
+Source profiles, UV guide, painting prompts and a Blender-compatible GLB are in
+`docs/design/model-sources/m1911/`. Native `fire`, `reload` and authoring `inspect`
+clips live in `animations/m1911.tres`. `PistolMechanism` owns magazine state through
+`NetworkedEntity`; view animations are cosmetic and seek into replicated reload
+time for late joiners. Animated views may expose `Pose/RightGrip` in addition to
+the root `Grip` / `SupportGrip` so the primary arm follows their moving pose.
+
+1. Drop a view scene under `items/` — meshes with an optional cosmetic script (see `pistol_view.tscn`,
    `banana_view.tscn`, `ball_view.tscn`). A weapon's view can include a `Marker3D`
    named `Muzzle`; the fire flash appears there if present. Use -Z as forward.
    Add a `Grip` marker at the primary hand contact and an optional `SupportGrip`
@@ -187,3 +201,12 @@ cigarettes relax the index/middle finger bones and other items restore their gri
 Scrap Metal and Wallet use painted low-poly meshes with shared UV islands and
 128×128 atlases. Their sources, rebuild commands and model icon preview are in
 [`docs/design/loot-models.md`](../../../docs/design/loot-models.md).
+
+## MP5, M4A4 and AK-47
+
+The SMG ID now uses the MP5 model. M4A4 and AK-47 are independent catalog items.
+All three support held automatic fire and thirty-round magazines; R or controller
+X reloads. Loaded rounds remain a subset of backpack ammo, so reloads never
+create ammunition. Native models and animation libraries are rebuilt with
+model_tools/build_rifles.gd. Blender-compatible GLBs, exact UV charts, paint
+sources and prompts live under docs/design/model-sources/ for each gun.

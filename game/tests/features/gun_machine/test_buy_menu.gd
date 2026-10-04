@@ -169,7 +169,9 @@ func test_classic_purchase_uses_inventory_and_higher_prices() -> void:
 	assert_eq(_wallet.balances[1], 1500000)
 	assert_eq(_hand.net_item_id, "smg")
 	assert_eq(await _machine.purchase(1, "awp"), "")
-	assert_eq(_hand.inventory().backpack[0], "awp")
+	assert_eq(_hand.inventory().backpack[0], "ammo:smg:40")
+	assert_eq(_hand.inventory().backpack[1], "awp")
+	assert_eq(_hand.inventory().backpack[2], "ammo:awp:5")
 	assert_eq(_wallet.balances[1], 0)
 
 
@@ -208,7 +210,7 @@ func test_pending_kiosk_and_menu_share_one_lock_and_paid_full_bag_drops_gun() ->
 	delayed.finish.emit()
 	await get_tree().process_frame
 	assert_eq(delayed.balances[1], 500)
-	assert_eq(sink.items, ["pistol"])
+	assert_eq(sink.items, ["pistol", "ammo:pistol:20"])
 	assert_false(_machine._buying.has(1))
 	assert_false(_menu._pending)
 

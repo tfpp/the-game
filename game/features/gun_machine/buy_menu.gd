@@ -126,7 +126,7 @@ func _complete_purchase(peer: int, id: String) -> void:
 		return
 	var text := result
 	if text.is_empty():
-		text = "Purchased! Ammo goes to backpack; classic guns ship empty; generated guns replace rig."
+		text = "Purchased! Stock guns include one ammo box; generated guns replace your rig."
 	entity.send_event(&"receipt", {"text": text}, peer)
 
 

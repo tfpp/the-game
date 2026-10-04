@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/holdables/item_definition.gd" id="script"]
+[ext_resource type="PackedScene" path="res://features/holdables/items/ak47_view.tscn" id="view"]
+
+[resource]
+script = ExtResource("script")
+id = "ak47"
+display_name = "AK-47"
+category = 0
+view_scene = ExtResource("view")
+weight = 3.8
+damage = 30.0
+fire_cooldown_s = 0.10
+spread_degrees = 2.4
+ground_clearance = 0.22
+first_person_offset = Vector3(0.20, -0.23, -0.70)

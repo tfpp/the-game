@@ -1,5 +1,9 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://features/pawn_shop/street_atmosphere.gd" id="atmosphere"]
+[ext_resource type="Texture2D" path="res://assets/pawn_shop/textures/cityscape.png" id="cityscape"]
+[ext_resource type="Shader" path="res://features/pawn_shop/grass.gdshader" id="grass_shader"]
+
 [ext_resource type="Material" path="res://features/street_district/materials/asphalt.tres" id="asphalt"]
 [ext_resource type="Material" path="res://features/street_district/materials/sidewalk.tres" id="concrete"]
 [ext_resource type="PackedScene" path="res://features/starter_room/van_model.tscn" id="van"]
@@ -24,7 +28,55 @@ roughness = 1.0
 size = Vector3(3, 0.012, 0.12)
 material = SubResource("paint")
 
+[sub_resource type="StandardMaterial3D" id="skyline_material"]
+resource_local_to_scene = true
+shading_mode = 0
+cull_mode = 2
+texture_filter = 2
+albedo_texture = ExtResource("cityscape")
+
+[sub_resource type="QuadMesh" id="skyline_mesh"]
+material = SubResource("skyline_material")
+size = Vector2(320, 160)
+
+[sub_resource type="ShaderMaterial" id="grass_material"]
+shader = ExtResource("grass_shader")
+
+[sub_resource type="PlaneMesh" id="grass_mesh"]
+material = SubResource("grass_material")
+size = Vector2(320, 320)
+subdivide_width = 15
+subdivide_depth = 15
+
 [node name="StreetBackdrop" type="Node3D"]
+script = ExtResource("atmosphere")
+
+[node name="Cityscape" type="MeshInstance3D" parent="."]
+position = Vector3(-9, 52, 180)
+cast_shadow = 0
+mesh = SubResource("skyline_mesh")
+
+[node name="CityscapeLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-169, 52, 20)
+rotation = Vector3(0, 1.5707964, 0)
+cast_shadow = 0
+mesh = SubResource("skyline_mesh")
+
+[node name="CityscapeRight" type="MeshInstance3D" parent="."]
+position = Vector3(151, 52, 20)
+rotation = Vector3(0, 1.5707964, 0)
+cast_shadow = 0
+mesh = SubResource("skyline_mesh")
+
+[node name="CityscapeRear" type="MeshInstance3D" parent="."]
+position = Vector3(-9, 52, -140)
+cast_shadow = 0
+mesh = SubResource("skyline_mesh")
+
+[node name="GrassGround" type="MeshInstance3D" parent="."]
+position = Vector3(-9, -0.42, 20)
+cast_shadow = 0
+mesh = SubResource("grass_mesh")
 
 [node name="PublicRoad" type="MeshInstance3D" parent="."]
 position = Vector3(-9, -0.3, 39)

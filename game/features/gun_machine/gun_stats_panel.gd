@@ -16,12 +16,15 @@ var _body: RichTextLabel
 func _ready() -> void:
 	Controls.ensure_action(TOGGLE_ACTION, [_key_event(KEY_TAB)])
 	_ammo_label = Label.new()
-	_ammo_label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	_ammo_label.position = Vector2(-250, -205)
-	_ammo_label.size = Vector2(500, 30)
-	_ammo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_ammo_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	_ammo_label.offset_left = 24
+	_ammo_label.offset_top = -84
+	_ammo_label.offset_right = 264
+	_ammo_label.offset_bottom = -20
+	_ammo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_ammo_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	_ammo_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_ammo_label.add_theme_font_size_override("font_size", 20)
+	_ammo_label.add_theme_font_size_override("font_size", 24)
 	_ammo_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	_ammo_label.add_theme_constant_override("outline_size", 6)
 	add_child(_ammo_label)
@@ -34,20 +37,19 @@ func _process(_delta: float) -> void:
 		var hand := Hand.for_peer(get_tree(), multiplayer.get_unique_id())
 		var weapon := hand.net_item_id if hand != null else ""
 		_ammo_label.text = (
-			(
-				"%s — %d rounds\nAmmo: Activities → Buy guns"
-				% [ItemCatalog.find(weapon).display_name, hand.inventory().ammo_for(weapon)]
-			)
-			if ItemCatalog.AMMO_PACKS.has(weapon)
-			else ""
+			("%d" % hand.inventory().ammo_for(weapon)) if ItemCatalog.AMMO_PACKS.has(weapon) else ""
 		)
+		var magazine := hand.magazine_for(weapon) if hand != null else null
+		if magazine != null:
+			var loaded := magazine.loaded()
+			var reserve := maxi(0, hand.inventory().ammo_for(weapon) - loaded)
+			_ammo_label.text = (
+				"%d / %d%s" % [loaded, reserve, "\nReloading…" if magazine.active() else ""]
+			)
 		if _is_open():
 			_close()
 		return
-	_ammo_label.text = (
-		"%s — %d / %d  (Tab for specs, R to reload)"
-		% [str(rig.net_stats["display_name"]), rig.net_ammo_in_mag, rig.net_ammo_reserve]
-	)
+	_ammo_label.text = ("%d / %d" % [rig.net_ammo_in_mag, rig.net_ammo_reserve])
 	if _is_open():
 		_body.text = _stats_text(rig)
 

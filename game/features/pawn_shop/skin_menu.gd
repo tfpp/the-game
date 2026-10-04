@@ -2,7 +2,12 @@ extends CanvasLayer
 ## Private collection UI. No local purchases, reward rolls or equipment writes.
 
 const UI_THEME := preload("res://ui/theme/ui_theme.tres")
+const PANEL_ART := preload("res://assets/pawn_shop/ui/case_panel.png")
 var _panel: Control
+var _frame: PanelContainer
+var _tabs: HBoxContainer
+var _scroll: ScrollContainer
+var _heading: Label
 var _rows: VBoxContainer
 var _status: Label
 var _data := {}
@@ -11,6 +16,7 @@ var _selected := "harbour"
 var _revealing := false
 var _reveal: PrawnSkinReveal
 var _winner := ""
+var _reward_view := false
 
 @onready var _owner: PrawnSkins = get_parent()
 
@@ -48,6 +54,7 @@ func receive(event: StringName, payload: Dictionary) -> void:
 		return
 	_data = payload
 	if event == &"show":
+		_reward_view = false
 		_panel.show()
 		add_to_group(&"modal_ui")
 		Controls.pause()
@@ -57,8 +64,10 @@ func receive(event: StringName, payload: Dictionary) -> void:
 	var reward := str(payload.get("reward", ""))
 	if not reward.is_empty() and PrawnSkinCatalog.SKINS.has(reward):
 		_revealing = true
+		_reward_view = true
 		_rebuild()
-		_status.text = "Opening… (reward already saved)"
+		_status.text = "Opening your case…"
+		_heading.text = "CASE OPENING"
 		_reveal.show()
 		var weights: Array[int] = []
 		weights.assign(_data.get("odds", PrawnSkinCatalog.DEFAULT_ODDS))
@@ -100,20 +109,46 @@ func _request_finished(_action: StringName, result: NetworkedEntity.Result) -> v
 func _build() -> void:
 	var backdrop := ColorRect.new()
 	backdrop.color = Color(.025, .04, .035, .95)
-	backdrop.theme = UI_THEME
+	backdrop.theme = UI_THEME.duplicate() as Theme
+	for scroll_style: String in ["scroll", "scroll_focus"]:
+		backdrop.theme.set_stylebox(
+			scroll_style, "VScrollBar", _scroll_surface(Color("171d17"), Color("353a2e"))
+		)
+	for grabber_style: String in ["grabber", "grabber_highlight", "grabber_pressed"]:
+		backdrop.theme.set_stylebox(
+			grabber_style, "VScrollBar", _scroll_surface(Color("897447"), Color("bfa367"))
+		)
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
 	_panel = backdrop
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	backdrop.add_child(center)
+	_frame = PanelContainer.new()
+	center.add_child(_frame)
+	_frame.add_theme_stylebox_override("panel", _surface(Color("141914"), Color("74613c")))
+	var art := TextureRect.new()
+	art.texture = PANEL_ART
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_SCALE
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	art.modulate = Color(1, 1, 1, 0.65)
+	_frame.add_child(art)
 	var margin := MarginContainer.new()
-	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
 	for edge: String in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + edge, 12)
-	backdrop.add_child(margin)
+		margin.add_theme_constant_override("margin_" + edge, 18)
+	_frame.add_child(margin)
 	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 10)
 	margin.add_child(box)
-	_label(box, "RUSTY HOGG'S · PRAWN SKINS", Color("d4b060"))
-	_label(box, "Cosmetics only · No keys needed · Buy at the shop, manage anywhere")
+	var brand := _label(box, "RUSTY HOGG'S", Color("b5a27a"))
+	brand.add_theme_font_size_override("font_size", 13)
+	_heading = _label(box, "PRAWN SKINS", Color("f2e8d2"))
+	_heading.add_theme_font_size_override("font_size", 28)
+	var subtitle := _label(box, "Weapon finishes · No keys needed", Color("aaa99b"))
+	subtitle.add_theme_font_size_override("font_size", 13)
 	var tabs := HBoxContainer.new()
+	_tabs = tabs
 	box.add_child(tabs)
 	_button(tabs, "Crates", _navigate.bind("crates", "harbour"), true)
 	_button(tabs, "Collection", _navigate.bind("collection", ""), true)
@@ -124,6 +159,7 @@ func _build() -> void:
 	_reveal.hide()
 	_reveal.finished.connect(_revealed)
 	var scroll := ScrollContainer.new()
+	_scroll = scroll
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
@@ -133,7 +169,39 @@ func _build() -> void:
 	_rows.add_theme_constant_override("separation", 8)
 	scroll.add_child(_rows)
 	_button(box, "Back to game", close, true)
+	get_viewport().size_changed.connect(_resize_panel)
+	_resize_panel()
 	backdrop.hide()
+
+
+func _resize_panel() -> void:
+	var viewport_size := get_viewport().get_visible_rect().size
+	_frame.custom_minimum_size = Vector2(
+		minf(940, viewport_size.x - 24), minf(660, viewport_size.y - 24)
+	)
+	_reveal.custom_minimum_size.y = minf(250, maxf(130, viewport_size.y - 280))
+
+
+func _surface(fill: Color, border: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = fill
+	style.border_color = border
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(4)
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	return style
+
+
+func _scroll_surface(fill: Color, border: Color) -> StyleBoxFlat:
+	var style := _surface(fill, border)
+	style.content_margin_left = 4
+	style.content_margin_right = 4
+	style.content_margin_top = 0
+	style.content_margin_bottom = 0
+	return style
 
 
 func _revealed() -> void:
@@ -158,6 +226,7 @@ func _navigate(page: String, id: String) -> void:
 	if _revealing:
 		return
 	_page = page
+	_reward_view = false
 	_selected = id
 	_rebuild()
 
@@ -171,6 +240,11 @@ func _send(action: String, id: String) -> void:
 
 
 func _rebuild() -> void:
+	_scroll.visible = not _revealing
+	_tabs.visible = not _revealing
+	_heading.text = (
+		"CASE OPENING" if _revealing else ("SKIN UNLOCKED" if _reward_view else "PRAWN SKINS")
+	)
 	var focus := get_viewport().gui_get_focus_owner()
 	var focus_text := (focus as Button).text if focus is Button else ""
 	for child: Node in _rows.get_children():
@@ -185,6 +259,10 @@ func _rebuild() -> void:
 			str(_data.get("message", "")),
 		]
 	)
+	if _reward_view:
+		_status.text = str(_data.get("message", ""))
+	if _revealing:
+		return
 	if _data.get("pending", false):
 		_label(_rows, "An unresolved transaction is locked. Retry it to safely recover.")
 		_button(_rows, "Retry saved transaction", _send.bind("retry", ""), true)
@@ -305,8 +383,11 @@ func _skin_details(document: Dictionary) -> void:
 	var count := int(document["skins"].get(_selected, 0))
 	var icon := PrawnSkinIcon.new()
 	icon.skin = _selected
-	icon.custom_minimum_size = Vector2(128, 128)
+	icon.custom_minimum_size = Vector2(128, 180)
 	_rows.add_child(icon)
+	var title := _label(_rows, data[0], PrawnSkinCatalog.COLORS[data[2]])
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 24)
 	_label(
 		_rows,
 		(
@@ -360,6 +441,18 @@ func _button(parent: Node, text: String, callback: Callable, enabled: bool = tru
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.disabled = not enabled or _data.get("busy", false)
+	button.add_theme_font_size_override("font_size", 13 if parent == _tabs else 16)
+	button.add_theme_color_override("font_pressed_color", Color("fff0c7"))
+	button.add_theme_color_override("font_focus_color", Color("fff0c7"))
+	button.add_theme_stylebox_override("normal", _surface(Color("252920"), Color("756441")))
+	button.add_theme_stylebox_override("hover", _surface(Color("393929"), Color("d4b060")))
+	button.add_theme_stylebox_override("pressed", _surface(Color("151a15"), Color("d4b060")))
+	button.add_theme_stylebox_override("disabled", _surface(Color("1a1e19"), Color("3f4439")))
+	var focus_style := _surface(Color(0, 0, 0, 0), Color("e5c77c"))
+	button.add_theme_stylebox_override("focus", focus_style)
+	button.add_theme_color_override("font_color", Color("e9dfc5"))
+	button.add_theme_color_override("font_hover_color", Color("fff0c7"))
+	button.add_theme_color_override("font_disabled_color", Color("74796b"))
 	if _revealing:
 		button.disabled = true
 	button.pressed.connect(callback)

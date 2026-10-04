@@ -12,6 +12,10 @@ controllers such as Backbone). Online and offline play use the same inputs.
 Use works while looking at a nearby interactable. A prompt identifies the target;
 menus and chat suppress interaction. The slot machine is near the initial spawn area.
 
+Reload the M1911-style pistol or generated gun with **R** / controller **X** (left
+face button). Rebind **Reload gun** under Settings → Controls → Items. The pistol
+holds seven rounds and shows loaded / reserve ammo; firing pauses during its reload.
+
 Desktop mouse sensitivity and movement bindings are unchanged. Jump remains a press,
 not a hold-to-bunny-hop action, for every input device. The mouse wheel no longer
 doubles as a jump bind — it cycles weapon slots instead (see

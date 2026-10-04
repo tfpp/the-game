@@ -1,0 +1,10 @@
+{
+  "title": "MP5, M4A4 and AK-47",
+  "summary": "New painted gun models with automatic fire and magazine reloads.",
+  "notes": [
+    "Replace the SMG with an MP5 while preserving existing SMG inventory and skin IDs.",
+    "Add separate M4A4 and AK-47 guns and matching ammunition to the gun shop.",
+    "Give all three guns thirty-round magazines, moving bolts, removable magazine reloads and charging handles.",
+    "Use padded UV atlases and skin masks that preserve grips and hardware; reload with R or controller X."
+  ]
+}

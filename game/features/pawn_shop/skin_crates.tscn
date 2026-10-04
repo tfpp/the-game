@@ -3,22 +3,13 @@
 [ext_resource type="Script" path="res://features/pawn_shop/prawn_skins.gd" id="root"]
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
 [ext_resource type="Script" path="res://features/pawn_shop/skin_menu.gd" id="menu"]
-[ext_resource type="PackedScene" path="res://features/procedural_rooms/props/crate.tscn" id="crate"]
+[ext_resource type="PackedScene" path="res://features/pawn_shop/skin_case.tscn" id="crate"]
 [ext_resource type="PackedScene" path="res://features/signage/sign_board.tscn" id="sign"]
-
-[ext_resource type="Shader" path="res://features/pawn_shop/prawn_stencil.gdshader" id="stencil"]
-
-[sub_resource type="ShaderMaterial" id="stencil_material"]
-shader = ExtResource("stencil")
 
 [node name="PrawnSkins" type="Node3D"]
 script = ExtResource("root")
 
 [node name="Crate" parent="." instance=ExtResource("crate")]
-scale = Vector3(0.7, 0.7, 0.7)
-
-[node name="Visual" parent="Crate" index="0"]
-material_overlay = SubResource("stencil_material")
 
 [node name="Sign" parent="." instance=ExtResource("sign")]
 position = Vector3(0, 1.35, -1.0)

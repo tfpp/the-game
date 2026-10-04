@@ -14,6 +14,8 @@ const CONTENT_NAME := &"Content"
 @export_file("*.tscn") var room_scene: String
 ## The room's extent, in this node's local space.
 @export var bounds := AABB(Vector3(-5, -1, -5), Vector3(10, 5, 10))
+## Optional scenery extent for camera clipping; room membership still uses bounds.
+@export var render_bounds := AABB()
 ## Extra distance a loaded room keeps its contents for, so walking along the edge
 ## doesn't rebuild it every frame.
 @export var unload_margin := 2.0
@@ -30,6 +32,13 @@ func _enter_tree() -> void:
 ## `bounds` in world space.
 func global_bounds() -> AABB:
 	return global_transform * bounds
+
+
+func global_render_bounds() -> AABB:
+	return (
+		global_transform
+		* (bounds.merge(render_bounds) if render_bounds.size != Vector3.ZERO else bounds)
+	)
 
 
 func _physics_process(_delta: float) -> void:

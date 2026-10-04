@@ -1,0 +1,10 @@
+{
+  "title": "M1911-style pistol",
+  "summary": "A newly modelled pistol with moving parts and a seven-round magazine.",
+  "notes": [
+    "Remodel the pistol with a painted steel finish, walnut grips and UV regions for skins.",
+    "Add animated slide recoil, empty slide lock and a timed magazine reload using R or controller X.",
+    "Show loaded and reserve pistol ammunition on the HUD.",
+    "Keep the chamber and barrel interior visible through the ejection port during firing."
+  ]
+}

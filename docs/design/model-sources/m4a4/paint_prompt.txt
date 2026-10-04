@@ -1,0 +1,14 @@
+Paint the PROVIDED EXACT square UV template as a flat diffuse color atlas for a detailed retro low-poly M4A4 game weapon. Keep every rectangle EXACTLY in place, same proportions and boundaries. The supplied guide is1024px; coordinates below are in128pixel atlas units, multiplyby8. No gun render, no perspective, no object silhouettes, no labels, no text, no logos, no invented geometry. Fill whole rectangular regions with the specified material. Broad restrained hand-painted material variation that survives final128x128pixel reduction, GoldSrc style, avoid micro noise and excessive wear. Use matched material tones across repeated islands and keep dark charcoal padding.
+RECEIVER_LEFT: rectangle x2 y40 width22 height64, rotated 90degrees; dark graphite blued gunmetal with restrained smooth brushed highlights.
+RECEIVER_RIGHT: rectangle x28 y40 width22 height64, rotated 90degrees; dark graphite blued gunmetal with restrained smooth brushed highlights.
+EDGE: rectangle x79 y98 width5 height22, rotated 90degrees; dark graphite blued gunmetal with restrained smooth brushed highlights.
+STOCK_LEFT: rectangle x2 y2 width48 height34, unrotated; matte charcoal black polymer with subtle molded seams and broad ribbing.
+STOCK_RIGHT: rectangle x54 y2 width48 height34, unrotated; matte charcoal black polymer with subtle molded seams and broad ribbing.
+METAL: rectangle x79 y66 width20 height28, rotated 90degrees; dark graphite blued gunmetal with restrained smooth brushed highlights.
+DARK: rectangle x103 y90 width16 height16, unrotated; uniform near-black charcoal, no detail.
+HANDGUARD_LEFT: rectangle x2 y108 width52 height17, unrotated; matte charcoal black polymer with subtle molded seams and broad ribbing.
+HANDGUARD_RIGHT: rectangle x58 y66 width17 height52, rotated 90degrees; matte charcoal black polymer with subtle molded seams and broad ribbing.
+MAGAZINE_LEFT: rectangle x54 y40 width46 height22, rotated 90degrees; dark desaturated slate aluminum with three long pressed vertical magazine ribs.
+MAGAZINE_RIGHT: rectangle x104 y40 width22 height46, unrotated; dark desaturated slate aluminum with three long pressed vertical magazine ribs.
+POLYMER: rectangle x106 y2 width19 height30, unrotated; matte charcoal black polymer with subtle molded seams and broad ribbing.
+For magazines, lengthwise pressed ribs run along the magazine's longest physical dimension, accounting for atlas rotation. Stock texture and handguard texture are separate named patches. Receiver left and right are consistent blue-black steel; small inset rivets and receiver seams, with muted details, no large painted holes. Return only the flat square UV atlas.

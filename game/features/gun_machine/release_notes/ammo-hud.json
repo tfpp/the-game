@@ -1,0 +1,8 @@
+{
+  "title": "Cleaner ammunition HUD",
+  "summary": "Move ammunition to the bottom left and simplify its readout.",
+  "notes": [
+    "Show loaded and reserve ammunition in the bottom-left corner, without gun names or control hints.",
+    "Show Reloading during magazine reloads."
+  ]
+}
