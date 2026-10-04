@@ -21,9 +21,15 @@ each musician under People.
   whispered captions behind his back, teasing his shorter suit and fuller belly.
   Captions appear above the speakers within 12 m, only while both speaker and target
   are alive. He faces the audience again afterwards. No controls or audio are added.
-- Songs (`MariachiSongs`): *La Cucaracha* and *Jarabe Tapatío* (the Mexican Hat Dance),
-  both traditional and public domain, arranged in C. Each plays twice, then the band
-  moves on. Trumpets take the first strain in thirds, the violin the second.
+- Songs (`MariachiSongs`), in rotation order:
+  *La Cucaracha* and *Jarabe Tapatío* (the Mexican Hat Dance), both traditional and
+  public domain, followed by three original instrumental compositions authored for
+  the game: *Brass at the Crown* (bright 6/8), *Promenade Waltz* (slower 3/4) and
+  *Last Chip Polka* (quick 4/4). All are arranged in C, with trumpet harmonies,
+  violin, vihuela and guitarrón. Each plays twice, then the band moves on.
+  Trumpets take the first strain in thirds, the violin the second; each strain
+  fills eight bars so score, audio and animation share the same timing.
+  No external recordings or arrangements are used for the new compositions.
 - Press **Use** (E, controller B/Circle, touch USE) within about 2 m of the stage edge
   to request the next song. Requests share a 4 s server-wide cooldown, so two players
   can't skip twice at once.

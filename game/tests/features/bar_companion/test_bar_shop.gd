@@ -57,6 +57,7 @@ func before_each() -> void:
 
 func after_each() -> void:
 	_stand.get_node("ShopMenu")._close(false)
+	_stand.get_node("ShopMenu/Dialogue").close(false)
 	await get_tree().process_frame
 
 
@@ -114,6 +115,12 @@ func test_rejects_forged_stock_price_peer_and_range() -> void:
 func test_use_opens_modal_without_spending_and_close_restores_controls() -> void:
 	_stand.use()
 	var menu: CanvasLayer = _stand.get_node("ShopMenu")
+	var dialogue := menu.get_node("Dialogue") as NpcDialogue
+	assert_true(dialogue.is_open(), "The bartender greets you first")
+	assert_eq(dialogue.action_labels(), PackedStringArray(["Buy", "Ask", "Leave"]))
+	assert_true(dialogue.is_in_group(&"modal_ui"))
+	(dialogue.get_node("Root/Panel").find_child("Buy", true, false) as Button).pressed.emit()
+	assert_false(dialogue.is_open())
 	assert_true(menu.is_in_group(&"modal_ui"))
 	assert_false(Controls.playing)
 	assert_eq(_wallet.balances[1], 10000)
@@ -207,6 +214,7 @@ func test_non_authority_cannot_apply_purchase() -> void:
 func test_order_buttons_disable_keep_close_focus_and_menu_request_stays_paused() -> void:
 	_stand.use()
 	var menu: CanvasLayer = _stand.get_node("ShopMenu")
+	menu._open_shop()
 	menu._buy("beer")
 	assert_eq(_hand.net_item_id, "beer")
 	assert_string_contains(menu._status.text, "Added to inventory")
@@ -228,3 +236,18 @@ func _slow_wallet() -> SlowWallet:
 	add_child_autofree(slow)
 	slow.set_process(false)
 	return slow
+
+
+func test_bartender_ask_answers_and_leave_resumes_without_buying() -> void:
+	_stand.use()
+	var dialogue := _stand.get_node("ShopMenu/Dialogue") as NpcDialogue
+	var line := (dialogue.find_child("Line", true, false) as Label).text
+	(dialogue.find_child("Ask", true, false) as Button).pressed.emit()
+	assert_ne((dialogue.find_child("Line", true, false) as Label).text, line)
+	assert_true(dialogue.is_open(), "Ask keeps the conversation going")
+	(dialogue.find_child("Leave", true, false) as Button).pressed.emit()
+	assert_false(dialogue.is_open())
+	assert_false(dialogue.is_in_group(&"modal_ui"))
+	assert_false(_stand.get_node("ShopMenu").is_in_group(&"modal_ui"))
+	assert_true(Controls.playing)
+	assert_eq(_wallet.balances[1], 10000)

@@ -1,0 +1,14 @@
+{
+  "title": "Golden Crown interface",
+  "summary": "Menus and the HUD now wear the Crown's aged oxblood, ivory and brass look, and fit phones, tablets and wide screens.",
+  "notes": [
+    "Restyle menus, buttons and panels in a 1960s Art Deco casino style with a teal highlight for the selected option.",
+    "Turn the pause menu into a Golden Crown hotel directory with Resume, Inventory, Settings, Activities, Players, Account and Quit.",
+    "Hide the whole HUD and touch controls while the pause menu is open.",
+    "Add a Players page listing everyone in the session alongside the leaderboard and player stats.",
+    "Show the held weapon, its ammo and slots 1-9 in one weapon panel; tap or click a slot to equip it.",
+    "Keep weapon slots large and swipeable on phones and narrow screens instead of shrinking them.",
+    "Show money as a small coin chip in the top-left corner, a compact HP bar on its own, and voice activity with nearby players in the top-right corner.",
+    "Greet guests at the bar with a portrait conversation panel offering Buy, Ask and Leave."
+  ]
+}

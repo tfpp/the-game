@@ -1,7 +1,7 @@
 class_name MariachiBand
 extends Node3D
 ## Mariachi Corona de Oro: five musicians on a little stage on the casino's west
-## promenade, playing traditional songs on loop. The server owns which song is on
+## promenade, playing traditional and original songs on loop. The server owns which song is on
 ## (`net_song`) and bumps `net_take` every time a song starts, so every peer starts
 ## it together and late joiners pick up the current one. Players press Use near the
 ## stage to request the next song; the band also moves on by itself every
@@ -23,6 +23,9 @@ const BANTER_LINES: Array[String] = [
 const STREAMS: Array[AudioStream] = [
 	preload("res://assets/mariachi_band/audio/la_cucaracha.wav"),
 	preload("res://assets/mariachi_band/audio/jarabe_tapatio.wav"),
+	preload("res://assets/mariachi_band/audio/brass_at_the_crown.wav"),
+	preload("res://assets/mariachi_band/audio/promenade_waltz.wav"),
+	preload("res://assets/mariachi_band/audio/last_chip_polka.wav"),
 ]
 
 @export var net_song := 0:

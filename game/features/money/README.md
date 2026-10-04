@@ -26,8 +26,8 @@ networking; like the balance label, they only render over other players, not you
 
 Other players see the current balance below the character name. A server-owned
 synchronizer sends balances to every peer, including late joiners. Clients cannot
-set balances or submit payouts. Your own balance shows in the bottom-right corner
-(`money_hud.gd`), just above `features/combat`'s health bar, and in the slot
+set balances or submit payouts. Your own balance shows as a small coin chip in the top-left corner, inside the safe
+area (`money_hud.gd`, placed by `ui/hud_layout.gd`), and in the slot
 interaction prompt. Offline and dev-auth play use temporary $20 wallets and the same income
 and payout rules; these never transfer to a real account.
 

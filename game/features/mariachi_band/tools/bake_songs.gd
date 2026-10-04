@@ -7,6 +7,9 @@ extends SceneTree
 const FILES: Array[String] = [
 	"res://assets/mariachi_band/audio/la_cucaracha.wav",
 	"res://assets/mariachi_band/audio/jarabe_tapatio.wav",
+	"res://assets/mariachi_band/audio/brass_at_the_crown.wav",
+	"res://assets/mariachi_band/audio/promenade_waltz.wav",
+	"res://assets/mariachi_band/audio/last_chip_polka.wav",
 ]
 
 

@@ -273,3 +273,10 @@ unlimited and has no persistent state; purchases follow ordinary inventory lifet
 `test_bar_shop.gd` covers purchase authority, stock/range validation, balances,
 capacity, async races, reset and the menu. Original drink/charisma tests now select
 `order` with `{"item": "drink"}` after the interaction opens the shop.
+
+## Bartender greeting (#500)
+
+Using the counter now opens the shared NPC dialogue panel (`ui/npc_dialogue/`) first:
+**Buy** opens the existing bar shop, **Ask** answers with a rotating line of bar talk and
+**Leave** walks away. It is client-local; ordering still goes through the validated
+`order` action. Walking out of range closes either panel.
