@@ -1,0 +1,5 @@
+{
+  "title": "Modeled gun price plaques",
+  "summary": "The pawn shop gun rack now displays brass price plaques.",
+  "notes": ["Replace floating weapon price text with framed plaques using the shared sign kit."]
+}

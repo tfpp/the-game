@@ -21,6 +21,12 @@ func _ready() -> void:
 	# be mistaken for basement actors. B1's ceiling is below -2.3 m.
 	render_bounds.size.y = 20.0
 	var level := Layout.build(self, layout_seed, [], true)
+	var lift := level.get_node("Lift") as ProceduralMovingLift
+	lift.dev_only = true
+	lift._update_doors()
+	for node: Node in level.find_children("*", "", true, false):
+		if node is GpsDestination:
+			(node as GpsDestination).dev_only = true
 	for surface: String in SURFACES:
 		var mesh := level.get_node_or_null("Structure/" + surface) as MeshInstance3D
 		if mesh != null:

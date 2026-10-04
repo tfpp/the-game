@@ -139,7 +139,21 @@ func spawn_projectile(data: Dictionary) -> void:
 	_next_projectile_id += 1
 	var payload := data.duplicate()
 	payload["id"] = _next_projectile_id
+	payload["instance"] = -1
+	for service: Node in get_tree().get_nodes_in_group(&"zone_instances"):
+		if service.multiplayer == multiplayer:
+			payload["instance"] = int(service.call("instance_at_position", payload["position"]))
+			break
 	_projectile_spawner.spawn(payload)
+
+
+func clear_instance_items(instance_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	for node: Node in _projectiles.get_children():
+		var projectile := node as Projectile
+		if projectile != null and projectile.instance_id == instance_id:
+			projectile.queue_free()
 
 
 func _on_mode_changed(_mode: Network.Mode) -> void:
@@ -185,6 +199,7 @@ func _spawn_projectile(data: Variant) -> Node:
 	projectile.velocity = info["velocity"]
 	projectile.damage = float(info["damage"])
 	projectile.shooter_peer = int(info["shooter_peer"])
+	projectile.instance_id = int(info.get("instance", -1))
 	return projectile
 
 

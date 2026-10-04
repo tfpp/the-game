@@ -44,6 +44,10 @@ static var _materials := {}
 	set(value):
 		mount = value
 		_queue_rebuild()
+@export var two_sided := false:
+	set(value):
+		two_sided = value
+		_queue_rebuild()
 @export var neon_color := Color(1.0, 0.25, 0.55):
 	set(value):
 		neon_color = value
@@ -117,23 +121,34 @@ func rebuild() -> void:
 func _build_board(board: Node3D, size: Vector2) -> void:
 	_box("Backing", Vector3(size.x, size.y, BOARD_DEPTH), Vector3.ZERO, "backing", board)
 	# Flush frames stand proud of the face only, so nothing pokes into the wall.
-	var sides := 1.0 if mount == Mount.FLUSH else 2.0
+	var sides := 1.0 if mount == Mount.FLUSH and not two_sided else 2.0
 	var bar_depth := BOARD_DEPTH + FRAME_RELIEF * sides
 	var bar_z := FRAME_RELIEF * 0.5 if mount == Mount.FLUSH else 0.0
 	var half := size * 0.5
 	var rail := Vector3(size.x + FRAME_WIDTH * 2.0, FRAME_WIDTH, bar_depth)
 	var stile := Vector3(FRAME_WIDTH, size.y, bar_depth)
-	_box("FrameTop", rail, Vector3(0, half.y + FRAME_WIDTH * 0.5, bar_z), "frame", board)
-	_box("FrameBottom", rail, Vector3(0, -half.y - FRAME_WIDTH * 0.5, bar_z), "frame", board)
-	_box("FrameLeft", stile, Vector3(-half.x - FRAME_WIDTH * 0.5, 0, bar_z), "frame", board)
-	_box("FrameRight", stile, Vector3(half.x + FRAME_WIDTH * 0.5, 0, bar_z), "frame", board)
+	var frame_builder := SurfaceTool.new()
+	frame_builder.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for part: Array in [
+		[rail, Vector3(0, half.y + FRAME_WIDTH * .5, bar_z)],
+		[rail, Vector3(0, -half.y - FRAME_WIDTH * .5, bar_z)],
+		[stile, Vector3(-half.x - FRAME_WIDTH * .5, 0, bar_z)],
+		[stile, Vector3(half.x + FRAME_WIDTH * .5, 0, bar_z)]
+	]:
+		var box := BoxMesh.new()
+		box.size = part[0]
+		frame_builder.append_from(box, 0, Transform3D(Basis.IDENTITY, part[1]))
+	var frame := MeshInstance3D.new()
+	frame.mesh = frame_builder.commit()
+	frame.material_override = _material("frame")
+	board.add_child(_part(frame, "Frame"))
 	var front := MeshInstance3D.new()
 	front.name = "Letters"
 	front.mesh = letters_mesh(text, letter_height, BOARD_DEPTH * 0.5 + LETTER_LIFT)
 	front.material_override = _material("letters")
 	front.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	board.add_child(_part(front, "Letters"))
-	if mount != Mount.FLUSH:
+	if mount != Mount.FLUSH or two_sided:
 		var back := front.duplicate() as MeshInstance3D
 		back.rotation.y = PI
 		board.add_child(_part(back, "LettersBack"))

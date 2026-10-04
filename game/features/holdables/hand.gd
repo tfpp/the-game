@@ -37,14 +37,19 @@ var _fire_cooldown := 0.0
 var _auto_request_left := 0.0
 var _motion := FirstPersonMotion.new()
 var _first_person := false
+var _safe_lowering := 0.0
 
 @onready var consumption: ConsumableUse = $Consumption
 @onready var pistol: PistolMechanism = $PistolMechanism
 
 @onready var _mount: Node3D = $Mount
+@onready var _events: NetworkedEntity = $NetworkedEntity
 
 
 func _ready() -> void:
+	($Sync as MultiplayerSynchronizer).add_visibility_filter(network_peer_allowed)
+	($Sync as MultiplayerSynchronizer).update_visibility()
+	_events.event_received.connect(_receive_effect)
 	# Player updates at priority 0; third-person camera updates at 10.
 	process_priority = 20
 	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
@@ -83,6 +88,14 @@ func _process(delta: float) -> void:
 			_first_person = first_person
 			FirstPersonView.set_visuals(self, first_person)
 		var resting := _motion.apply(player, _mount_transform(player), delta, visible)
+		var definition := ItemCatalog.find(net_item_id)
+		var lower_weapon := (
+			definition != null
+			and definition.category == ItemDefinition.Category.WEAPON
+			and SafeZone.covers(get_tree(), player.global_position)
+		)
+		_safe_lowering = move_toward(_safe_lowering, 1.0 if lower_weapon else 0.0, delta * 5.0)
+		resting = HeldItemPose.lowered(resting, _safe_lowering)
 		global_transform = consumption.pose(player, resting)
 		_pose_arms(player)
 		consumption.pose_fingers(player)
@@ -186,6 +199,23 @@ func _is_own_request() -> bool:
 	return effective == peer_id
 
 
+func network_peer_allowed(peer: int) -> bool:
+	for service: Node in get_tree().get_nodes_in_group(&"zone_instances"):
+		if service.multiplayer == multiplayer:
+			return bool(service.call("can_observe_player", peer_id, peer))
+	return true
+
+
+func _receive_effect(event: StringName, payload: Dictionary) -> void:
+	match event:
+		&"fire":
+			_play_fire(str(payload["item"]), payload["origin"])
+		&"impact":
+			_play_impact(payload["position"], bool(payload["living"]))
+		&"eaten":
+			_play_eaten(str(payload["item"]))
+
+
 func _fire(def: ItemDefinition) -> void:
 	if _fire_cooldown > 0.0:
 		return
@@ -203,7 +233,7 @@ func _fire(def: ItemDefinition) -> void:
 		magazine.record_shot()
 	_fire_cooldown = def.fire_cooldown_s
 	var origin := _aim_origin(player)
-	_play_fire.rpc(def.id, origin)
+	_events.send_event(&"fire", {"item": def.id, "origin": origin})
 	if def.damage <= 0.0:
 		return
 	var combat := get_tree().get_first_node_in_group(&"combat")
@@ -221,7 +251,13 @@ func _fire(def: ItemDefinition) -> void:
 		if target == null:
 			continue
 		if not played_impact:
-			_play_impact.rpc(hit["position"], target is Player or target.is_in_group(&"killable"))
+			_events.send_event(
+				&"impact",
+				{
+					"position": hit["position"],
+					"living": target is Player or target.is_in_group(&"killable")
+				}
+			)
 			played_impact = true
 		var target_player := target as Player
 		if target_player != null and combat != null:
@@ -267,7 +303,7 @@ func _eat(def: ItemDefinition) -> void:
 	var combat := get_tree().get_first_node_in_group(&"combat")
 	if combat != null and def.heal_amount > 0.0:
 		combat.call("heal", peer_id, def.heal_amount)
-	_play_eaten.rpc(def.id)
+	_events.send_event(&"eaten", {"item": def.id})
 
 
 ## An event, not saved state: late joiners don't need to replay an old bite.

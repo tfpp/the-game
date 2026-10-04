@@ -42,7 +42,7 @@ hint = "Pray for luck at the slots (northwest)"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 28)
 script = ExtResource("2_dest")
 label = "South Lobby"
-hint = "Doors to the lounge, hotel, apartments and garage"
+hint = "Pawn shop and doors to casino side rooms. Slum runs start at the north elevator."
 
 [node name="Lounge" type="Marker3D" parent="Destinations"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -597)

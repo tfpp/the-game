@@ -48,6 +48,11 @@ func handle_chat_command(peer: int, command: String) -> void:
 		_notice(peer, "That room is unavailable.")
 		return
 	_next_warp[peer] = Time.get_ticks_msec() + 1000
+	var zones := ZoneInstances.for_node(self)
+	if zones != null and arrival is SlumArrivalPoint:
+		if not zones.enter_development_zone(player, arrival as SlumArrivalPoint):
+			_notice(peer, "That room is unavailable.")
+		return
 	var ancestor: Node = arrival.get_parent()
 	while ancestor != null:
 		if ancestor is StreamedRoom:

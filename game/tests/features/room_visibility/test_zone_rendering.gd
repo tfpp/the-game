@@ -1,8 +1,7 @@
 extends GutTest
 
 const RENDERER := preload("res://features/room_visibility/zone_rendering.gd")
-const PARKING := preload("res://features/parking_garage/feature.tscn")
-const BASEMENT := preload("res://features/procedural_rooms/feature.tscn")
+const BASEMENT := preload("res://features/procedural_rooms/prototype.tscn")
 
 var _root: Node3D
 var _zone: RenderZone
@@ -33,6 +32,48 @@ func _mesh(parent: Node3D, at: Vector3) -> MeshInstance3D:
 	return mesh
 
 
+func test_static_gridmap_joins_private_render_mask_and_keeps_collision() -> void:
+	var grid := GridMap.new()
+	var library := MeshLibrary.new()
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(4, .2, 4)
+	var shape := BoxShape3D.new()
+	shape.size = mesh.size
+	library.create_item(0)
+	library.set_item_mesh(0, mesh)
+	library.set_item_shapes(0, [shape, Transform3D.IDENTITY])
+	grid.mesh_library = library
+	grid.cell_size = Vector3.ONE
+	grid.cell_center_x = false
+	grid.cell_center_y = false
+	grid.cell_center_z = false
+	grid.set_cell_item(Vector3i.ZERO, 0)
+	_zone.add_child(grid)
+	await wait_physics_frames(2)
+	_renderer._register(grid, false)
+	var id := grid.get_instance_id()
+	assert_true(
+		_renderer._gridmaps.has(id), "GridMap is classified despite not being VisualInstance3D"
+	)
+	assert_gt(_renderer._gridmaps[id]["instances"].size(), 0)
+	assert_eq(_renderer._gridmaps[id]["mask"], _zone.render_mask())
+	assert_same(grid.mesh_library, library, "Rendering must preserve the authored tile library")
+	assert_eq(grid.get_used_cells(), [Vector3i.ZERO])
+	var query := PhysicsRayQueryParameters3D.create(Vector3(0, -21, 0), Vector3(0, -23, 0), 1)
+	assert_false(grid.get_world_3d().direct_space_state.intersect_ray(query).is_empty())
+	_zone.remove_child(grid)
+	assert_false(
+		_renderer._gridmaps.has(id), "Detached maps release their cached rendering instances"
+	)
+	_zone.add_child(grid)
+	_renderer._register(grid, false)
+	_renderer._register(grid, false)
+	assert_eq(_renderer._gridmaps.size(), 1, "Reentered maps register exactly once")
+	assert_eq(grid.get_bake_meshes().size(), 2, "Reentry must not draw duplicated baked geometry")
+	grid.free()
+	assert_false(_renderer._gridmaps.has(id), "Streamed map destruction removes cached render RIDs")
+
+
 func test_garage_camera_excludes_overlapping_casino_geometry_and_lights() -> void:
 	var casino := _mesh(_root, Vector3(0, -1.5, 0))
 	var garage := _mesh(_zone, Vector3(0, 16, 0))
@@ -55,6 +96,31 @@ func test_garage_camera_excludes_overlapping_casino_geometry_and_lights() -> voi
 	_renderer.update_camera(camera)
 	assert_ne(camera.cull_mask & casino.layers, 0)
 	assert_eq(camera.cull_mask & garage.layers, 0, "Garage is not drawn from casino")
+
+
+func test_private_membership_keeps_casino_hidden_outside_zone_bounds() -> void:
+	var scope := ZoneScope.new()
+	scope.members = [multiplayer.get_unique_id()]
+	_root.add_child(scope)
+	var map := RenderZone.new()
+	map.name = "Map"
+	map.render_layer = 20
+	scope.add_child(map)
+	var return_cab := _mesh(scope, Vector3.ZERO)
+	_renderer._register(return_cab, false)
+	var casino := _mesh(_root, Vector3.ZERO)
+	_renderer._register(casino, false)
+	var camera := Camera3D.new()
+	_root.add_child(camera)
+	camera.position = Vector3(100, 100, 100)
+	assert_false(map.contains(camera.global_position))
+	_renderer.update_camera(camera)
+	assert_eq(camera.cull_mask, map.render_mask())
+	assert_ne(camera.cull_mask & return_cab.layers, 0, "Return cab shares the private map layer")
+	assert_eq(camera.cull_mask & casino.layers, 0)
+	scope.replace_members([])
+	_renderer.update_camera(camera)
+	assert_ne(camera.cull_mask & casino.layers, 0, "Returning restores shared-zone rendering")
 
 
 func test_new_player_visuals_follow_teleport_and_respawn_camera() -> void:
@@ -160,16 +226,11 @@ func test_renderer_removal_restores_camera_and_authored_visual_masks() -> void:
 	_root.add_child(_renderer)
 
 
-func test_separate_garage_scenes_keep_paths_and_exclude_each_other() -> void:
-	var parking := PARKING.instantiate() as Node3D
+func test_five_floor_garage_excludes_casino_geometry_and_preserves_lift_paths() -> void:
 	var basement := BASEMENT.instantiate() as Node3D
-	_root.add_child(parking)
 	_root.add_child(basement)
-	var old_garage := parking.get_node("Garage") as RenderZone
 	var new_garage := basement.get_node("Garage") as RenderZone
-	assert_eq(old_garage.scene_file_path, "res://features/parking_garage/garage.tscn")
 	assert_eq(new_garage.scene_file_path, "res://features/procedural_rooms/garage.tscn")
-	assert_true(old_garage.has_node("GarageDoor"))
 	assert_false(new_garage.contains(Vector3(7.4, -1.5, -8.4)), "Sunken casino is outside")
 	var patron := CharacterBody3D.new()
 	_root.add_child(patron)
@@ -179,20 +240,18 @@ func test_separate_garage_scenes_keep_paths_and_exclude_each_other() -> void:
 	assert_eq(patron_mesh.layers, 1, "Moving casino patrons do not leak into garage")
 	assert_true(new_garage.has_node("Return/NetworkedEntity"))
 	assert_true(new_garage.has_node("CrownGarage/Lift/NetworkedEntity"))
-	var old_mesh := old_garage.get_node("Floor0MiddleBand") as VisualInstance3D
 	var new_mesh := new_garage.get_node("CrownGarage/Structure/Floor") as VisualInstance3D
-	_renderer._register(old_mesh, false)
 	_renderer._register(new_mesh, false)
 	var camera := Camera3D.new()
 	_root.add_child(camera)
-	camera.position = Vector3(-10, 2, 595)
+	camera.position = Vector3(7.4, -1.5, -8.4)
 	_renderer.update_camera(camera)
-	assert_ne(camera.cull_mask & old_mesh.layers, 0)
+	assert_ne(camera.cull_mask & patron_mesh.layers, 0)
 	assert_eq(camera.cull_mask & new_mesh.layers, 0)
 	camera.global_position = new_garage.to_global(Vector3(0, 17.7, 5))
 	_renderer.update_camera(camera)
 	assert_ne(camera.cull_mask & new_mesh.layers, 0)
-	assert_eq(camera.cull_mask & old_mesh.layers, 0)
+	assert_eq(camera.cull_mask & patron_mesh.layers, 0)
 
 
 func test_socket_cap_freed_before_deferred_registration_is_ignored() -> void:

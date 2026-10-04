@@ -81,6 +81,33 @@ inventory, money and other gameplay rules in the feature callback.
 
 ## Lifecycle and migration
 
+### Private instance membership
+
+Player movement is filtered by `ZoneInstances.can_observe_player()` using a small
+server-replicated membership roster. Owners and the server always receive their
+player state; other peers receive it only in the same instance (or shared hub).
+The player's `Sync` roots at `MovementState` and addresses the parent `net_*`
+fields. This separates movement visibility from the spawned Player identity,
+which remains available for global chat, account bookkeeping and owner teleports.
+Unrelated remote player visuals and collision capsules are disabled locally.
+`test_player_relevance.gd` exercises the actual player spawner with a server and
+three clients, including private movement, owner teleport and hub return.
+
+A privately spawned scene may place its entities under a root implementing
+`network_peer_allowed(peer: int) -> bool`. `ZoneScope` in `features/zone_instances`
+implements this using the server and the instance's current members. Set its
+membership before adding the scene to the tree. The root synchronizer controls
+spawn visibility, and descendant `NetworkedEntity` synchronizers filter state
+with the same policy. Registered actions reject outsiders before calling gameplay
+validation; broadcast events are sent only to allowed peers. Shared entities
+without such a root retain their existing policy.
+
+Use `replace_members()` when someone joins or leaves. It refreshes authoritative
+synchronizer visibility, including the root's spawn visibility. This component
+does not assign player zones or create map instances by itself; the zone service
+owns those transitions. Real ENet privacy/revocation coverage lives in
+`tests/features/zone_instances/test_scope_network.gd`.
+
 For transient effects, the server calls `entity.send_event(event, payload, peer)`.
 Omit `peer` to broadcast, or supply an authenticated recipient for an owner-only event.
 Listen to `event_received` on clients. These reliable authority-only events are never

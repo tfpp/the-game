@@ -13,7 +13,7 @@ const TITLES: Array[String] = [
 ]
 var index := 0
 var talk: NetworkedInteraction
-var _label: Label3D
+var _label: SignBoard
 @onready var case: VivienneCase = get_parent()
 
 
@@ -28,14 +28,20 @@ func _ready() -> void:
 	var model := source.get_node("Model").duplicate() as Node3D
 	source.free()
 	add_child(model)
-	_label = Label3D.new()
-	_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_label.position.y = 0.35
-	_label.pixel_size = 0.0025
-	_label.font_size = 24
-	_label.outline_size = 6
+	_label = SignBoard.new()
+	_label.position = Vector3(0, .17, .14)
+	_label.rotation.y = -PI / 2 if index == 4 else PI / 2
+	_label.letter_height = .04
+	_label.padding = .02
+	_label.scale = Vector3.ONE * .5
 	_label.text = "CASE PHONE" if index == 3 else TITLES[index]
-	_label.modulate = Color("ead6a4")
+	var post := MeshInstance3D.new()
+	var post_mesh := BoxMesh.new()
+	post_mesh.size = Vector3(.015, .17, .015)
+	post.mesh = post_mesh
+	post.position = Vector3(0, .085, .14)
+	post.material_override = preload("res://features/procedural_rooms/materials/grey.tres")
+	add_child(post)
 	add_child(_label)
 	var menu := CanvasLayer.new()
 	menu.set_script(MENU)

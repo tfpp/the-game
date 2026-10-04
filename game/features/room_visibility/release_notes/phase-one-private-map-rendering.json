@@ -1,0 +1,5 @@
+{
+  "title": "Keep private excursion floors visible",
+  "summary": "Garage floors and elevator surroundings remain visible during private slum runs.",
+  "notes": ["Render private garage floors, elevator bays and alley fences in their destination zone."]
+}

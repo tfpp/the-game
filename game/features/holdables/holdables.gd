@@ -35,7 +35,23 @@ func spawn_thrown_item(item_id: String, from: Vector3, to: Vector3) -> void:
 	if not multiplayer.is_server():
 		return
 	_next_thrown_id += 1
-	_thrown_spawner.spawn({"id": _next_thrown_id, "item_id": item_id, "from": from, "to": to})
+	var instance_id := -1
+	for service: Node in get_tree().get_nodes_in_group(&"zone_instances"):
+		if service.multiplayer == multiplayer:
+			instance_id = int(service.call("instance_at_position", from))
+			break
+	_thrown_spawner.spawn(
+		{"id": _next_thrown_id, "item_id": item_id, "from": from, "to": to, "instance": instance_id}
+	)
+
+
+func clear_instance_items(instance_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	for node: Node in _thrown.get_children():
+		var item := node as ThrownItem
+		if item != null and item.instance_id == instance_id:
+			item.queue_free()
 
 
 func _on_mode_changed(_mode: Network.Mode) -> void:
@@ -77,6 +93,7 @@ func _spawn_thrown_item(data: Variant) -> Node:
 	item.item_id = info["item_id"]
 	item.from = info["from"]
 	item.to = info["to"]
+	item.instance_id = int(info.get("instance", -1))
 	return item
 
 

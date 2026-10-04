@@ -8,6 +8,17 @@ const SlumArrivalPoint := preload("res://features/dev_elevator/slum_arrival_poin
 const SlumDestinations := preload("res://features/dev_elevator/slum_destinations.gd")
 
 
+func test_official_garage_registration_belongs_to_five_floor_destination() -> void:
+	var garage := preload("res://features/procedural_rooms/feature.tscn").instantiate() as Node3D
+	add_child_autofree(garage)
+	var arrival := garage.get_node("Garage/Arrival") as SlumArrivalPoint
+	assert_not_null(arrival)
+	assert_eq(arrival.slum_name, "Parking Garage")
+	assert_eq(arrival.position.y, 17.0)
+	assert_eq(SlumDestinations.pick(get_tree(), multiplayer), arrival)
+	assert_eq(get_tree().get_nodes_in_group(&"slum_arrival_points").size(), 1)
+
+
 func test_returns_null_when_nothing_is_registered() -> void:
 	assert_null(SlumDestinations.pick(get_tree()))
 

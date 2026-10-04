@@ -18,11 +18,10 @@ func test_ten_units_have_clear_doorways_floors_and_furniture() -> void:
 	var signs := 0
 	var beds := 0
 	for child: Node in floor_node.get_node("Content").get_children():
-		if child is Label3D and (child as Label3D).text.begins_with("UNIT"):
+		if child is SignBoard and (child as SignBoard).text.begins_with("UNIT"):
 			signs += 1
-			assert_eq((child as Label3D).billboard, BaseMaterial3D.BILLBOARD_DISABLED)
-			var front := (child as Label3D).basis.z
-			assert_lt(front.z * (child as Label3D).position.z, 0.0)
+			var front := (child as SignBoard).basis.z
+			assert_lt(front.z * (child as SignBoard).position.z, 0.0)
 		if child is CSGBox3D and (child as CSGBox3D).size == Vector3(1.8, 0.6, 2.8):
 			beds += 1
 	assert_eq(signs, 10)

@@ -3,15 +3,17 @@
 Main-casino overhead door signs were removed in issue #487. Door placement,
 Use prompts, GPS routing and remote return signs remain unchanged.
 
-The Golden Crown's south lobby gate starts a shared excursion. The first player
-through chooses a registered slum arrival point; later players join that same
-map until everyone returns, dies or disconnects. A new excursion resets
-searchable containers. The old parking garage no longer has a casino staff
-door; only this gate reaches it.
+The Golden Crown elevator starts private group excursions through
+`features/zone_instances`. Its occupants travel together to their own copy of the
+garage or Rain Alleys; returning, dying or disconnecting removes membership.
+Each new instance starts with fresh searchable containers. The south lobby gate
+is now scenery and has no interaction script.
 
-Runs are recorded in `features/zone_instances` as one instance.
+`SlumRuns` keeps death-drop and post-respawn messaging in the existing inventory
+and combat flow. Its legacy `begin` API remains for development fixtures while
+the normal elevator creates instances directly through `ZoneInstances`.
 
-Each slum has a return door. Surviving players bring valuables back in their
+Each private slum has a return elevator. Surviving players bring valuables back in their
 inventory. The pawn shop counter (`Fence`, `loot_fence.gd`) inside Rusty Hogg's pawn shop
 (`features/pawn_shop`, off the south corridor), marked by three gold balls and a glass display case, buys one valuable per Use press at
 the price on its `ItemDefinition`; the sale goes into the same wallet used by
@@ -28,6 +30,8 @@ and confirming their weapons were kept (`SlumRuns.death_penalty_message`).
 The toast reuses `LootToast` with a longer duration. Deaths in
 the Crown and its other rooms do not drop valuables.
 
-New slum scenes register a `SlumArrivalPoint` on their arrival marker and
-can use a `GarageDoor` to return to `slum_runs/CasinoArrival`. Put searchable
-containers in the new area and add a GPS destination.
+The registered `SlumArrivalPoint` selects the destination for the Crown elevator;
+`SlumInstance` builds its private map and return cab. Extend that instance builder
+and its spawn data when adding destinations. Keep searchable containers and shared
+actors outside client-only streamed geometry. Legacy shared-map return doors
+remain development fixtures, rather than the integration path for new excursions.

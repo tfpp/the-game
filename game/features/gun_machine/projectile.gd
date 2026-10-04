@@ -28,6 +28,7 @@ var ammo_type: GunGenerator.AmmoType = GunGenerator.AmmoType.RIFLE
 var velocity := Vector3.ZERO
 var damage := 0.0
 var shooter_peer := 0
+var instance_id := -1
 
 var _bounces_left := 0
 var _elapsed := 0.0
@@ -45,10 +46,14 @@ var _finished := false
 var _visual_offset := Vector3.ZERO
 var _visual_offset_elapsed := 0.0
 
+@onready var entity: NetworkedEntity = $NetworkedEntity
 @onready var _visual: MeshInstance3D = $Visual
 
 
 func _ready() -> void:
+	($Sync as MultiplayerSynchronizer).add_visibility_filter(network_peer_allowed)
+	($Sync as MultiplayerSynchronizer).update_visibility()
+	entity.event_received.connect(_receive_effect)
 	position = net_position
 	net_position = position
 	var rig := GunRig.for_peer(get_tree(), shooter_peer)
@@ -122,6 +127,9 @@ func _on_hit(hit: Dictionary, profile: Dictionary) -> void:
 
 
 func _apply_direct_hit(player: Player, profile: Dictionary) -> void:
+	if not _target_in_instance(player.get_multiplayer_authority()):
+		_finish()
+		return
 	var combat := get_tree().get_first_node_in_group(&"combat")
 	if combat != null:
 		combat.call("apply_damage", player.get_multiplayer_authority(), damage, shooter_peer)
@@ -133,6 +141,17 @@ func _apply_direct_hit(player: Player, profile: Dictionary) -> void:
 ## have no player peer id, so this routes to their own `take_hit` instead of
 ## features/combat's `apply_damage` — the same split hand.gd's hitscan makes.
 func _apply_killable_hit(target: Node, profile: Dictionary) -> void:
+	if target is Node3D:
+		for service: Node in get_tree().get_nodes_in_group(&"zone_instances"):
+			if service.multiplayer != multiplayer:
+				continue
+			if (
+				int(service.call("instance_at_position", (target as Node3D).global_position))
+				!= instance_id
+			):
+				_finish()
+				return
+			break
 	target.call("take_hit", shooter_peer)
 	_splash(profile, 0)
 	_finish()
@@ -160,6 +179,8 @@ func _splash(profile: Dictionary, already_hit_peer: int) -> void:
 		if player == null:
 			continue
 		var peer := player.get_multiplayer_authority()
+		if not _target_in_instance(peer):
+			continue
 		var distance := player.net_position.distance_to(net_position)
 		if distance >= radius:
 			continue
@@ -175,6 +196,12 @@ func _splash(profile: Dictionary, already_hit_peer: int) -> void:
 ## the server (game/AGENTS.md) since movement is otherwise client-authoritative and
 ## `core/player` isn't ours to edit.
 func _apply_splash_force(player: Player, distance: float, radius: float, max_force: float) -> void:
+	if (
+		not _target_in_instance(player.get_multiplayer_authority())
+		or SafeZone.covers(get_tree(), player.global_position)
+		or SafeZone.covers_peer(get_tree(), shooter_peer)
+	):
+		return
 	var push := ProjectileMath.splash_force(distance, radius, max_force)
 	if push <= 0.0:
 		return
@@ -183,11 +210,9 @@ func _apply_splash_force(player: Player, distance: float, radius: float, max_for
 	direction.y = maxf(direction.y, 0.35)
 	direction = direction.normalized()
 	var destination := player.net_position + direction * push
-	# Broadcast rather than `rpc_id(player.get_multiplayer_authority(), ...)`: a splash
-	# can reach several players' worth of targeted calls per explosion, and
-	# `server_teleport`'s own `is_local()` guard already makes sure only the owning
-	# peer ever applies it, so there's no need to address each one individually.
-	player.server_teleport.rpc(destination)
+	var owner := player.get_multiplayer_authority()
+	if owner == multiplayer.get_unique_id() or owner in multiplayer.get_peers():
+		player.server_teleport.rpc_id(owner, destination)
 
 
 func _finish(explosion_radius: float = 0.0) -> void:
@@ -195,10 +220,31 @@ func _finish(explosion_radius: float = 0.0) -> void:
 		return
 	_finished = true
 	if explosion_radius > 0.0:
-		_play_explosion.rpc(net_position, explosion_radius)
+		entity.send_event(&"explosion", {"position": net_position, "radius": explosion_radius})
 	else:
-		_play_impact.rpc(net_position)
+		entity.send_event(&"impact", {"position": net_position})
 	queue_free()
+
+
+func network_peer_allowed(peer: int) -> bool:
+	for service: Node in get_tree().get_nodes_in_group(&"zone_instances"):
+		if service.multiplayer == multiplayer:
+			return bool(service.call("can_observe_zone", instance_id, peer))
+	return instance_id == -1 or peer == MultiplayerPeer.TARGET_PEER_SERVER
+
+
+func _target_in_instance(peer: int) -> bool:
+	for service: Node in get_tree().get_nodes_in_group(&"zone_instances"):
+		if service.multiplayer == multiplayer:
+			return int(service.get("net_peer_instances").get(peer, -1)) == instance_id
+	return true
+
+
+func _receive_effect(event: StringName, payload: Dictionary) -> void:
+	if event == &"impact":
+		_play_impact(payload["position"])
+	elif event == &"explosion":
+		_play_explosion(payload["position"], float(payload["radius"]))
 
 
 ## An event, not saved state: late joiners don't need to replay an old impact.

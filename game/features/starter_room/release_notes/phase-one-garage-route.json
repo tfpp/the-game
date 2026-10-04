@@ -1,0 +1,8 @@
+{
+  "title": "Garage excursion access",
+  "summary": "Take the Crown elevator for garage excursions.",
+  "notes": [
+    "Hide and block the van's old shared garage route during normal play.",
+    "Developer garage travel waits for a private map and closes its overlay at the new arrival."
+  ]
+}

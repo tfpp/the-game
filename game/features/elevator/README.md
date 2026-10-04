@@ -18,8 +18,15 @@ lights above the hall doors (right of the floor indicator) and on the cab's back
 wall. The replicated `net_overloaded` flag drives both lamps, so late joiners see
 the current state. `rider_count()` exposes the server count.
 
-**Travel is disabled in the casino.** There is no destination cab or basement trip
-loaded by this feature. The elevator car never translates vertically.
+The Crown cab delegates accepted excursions to `ZoneInstances`. Riders travel
+together to a private garage or alley copy and return through its matching cab.
+The elevator car never translates vertically. During transfer the controls are
+locked, a quiet synthesized motor hum plays on the GameSFX bus, and the modeled
+floor indicators tick. Occupants see a subtle camera vibration (at most six
+millimetres per axis); player positions and cab collision stay stationary. Existing
+camera offsets are restored when a rider leaves, arrives, resets or the cab is freed.
+Receiving doors open after the teleport, with the existing
+arrival chime; the Crown arrival is reserved while a return is pending.
 
 ## Files and ownership
 
@@ -74,7 +81,11 @@ doors fully close, using the existing owner-authorized `Player.server_teleport`
 RPC. It preserves their cab-relative positions, yaw and pitch. A missing or busy
 destination safely leaves riders where they are. `server_arrive()` opens the
 receiving cab for unloading without automatically scheduling a return trip.
-This is a same-world transfer hook, not the future zone-instancing system.
+This hook serves compatible same-world cabs. The Crown uses
+`excursion_role = CROWN` instead: `ZoneInstances` creates a private destination
+for the collected riders, waits for their loaded acknowledgements and transfers
+them after the one-second ride. Its return cab uses `excursion_role = RETURN`.
+The normal Crown departure keeps the existing door and obstruction policy.
 
 `NetworkedEntity` owns state replication and session resets;
 `NetworkedInteraction` authenticates both control plates. State and aperture are

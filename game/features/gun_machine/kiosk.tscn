@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://features/gun_machine/gun_machine_kiosk.gd" id="1_script"]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign"]
 
 [sub_resource type="BoxShape3D" id="Hull"]
 size = Vector3(1.0, 2.0, 0.8)
@@ -23,9 +24,9 @@ position = Vector3(0, 1.0, 0)
 mesh = SubResource("CabinetMesh")
 material_override = SubResource("CabinetMaterial")
 
-[node name="Sign" type="Label3D" parent="."]
-position = Vector3(0, 2.3, 0)
-billboard = 1
-font_size = 32
-outline_size = 6
+[node name="Sign" type="Node3D" parent="."]
+position = Vector3(0, 1.75, 0.4)
+script = ExtResource("sign")
+letter_height = 0.08
+padding = 0.025
 text = "GUN-O-MATIC"

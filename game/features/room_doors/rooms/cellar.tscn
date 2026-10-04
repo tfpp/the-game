@@ -1,4 +1,5 @@
 [gd_scene format=3]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign_board"]
 
 [ext_resource type="Material" path="res://features/casino_hub/materials/tile.tres" id="tile"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/plaster.tres" id="plaster"]
@@ -85,9 +86,10 @@ light_color = Color(1, 0.7, 0.45, 1)
 light_energy = 0.9
 omni_range = 7
 
-[node name="LoungeSign" type="Label3D" parent="."]
+[node name="LoungeSign" type="Node3D" parent="."]
+script = ExtResource("sign_board")
+letter_height = 0.09
+padding = 0.035
 position = Vector3(0, 2.2, 3.9)
 rotation = Vector3(0, 3.1415927, 0)
 text = "LOUNGE"
-font_size = 20
-outline_size = 6

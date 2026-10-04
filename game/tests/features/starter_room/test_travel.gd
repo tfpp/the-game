@@ -35,6 +35,24 @@ func test_use_is_authenticated_and_only_opens_a_private_modal() -> void:
 	assert_false(_van.panel.is_in_group(&"modal_ui"))
 
 
+func test_shared_garage_route_is_hidden_and_rejected_without_cheats() -> void:
+	var marker := Marker3D.new()
+	marker.name = "DevelopmentGarage"
+	_feature.add_child(marker)
+	_van.arrivals[1] = _van.get_path_to(marker)
+	assert_null(_van.arrival(1))
+	assert_eq(_van.entity._evaluate(1, &"travel", {"zone": 1}), NetworkedEntity.Result.DENIED)
+	_van.use()
+	assert_false(_van.panel._buttons[1].visible)
+	var cheats := preload("res://tests/features/dev_access/cheats_fixture.gd").enable(self)
+	assert_eq(_van.arrival(1), marker)
+	assert_true(_van._validate_trip(1, {"zone": 1}))
+	_van.panel.open_map(_van)
+	assert_true(_van.panel._buttons[1].visible)
+	cheats.set("cheats_enabled", false)
+	assert_false(_van._validate_trip(1, {"zone": 1}), "Stale open menus cannot bypass the lock")
+
+
 func test_rejects_unknown_zone_wrong_types_extra_fields_and_distant_players() -> void:
 	for payload: Dictionary in [
 		{}, {"zone": -1}, {"zone": 30}, {"zone": 0.0}, {"zone": "0"}, {"zone": 0, "peer": 1}

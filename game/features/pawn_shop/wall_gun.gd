@@ -23,25 +23,26 @@ func _ready() -> void:
 	if GunBuyCatalog.FIXED_PRICES.has(item_id):
 		price_cents = GunBuyCatalog.FIXED_PRICES[item_id]
 	add_to_group(&"interactables")
+	_build_display()
+	entity.register_use(can_use, _buy)
+	entity.event_received.connect(_on_event)
+	entity.session_reset.connect(_reset)
+
+
+func _build_display() -> void:
 	var view := ItemCatalog.create_view(item_id)
 	if view != null:
 		view.name = "View"
 		# Hung sideways, muzzle pointing along the wall.
 		view.rotation.y = PI * 0.5
 		add_child(view)
-	var tag := Label3D.new()
+	var tag := SignBoard.new()
 	tag.name = "PriceTag"
 	tag.text = "%s\n%s" % [_display_name(), PlayerMoney.format_money(price_cents)]
-	tag.font_size = 20
-	tag.outline_size = 6
-	tag.pixel_size = 0.005
-	tag.modulate = Color(1, 0.84, 0.4)
-	tag.double_sided = false
+	tag.letter_height = 0.07
+	tag.padding = 0.025
 	tag.position = tag_position
 	add_child(tag)
-	entity.register_use(can_use, _buy)
-	entity.event_received.connect(_on_event)
-	entity.session_reset.connect(_reset)
 
 
 func interaction_text() -> String:

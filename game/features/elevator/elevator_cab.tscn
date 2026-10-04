@@ -69,5 +69,5 @@ light_specular = 0.0
 omni_range = 4.0
 [node name="NetworkedEntity" type="Node" parent="."]
 script = ExtResource("network")
-replicated_properties = Array[NodePath]([NodePath(".:net_state"), NodePath(".:net_overloaded")])
+replicated_properties = Array[NodePath]([NodePath(".:net_state"), NodePath(".:net_overloaded"), NodePath(".:net_riding"), NodePath(".:net_floor")])
 continuous_properties = Array[NodePath]([NodePath(".:net_aperture")])

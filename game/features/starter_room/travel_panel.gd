@@ -36,7 +36,7 @@ func open_map(van: OperationsVan) -> void:
 	_drive.hide()
 	_close.show()
 	for i: int in _buttons.size():
-		_buttons[i].show()
+		_buttons[i].visible = i not in van.dev_routes or DevGate.cheats_enabled(get_tree())
 		_buttons[i].disabled = van.arrival(i) == null
 	_show()
 	_buttons[0].grab_focus()
@@ -55,6 +55,10 @@ func depart(van: OperationsVan, zone: int, destination: Vector3) -> void:
 	for button: Button in _buttons:
 		button.hide()
 	_show()
+
+
+func update_destination(position: Vector3) -> void:
+	_destination = position
 
 
 func reject_trip() -> void:

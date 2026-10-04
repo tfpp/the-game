@@ -1,4 +1,5 @@
 [gd_scene format=3]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign_board"]
 
 [ext_resource type="Script" path="res://features/dev_access/dev_gate.gd" id="dev_gate"]
 [ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
@@ -32,13 +33,13 @@ door_label = "Teleport to the hotel prop room"
 script = ExtResource("interaction")
 interaction_range = 2.5
 
-[node name="Sign" type="Label3D" parent="Entrance"]
+[node name="Sign" type="Node3D" parent="Entrance"]
+script = ExtResource("sign_board")
+letter_height = 0.1
+padding = 0.035
 position = Vector3(0, 1.45, -0.12)
 rotation = Vector3(0, 3.14159265, 0)
 text = "HOTEL PROPS"
-font_size = 44
-pixel_size = 0.0035
-modulate = Color(1, 0.84, 0.52, 1)
 
 [node name="FrameLeft" type="CSGBox3D" parent="Entrance"]
 position = Vector3(-0.77, 0, 0)
@@ -77,13 +78,13 @@ door_label = "Return to the dev room"
 script = ExtResource("interaction")
 interaction_range = 2.5
 
-[node name="Sign" type="Label3D" parent="Room/Return"]
+[node name="Sign" type="Node3D" parent="Room/Return"]
+script = ExtResource("sign_board")
+letter_height = 0.1
+padding = 0.035
 position = Vector3(0, 1.4, -0.12)
 rotation = Vector3(0, 3.14159265, 0)
 text = "DEV ROOM"
-font_size = 40
-pixel_size = 0.004
-modulate = Color(1, 0.84, 0.52, 1)
 
 [node name="Destinations" type="Node3D" parent="."]
 

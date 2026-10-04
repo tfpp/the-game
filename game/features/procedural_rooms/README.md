@@ -1,8 +1,14 @@
 # Procedural rooms development
 
 This directory contains original developer materials, a socket attachment prototype
-and standalone playable examples. `feature.tscn` now adds a shared in-game copy of
-five basement garages beneath the casino. The service elevator at the east doorway
+and standalone playable examples. `feature.tscn` registers a developer portal and
+arrival marker without loading garage geometry or collision. The portal, developer
+van route and `!warp garage` create a private garage through `ZoneInstances` and
+wait for its readiness before teleporting into the return cab. The original full
+authoring scene remains in `prototype.tscn` for previews and legacy fixtures.
+In that prototype, during normal play the
+service elevator's modeled doors stay closed and its controls reject requests;
+its garage GPS destinations require `sv_cheats`. The service elevator at the east doorway
 (x=34, z=-25) physically carries players from **C / CASINO** at y=0 to **B1–B5**
 at y=-6, -10, -14, -18 and -22. The first basement has extra clearance beneath the
 sunken gaming floor. Find **Procedural Garage** in GPS to reach the casino landing.
@@ -10,9 +16,10 @@ The standalone cyan **PROCEDURAL GARAGE**
 teleporter stands on the north wall of the [dev room](../dev_room/README.md),
 or locate **Garage Teleporter** in GPS. E / controller
 Use / touch Use teleports to B1. Its **RETURN TO CASINO** portal is beside arrival.
-The casino currently has a non-moving [elevator](../elevator/README.md) with travel
-disabled; its old paired garage connection is not loaded. The procedural garage
-and its physical service lift remain available through the development entrance.
+The casino's stationary [elevator](../elevator/README.md) sends groups into private
+slum instances through `ZoneInstances`. The standalone prototype's physical
+service lift remains available with developer access. Private
+garage instances keep their internal service lift available without cheats.
 The kit uses a fixed seed on every peer; there is no live reroll control, general random
 layout solver or automatic map mutation. The proposed complete system is described in
 [the plan](../../../docs/design/procedural-rooms.md).

@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://features/gun_machine/projectile.gd" id="1_script"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="entity"]
 
 [sub_resource type="SphereMesh" id="SphereMesh"]
 radius = 0.035
@@ -21,3 +22,6 @@ mesh = SubResource("SphereMesh")
 root_path = NodePath("..")
 replication_interval = 0.03
 replication_config = SubResource("Replication")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")

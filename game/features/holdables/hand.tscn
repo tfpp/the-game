@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://features/holdables/hand.gd" id="1_script"]
 
@@ -12,23 +12,36 @@
 properties/0/path = NodePath(".:net_item_id")
 properties/0/spawn = true
 properties/0/replication_mode = 2
-
-[sub_resource type="SceneReplicationConfig" id="InventoryReplication"]
-properties/0/path = NodePath(".:backpack")
-properties/0/spawn = true
-properties/0/replication_mode = 2
-properties/1/path = NodePath(".:shirt")
+properties/1/path = NodePath("Inventory:backpack")
 properties/1/spawn = true
 properties/1/replication_mode = 2
-properties/2/path = NodePath(".:pants")
+properties/2/path = NodePath("Inventory:shirt")
 properties/2/spawn = true
 properties/2/replication_mode = 2
-properties/3/path = NodePath(".:keys")
+properties/3/path = NodePath("Inventory:pants")
 properties/3/spawn = true
 properties/3/replication_mode = 2
-properties/4/path = NodePath(".:hat")
+properties/4/path = NodePath("Inventory:keys")
 properties/4/spawn = true
 properties/4/replication_mode = 2
+properties/5/path = NodePath("Inventory:hat")
+properties/5/spawn = true
+properties/5/replication_mode = 2
+properties/6/path = NodePath("Consumption:state")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+properties/7/path = NodePath("PistolMechanism:state")
+properties/7/spawn = true
+properties/7/replication_mode = 1
+properties/8/path = NodePath("MP5Mechanism:state")
+properties/8/spawn = true
+properties/8/replication_mode = 1
+properties/9/path = NodePath("M4Mechanism:state")
+properties/9/spawn = true
+properties/9/replication_mode = 1
+properties/10/path = NodePath("AKMechanism:state")
+properties/10/spawn = true
+properties/10/replication_mode = 1
 
 [node name="Hand" type="Node3D"]
 script = ExtResource("1_script")
@@ -39,26 +52,23 @@ script = ExtResource("1_script")
 root_path = NodePath("..")
 replication_config = SubResource("Replication")
 
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")
+
 [node name="Inventory" type="Node" parent="."]
 script = ExtResource("2_inventory")
-
-[node name="Sync" type="MultiplayerSynchronizer" parent="Inventory"]
-root_path = NodePath("..")
-replication_config = SubResource("InventoryReplication")
 
 [node name="Consumption" type="Node" parent="."]
 script = ExtResource("consume")
 
 [node name="NetworkedEntity" type="Node" parent="Consumption"]
 script = ExtResource("entity")
-continuous_properties = Array[NodePath]([NodePath(".:state")])
 
 [node name="PistolMechanism" type="Node" parent="."]
 script = ExtResource("pistol")
 
 [node name="NetworkedEntity" type="Node" parent="PistolMechanism"]
 script = ExtResource("entity")
-continuous_properties = Array[NodePath]([NodePath(".:state")])
 
 [node name="MP5Mechanism" type="Node" parent="."]
 script = ExtResource("pistol")
@@ -68,7 +78,6 @@ reload_duration = 2.25
 
 [node name="NetworkedEntity" type="Node" parent="MP5Mechanism"]
 script = ExtResource("entity")
-continuous_properties = Array[NodePath]([NodePath(".:state")])
 
 [node name="M4Mechanism" type="Node" parent="."]
 script = ExtResource("pistol")
@@ -78,7 +87,6 @@ reload_duration = 2.25
 
 [node name="NetworkedEntity" type="Node" parent="M4Mechanism"]
 script = ExtResource("entity")
-continuous_properties = Array[NodePath]([NodePath(".:state")])
 
 [node name="AKMechanism" type="Node" parent="."]
 script = ExtResource("pistol")
@@ -88,4 +96,3 @@ reload_duration = 2.25
 
 [node name="NetworkedEntity" type="Node" parent="AKMechanism"]
 script = ExtResource("entity")
-continuous_properties = Array[NodePath]([NodePath(".:state")])

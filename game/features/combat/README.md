@@ -6,9 +6,10 @@ respawns) at 100 HP.
 ## How it works
 
 - `combat.gd` is the server-authoritative source of truth: peer-keyed `health` and
-  `kills` dictionaries, replicated to every peer like `features/smeckles`' balances.
-  Nothing else in this feature spawns per player — it just tracks numbers per
-  connected peer.
+  `kills` dictionaries. `HealthSpawner` creates one `CombatHealthState` per peer;
+  its NetworkedEntity snapshot is visible only to the owner and their current
+  group. Joining a group receives current HP; leaving revokes the old snapshot.
+  Kill totals remain public for the existing leaderboard.
 - A kill (`kills_for(peer_id)`) is awarded to whoever's damage brought a *different*
   peer's health to zero; self-damage (e.g. rocket splash) never counts. `features/
   leaderboard` reads `kills_for` for its Esc-menu "Kills" tab.
@@ -17,11 +18,11 @@ respawns) at 100 HP.
   `features/slot_machine` uses to reach `features/money`'s wallet. See
   `features/holdables/hand.gd`'s `_fire`, which hitscans from the shooter and looks
   the hit `Player`'s peer up.
-- Reaching zero health heals back to full and broadcasts `player_died` at the
+- Reaching zero health heals back to full and sends `player_died` to the group at the
   death location, preserving slum loot drops and other death listeners. The victim
   sees a full-screen **u died gg** overlay for two seconds, then the server teleports
   them to the feature-owned `player_spawn` marker (the Crown, `crown_spawn`), or the
-  legacy casino fallback when no marker exists, with `player.server_teleport` and broadcasts
+  legacy casino fallback when no marker exists, with `player.server_teleport` and sends
   `player_respawned(peer_id)`. Further damage to that victim is ignored during the
   delay, preventing duplicate deaths/kills. Pending respawns are server-only and
   cancelled on disconnect/session reset; no death history is replayed to late joiners.
@@ -44,6 +45,10 @@ as initial joins and fall recovery; marker ownership remains with `starter_room`
 
 Damage between two different players is ignored while either stands in a
 `SafeZone` (`features/safe_zone`), so the Golden Crown stays peaceful.
+Damage is also rejected between different excursion groups, including damage from
+a hosting player. Hostile NPCs call `apply_enemy_damage`, which checks the victim's
+safe zone while preserving the no-player-kill-credit rule. Deliberate self-damage
+continues to use `apply_damage` so `/suicide` remains available.
 
 ## Adding a new source of damage
 

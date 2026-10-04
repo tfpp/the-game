@@ -31,9 +31,9 @@ func _build_lobby() -> void:
 	_box("Desk", Vector3(0, 0.6, -3), Vector3(4, 1.2, 1.2), WOOD)
 	_box("Counter", Vector3(0, 1.25, -3), Vector3(4.3, 0.1, 1.4), BRASS)
 	_elevator_frame(Vector3(5, 0, -6), 0)
-	_sign("LILY APARTMENTS\nFRONT DESK · FREE ROOMS", Vector3(0, 2.9, -4))
+	_sign("LILY APARTMENTS\nFRONT DESK · FREE ROOMS", Vector3(0, 2.9, -6.89))
 	_sign("EXPRESS ELEVATOR\nYour floor ↑", Vector3(5, 2.8, -5.9))
-	_sign("CASINO", Vector3(-5, 2.8, 5.9))
+	_sign("CASINO", Vector3(-5, 2.8, 6.89)).rotation.y = PI
 	for x: float in [-5.0, 5.0]:
 		_box("Bench", Vector3(x, 0.35, 1), Vector3(2.4, 0.7, 0.8), WOOD)
 
@@ -43,7 +43,6 @@ func _build_floor() -> void:
 	_elevator_frame(Vector3(-16, 0, 0), PI / 2)
 	var number := int(get_parent().get_meta(&"floor_number", 1))
 	var floor_sign := _sign("FLOOR %d\nELEVATOR TO RECEPTION" % number, Vector3(-15.8, 2.9, 0))
-	floor_sign.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 	floor_sign.rotation.y = PI / 2
 	for slot: int in 10:
 		var x := -12.0 + (slot % 5) * 6.0
@@ -55,7 +54,6 @@ func _build_floor() -> void:
 		_box("Lintel", Vector3(x, 3, side * 2), Vector3(2, 1, 0.2), WOOD)
 		_box("Partition", Vector3(x - 3, 1.75, side * 5.5), Vector3(0.2, 3.5, 7), WALL)
 		var unit_sign := _sign("UNIT %d%02d" % [number, slot + 1], Vector3(x, 2.8, side * 1.85))
-		unit_sign.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 		unit_sign.rotation.y = PI if side > 0 else 0.0
 		_box("BedFrame", center + Vector3(-1.7, 0.3, side), Vector3(1.8, 0.6, 2.8), WOOD)
 		_box("Mattress", center + Vector3(-1.7, 0.7, side), Vector3(1.7, 0.2, 2.7), PLASTER)
@@ -78,13 +76,12 @@ func _box(title: String, point: Vector3, size: Vector3, material: Material) -> v
 	add_child(box)
 
 
-func _sign(words: String, point: Vector3) -> Label3D:
-	var label := Label3D.new()
+func _sign(words: String, point: Vector3) -> SignBoard:
+	var label := SignBoard.new()
 	label.position = point
 	label.text = words
-	label.font_size = 32
-	label.pixel_size = 0.008
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	label.letter_height = .14
+	label.padding = .035
 	add_child(label)
 	return label
 

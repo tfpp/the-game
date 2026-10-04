@@ -6,6 +6,7 @@ extends RefCounted
 
 signal instance_created(instance_id: int)
 signal instance_freed(instance_id: int)
+signal membership_changed(instance_id: int)
 
 ## Distance between instance slots along +X. Slot 0 is the slum's authored position.
 const OFFSET_STEP_M := 4000.0
@@ -54,6 +55,8 @@ func leave(peer_id: int) -> void:
 	if group.is_empty():
 		_instances.erase(instance_id)
 		instance_freed.emit(instance_id)
+	else:
+		membership_changed.emit(instance_id)
 
 
 func clear() -> void:
@@ -109,6 +112,7 @@ static func offset_for_slot(slot: int) -> Vector3:
 func _add(instance_id: int, peer_id: int) -> void:
 	(_instances[instance_id]["members"] as Dictionary)[peer_id] = true
 	_peer_instance[peer_id] = instance_id
+	membership_changed.emit(instance_id)
 
 
 ## Lowest slot not used by a live instance, so freed slots are reused.

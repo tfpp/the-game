@@ -1,4 +1,5 @@
 [gd_scene format=3]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign_board"]
 
 [ext_resource type="Script" path="res://features/room_doors/room_door.gd" id="1_door"]
 [ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="2_room"]
@@ -53,12 +54,12 @@ door_label = "Enter the lounge"
 [node name="LobbyArrival" type="Marker3D" parent="Lobby"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -1)
 
-[node name="Sign" type="Label3D" parent="Lobby"]
+[node name="Sign" type="Node3D" parent="Lobby"]
+script = ExtResource("sign_board")
+letter_height = 0.09
+padding = 0.035
 position = Vector3(0, 2.3, 1.1)
-billboard = 1
 text = "LOUNGE"
-font_size = 20
-outline_size = 6
 
 [node name="Light" type="OmniLight3D" parent="Lobby"]
 position = Vector3(0, 2.2, 0)

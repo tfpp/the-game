@@ -101,10 +101,11 @@ func _kim_costume() -> void:
 			Vector3(.17, .008, .008),
 			black
 		)
-	var badge := Label3D.new()
+	var badge := SignBoard.new()
 	badge.text = "CITY\nWOK"
-	badge.font_size = 24
-	badge.pixel_size = .0012
+	badge.letter_height = .09
+	badge.padding = .01
+	badge.scale = Vector3.ONE * .25
 	badge.position = Vector3(-.10, .38, CHEST_Z - .034)
 	badge.rotation.y = PI
 	torso_items.add_child(badge)

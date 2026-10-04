@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "Garage standing water"
+albedo_color = Color(0.16, 0.23, 0.28, 1)
+roughness = 0.17
+metallic_specular = 0.65
+emission_enabled = true
+emission = Color(0.02, 0.03, 0.045, 1)

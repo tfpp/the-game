@@ -57,9 +57,9 @@ func test_stow_and_drop_the_hat() -> void:
 
 
 func test_hat_replicates_to_late_joiners() -> void:
-	var config := (_hand.get_node("Inventory/Sync") as MultiplayerSynchronizer).replication_config
-	assert_true(config.has_property(NodePath(".:hat")))
-	assert_true(config.property_get_spawn(NodePath(".:hat")))
+	var config := (_hand.get_node("Sync") as MultiplayerSynchronizer).replication_config
+	assert_true(config.has_property(NodePath("Inventory:hat")))
+	assert_true(config.property_get_spawn(NodePath("Inventory:hat")))
 
 
 func test_avatar_wears_the_hat_on_every_head() -> void:

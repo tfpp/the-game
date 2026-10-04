@@ -8,6 +8,15 @@ const SHOULDER_PIVOT := Vector3(0.22, 0.30, 0.0)
 const REACH := Vector3(0.0, -0.12, -0.34)
 
 
+## Cosmetic safe-zone pose; the authoritative firing origin remains unchanged.
+static func lowered(resting: Transform3D, blend: float) -> Transform3D:
+	var amount := clampf(blend, 0.0, 1.0)
+	return (
+		resting
+		* Transform3D(Basis(Vector3.RIGHT, -0.4 * amount), Vector3(0.0, -0.22, 0.1) * amount)
+	)
+
+
 static func aim_basis(yaw: float, pitch: float) -> Basis:
 	return Basis(Vector3.UP, yaw) * Basis(Vector3.RIGHT, pitch)
 

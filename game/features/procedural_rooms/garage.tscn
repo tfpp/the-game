@@ -1,4 +1,6 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign_board"]
+[ext_resource type="Script" path="res://features/dev_elevator/slum_arrival_point.gd" id="arrival"]
 [ext_resource type="Script" path="res://features/procedural_rooms/playable_world.gd" id="1_world"]
 [ext_resource type="Script" path="res://features/procedural_rooms/portal.gd" id="2_portal"]
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="3_net"]
@@ -9,6 +11,8 @@ script = ExtResource("1_world")
 
 [node name="Arrival" type="Marker3D" parent="."]
 position = Vector3(0, 17, 5)
+script = ExtResource("arrival")
+slum_name = "Parking Garage"
 
 [node name="Return" type="CSGBox3D" parent="."]
 position = Vector3(4, 17.1, 5)
@@ -23,9 +27,9 @@ door_label = "Return to the casino"
 script = ExtResource("3_net")
 interaction_range = 2.5
 
-[node name="Sign" type="Label3D" parent="Return"]
+[node name="Sign" type="Node3D" parent="Return"]
+script = ExtResource("sign_board")
+letter_height = 0.1
+padding = 0.035
 position = Vector3(0, 1.4, 0)
-billboard = 1
 text = "RETURN TO CASINO\nE / USE TO TELEPORT"
-font_size = 36
-pixel_size = 0.004

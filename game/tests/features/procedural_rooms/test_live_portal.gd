@@ -1,7 +1,7 @@
 extends GutTest
 
 const Cheats := preload("res://tests/features/dev_access/cheats_fixture.gd")
-const FEATURE := preload("res://features/procedural_rooms/feature.tscn")
+const FEATURE := preload("res://features/procedural_rooms/prototype.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
 var _feature: Node3D
 var _player: Player

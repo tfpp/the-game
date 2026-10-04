@@ -8,6 +8,7 @@ const UPDATE_SECONDS := 0.1
 var _visuals: Dictionary[int, Dictionary] = {}
 var _moving_visuals: Dictionary[int, Dictionary] = {}
 var _registered: Dictionary[int, bool] = {}
+var _gridmaps: Dictionary[int, Dictionary] = {}
 var _camera: Camera3D
 var _original_mask := 0
 var _elapsed := 0.0
@@ -26,15 +27,20 @@ func _ready() -> void:
 func _scan() -> void:
 	for node: Node in get_tree().root.find_children("*", "VisualInstance3D", true, false):
 		_register(node, false)
+	for node: Node in get_tree().root.find_children("*", "GridMap", true, false):
+		_register(node, false)
 
 
 func _node_added(node: Node) -> void:
-	if node is VisualInstance3D:
+	if node is VisualInstance3D or node is GridMap:
 		_register_added.call_deferred(weakref(node))
 
 
 func _register(node: Node, added: bool) -> void:
 	if not is_instance_valid(node) or not node.is_inside_tree():
+		return
+	if node is GridMap:
+		_register_gridmap(node as GridMap)
 		return
 	var visual := node as VisualInstance3D
 	var id := visual.get_instance_id()
@@ -53,6 +59,10 @@ func _register(node: Node, added: bool) -> void:
 		if ancestor is RenderZone:
 			zone = ancestor as RenderZone
 			break
+		if ancestor is ZoneScope:
+			zone = ancestor.get_node_or_null("Map") as RenderZone
+			if zone != null:
+				break
 		ancestor = ancestor.get_parent()
 	var entry := {
 		"node": visual,
@@ -126,6 +136,17 @@ func refresh_moving() -> void:
 
 
 func _unregister(id: int) -> void:
+	if _gridmaps.has(id):
+		var grid := _gridmaps[id]["node"] as GridMap
+		if is_instance_valid(grid):
+			for instance: RID in _gridmaps[id]["instances"]:
+				RenderingServer.instance_set_layer_mask(instance, 1)
+			var callback := _unregister.bind(id)
+			if grid.tree_exiting.is_connected(callback):
+				grid.tree_exiting.disconnect(callback)
+		_gridmaps.erase(id)
+		_registered.erase(id)
+		return
 	if not _visuals.has(id):
 		return
 	var entry := _visuals[id]
@@ -151,6 +172,16 @@ func update_camera(camera: Camera3D) -> void:
 	if camera == null:
 		return
 	camera.cull_mask = _original_mask & ~ZONE_MASK
+	# Membership remains authoritative when noclip takes the camera outside bounds.
+	for scope: Node in get_tree().get_nodes_in_group(&"zone_scopes"):
+		if scope.multiplayer != camera.multiplayer:
+			continue
+		if camera.multiplayer.get_unique_id() not in (scope as ZoneScope).members:
+			continue
+		var map := scope.get_node_or_null("Map") as RenderZone
+		if map != null:
+			camera.cull_mask = map.render_mask()
+			return
 	for node: Node in get_tree().get_nodes_in_group(&"render_zones"):
 		var zone := node as RenderZone
 		if zone.contains(camera.global_position):
@@ -166,8 +197,50 @@ func _restore_camera() -> void:
 
 func _exit_tree() -> void:
 	_restore_camera()
+	for id: int in _gridmaps.keys():
+		_unregister(id)
 	for id: int in _visuals.keys():
 		_unregister(id)
+
+
+## GridMap is not a VisualInstance3D and exposes no visual layer property. Its
+## native baked mesh instances expose rendering RIDs; collision and saved cells
+## remain owned by GridMap. Static streamed maps need this only once per load.
+func _register_gridmap(grid: GridMap) -> void:
+	var id := grid.get_instance_id()
+	if _registered.has(id) or grid.mesh_library == null:
+		return
+	var zone: RenderZone
+	var ancestor := grid.get_parent()
+	while ancestor != null:
+		if ancestor is RenderZone:
+			zone = ancestor as RenderZone
+			break
+		if ancestor is ZoneScope:
+			zone = ancestor.get_node_or_null("Map") as RenderZone
+			break
+		ancestor = ancestor.get_parent()
+	if zone == null:
+		return
+	var has_mesh := false
+	for item: int in grid.mesh_library.get_item_list():
+		if grid.mesh_library.get_item_mesh(item) != null:
+			has_mesh = true
+			break
+	if not has_mesh:
+		return
+	# Native baking appends to existing instances. Reentry must replace them.
+	grid.clear_baked_meshes()
+	grid.make_baked_meshes(false)
+	var meshes := grid.get_bake_meshes()
+	var instances: Array[RID] = []
+	for index: int in meshes.size() / 2:
+		var instance := grid.get_bake_mesh_instance(index)
+		RenderingServer.instance_set_layer_mask(instance, zone.render_mask())
+		instances.append(instance)
+	_gridmaps[id] = {"node": grid, "instances": instances, "mask": zone.render_mask()}
+	_registered[id] = true
+	grid.tree_exiting.connect(_unregister.bind(id))
 
 
 func _register_added(reference: WeakRef) -> void:

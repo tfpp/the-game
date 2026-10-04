@@ -1,7 +1,6 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://features/slum_runs/slum_runs.gd" id="1_runs"]
-[ext_resource type="Script" path="res://features/slum_runs/slum_gate.gd" id="2_gate"]
 [ext_resource type="Script" path="res://features/slum_runs/loot_fence.gd" id="3_fence"]
 [ext_resource type="Material" path="res://world/materials/proto_dark.tres" id="4_dark"]
 
@@ -21,7 +20,6 @@ position = Vector3(18, 1.1, 19.8)
 size = Vector3(1.5, 2.2, 0.14)
 material = ExtResource("4_dark")
 use_collision = true
-script = ExtResource("2_gate")
 
 [node name="Fence" type="CSGBox3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -11.5, 0.575, -3975.5)

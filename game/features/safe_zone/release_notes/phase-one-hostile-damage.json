@@ -1,0 +1,8 @@
+{
+  "title": "Safer preparation rooms",
+  "summary": "Weapons lower in safe rooms, where hostile NPC damage is also blocked.",
+  "notes": [
+    "Block hostile NPC damage inside the Golden Crown and other safe preparation rooms.",
+    "Lower held weapons while inside safe rooms and raise them on leaving."
+  ]
+}

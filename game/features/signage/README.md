@@ -18,7 +18,7 @@ transform. Mounts, in the sign's local space:
   two-sided blade sign whose text faces ±X.
 - `HANGING`: two rods rise to the ceiling point at y = 0; the board is two-sided.
 
-Each sign is a `Backing` box, four frame bars and one `Letters` mesh (plus
+Each sign is a `Backing` box, four frame bars joined into one `Frame` mesh and one `Letters` mesh (plus
 `LettersBack` when two-sided). Letters are quads on that mesh, UV-mapped into the
 shared 64×64 letter-tile atlas `SignLetterAtlas` (5×7 glyphs in 8×8 cells, painted
 once at runtime from patterns in `letter_atlas.gd`, nearest filtering, alpha
@@ -38,3 +38,19 @@ keep their original behavior.
 Tests: `tests/features/signage/test_sign_board.gd` checks the atlas size and
 glyphs, the letter quads, and that every mount has a backing and sits flush on its
 wall or ceiling.
+
+## Dynamic text retained during Phase 1
+
+- Slot cabinet status and price caption: authoritative spin results, error messages
+  and changing stake values. Fixed names, payout instructions and control labels
+  use modeled plaques.
+- Kebab cashier/chef names and service reply: overhead character identification
+  and live serving dialogue. The fixed title, menu and ordering sign use plaques.
+- Bartender and Vivienne speech: live character dialogue.
+- Bar busboy task markers: current per-player shift instructions and active orders.
+- Strip Mall rivals' speech bubbles and overhead character names: live dialogue
+  and character identification. The fixed City Wok uniform badge uses the atlas
+  sign mesh rather than a label.
+
+The atlas supports price `+` and `%` glyphs. Dashes, bullet separators and accented
+Turkish menu letters map to their coarse atlas equivalents.

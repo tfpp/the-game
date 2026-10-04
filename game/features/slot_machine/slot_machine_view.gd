@@ -30,8 +30,8 @@ func _ready() -> void:
 	add_child(CABINET.instantiate())
 	_art_panel(Vector3(0, 2.3875, .333), Vector2(1.20, .635), Rect2(2, 2, 124, 72))
 	_art_panel(Vector3(0, .885, .512), Vector2(1.20, .45), Rect2(2, 78, 124, 48))
-	_label("LUCKY FIVE", Vector3(0, 2.60, .345), 38, INK, .0027)
-	_label("THE GOLDEN CROWN", Vector3(0, .85, .525), 28, INK, .0022)
+	_plaque("LUCKY FIVE", Vector3(0, 2.60, .345), .085)
+	_plaque("THE GOLDEN CROWN", Vector3(0, .85, .525), .055)
 	var drum := SlotReelMesh.create()
 	for index: int in 3:
 		var reel := MeshInstance3D.new()
@@ -49,20 +49,12 @@ func _ready() -> void:
 		add_child(reel)
 	_status = _label("READY", Vector3(0, 1.505, .56), 20, Color("ff6a3f"), .002)
 	_caption = _label(_price_caption(), Vector3(0, 2.012, .365), 16, GOLD, .002)
-	_label(
-		"7 ×30    BAR ×20    STAR ×10    BELL ×15    GEM ×25",
-		Vector3(0, .672, .527),
-		11,
-		GOLD,
-		.00165
-	)
+	_plaque("7 X30  BAR X20  STAR X10  BELL X15  GEM X25", Vector3(0, .672, .527), .026)
 	var controls: Array[String] = ["BET", "MAX", "COLLECT", "SERVICE", "SPIN"]
 	for i: int in 5:
-		var label := _label(
-			controls[i], Vector3(-.48 + i * .23, 1.416, .724), 12, Color("171b18"), .0015
-		)
+		var label := _plaque(controls[i], Vector3(-.48 + i * .23, 1.416, .724), .022)
 		label.rotation.x = -.58
-	_label("INSERT BILLS", Vector3(.465, 1.243, .771), 9, Color("efe4cc"), .0012)
+	_plaque("INSERT BILLS", Vector3(.465, 1.243, .771), .015)
 	_build_lever()
 	feedback = FEEDBACK.new()
 	feedback.name = "Feedback"
@@ -152,6 +144,16 @@ func _build_lever() -> void:
 	model.mesh = LEVER_MESH
 	model.material_override = CABINET_FINISH
 	_lever.add_child(model)
+
+
+func _plaque(text: String, origin: Vector3, height: float) -> SignBoard:
+	var plaque := SignBoard.new()
+	plaque.text = text
+	plaque.position = origin
+	plaque.letter_height = height
+	plaque.padding = .01
+	add_child(plaque)
+	return plaque
 
 
 func _label(

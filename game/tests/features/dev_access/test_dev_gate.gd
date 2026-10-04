@@ -9,6 +9,7 @@ const GARAGE := preload("res://features/procedural_rooms/feature.tscn")
 const GPS := preload("res://features/gps/feature.tscn")
 const HIDDEN_PLACES: Array[String] = [
 	"Garage Teleporter",
+	"Procedural Garage",
 	"Hotel Prop Room",
 	"Hotel Props Teleport",
 	"Street Casino Entrance",
@@ -75,7 +76,6 @@ func test_gps_lists_and_routes_dev_places_only_with_cheats() -> void:
 	var labels := _labels(gps)
 	for place: String in HIDDEN_PLACES:
 		assert_false(labels.has(place), "%s hidden without cheats" % place)
-	assert_true(labels.has("Procedural Garage"), "The physical service lift stays listed")
 	for link: Dictionary in gps.links():
 		assert_ne(link["label"], "Visit the old casino", "Locked doors are not routed")
 	Cheats.enable(self)

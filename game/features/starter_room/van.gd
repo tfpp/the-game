@@ -20,6 +20,8 @@ const ZONE_HINTS: Array[String] = [
 
 @export var arrivals: Array[NodePath] = []
 @export var panel_path: NodePath
+## Garage travel is developer-only and enters a ready private instance.
+@export var dev_routes := PackedInt32Array([1])
 
 var _pending: Dictionary[int, Dictionary] = {}
 @onready var entity: NetworkedInteraction = $NetworkedEntity
@@ -53,6 +55,8 @@ func use() -> void:
 
 func arrival(zone: int) -> Marker3D:
 	if zone < 0 or zone >= arrivals.size():
+		return null
+	if zone in dev_routes and not DevGate.cheats_enabled(get_tree()):
 		return null
 	return get_node_or_null(arrivals[zone]) as Marker3D
 
@@ -105,6 +109,14 @@ func _physics_process(delta: float) -> void:
 		if target == null:
 			entity.send_event(&"cancel", {}, peer)
 			continue
+		var zones := ZoneInstances.for_node(self)
+		if zones != null and target is SlumArrivalPoint:
+			if zones.enter_development_zone(player, target as SlumArrivalPoint):
+				var run := zones.scope_for(zones.registry.instance_of(peer)) as SlumInstance
+				entity.send_event(&"destination", {"position": run.entry_position()}, peer)
+			else:
+				entity.send_event(&"cancel", {}, peer)
+			continue
 		var runs := get_tree().get_first_node_in_group(&"slum_runs") as SlumRuns
 		if runs != null:
 			runs.finish(peer)
@@ -132,6 +144,8 @@ func _event(event: StringName, payload: Dictionary) -> void:
 			GameAudio.play_ui(self, &"van_departure")
 		&"cancel":
 			panel.close()
+		&"destination":
+			panel.update_destination(payload["position"])
 
 
 func _result(action: StringName, result: NetworkedEntity.Result) -> void:

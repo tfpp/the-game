@@ -1,0 +1,5 @@
+{
+  "title": "Keep garage fights within your group",
+  "summary": "Private garage enemies only target and take hits from current excursion members.",
+  "notes": ["Prevent outsiders and returning players from fighting enemies in another group's excursion."]
+}

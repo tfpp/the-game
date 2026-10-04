@@ -52,11 +52,19 @@ var _fire_cooldown := 0.0
 var _auto_fire_cooldown := 0.0
 var _motion := FirstPersonMotion.new()
 var _first_person := false
+var _safe_lowering := 0.0
 
+@onready var entity: NetworkedEntity = $NetworkedEntity
 @onready var _mount: Node3D = $Mount
 
 
 func _ready() -> void:
+	($Sync as MultiplayerSynchronizer).add_visibility_filter(network_peer_allowed)
+	($Sync as MultiplayerSynchronizer).update_visibility()
+	entity.register_action(&"fire", _may_control, _fire)
+	entity.register_action(&"reload", _may_control, _reload)
+	entity.register_action(&"equip", _may_control, _equip_reserved)
+	entity.event_received.connect(_receive_effect)
 	_arms.name = "Arms"
 	add_child(_arms)
 	_arms.visible = false
@@ -92,7 +100,14 @@ func _process(delta: float) -> void:
 		if first_person != _first_person:
 			_first_person = first_person
 			FirstPersonView.set_visuals(self, first_person)
-		global_transform = _motion.apply(player, _mount_transform(player), delta, visible)
+		_safe_lowering = move_toward(
+			_safe_lowering,
+			1.0 if SafeZone.covers(get_tree(), player.global_position) else 0.0,
+			delta * 5.0
+		)
+		global_transform = HeldItemPose.lowered(
+			_motion.apply(player, _mount_transform(player), delta, visible), _safe_lowering
+		)
 		if has_hand_grips():
 			var hand := Hand.for_peer(get_tree(), peer_id)
 			var skin := hand.skin_tone_index() if hand != null else 0
@@ -201,33 +216,42 @@ func has_ammo_to_fire() -> bool:
 ## features/weapon_hotbar to let scrolling or a hotbar key bring the rig gun back out.
 @rpc("any_peer", "call_local", "reliable")
 func request_equip_rig() -> void:
-	if not multiplayer.is_server() or not _is_own_request() or net_stats.is_empty():
-		return
+	entity.receive_legacy_action(&"equip")
+
+
+func _equip_reserved(_peer: int, _payload: Dictionary) -> bool:
+	if net_stats.is_empty():
+		return false
 	_holster_holdable_weapon()
 	net_equipped = true
+	return true
 
 
 @rpc("any_peer", "call_local", "reliable")
 func request_fire() -> void:
-	if not multiplayer.is_server() or not _is_own_request() or _fire_cooldown > 0.0:
-		return
+	entity.receive_legacy_action(&"fire")
+
+
+func _fire(_peer: int, _payload: Dictionary) -> bool:
+	if _fire_cooldown > 0.0:
+		return false
 	if FirstPersonView.firing_blocked(get_tree(), peer_id):
-		return
+		return false
 	if not is_active() or not has_ammo_to_fire():
-		return
+		return false
 	var player := _player()
 	var gun_machine := get_tree().get_first_node_in_group(&"gun_machine_root")
 	if player == null or gun_machine == null:
-		return
+		return false
 	if SafeZone.covers(get_tree(), player.global_position):
-		return
+		return false
 	var barrel_count := int(net_stats["barrel_count"])
 	_fire_cooldown = 1.0 / maxf(float(net_stats["fire_rate"]), 0.01)
 	net_ammo_in_mag -= barrel_count
 	var ammo_type: GunGenerator.AmmoType = net_stats["ammo_type"]
 	var profile := GunGenerator.profile(ammo_type)
 	var origin := _aim_origin(player)
-	_play_fire.rpc(ammo_type, origin)
+	entity.send_event(&"fire", {"ammo_type": ammo_type, "origin": origin})
 	var jitter := deg_to_rad(float(net_stats["spread_degrees"]))
 	for _barrel: int in barrel_count:
 		for _pellet: int in int(profile["pellets"]):
@@ -249,6 +273,7 @@ func request_fire() -> void:
 					}
 				)
 			)
+	return true
 
 
 ## `origin` is the authoritative eye position `request_fire` fired from (see
@@ -263,12 +288,17 @@ func _play_fire(ammo_type: GunGenerator.AmmoType, origin: Vector3) -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func request_reload() -> void:
-	if not multiplayer.is_server() or not _is_own_request() or not is_active():
-		return
+	entity.receive_legacy_action(&"reload")
+
+
+func _reload(_peer: int, _payload: Dictionary) -> bool:
+	if not is_active():
+		return false
 	var needed := int(net_stats["magazine_size"]) - net_ammo_in_mag
 	var moved := mini(needed, net_ammo_reserve)
 	net_ammo_in_mag += moved
 	net_ammo_reserve -= moved
+	return moved > 0
 
 
 ## A GunRig tracks its owner by peer id (see `peer_id`), not scene position, so any
@@ -281,10 +311,20 @@ static func for_peer(tree: SceneTree, target_peer_id: int) -> GunRig:
 	return null
 
 
-func _is_own_request() -> bool:
-	var sender := multiplayer.get_remote_sender_id()
-	var effective := sender if sender != 0 else multiplayer.get_unique_id()
-	return effective == peer_id
+func _may_control(peer: int, payload: Dictionary) -> bool:
+	return peer == peer_id and payload.is_empty()
+
+
+func network_peer_allowed(peer: int) -> bool:
+	for service: Node in get_tree().get_nodes_in_group(&"zone_instances"):
+		if service.multiplayer == multiplayer:
+			return bool(service.call("can_observe_player", peer_id, peer))
+	return true
+
+
+func _receive_effect(event: StringName, payload: Dictionary) -> void:
+	if event == &"fire":
+		_play_fire(int(payload["ammo_type"]) as GunGenerator.AmmoType, payload["origin"])
 
 
 ## Server-only: stows whatever holdable weapon (features/holdables) this peer has in

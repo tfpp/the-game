@@ -14,6 +14,8 @@ uniform vec4 shirt_tint : source_color = vec4(0.5, 0.5, 0.5, 1.0);
 uniform vec4 pants_tint : source_color = vec4(0.3, 0.3, 0.3, 1.0);
 uniform vec4 hair_tint : source_color = vec4(0.12, 0.08, 0.05, 1.0);
 uniform vec4 eye_tint : source_color = vec4(0.15, 0.1, 0.05, 1.0);
+// Opt-in actor readability in dark combat areas; ordinary avatars keep zero fill.
+uniform float minimum_light : hint_range(0.0, 0.3) = 0.0;
 uniform bool shirt_equipped = false;
 uniform bool pants_equipped = false;
 uniform bool tactical = false;
@@ -92,5 +94,6 @@ void fragment() {
 		tint = mix(tint, eye_tint.rgb * 0.7, iris);
 	}
 	ALBEDO = artwork * tint;
+	EMISSION = max(ALBEDO, vec3(0.15)) * minimum_light;
 	ROUGHNESS = 1.0;
 }

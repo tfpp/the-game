@@ -1,0 +1,8 @@
+{
+  "title": "Cleaner weapon hotbar",
+  "summary": "The weapon panel hides empty slots and collapses when nothing is carried.",
+  "notes": [
+    "Keep occupied slot numbers, the Golden Crown theme and touch-sized equip buttons.",
+    "Compact layouts retain the current sideways scrolling row."
+  ]
+}

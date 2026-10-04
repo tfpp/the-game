@@ -1,16 +1,30 @@
 # Rain Alleys
 
-A compact, rain-soaked slum map in an isolated pocket at world z=900. The
+A compact, rain-soaked slum map. The authored `alley.tscn` preview sits at z=900;
+normal `feature.tscn` contains only its destination registration, so startup does
+not load an unused public map. Private copies place the district at their instance
+offset through `SlumInstance`. The
 crossing streets run between boarded brick blocks and are broken up by four
 searchable dumpsters. Puddles, rain streaks, a rain-and-wind bed, and failing
 lights make the route back to the Golden Crown visible without making the
 whole map safe to cross. A fence and wire ring the playable footprint.
 
-The public Crown gate picks this arrival or the parking garage for each new
-shared excursion. The alley return door leads back to the Crown's south lobby.
-Its searchable dumpsters use `alley_loot.tres`; their contents reset when the
-next excursion begins. `tests/features/slum_runs/` covers travel, shared
-destination and loot reset behavior.
+The Crown elevator picks this arrival or the parking garage for each new private
+group excursion. Each copy has an arrival/return cab that brings its riders back
+to the Crown. Searchable dumpsters use `alley_loot.tres` and reset per instance.
+`tests/features/zone_instances/` covers travel and private scene lifetimes.
+
+The developer pad also creates a private copy when the zone service is present,
+requires cheats and waits for the owning client to acknowledge readiness. Legacy
+shared-map fixtures instantiate `alley.tscn` explicitly. Tests verify registration
+contains no geometry/collision and developer transfer cannot enter an unloaded map.
+
+`ground.tscn` paints the original 50-metre floor with 25 ten-metre GridMap tiles.
+One cell per octant keeps each baked mesh's local light selection separate in the
+Compatibility renderer; a single district-wide floor lost the entrance's light
+coverage. Floor height and collision footprint remain unchanged. A steady warm
+fixture marks the arrival/return cab. `tests/features/slum_alley/test_ground.gd`
+checks the floor footprint, seams, height and baked mesh bounds.
 
 The checked-in low polygon geometry in `res://assets/slum_alley/models/` includes painted dumpsters,
 boarded window banks, fire escapes, streetlamp posts and fence wire. The OBJ

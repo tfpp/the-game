@@ -137,8 +137,7 @@ static func _room(parent: Node3D, id: String, width: float, length: float) -> No
 	marker.position = Vector3(0, 0, length * .5)
 	room.add_child(marker)
 	var sign := SHOWCASE.placard(room, id.capitalize(), Vector3(0, 2.6, 1))
-	sign.font_size = 28
-	sign.modulate = Color("d8bd82")
+	sign.letter_height = .08
 	for z: int in range(3, int(length), 6):
 		KIT.box(
 			room, "CeilingLight%d" % z, Vector3(1.8, .06, .45), Vector3(0, 3.38, z), OPAL, false

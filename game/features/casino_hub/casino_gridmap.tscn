@@ -87,7 +87,7 @@ hint = "Slot machines, casino patrons and the bar."
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -17.5)
 script = ExtResource("2_uu0f6")
 label = "Golden Crown Elevator"
-hint = "Center of the north wall, opposite the casino entrance."
+hint = "North wall, opposite the entrance. Board with up to four players for a private slum run."
 
 [node name="Furnishings" type="Node3D" parent="." unique_id=1427436785 instance=ExtResource("3_3yohf")]
 script = ExtResource("4_yyxp5")

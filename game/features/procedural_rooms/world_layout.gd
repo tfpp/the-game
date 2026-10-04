@@ -11,13 +11,15 @@ const DOOR := preload("res://features/procedural_rooms/sliding_door.tscn")
 const Population := preload("res://features/procedural_rooms/room_population.gd")
 const RULE := preload("res://features/procedural_rooms/garage_population.tres")
 const Lights := preload("res://features/procedural_rooms/garage_lights.gd")
+const WET := preload("res://features/procedural_rooms/materials/garage_puddle.tres")
 
 
 static func build(
 	parent: Node3D,
 	seed_value: int = 73021,
 	rules: Array[ProceduralPopulationRule] = [],
-	casino_connection: bool = false
+	casino_connection: bool = false,
+	build_shell: bool = true
 ) -> Node3D:
 	var world := Node3D.new()
 	world.name = "CrownGarage"
@@ -31,13 +33,13 @@ static func build(
 	var west: Array[Node3D] = []
 	var east: Array[Node3D] = []
 	for floor_index: int in 5:
-		var deck := _deck("Deck%d" % floor_index)
+		var deck := _deck("Deck%d" % floor_index, floor_index)
 		world.add_child(deck)
 		deck.position.y = floor_index * 4.0
 		decks.append(deck)
 		_destination(deck, "Garage B%d" % (5 - floor_index), Vector3(0, 0, 5))
 		Showcase.placard(
-			deck, "B%d   /   GOLDEN CROWN SERVICE GARAGE" % (5 - floor_index), Vector3(0, 2.8, 3)
+			deck, "B%d   /   GOLDEN CROWN SERVICE GARAGE" % (5 - floor_index), Vector3(-5, 2.8, 3)
 		)
 		for side: int in [-1, 1]:
 			for end: int in 2:
@@ -140,9 +142,10 @@ static func build(
 		var sign := Showcase.placard(
 			world, "SERVICE ELEVATOR\nC / CASINO  •  B1–B5", Vector3(0, 25.25, -7.85)
 		)
-		sign.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 		sign.add_to_group(&"render_zone_shared")
-	Shell.rebuild(world)
+	if not build_shell:
+		return world
+	Shell.rebuild(world, {"wet": WET})
 	var collision := world.get_node("Structure/ShellCollision").get_child(0) as CollisionShape3D
 	(collision.shape as ConcavePolygonShape3D).backface_collision = true
 	# The same wall face is visible from either side, including outside terminal rooms.
@@ -168,12 +171,23 @@ static func repopulate(
 
 
 static func _rule(index: int, rules: Array[ProceduralPopulationRule]) -> ProceduralPopulationRule:
-	if index < rules.size() and rules[index] != null:
-		return rules[index]
-	var rule := RULE.duplicate() as ProceduralPopulationRule
-	if index < 2:
+	var custom := index < rules.size() and rules[index] != null
+	var source := rules[index] if custom else RULE
+	var rule := source.duplicate() as ProceduralPopulationRule
+	if index < 2 and not custom:
 		rule.allowed_sets = ["storage", "utility", "pump", "garage"]
 		rule.weights = PackedFloat32Array([3, 3, 2, 1])
+	rule.forbidden_volumes = rule.forbidden_volumes.duplicate()
+	# Both the opening and the landing under the next floor need clear space.
+	for opening: Rect2 in [_drop_opening(index), _drop_opening(index + 1)]:
+		if opening.has_area():
+			var reserved := opening.grow(.5)
+			rule.forbidden_volumes.append(
+				AABB(
+					Vector3(reserved.position.x, -.5, reserved.position.y),
+					Vector3(reserved.size.x, 4.5, reserved.size.y)
+				)
+			)
 	return rule
 
 
@@ -235,13 +249,47 @@ static func _join(from: ProceduralSocketAttachment, to: ProceduralSocketAttachme
 	to.open(from.join_id)
 
 
-static func _deck(id: String) -> Node3D:
-	var deck := Node3D.new()
-	deck.name = id
-	# Four broad strips surround a 20 x 18 m open atrium.
+static func _drop_opening(index: int) -> Rect2:
+	if index < 1 or index > 4:
+		return Rect2()
+	return Rect2(-14 if index % 2 == 0 else 12, 20, 2, 2)
+
+
+static func _deck_rects(opening: Rect2) -> Array[Rect2]:
+	var result: Array[Rect2] = []
 	for rect: Rect2 in [
 		Rect2(-21, 0, 42, 12), Rect2(-21, 30, 42, 12), Rect2(-21, 12, 11, 18), Rect2(10, 12, 11, 18)
 	]:
+		if not opening.has_area() or not rect.intersects(opening):
+			result.append(rect)
+			continue
+		# The opening is wholly inside one apron; retain four surrounding strips.
+		result.append(
+			Rect2(rect.position, Vector2(opening.position.x - rect.position.x, rect.size.y))
+		)
+		result.append(
+			Rect2(opening.end.x, rect.position.y, rect.end.x - opening.end.x, rect.size.y)
+		)
+		result.append(
+			Rect2(
+				opening.position.x,
+				rect.position.y,
+				opening.size.x,
+				opening.position.y - rect.position.y
+			)
+		)
+		result.append(
+			Rect2(opening.position.x, opening.end.y, opening.size.x, rect.end.y - opening.end.y)
+		)
+	return result
+
+
+static func _deck(id: String, index: int = 0) -> Node3D:
+	var deck := Node3D.new()
+	deck.name = id
+	_puddles(deck, index)
+	# Four broad strips surround a 20 x 18 m open atrium.
+	for rect: Rect2 in _deck_rects(_drop_opening(index)):
 		var points := PackedVector3Array(
 			[
 				Vector3(rect.position.x, 0, rect.position.y),
@@ -251,10 +299,42 @@ static func _deck(id: String) -> Node3D:
 			]
 		)
 		Shell.face(deck, points, Vector3.UP, "floor")
-		points = points.duplicate()
-		for index: int in points.size():
-			points[index].y = 3.5
+	# The next storey's hole must also cut this ceiling, otherwise drops hit it.
+	for rect: Rect2 in _deck_rects(_drop_opening(index + 1)):
+		var points := PackedVector3Array(
+			[
+				Vector3(rect.position.x, 3.5, rect.position.y),
+				Vector3(rect.end.x, 3.5, rect.position.y),
+				Vector3(rect.end.x, 3.5, rect.end.y),
+				Vector3(rect.position.x, 3.5, rect.end.y)
+			]
+		)
 		Shell.face(deck, points, Vector3.DOWN, "roof")
+	var opening := _drop_opening(index)
+	if opening.has_area():
+		deck.set_meta("drop_opening", opening)
+		var corners := PackedVector3Array(
+			[
+				Vector3(opening.position.x, 0, opening.position.y),
+				Vector3(opening.end.x, 0, opening.position.y),
+				Vector3(opening.end.x, 0, opening.end.y),
+				Vector3(opening.position.x, 0, opening.end.y)
+			]
+		)
+		for corner: int in 4:
+			var a := corners[corner]
+			var b := corners[(corner + 1) % 4]
+			Shell.face(
+				deck,
+				PackedVector3Array([a, b, b - Vector3.UP * .5, a - Vector3.UP * .5]),
+				(b - a).cross(Vector3.DOWN).normalized(),
+				"grey"
+			)
+		Showcase.placard(
+			deck,
+			"JUMP / DROP TO B%d" % (6 - index),
+			Vector3(opening.get_center().x + 1.8, .65, 19.5)
+		)
 	Kit._end(deck, "Lift", Vector3.ZERO, PI, 42, 4.0)
 	Kit._end(deck, "Sewer", Vector3(0, 0, 42), 0, 42, 4.0)
 	for side: int in [-1, 1]:
@@ -298,9 +378,7 @@ static func _decorate(deck: Node3D, index: int, seed_value: int) -> void:
 	Showcase.placard(deck, "↑ ELEVATOR / RETURN", Vector3(0, 2.5, 34))
 	var sign := Showcase.placard(deck, "ELEVATOR / B%d" % (5 - index), Vector3(0, 3.25, 0.25))
 	sign.name = "ElevatorSign"
-	sign.font_size = 48
-	sign.pixel_size = 0.008
-	sign.modulate = Color("ffe2a2")
+	sign.letter_height = .25
 	var beacon := OmniLight3D.new()
 	beacon.name = "ElevatorBeacon"
 	beacon.position = Vector3(0, 2.5, 1)
@@ -312,6 +390,31 @@ static func _decorate(deck: Node3D, index: int, seed_value: int) -> void:
 	fluorescents.name = "Fluorescents"
 	deck.add_child(fluorescents)
 	fluorescents.build(index, seed_value)
+
+
+static func _puddles(deck: Node3D, index: int) -> void:
+	var depth := 4 - index
+	if depth == 0:
+		return
+	var centers: Array[Vector2] = [
+		Vector2(7, 8), Vector2(-7, 34), Vector2(-18, 10.5), Vector2(18, 32), Vector2(-18, 29)
+	]
+	var contour: Array[Vector2] = [
+		Vector2(-1, -.35),
+		Vector2(-.45, -.65),
+		Vector2(.8, -.4),
+		Vector2(1, .2),
+		Vector2(.35, .6),
+		Vector2(-.9, .5)
+	]
+	for patch: int in depth + 1:
+		var points := PackedVector3Array()
+		var radius := .7 + depth * .35
+		for offset: Vector2 in contour:
+			var point := centers[patch] + offset * radius
+			points.append(Vector3(point.x, .012, point.y))
+		# Static overlays join one material surface per floor and add no collision.
+		Shell.face(deck, points, Vector3.UP, "wet", false)
 
 
 static func _destination(module: Node3D, label: String, at: Vector3) -> void:

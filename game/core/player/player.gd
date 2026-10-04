@@ -37,6 +37,9 @@ var _jump_queued := false
 
 func _ready() -> void:
 	add_to_group(&"players")
+	var movement_sync := get_node_or_null("Sync") as MultiplayerSynchronizer
+	if movement_sync != null:
+		movement_sync.add_visibility_filter(_movement_visible_to)
 	_configure_hull()
 	if is_local():
 		add_to_group(&"local_player")
@@ -59,6 +62,19 @@ func _ready() -> void:
 
 func is_local() -> bool:
 	return is_multiplayer_authority()
+
+
+## Keep the identity node spawned for chat/roster and owner RPCs. Only the
+## movement state synchronizer is filtered, so changing zones cannot despawn
+## the owner or remove the server's authoritative teleport endpoint.
+func _movement_visible_to(peer: int) -> bool:
+	var owner := get_multiplayer_authority()
+	if peer == MultiplayerPeer.TARGET_PEER_SERVER or peer == owner:
+		return true
+	for service: Node in get_tree().get_nodes_in_group(&"zone_instances"):
+		if service.multiplayer == multiplayer:
+			return bool(service.call("can_observe_player", owner, peer))
+	return true
 
 
 func _unhandled_input(event: InputEvent) -> void:

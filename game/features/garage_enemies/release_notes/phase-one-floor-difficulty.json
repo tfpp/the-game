@@ -1,0 +1,5 @@
+{
+  "title": "Garage difficulty grows with depth",
+  "summary": "The arrival floor is manageable with a pistol; deeper floors reward preparation.",
+  "notes": ["Scale encounters from two distant brawlers on B1 to six enemies, including five gunmen, on B5; keep the arrival lane clear and increase reload pressure deeper down.", "Deepest-floor enemies strike harder and react faster while earlier floors retain their existing tuning."]
+}

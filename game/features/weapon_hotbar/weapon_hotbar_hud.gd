@@ -69,6 +69,10 @@ func _process(_delta: float) -> void:
 	var ammo := GunStatsPanel.ammo_text(get_tree(), peer)
 	if _ammo.text != ammo:
 		_ammo.text = ammo
+	var has_items := not held.is_empty() or not rig_name.is_empty()
+	for id: String in backpack:
+		has_items = has_items or not id.is_empty()
+	_panel.visible = has_items and not HudLayout.paused(get_tree())
 
 
 ## The HUD slot index weapon_hotbar.gd last equipped, or -1.
@@ -106,7 +110,7 @@ func _set_compact(compact: bool) -> void:
 
 func _set_slot(slot: int, text: String, active: bool) -> void:
 	var label := _labels[slot]
-	var display := text if not text.is_empty() else "—"
+	var display := text
 	if _compact and slot != HAND_SLOT:
 		display = short_name(display)
 	if label.text != display:
@@ -115,6 +119,8 @@ func _set_slot(slot: int, text: String, active: bool) -> void:
 	if label.get_theme_color("font_color") != color:
 		label.add_theme_color_override("font_color", color)
 	var cell := _cells[slot]
+	if cell != null:
+		cell.visible = not text.is_empty()
 	var variation := &"HudSlotActive" if active else &"HudSlot"
 	if cell != null and cell.theme_type_variation != variation:
 		cell.theme_type_variation = variation

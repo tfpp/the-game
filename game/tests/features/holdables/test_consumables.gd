@@ -96,9 +96,9 @@ func test_smoke_only_runs_while_using_and_snapshot_resumes_in_progress() -> void
 	late._process(0)
 	assert_almost_eq(late.global_position, _hand.global_position, Vector3.ONE * 0.001)
 	assert_true((late.held_view().get_node("Smoke") as CPUParticles3D).emitting)
-	var sync := late.consumption.entity.get_node("Sync") as MultiplayerSynchronizer
+	var sync := late.get_node("Sync") as MultiplayerSynchronizer
 	assert_eq(sync.get_multiplayer_authority(), 1)
-	assert_true(sync.replication_config.property_get_spawn(NodePath(".:state")))
+	assert_true(sync.replication_config.property_get_spawn(NodePath("Consumption:state")))
 	late._process(2.0)
 	assert_eq(late.net_item_id, "cigarette:2")
 	assert_false((late.held_view().get_node("Smoke") as CPUParticles3D).emitting)

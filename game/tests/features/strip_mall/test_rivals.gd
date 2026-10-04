@@ -197,4 +197,4 @@ func test_costumes_reuse_avatar_and_distinguish_the_named_characters() -> void:
 	assert_true(junichi.torso_items.has_node("Sash"))
 	assert_eq((kim.get_node("NameTag") as Label3D).text, "Tuong Lu Kim")
 	assert_eq((junichi.get_node("NameTag") as Label3D).text, "Junichi Takayama")
-	assert_eq((content.get_node("CitySushi/Sign") as Label3D).text, "CITY SUSHI")
+	assert_eq((content.get_node("CitySushi/Sign") as SignBoard).text, "CITY SUSHI")

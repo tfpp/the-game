@@ -138,6 +138,9 @@ func _update() -> void:
 				else "\nVisit the arrival point, then return here."
 			)
 	for i: int in _buttons.size():
+		_buttons[i].visible = (
+			i not in terminal.van.dev_routes or DevGate.cheats_enabled(get_tree())
+		)
 		_buttons[i].disabled = (
 			_pending or job >= 0 or i in data["done"] or terminal.van.arrival(i) == null
 		)

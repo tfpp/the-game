@@ -1,0 +1,5 @@
+{
+  "title": "Garage visibility",
+  "summary": "The garage has more ambient fill to help distinguish enemies from dark walls.",
+  "notes": ["Keep lower-floor lamp losses, fog and rain while raising ambient light."]
+}

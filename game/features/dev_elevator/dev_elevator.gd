@@ -1,11 +1,8 @@
 class_name DevElevator
 extends CSGBox3D
-## Debug-only teleport pad: pressing Use immediately sends the player to a slum map
-## picked by SlumDestinations (slum_destinations.gd) — today that's always the Parking
-## Garage, the only registered destination. Unlike features/elevator/elevator_cab.gd
-## there's no cab, boarding window or return trip; it's the same immediate-teleport
-## shape as features/parking_garage/garage_door.gd, minus the fixed destination, so
-## testers can reach new slum maps without wandering the casino.
+## Debug-only pad selects a registered slum. In the game, ZoneInstances validates
+## cheats and waits for a private map to be ready before moving the player.
+## Standalone pad fixtures without that service retain the authored-marker warp.
 
 const SlumDestinations := preload("res://features/dev_elevator/slum_destinations.gd")
 
@@ -37,8 +34,12 @@ func request_teleport() -> void:
 	var player := _player_for_peer(peer_id)
 	if player == null or not can_use(player):
 		return
-	var arrival := SlumDestinations.pick(get_tree())
+	var arrival := SlumDestinations.pick(get_tree(), multiplayer)
 	if arrival == null:
+		return
+	var zones := ZoneInstances.for_node(self)
+	if zones != null:
+		zones.enter_development_zone(player, arrival)
 		return
 	var arrival_yaw := arrival.global_transform.basis.get_euler().y
 	player.server_teleport.rpc_id(
@@ -49,6 +50,10 @@ func request_teleport() -> void:
 func _player_for_peer(peer_id: int) -> Player:
 	for node: Node in get_tree().get_nodes_in_group(&"players"):
 		var player := node as Player
-		if player != null and player.get_multiplayer_authority() == peer_id:
+		if (
+			player != null
+			and player.multiplayer == multiplayer
+			and player.get_multiplayer_authority() == peer_id
+		):
 			return player
 	return null

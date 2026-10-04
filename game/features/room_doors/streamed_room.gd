@@ -9,6 +9,9 @@ extends Node3D
 ## (RoomDoor) and arrival markers as children of this node, outside the room scene,
 ## so their paths match everywhere.
 
+## Persistent actors can attach cosmetic model lifetime to room presentation.
+signal content_changed(loaded: bool)
+
 const CONTENT_NAME := &"Content"
 
 @export_file("*.tscn") var room_scene: String
@@ -22,6 +25,15 @@ const CONTENT_NAME := &"Content"
 
 var _content: Node3D
 var _hold_until_msec := 0
+
+
+## Find an owning room without crossing server/client MultiplayerAPI branches.
+static func for_position(caller: Node, point: Vector3) -> StreamedRoom:
+	for node: Node in caller.get_tree().get_nodes_in_group(&"streamed_rooms"):
+		var room := node as StreamedRoom
+		if room.get_multiplayer() == caller.get_multiplayer() and room.contains(point):
+			return room
+	return null
 
 
 func _enter_tree() -> void:
@@ -76,6 +88,7 @@ func load_room(hold_msec: int = 0) -> void:
 	_content = scene.instantiate() as Node3D
 	_content.name = CONTENT_NAME
 	add_child(_content)
+	content_changed.emit(true)
 
 
 func unload_room() -> void:
@@ -84,8 +97,14 @@ func unload_room() -> void:
 	remove_child(_content)
 	_content.queue_free()
 	_content = null
+	content_changed.emit(false)
 
 
 ## Room assignment may still describe the departure room while a teleport is in flight.
 func arrival_held() -> bool:
 	return is_loaded() and Time.get_ticks_msec() < _hold_until_msec
+
+
+## Once the server confirms this room, the next departure can unload it immediately.
+func confirm_arrival() -> void:
+	_hold_until_msec = 0

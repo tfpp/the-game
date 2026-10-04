@@ -56,7 +56,7 @@ func before_each() -> void:
 
 func test_shows_the_gun_and_its_price() -> void:
 	assert_not_null(_gun.get_node_or_null("View"))
-	var tag := _gun.get_node("PriceTag") as Label3D
+	var tag := _gun.get_node("PriceTag") as SignBoard
 	assert_string_contains(tag.text, "$5,550.00")
 	assert_eq(_gun.interaction_text(), "Buy Shotgun — $5,550.00")
 

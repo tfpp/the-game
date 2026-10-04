@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="MeshLibrary" path="res://features/zone_instances/garage_gridmap/collision_levels.tres" id="1_8a30g"]
+
+[node name="GarageStatic" type="Node3D" unique_id=814783918]
+
+[node name="Levels" type="GridMap" parent="." unique_id=1376994653]
+mesh_library = ExtResource("1_8a30g")
+cell_size = Vector3(1, 4, 1)
+cell_octant_size = 1
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 0, 65536, 0, 1, 131072, 0, 2, 196608, 0, 3, 262144, 0, 4)
+}
