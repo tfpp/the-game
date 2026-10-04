@@ -16,10 +16,14 @@ func test_every_section_fills_its_bars_exactly() -> void:
 
 
 func test_songs_have_names_and_loop_lengths() -> void:
-	assert_eq(MariachiSongs.count(), 2)
+	assert_eq(MariachiSongs.count(), 5)
 	assert_eq(MariachiSongs.song_name(0), "La Cucaracha")
 	assert_eq(MariachiSongs.song_name(1), "Jarabe Tapatío")
-	assert_eq(MariachiSongs.song_name(2), "La Cucaracha", "indices wrap")
+	assert_eq(MariachiSongs.song_name(2), "Brass at the Crown")
+	assert_eq(MariachiSongs.song_name(3), "Promenade Waltz")
+	assert_eq(MariachiSongs.song_name(4), "Last Chip Polka")
+	assert_eq(MariachiSongs.song_name(5), "La Cucaracha", "indices wrap")
+	assert_eq(MariachiSongs.song_name(-1), "Last Chip Polka")
 	assert_almost_eq(MariachiSongs.duration(0), 16 * 8 * 0.16, 0.0001)
 	assert_almost_eq(MariachiSongs.duration(1), 16 * 6 * 0.155, 0.0001)
 
@@ -101,6 +105,31 @@ func test_synth_renders_deterministic_normalized_audio() -> void:
 	assert_eq(stream.data.size(), first.size() * 2)
 	assert_almost_eq(MariachiSynth.frequency(69), 440.0, 0.001)
 	assert_almost_eq(MariachiSynth.frequency(81), 880.0, 0.001)
+
+
+func test_new_compositions_have_distinct_melodies_and_audible_renders() -> void:
+	for song: int in range(2, MariachiSongs.count()):
+		var melody: Array = MariachiSongs.SONGS[song]["sections"][0][0]
+		for other: int in song:
+			assert_ne(melody, MariachiSongs.SONGS[other]["sections"][0][0], "a new tune")
+		var half := MariachiSongs.duration(song) / 2.0
+		assert_eq(MariachiSongs.lead_at(song, half - 0.001), MariachiSongs.Voice.TRUMPET)
+		assert_eq(MariachiSongs.lead_at(song, half), MariachiSongs.Voice.VIOLIN)
+		assert_eq(
+			MariachiSongs.lead_at(song, MariachiSongs.duration(song)), MariachiSongs.Voice.TRUMPET
+		)
+		assert_true(
+			MariachiMusicianModel.playing(
+				MariachiMusicianModel.Instrument.VIOLIN, song, half + 0.01
+			)
+		)
+		assert_almost_eq(MariachiSongs.since_hit(song, 0.0, "bass"), 0.0, 0.0001)
+		var samples := MariachiSynth.render(song, 0.6)
+		var peak := 0.0
+		for sample: float in samples:
+			peak = maxf(peak, absf(sample))
+		assert_almost_eq(peak, MariachiSynth.PEAK, 0.001, "not silent or clipping")
+		assert_eq(samples, MariachiSynth.render(song, 0.6), "deterministic")
 
 
 func test_baked_clips_loop_for_exactly_one_pass_of_each_song() -> void:

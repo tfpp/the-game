@@ -41,18 +41,19 @@ func test_late_joiner_gets_the_song_and_requests_go_through_the_server() -> void
 	var server_peer := ENetMultiplayerPeer.new()
 	assert_eq(server_peer.create_server(0), OK)
 	var server := _branch("Server", server_peer)
-	server.advance()
+	for song: int in range(1, MariachiSongs.count() - 1):
+		server.advance()
 	server.net_stocky_member = 4
 	server.net_banter = 1
 	var take := server.net_take
 	var client_peer := ENetMultiplayerPeer.new()
 	assert_eq(client_peer.create_client("127.0.0.1", server_peer.host.get_local_port()), OK)
 	var client := _branch("Client", client_peer)
-	var joined := func() -> bool: return client.net_take == take and client.net_song == 1
+	var joined := func() -> bool: return client.net_take == take and client.net_song == 3
 	assert_true(await RealTime.wait_until(get_tree(), joined, 5.0), "late join gets the song")
 	await wait_process_frames(1)
-	assert_eq((client.get_node("NowPlaying") as Label3D).text, "Now playing: Jarabe Tapatío")
-	assert_eq(client.get_node("Audio").get("stream"), MariachiBand.STREAMS[1])
+	assert_eq((client.get_node("NowPlaying") as Label3D).text, "Now playing: Promenade Waltz")
+	assert_eq(client.get_node("Audio").get("stream"), MariachiBand.STREAMS[3])
 	assert_eq(client.net_stocky_member, 4, "late join gets the same selected musician")
 	assert_eq(client.net_banter, 1, "late join sees the current backstage whisper")
 	var body := client.get_node("Musicians/VihuelaPlayer/Body") as Node3D
@@ -78,13 +79,13 @@ func test_late_joiner_gets_the_song_and_requests_go_through_the_server() -> void
 	client.advance()
 	client.net_song = 0
 	await RealTime.wait(get_tree(), 0.2)
-	assert_eq(server.net_song, 1, "a client can't pick the song itself")
+	assert_eq(server.net_song, 3, "a client can't pick the song itself")
 
 	var player := PlayerScene.instantiate() as Player
 	player.set_multiplayer_authority(client_peer.get_unique_id())
 	add_child_autofree(player)
 	player.net_position = server.to_global(Vector3(0, 0.9, -3.8))
 	client.use()
-	var moved := func() -> bool: return server.net_song == 0 and client.net_take == take + 1
+	var moved := func() -> bool: return server.net_song == 4 and client.net_take == take + 1
 	assert_true(await RealTime.wait_until(get_tree(), moved, 5.0), "request reaches the server")
-	assert_eq(client.net_song, 0, "the new song replicates back")
+	assert_eq(client.net_song, 4, "the new song replicates back")
