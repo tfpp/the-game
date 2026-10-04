@@ -2,7 +2,8 @@ class_name InventoryPersistence
 extends Node
 ## Server-only: keeps signed-in players' inventories in the accounts API's SQLite
 ## database, so items survive disconnects, server restarts and redeploys. Offline
-## and dev-auth players (no account ID) keep the in-memory behavior.
+## play uses a local atomic inventory file after first using the van stash.
+## Dev-auth players without an account keep session inventory; saved stash is unavailable.
 ##
 ## A new Hand loads its account's saved snapshot before it accepts any change
 ## (`PlayerInventory.loading`). Afterwards, changes are saved at most once per
@@ -14,6 +15,8 @@ const SIGNATURE_DOMAIN := "game-inventory-v1\n"
 
 ## Replaced by tests with a fake accounts API: func(payload: Dictionary) -> Dictionary.
 var transport: Callable = _http
+## Override or disable in tests. Activated when the offline van stash is first used.
+var offline_path := "user://offline-inventory.json"
 ## Hand instance ID -> {hand, account, saved}
 var _tracked: Dictionary = {}
 ## Account ID -> true while a request for it is in flight.
@@ -50,8 +53,13 @@ func _process(delta: float) -> void:
 	for key: int in _tracked.keys():
 		var entry: Dictionary = _tracked[key]
 		var hand := entry["hand"] as Hand
-		if entry["account"] > 0 and is_instance_valid(hand) and not hand.inventory().loading:
-			_save_if_changed(entry, hand.inventory().snapshot())
+		if is_instance_valid(hand) and not hand.inventory().loading:
+			if entry["account"] > 0:
+				_save_if_changed(entry, hand.inventory().snapshot())
+			elif entry.get("local", false):
+				var snapshot := hand.inventory().snapshot()
+				if snapshot != entry["saved"] and _write_offline(snapshot):
+					entry["saved"] = snapshot
 
 
 static func account_for(peer: int) -> int:
@@ -66,6 +74,16 @@ func _track(hand: Hand) -> void:
 	hand.tree_exiting.connect(_on_hand_exiting.bind(key), CONNECT_ONE_SHOT)
 	if entry["account"] > 0:
 		_load(entry)
+	elif Network.mode == Network.Mode.OFFLINE and not offline_path.is_empty():
+		entry["local"] = FileAccess.file_exists(offline_path)
+		if entry["local"]:
+			var saved: Variant = JSON.parse_string(FileAccess.get_file_as_string(offline_path))
+			if saved is Dictionary:
+				hand.inventory().restore(saved)
+				entry["saved"] = hand.inventory().snapshot()
+			else:
+				entry["local_failed"] = true
+				entry["local"] = false
 
 
 func _load(entry: Dictionary) -> void:
@@ -105,19 +123,21 @@ func _on_hand_exiting(key: int) -> void:
 	var hand := entry.get("hand") as Hand
 	if entry.get("account", 0) > 0 and is_instance_valid(hand) and not hand.inventory().loading:
 		_save_if_changed(entry, hand.inventory().snapshot())
+	elif entry.get("local", false) and is_instance_valid(hand) and not hand.inventory().loading:
+		_write_offline(hand.inventory().snapshot())
 
 
 func _save_if_changed(entry: Dictionary, snapshot: Dictionary) -> void:
 	if snapshot == entry["saved"]:
 		return
-	entry["saved"] = snapshot
-	_save(entry["account"], snapshot)
+	if await _save(entry["account"], snapshot):
+		entry["saved"] = snapshot
 
 
-func _save(account: int, snapshot: Dictionary) -> void:
+func _save(account: int, snapshot: Dictionary, warn_on_failure := true) -> bool:
 	if _busy.has(account):
 		_pending[account] = snapshot
-		return
+		return false
 	_busy[account] = true
 	var generation := _generation
 	var result := {}
@@ -126,12 +146,13 @@ func _save(account: int, snapshot: Dictionary) -> void:
 			{"account_id": account, "action": "save", "inventory": snapshot}
 		)
 		if generation != _generation:
-			return
+			return false
 		if result.has("saved"):
 			break
-	if not result.has("saved"):
+	if not result.has("saved") and warn_on_failure:
 		push_warning("Inventory save for account %d failed: %s" % [account, result])
 	_finish(account)
+	return result.get("saved", false) == true
 
 
 func _finish(account: int) -> void:
@@ -176,3 +197,80 @@ func _http(payload: Dictionary) -> Dictionary:
 		if parsed is Dictionary:
 			return parsed
 	return {"error": "Inventory storage unavailable"}
+
+
+## A van transfer commits carried items and stash together before acknowledging it.
+## Callers hold inventory.loading until this finishes, preventing concurrent changes.
+func commit_inventory(hand: Hand, snapshot: Dictionary) -> bool:
+	var entry: Dictionary = _tracked.get(hand.get_instance_id(), {})
+	if not multiplayer.is_server() or entry.is_empty():
+		return false
+	if entry["account"] > 0:
+		var generation := _generation
+		while _busy.has(entry["account"]):
+			await get_tree().process_frame
+			if generation != _generation:
+				return false
+		if not await _save(entry["account"], snapshot, false):
+			return await _resolve_commit(entry, snapshot)
+		entry["saved"] = snapshot
+		return true
+	if (
+		Network.mode != Network.Mode.OFFLINE
+		or entry.get("local_failed", false)
+		or not _write_offline(snapshot)
+	):
+		return false
+	entry["local"] = true
+	entry["saved"] = snapshot
+	return true
+
+
+func can_commit(hand: Hand) -> bool:
+	var entry: Dictionary = _tracked.get(hand.get_instance_id(), {})
+	return (
+		not entry.is_empty()
+		and not entry.get("uncertain", false)
+		and (
+			entry["account"] > 0
+			or (
+				Network.mode == Network.Mode.OFFLINE
+				and not offline_path.is_empty()
+				and not entry.get("local_failed", false)
+			)
+		)
+	)
+
+
+func _write_offline(snapshot: Dictionary) -> bool:
+	if offline_path.is_empty():
+		return false
+	var file := FileAccess.open(offline_path + ".tmp", FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(snapshot))
+	file.flush()
+	var error := file.get_error()
+	file.close()
+	if error != OK:
+		return false
+	return DirAccess.rename_absolute(offline_path + ".tmp", offline_path) == OK
+
+
+## A lost HTTP response may hide a completed write. Read back before unlocking;
+## if storage remains unreachable, keep this session locked rather than duplicate.
+func _resolve_commit(entry: Dictionary, snapshot: Dictionary) -> bool:
+	var account: int = entry["account"]
+	var generation := _generation
+	_busy[account] = true
+	var result: Dictionary = await transport.call({"account_id": account, "action": "load"})
+	if generation != _generation:
+		return false
+	_finish(account)
+	if not result.has("inventory"):
+		entry["uncertain"] = true
+		return false
+	if result.get("inventory") == snapshot:
+		entry["saved"] = snapshot
+		return true
+	return false

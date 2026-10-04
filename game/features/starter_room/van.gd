@@ -23,6 +23,7 @@ const ZONE_HINTS: Array[String] = [
 ## Garage travel is developer-only and enters a ready private instance.
 @export var dev_routes := PackedInt32Array([1])
 
+var workshop_lift: WorkshopLift
 var _pending: Dictionary[int, Dictionary] = {}
 @onready var entity: NetworkedInteraction = $NetworkedEntity
 @onready var panel: VanTravelPanel = get_node(panel_path)
@@ -30,6 +31,7 @@ var _pending: Dictionary[int, Dictionary] = {}
 
 func _ready() -> void:
 	add_to_group(&"interactables")
+	$RouteMap.add_to_group(&"interactables")
 	entity.register_use(can_use, _open_map)
 	entity.register_action(&"travel", _validate_trip, _begin_trip)
 	entity.event_received.connect(_event)
@@ -65,9 +67,17 @@ func request_trip(zone: int) -> void:
 	entity.request_action(&"travel", {"zone": zone})
 
 
+func has_pending_trips() -> bool:
+	return not _pending.is_empty()
+
+
 func _available(peer: int) -> bool:
 	var combat := get_tree().get_first_node_in_group(&"combat") as Combat
-	return not _pending.has(peer) and (combat == null or not combat.is_respawning(peer))
+	return (
+		not _pending.has(peer)
+		and (combat == null or not combat.is_respawning(peer))
+		and (workshop_lift == null or workshop_lift.grounded())
+	)
 
 
 func _open_map(player: Player) -> bool:

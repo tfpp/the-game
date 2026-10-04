@@ -29,6 +29,8 @@ func _ready() -> void:
 	world.add_child(light)
 	_van = preload("res://features/starter_room/van_model.tscn").instantiate()
 	_van.get_node("Collision").free()
+	for body: Node in _van.find_children("*", "CollisionObject3D"):
+		body.free()
 	world.add_child(_van)
 	var road := MeshInstance3D.new()
 	var plane := PlaneMesh.new()

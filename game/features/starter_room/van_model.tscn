@@ -1,7 +1,14 @@
 [gd_scene format=3]
 
-[ext_resource type="ArrayMesh" path="res://assets/starter_room/van.res" id="mesh"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/van_armoured.res" id="mesh"]
 [ext_resource type="Texture2D" path="res://assets/starter_room/van.png" id="texture"]
+[ext_resource type="Texture2D" path="res://assets/starter_room/van_cab.png" id="cab_texture"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/van_driver.res" id="driver"]
+[ext_resource type="Shape3D" path="res://assets/starter_room/van_driver_collision.tres" id="driver_shape"]
+[ext_resource type="Shape3D" path="res://assets/starter_room/van_passenger_collision.tres" id="passenger_shape"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/van_passenger.res" id="passenger"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/van_rear_left.res" id="rear_left"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/van_rear_right.res" id="rear_right"]
 
 [sub_resource type="StandardMaterial3D" id="paint"]
 albedo_texture = ExtResource("texture")
@@ -9,8 +16,35 @@ roughness = 1.0
 texture_filter = 2
 texture_repeat = false
 
-[sub_resource type="BoxShape3D" id="shape"]
-size = Vector3(2.2, 1.9, 5)
+[sub_resource type="StandardMaterial3D" id="cab_paint"]
+albedo_texture = ExtResource("cab_texture")
+roughness = 0.9
+texture_filter = 2
+texture_repeat = false
+
+[sub_resource type="BoxShape3D" id="Floor"]
+size = Vector3(1.85, 0.18, 4.8)
+
+[sub_resource type="BoxShape3D" id="Roof"]
+size = Vector3(2, 0.12, 3.3)
+
+[sub_resource type="BoxShape3D" id="LeftWall"]
+size = Vector3(0.12, 1.4, 2.6)
+
+[sub_resource type="BoxShape3D" id="RightWall"]
+size = Vector3(0.12, 1.4, 2.6)
+
+[sub_resource type="BoxShape3D" id="Bulkhead"]
+size = Vector3(1.85, 1.5, 0.12)
+
+[sub_resource type="BoxShape3D" id="Bonnet"]
+size = Vector3(2, 0.65, 0.85)
+
+[sub_resource type="BoxShape3D" id="rear_left_shape"]
+size = Vector3(0.9, 1.3, 0.08)
+
+[sub_resource type="BoxShape3D" id="rear_right_shape"]
+size = Vector3(0.9, 1.3, 0.08)
 
 [node name="VanModel" type="Node3D"]
 
@@ -18,8 +52,95 @@ size = Vector3(2.2, 1.9, 5)
 mesh = ExtResource("mesh")
 material_override = SubResource("paint")
 
-[node name="Collision" type="StaticBody3D" parent="."]
+[node name="Collision" type="AnimatableBody3D" parent="."]
+sync_to_physics = false
 
-[node name="Shape" type="CollisionShape3D" parent="Collision"]
-position = Vector3(0, 1.4, 0)
-shape = SubResource("shape")
+[node name="Floor" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0, 0.63, 0)
+shape = SubResource("Floor")
+
+[node name="Roof" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0, 2.19, -0.65)
+shape = SubResource("Roof")
+
+[node name="LeftWall" type="CollisionShape3D" parent="Collision"]
+position = Vector3(-0.98, 1.4, -1.2)
+shape = SubResource("LeftWall")
+
+[node name="RightWall" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0.98, 1.4, -1.2)
+shape = SubResource("RightWall")
+
+[node name="Bulkhead" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0, 1.45, 0.1)
+shape = SubResource("Bulkhead")
+
+[node name="Bonnet" type="CollisionShape3D" parent="Collision"]
+position = Vector3(0, 0.94, 2.07)
+shape = SubResource("Bonnet")
+
+[node name="DriverDoor" type="Node3D" parent="."]
+position = Vector3(-1, 1.3, 0.3)
+
+[node name="Hinge" type="Node3D" parent="DriverDoor"]
+position = Vector3(0, -0.45, 1.3)
+
+[node name="Leaf" type="MeshInstance3D" parent="DriverDoor/Hinge"]
+mesh = ExtResource("driver")
+material_override = SubResource("cab_paint")
+
+[node name="Collision" type="AnimatableBody3D" parent="DriverDoor/Hinge"]
+sync_to_physics = false
+
+[node name="Shape" type="CollisionShape3D" parent="DriverDoor/Hinge/Collision"]
+shape = ExtResource("driver_shape")
+
+[node name="PassengerDoor" type="Node3D" parent="."]
+position = Vector3(1, 1.3, 0.3)
+
+[node name="Hinge" type="Node3D" parent="PassengerDoor"]
+position = Vector3(0, -0.45000000000000007, 1.3)
+
+[node name="Leaf" type="MeshInstance3D" parent="PassengerDoor/Hinge"]
+mesh = ExtResource("passenger")
+material_override = SubResource("cab_paint")
+
+[node name="Collision" type="AnimatableBody3D" parent="PassengerDoor/Hinge"]
+sync_to_physics = false
+
+[node name="Shape" type="CollisionShape3D" parent="PassengerDoor/Hinge/Collision"]
+shape = ExtResource("passenger_shape")
+
+[node name="RearLeftDoor" type="Node3D" parent="."]
+position = Vector3(-0.45, 1.3, -2.55)
+
+[node name="Hinge" type="Node3D" parent="RearLeftDoor"]
+position = Vector3(-0.47, -0.6, 0.05)
+
+[node name="Leaf" type="MeshInstance3D" parent="RearLeftDoor/Hinge"]
+mesh = ExtResource("rear_left")
+material_override = SubResource("paint")
+
+[node name="Collision" type="AnimatableBody3D" parent="RearLeftDoor/Hinge"]
+sync_to_physics = false
+
+[node name="Shape" type="CollisionShape3D" parent="RearLeftDoor/Hinge/Collision"]
+position = Vector3(0.45, 0.65, 0.04)
+shape = SubResource("rear_left_shape")
+
+[node name="RearRightDoor" type="Node3D" parent="."]
+position = Vector3(0.45, 1.3, -2.55)
+
+[node name="Hinge" type="Node3D" parent="RearRightDoor"]
+position = Vector3(0.47, -0.6000000000000001, 0.04999999999999982)
+
+[node name="Leaf" type="MeshInstance3D" parent="RearRightDoor/Hinge"]
+mesh = ExtResource("rear_right")
+material_override = SubResource("paint")
+
+[node name="Collision" type="AnimatableBody3D" parent="RearRightDoor/Hinge"]
+sync_to_physics = false
+
+[node name="Shape" type="CollisionShape3D" parent="RearRightDoor/Hinge/Collision"]
+position = Vector3(-0.45, 0.65, 0.04)
+shape = SubResource("rear_right_shape")

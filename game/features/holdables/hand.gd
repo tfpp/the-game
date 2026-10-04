@@ -175,7 +175,7 @@ func request_drop_item() -> void:
 
 ## Server: hands this an item, if it's empty. Called by pickups and landed throws.
 func try_equip(item_id: String) -> bool:
-	if not multiplayer.is_server() or not net_item_id.is_empty():
+	if not multiplayer.is_server() or inventory().loading or not net_item_id.is_empty():
 		return false
 	if ItemCatalog.find(item_id) == null or not ClothingCatalog.slot(item_id).is_empty():
 		return false
@@ -196,7 +196,7 @@ static func for_peer(tree: SceneTree, target_peer_id: int) -> Hand:
 func _is_own_request() -> bool:
 	var sender := multiplayer.get_remote_sender_id()
 	var effective := sender if sender != 0 else multiplayer.get_unique_id()
-	return effective == peer_id
+	return effective == peer_id and not inventory().loading
 
 
 func network_peer_allowed(peer: int) -> bool:

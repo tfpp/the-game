@@ -1,0 +1,152 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/starter_room/workshop_lift.gd" id="lift"]
+[ext_resource type="Script" path="res://features/starter_room/lift_control.gd" id="control"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/workshop_lift_posts.res" id="posts"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/workshop_lift_arms.res" id="arms"]
+[ext_resource type="Texture2D" path="res://assets/starter_room/workshop_lift.png" id="texture"]
+
+[sub_resource type="StandardMaterial3D" id="paint"]
+albedo_texture = ExtResource("texture")
+roughness = 1.0
+texture_filter = 2
+texture_repeat = false
+
+[sub_resource type="BoxShape3D" id="LeftBase"]
+size = Vector3(0.65, 0.12, 0.75)
+
+[sub_resource type="BoxShape3D" id="LeftPost"]
+size = Vector3(0.32, 4.24, 0.32)
+
+[sub_resource type="BoxShape3D" id="RightBase"]
+size = Vector3(0.65, 0.12, 0.75)
+
+[sub_resource type="BoxShape3D" id="RightPost"]
+size = Vector3(0.32, 4.24, 0.32)
+
+[sub_resource type="BoxShape3D" id="LeftCarriage"]
+size = Vector3(0.23, 0.62, 0.3)
+
+[sub_resource type="BoxShape3D" id="LeftRearArm"]
+size = Vector3(0.14, 0.12, 1.194194289050153)
+
+[sub_resource type="BoxShape3D" id="LeftRearPad"]
+size = Vector3(0.22, 0.1, 0.22)
+
+[sub_resource type="BoxShape3D" id="LeftFrontArm"]
+size = Vector3(0.14, 0.12, 2.219481921530338)
+
+[sub_resource type="BoxShape3D" id="LeftFrontPad"]
+size = Vector3(0.22, 0.1, 0.22)
+
+[sub_resource type="BoxShape3D" id="RightCarriage"]
+size = Vector3(0.23, 0.62, 0.3)
+
+[sub_resource type="BoxShape3D" id="RightRearArm"]
+size = Vector3(0.14, 0.12, 1.194194289050153)
+
+[sub_resource type="BoxShape3D" id="RightRearPad"]
+size = Vector3(0.22, 0.1, 0.22)
+
+[sub_resource type="BoxShape3D" id="RightFrontArm"]
+size = Vector3(0.14, 0.12, 2.219481921530338)
+
+[sub_resource type="BoxShape3D" id="RightFrontPad"]
+size = Vector3(0.22, 0.1, 0.22)
+
+[node name="WorkshopLift" type="Node3D"]
+script = ExtResource("lift")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("net")
+interaction_offset = Vector3(-2.09, 1.2, -0.3)
+interaction_range = 1.6
+replicated_properties = Array[NodePath]([NodePath(".:net_target_height"), NodePath(".:net_obstructed")])
+continuous_properties = Array[NodePath]([NodePath(".:net_height")])
+
+[node name="Posts" type="MeshInstance3D" parent="."]
+mesh = ExtResource("posts")
+material_override = SubResource("paint")
+
+[node name="Collision" type="StaticBody3D" parent="."]
+
+[node name="LeftBase" type="CollisionShape3D" parent="Collision"]
+position = Vector3(-1.9, 0.06, -0.7)
+shape = SubResource("LeftBase")
+
+[node name="LeftPost" type="CollisionShape3D" parent="Collision"]
+position = Vector3(-1.9, 2.18, -0.7)
+shape = SubResource("LeftPost")
+
+[node name="RightBase" type="CollisionShape3D" parent="Collision"]
+position = Vector3(1.9, 0.06, -0.7)
+shape = SubResource("RightBase")
+
+[node name="RightPost" type="CollisionShape3D" parent="Collision"]
+position = Vector3(1.9, 2.18, -0.7)
+shape = SubResource("RightPost")
+
+[node name="Arms" type="Node3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Arms"]
+mesh = ExtResource("arms")
+material_override = SubResource("paint")
+
+[node name="Collision" type="AnimatableBody3D" parent="Arms"]
+sync_to_physics = false
+
+[node name="LeftCarriage" type="CollisionShape3D" parent="Arms/Collision"]
+position = Vector3(-1.72, 0.47, -0.7)
+shape = SubResource("LeftCarriage")
+
+[node name="LeftRearArm" type="CollisionShape3D" parent="Arms/Collision"]
+position = Vector3(-1.17, 0.24, -0.975)
+rotation = Vector3(0, 2.0494240885630726, 0)
+shape = SubResource("LeftRearArm")
+
+[node name="LeftRearPad" type="CollisionShape3D" parent="Arms/Collision"]
+position = Vector3(-0.64, 0.31, -1.25)
+shape = SubResource("LeftRearPad")
+
+[node name="LeftFrontArm" type="CollisionShape3D" parent="Arms/Collision"]
+position = Vector3(-1.17, 0.24, 0.275)
+rotation = Vector3(0, 0.49790839113658225, 0)
+shape = SubResource("LeftFrontArm")
+
+[node name="LeftFrontPad" type="CollisionShape3D" parent="Arms/Collision"]
+position = Vector3(-0.64, 0.31, 1.25)
+shape = SubResource("LeftFrontPad")
+
+[node name="RightCarriage" type="CollisionShape3D" parent="Arms/Collision"]
+position = Vector3(1.72, 0.47, -0.7)
+shape = SubResource("RightCarriage")
+
+[node name="RightRearArm" type="CollisionShape3D" parent="Arms/Collision"]
+position = Vector3(1.17, 0.24, -0.975)
+rotation = Vector3(0, -2.0494240885630726, 0)
+shape = SubResource("RightRearArm")
+
+[node name="RightRearPad" type="CollisionShape3D" parent="Arms/Collision"]
+position = Vector3(0.64, 0.31, -1.25)
+shape = SubResource("RightRearPad")
+
+[node name="RightFrontArm" type="CollisionShape3D" parent="Arms/Collision"]
+position = Vector3(1.17, 0.24, 0.275)
+rotation = Vector3(0, -0.49790839113658225, 0)
+shape = SubResource("RightFrontArm")
+
+[node name="RightFrontPad" type="CollisionShape3D" parent="Arms/Collision"]
+position = Vector3(0.64, 0.31, 1.25)
+shape = SubResource("RightFrontPad")
+
+[node name="Control" type="Node3D" parent="."]
+position = Vector3(-2.09, 1.2, -0.3)
+script = ExtResource("control")
+
+
+[node name="ServiceLight" type="OmniLight3D" parent="."]
+position = Vector3(-1.6, 2.4, -0.7)
+light_color = Color(0.9, 0.94, 0.82, 1)
+light_energy = 1.0
+omni_range = 4.0
