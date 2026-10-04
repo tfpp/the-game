@@ -16,9 +16,13 @@ func test_six_distinct_secrets_are_spread_through_the_wings() -> void:
 	assert_eq(_secrets.get_child_count(), 6)
 	var messages: Array[String] = []
 	for secret: Node3D in _secrets.get_children():
-		var label := secret.get_node("Joke") as Label3D
-		assert_false(messages.has(label.text))
-		messages.append(label.text)
+		var letters := secret.get_node("Joke") as MeshInstance3D
+		var message := str(letters.get_meta("plaque_text"))
+		assert_false(messages.has(message))
+		messages.append(message)
+		var bounds := letters.mesh.get_aabb()
+		assert_lte(bounds.size.x, 1.8, "Lettering fits the wooden plaque")
+		assert_lte(bounds.size.y, .65)
 		for other: Node3D in _secrets.get_children():
 			if secret != other:
 				assert_gt(secret.position.distance_to(other.position), 25.0)
@@ -60,8 +64,8 @@ func test_static_budget_and_peer_independence() -> void:
 	var second := ANNEX.instantiate() as Node3D
 	add_child_autofree(second)
 	var copy := second.get_node("EasterEggs")
-	assert_eq(_secrets.find_children("*", "MeshInstance3D", true, false).size(), 6)
-	assert_eq(_secrets.find_children("*", "Label3D", true, false).size(), 6)
+	assert_eq(_secrets.find_children("*", "MeshInstance3D", true, false).size(), 12)
+	assert_eq(_secrets.find_children("*", "Label3D", true, false).size(), 0)
 	for node: Node in _secrets.find_children("*", "", true, false):
 		assert_null(node.get_script(), "No runtime scripts or processing")
 		assert_true(node is Node3D)
@@ -72,7 +76,10 @@ func test_static_budget_and_peer_independence() -> void:
 	for secret: Node3D in _secrets.get_children():
 		var other := copy.get_node(NodePath(secret.name)) as Node3D
 		assert_eq(secret.transform, other.transform)
-		var label := secret.get_node("Joke") as Label3D
-		assert_eq(label.text, other.get_node("Joke").text)
-		assert_false(label.no_depth_test)
-		assert_false(label.double_sided)
+		var letters := secret.get_node("Joke") as MeshInstance3D
+		assert_eq(letters.get_meta("plaque_text"), other.get_node("Joke").get_meta("plaque_text"))
+		var material := letters.material_override as StandardMaterial3D
+		assert_false(material.no_depth_test)
+		assert_eq(material.cull_mode, BaseMaterial3D.CULL_BACK)
+		assert_lte(material.albedo_texture.get_width(), 128)
+		assert_lte(material.albedo_texture.get_height(), 128)

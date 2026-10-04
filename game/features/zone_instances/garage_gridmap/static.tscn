@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="MeshLibrary" path="res://features/zone_instances/garage_gridmap/garage_levels.tres" id="1_qovqv"]
+
+[node name="GarageStatic" type="Node3D" unique_id=922046421]
+
+[node name="Levels" type="GridMap" parent="." unique_id=1277036994]
+mesh_library = ExtResource("1_qovqv")
+cell_size = Vector3(1, 4, 1)
+cell_octant_size = 1
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 0, 65536, 0, 1, 131072, 0, 2, 196608, 0, 3, 262144, 0, 4)
+}

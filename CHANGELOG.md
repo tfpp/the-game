@@ -12,6 +12,7 @@ edge bullets into the next version section. See [Release notes](docs/release-not
 ## [edge]
 
 - Keep visual preview images local and exclude them from Git tracking.
+- Add private group elevator excursions, five-floor garage progression, destination lighting and a clearer touch-screen hotbar.
 
 ## [0.8.0](https://github.com/tfpp/the-game/releases/tag/v0.8.0) - 2026-09-29
 

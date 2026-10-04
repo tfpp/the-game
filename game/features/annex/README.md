@@ -39,9 +39,14 @@ Spoilers / placement (world coordinates, wall face at y=1.55):
 | Encoded message | South room 8 | -22.5, 80.5 | -Z |
 
 The backing starts 5mm in front of each wall; lettering sits another 5mm beyond
-its face, facing into the room. Labels retain depth testing and are unshaded for
-night readability. Six shared BoxMeshes (12 triangles each) and six labels stop
+its face, facing into the room. Atlas lettering retains depth testing and uses
+the sign kit's faint emissive material for night readability. Six shared BoxMeshes
+(12 triangles each) and six baked lettering meshes stop
 drawing beyond 18m; there are no scripts, colliders, lights, timers, or network
 messages. All peers, including late joins and offline play, load the same immutable
 scene. There is no player state to persist or clean up on respawn/disconnect.
 `test_easter_eggs.gd` checks wall mounting, approach clearance and the static budget.
+
+Lettering uses the shared 64×64 sign atlas. To rebake after editing a plaque's
+`plaque_text` metadata, run Godot with `--headless --path game -s
+res://features/annex/bake_plaques.gd`. The saved scene contains no runtime scripts.

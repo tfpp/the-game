@@ -1,8 +1,0 @@
-[gd_scene format=3]
-
-[ext_resource type="PackedScene" path="res://features/parking_garage/garage.tscn" id="15_garage"]
-
-[node name="ParkingGarage" type="Node3D"]
-
-[node name="Garage" parent="." instance=ExtResource("15_garage")]
-position = Vector3(0, 0, 600)

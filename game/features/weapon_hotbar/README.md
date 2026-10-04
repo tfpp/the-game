@@ -54,3 +54,6 @@ keeps weak references to weapon views so replacing a model safely clears its rec
   pure and unit-tested, the same way `features/holdables/throw_math.gd` keeps toss
   math separate from `hand.gd`. `next_occupied` is the general cycle used for both
   the backpack-only case (`next_slot`) and the backpack-plus-rig case.
+
+Empty slot labels and cells are hidden. The weapon panel collapses when the hand,
+backpack and rig are empty; occupied slots retain the current theme and touch targets.

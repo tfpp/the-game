@@ -166,9 +166,9 @@ func test_gun_o_matic_and_can_have_floor_clear_approaches_and_work_in_range() ->
 	player.net_position = Vector3(-6.5, 0.95, -3971.6)
 	assert_false(kiosk.can_use(player), "Old shop position cannot buy from kiosk")
 	assert_false(can.can_use(player), "Old shop position cannot discard")
-	var sign := kiosk.get_node("Sign") as Label3D
-	assert_false(sign.fixed_size)
-	assert_lt(sign.font_size * sign.pixel_size, 0.25)
+	var sign := kiosk.get_node("Sign") as SignBoard
+	assert_lt(sign.letter_height, 0.25)
+	assert_lte(sign.board_size().x, 1.0)
 
 
 func test_dev_room_has_a_gps_area() -> void:

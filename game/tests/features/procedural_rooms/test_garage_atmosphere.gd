@@ -3,7 +3,7 @@ extends GutTest
 const Layout := preload("res://features/procedural_rooms/world_layout.gd")
 const Lights := preload("res://features/procedural_rooms/garage_lights.gd")
 const Atmosphere := preload("res://features/procedural_rooms/garage_atmosphere.gd")
-const FEATURE := preload("res://features/procedural_rooms/feature.tscn")
+const FEATURE := preload("res://features/procedural_rooms/prototype.tscn")
 
 
 func test_tube_plan_is_seeded_and_keeps_lit_tubes_working() -> void:

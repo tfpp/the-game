@@ -1,0 +1,112 @@
+[gd_scene format=3]
+[node name="EncounterPoints" type="Node3D"]
+[node name="B1" type="Node3D" parent="."]
+position = Vector3(0, 16, 0)
+[node name="Enemy0" type="Marker3D" parent="B1"]
+position = Vector3(-14, 0, 4)
+[node name="Enemy1" type="Marker3D" parent="B1"]
+position = Vector3(14, 0, 4)
+[node name="Enemy2" type="Marker3D" parent="B1"]
+position = Vector3(-14, 0, 38)
+[node name="Enemy3" type="Marker3D" parent="B1"]
+position = Vector3(14, 0, 38)
+[node name="Enemy4" type="Marker3D" parent="B1"]
+position = Vector3(-5, 0, 38)
+[node name="Enemy5" type="Marker3D" parent="B1"]
+position = Vector3(5, 0, 38)
+[node name="Loot0" type="Marker3D" parent="B1"]
+position = Vector3(-18, 0, 5)
+[node name="Loot1" type="Marker3D" parent="B1"]
+position = Vector3(18, 0, 5)
+[node name="Loot2" type="Marker3D" parent="B1"]
+position = Vector3(-18, 0, 38)
+[node name="Loot3" type="Marker3D" parent="B1"]
+position = Vector3(18, 0, 38)
+[node name="B2" type="Node3D" parent="."]
+position = Vector3(0, 12, 0)
+[node name="Enemy0" type="Marker3D" parent="B2"]
+position = Vector3(-14, 0, 4)
+[node name="Enemy1" type="Marker3D" parent="B2"]
+position = Vector3(14, 0, 4)
+[node name="Enemy2" type="Marker3D" parent="B2"]
+position = Vector3(-14, 0, 38)
+[node name="Enemy3" type="Marker3D" parent="B2"]
+position = Vector3(14, 0, 38)
+[node name="Enemy4" type="Marker3D" parent="B2"]
+position = Vector3(-5, 0, 38)
+[node name="Enemy5" type="Marker3D" parent="B2"]
+position = Vector3(5, 0, 38)
+[node name="Loot0" type="Marker3D" parent="B2"]
+position = Vector3(-18, 0, 5)
+[node name="Loot1" type="Marker3D" parent="B2"]
+position = Vector3(18, 0, 5)
+[node name="Loot2" type="Marker3D" parent="B2"]
+position = Vector3(-18, 0, 38)
+[node name="Loot3" type="Marker3D" parent="B2"]
+position = Vector3(18, 0, 38)
+[node name="B3" type="Node3D" parent="."]
+position = Vector3(0, 8, 0)
+[node name="Enemy0" type="Marker3D" parent="B3"]
+position = Vector3(-14, 0, 4)
+[node name="Enemy1" type="Marker3D" parent="B3"]
+position = Vector3(14, 0, 4)
+[node name="Enemy2" type="Marker3D" parent="B3"]
+position = Vector3(-14, 0, 38)
+[node name="Enemy3" type="Marker3D" parent="B3"]
+position = Vector3(14, 0, 38)
+[node name="Enemy4" type="Marker3D" parent="B3"]
+position = Vector3(-5, 0, 38)
+[node name="Enemy5" type="Marker3D" parent="B3"]
+position = Vector3(5, 0, 38)
+[node name="Loot0" type="Marker3D" parent="B3"]
+position = Vector3(-18, 0, 5)
+[node name="Loot1" type="Marker3D" parent="B3"]
+position = Vector3(18, 0, 5)
+[node name="Loot2" type="Marker3D" parent="B3"]
+position = Vector3(-18, 0, 38)
+[node name="Loot3" type="Marker3D" parent="B3"]
+position = Vector3(18, 0, 38)
+[node name="B4" type="Node3D" parent="."]
+position = Vector3(0, 4, 0)
+[node name="Enemy0" type="Marker3D" parent="B4"]
+position = Vector3(-14, 0, 4)
+[node name="Enemy1" type="Marker3D" parent="B4"]
+position = Vector3(14, 0, 4)
+[node name="Enemy2" type="Marker3D" parent="B4"]
+position = Vector3(-14, 0, 38)
+[node name="Enemy3" type="Marker3D" parent="B4"]
+position = Vector3(14, 0, 38)
+[node name="Enemy4" type="Marker3D" parent="B4"]
+position = Vector3(-5, 0, 38)
+[node name="Enemy5" type="Marker3D" parent="B4"]
+position = Vector3(5, 0, 38)
+[node name="Loot0" type="Marker3D" parent="B4"]
+position = Vector3(-18, 0, 5)
+[node name="Loot1" type="Marker3D" parent="B4"]
+position = Vector3(18, 0, 5)
+[node name="Loot2" type="Marker3D" parent="B4"]
+position = Vector3(-18, 0, 38)
+[node name="Loot3" type="Marker3D" parent="B4"]
+position = Vector3(18, 0, 38)
+[node name="B5" type="Node3D" parent="."]
+position = Vector3(0, 0, 0)
+[node name="Enemy0" type="Marker3D" parent="B5"]
+position = Vector3(-14, 0, 4)
+[node name="Enemy1" type="Marker3D" parent="B5"]
+position = Vector3(14, 0, 4)
+[node name="Enemy2" type="Marker3D" parent="B5"]
+position = Vector3(-14, 0, 38)
+[node name="Enemy3" type="Marker3D" parent="B5"]
+position = Vector3(14, 0, 38)
+[node name="Enemy4" type="Marker3D" parent="B5"]
+position = Vector3(-5, 0, 38)
+[node name="Enemy5" type="Marker3D" parent="B5"]
+position = Vector3(5, 0, 38)
+[node name="Loot0" type="Marker3D" parent="B5"]
+position = Vector3(-18, 0, 5)
+[node name="Loot1" type="Marker3D" parent="B5"]
+position = Vector3(18, 0, 5)
+[node name="Loot2" type="Marker3D" parent="B5"]
+position = Vector3(-18, 0, 38)
+[node name="Loot3" type="Marker3D" parent="B5"]
+position = Vector3(18, 0, 38)

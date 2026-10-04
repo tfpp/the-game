@@ -11,37 +11,58 @@ the rig is only posed for cameras within 45 m.
 
 ## Basement garage (B1–B5)
 
-`GarageEnemies/Basement` copies the transform of `features/procedural_rooms`'
-`Garage` node, so its children use `CrownGarage` deck coordinates (deck `i` floor at
-`y = 4i`, B5 at the bottom). Enemies stand in the front (z < 8) and back (z > 34)
-lanes that population rules keep free of set pieces:
+### Private elevator excursions
 
-| Floor | Enemies |
-| --- | --- |
-| B1 (elevator arrival) | 2 brawlers, far from the arrival |
-| B2 | 3 brawlers |
-| B3 | 2 brawlers, 2 knifers |
-| B4 | 1 brawler, 2 knifers, 1 gunman |
-| B5 | 1 knifer, 3 gunmen |
+Normal Crown elevator runs use `ZoneInstances` copies of B1–B5. The server creates
+one seeded plan per group from `zone_instances/encounter_points.tscn`; point indices
+and tiers travel as instance spawn data. Clients reproduce the selected plan and
+receive only their instance's enemy state/events. The table below describes the
+run population. The older fixed placements and P1–P3 scene have been removed.
+
+| Floor | Run population | Total hits to clear |
+| --- | --- | --- |
+| B1 | 2 distant brawlers; arrival lane empty | 2 |
+| B2 | 3 brawlers | 3 |
+| B3 | 2 brawlers, 2 knifers | 6 |
+| B4 | 1 brawler, 2 knifers, 1 gunman | 8 |
+| B5 | 1 knifer, 5 gunmen | 17 |
+
+Base tiers remain brawler 1 hit/8 damage/0.4 s windup, knifer 2 hits/18 damage/
+0.25 s windup, gunman 3 hits/15 damage/0.6 s windup. B5 instance enemies use 1.5x
+damage and 0.75x windup: knifers deal 27 with a 0.1875 s windup, gunmen deal 22.5
+with a 0.45 s windup. Earlier floors and shared development enemies keep the base
+profiles. Hit counts, movement and dodge rules remain unchanged. A seven-round pistol magazine covers the top floor; the lower
+floors put a lone pistol user under reload pressure; faster guns and group support
+reduce that exposure. The population progression is the Phase 1 difficulty tuning.
+
+The controlled real-map weapon exercise uses seed 73021, active enemy AI, actual
+hitscans, firing cooldowns and magazine reloads. B1 clears with two pistol shots,
+no reload and 100 HP. B5 requires 17 hits to clear: the exposed pistol run dies
+after four enemies, 12 shots, one reload and 4.55 simulated seconds. The M4A4
+clears all six in 1.66 seconds, without reloading, and finishes at 100 HP.
+Times include scripted reposition settling, not player
+travel or aiming time. The fixture auto-aims and places the player six metres from
+each encounter; it verifies weapon/reload pressure, not a manual skill assessment.
+`tests/features/zone_instances/test_garage_weapon_pressure.gd` preserves this check.
+The fixture stops on the actual death event, since Combat resets health during
+respawn. B1 remains approachable while B5's five ranged enemies punish exposed
+reloads. This verifies a stronger weapon can clear the encounter that defeats the
+exposed pistol strategy; it does not claim that skilled movement makes pistol-only
+runs impossible.
+
+Each floor has four searchable supply crates with its own independent `LootTable`.
+Expected value per crate rises from about $2.44 (B1) to $3.82/$6.02/$16.48/$23.78.
+Loot weights shift from scrap/wallets to watches/jewelry. Instances begin with fresh
+containers; their RNGs are seeded independently by floor/point. Tests verify
+marker floor support, unique enemy positions, reproducible plans, increasing
+expected value and fresh loot without resetting other runs.
+
+Private enemies live under `SlumInstance/Map/CrownGarage/Enemies`, using authored
+deck coordinates (deck `i` at `y = 4i`, B5 at the bottom). Spawn markers occupy
+the front (z < 8) and back (z > 34) lanes reserved from set pieces.
 
 `net_yaw` is stored in the parent's space (`_parent_direction`) so enemies under
 the rotated basement face where they walk.
-
-## Parking garage (P1–P3)
-
-Hostile scavengers that haunt `features/parking_garage/`. `feature.tscn` sits at
-world `(0, 0, 600)`, the same origin as the garage's `Garage` node, so every
-enemy's position is in garage-local coordinates.
-
-Players arrive on P1 through the employee door and climb, so danger rises with
-each floor away from the door (the design's "deeper" direction for this
-three-level garage):
-
-| Floor | Enemies | Tier traits (`enemy_tiers.gd`) |
-| --- | --- | --- |
-| P1 | 3 brawlers | 1 hit, slow walking punch (8 dmg) |
-| P2 | 2 brawlers, 2 gunmen | gunman: 3 hits, fires from 16 m (15 dmg), keeps its distance |
-| P3 | 2 gunmen, 3 knifers | knifer: 2 hits, runs, knife slash (18 dmg) |
 
 ## How it works
 
@@ -53,8 +74,8 @@ three-level garage):
   gunman's shot needs line of sight and misses fast-moving targets more often.
   Enemies never follow players off their floor area, and idle enemies skip
   sensing while nobody is within 30 m.
-- Damage goes through `features/combat`'s `apply_damage` with the victim as the
-  attacker, so no player gets a kill credit; `features/slum_runs` then drops the
+- Damage goes through `features/combat`'s `apply_enemy_damage`, respecting safe
+  zones without player kill credit; `features/slum_runs` then drops the
   victim's valuables as for any death.
 - Enemies are `killable`: any weapon hit calls `take_hit()`, which also turns
   the enemy on its attacker. After their tier's number of hits they explode
@@ -75,3 +96,9 @@ placement of every enemy on real garage floor clear of cars and columns.
 Enemy posing also checks the active camera mask against the avatar surface layer.
 Entering a garage resumes posing; movement, collisions, AI and replication continue
 while the rig is masked. The existing 45 m animation limit remains.
+
+Hostile body materials opt into `minimum_light = 0.3` in the shared human surface
+shader. This adds a texture-colored light floor, including a small minimum for
+black tactical fabric, so enemy silhouettes remain visible in the dark garage.
+The shader's default is zero. Actual private-map captures review brawlers and
+gunmen at five and twelve metres; the fill adds no lights or draw calls.

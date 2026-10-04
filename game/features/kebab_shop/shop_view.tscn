@@ -1,4 +1,5 @@
 [gd_scene format=3]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign"]
 
 [ext_resource type="Texture2D" path="res://assets/casino_hub/textures/prop_grain.png" id="grain"]
 
@@ -698,29 +699,26 @@ mesh = SubResource("r17")
 material_override = SubResource("r2")
 visibility_range_end = 45.0
 
-[node name="Title" type="Label3D" parent="."]
+[node name="Title" type="Node3D" parent="."]
+script = ExtResource("sign")
+letter_height = 0.23
+padding = 0.025
 position = Vector3(0, 3.02, -0.09)
 text = "İSTANBUL KEBAB"
-font_size = 54
-pixel_size = 0.007
-outline_size = 5
-visibility_range_end = 35.0
 
-[node name="Menu" type="Label3D" parent="."]
+[node name="Menu" type="Node3D" parent="."]
+script = ExtResource("sign")
+letter_height = 0.085
+padding = 0.025
 position = Vector3(-1, 0.58, 0.411)
 text = "DÖNER • DÜRÜM\nFresh bread · salad · yogurt sauce\nOpening special: FREE"
-font_size = 26
-pixel_size = 0.007
-outline_size = 5
-visibility_range_end = 35.0
 
-[node name="OrderHere" type="Label3D" parent="."]
+[node name="OrderHere" type="Node3D" parent="."]
+script = ExtResource("sign")
+letter_height = 0.1
+padding = 0.025
 position = Vector3(1.8, 1.48, 0.1)
 text = "ORDER HERE ↓"
-font_size = 26
-pixel_size = 0.007
-outline_size = 5
-visibility_range_end = 35.0
 
 [node name="Post-3.05" type="MeshInstance3D" parent="."]
 position = Vector3(-3.05, 1.5, -0.3)

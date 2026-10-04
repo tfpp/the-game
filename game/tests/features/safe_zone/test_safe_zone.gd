@@ -154,6 +154,43 @@ func test_self_inflicted_damage_still_applies_inside() -> void:
 	assert_true(_combat.is_respawning(1), "/suicide still works in the Crown")
 
 
+func test_enemy_damage_is_blocked_in_preparation_rooms_but_allowed_in_slums() -> void:
+	var player := _player(1, CROWN_POINTS[0])
+	for at: Vector3 in CROWN_POINTS:
+		player.global_position = at
+		_combat.apply_enemy_damage(1, Combat.MAX_HEALTH)
+		assert_eq(_combat.health_for(1), Combat.MAX_HEALTH)
+		assert_false(_combat.is_respawning(1))
+	player.global_position = SLUM_POINTS[0]
+	_combat.apply_enemy_damage(1, 20.0)
+	assert_eq(_combat.health_for(1), 80.0)
+	_combat.apply_enemy_damage(1, Combat.MAX_HEALTH)
+	assert_true(_combat.is_respawning(1))
+	assert_eq(_combat.kills_for(1), 0, "Hostile NPC deaths do not grant player kills")
+
+
+func test_weapons_lower_in_safe_rooms_and_raise_again_outside() -> void:
+	var player := _player(1, CROWN_POINTS[0])
+	var hand := HandScene.instantiate() as Hand
+	hand.peer_id = 1
+	add_child_autofree(hand)
+	hand.net_item_id = "pistol"
+	hand.set_process(false)
+	hand._process(.25)
+	assert_eq(hand._safe_lowering, 1.0)
+	assert_lt((-hand.global_basis.z).dot(Vector3.UP), -0.2, "Muzzle points down")
+	player.global_position = SLUM_POINTS[0]
+	player.net_position = player.global_position
+	hand._process(.25)
+	assert_eq(hand._safe_lowering, 0.0)
+	assert_almost_eq((-hand.global_basis.z).dot(Vector3.UP), 0.0, .01)
+	player.global_position = CROWN_POINTS[0]
+	hand.net_item_id = "scrap"
+	hand._process(.25)
+	assert_eq(hand._safe_lowering, 0.0, "Non-weapons retain their normal grip")
+	await wait_physics_frames(1)
+
+
 func test_held_guns_do_not_fire_inside_the_crown() -> void:
 	_player(1, Vector3(2, 0.2, 5))
 	var target := _player(2, Vector3(2, 0.2, -5))

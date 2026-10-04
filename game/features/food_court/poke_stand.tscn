@@ -1,4 +1,5 @@
 [gd_scene format=3]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign"]
 [ext_resource type="Script" path="res://features/food_court/poke_stand.gd" id="stand"]
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
 [ext_resource type="Script" path="res://features/food_court/poke_menu.gd" id="menu"]
@@ -58,19 +59,18 @@ size = Vector3(2.8, 0.65, 0.12)
 material = ExtResource("teal")
 use_collision = false
 
-[node name="Sign" type="Label3D" parent="."]
+[node name="Sign" type="Node3D" parent="."]
+script = ExtResource("sign")
+letter_height = 0.13
+padding = 0.025
 position = Vector3(0, 2.35, -0.325)
 text = "POKE BOWLS\n$29 + TIP 15–40%"
-font_size = 48
-pixel_size = 0.004
-modulate = Color(1, 0.9, 0.65, 1)
-double_sided = false
-[node name="FrontLabel" type="Label3D" parent="."]
+[node name="FrontLabel" type="Node3D" parent="."]
+script = ExtResource("sign")
+letter_height = 0.085
+padding = 0.025
 position = Vector3(0, 0.6, 0.63)
 text = "SALMON • RICE • AVOCADO\nORDER HERE"
-font_size = 40
-pixel_size = 0.0035
-double_sided = false
 [node name="DisplayBowl" parent="." instance=ExtResource("bowl")]
 position = Vector3(0, 1.16, 0.1)
 [node name="SecondBowl" parent="." instance=ExtResource("bowl")]

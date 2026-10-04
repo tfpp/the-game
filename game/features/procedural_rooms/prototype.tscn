@@ -1,0 +1,59 @@
+[gd_scene load_steps=8 format=3]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign_board"]
+[ext_resource type="Script" path="res://features/dev_access/dev_gate.gd" id="dev_gate"]
+[ext_resource type="Script" path="res://features/procedural_rooms/portal.gd" id="2_portal"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="3_net"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="4_gps"]
+[ext_resource type="Material" path="res://features/procedural_rooms/materials/elevator.tres" id="5_paint"]
+
+[ext_resource type="PackedScene" path="res://features/procedural_rooms/garage.tscn" id="6_garage"]
+
+[node name="ProceduralRooms" type="Node3D"]
+
+[node name="Garage" parent="." instance=ExtResource("6_garage")]
+position = Vector3(26, -22, -25)
+rotation = Vector3(0, -1.5707963, 0)
+
+[node name="CasinoArrival" type="Marker3D" parent="."]
+position = Vector3(294, 0.2, -305.9)
+
+[node name="Entrance" type="CSGBox3D" parent="."]
+position = Vector3(294, 1.1, -307.8)
+rotation = Vector3(0, 1.5707963, 0)
+size = Vector3(0.2, 2.2, 1.4)
+material = ExtResource("5_paint")
+use_collision = true
+script = ExtResource("2_portal")
+destination = NodePath("../Garage/Arrival")
+door_label = "Teleport to the procedural garage"
+
+[node name="NetworkedEntity" type="Node" parent="Entrance"]
+script = ExtResource("3_net")
+interaction_range = 2.5
+
+[node name="Sign" type="Node3D" parent="Entrance"]
+script = ExtResource("sign_board")
+letter_height = 0.1
+padding = 0.035
+position = Vector3(0, 1.4, 0)
+text = "PROCEDURAL GARAGE\nE / USE TO TELEPORT"
+
+[node name="Destinations" type="Node3D" parent="."]
+
+[node name="Portal" type="Marker3D" parent="Destinations"]
+position = Vector3(294, 0, -305.9)
+script = ExtResource("4_gps")
+label = "Garage Teleporter"
+dev_only = true
+hint = "In the dev room, behind the DEV ROOM booth in the north promenade. Use the cyan teleporter."
+
+[node name="Garage" type="Marker3D" parent="Destinations"]
+position = Vector3(32, 0, -25)
+script = ExtResource("4_gps")
+label = "Procedural Garage"
+dev_only = true
+hint = "Service elevator at the east doorway. C is the casino; B1–B5 are basement garages."
+area = AABB(-100, -23, -125, 250, 21, 230)
+
+[node name="DevGate" type="Node" parent="Entrance"]
+script = ExtResource("dev_gate")

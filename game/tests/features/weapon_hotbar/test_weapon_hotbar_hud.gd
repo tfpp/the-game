@@ -34,7 +34,9 @@ func test_backpack_slots_show_their_contents_by_number() -> void:
 	_hand.inventory().backpack[2] = "pistol"
 	_hud._process(0.0)
 	assert_eq(_hud._labels[3].text, "Pistol", "Backpack slot 2 (0-indexed) is column 3")
-	assert_eq(_hud._labels[1].text, "—", "An empty slot reads as a dash")
+	assert_eq(_hud._labels[1].text, "")
+	assert_false(_hud._cells[1].visible)
+	assert_true(_hud._cells[3].visible)
 
 
 func test_holding_a_weapon_highlights_the_hand_slot() -> void:
@@ -67,7 +69,16 @@ func test_the_gun_machines_rig_slot_highlights_only_while_active() -> void:
 	assert_eq(label.get_theme_color("font_color"), _hud.IDLE_COLOR)
 
 
-func test_empty_hand_and_no_rig_read_as_dashes() -> void:
+func test_empty_slots_hide_labels_and_collapse_strip() -> void:
+	_hand.net_item_id = ""
+	_hand.inventory().backpack.fill("")
 	_hud._process(0.0)
-	assert_eq(_hud._labels[_hud.HAND_SLOT].text, "—")
-	assert_eq(_hud._labels[_hud.RIG_SLOT].text, "—")
+	assert_eq(_hud._labels[_hud.HAND_SLOT].text, "")
+	assert_eq(_hud._labels[_hud.RIG_SLOT].text, "")
+	assert_false(_hud._panel.visible)
+	_hand.inventory().backpack[7] = "pistol"
+	_hud._process(0.0)
+	assert_true(_hud._panel.visible)
+	assert_true(_hud._cells[8].visible)
+	assert_false(_hud._cells[1].visible)
+	assert_eq((_hud._labels[8].get_parent().get_child(0) as Label).text, "8")

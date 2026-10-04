@@ -1,0 +1,13 @@
+{
+  "title": "Group elevator excursions",
+  "summary": "Ride the Crown elevator into a private slum run with your group.",
+  "notes": [
+    "Send elevator occupants together into separate garage or alley excursions, each with its own scene template.",
+    "Add return elevators and wait for destination collision before moving riders.",
+    "Add elevator ride hum, subtle vibration and changing floor indicators; open return doors when riders arrive.",
+    "Vary garage enemies between runs and improve supply-crate loot on deeper floors.",
+    "Load saved five-floor garage geometry instead of rebuilding the structure for every run.",
+    "Retire the old shared slum gate as an entrance and point GPS hints to the Crown elevator.",
+    "Keep weapon effects, projectiles and health updates within each excursion group while retaining global chat."
+  ]
+}

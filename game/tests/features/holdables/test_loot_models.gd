@@ -2,7 +2,7 @@ extends GutTest
 
 const MODELS := preload("res://features/holdables/model_tools/loot_models.gd")
 const MESH := preload("res://features/procedural_rooms/model_tools/prop_model.gd")
-const ALLEY := preload("res://features/slum_alley/feature.tscn")
+const ALLEY := preload("res://features/slum_alley/alley.tscn")
 const EXPORTS := [
 	preload("res://assets/slum_alley/models/dumpster/dumpster.glb"),
 	preload("res://assets/holdables/models/scrap/scrap.glb"),

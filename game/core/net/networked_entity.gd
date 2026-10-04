@@ -89,10 +89,32 @@ func receive_legacy_action(action: StringName, payload: Dictionary = {}) -> void
 func send_event(event: StringName, payload: Dictionary = {}, peer: int = 0) -> void:
 	if not is_authority():
 		return
-	if peer == 0:
+	if peer == 0 and _network_scope() == null:
 		_receive_event.rpc(event, payload)
-	else:
+	elif peer != 0 and peer_allowed(peer):
 		_receive_event.rpc_id(peer, event, payload)
+	elif peer == 0:
+		for recipient: int in multiplayer.get_peers():
+			if peer_allowed(recipient):
+				_receive_event.rpc_id(recipient, event, payload)
+		if peer_allowed(multiplayer.get_unique_id()):
+			_receive_event(event, payload)
+
+
+## An instance root owns membership. Shared entities have no scope and retain
+## their existing visibility. Requests and transient events use the same policy.
+func peer_allowed(peer: int) -> bool:
+	var scope := _network_scope()
+	return scope == null or bool(scope.call("network_peer_allowed", peer))
+
+
+func _network_scope() -> Node:
+	var ancestor := get_parent()
+	while ancestor != null:
+		if ancestor.has_method("network_peer_allowed"):
+			return ancestor
+		ancestor = ancestor.get_parent()
+	return null
 
 
 @rpc("authority", "call_local", "reliable")
@@ -118,6 +140,8 @@ func _action_result(action: StringName, result: Result) -> void:
 # gdlint: disable=max-returns
 func _evaluate(peer: int, action: StringName, payload: Dictionary) -> Result:
 	if not is_authority():
+		return Result.DENIED
+	if not peer_allowed(peer):
 		return Result.DENIED
 	if not _actions.has(action):
 		return Result.UNKNOWN_ACTION
@@ -159,7 +183,11 @@ func _configure_replication() -> void:
 	_sync.replication_config = config
 	_sync.replication_interval = replication_interval
 	_sync.set_multiplayer_authority(SERVER_PEER)
+	if _network_scope() != null:
+		_sync.add_visibility_filter(peer_allowed)
 	add_child(_sync)
+	if _network_scope() != null:
+		_sync.update_visibility()
 
 
 func _on_session_changed(mode: Network.Mode) -> void:

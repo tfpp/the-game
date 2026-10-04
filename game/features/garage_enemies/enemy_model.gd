@@ -78,6 +78,8 @@ func equip(tier: int, index: int) -> void:
 			held = _pistol()
 		_:
 			_rags(look, index)
+	# Retain painted detail and a readable silhouette without adding dynamic lights.
+	avatar.human.material.set_shader_parameter("minimum_light", 0.3)
 	if held != null:
 		add_child(held)
 

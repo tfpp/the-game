@@ -1,7 +1,7 @@
 extends GutTest
 
 const FEATURE := preload("res://features/starter_room/feature.tscn")
-const GARAGE := preload("res://features/procedural_rooms/feature.tscn")
+const GARAGE := preload("res://features/procedural_rooms/prototype.tscn")
 const STREET := preload("res://features/street_district/feature.tscn")
 const CASINO := preload("res://features/casino_hub/gridmap/playable.tscn")
 const RUNS := preload("res://features/slum_runs/feature.tscn")
@@ -9,6 +9,7 @@ const PLAYER := preload("res://core/player/player.tscn")
 
 
 func test_all_routes_use_existing_arrivals_and_street_floor_preloads_before_travel() -> void:
+	preload("res://tests/features/dev_access/cheats_fixture.gd").enable(self)
 	var features := Node3D.new()
 	add_child_autofree(features)
 	var garage := GARAGE.instantiate() as Node3D

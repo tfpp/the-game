@@ -25,17 +25,32 @@ func _capture_views() -> void:
 	for layer: Node in get_tree().root.find_children("*", "CanvasLayer", true, false):
 		(layer as CanvasLayer).visible = false
 	await _shot(player, Vector3(0, 1.65, 917), Vector3(0, 1.1, 900), "alley-night.png")
-	await _shot(player, Vector3(-8, 1.65, 595), Vector3(4, 1.1, 600), "garage-p1-night.png")
-	await _shot(player, Vector3(-8, 8.25, 595), Vector3(4, 7.7, 600), "garage-p3-night.png")
-	var car := $Game/Features/parking_garage/Garage/Car_F0_1 as CarWreck
-	(car.get_node("Loot") as LootContainer).net_searched = true
-	car._process(0.5)
+	var garage := $Game/Features/procedural_rooms/Garage as Node3D
 	await _shot(
 		player,
-		car.global_position + Vector3(-3, 1.8, 2.6),
-		car.global_position + Vector3(-1.5, 1.0, 0),
-		"car-boot-open.png"
+		garage.to_global(Vector3(-8, 17.65, 5)),
+		garage.to_global(Vector3(4, 17, 10)),
+		"garage-b1-night.png"
 	)
+	await _shot(
+		player,
+		garage.to_global(Vector3(-8, 1.65, 5)),
+		garage.to_global(Vector3(4, 1, 10)),
+		"garage-b5-night.png"
+	)
+	for node: Node in get_tree().get_nodes_in_group(LootContainer.GROUP):
+		if node is CarBoot and garage.is_ancestor_of(node):
+			var boot := node as CarBoot
+			var car := boot.get_parent() as Node3D
+			boot.net_boot_open = true
+			boot._process(.5)
+			await _shot(
+				player,
+				car.to_global(Vector3(-3, 1.8, 2.6)),
+				boot.global_position,
+				"car-boot-open.png"
+			)
+			break
 	print("LIGHTING_PROBE PASS")
 	get_tree().quit()
 

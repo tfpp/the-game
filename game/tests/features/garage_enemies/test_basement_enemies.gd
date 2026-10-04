@@ -4,19 +4,19 @@ extends GutTest
 ## gunmen on the lowest floors. Every enemy stands on real deck floor, clear of
 ## geometry, in the lanes the population rules keep free of set pieces.
 
-const ROOMS := preload("res://features/procedural_rooms/feature.tscn")
-const ENEMIES := preload("res://features/garage_enemies/feature.tscn")
 const DECK_SPACING := 4.0
 
-var _rooms: Node3D
+var _rooms: SlumInstance
 var _enemies: Node3D
 
 
 func before_all() -> void:
-	_rooms = ROOMS.instantiate() as Node3D
+	_rooms = SlumInstance.new()
+	_rooms.enemy_plan = GarageRunPlan.enemies(73021)
+	_rooms.position = Vector3(0, 0, 12000)
+	_rooms.rotation.y = -PI / 2
 	add_child(_rooms)
-	_enemies = ENEMIES.instantiate() as Node3D
-	add_child(_enemies)
+	_enemies = _rooms.get_node("Map/CrownGarage/Enemies") as Node3D
 	for enemy: GarageEnemy in _list():
 		enemy.set_physics_process(false)
 	await wait_physics_frames(3)
@@ -24,14 +24,33 @@ func before_all() -> void:
 
 func after_all() -> void:
 	_rooms.free()
-	_enemies.free()
 
 
 func _list() -> Array[GarageEnemy]:
 	var out: Array[GarageEnemy] = []
-	for child: Node in _enemies.get_node("Basement").get_children():
+	for child: Node in _enemies.get_children():
 		out.append(child as GarageEnemy)
 	return out
+
+
+func test_deep_encounter_tuning_keeps_base_profiles_and_other_floors_unchanged() -> void:
+	var deep_gunman: GarageEnemy
+	var upper_gunman: GarageEnemy
+	for enemy: GarageEnemy in _list():
+		if enemy.tier != GarageEnemyTiers.Tier.GUNMAN:
+			continue
+		if is_zero_approx(enemy.home().y):
+			deep_gunman = enemy
+		else:
+			upper_gunman = enemy
+	assert_not_null(deep_gunman)
+	assert_not_null(upper_gunman)
+	assert_eq(deep_gunman.profile()["damage"], 22.5)
+	assert_almost_eq(deep_gunman.profile()["windup"], .45, .0001)
+	assert_eq(upper_gunman.profile()["damage"], 15.0)
+	assert_eq(upper_gunman.profile()["windup"], .6)
+	assert_eq(GarageEnemyTiers.profile(GarageEnemyTiers.Tier.GUNMAN)["damage"], 15.0)
+	assert_eq(GarageEnemyTiers.profile(GarageEnemyTiers.Tier.GUNMAN)["windup"], .6)
 
 
 ## B1 is 1, B5 is 5.
@@ -40,8 +59,8 @@ func _basement_level(enemy: GarageEnemy) -> int:
 
 
 func test_basement_lines_up_with_the_procedural_garage() -> void:
-	var garage := _rooms.get_node("Garage") as Node3D
-	var basement := _enemies.get_node("Basement") as Node3D
+	var garage := _rooms.get_node("Map/CrownGarage") as Node3D
+	var basement := _enemies
 	assert_true(basement.global_transform.is_equal_approx(garage.global_transform))
 
 
@@ -78,7 +97,7 @@ func test_enemies_start_clear_of_geometry_and_in_open_lanes() -> void:
 
 
 func test_danger_rises_towards_b5_and_arrival_is_safe() -> void:
-	var arrival := (_rooms.get_node("Garage/Arrival") as Node3D).global_position
+	var arrival := _rooms.arrival.global_position
 	var strongest := {}
 	for enemy: GarageEnemy in _list():
 		var level := _basement_level(enemy)

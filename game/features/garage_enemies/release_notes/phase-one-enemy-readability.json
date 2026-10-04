@@ -1,0 +1,5 @@
+{
+  "title": "Readable garage scavengers",
+  "summary": "Dark-clothed enemies are easier to pick out during garage fights.",
+  "notes": ["Give garage enemies a subtle surface light floor so their silhouettes stay readable in dark areas."]
+}

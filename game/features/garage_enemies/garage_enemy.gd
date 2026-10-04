@@ -19,6 +19,9 @@ const WAKE_RADIUS := 30.0
 const ANIMATE_RADIUS := 45.0
 
 @export var tier := GarageEnemyTiers.Tier.LURKER
+## Instance encounter tuning; defaults preserve shared/development enemies.
+@export_range(.5, 2.0) var damage_scale := 1.0
+@export_range(.5, 2.0) var windup_scale := 1.0
 
 ## Replicated through NetworkedEntity (see garage_enemy.tscn).
 @export var net_position := Vector3.ZERO
@@ -45,7 +48,9 @@ var _remote_ready := false
 
 
 func _ready() -> void:
-	_info = GarageEnemyTiers.profile(tier)
+	_info = GarageEnemyTiers.profile(tier).duplicate()
+	_info["damage"] = float(_info["damage"]) * damage_scale
+	_info["windup"] = float(_info["windup"]) * windup_scale
 	_home = position
 	net_position = position
 	health = int(_info["hits"])
@@ -116,7 +121,7 @@ func _find_target() -> Player:
 	var points: Array[Vector3] = []
 	for node: Node in get_tree().get_nodes_in_group(&"players"):
 		var player := node as Player
-		if player == null or not player.is_inside_tree():
+		if player == null or not player.is_inside_tree() or not _may_target(player):
 			continue
 		var point := player.global_position
 		if global_position.distance_to(point) > WAKE_RADIUS:
@@ -143,8 +148,10 @@ func _find_target() -> Player:
 
 
 func _crouching(player: Player) -> bool:
-	var crouch := get_tree().get_first_node_in_group(&"crouching")
-	return crouch != null and bool(crouch.call("is_crouching", player.get_multiplayer_authority()))
+	for crouch: Node in get_tree().get_nodes_in_group(&"crouching"):
+		if crouch.multiplayer == multiplayer:
+			return bool(crouch.call("is_crouching", player.get_multiplayer_authority()))
+	return false
 
 
 func can_see(player: Player) -> bool:
@@ -195,10 +202,8 @@ func _strike() -> void:
 	if hit:
 		var combat := _live_combat()
 		if combat != null:
-			# The victim is also the "attacker", so dying to an enemy never awards
-			# another player a kill.
 			var peer := player.get_multiplayer_authority()
-			combat.call("apply_damage", peer, float(_info["damage"]), peer)
+			combat.call("apply_enemy_damage", peer, float(_info["damage"]))
 
 
 ## The Combat that should take the hit. A world being torn down (a network mode change
@@ -206,14 +211,14 @@ func _strike() -> void:
 ## it so damage always lands on the live one.
 func _live_combat() -> Node:
 	for combat: Node in get_tree().get_nodes_in_group(&"combat"):
-		if not combat.is_queued_for_deletion():
+		if combat.multiplayer == multiplayer and not combat.is_queued_for_deletion():
 			return combat
 	return null
 
 
 ## Server-only: any weapon's hit. Being shot turns the enemy towards its attacker.
 func take_hit(attacker_peer: int) -> void:
-	if not multiplayer.is_server() or not net_alive:
+	if not multiplayer.is_server() or not net_alive or not _may_target_peer(attacker_peer):
 		return
 	health -= 1
 	var attacker := _player(attacker_peer)
@@ -305,9 +310,25 @@ func _player(peer: int) -> Player:
 		return null
 	for node: Node in get_tree().get_nodes_in_group(&"players"):
 		var player := node as Player
-		if player != null and player.get_multiplayer_authority() == peer:
+		if player != null and player.get_multiplayer_authority() == peer and _may_target(player):
 			return player
 	return null
+
+
+## Gameplay membership has no exception for a hosting player or a nearby outsider.
+func _may_target(player: Player) -> bool:
+	if player.multiplayer != multiplayer:
+		return false
+	return _may_target_peer(player.get_multiplayer_authority())
+
+
+func _may_target_peer(peer: int) -> bool:
+	var ancestor := get_parent()
+	while ancestor != null:
+		if ancestor is ZoneScope:
+			return peer in (ancestor as ZoneScope).members
+		ancestor = ancestor.get_parent()
+	return true
 
 
 ## Turns a global direction into the parent's space, so `net_yaw` (applied to the

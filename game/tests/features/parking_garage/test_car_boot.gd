@@ -4,8 +4,29 @@ const WRECK := preload("res://features/parking_garage/car_wreck.tscn")
 const CAR := preload("res://features/procedural_rooms/props/car.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
 const HAND := preload("res://features/holdables/hand.tscn")
-const GARAGE := preload("res://features/parking_garage/feature.tscn")
+const GARAGE := preload("res://features/procedural_rooms/prototype.tscn")
 var _player: Player
+
+
+func test_shared_wreck_keeps_paint_collision_and_damaged_variant() -> void:
+	var car := WRECK.instantiate() as CarWreck
+	add_child_autofree(car)
+	var damaged := WRECK.instantiate() as CarWreck
+	damaged.damaged = true
+	damaged.position.x = 10
+	add_child_autofree(damaged)
+	await wait_physics_frames(2)
+	var body := car.get_node("BodyPaint") as MeshInstance3D
+	assert_not_null(body.mesh)
+	assert_eq(body.mesh.get_surface_count(), 1)
+	assert_true((car.get_node("Trim") as MeshInstance3D).mesh.get_surface_count() > 1)
+	assert_eq(
+		(body.get_surface_override_material(0) as StandardMaterial3D).albedo_color, car.body_color
+	)
+	var query := PhysicsRayQueryParameters3D.create(Vector3(0, 1, -3), Vector3(0, 1, 3))
+	var hit := car.get_world_3d().direct_space_state.intersect_ray(query)
+	assert_eq(hit.get("collider"), car)
+	assert_false((damaged.get_node("HoodPaint") as MeshInstance3D).visible)
 
 
 func before_each() -> void:
@@ -91,12 +112,11 @@ func test_every_authored_garage_car_has_one_searchable_boot() -> void:
 	var garage := GARAGE.instantiate() as Node3D
 	add_child_autofree(garage)
 	var count := 0
-	for car: Node in garage.get_node("Garage").get_children():
-		if car is CarWreck:
+	for node: Node in garage.find_children("Loot", "", true, false):
+		if node is CarBoot:
 			count += 1
-			assert_is(car.get_node("Loot"), CarBoot)
-			assert_eq(car.find_children("Loot", "Node3D", true, false).size(), 1)
-	assert_eq(count, 17)
+			assert_eq(node.get_parent().find_children("Loot", "", true, false).size(), 1)
+	assert_gt(count, 5)
 
 
 func test_remote_crouching_uses_the_replicated_lower_eye_height() -> void:

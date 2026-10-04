@@ -11,3 +11,4 @@ cell_center_z = false
 cell_octant_size = 1
 data = {"cells": PackedInt32Array(0, 0, 0)}
 [node name="Cab" parent="." instance=ExtResource("cab")]
+excursion_role = 1

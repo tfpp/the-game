@@ -4,6 +4,10 @@ class_name ChangelogEntries
 
 const ENTRIES: Array[Dictionary] = [
 	{
+		"title": "Private slum elevator runs",
+		"summary": "Ride with your group, loot deeper garage floors and return to sell your haul.",
+	},
+	{
 		"title": "Vivienne at the bar",
 		"summary": "Buy drinks, win for charisma and walk Vivienne to your room for a lucky night.",
 	},

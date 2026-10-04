@@ -1,0 +1,9 @@
+{
+  "title": "Load Rain Alleys for its excursion",
+  "summary": "Keep the unused public alley map out of normal startup.",
+  "notes": [
+    "Separate destination registration from the authored alley map scene.",
+    "Keep private group maps and their return elevators, with fresh dumpster loot.",
+    "Developer pad travel requires cheats and waits for its private map to load."
+  ]
+}

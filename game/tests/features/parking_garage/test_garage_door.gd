@@ -1,9 +1,6 @@
 extends GutTest
-## The old garage's return door (features/parking_garage/garage_door.gd). The casino
-## staff door into this mock-up was removed (issue #317); runs single-process like
-## test_elevator_cab.gd, so peer 1 is the server and direct calls resolve locally.
+## Shared GarageDoor behavior, independent of the retired P1–P3 map.
 
-const FeatureScene := preload("res://features/parking_garage/feature.tscn")
 const PlayerScene := preload("res://core/player/player.tscn")
 
 var _features: Node3D
@@ -22,10 +19,11 @@ func before_each() -> void:
 	_casino_arrival.name = "CasinoArrival"
 	_casino_arrival.position = Vector3(0, 1.2, 28)
 	runs.add_child(_casino_arrival)
-	_root = FeatureScene.instantiate() as Node3D
-	_root.name = "parking_garage"
+	_root = Node3D.new()
 	_features.add_child(_root)
-	_garage_door = _root.get_node("Garage/GarageDoor") as GarageDoor
+	_garage_door = GarageDoor.new()
+	_garage_door.destination = NodePath("../../slum_runs/CasinoArrival")
+	_root.add_child(_garage_door)
 
 
 func _player_at(global_pos: Vector3) -> Player:

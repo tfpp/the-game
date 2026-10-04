@@ -86,7 +86,10 @@ func _physics_process(delta: float) -> void:
 
 func _update_leaves() -> void:
 	for index: int in _leaves.size():
-		_leaves[index].position.x = (-1.0 if index == 0 else 1.0) * (0.75 + _amount * 1.65)
+		var target := _leaves[index].position
+		target.x = (-1.0 if index == 0 else 1.0) * (0.75 + _amount * 1.65)
+		if _leaves[index].position != target:
+			_leaves[index].position = target
 
 
 func occupied() -> bool:

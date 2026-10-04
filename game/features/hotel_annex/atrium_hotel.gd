@@ -208,12 +208,9 @@ func _build_atrium() -> void:
 			Vector3(corner.x + 0.3, top, corner.y + 0.3),
 			"plaster"
 		)
-	var sign := Label3D.new()
+	var sign := SignBoard.new()
 	sign.text = "THE ATRIUM HOTEL"
-	sign.font_size = 64
-	sign.pixel_size = 0.004
-	sign.modulate = Color(1, 0.83, 0.52)
-	sign.outline_size = 6
+	sign.letter_height = .18
 	sign.position = Vector3(8.75, 3.45, 0.1)
 	add_child(sign)
 	# One light per storey over the atrium and one per wing: no shadows, only loaded
@@ -226,15 +223,13 @@ func _build_atrium() -> void:
 
 
 func _room_sign(level: int, side: int, room: int, wall_x: float) -> void:
-	var label := Label3D.new()
+	var label := SignBoard.new()
 	if level == 0:
 		label.text = GROUND_NAMES[side * ROOM_DOORS.size() + room]
 	else:
 		label.text = "%d%02d" % [level, side * ROOM_DOORS.size() + room + 1]
-	label.font_size = 48
-	label.pixel_size = 0.004
-	label.modulate = Color(1, 0.83, 0.52)
-	label.outline_size = 4
+	label.letter_height = .13
+	label.padding = .035
 	# Face the gallery: the west wing's sign faces +X, the east wing's -X.
 	var facing := 1.0 if side == 0 else -1.0
 	label.position = Vector3(wall_x + facing * (WALL * 0.5 + 0.02), floor_y(level) + 3.0, 0)

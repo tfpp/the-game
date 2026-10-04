@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://features/gun_machine/gun_rig.gd" id="1_script"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="entity"]
 
 [sub_resource type="SceneReplicationConfig" id="Replication"]
 properties/0/path = NodePath(".:net_stats")
@@ -24,3 +25,6 @@ script = ExtResource("1_script")
 [node name="Sync" type="MultiplayerSynchronizer" parent="."]
 root_path = NodePath("..")
 replication_config = SubResource("Replication")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("entity")

@@ -142,6 +142,7 @@ func test_death_disconnect_and_session_reset_do_not_complete_or_pay_jobs() -> vo
 
 
 func test_all_routes_can_pay_once_and_accumulate_session_xp() -> void:
+	preload("res://tests/features/dev_access/cheats_fixture.gd").enable(self)
 	for job: int in OperationsVan.ZONE_NAMES.size():
 		if _terminal.van.arrival(job) == null:
 			var marker := Marker3D.new()

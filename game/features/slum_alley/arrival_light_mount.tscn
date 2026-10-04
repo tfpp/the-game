@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Metal"]
+albedo_color = Color(0.12, 0.13, 0.14, 1)
+metallic = 0.7
+roughness = 0.65
+
+[sub_resource type="BoxMesh" id="Plate"]
+size = Vector3(0.18, 0.3, 0.06)
+material = SubResource("Metal")
+
+[sub_resource type="BoxMesh" id="Arm"]
+size = Vector3(0.08, 0.08, 2.08)
+material = SubResource("Metal")
+
+[node name="ArrivalLightMount" type="Node3D"]
+
+[node name="WallPlate" type="MeshInstance3D" parent="."]
+position = Vector3(0, 4.23, 0.17)
+mesh = SubResource("Plate")
+
+[node name="SupportArm" type="MeshInstance3D" parent="."]
+position = Vector3(0, 4.25, 1.2)
+mesh = SubResource("Arm")

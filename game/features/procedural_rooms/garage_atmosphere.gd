@@ -9,7 +9,7 @@ const BOUNDS := AABB(Vector3(-34, -1, -13), Vector3(68, 22, 90))
 ## The open atrium between the deck strips, from the bottom slab to above B1.
 const ATRIUM := AABB(Vector3(-10, 0, 12), Vector3(20, 20, 18))
 const AMBIENT_COLOR := Color(0.42, 0.5, 0.6)
-const AMBIENT_ENERGY := 0.1
+const AMBIENT_ENERGY := 0.22
 const FOG_COLOR := Color(0.02, 0.025, 0.035)
 const FOG_DENSITY := 0.035
 static var _rain_stream: AudioStreamWAV

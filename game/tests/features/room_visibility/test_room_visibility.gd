@@ -35,8 +35,8 @@ func test_server_selects_streamed_and_area_rooms_from_authored_bounds() -> void:
 	var room := fixture["room"] as StreamedRoom
 	var area := fixture["area"] as GpsDestination
 	var visibility := fixture["visibility"] as RoomVisibility
-	assert_eq(visibility._room_at(Vector3(0, 1, -600))["path"], room.get_path())
-	assert_eq(visibility._room_at(Vector3(0, 1, 600))["path"], area.get_path())
+	assert_eq(visibility._room_at(Vector3(0, 1, -600))["path"], visibility.get_path_to(room))
+	assert_eq(visibility._room_at(Vector3(0, 1, 600))["path"], visibility.get_path_to(area))
 	assert_eq(visibility._room_at(Vector3.ZERO)["path"], NodePath(""))
 	assert_eq(visibility._casino_bounds.size, Vector3(40, 8, 40))
 
@@ -47,6 +47,30 @@ func test_assignment_loads_only_the_selected_room() -> void:
 	var visibility := fixture["visibility"] as RoomVisibility
 	visibility.assign_room(room.get_path(), room.global_bounds())
 	assert_true(room.is_loaded())
+	visibility.assign_room(NodePath(""), visibility._casino_bounds)
+	assert_false(room.is_loaded())
+
+
+func test_preload_selects_streamed_floor_over_overlapping_gps_landmark() -> void:
+	var fixture := _fixture()
+	var room := fixture["room"] as StreamedRoom
+	var area := fixture["area"] as GpsDestination
+	var visibility := fixture["visibility"] as RoomVisibility
+	area.area = AABB(Vector3(-1, 0, -601), Vector3(2, 3, 2))
+	assert_eq(visibility._room_at(Vector3(0, 1, -600))["path"], visibility.get_path_to(room))
+	visibility.preload_at(Vector3(0, 1, -600))
+	assert_true(room.is_loaded())
+	assert_true(room.arrival_held())
+
+
+func test_confirmed_arrival_releases_preload_hold_for_next_departure() -> void:
+	var fixture := _fixture()
+	var room := fixture["room"] as StreamedRoom
+	var visibility := fixture["visibility"] as RoomVisibility
+	visibility.preload_at(Vector3(0, 1, -600))
+	assert_true(room.arrival_held())
+	visibility.assign_room(visibility.get_path_to(room), room.global_bounds())
+	assert_false(room.arrival_held())
 	visibility.assign_room(NodePath(""), visibility._casino_bounds)
 	assert_false(room.is_loaded())
 

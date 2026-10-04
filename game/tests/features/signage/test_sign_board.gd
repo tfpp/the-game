@@ -48,7 +48,9 @@ func test_atlas_stays_within_texture_limit_and_has_every_glyph() -> void:
 
 func test_unknown_characters_fall_back_and_case_is_ignored() -> void:
 	assert_eq(SignLetterAtlas.uv_rect("a"), SignLetterAtlas.uv_rect("A"))
-	assert_eq(SignLetterAtlas.uv_rect("%"), SignLetterAtlas.uv_rect("?"))
+	assert_eq(SignLetterAtlas.uv_rect("@"), SignLetterAtlas.uv_rect("?"))
+	for character: String in ["%", "+"]:
+		assert_ne(SignLetterAtlas.uv_rect(character), SignLetterAtlas.uv_rect("?"))
 	for character: String in ["ż", "ł"]:
 		assert_ne(SignLetterAtlas.uv_rect(character), SignLetterAtlas.uv_rect("?"))
 		assert_eq(SignLetterAtlas.uv_rect(character), SignLetterAtlas.uv_rect(character.to_upper()))
@@ -71,7 +73,9 @@ func test_every_mount_has_backing_frame_and_letters_without_labels() -> void:
 			var backing := sign.find_child("Backing", true, false) as MeshInstance3D
 			assert_not_null(backing, "mount %d has a backing mesh" % mount)
 			assert_true(backing.mesh is BoxMesh)
-			assert_not_null(sign.find_child("FrameTop", true, false))
+			var frame := sign.find_child("Frame", true, false) as MeshInstance3D
+			assert_not_null(frame)
+			assert_eq(frame.mesh.get_surface_count(), 1, "The complete frame uses one surface")
 			var letters := sign.find_child("Letters", true, false) as MeshInstance3D
 			assert_gt(letters.mesh.get_surface_count(), 0)
 			assert_eq(sign.find_children("*", "Label3D", true, false).size(), 0)

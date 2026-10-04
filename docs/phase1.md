@@ -77,26 +77,44 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
   records its run there. Scene copies at the offset are not placed yet (A3/A4).
 
 ### A2. Per-zone network relevance (depends on A1)
-- [ ] Send player, enemy and loot replication only to peers in the same zone
+- [x] Send player, enemy and loot replication only to peers in the same zone
   instance (MultiplayerSynchronizer visibility filters / `set_visibility_for`).
   Chat stays global.
 - Late joiners of an instance get its current state; peers in other instances get
   nothing.
 - This touches `game/core/net/` or the player scene: needs human review, say so.
+- Verified on the Phase 1 branch: transport tests mutate real player movement,
+  enemy state and searched-container contents and check member delivery, outsider
+  exclusion and late-entry state. Separate transport checks cover private item,
+  projectile, damage and death events, plus global chat. Player identities remain
+  available for the roster and owner RPCs; unrelated peers receive no movement
+  and their hidden player collider is disabled. Core networking/player changes
+  require human review in the PR.
 
 ### A3. Load only the active zone on clients (depends on A1)
-- [ ] Clients load the slum scene of their own instance only and free it on return;
+- [x] Clients load the slum scene of their own instance only and free it on return;
   the server keeps the instances it owns. Reuse `room_visibility` / `StreamedRoom`
   rather than a second loader. Noclipping out of a slum must not show the casino.
+- Verified on the Phase 1 branch: transport tests check exclusive map spawning,
+  free-on-return and member retention. The WebSocket cab round trip checks Crown
+  structure unloading for riders and retention for the outsider. The private
+  camera mask stays on the instance layer outside its bounds, excluding the Crown;
+  saved-map tests check server floor collision after client visuals unload.
 
 ### A4. Elevator travel to a random slum (depends on A1)
-- [ ] Enable travel in `features/elevator/elevator_cab.gd`: after the doors close
+- [x] Enable travel in `features/elevator/elevator_cab.gd`: after the doors close
   with riders inside, the server asks `ZoneInstances` for a new instance with a
   random registered `SlumArrivalPoint` (`dev_elevator/slum_destinations.gd`) and
   moves exactly the riders there together, keeping cab-relative positions.
 - Add a cab-style arrival (doors open onto the slum) and a return elevator in each
   slum that brings its riders back to the Crown cab.
 - Keep the existing door, hall-call and obstruction behavior and tests.
+- Verified on the Phase 1 branch: the server collects the cab's occupants after
+  closure, selects a registered destination and waits for owning-client readiness.
+  The production WebSocket test sends two riders together, keeps the outsider in
+  the hub and verifies their return positions. Offline cab tests also check yaw
+  and pitch preservation; existing door, obstruction, capacity and late-join tests
+  pass in the full suite. Garage and alley instances both construct return cabs.
 
 ### A5. Capacity limit and weight light (depends on nothing)
 - [x] Count riders inside the cab volume on the server. With more than 4 riders the
@@ -105,37 +123,63 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
   the lamp state for late joiners. Test 4 vs 5 riders and riders leaving.
 
 ### A6. Retire the slum gate (depends on A4)
-- [ ] Once the elevator travels, remove the south lobby gate as an entrance (or turn
+- [x] Once the elevator travels, remove the south lobby gate as an entrance (or turn
   it into scenery), update `slum_runs` README, GPS and tests so the elevator is the
   only way into the slums.
+- The gate is collision scenery without an interaction script. Normal van and
+  service-lift garage bypasses are locked behind cheats; GPS hints point to the
+  Crown elevator. The gate regression checks its non-interactive state, while the
+  production cab test verifies departure and return through the elevators.
 
 ## Milestone B: the parking garage zone
 
 ### B1. Choose one garage and delete the other
-- [ ] Make the B1–B5 procedural garage the parking garage destination: give it a
+- [x] Make the B1–B5 procedural garage the parking garage destination: give it a
   `SlumArrivalPoint` and a return elevator, and remove its dev teleporter, van
   route and service-lift entrance from normal play. Then delete the old P1–P3
   mock-up as listed in `docs/code-cleanup.md`, moving the tests that relied on it.
+- The old loaded map is deleted; shared car/door/light utilities remain. The
+  five-floor registration and top return cab are checked by destination and
+  excursion tests. Van, developer portal and service-lift bypasses require cheats.
 
 ### B2. Central open shaft and top-down progression (depends on B1)
-- [ ] Rework the garage per `docs/design/zones/slums/parking-garage.md`: at least
+- [x] Rework the garage per `docs/design/zones/slums/parking-garage.md`: at least
   five floors around an open shaft to the sky, arrival on the top floor, darker and
   wetter floors further down, ramps and jumpable gaps between floors. Build with
   GridMap tiles. Keep layout tests for clear ramps and arrival.
+- Five saved level tiles preserve the sky-open shaft and top arrival. Actual
+  controller checks traverse all four ramps and stairways both ways, jump each
+  shortcut and drop only one storey. B1 is dry; B2–B5 increase puddle count and
+  area. Lower floors reduce tube energy and increase failures; rendered captures
+  review all five water depths and the four shortcut landings.
 
 ### B3. Spawn enemies at random pre-placed points (depends on B1)
-- [ ] Replace fixed enemy placement with `EnemySpawnPoint` markers per floor; each
+- [x] Replace fixed enemy placement with `EnemySpawnPoint` markers per floor; each
   instance picks a random subset at start. Deeper floors have more and stronger
   spawns. Server-only rolls, deterministic in tests with a seeded RNG.
+- Authored markers feed a server-generated plan sent as spawn data. Seeded tests
+  check distinct points, repeatability, variation between seeds and increasing
+  encounter strength. Populations are 2/3/4/4/6; the B1 arrival lane stays clear.
 
 ### B4. Floor-scaled loot (depends on B1)
-- [ ] Give each floor its own `LootTable` so common cheap items dominate the top and
+- [x] Give each floor its own `LootTable` so common cheap items dominate the top and
   rare valuables appear deeper. Containers reset per instance.
+- Independent tables and seeded containers yield increasing expected value per
+  crate: $2.44/$3.82/$6.02/$16.48/$23.78. Plan tests check the weights and table
+  isolation; excursion tests check a new run gets fresh containers.
 
 ### B5. Difficulty pass (depends on B2–B4)
-- [ ] Tune enemy health, damage, reaction time and counts so a solo player can clear
+- [x] Tune enemy health, damage, reaction time and counts so a solo player can clear
   the top floor with a pistol and the bottom floor needs a better gun or a group.
   Document the numbers in the garage_enemies README.
+- The controlled real-map exercise clears B1 with two pistol shots and 100 HP.
+  B5 has one knifer and five gunmen, with 1.5x damage and 0.75x windup; its exposed
+  pistol run dies after four enemies, while the M4A4 clears all six at 100 HP.
+  The fixture observes actual death events, weapon cooldowns and reloads. Earlier
+  floors and base profiles are unchanged; numbers and fixture limitations are in
+  the enemy README. Enemy, plan and excursion regressions pass 34 tests / 328
+  assertions. This proves the stronger-weapon route, not impossibility of a
+  skilled movement-based pistol run.
 
 ## Milestone C: loot and economy
 
@@ -218,30 +262,49 @@ Replace one area per task so each PR stays reviewable.
   `CabIndicator` are flush brass `SignBoard`s at the old transforms; the atlas gained `<` `>`.
 
 ### E3. Shop and price signs (depends on E1)
-- [ ] Pawn shop (`pawn_shop`, `wall_gun.gd` price tags), kebab shop, food court
+- [x] Pawn shop (`pawn_shop`, `wall_gun.gd` price tags), kebab shop, food court
   stands, bar, gun machine and slot cabinet labels become modeled plaques/tags.
+- Fixed captions use the shared modeled sign kit; shop/slot and main-scene bar
+  captures review scale and attachment. The remaining runtime labels are changing
+  status/stakes, character names and dialogue, listed in the kit README.
 
 ### E4. Remaining world signs (depends on E1)
-- [ ] Annex, hotel, apartments, room doors, slum alley, garage and street district.
+- [x] Annex, hotel, apartments, room doors, slum alley, garage and street district.
   Keep `Label3D` only for dynamic text that must change at runtime (names over
   heads, live counters), and list those exceptions in the kit README.
+- A source audit of these runtime areas finds no remaining fixed `Label3D` signs.
+  Annex plaque letters are saved atlas meshes; the other fixed signs use mounted
+  `SignBoard`s. Remaining example-lab labels and authoring capture tools are
+  standalone development fixtures, outside runtime world signs.
 
 ## Milestone F: presentation polish
 
 ### F1. Slum readability
-- [ ] Brighten arrivals enough to orient (a working light near each arrival and
+- [x] Brighten arrivals enough to orient (a working light near each arrival and
   return elevator, visible landmark), keeping darkness elsewhere. Check that enemies
   are readable per the gameplay doc.
+- Actual main captures review both arrivals and return cabs, plus enemy silhouettes
+  at five and twelve metres. Garage light pools, floor plaques and the central
+  shaft orient arrivals; the alley return has a working lamp on a modeled bracket.
 
 ### F2. Elevator ride presentation (depends on A4)
-- [ ] Short (≤ 2 s) ride: hum, shake, floor indicator ticking, chime, doors open.
+- [x] Short (≤ 2 s) ride: hum, shake, floor indicator ticking, chime, doors open.
   No loading screen if the zone is already loaded.
+- Verified on the Phase 1 branch: the production WebSocket round-trip test returns
+  two riders to a preloaded Crown in 1.088 seconds, retaining cab-relative poses.
+  Cab tests cover indicator progression, local camera shake/restoration and hum
+  shutdown; arrival opens the doors and sends the existing arrival-bell event.
 
 ### F3. HUD tidy-up
-- [ ] Review overlapping HUD (version badge, radar, hotbar labels, money, HP) on a
+- [x] Review overlapping HUD (version badge, radar, hotbar labels, money, HP) on a
   phone-sized screen; hide the hotbar's "Hand" and slot labels when empty.
+- Actual main captures cover 360x780 and 780x360, empty and occupied inventories.
+  The empty panel collapses; occupied slots keep the current theme and touch targets.
+  Compact layouts retain main's sideways scrolling row. Touch controls, money,
+  health and ammo remain separate. Radar
+  remains desktop-only. Hotbar regression tests check empty-slot collapse.
 
-### F4. Web performance check
+### F4. Web performance check (deferred to Part 2)
 - [ ] Profile the web build in the Crown and in a slum; keep dynamic lights and
   per-frame work within budget. Record numbers in `docs/profiling-animation.md` or a
   new profiling note.

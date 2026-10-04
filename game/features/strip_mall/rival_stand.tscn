@@ -1,5 +1,6 @@
 [gd_scene format=3]
 [ext_resource type="Script" path="res://features/strip_mall/rival_model.gd" id="model"]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign_board"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/wood.tres" id="wood"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/cream.tres" id="cream"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/brass.tres" id="brass"]
@@ -50,21 +51,18 @@ material_override = ExtResource("brass")
 position = Vector3(0, 2.68, -0.4)
 mesh = SubResource("header")
 material_override = SubResource("red")
-[node name="Sign" type="Label3D" parent="."]
+[node name="Sign" type="Node3D" parent="."]
 position = Vector3(0, 2.68, -0.315)
+script = ExtResource("sign_board")
 text = "CITY WOK"
-font_size = 96
-pixel_size = 0.005
-modulate = Color(1, 0.92, 0.76, 1)
-outline_modulate = Color(0.2, 0.015, 0.01, 1)
-double_sided = false
-[node name="MenuBoard" type="Label3D" parent="."]
+letter_height = 0.3
+padding = 0.035
+[node name="MenuBoard" type="Node3D" parent="."]
 position = Vector3(0, 0.55, 0.635)
+script = ExtResource("sign_board")
 text = "SALMON RICE BOWL - $12\nE / USE TO ORDER"
-font_size = 40
-pixel_size = 0.0035
-modulate = Color(1, 0.92, 0.76, 1)
-double_sided = false
+letter_height = 0.085
+padding = 0.035
 [node name="Owner" type="Node3D" parent="."]
 position = Vector3(2, 0, 0)
 rotation = Vector3(0, 3.1415927, 0)

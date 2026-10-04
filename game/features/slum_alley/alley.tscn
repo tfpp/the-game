@@ -1,0 +1,271 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://features/parking_garage/garage_door.gd" id="1_door"]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign_board"]
+[ext_resource type="Script" path="res://features/dev_elevator/slum_arrival_point.gd" id="2_arrival"]
+[ext_resource type="PackedScene" path="res://features/loot/loot_container.tscn" id="3_loot"]
+[ext_resource type="Resource" path="res://features/slum_alley/alley_loot.tres" id="4_table"]
+[ext_resource type="Material" path="res://features/slum_alley/materials/brick.tres" id="6_brick"]
+[ext_resource type="Material" path="res://features/slum_alley/materials/rust.tres" id="7_rust"]
+[ext_resource type="Material" path="res://features/slum_alley/materials/board.tres" id="8_board"]
+[ext_resource type="Material" path="res://features/parking_garage/materials/puddle.tres" id="9_puddle"]
+[ext_resource type="PackedScene" path="res://features/parking_garage/fluorescent_fixture.tscn" id="10_light"]
+[ext_resource type="Script" path="res://features/parking_garage/garage_ambience.gd" id="11_ambience"]
+[ext_resource type="Script" path="res://features/slum_alley/rain.gd" id="12_rain"]
+[ext_resource type="PackedScene" path="res://features/slum_alley/dumpster_model.tscn" id="13_dumpster"]
+[ext_resource type="Mesh" path="res://assets/slum_alley/models/street_details.obj" id="14_streets"]
+[ext_resource type="PackedScene" path="res://features/slum_alley/ground.tscn" id="15_ground"]
+
+[sub_resource type="BoxShape3D" id="DumpsterShape"]
+size = Vector3(2.47, 1.6, 1.46)
+[sub_resource type="BoxMesh" id="PuddleMesh"]
+
+size = Vector3(1, 0.02, 1)
+
+[node name="SlumAlley" type="Node3D"]
+
+[node name="District" type="Node3D" parent="."]
+position = Vector3(0, 0, 900)
+
+[node name="StreetDetails" type="MeshInstance3D" parent="District"]
+mesh = ExtResource("14_streets")
+
+[node name="Arrival" type="Marker3D" parent="District"]
+position = Vector3(0, 1.2, 18)
+script = ExtResource("2_arrival")
+slum_name = "Rain Alleys"
+
+[node name="ReturnDoor" type="CSGBox3D" parent="District"]
+position = Vector3(0, 1.1, 23.4)
+size = Vector3(1.6, 2.2, 0.16)
+material = ExtResource("7_rust")
+use_collision = true
+script = ExtResource("1_door")
+destination = NodePath("../../../slum_runs/CasinoArrival")
+door_label = "Return to the Golden Crown"
+
+[node name="ReturnSign" type="Node3D" parent="District"]
+position = Vector3(0, 2.6, 23.2)
+rotation = Vector3(0, 3.14159265, 0)
+script = ExtResource("sign_board")
+letter_height = 0.1
+text = "GOLDEN CROWN\nBACK THROUGH THE GATE"
+
+[node name="Ground" parent="District" instance=ExtResource("15_ground")]
+
+[node name="NorthWestBlock" type="CSGBox3D" parent="District"]
+position = Vector3(-15, 6, -15)
+size = Vector3(16, 12, 16)
+material = ExtResource("6_brick")
+use_collision = true
+
+[node name="NorthEastBlock" type="CSGBox3D" parent="District"]
+position = Vector3(15, 8, -15)
+size = Vector3(16, 16, 16)
+material = ExtResource("6_brick")
+use_collision = true
+
+[node name="SouthWestBlock" type="CSGBox3D" parent="District"]
+position = Vector3(-15, 7, 15)
+size = Vector3(16, 14, 16)
+material = ExtResource("6_brick")
+use_collision = true
+
+[node name="SouthEastBlock" type="CSGBox3D" parent="District"]
+position = Vector3(15, 5, 15)
+size = Vector3(16, 10, 16)
+material = ExtResource("6_brick")
+use_collision = true
+
+[node name="NorthFence" type="CSGBox3D" parent="District"]
+position = Vector3(0, 1.6, -24.5)
+size = Vector3(49, 3.2, 0.12)
+material = ExtResource("7_rust")
+use_collision = true
+
+[node name="SouthFence" type="CSGBox3D" parent="District"]
+position = Vector3(0, 1.6, 24.5)
+size = Vector3(49, 3.2, 0.12)
+material = ExtResource("7_rust")
+use_collision = true
+
+[node name="WestFence" type="CSGBox3D" parent="District"]
+position = Vector3(-24.5, 1.6, 0)
+size = Vector3(0.12, 3.2, 49)
+material = ExtResource("7_rust")
+use_collision = true
+
+[node name="EastFence" type="CSGBox3D" parent="District"]
+position = Vector3(24.5, 1.6, 0)
+size = Vector3(0.12, 3.2, 49)
+material = ExtResource("7_rust")
+use_collision = true
+
+[node name="NorthWire" type="CSGBox3D" parent="District"]
+position = Vector3(0, 3.35, -24.5)
+size = Vector3(49, 0.08, 0.08)
+material = ExtResource("7_rust")
+
+[node name="SouthWire" type="CSGBox3D" parent="District"]
+position = Vector3(0, 3.35, 24.5)
+size = Vector3(49, 0.08, 0.08)
+material = ExtResource("7_rust")
+
+[node name="WestWire" type="CSGBox3D" parent="District"]
+position = Vector3(-24.5, 3.35, 0)
+size = Vector3(0.08, 0.08, 49)
+material = ExtResource("7_rust")
+
+[node name="EastWire" type="CSGBox3D" parent="District"]
+position = Vector3(24.5, 3.35, 0)
+size = Vector3(0.08, 0.08, 49)
+material = ExtResource("7_rust")
+
+[node name="AlleyWallWest" type="CSGBox3D" parent="District"]
+position = Vector3(-7, 1.2, 0)
+size = Vector3(0.3, 2.4, 10)
+material = ExtResource("6_brick")
+use_collision = true
+
+[node name="AlleyWallEast" type="CSGBox3D" parent="District"]
+position = Vector3(7, 1.2, 0)
+size = Vector3(0.3, 2.4, 10)
+material = ExtResource("6_brick")
+use_collision = true
+
+[node name="NorthBoardA" type="CSGBox3D" parent="District"]
+position = Vector3(-10, 2.2, -6.85)
+size = Vector3(2.5, 1.8, 0.12)
+material = ExtResource("8_board")
+
+[node name="NorthBoardB" type="CSGBox3D" parent="District"]
+position = Vector3(12, 3.4, -6.85)
+size = Vector3(3, 1.8, 0.12)
+material = ExtResource("8_board")
+
+[node name="SouthBoardA" type="CSGBox3D" parent="District"]
+position = Vector3(-18, 2.5, 6.85)
+size = Vector3(2.5, 1.8, 0.12)
+material = ExtResource("8_board")
+
+[node name="SouthBoardB" type="CSGBox3D" parent="District"]
+position = Vector3(17, 2.1, 6.85)
+size = Vector3(3, 1.8, 0.12)
+material = ExtResource("8_board")
+
+[node name="DumpsterNorth" type="StaticBody3D" parent="District"]
+position = Vector3(-3.2, 0.8, -11)
+
+[node name="Shape" type="CollisionShape3D" parent="District/DumpsterNorth"]
+shape = SubResource("DumpsterShape")
+
+[node name="Model" parent="District/DumpsterNorth" instance=ExtResource("13_dumpster")]
+position = Vector3(0, -0.8, 0)
+
+[node name="Loot" parent="District/DumpsterNorth" instance=ExtResource("3_loot")]
+position = Vector3(0, 0.1, 1.1)
+loot_table = ExtResource("4_table")
+noun = "dumpster"
+
+[node name="DumpsterSouth" type="StaticBody3D" parent="District"]
+position = Vector3(3, 0.8, 11)
+
+[node name="Shape" type="CollisionShape3D" parent="District/DumpsterSouth"]
+shape = SubResource("DumpsterShape")
+
+[node name="Model" parent="District/DumpsterSouth" instance=ExtResource("13_dumpster")]
+position = Vector3(0, -0.8, 0)
+
+[node name="Loot" parent="District/DumpsterSouth" instance=ExtResource("3_loot")]
+position = Vector3(0, 0.1, -1.1)
+loot_table = ExtResource("4_table")
+noun = "dumpster"
+
+[node name="DumpsterWest" type="StaticBody3D" parent="District"]
+position = Vector3(-12, 0.8, 2.5)
+
+[node name="Shape" type="CollisionShape3D" parent="District/DumpsterWest"]
+shape = SubResource("DumpsterShape")
+
+[node name="Model" parent="District/DumpsterWest" instance=ExtResource("13_dumpster")]
+position = Vector3(0, -0.8, 0)
+
+[node name="Loot" parent="District/DumpsterWest" instance=ExtResource("3_loot")]
+position = Vector3(0, 0.1, -1.1)
+loot_table = ExtResource("4_table")
+noun = "dumpster"
+
+[node name="DumpsterEast" type="StaticBody3D" parent="District"]
+position = Vector3(12, 0.8, -2.5)
+
+[node name="Shape" type="CollisionShape3D" parent="District/DumpsterEast"]
+shape = SubResource("DumpsterShape")
+
+[node name="Model" parent="District/DumpsterEast" instance=ExtResource("13_dumpster")]
+position = Vector3(0, -0.8, 0)
+
+[node name="Loot" parent="District/DumpsterEast" instance=ExtResource("3_loot")]
+position = Vector3(0, 0.1, 1.1)
+loot_table = ExtResource("4_table")
+noun = "dumpster"
+
+[node name="StreetLampNorth" parent="District" instance=ExtResource("10_light")]
+position = Vector3(5, 4.1, -16)
+mode = 0
+base_energy = 3.3
+light_color = Color(0.96, 0.89, 0.75, 1)
+fixture_seed = 41
+
+[node name="StreetLampCenter" parent="District" instance=ExtResource("10_light")]
+position = Vector3(-5, 4.1, 0)
+mode = 0
+base_energy = 3.3
+light_color = Color(0.96, 0.89, 0.75, 1)
+fixture_seed = 43
+
+[node name="StreetLampSouth" parent="District" instance=ExtResource("10_light")]
+position = Vector3(5, 4.1, 16)
+mode = 0
+base_energy = 3.3
+light_color = Color(0.96, 0.89, 0.75, 1)
+fixture_seed = 47
+
+[node name="StreetLampWest" parent="District" instance=ExtResource("10_light")]
+position = Vector3(-16, 4.1, 0)
+mode = 2
+fixture_seed = 53
+
+[node name="StreetLampEast" parent="District" instance=ExtResource("10_light")]
+position = Vector3(16, 4.1, 0)
+mode = 3
+fixture_seed = 59
+
+[node name="PuddleNorth" type="MeshInstance3D" parent="District"]
+position = Vector3(2.2, 0.015, -14)
+scale = Vector3(3.5, 1, 2)
+mesh = SubResource("PuddleMesh")
+material_override = ExtResource("9_puddle")
+
+[node name="PuddleSouth" type="MeshInstance3D" parent="District"]
+position = Vector3(-2, 0.015, 13)
+scale = Vector3(2.6, 1, 3)
+mesh = SubResource("PuddleMesh")
+material_override = ExtResource("9_puddle")
+
+[node name="PuddleWest" type="MeshInstance3D" parent="District"]
+position = Vector3(-14, 0.015, -2)
+scale = Vector3(3, 1, 2)
+mesh = SubResource("PuddleMesh")
+material_override = ExtResource("9_puddle")
+
+[node name="Ambience" type="Node3D" parent="District"]
+script = ExtResource("11_ambience")
+ambience_seed = 907
+
+[node name="Bed" type="AudioStreamPlayer" parent="District/Ambience"]
+
+[node name="Creaks" type="AudioStreamPlayer3D" parent="District/Ambience"]
+
+[node name="Rain" type="CPUParticles3D" parent="District"]
+position = Vector3(0, 17, 0)
+script = ExtResource("12_rain")

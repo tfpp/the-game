@@ -221,3 +221,17 @@ X reloads. Loaded rounds remain a subset of backpack ammo, so reloads never
 create ammunition. Native models and animation libraries are rebuilt with
 model_tools/build_rifles.gd. Blender-compatible GLBs, exact UV charts, paint
 sources and prompts live under docs/design/model-sources/ for each gun.
+
+## Private excursion replication
+
+The Hand root synchronizer owns the held item, inventory, consumable animation and
+all magazine snapshots. A single root snapshot survives visibility despawn/respawn
+without retaining stale child synchronizer paths. Consumption and magazine
+NetworkedEntity components continue to validate actions and publish effects;
+their state is carried by the Hand root.
+
+ZoneInstances membership filters hand spawning and updates. Fire, impact and
+consumption effects use scoped NetworkedEntity events. Drops retain their origin
+instance, initialize visibility before their spawn snapshot, deny outsider pickups
+and are deleted when the instance empties. The server always retains simulation;
+owners retain their own inventory through travel.

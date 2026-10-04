@@ -29,7 +29,7 @@ func _capture() -> void:
 	environment.environment.ambient_light_color = Color("9baca6")
 	environment.environment.ambient_light_energy = .65
 	world.add_child(environment)
-	var garage := preload("res://features/procedural_rooms/feature.tscn").instantiate() as Node3D
+	var garage := preload("res://features/procedural_rooms/prototype.tscn").instantiate() as Node3D
 	garage.name = "procedural_rooms"
 	world.add_child(garage)
 	var street := preload("res://features/street_district/feature.tscn").instantiate() as Node3D

@@ -68,12 +68,13 @@ func test_touch_layout_keeps_big_slots_in_a_scroll_row_with_short_names() -> voi
 		var cell: PanelContainer = _hud._cells[slot]
 		assert_gte(cell.custom_minimum_size.x, HudLayout.TOUCH_SLOT)
 		assert_gte(cell.custom_minimum_size.y, HudLayout.TOUCH_SLOT)
-		assert_true(_hud._labels[slot].visible, "Short names stay visible")
+		assert_eq(_hud._cells[slot].visible, slot == 1, "Only occupied touch slots are shown")
 	assert_eq(_hud._labels[1].text, "Pistol")
 	assert_eq(_hud.short_name("Golden Revolver"), "Golden")
 
 
 func test_pause_menu_hides_the_panel() -> void:
+	_hand.inventory().backpack[0] = "pistol"
 	var menu := Node.new()
 	add_child_autofree(menu)
 	menu.add_to_group(HudLayout.PAUSE_GROUP)

@@ -1,11 +1,37 @@
 extends GutTest
 
-const FEATURE := preload("res://features/procedural_rooms/feature.tscn")
+const FEATURE := preload("res://features/procedural_rooms/prototype.tscn")
 const ROOM := preload("res://world/room.tscn")
 const ANNEX := preload("res://features/annex/feature.tscn")
+const Cheats := preload("res://tests/features/dev_access/cheats_fixture.gd")
+
+
+func test_shared_service_lift_has_closed_collision_and_rejects_calls_without_cheats() -> void:
+	var feature := FEATURE.instantiate() as Node3D
+	add_child_autofree(feature)
+	var lift := feature.get_node("Garage/CrownGarage/Lift") as ProceduralMovingLift
+	lift.set_physics_process(false)
+	assert_false(lift.available())
+	assert_false(lift.request_floor(0))
+	assert_eq(lift.gates[5]._amount, 0.0)
+	assert_eq(lift.cab_door._amount, 0.0)
+	await wait_physics_frames(2)
+	var query := PhysicsRayQueryParameters3D.create(
+		Vector3(32, 1.2, -25.4), Vector3(35.5, 1.2, -25.4), 1
+	)
+	assert_false(
+		feature.get_world_3d().direct_space_state.intersect_ray(query).is_empty(),
+		"Closed modeled doors physically block the casino bypass"
+	)
+	Cheats.enable(self)
+	lift._update_doors()
+	assert_true(lift.available())
+	assert_eq(lift.gates[5]._amount, 1.0)
+	assert_true(lift.request_floor(0))
 
 
 func test_casino_is_sixth_stop_and_basements_clear_the_gaming_floor() -> void:
+	Cheats.enable(self)
 	var feature := FEATURE.instantiate() as Node3D
 	add_child_autofree(feature)
 	var lift := feature.get_node("Garage/CrownGarage/Lift") as ProceduralMovingLift
@@ -23,6 +49,7 @@ func test_casino_is_sixth_stop_and_basements_clear_the_gaming_floor() -> void:
 
 
 func test_real_casino_doorway_has_full_capsule_clearance_and_continuous_support() -> void:
+	Cheats.enable(self)
 	var room := ROOM.instantiate()
 	add_child_autofree(room)
 	add_child_autofree(ANNEX.instantiate())
@@ -58,6 +85,7 @@ func test_real_casino_doorway_has_full_capsule_clearance_and_continuous_support(
 
 
 func test_empty_casino_landing_closes_while_cab_is_below() -> void:
+	Cheats.enable(self)
 	var feature := FEATURE.instantiate() as Node3D
 	add_child_autofree(feature)
 	var lift := feature.get_node("Garage/CrownGarage/Lift") as ProceduralMovingLift

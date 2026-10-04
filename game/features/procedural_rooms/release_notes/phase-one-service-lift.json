@@ -1,0 +1,11 @@
+{
+  "title": "Private garage entry",
+  "summary": "Garage runs start at the Crown excursion elevator.",
+  "notes": [
+    "Keep the old shared service-lift entrance closed and unavailable during normal play.",
+    "Show shared garage GPS destinations only in developer mode.",
+    "Register the five-floor garage as the official garage excursion destination.",
+    "Remove the old three-floor garage and its fixed enemy placements.",
+    "Keep internal lifts working inside private garage excursions."
+  ]
+}

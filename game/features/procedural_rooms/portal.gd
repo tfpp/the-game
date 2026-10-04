@@ -14,6 +14,9 @@ func _can_enter(player: Player) -> bool:
 
 
 func _travel(player: Player) -> bool:
+	var zones := ZoneInstances.for_node(self)
+	if zones != null and _arrival is SlumArrivalPoint:
+		return zones.enter_development_zone(player, _arrival as SlumArrivalPoint)
 	var runs := get_tree().get_first_node_in_group(&"slum_runs") as SlumRuns
 	if runs != null:
 		runs.finish(player.get_multiplayer_authority())

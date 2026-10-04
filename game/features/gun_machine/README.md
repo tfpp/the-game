@@ -1,5 +1,20 @@
 # Gun machine
 
+## Private excursions
+
+Generated rigs replicate only to their owner and peers in the same instance.
+Equip, reload and firing use the existing NetworkedEntity owner validator, with
+legacy RPC adapters retained for controls and callers. Fire effects are scoped
+events. Projectiles retain the instance containing their spawn origin; visibility
+is evaluated before their initial snapshot. Impact/explosion effects follow that
+scope, and final-member cleanup removes any remaining projectiles.
+
+Direct hits and splash cannot damage or push players outside the projectile's
+instance. Splash movement is sent only to the affected owner and is blocked in
+safe rooms. Combat also checks membership for player damage, including damage
+from a hosting player. Tests cover real transport ownership, no initial outsider
+snapshots, late membership and cleanup in `tests/features/zone_instances/`.
+
 A machine that sells a randomly generated gun for $20, and a trash can next to it
 that gets rid of your current one. Both stand along the east wall of the existing
 **Dev Room**, reached through the DEV ROOM booth on the casino north promenade.

@@ -1,0 +1,8 @@
+{
+  "title": "Garage map loading",
+  "summary": "Load garage maps only when an excursion needs them.",
+  "notes": [
+    "Keep the developer garage prototype out of normal startup.",
+    "Developer portal, warp and van routes wait for a private garage before arrival."
+  ]
+}

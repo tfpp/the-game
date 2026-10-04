@@ -23,6 +23,7 @@ const PICKUP_RANGE := 2.5
 var item_id := ""
 var from := Vector3.ZERO
 var to := Vector3.ZERO
+var instance_id := -1
 
 var _elapsed := 0.0
 var _last_landed := false
@@ -36,9 +37,13 @@ var _seg_duration := FLIGHT_DURATION_S
 var _bounce_index := 0
 
 @onready var _mount: Node3D = $Mount
+@onready var _entity: NetworkedInteraction = $NetworkedEntity
 
 
 func _ready() -> void:
+	($Sync as MultiplayerSynchronizer).add_visibility_filter(network_peer_allowed)
+	($Sync as MultiplayerSynchronizer).update_visibility()
+	_entity.register_use(can_use, _collect)
 	position = from
 	net_position = from
 	_seg_from = from
@@ -112,7 +117,12 @@ func _process(delta: float) -> void:
 
 
 func can_use(player: Player) -> bool:
-	if not net_landed or global_position.distance_to(player.global_position) > PICKUP_RANGE:
+	if (
+		not net_landed
+		or is_queued_for_deletion()
+		or not network_peer_allowed(player.get_multiplayer_authority())
+		or global_position.distance_to(player.global_position) > PICKUP_RANGE
+	):
 		return false
 	var hand := Hand.for_peer(get_tree(), player.get_multiplayer_authority())
 	return hand != null and hand.inventory().can_collect(item_id)
@@ -127,22 +137,27 @@ func interaction_color() -> Color:
 
 
 func use() -> void:
-	request_pickup.rpc_id(1)
+	_entity.request_use()
 
 
 @rpc("any_peer", "call_local", "reliable")
 func request_pickup() -> void:
-	if not multiplayer.is_server() or not net_landed or is_queued_for_deletion():
-		return
-	var sender := multiplayer.get_remote_sender_id()
-	var peer_id := sender if sender != 0 else multiplayer.get_unique_id()
-	var player := _player_for_peer(peer_id)
-	if player == null or not can_use(player):
-		return
-	var hand := Hand.for_peer(get_tree(), peer_id)
+	_entity.receive_legacy_action(&"use")
+
+
+func network_peer_allowed(peer: int) -> bool:
+	for service: Node in get_tree().get_nodes_in_group(&"zone_instances"):
+		if service.multiplayer == multiplayer:
+			return bool(service.call("can_observe_zone", instance_id, peer))
+	return instance_id == -1 or peer == MultiplayerPeer.TARGET_PEER_SERVER
+
+
+func _collect(player: Player) -> bool:
+	var hand := Hand.for_peer(get_tree(), player.get_multiplayer_authority())
 	if hand == null or not hand.inventory().collect(item_id):
-		return
+		return false
 	queue_free()
+	return true
 
 
 func _apply_landed(landed: bool) -> void:
@@ -151,11 +166,3 @@ func _apply_landed(landed: bool) -> void:
 		add_to_group(&"interactables")
 	else:
 		remove_from_group(&"interactables")
-
-
-func _player_for_peer(peer_id: int) -> Player:
-	for node: Node in get_tree().get_nodes_in_group(&"players"):
-		var player := node as Player
-		if player != null and player.get_multiplayer_authority() == peer_id:
-			return player
-	return null

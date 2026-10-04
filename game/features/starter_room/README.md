@@ -6,8 +6,10 @@ The whole garage, including the upstairs office, is a **safe zone**
 ammo. Self-damage commands retain the existing safe-zone exception.
 New joins, fall recovery and combat respawns start in the Crown (`../crown_spawn/`).
 Walk to the van's driver side and press **E / B or Circle / touch USE**. Pick a
-numbered destination on its schematic route map: **The Golden Crown**, **Basement
-Garage B1**, **Street District**, **Gun Shop · Rusty Hogg's**, or **Crown Strip Mall**. A two-second engine-start/acceleration sound
+numbered destination on its schematic route map: **The Golden Crown**,
+**Street District**, **Gun Shop · Rusty Hogg's**, or **Crown Strip Mall**. The old
+shared **Basement Garage B1** route is hidden and server-rejected unless
+`sv_cheats` is enabled; normal slum excursions use the Crown elevator. A two-second engine-start/acceleration sound
 and opaque driving screen precede travel. Buttons support touch and controller
 focus; the list scrolls on small/landscape screens. Esc / Back to garage dismisses
 an unsubmitted map. There is no extra key or purchase.

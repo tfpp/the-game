@@ -21,8 +21,9 @@ const PANEL := preload("res://features/procedural_rooms/elevator_panel.tscn")
 @export var net_phase: Phase = Phase.DOCKED
 @export var net_aperture := 1.0
 @export var casino_connection := false
+@export var dev_only := false
 var cab: AnimatableBody3D
-var indicator: Label3D
+var indicator: SignBoard
 var cab_door: ProceduralSlidingDoor
 var gates: Array[ProceduralSlidingDoor] = []
 var audio: ProceduralLiftAudio
@@ -89,20 +90,21 @@ func _build_cab() -> void:
 	lamp.omni_range = 5
 	lamp.light_color = Color(1, .82, .58)
 	cab.add_child(lamp)
-	var instruction := Showcase.placard(cab, "SELECT FLOOR ON RIGHT", Vector3(0, 2.3, -1.38))
-	instruction.billboard = BaseMaterial3D.BILLBOARD_DISABLED
-	instruction.font_size = 20
-	indicator = Showcase.placard(cab, "B1", model.get_node("DisplaySocket").position)
-	indicator.billboard = BaseMaterial3D.BILLBOARD_DISABLED
-	indicator.font_size = 40
+	var instruction := Showcase.placard(cab, "SELECT FLOOR ON RIGHT", Vector3(0, 2.3, -1.38), false)
+	instruction.letter_height = .055
+	indicator = Showcase.placard(cab, "B1", model.get_node("DisplaySocket").position, false)
+	indicator.letter_height = .12
 
 
 func _physics_process(delta: float) -> void:
+	var target := cab.position
 	if multiplayer.is_server():
 		_advance(delta)
-		cab.position.y = net_height
+		target.y = net_height
 	elif _received_snapshot:
-		cab.position.y = move_toward(cab.position.y, net_height, (SPEED + 1.0) * delta)
+		target.y = move_toward(cab.position.y, net_height, (SPEED + 1.0) * delta)
+	if cab.position != target:
+		cab.position = target
 	_update_doors()
 	audio.update(net_phase, delta)
 	indicator.text = (
@@ -121,13 +123,22 @@ func _snapshot() -> void:
 
 
 func request_floor(index: int) -> bool:
-	if not multiplayer.is_server() or net_phase != Phase.DOCKED or index not in range(gates.size()):
+	if (
+		not multiplayer.is_server()
+		or not available()
+		or net_phase != Phase.DOCKED
+		or index not in range(gates.size())
+	):
 		return false
 	if index == net_floor or doorway_occupied():
 		return false
 	net_target = index
 	net_phase = Phase.CLOSING
 	return true
+
+
+func available() -> bool:
+	return not dev_only or DevGate.cheats_enabled(get_tree())
 
 
 func _advance(delta: float) -> void:
@@ -164,7 +175,7 @@ func _update_doors() -> void:
 	var aligned := (
 		absf(cab.position.y - floor_height(net_floor)) < .025 and net_phase != Phase.MOVING
 	)
-	var aperture := net_aperture if aligned else 0.0
+	var aperture := net_aperture if aligned and available() else 0.0
 	cab_door.drive(aperture)
 	for index: int in gates.size():
 		gates[index].drive(aperture if index == net_floor else 0)

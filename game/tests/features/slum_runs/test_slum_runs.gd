@@ -1,8 +1,8 @@
 extends GutTest
 
 const RUN_SCENE := preload("res://features/slum_runs/feature.tscn")
-const ALLEY_SCENE := preload("res://features/slum_alley/feature.tscn")
-const GARAGE_SCENE := preload("res://features/parking_garage/feature.tscn")
+const ALLEY_SCENE := preload("res://features/slum_alley/alley.tscn")
+const GARAGE_SCENE := preload("res://features/procedural_rooms/prototype.tscn")
 const HAND_SCENE := preload("res://features/holdables/hand.tscn")
 const PLAYER_SCENE := preload("res://core/player/player.tscn")
 
@@ -96,7 +96,7 @@ func test_a_shared_run_resets_loot_once_and_keeps_late_arrivals_together() -> vo
 	var runs := _run(features)
 	var alley := _alley(features)
 	var garage := GARAGE_SCENE.instantiate() as Node3D
-	garage.name = "parking_garage"
+	garage.name = "procedural_rooms"
 	features.add_child(garage)
 	var arrival := alley.get_node("District/Arrival") as SlumArrivalPoint
 	var container := alley.get_node("District/DumpsterNorth/Loot") as LootContainer
@@ -104,7 +104,7 @@ func test_a_shared_run_resets_loot_once_and_keeps_late_arrivals_together() -> vo
 	runs.begin(1, arrival)
 	assert_false(container.net_searched)
 	container.net_searched = true
-	runs.begin(2, garage.get_node("Garage/GarageArrival") as SlumArrivalPoint)
+	runs.begin(2, garage.get_node("Garage/Arrival") as SlumArrivalPoint)
 	assert_true(container.net_searched)
 	assert_eq(runs.choose_arrival(), arrival)
 	runs.finish(1)
@@ -114,16 +114,17 @@ func test_a_shared_run_resets_loot_once_and_keeps_late_arrivals_together() -> vo
 	assert_false(container.net_searched)
 
 
-func test_gate_and_return_door_move_the_player_and_close_the_run() -> void:
+func test_retired_gate_is_scenery_and_legacy_return_door_still_closes_a_run() -> void:
 	var features := _features()
 	var runs := _run(features)
 	var alley := _alley(features)
-	var gate := runs.get_node("Gate") as SlumGate
+	var gate := runs.get_node("Gate") as CSGBox3D
+	assert_null(gate.get_script())
+	assert_false(gate.is_in_group(&"interactables"), "Public excursions use the Crown elevator")
 	var player := _player(gate.global_position)
 	var arrival := alley.get_node("District/Arrival") as SlumArrivalPoint
-	gate.request_enter()
+	runs.begin(1, arrival)
 	assert_true(runs.is_active(1))
-	assert_true(player.net_position.is_equal_approx(arrival.global_position))
 	var return_door := alley.get_node("District/ReturnDoor") as GarageDoor
 	player.net_position = return_door.global_position
 	return_door.request_enter()

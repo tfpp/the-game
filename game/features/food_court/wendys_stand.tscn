@@ -1,4 +1,5 @@
 [gd_scene format=3]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign"]
 [ext_resource type="Script" path="res://features/food_court/wendys_stand.gd" id="stand"]
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
 [ext_resource type="PackedScene" path="res://features/food_court/burger_view.tscn" id="burger"]
@@ -57,20 +58,17 @@ material_override = ExtResource("brass")
 position = Vector3(0, 2.68, -0.4)
 mesh = SubResource("header")
 material_override = SubResource("red")
-[node name="Sign" type="Label3D" parent="."]
+[node name="Sign" type="Node3D" parent="."]
+script = ExtResource("sign")
+letter_height = 0.3
+padding = 0.025
 position = Vector3(0, 2.68, -0.315)
 text = "Wendy's"
-font_size = 96
-pixel_size = 0.005
-modulate = Color(1, 0.92, 0.76, 1)
-outline_modulate = Color(0.2, 0.015, 0.01, 1)
-double_sided = false
-[node name="MenuBoard" type="Label3D" parent="."]
+[node name="MenuBoard" type="Node3D" parent="."]
+script = ExtResource("sign")
+letter_height = 0.085
+padding = 0.025
 position = Vector3(0, 0.55, 0.635)
 text = "CHEESEBURGERS — FREE\nORDER HERE"
-font_size = 40
-pixel_size = 0.0035
-modulate = Color(1, 0.92, 0.76, 1)
-double_sided = false
 [node name="DisplayBurger" parent="." instance=ExtResource("burger")]
 position = Vector3(0, 1.1575, 0.1)

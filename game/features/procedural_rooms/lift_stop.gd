@@ -33,10 +33,9 @@ func _ready() -> void:
 		model.position.z = -.27
 		add_child(model)
 		var label := Showcase.placard(
-			self, ProceduralMovingLift.floor_label(floor_index), Vector3(0, 1.6, -.07)
+			self, ProceduralMovingLift.floor_label(floor_index), Vector3(0, 1.6, -.07), false
 		)
-		label.font_size = 20
-		label.billboard = BaseMaterial3D.BILLBOARD_DISABLED
+		label.letter_height = .055
 		label.rotation.y = PI
 	entity.interaction_range = 2.2 if ride_button else 2.5
 	entity.register_use(_can_use, _travel, .4)
@@ -50,6 +49,7 @@ func _can_use(player: Player) -> bool:
 	var owner := lift()
 	return (
 		owner != null
+		and owner.available()
 		and floor_index < owner.gates.size()
 		and entity.in_range(player)
 		and owner.net_phase == ProceduralMovingLift.Phase.DOCKED
@@ -100,6 +100,8 @@ func _process(_delta: float) -> void:
 
 
 func interaction_text() -> String:
+	if lift() != null and not lift().available():
+		return "Service elevator out of service"
 	if ride_button and lift().net_floor == floor_index:
 		return "Already at %s" % ProceduralMovingLift.floor_label(floor_index)
 	return (

@@ -117,16 +117,25 @@ static func portal(socket: Node3D, id: String, color: Color) -> void:
 	placard(marker, "W03 / " + id, Vector3(0, 3.35, 0))
 
 
-static func placard(root: Node3D, text: String, at: Vector3) -> Label3D:
-	var label := Label3D.new()
+static func placard(root: Node3D, text: String, at: Vector3, standing: bool = true) -> SignBoard:
+	var label := SignBoard.new()
 	label.text = text
-	label.font_size = 28
-	label.pixel_size = 0.0035
-	label.modulate = Color("f4ead8")
-	label.outline_size = 4
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	label.letter_height = .08
+	label.padding = .025
+	label.two_sided = standing
 	label.position = at
 	root.add_child(label)
+	if not standing:
+		return label
+	# Route markers have their own support rather than hovering above open lanes.
+	var post := MeshInstance3D.new()
+	post.name = "Support"
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(.035, maxf(at.y, .035), .035)
+	mesh.material = GREY
+	post.mesh = mesh
+	post.position = Vector3(0, -maxf(at.y, .035) * .5, -.02)
+	label.add_child(post)
 	return label
 
 

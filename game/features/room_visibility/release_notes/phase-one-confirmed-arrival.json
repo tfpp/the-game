@@ -1,0 +1,5 @@
+{
+  "title": "Stream rooms cleanly during elevator travel",
+  "summary": "Preload destination floors before arrival and release departure scenery once the new room is confirmed.",
+  "notes": ["Keep another player's shared hub loaded while excursion riders unload theirs, and rebuild the Crown floor before their return teleport."]
+}

@@ -1,0 +1,5 @@
+{
+  "title": "Modeled annex plaques",
+  "summary": "The annex's wall plaques now use coarse atlas lettering on real meshes.",
+  "notes": ["Keep the existing wall placement, depth testing and short draw distance without runtime sign scripts or extra lights."]
+}

@@ -1,4 +1,5 @@
 [gd_scene format=3]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign_board"]
 
 [ext_resource type="PackedScene" path="res://features/hotel_props/props/rotary_phone.tscn" id="rotary_phone"]
 [ext_resource type="PackedScene" path="res://features/hotel_props/props/vintage_suitcase.tscn" id="vintage_suitcase"]
@@ -362,45 +363,45 @@ position = Vector3(-8, 0, 4.5)
 [node name="FoldingLuggageRack" parent="Props" instance=ExtResource("folding_luggage_rack")]
 position = Vector3(-4, 0, -5.8)
 
-[node name="Title" type="Label3D" parent="."]
+[node name="Title" type="Node3D" parent="."]
+script = ExtResource("sign_board")
+letter_height = 0.16
+padding = 0.04
 position = Vector3(0, 3.1, -7.88)
 rotation = Vector3(0, 0, 0)
 text = "THE GOLDEN CROWN\nHOTEL COLLECTION"
-font_size = 40
-pixel_size = 0.006
-modulate = Color(1, 0.83, 0.52, 1)
 
-[node name="ReceptionLabel" type="Label3D" parent="."]
+[node name="ReceptionLabel" type="Node3D" parent="."]
+script = ExtResource("sign_board")
+letter_height = 0.16
+padding = 0.04
 position = Vector3(5.5, 2.75, 1.41)
 rotation = Vector3(0, 0, 0)
 text = "RECEPTION"
-font_size = 40
-pixel_size = 0.006
-modulate = Color(1, 0.83, 0.52, 1)
 
-[node name="SuiteLabel" type="Label3D" parent="."]
+[node name="SuiteLabel" type="Node3D" parent="."]
+script = ExtResource("sign_board")
+letter_height = 0.16
+padding = 0.04
 position = Vector3(-6.3, 3.3, -7.88)
 rotation = Vector3(0, 0, 0)
 text = "GUEST SUITE"
-font_size = 40
-pixel_size = 0.006
-modulate = Color(1, 0.83, 0.52, 1)
 
-[node name="LoungeLabel" type="Label3D" parent="."]
+[node name="LoungeLabel" type="Node3D" parent="."]
+script = ExtResource("sign_board")
+letter_height = 0.16
+padding = 0.04
 position = Vector3(5.5, 3.3, -7.88)
 rotation = Vector3(0, 0, 0)
 text = "LOUNGE"
-font_size = 40
-pixel_size = 0.006
-modulate = Color(1, 0.83, 0.52, 1)
 
-[node name="ServiceLabel" type="Label3D" parent="."]
+[node name="ServiceLabel" type="Node3D" parent="."]
+script = ExtResource("sign_board")
+letter_height = 0.16
+padding = 0.04
 position = Vector3(-6.5, 2.8, 7.86)
 rotation = Vector3(0, 3.141592653589793, 0)
 text = "ROOM SERVICE"
-font_size = 40
-pixel_size = 0.006
-modulate = Color(1, 0.83, 0.52, 1)
 
 [node name="WarmLight0" type="OmniLight3D" parent="."]
 position = Vector3(-6, 3.6, -4)

@@ -4,7 +4,7 @@ extends GutTest
 
 const CONTAINER := preload("res://features/loot/loot_container.tscn")
 const CAR_LOOT := preload("res://features/parking_garage/car_loot.tres")
-const GARAGE := preload("res://features/parking_garage/feature.tscn")
+const GARAGE := preload("res://features/procedural_rooms/prototype.tscn")
 const HAND := preload("res://features/holdables/hand.tscn")
 const PLAYER := preload("res://core/player/player.tscn")
 const INVENTORY_SCREEN := preload("res://features/inventory/inventory_screen.gd")
@@ -262,6 +262,6 @@ func test_garage_places_searchable_wrecked_cars() -> void:
 		var container := node as LootContainer
 		if garage.is_ancestor_of(container):
 			found += 1
-			assert_is(container.get_parent(), CarWreck)
+			assert_is(container, CarBoot)
 			assert_eq(container.loot_table, CAR_LOOT)
 	assert_gt(found, 5)

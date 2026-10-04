@@ -1,4 +1,5 @@
 [gd_scene format=3]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign_board"]
 
 [ext_resource type="Script" path="res://features/apartments/apartments.gd" id="apartments"]
 [ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
@@ -27,12 +28,13 @@ script = ExtResource("door")
 destination = NodePath("../Lobby/EntranceArrival")
 door_label = "Enter Lily Apartments — front desk"
 
-[node name="Sign" type="Label3D" parent="Entrance"]
-position = Vector3(0, 1.5, 0)
+[node name="Sign" type="Node3D" parent="Entrance"]
+script = ExtResource("sign_board")
+letter_height = 0.1
+padding = 0.035
+position = Vector3(0, 1, -0.16)
+rotation = Vector3(0, 3.14159265, 0)
 text = "LILY APARTMENTS\nFREE ROOMS · ELEVATOR"
-font_size = 28
-pixel_size = 0.006
-billboard = 1
 
 [node name="CasinoArrival" type="Marker3D" parent="."]
 position = Vector3(290, 1.2, -293.75)

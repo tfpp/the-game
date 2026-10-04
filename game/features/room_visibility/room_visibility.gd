@@ -31,7 +31,7 @@ func _physics_process(delta: float) -> void:
 	_elapsed = 0.0
 	for node: Node in get_tree().get_nodes_in_group(&"players"):
 		var player := node as Player
-		if player == null:
+		if player == null or player.multiplayer != multiplayer:
 			continue
 		var peer := player.get_multiplayer_authority()
 		var room := _room_at(player.net_position)
@@ -75,26 +75,42 @@ func _room_at(position: Vector3) -> Dictionary:
 	var best_volume := INF
 	for node: Node in get_tree().get_nodes_in_group(&"streamed_rooms"):
 		var room := node as StreamedRoom
-		if room == null or not room.contains(position):
+		if room == null or room.multiplayer != multiplayer or not room.contains(position):
 			continue
 		var bounds := room.global_bounds()
 		var volume := bounds.get_volume()
 		if volume < best_volume:
-			best = {"path": room.get_path(), "bounds": room.global_render_bounds()}
+			best = {"path": get_path_to(room), "bounds": room.global_render_bounds()}
 			best_volume = volume
+	# GPS areas describe a region but cannot build its floor. A matching streamed
+	# scene must retain assignment even when a smaller landmark overlaps it.
+	if best_volume < INF:
+		return best
 	for node: Node in get_tree().get_nodes_in_group(GpsDestination.GROUP):
 		var destination := node as GpsDestination
-		if destination == null or destination.area.size == Vector3.ZERO:
+		if (
+			destination == null
+			or destination.multiplayer != multiplayer
+			or destination.area.size == Vector3.ZERO
+		):
 			continue
 		if not destination.area.has_point(position):
 			continue
 		var volume := destination.area.get_volume()
 		if volume < best_volume:
-			best = {"path": destination.get_path(), "bounds": destination.area}
+			best = {"path": get_path_to(destination), "bounds": destination.area}
 			best_volume = volume
 	if best_volume < INF:
 		return best
 	return {"path": NodePath(""), "bounds": _casino_bounds}
+
+
+@rpc("authority", "call_local", "reliable")
+func preload_at(position: Vector3, hold_msec: int = 3000) -> void:
+	var selection := _room_at(position)
+	var room := get_node_or_null(selection["path"]) as StreamedRoom
+	if room != null:
+		room.load_room(hold_msec)
 
 
 func _world_bounds(world: Node3D) -> AABB:
@@ -139,13 +155,15 @@ func _collect_bounds(node: Node, boxes: Array[AABB]) -> void:
 func assign_room(path: NodePath, bounds: AABB) -> void:
 	_current_room = path
 	_current_bounds = bounds
+	var selected := get_node_or_null(path) as StreamedRoom
 	for node: Node in get_tree().get_nodes_in_group(&"streamed_rooms"):
 		var room := node as StreamedRoom
-		if room == null:
+		if room == null or room.multiplayer != multiplayer:
 			continue
-		if room.get_path() == path:
+		if room == selected:
 			_pending_unloads.erase(room)
 			room.load_room()
+			room.confirm_arrival()
 		elif room.arrival_held():
 			if not _pending_unloads.has(room):
 				_pending_unloads.append(room)
