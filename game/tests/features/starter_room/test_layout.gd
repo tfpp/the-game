@@ -35,7 +35,7 @@ func test_entire_spawn_square_and_routes_have_floor_and_capsule_clearance() -> v
 	assert_eq(space.cast_motion(query)[0], 1.0, "spawn to walking exit")
 	for grid: GridMap in room.get_node("Content/Structure").get_children():
 		assert_gt(grid.get_used_cells().size(), 0)
-	assert_eq((room.get_node("Content/Structure/Walls") as GridMap).get_used_cells().size(), 64)
+	assert_eq((room.get_node("Content/Structure/Walls") as GridMap).get_used_cells().size(), 60)
 	assert_eq((room.get_node("Content/Structure/SideWalls") as GridMap).get_used_cells().size(), 72)
 
 

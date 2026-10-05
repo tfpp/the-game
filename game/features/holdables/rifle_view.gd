@@ -39,5 +39,5 @@ func _process(_delta: float) -> void:
 
 
 func _fired(id: String) -> void:
-	if id == weapon_id:
+	if ItemCatalog.base_weapon(id) == weapon_id:
 		_animation.play(&"fire")

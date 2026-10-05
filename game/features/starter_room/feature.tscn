@@ -21,6 +21,11 @@
 [ext_resource type="Script" path="res://features/starter_room/van_stash.gd" id="stash"]
 [ext_resource type="Script" path="res://features/starter_room/van_stash_screen.gd" id="stash_screen"]
 
+[ext_resource type="Script" path="res://features/starter_room/gear_workbench.gd" id="workbench"]
+[ext_resource type="Script" path="res://features/starter_room/workbench_screen.gd" id="workbench_ui"]
+
+[ext_resource type="PackedScene" path="res://features/starter_room/roller_door.tscn" id="roller"]
+
 [sub_resource type="StandardMaterial3D" id="door_paint"]
 albedo_color = Color(0.27, 0.37, 0.35, 1)
 roughness = 1.0
@@ -33,7 +38,7 @@ position = Vector3(0, 0, -3000)
 script = ExtResource("room")
 room_scene = "res://features/starter_room/interior.tscn"
 bounds = AABB(-8.2, -1, -9.2, 16.4, 7, 18.4)
-render_bounds = AABB(-13.2, -1, -9.2, 21.4, 9, 20.4)
+render_bounds = AABB(-16.2, -1, -25.2, 39.4, 12, 36.4)
 
 [node name="Spawn" type="Marker3D" parent="Room"]
 position = Vector3(0, 1, 4)
@@ -178,3 +183,17 @@ interaction_range = 1.8
 
 [node name="StashScreen" type="CanvasLayer" parent="."]
 script = ExtResource("stash_screen")
+
+[node name="Workbench" type="Node3D" parent="Room"]
+position = Vector3(-5, 1, -7.4)
+script = ExtResource("workbench")
+
+[node name="NetworkedEntity" type="Node" parent="Room/Workbench"]
+script = ExtResource("net")
+interaction_range = 2.0
+
+[node name="WorkbenchScreen" type="CanvasLayer" parent="."]
+script = ExtResource("workbench_ui")
+
+[node name="RollerDoor" parent="Room" instance=ExtResource("roller")]
+position = Vector3(3, 0, -8.72)

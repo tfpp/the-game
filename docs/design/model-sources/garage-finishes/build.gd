@@ -12,8 +12,10 @@ const CHARTS: Array[Rect2i] = [
 	Rect2i(64, 112, 14, 12),
 	Rect2i(84, 112, 14, 12)
 ]
-const NAMES: Array[String] = ["shutter", "window_frame", "broom_cupboard"]
-var _parts: Array[Array] = [[], [], []]
+const NAMES: Array[String] = [
+	"shutter", "window_frame", "broom_cupboard", "shutter_frame", "shutter_leaf"
+]
+var _parts: Array[Array] = [[], [], [], [], []]
 
 
 func _initialize() -> void:
@@ -69,16 +71,19 @@ func _shutter() -> void:
 			)
 		_parts[0].append(poly)
 	for x: float in [-2.35, 2.35]:
-		_box(0, Vector3(x, 1.64, -.015), Vector3(.2, 3.28, .23), 1)
+		_box(3, Vector3(x, 1.64, -.015), Vector3(.2, 3.28, .23), 1)
 		_box(0, Vector3(x, 1.64, .115), Vector3(.13, 3.28, .035), 3)
-	_box(0, Vector3(0, 3.38, -.01), Vector3(4.95, .3, .32), 1)
+	_box(3, Vector3(0, 3.38, -.01), Vector3(4.95, .3, .32), 1)
 	_box(0, Vector3(0, .035, .085), Vector3(4.5, .07, .07), 4)
 	# A continuous U pull has hand clearance and ends anchored in the panel skin.
 	for x: float in [-.32, .32]:
 		_box(0, Vector3(x, .55, .13), Vector3(.055, .055, .14), 1)
 	_box(0, Vector3(0, .55, .2), Vector3(.695, .055, .055), 1)
 	_box(0, Vector3(.55, .85, .09), Vector3(.16, .2, .025), 4)
-	_box(0, Vector3(0, 3.56, -.01), Vector3(4.8, .055, .35), 3)
+	_box(3, Vector3(0, 3.56, -.01), Vector3(4.8, .055, .35), 3)
+
+	_parts[4] = _parts[0].duplicate(true)
+	_parts[0].append_array(_parts[3])
 
 
 func _window() -> void:

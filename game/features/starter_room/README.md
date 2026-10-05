@@ -65,8 +65,8 @@ and mirrors that follow their leaves. Their server-owned state replicates to all
 players, including late joiners.
 Moving leaf collision clears the cab and cargo openings. The route-map panel
 behind the driver door keeps the original travel interaction separate.
-Rolling shutter: one static mesh using an existing small steel-like
-texture. The service cabinet reuses the procedural prop kit; workshop equipment
+Rolling shutter: separate fixed guide rails/housing and a moving painted steel
+leaf with collision, using the shared 128px garage-finishes atlas. The service cabinet reuses the procedural prop kit; workshop equipment
 shares the lift enamel/steel atlas.
 
 Authoritative native builder, exact UV guide, original painting and prompt:
@@ -272,3 +272,48 @@ and stops ambience when the camera leaves the garage. The window glass seals the
 GridMap opening. `garage_finishes.tscn` owns the textured shutter and broom
 cupboard; floating world debug labels have been removed. Interaction prompts and
 functional screens remain available.
+
+## Working workshop
+
+`Room/Workbench` is always present on every peer, beside the existing model.
+Use opens an owner-only blueprint workbench with 106px gear cards, model previews,
+before/after damage and live salvage counts. Install and Back controls stay fixed
+at 60px while the content scrolls on phones and landscape screens.
+A stock firearm in hand or backpack can be tuned once for **two carried Scrap and
+one Electronics**. The tuned item (`tuned:<stock ID>`) deals 15% more damage and
+retains normal ammo, magazines, animations, skins and handling. Its identity
+survives dropping, backpack moves, stash transfers and saved inventory reloads.
+Salvage remains loot that can alternatively be sold; no cash or XP system is added.
+`WorkbenchRecipes` builds a detached full inventory snapshot, and `GearWorkbench`
+validates sender, range, exact gear ID, materials and inventory availability.
+Inventory stays locked during the existing atomic persistence commit. Only a
+successful save applies the upgraded item and material consumption. Failed or
+uncertain saves use the inventory store's existing recovery policy.
+
+`Room/RollerDoor` is also always present, with server-owned replicated height and
+target, moving collision and open/stop/close control beside the left guide rail.
+The painted leaf feeds into the fixed roller housing; the shader clips material
+above the slot. Closing reverses when players or physics items occupy the opening.
+A real four-metre GridMap aperture reveals a rainy road with lane markings,
+sidewalks, parked scenery and lamps. A permanent invisible full-height
+collision boundary keeps walking and jumping players inside. Obstruction queries
+exclude this fixed boundary. Only rendering bounds include the road; membership
+and safe-zone bounds remain those of the original garage. The road has no
+interactions, travel destination or excursion.
+
+`garage_atmosphere.gd` owns camera-scoped spatial fluorescent hum, original quiet
+radio music and a motor loop while the shutter moves. A short, occasional dip in
+one bay lamp never extinguishes the workshop. Opening the shutter admits louder
+storm ambience. Existing native radio, coffee cups, coat rack, office chair and
+table lamp add personal details. Sounds and scenery unload with the interior;
+dedicated servers skip audio and lighting effects. All sounds use GameSFX.
+
+Authoring: `docs/design/model-sources/garage-atmosphere/build.gd` bakes the road
+scenery GridMaps and original sound loops. The existing garage-finishes builder now
+exports separate leaf/frame meshes sharing the approved 128px atlas. Focused tests
+cover exact recipe consumption, durable saves/failures, restored tuned items,
+ammo compatibility, shutter physics/range, remote use and late joining.
+
+The ImageGen background source and exact prompt are preserved in
+`docs/design/model-sources/workbench-ui/`. Its native importer writes a 128px
+mipmapped panel; all text, counts, item previews and controls remain live Godot UI.

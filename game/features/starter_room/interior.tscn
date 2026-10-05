@@ -12,6 +12,16 @@
 
 [ext_resource type="PackedScene" path="res://features/starter_room/workshop_equipment.tscn" id="equipment"]
 
+
+[ext_resource type="Script" path="res://features/starter_room/garage_atmosphere.gd" id="atmosphere"]
+[ext_resource type="PackedScene" path="res://features/starter_room/road_view.tscn" id="court"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/coffee_cup.tscn" id="cup"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/bedside_radio.tscn" id="radio"]
+[ext_resource type="PackedScene" path="res://features/casino_props/props/coat_rack.tscn" id="coats"]
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/desk_chair.tscn" id="chair"]
+
+[ext_resource type="PackedScene" path="res://features/hotel_props/props/table_lamp.tscn" id="task_lamp"]
+
 [sub_resource type="BoxMesh" id="tube"]
 size = Vector3(0.16, 0.08, 2.4)
 
@@ -21,6 +31,7 @@ emission_enabled = true
 emission = Color(0.7, 0.8, 0.7, 1)
 
 [node name="OperationsGarage" type="Node3D"]
+script = ExtResource("atmosphere")
 
 [node name="Structure" parent="." instance=ExtResource("structure")]
 
@@ -77,3 +88,38 @@ blueprint = true
 position = Vector3(3, 4.6, -3)
 mesh = SubResource("tube")
 material_override = SubResource("glow")
+
+[node name="RoadView" parent="." instance=ExtResource("court")]
+
+[node name="RoadFill" type="OmniLight3D" parent="."]
+position = Vector3(3, 3.5, -16)
+light_color = Color(0.5, 0.64, 0.78, 1)
+light_energy = 1.2
+omni_range = 7.0
+
+[node name="Radio" parent="." instance=ExtResource("radio")]
+position = Vector3(-4.0, 1.02, -8.0)
+
+[node name="CoffeeA" parent="." instance=ExtResource("cup")]
+position = Vector3(-5.7, 1.02, -7.75)
+rotation = Vector3(0, 0.5, 0)
+
+[node name="CoffeeB" parent="." instance=ExtResource("cup")]
+position = Vector3(-5.45, 1.02, -7.8)
+rotation = Vector3(0, -0.7, 0)
+
+[node name="Coats" parent="." instance=ExtResource("coats")]
+position = Vector3(-7.4, 0, -2.5)
+
+[node name="OfficeChair" parent="." instance=ExtResource("chair")]
+position = Vector3(-3.5, 2.5, -7.9)
+rotation = Vector3(0, 0.3, 0)
+
+[node name="TaskLamp" parent="." instance=ExtResource("task_lamp")]
+position = Vector3(-6.7, 1.02, -8.05)
+
+[node name="BenchLight" type="OmniLight3D" parent="."]
+position = Vector3(-6.7, 1.55, -7.85)
+light_color = Color(1, 0.78, 0.5, 1)
+light_energy = 0.7
+omni_range = 3.5

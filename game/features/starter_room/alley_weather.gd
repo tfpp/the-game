@@ -8,7 +8,8 @@ const CLIPS: Array[AudioStreamWAV] = [
 	preload("res://assets/pawn_shop/audio/road_ambience_3.wav"),
 	preload("res://assets/pawn_shop/audio/road_ambience_4.wav"),
 ]
-const BOUNDS := AABB(Vector3(-13.2, -1, -9.2), Vector3(21.4, 9, 20.4))
+const BOUNDS := AABB(Vector3(-13.2, -1, -14.2), Vector3(21.4, 9, 25.4))
+var _road_rain: CPUParticles3D
 var _rain: CPUParticles3D
 var _lightning: OmniLight3D
 var _ambience: AudioStreamPlayer3D
@@ -50,6 +51,12 @@ func _ready() -> void:
 	_rain.visibility_aabb = AABB(Vector3(-2, -7, -8), Vector3(4, 8, 16))
 	_rain.emitting = false
 	add_child(_rain)
+	_road_rain = _rain.duplicate() as CPUParticles3D
+	_road_rain.name = "RoadRain"
+	_road_rain.position = Vector3(3, 6.8, -17.5)
+	_road_rain.amount = 250
+	_road_rain.emission_box_extents = Vector3(17, .05, 6)
+	add_child(_road_rain)
 	_lightning = OmniLight3D.new()
 	_lightning.name = "AlleyLightning"
 	_lightning.position = Vector3(-10.5, 5.8, 3.5)
@@ -75,6 +82,8 @@ func _process(delta: float) -> void:
 		_active = inside
 		_rain.emitting = inside
 		_rain.visible = inside
+		_road_rain.visible = inside
+		_road_rain.emitting = inside
 		if inside:
 			_play_next()
 		else:

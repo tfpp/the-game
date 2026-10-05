@@ -110,7 +110,7 @@ func _process(delta: float) -> void:
 		_fire_cooldown -= delta
 	_auto_request_left = maxf(0.0, _auto_request_left - delta)
 	if (
-		net_item_id in ["smg", "m4a4", "ak47"]
+		ItemCatalog.base_weapon(net_item_id) in ["smg", "m4a4", "ak47"]
 		and peer_id == multiplayer.get_unique_id()
 		and Controls.gameplay_active()
 		and Input.is_action_pressed(&"primary_action")
@@ -227,7 +227,10 @@ func _fire(def: ItemDefinition) -> void:
 	var magazine := magazine_for(def.id)
 	if magazine != null and not magazine.can_fire():
 		return
-	if ItemCatalog.AMMO_PACKS.has(def.id) and not inventory().spend_ammo(def.id):
+	if (
+		ItemCatalog.AMMO_PACKS.has(ItemCatalog.base_weapon(def.id))
+		and not inventory().spend_ammo(def.id)
+	):
 		return
 	if magazine != null:
 		magazine.record_shot()
@@ -283,7 +286,7 @@ func _play_fire(item_id: String, origin: Vector3) -> void:
 	_set_flash(true)
 	fired.emit(item_id)
 	# Use the event's weapon ID; replicated equipment may already have changed.
-	GameAudio.play_at(self, StringName(item_id), origin)
+	GameAudio.play_at(self, StringName(ItemCatalog.base_weapon(item_id)), origin)
 
 
 @rpc("authority", "call_local", "reliable")
@@ -436,6 +439,7 @@ func inventory() -> PlayerInventory:
 
 
 func magazine_for(id: String) -> PistolMechanism:
+	id = ItemCatalog.base_weapon(id)
 	match id:
 		"pistol":
 			return $PistolMechanism as PistolMechanism
