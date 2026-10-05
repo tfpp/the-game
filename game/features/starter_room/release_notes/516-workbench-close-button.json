@@ -1,0 +1,8 @@
+{
+  "title": "Workbench close button on phones",
+  "summary": "The workshop upgrade screen now always shows a way back out, even on small phone screens.",
+  "notes": [
+    "Add a Close button to the top of the workbench screen.",
+    "Keep the workbench screen sized to the display so Back to garage stays tappable on phones."
+  ]
+}

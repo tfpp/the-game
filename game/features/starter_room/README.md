@@ -278,7 +278,9 @@ functional screens remain available.
 `Room/Workbench` is always present on every peer, beside the existing model.
 Use opens an owner-only blueprint workbench with 106px gear cards, model previews,
 before/after damage and live salvage counts. Install and Back controls stay fixed
-at 60px while the content scrolls on phones and landscape screens.
+at 60px while the content scrolls on phones and landscape screens, and a header
+✕ Close button is always visible. The panel is re-pinned to the screen size after
+each refresh so rebuilt content cannot push the footer off-screen.
 A stock firearm in hand or backpack can be tuned once for **two carried Scrap and
 one Electronics**. The tuned item (`tuned:<stock ID>`) deals 15% more damage and
 retains normal ammo, magazines, animations, skins and handling. Its identity

@@ -11,6 +11,8 @@ var _root: Control
 var _list: GridContainer
 var _status: Label
 var _back: Button
+var _close: Button
+var _fit_size := Vector2.ZERO
 var _action: Button
 var _body: BoxContainer
 var _gear_column: VBoxContainer
@@ -39,8 +41,19 @@ func _ready() -> void:
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 12)
 	margin.add_child(column)
-	_label(column, "OPERATIONS GARAGE / PREPARATION", 12, AMBER)
-	_label(column, "Workshop upgrades", 27)
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 10)
+	column.add_child(header)
+	var heading := VBoxContainer.new()
+	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(heading)
+	_label(heading, "OPERATIONS GARAGE / PREPARATION", 12, AMBER)
+	_label(heading, "Workshop upgrades", 27)
+	_close = _button(header, "✕ Close", close)
+	_close.size_flags_horizontal = Control.SIZE_SHRINK_END
+	_close.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	_close.custom_minimum_size = Vector2(96, 48)
+	_close.tooltip_text = "Close the workbench"
 	_status = _label(column, "Select your gear to inspect a salvage tune.", 14, MUTED)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -151,7 +164,8 @@ func _resize() -> void:
 	scale = Vector2.ONE * ui_scale
 	_font.set("oversampling", ui_scale)
 	_root.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_root.size = logical / ui_scale
+	_fit_size = logical / ui_scale
+	_root.size = _fit_size
 	var wide := _root.size.x >= 740
 	_body.vertical = not wide
 	_gear_column.custom_minimum_size.x = 230 if wide else 0
@@ -183,7 +197,14 @@ func close(resume := true) -> void:
 		Controls.start()
 
 
+func _fit() -> void:
+	# Refreshed content can grow the panel past the screen; keep the buttons visible.
+	if _root.visible and _root.size != _fit_size:
+		_root.size = _fit_size
+
+
 func _process(_delta: float) -> void:
+	_fit()
 	if _root.visible and is_instance_valid(_bench):
 		var player := _bench.entity.player_for_peer(multiplayer.get_unique_id())
 		if player != null and not _bench.can_use(player):
@@ -219,6 +240,7 @@ func _install() -> void:
 func _refresh() -> void:
 	if _bench == null:
 		return
+	_fit.call_deferred()
 	_status.text = _bench.message
 	for node: Node in _list.get_children():
 		_list.remove_child(node)
