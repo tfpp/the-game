@@ -51,7 +51,7 @@ func advance(delta: float) -> void:
 		return
 	_prepare()
 	if active():
-		if hand.net_item_id != weapon_id or hand._player() == null:
+		if ItemCatalog.base_weapon(hand.net_item_id) != weapon_id or hand._player() == null:
 			_set_state(loaded(), 0.0, bool(state["initialized"]))
 		else:
 			var left := maxf(0.0, float(state["left"]) - delta)
@@ -69,7 +69,7 @@ func _prepare() -> void:
 	if (
 		multiplayer.is_server()
 		and not bool(state["initialized"])
-		and hand.net_item_id == weapon_id
+		and ItemCatalog.base_weapon(hand.net_item_id) == weapon_id
 		and not hand.inventory().loading
 	):
 		var total := hand.inventory().ammo_for(weapon_id)
@@ -82,7 +82,7 @@ func _may_reload(peer: int, payload: Dictionary) -> bool:
 		payload.is_empty()
 		and peer == hand.peer_id
 		and hand._player() != null
-		and hand.net_item_id == weapon_id
+		and ItemCatalog.base_weapon(hand.net_item_id) == weapon_id
 		and not hand.inventory().loading
 		and not hand.consumption.active()
 		and not active()
@@ -128,7 +128,7 @@ func _died(victim: int, _attacker: int) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if (
 		hand.peer_id == multiplayer.get_unique_id()
-		and hand.net_item_id == weapon_id
+		and ItemCatalog.base_weapon(hand.net_item_id) == weapon_id
 		and Controls.gameplay_active()
 		and event.is_action_pressed(&"gun_reload")
 	):

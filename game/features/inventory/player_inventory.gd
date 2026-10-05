@@ -94,6 +94,7 @@ func collect_into_slot(id: String, slot: int) -> bool:
 
 ## Read-only count for the HUD. Packs in the backpack feed the held stock gun.
 func ammo_for(weapon: String) -> int:
+	weapon = ItemCatalog.base_weapon(weapon)
 	var rounds := 0
 	for id: String in backpack:
 		if ItemCatalog.ammo_weapon(id) == weapon:
@@ -103,6 +104,7 @@ func ammo_for(weapon: String) -> int:
 
 ## Server-only: spend one round per trigger, including a shotgun's whole pellet burst.
 func spend_ammo(weapon: String) -> bool:
+	weapon = ItemCatalog.base_weapon(weapon)
 	if not multiplayer.is_server() or loading or hand().consumption.active():
 		return false
 	for slot: int in CAPACITY:

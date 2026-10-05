@@ -43,7 +43,7 @@ static func ammo_text(tree: SceneTree, peer: int) -> String:
 		var loaded := magazine.loaded()
 		var reserve := maxi(0, hand.inventory().ammo_for(weapon) - loaded)
 		return "%d / %d%s" % [loaded, reserve, "  Reloading…" if magazine.active() else ""]
-	if ItemCatalog.AMMO_PACKS.has(weapon):
+	if ItemCatalog.AMMO_PACKS.has(ItemCatalog.base_weapon(weapon)):
 		return "%d" % hand.inventory().ammo_for(weapon)
 	return ""
 

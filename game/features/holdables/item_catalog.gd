@@ -101,6 +101,15 @@ static func after_use(id: String) -> String:
 
 ## The definition for `id`, or null if unknown (e.g. an empty hand).
 static func find(id: String) -> ItemDefinition:
+	if id.begins_with("tuned:"):
+		var base := id.trim_prefix("tuned:")
+		if not AMMO_PACKS.has(base):
+			return null
+		var tuned := find(base).duplicate() as ItemDefinition
+		tuned.id = id
+		tuned.display_name = "Workshop-tuned " + tuned.display_name
+		tuned.damage *= 1.15
+		return tuned
 	var weapon := ammo_weapon(id)
 	if not weapon.is_empty():
 		var pack := find("cash_bundle").duplicate() as ItemDefinition
@@ -155,3 +164,9 @@ static func create_view(id: String) -> Node3D:
 		return clothing
 	var definition := find(id)
 	return definition.view_scene.instantiate() as Node3D if definition != null else null
+
+
+## One workshop grade; malformed or nested variants remain unknown.
+static func base_weapon(id: String) -> String:
+	var base := id.trim_prefix("tuned:")
+	return base if AMMO_PACKS.has(base) else id

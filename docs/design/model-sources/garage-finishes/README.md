@@ -19,3 +19,8 @@ asphalt textures and street props. Glass closes the opening for collision.
 The shutter and cupboard are scenery; the van doors remain interactive.
 The alley storm reuses the pawn shop audio clips, bounds rain outside the room,
 and runs only while the local camera is in the garage.
+
+For the working roller door, the same builder also exports
+`garage_shutter_frame.res` (48 triangles) and `garage_shutter_leaf.res` (332).
+Their UVs retain the approved paint. The original 380-triangle combined output
+remains reproducible; only the separate frame and leaf are used in gameplay.

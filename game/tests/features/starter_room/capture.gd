@@ -73,9 +73,38 @@ func _capture() -> void:
 	_camera.position = room.to_global(Vector3(.2, 1.9, -5.9))
 	_camera.look_at(room.to_global(Vector3(3, 1.7, -8.72)))
 	await _save("garage-shutter")
+	var shutter := room.get_node("RollerDoor") as GarageRollerDoor
+	shutter.set_physics_process(false)
+	shutter.net_height = GarageRollerDoor.HEIGHT
+	shutter.net_target = shutter.net_height
+	shutter._pose()
+	await _save("garage-shutter-open")
+	_camera.position = room.to_global(Vector3(3, 1.65, -5.5))
+	_camera.look_at(room.to_global(Vector3(3, 1.5, -18)))
+	await _save("garage-road-view")
+	shutter.net_height = 0.0
+	shutter.net_target = 0.0
+	shutter._pose()
 	_camera.position = room.to_global(Vector3(-1.3, 1.65, -4.8))
 	_camera.look_at(room.to_global(Vector3(-5, 1.3, -8)))
 	await _save("workshop-bench")
+	var bench := room.get_node("Workbench") as GearWorkbench
+	bench.items = [
+		{"slot": -1, "id": "pistol", "available": true},
+		{"slot": 0, "id": "tuned:shotgun", "available": false}
+	]
+	bench.materials = {"scrap": 2, "electronics": 1}
+	bench.message = "Use carried scrap and electronics to tune a stock weapon."
+	var workbench_ui := feature.get_node("WorkbenchScreen") as CanvasLayer
+	workbench_ui.set_process(false)
+	workbench_ui.call("open", bench)
+	await _save("workbench-upgrades")
+	root.size = Vector2i(390, 844)
+	await _save("workbench-upgrades-phone")
+	root.size = Vector2i(844, 390)
+	await _save("workbench-upgrades-landscape")
+	workbench_ui.call("close")
+	root.size = Vector2i(960, 540)
 	_camera.position = room.to_global(Vector3(5.8, 1.65, 1.5))
 	_camera.look_at(room.to_global(Vector3(7, .9, -4.2)))
 	await _save("workshop-equipment")

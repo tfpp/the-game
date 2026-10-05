@@ -251,7 +251,7 @@ func _apply_appearance() -> void:
 		if view == null:
 			continue
 		var equipped: Dictionary = net_equipped.get(hand.peer_id, {})
-		var skin: String = str(equipped.get(hand.net_item_id, ""))
+		var skin: String = str(equipped.get(ItemCatalog.base_weapon(hand.net_item_id), ""))
 		PrawnSkinAppearance.apply(view, skin)
 
 

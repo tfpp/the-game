@@ -1,0 +1,79 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/starter_room/road_structure.tscn" id="road"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/double_street_lamp.tscn" id="lamp"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/service_door.tscn" id="door"]
+[ext_resource type="PackedScene" path="res://features/street_props/props/manhole_cover.tscn" id="manhole"]
+[ext_resource type="ArrayMesh" path="res://assets/procedural_rooms/models/car/boot_body.tres" id="car"]
+[ext_resource type="Material" path="res://features/procedural_rooms/materials/car.tres" id="car_paint"]
+[ext_resource type="ArrayMesh" path="res://assets/procedural_rooms/models/wheel/mesh.tres" id="wheel"]
+
+[node name="RoadView" type="Node3D"]
+
+[node name="Structure" parent="." instance=ExtResource("road")]
+position = Vector3(0, 0, -14)
+
+[node name="LampLeft" parent="." instance=ExtResource("lamp")]
+position = Vector3(-4, 0, -11)
+
+[node name="LampRight" parent="." instance=ExtResource("lamp")]
+position = Vector3(12, 0, -11)
+
+[node name="LightLeft" type="OmniLight3D" parent="."]
+position = Vector3(-4, 4.8, -12)
+light_color = Color(1, 0.68, 0.35, 1)
+light_energy = 1.4
+omni_range = 10.0
+
+[node name="LightRight" type="OmniLight3D" parent="."]
+position = Vector3(12, 4.8, -12)
+light_color = Color(1, 0.68, 0.35, 1)
+light_energy = 1.2
+omni_range = 10.0
+
+[node name="FacadeDoor" parent="." instance=ExtResource("door")]
+position = Vector3(4, 0, -24.86)
+
+[node name="Drain" parent="." instance=ExtResource("manhole")]
+position = Vector3(3, 0.012, -17)
+
+[node name="ParkedCar" type="Node3D" parent="."]
+position = Vector3(8, 0, -21)
+rotation = Vector3(0, 1.57079633, 0)
+
+[node name="Body" type="MeshInstance3D" parent="ParkedCar"]
+mesh = ExtResource("car")
+material_override = ExtResource("car_paint")
+
+[node name="WheelFL" type="MeshInstance3D" parent="ParkedCar"]
+position = Vector3(-0.69, 0.29, 1.25)
+rotation = Vector3(0, 0, 1.57079633)
+mesh = ExtResource("wheel")
+material_override = ExtResource("car_paint")
+
+[node name="WheelFR" type="MeshInstance3D" parent="ParkedCar"]
+position = Vector3(0.69, 0.29, 1.25)
+rotation = Vector3(0, 0, 1.57079633)
+mesh = ExtResource("wheel")
+material_override = ExtResource("car_paint")
+
+[node name="WheelRL" type="MeshInstance3D" parent="ParkedCar"]
+position = Vector3(-0.69, 0.29, -1.25)
+rotation = Vector3(0, 0, 1.57079633)
+mesh = ExtResource("wheel")
+material_override = ExtResource("car_paint")
+
+[node name="WheelRR" type="MeshInstance3D" parent="ParkedCar"]
+position = Vector3(0.69, 0.29, -1.25)
+rotation = Vector3(0, 0, 1.57079633)
+mesh = ExtResource("wheel")
+material_override = ExtResource("car_paint")
+
+[node name="OppositeLamp" parent="." instance=ExtResource("lamp")]
+position = Vector3(0, 0, -23)
+
+[node name="OppositeLight" type="OmniLight3D" parent="."]
+position = Vector3(0, 4.8, -21.8)
+light_color = Color(1, 0.68, 0.35, 1)
+light_energy = 1.5
+omni_range = 10.0

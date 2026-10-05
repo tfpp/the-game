@@ -1,0 +1,97 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/starter_room/roller_door.gd" id="script"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_shutter_frame.res" id="frame"]
+[ext_resource type="ArrayMesh" path="res://assets/starter_room/garage_shutter_leaf.res" id="leaf"]
+[ext_resource type="Texture2D" path="res://assets/starter_room/garage_finishes.png" id="paint"]
+[ext_resource type="Shader" path="res://features/starter_room/roller_leaf.gdshader" id="shader"]
+
+[sub_resource type="BoxShape3D" id="boundary"]
+size = Vector3(4.6, 5, 0.14)
+
+[sub_resource type="StandardMaterial3D" id="frame_material"]
+albedo_texture = ExtResource("paint")
+texture_filter = 2
+roughness = 0.86
+
+[sub_resource type="ShaderMaterial" id="leaf_material"]
+shader = ExtResource("shader")
+shader_parameter/paint = ExtResource("paint")
+
+[sub_resource type="BoxShape3D" id="collision"]
+size = Vector3(4.5, 3.2, 0.12)
+
+[sub_resource type="BoxMesh" id="control"]
+size = Vector3(0.18, 0.3, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="control_material"]
+albedo_color = Color(0.32, 0.45, 0.35, 1)
+
+[sub_resource type="CylinderMesh" id="button"]
+top_radius = 0.045
+bottom_radius = 0.045
+height = 0.024
+radial_segments = 8
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="button_material"]
+albedo_color = Color(0.18, 0.48, 0.23, 1)
+
+[sub_resource type="CylinderMesh" id="indicator"]
+top_radius = 0.017
+bottom_radius = 0.017
+height = 0.015
+radial_segments = 8
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="indicator_material"]
+albedo_color = Color(0.7, 0.48, 0.15, 1)
+
+[node name="RollerDoor" type="Node3D"]
+script = ExtResource("script")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("net")
+replicated_properties = Array[NodePath]([NodePath(".:net_height"), NodePath(".:net_target")])
+interaction_offset = Vector3(-2.65, 1.25, 0.2)
+interaction_range = 2.0
+
+[node name="Frame" type="MeshInstance3D" parent="."]
+mesh = ExtResource("frame")
+material_override = SubResource("frame_material")
+
+[node name="Control" type="MeshInstance3D" parent="."]
+position = Vector3(-2.65, 1.25, 0.2)
+mesh = SubResource("control")
+material_override = SubResource("control_material")
+
+[node name="Leaf" type="Node3D" parent="."]
+
+[node name="Model" type="MeshInstance3D" parent="Leaf"]
+mesh = ExtResource("leaf")
+material_override = SubResource("leaf_material")
+
+[node name="Body" type="StaticBody3D" parent="Leaf"]
+
+[node name="Shape" type="CollisionShape3D" parent="Leaf/Body"]
+position = Vector3(0, 1.6, 0)
+shape = SubResource("collision")
+
+[node name="PushButton" type="MeshInstance3D" parent="Control"]
+position = Vector3(0, 0.04, 0.052)
+rotation = Vector3(1.57079633, 0, 0)
+mesh = SubResource("button")
+material_override = SubResource("button_material")
+
+[node name="Indicator" type="MeshInstance3D" parent="Control"]
+position = Vector3(0, -0.08, 0.0475)
+rotation = Vector3(1.57079633, 0, 0)
+mesh = SubResource("indicator")
+material_override = SubResource("indicator_material")
+
+[node name="Boundary" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Boundary"]
+position = Vector3(0, 2.5, -0.25)
+shape = SubResource("boundary")

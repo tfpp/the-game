@@ -1,0 +1,10 @@
+{
+  "title": "Roadside garage and blueprint workbench",
+  "summary": "The opening shutter now overlooks a rainy road and upgrades have a new workshop interface.",
+  "notes": [
+    "Replace the service court with wet road scenery, lane markings, street lamps and a parked car.",
+    "Keep players inside with an invisible full-height collision boundary, even while the shutter is open.",
+    "Add ImageGen blueprint artwork, selectable gear cards, live weapon previews, damage comparisons and carried salvage counts.",
+    "Keep upgrade and Back controls fixed and touch-friendly on portrait and landscape phones."
+  ]
+}
