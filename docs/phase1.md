@@ -96,8 +96,9 @@ under Xvfb (casino floor, elevator wall, slum gate, pawn shop, both slum arrival
   the server keeps the instances it owns. Reuse `room_visibility` / `StreamedRoom`
   rather than a second loader. Noclipping out of a slum must not show the casino.
 - Verified on the Phase 1 branch: transport tests check exclusive map spawning,
-  free-on-return and member retention. The WebSocket cab round trip checks Crown
-  structure unloading for riders and retention for the outsider. The private
+  free-on-return and member retention. The WebSocket cab round trip checks rider
+  transfers, private-map cleanup and the outsider remaining in the shared hub.
+  Crown cosmetic unloading and its assertions are deferred to Part 2. The private
   camera mask stays on the instance layer outside its bounds, excluding the Crown;
   saved-map tests check server floor collision after client visuals unload.
 
