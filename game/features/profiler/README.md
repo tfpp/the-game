@@ -127,3 +127,12 @@ are collected. Dedicated servers remain disabled unless explicitly invoked local
 
 Tests: from `game/`, run
 `godot --headless --fixed-fps 64 -s addons/gut/gut_cmdln.gd -gdir=res://tests/features/profiler -gexit`.
+
+## Web budget census
+
+`SceneCensus.count(root)` counts visible dynamic lights (shadowed, by type),
+processing and physics-processing nodes and mesh nodes under a node;
+`SceneCensus.lights_reaching(root, point)` counts lights whose range covers a point.
+`tests/features/profiler/web_budget_probe.tscn` prints the Crown and slum numbers and
+`test_web_budget.gd` guards the light budget. See
+[profiling-web.md](../../../docs/profiling-web.md).

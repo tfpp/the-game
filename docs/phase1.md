@@ -309,6 +309,9 @@ Replace one area per task so each PR stays reviewable.
 - [ ] Profile the web build in the Crown and in a slum; keep dynamic lights and
   per-frame work within budget. Record numbers in `docs/profiling-animation.md` or a
   new profiling note.
+- First pass recorded in [profiling-web.md](profiling-web.md): light/process census
+  of the Crown and both slum instances and a GUT light-budget guard. No web export
+  templates exist on CI, so the browser profile itself is still to do.
 
 ## Suggested order
 

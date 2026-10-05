@@ -1,0 +1,8 @@
+{
+  "title": "Web light budget check",
+  "summary": "Counted lights and busy objects in the Crown and slums to keep the browser game smooth.",
+  "notes": [
+    "Add a scene census of dynamic lights, shadows and per-frame nodes for the Crown and both slums.",
+    "Add a test that stops new shadowed or excess lights from slipping into those areas."
+  ]
+}
