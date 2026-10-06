@@ -17,6 +17,8 @@ func after_each() -> void:
 		peer.close()
 	roots.clear()
 	peers.clear()
+	# Let the audio thread retire streamed carriage hum playbacks before process exit.
+	await RealTime.wait(get_tree(), 0.1)
 
 
 func branch(title: String, transport: WebSocketMultiplayerPeer) -> Node3D:
@@ -35,6 +37,8 @@ func branch(title: String, transport: WebSocketMultiplayerPeer) -> Node3D:
 	features.add_child(metro)
 	metro.set_physics_process(false)
 	metro.transfers.set_physics_process(false)
+	for zone: MetroZone in metro.stations + metro.rides:
+		zone.seating.set_physics_process(false)
 	var visibility := RoomVisibility.new()
 	visibility.name = "Visibility"
 	features.add_child(visibility)
@@ -200,6 +204,123 @@ func test_boarding_departure_late_join_and_arrival_keep_shared_state() -> void:
 			get_tree(),
 			func() -> bool:
 				return owner_metro.stations[1].is_loaded() and not owner_metro.rides[0].is_loaded(),
+			5
+		)
+	)
+
+
+func test_seat_requests_use_transport_identity_and_replicate_to_late_peer() -> void:
+	var transport := Network.create_transport()
+	var port := randi_range(20000, 40000)
+	assert_eq(transport.create_server(port), OK)
+	var server := branch("ServerSeats", transport)
+	var owner := connect_client(port, "SeatOwner")
+	var observer := connect_client(port, "SeatObserver")
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return server.multiplayer.get_peers().size() == 2, 5
+		)
+	)
+	var owner_id := owner.multiplayer.get_unique_id()
+	var observer_id := observer.multiplayer.get_unique_id()
+	var metro := server.get_node("Features/Metro") as MetroService
+	var court := metro.rides[0].seating
+	metro.net_time = MetroRules.DEPART + 1
+	var at := court.stand_position(0) + Vector3.UP * 0.94
+	var spawner := server.get_node("PlayerSpawner") as MultiplayerSpawner
+	spawner.spawn({"peer": owner_id, "position": at})
+	spawner.spawn({"peer": observer_id, "position": at + Vector3(0, 0, 1)})
+	var owner_metro := owner.get_node("Features/Metro") as MetroService
+	var observer_metro := observer.get_node("Features/Metro") as MetroService
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool:
+				return (
+					owner.get_node("Players").get_child_count() == 2
+					and owner_metro.net_time > MetroRules.DEPART
+				),
+			5
+		)
+	)
+	for root: Node3D in roots:
+		for player: Node in root.get_node("Players").get_children():
+			player.set_physics_process(false)
+	metro.player(owner_id).server_teleport.rpc_id(owner_id, at)
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool: return metro.player(owner_id).net_position.distance_to(at) < 0.01,
+			5
+		)
+	)
+	owner_metro.rides[0].seating.request_sit(0)
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool:
+				return (
+					court.net_seats[0] == owner_id
+					and observer_metro.rides[0].seating.net_seats[0] == owner_id
+				),
+			5
+		)
+	)
+	# A payload cannot impersonate the owner; even an honest second sitter is denied.
+	observer_metro.rides[0].seating.entity.request_action(&"sit", {"seat": 0, "peer": owner_id})
+	observer_metro.rides[0].seating.request_sit(0)
+	observer_metro.rides[0].seating.request_stand()
+	await RealTime.wait(get_tree(), 0.2)
+	assert_eq(court.net_seats[0], owner_id)
+	var late := connect_client(port, "SeatLate")
+	var late_metro := late.get_node("Features/Metro") as MetroService
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool:
+				return (
+					late_metro.rides[0].seating.net_seats[0] == owner_id
+					and absf(late_metro.net_time - metro.net_time) < 0.01
+				),
+			5
+		)
+	)
+	assert_true(late_metro.rides[0].seating.is_seated(owner_id))
+	assert_almost_eq(late_metro.rides[0].seating.seated_yaw(owner_id), court.sit_yaw(0), 0.001)
+	# The only ambient simulation input is the same replicated server timetable.
+	assert_almost_eq(late_metro.net_time, metro.net_time, 0.01)
+	owner_metro.rides[0].seating.request_stand()
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool:
+				return court.net_seats[0] == 0 and late_metro.rides[0].seating.net_seats[0] == 0,
+			5
+		)
+	)
+	await RealTime.wait(get_tree(), 0.1)
+	# Spawn-time capsule separation may have moved the observer away from reach.
+	metro.player(observer_id).server_teleport.rpc_id(observer_id, at)
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool: return metro.player(observer_id).net_position.distance_to(at) < 0.01,
+			5
+		)
+	)
+	assert_true(court._may_sit(observer_id, {"seat": 0}))
+	observer_metro.rides[0].seating.request_sit(0)
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return court.net_seats[0] == observer_id, 5
+		)
+	)
+	observer.multiplayer.multiplayer_peer.close()
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool:
+				return court.net_seats[0] == 0 and late_metro.rides[0].seating.net_seats[0] == 0,
 			5
 		)
 	)

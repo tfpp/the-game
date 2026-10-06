@@ -4,6 +4,7 @@ extends StreamedRoom
 
 @export var station_index := -1
 @export var ride_index := -1
+var seating: MetroSeating
 var train: Node3D
 var _doors: AnimationPlayer
 var _caption: Label3D
@@ -21,6 +22,11 @@ var _shake_offset := Vector2.ZERO
 
 func _ready() -> void:
 	content_changed.connect(_content_changed)
+	seating = (
+		(load("res://features/metro/metro_seating.tscn") as PackedScene).instantiate()
+		as MetroSeating
+	)
+	add_child(seating)
 
 
 func service() -> MetroService:
@@ -43,6 +49,10 @@ func _content_changed(loaded: bool) -> void:
 	if not loaded:
 		return
 	train = _content.get_node("Train") as Node3D
+	var residents := MetroResidents.new()
+	residents.name = "ShelteringResidents"
+	residents.zone = self
+	_content.add_child(residents)
 	_doors = train.get_node("Doors") as AnimationPlayer
 	_caption = _content.get_node_or_null("Board") as Label3D
 	for node: Node in _content.find_children("Board*", "Label3D", false, false):
