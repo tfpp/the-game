@@ -5,6 +5,8 @@
 [ext_resource type="Material" path="res://world/materials/proto_dark.tres" id="3_dark"]
 [ext_resource type="Material" path="res://world/materials/proto_orange.tres" id="4_orange"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [node name="ShootingGallery" type="Node3D"]
 script = ExtResource("1_script")
 
@@ -75,3 +77,12 @@ text = "EXIT"
 
 [node name="TargetSpawner" type="MultiplayerSpawner" parent="Arena"]
 spawn_path = NodePath("../Targets")
+
+[node name="MetroAccess" type="Node3D" parent="Arena"]
+script = ExtResource("metro_access")
+position = Vector3(-10, 0, 8)
+rotation = Vector3(0, 0, 0)
+zone_id = "gallery"
+label = "Shooting Gallery"
+station = 2
+slot = 2

@@ -50,12 +50,6 @@ size = Vector3(1.8, 2.0, 0.8)
 material = ExtResource("wood")
 use_collision = true
 
-[node name="Rack1" type="CSGBox3D" parent="."]
-position = Vector3(0, 1.0, -3.5)
-size = Vector3(1.8, 2.0, 0.8)
-material = ExtResource("wood")
-use_collision = true
-
 [node name="Rack2" type="CSGBox3D" parent="."]
 position = Vector3(2.5, 1.0, -3.5)
 size = Vector3(1.8, 2.0, 0.8)
@@ -75,7 +69,7 @@ material = ExtResource("wood")
 use_collision = true
 
 [node name="Barrel" type="CSGBox3D" parent="."]
-position = Vector3(0, 0.45, -0.5)
+position = Vector3(1.9, 0.45, 1.8)
 size = Vector3(1.2, 0.9, 1.2)
 material = ExtResource("wood")
 use_collision = true

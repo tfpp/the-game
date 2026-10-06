@@ -57,3 +57,10 @@ The default six-metre ladder descends from y=0 to y=-6 (player centers y=1 and y
 
 Run `godot --headless --path game -s scripts/network_checks.gd -- doors` for shared open/close,
 server range/key validation, key ring replication, streaming and late-join checks.
+
+## Metro connections for new rooms
+
+Every new public fast-travel room needs a permanent `MetroAccess` marker outside its
+streamed Content. The marker registers its paired station elevator and GPS link;
+see [metro authoring and footprint](../metro/README.md#adding-future-travel-rooms).
+Keep private excursion and resident-floor access behind their existing owners.

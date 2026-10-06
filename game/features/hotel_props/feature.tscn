@@ -7,6 +7,8 @@
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="interaction"]
 [ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [sub_resource type="StandardMaterial3D" id="Brass"]
 albedo_color = Color(0.55, 0.4, 0.18, 1)
 roughness = 1.0
@@ -104,3 +106,13 @@ hint = "In the dev room beside HOTEL WING."
 
 [node name="DevGate" type="Node" parent="Entrance"]
 script = ExtResource("dev_gate")
+
+[node name="MetroAccess" type="Node3D" parent="Room"]
+script = ExtResource("metro_access")
+position = Vector3(0, 0, -4.3)
+rotation = Vector3(0, 0, 0)
+zone_id = "hotel_props"
+label = "Hotel Props"
+station = 3
+slot = 3
+access_policy = "developer"

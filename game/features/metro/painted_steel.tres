@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/metro/textures/r44_atlas.res" id="1_713ef"]
+
+[resource]
+resource_name = "R44 painted steel - 128px"
+albedo_texture = ExtResource("1_713ef")
+roughness = 0.86
+texture_filter = 2
+texture_repeat = false

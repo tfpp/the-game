@@ -18,7 +18,10 @@ func _ready() -> void:
 		for corner: Vector2 in [
 			Vector2(-4.6, -4.75), Vector2(4.6, -4.75), Vector2(-4.6, 4.75), Vector2(4.6, 4.75)
 		]:
-			_place(room, PLANT, Vector3(corner.x, 0, corner.y))
+			var plant_at := Vector3(corner.x, 0, corner.y)
+			if x == 0 and corner == Vector2(-4.6, -4.75):
+				plant_at.z = 2.5
+			_place(room, PLANT, plant_at)
 		_place(room, SOFA, Vector3(2.5, 0, -5.3))
 		_place(room, COFFEE_TABLE, Vector3(2.5, 0, -3.9))
 		_place(room, ASHTRAY, Vector3(2.5, .4625, -3.9))

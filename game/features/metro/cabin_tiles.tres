@@ -1,0 +1,70 @@
+[gd_resource type="MeshLibrary" format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/CabinFloor.res" id="1_ylu4d"]
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/CabinCeiling.res" id="2_sy2uh"]
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/WallBay.res" id="3_q2ajb"]
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/EndWallBay.res" id="4_x0csi"]
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/DoorHeader.res" id="5_bde8o"]
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/EndPartition.res" id="6_l63w6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ylu4d"]
+size = Vector3(3.04, 0.1, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sy2uh"]
+size = Vector3(3.04, 0.12, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_q2ajb"]
+size = Vector3(0.19, 1.94, 3.56)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x0csi"]
+size = Vector3(0.19, 1.94, 2.88)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bde8o"]
+size = Vector3(0.2, 0.27, 1.44)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l63w6"]
+size = Vector3(2.68, 2.12, 0.1)
+
+[resource]
+item/0/name = "Floor"
+item/0/mesh = ExtResource("1_ylu4d")
+item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/mesh_cast_shadow = 1
+item/0/shapes = [SubResource("BoxShape3D_ylu4d"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)]
+item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/navigation_layers = 1
+item/1/name = "Ceiling"
+item/1/mesh = ExtResource("2_sy2uh")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/mesh_cast_shadow = 1
+item/1/shapes = [SubResource("BoxShape3D_sy2uh"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.55, 0)]
+item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/navigation_layers = 1
+item/2/name = "WindowBay"
+item/2/mesh = ExtResource("3_q2ajb")
+item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/mesh_cast_shadow = 1
+item/2/shapes = [SubResource("BoxShape3D_q2ajb"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.43, 2.17, 0)]
+item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/navigation_layers = 1
+item/3/name = "EndWindowBay"
+item/3/mesh = ExtResource("4_x0csi")
+item/3/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/3/mesh_cast_shadow = 1
+item/3/shapes = [SubResource("BoxShape3D_x0csi"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.43, 2.17, 0)]
+item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/3/navigation_layers = 1
+item/4/name = "DoorHeader"
+item/4/mesh = ExtResource("5_bde8o")
+item/4/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/4/mesh_cast_shadow = 1
+item/4/shapes = [SubResource("BoxShape3D_bde8o"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 3.255, 0)]
+item/4/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/4/navigation_layers = 1
+item/5/name = "FixedEndPartition"
+item/5/mesh = ExtResource("6_l63w6")
+item/5/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/5/mesh_cast_shadow = 1
+item/5/shapes = [SubResource("BoxShape3D_l63w6"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.26, 0)]
+item/5/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/5/navigation_layers = 1

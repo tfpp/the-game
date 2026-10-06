@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "R44 dusty transparent glazing"
+transparency = 1
+cull_mode = 2
+albedo_color = Color(0.2, 0.3, 0.29, 0.22)
+roughness = 0.85

@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "R44 fluorescent diffuser"
+albedo_color = Color(0.80784315, 0.8352941, 0.7294118, 1)
+emission_enabled = true
+emission = Color(0.73333335, 0.7882353, 0.65882355, 1)
+emission_energy_multiplier = 0.45

@@ -62,6 +62,20 @@ func _physics_process(delta: float) -> void:
 		_advance(delta)
 
 
+## Move an in-flight or settled item with an authoritative compartment transfer.
+## Preserve the flight segment so it cannot jump back to its departure room.
+func transfer_by(offset: Vector3) -> void:
+	if not multiplayer.is_server():
+		return
+	from += offset
+	to += offset
+	_seg_from += offset
+	_seg_to += offset
+	net_position += offset
+	position = net_position
+	reset_physics_interpolation()
+
+
 func _advance(delta: float) -> void:
 	_elapsed += delta
 	var t := _elapsed / _seg_duration
@@ -113,7 +127,12 @@ func _process(delta: float) -> void:
 		position = net_position
 		return
 	var t := 1.0 - exp(-REMOTE_SMOOTHING * delta)
-	position = position.lerp(net_position, t)
+	# A room transfer is discontinuous; never draw a dropped item across the world.
+	position = (
+		net_position
+		if position.distance_squared_to(net_position) > 128 * 128
+		else position.lerp(net_position, t)
+	)
 
 
 func can_use(player: Player) -> bool:

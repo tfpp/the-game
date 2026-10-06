@@ -5,6 +5,8 @@
 
 [ext_resource type="Script" path="res://features/gnomes/gnome_tunnels.gd" id="3_tunnels"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [node name="Gnomes" type="Node3D"]
 script = ExtResource("3_tunnels")
 
@@ -82,3 +84,12 @@ rotation = Vector3(0, 1.5708, 0)
 [node name="Hole3" parent="TrainWest" index="3"]
 position = Vector3(-34, 0, 18)
 rotation = Vector3(0, 1.5708, 0)
+
+[node name="MetroAccess" type="Node3D" parent="."]
+script = ExtResource("metro_access")
+position = Vector3(117, 0, -1000)
+rotation = Vector3(0, -1.5707963267948966, 0)
+zone_id = "gnome_tunnels"
+label = "Gnome Tunnels"
+station = 2
+slot = 4

@@ -1,0 +1,281 @@
+{
+	"car_pitch": 22.86,
+	"cars": 5,
+	"components": [
+		{
+			"mesh": "CabShell",
+			"surfaces": 1,
+			"triangles": 852,
+			"vertices": 1440
+		},
+		{
+			"mesh": "CabinFloor",
+			"surfaces": 1,
+			"triangles": 12,
+			"vertices": 24
+		},
+		{
+			"mesh": "CabinCeiling",
+			"surfaces": 1,
+			"triangles": 10,
+			"vertices": 20
+		},
+		{
+			"mesh": "BaySteel",
+			"surfaces": 1,
+			"triangles": 84,
+			"vertices": 168
+		},
+		{
+			"mesh": "BayLining",
+			"surfaces": 1,
+			"triangles": 276,
+			"vertices": 552
+		},
+		{
+			"mesh": "BayGlass",
+			"surfaces": 1,
+			"triangles": 4,
+			"vertices": 8
+		},
+		{
+			"mesh": "EndBaySteel",
+			"surfaces": 1,
+			"triangles": 72,
+			"vertices": 144
+		},
+		{
+			"mesh": "EndBayLining",
+			"surfaces": 1,
+			"triangles": 168,
+			"vertices": 336
+		},
+		{
+			"mesh": "EndBayGlass",
+			"surfaces": 1,
+			"triangles": 2,
+			"vertices": 4
+		},
+		{
+			"mesh": "HeaderSteel",
+			"surfaces": 1,
+			"triangles": 12,
+			"vertices": 24
+		},
+		{
+			"mesh": "HeaderLining",
+			"surfaces": 1,
+			"triangles": 12,
+			"vertices": 24
+		},
+		{
+			"mesh": "EndPartition",
+			"surfaces": 1,
+			"triangles": 60,
+			"vertices": 120
+		},
+		{
+			"mesh": "PassengerFurniture",
+			"surfaces": 1,
+			"triangles": 1672,
+			"vertices": 3176
+		},
+		{
+			"mesh": "FluorescentDiffusers",
+			"surfaces": 1,
+			"triangles": 72,
+			"vertices": 144
+		},
+		{
+			"mesh": "OpeningDoorLeaf",
+			"surfaces": 1,
+			"triangles": 48,
+			"vertices": 96
+		},
+		{
+			"mesh": "DoorP",
+			"surfaces": 1,
+			"triangles": 2,
+			"vertices": 4
+		},
+		{
+			"mesh": "Truck",
+			"surfaces": 1,
+			"triangles": 604,
+			"vertices": 1032
+		},
+		{
+			"mesh": "CabLivery",
+			"surfaces": 1,
+			"triangles": 10,
+			"vertices": 20
+		},
+		{
+			"mesh": "TrailerShell",
+			"surfaces": 1,
+			"triangles": 400,
+			"vertices": 684
+		},
+		{
+			"mesh": "TrailerLivery",
+			"surfaces": 1,
+			"triangles": 8,
+			"vertices": 16
+		},
+		{
+			"mesh": "GraffitiCar01",
+			"surfaces": 1,
+			"triangles": 12,
+			"vertices": 24
+		},
+		{
+			"mesh": "NumberCar01",
+			"surfaces": 1,
+			"triangles": 6,
+			"vertices": 12
+		},
+		{
+			"mesh": "GraffitiCar02",
+			"surfaces": 1,
+			"triangles": 12,
+			"vertices": 24
+		},
+		{
+			"mesh": "NumberCar02",
+			"surfaces": 1,
+			"triangles": 4,
+			"vertices": 8
+		},
+		{
+			"mesh": "GraffitiCar03",
+			"surfaces": 1,
+			"triangles": 12,
+			"vertices": 24
+		},
+		{
+			"mesh": "NumberCar03",
+			"surfaces": 1,
+			"triangles": 4,
+			"vertices": 8
+		},
+		{
+			"mesh": "GraffitiCar04",
+			"surfaces": 1,
+			"triangles": 12,
+			"vertices": 24
+		},
+		{
+			"mesh": "NumberCar04",
+			"surfaces": 1,
+			"triangles": 4,
+			"vertices": 8
+		},
+		{
+			"mesh": "GraffitiCar05",
+			"surfaces": 1,
+			"triangles": 12,
+			"vertices": 24
+		},
+		{
+			"mesh": "NumberCar05",
+			"surfaces": 1,
+			"triangles": 6,
+			"vertices": 12
+		}
+	],
+	"front": "+Z",
+	"height_m": 3.66,
+	"length_m": 114.3,
+	"pivot": "rail centre, mid-consist",
+	"textures": [
+		"128x128 painted atlas",
+		"128x64 exact livery",
+		"128x128 graffiti",
+		"128x128 interior"
+	],
+	"units": "metres",
+	"up": "+Y",
+	"uv_regions": [
+		{
+			"name": "STEEL",
+			"padding_px": 2,
+			"rect_px": [
+				2,
+				2,
+				60,
+				28
+			]
+		},
+		{
+			"name": "RIBS",
+			"padding_px": 2,
+			"rect_px": [
+				66,
+				2,
+				60,
+				28
+			]
+		},
+		{
+			"name": "ROOF",
+			"padding_px": 2,
+			"rect_px": [
+				2,
+				34,
+				60,
+				28
+			]
+		},
+		{
+			"name": "RUBBER",
+			"padding_px": 2,
+			"rect_px": [
+				66,
+				34,
+				60,
+				28
+			]
+		},
+		{
+			"name": "GLASS",
+			"padding_px": 2,
+			"rect_px": [
+				2,
+				66,
+				60,
+				28
+			]
+		},
+		{
+			"name": "TRUCK",
+			"padding_px": 2,
+			"rect_px": [
+				66,
+				66,
+				60,
+				28
+			]
+		},
+		{
+			"name": "CREAM",
+			"padding_px": 2,
+			"rect_px": [
+				2,
+				98,
+				60,
+				28
+			]
+		},
+		{
+			"name": "RUST",
+			"padding_px": 2,
+			"rect_px": [
+				66,
+				98,
+				60,
+				28
+			]
+		}
+	],
+	"width_m": 3.15
+}

@@ -1,0 +1,3392 @@
+[gd_scene format=3]
+
+[ext_resource type="MeshLibrary" path="res://features/metro/cabin_collision.tres" id="1_qlb2l"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3yu4r"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6bspg"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iv87i"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iqr1n"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qe8xd"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ylfp8"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wr8s7"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j3e4q"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6rc62"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jcrs6"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2y2bs"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_av60g"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wlldi"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qjvis"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_njs22"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dm1mt"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j4xmd"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7b86g"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_thgu1"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3pr3k"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kijgy"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_isbas"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bgyp0"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_opm42"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wtgvj"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qtvl6"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m6s6w"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_15ova"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_n6vpx"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_g5amj"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4f0wk"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fwcew"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_btpwy"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_50mxb"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_46l04"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8fgq3"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b7ubh"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6tg8y"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4q78d"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nlntc"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v23i8"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xh2o1"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ecf4n"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sbwdc"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_quctu"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rqbjj"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ek3sx"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b31u1"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dw2sd"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jc0qr"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1vlc3"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_et7b8"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="Animation" id="Animation_48rxv"]
+length = 1.2
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Car01/DoorL1A")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -8.596, 1.2, 1, -1.43, 2.16, -7.856)
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Car01/DoorL1B")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -6.4040003, 1.2, 1, -1.43, 2.16, -7.144)
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Car01/DoorL2A")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -3.596, 1.2, 1, -1.43, 2.16, -2.856)
+tracks/3/type = "position_3d"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Car01/DoorL2B")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -1.404, 1.2, 1, -1.43, 2.16, -2.144)
+tracks/4/type = "position_3d"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Car01/DoorL3A")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 1.404, 1.2, 1, -1.43, 2.16, 2.144)
+tracks/5/type = "position_3d"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Car01/DoorL3B")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 3.596, 1.2, 1, -1.43, 2.16, 2.856)
+tracks/6/type = "position_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Car01/DoorL4A")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 6.4040003, 1.2, 1, -1.43, 2.16, 7.144)
+tracks/7/type = "position_3d"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Car01/DoorL4B")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 8.596, 1.2, 1, -1.43, 2.16, 7.856)
+tracks/8/type = "position_3d"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Car01/DoorR1A")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -8.596, 1.2, 1, 1.43, 2.16, -7.856)
+tracks/9/type = "position_3d"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Car01/DoorR1B")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -6.4040003, 1.2, 1, 1.43, 2.16, -7.144)
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Car01/DoorR2A")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -3.596, 1.2, 1, 1.43, 2.16, -2.856)
+tracks/11/type = "position_3d"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Car01/DoorR2B")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -1.404, 1.2, 1, 1.43, 2.16, -2.144)
+tracks/12/type = "position_3d"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Car01/DoorR3A")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 1.404, 1.2, 1, 1.43, 2.16, 2.144)
+tracks/13/type = "position_3d"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Car01/DoorR3B")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 3.596, 1.2, 1, 1.43, 2.16, 2.856)
+tracks/14/type = "position_3d"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("Car01/DoorR4A")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 6.4040003, 1.2, 1, 1.43, 2.16, 7.144)
+tracks/15/type = "position_3d"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Car01/DoorR4B")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 8.596, 1.2, 1, 1.43, 2.16, 7.856)
+tracks/16/type = "position_3d"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("Car02/DoorL1A")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -8.596, 1.2, 1, -1.43, 2.16, -7.856)
+tracks/17/type = "position_3d"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("Car02/DoorL1B")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -6.4040003, 1.2, 1, -1.43, 2.16, -7.144)
+tracks/18/type = "position_3d"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("Car02/DoorL2A")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -3.596, 1.2, 1, -1.43, 2.16, -2.856)
+tracks/19/type = "position_3d"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("Car02/DoorL2B")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -1.404, 1.2, 1, -1.43, 2.16, -2.144)
+tracks/20/type = "position_3d"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("Car02/DoorL3A")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 1.404, 1.2, 1, -1.43, 2.16, 2.144)
+tracks/21/type = "position_3d"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("Car02/DoorL3B")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 3.596, 1.2, 1, -1.43, 2.16, 2.856)
+tracks/22/type = "position_3d"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("Car02/DoorL4A")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 6.4040003, 1.2, 1, -1.43, 2.16, 7.144)
+tracks/23/type = "position_3d"
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/path = NodePath("Car02/DoorL4B")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 8.596, 1.2, 1, -1.43, 2.16, 7.856)
+tracks/24/type = "position_3d"
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/path = NodePath("Car02/DoorR1A")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -8.596, 1.2, 1, 1.43, 2.16, -7.856)
+tracks/25/type = "position_3d"
+tracks/25/imported = false
+tracks/25/enabled = true
+tracks/25/path = NodePath("Car02/DoorR1B")
+tracks/25/interp = 1
+tracks/25/loop_wrap = true
+tracks/25/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -6.4040003, 1.2, 1, 1.43, 2.16, -7.144)
+tracks/26/type = "position_3d"
+tracks/26/imported = false
+tracks/26/enabled = true
+tracks/26/path = NodePath("Car02/DoorR2A")
+tracks/26/interp = 1
+tracks/26/loop_wrap = true
+tracks/26/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -3.596, 1.2, 1, 1.43, 2.16, -2.856)
+tracks/27/type = "position_3d"
+tracks/27/imported = false
+tracks/27/enabled = true
+tracks/27/path = NodePath("Car02/DoorR2B")
+tracks/27/interp = 1
+tracks/27/loop_wrap = true
+tracks/27/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -1.404, 1.2, 1, 1.43, 2.16, -2.144)
+tracks/28/type = "position_3d"
+tracks/28/imported = false
+tracks/28/enabled = true
+tracks/28/path = NodePath("Car02/DoorR3A")
+tracks/28/interp = 1
+tracks/28/loop_wrap = true
+tracks/28/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 1.404, 1.2, 1, 1.43, 2.16, 2.144)
+tracks/29/type = "position_3d"
+tracks/29/imported = false
+tracks/29/enabled = true
+tracks/29/path = NodePath("Car02/DoorR3B")
+tracks/29/interp = 1
+tracks/29/loop_wrap = true
+tracks/29/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 3.596, 1.2, 1, 1.43, 2.16, 2.856)
+tracks/30/type = "position_3d"
+tracks/30/imported = false
+tracks/30/enabled = true
+tracks/30/path = NodePath("Car02/DoorR4A")
+tracks/30/interp = 1
+tracks/30/loop_wrap = true
+tracks/30/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 6.4040003, 1.2, 1, 1.43, 2.16, 7.144)
+tracks/31/type = "position_3d"
+tracks/31/imported = false
+tracks/31/enabled = true
+tracks/31/path = NodePath("Car02/DoorR4B")
+tracks/31/interp = 1
+tracks/31/loop_wrap = true
+tracks/31/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 8.596, 1.2, 1, 1.43, 2.16, 7.856)
+tracks/32/type = "position_3d"
+tracks/32/imported = false
+tracks/32/enabled = true
+tracks/32/path = NodePath("Car03/DoorL1A")
+tracks/32/interp = 1
+tracks/32/loop_wrap = true
+tracks/32/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -8.596, 1.2, 1, -1.43, 2.16, -7.856)
+tracks/33/type = "position_3d"
+tracks/33/imported = false
+tracks/33/enabled = true
+tracks/33/path = NodePath("Car03/DoorL1B")
+tracks/33/interp = 1
+tracks/33/loop_wrap = true
+tracks/33/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -6.4040003, 1.2, 1, -1.43, 2.16, -7.144)
+tracks/34/type = "position_3d"
+tracks/34/imported = false
+tracks/34/enabled = true
+tracks/34/path = NodePath("Car03/DoorL2A")
+tracks/34/interp = 1
+tracks/34/loop_wrap = true
+tracks/34/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -3.596, 1.2, 1, -1.43, 2.16, -2.856)
+tracks/35/type = "position_3d"
+tracks/35/imported = false
+tracks/35/enabled = true
+tracks/35/path = NodePath("Car03/DoorL2B")
+tracks/35/interp = 1
+tracks/35/loop_wrap = true
+tracks/35/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -1.404, 1.2, 1, -1.43, 2.16, -2.144)
+tracks/36/type = "position_3d"
+tracks/36/imported = false
+tracks/36/enabled = true
+tracks/36/path = NodePath("Car03/DoorL3A")
+tracks/36/interp = 1
+tracks/36/loop_wrap = true
+tracks/36/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 1.404, 1.2, 1, -1.43, 2.16, 2.144)
+tracks/37/type = "position_3d"
+tracks/37/imported = false
+tracks/37/enabled = true
+tracks/37/path = NodePath("Car03/DoorL3B")
+tracks/37/interp = 1
+tracks/37/loop_wrap = true
+tracks/37/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 3.596, 1.2, 1, -1.43, 2.16, 2.856)
+tracks/38/type = "position_3d"
+tracks/38/imported = false
+tracks/38/enabled = true
+tracks/38/path = NodePath("Car03/DoorL4A")
+tracks/38/interp = 1
+tracks/38/loop_wrap = true
+tracks/38/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 6.4040003, 1.2, 1, -1.43, 2.16, 7.144)
+tracks/39/type = "position_3d"
+tracks/39/imported = false
+tracks/39/enabled = true
+tracks/39/path = NodePath("Car03/DoorL4B")
+tracks/39/interp = 1
+tracks/39/loop_wrap = true
+tracks/39/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 8.596, 1.2, 1, -1.43, 2.16, 7.856)
+tracks/40/type = "position_3d"
+tracks/40/imported = false
+tracks/40/enabled = true
+tracks/40/path = NodePath("Car03/DoorR1A")
+tracks/40/interp = 1
+tracks/40/loop_wrap = true
+tracks/40/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -8.596, 1.2, 1, 1.43, 2.16, -7.856)
+tracks/41/type = "position_3d"
+tracks/41/imported = false
+tracks/41/enabled = true
+tracks/41/path = NodePath("Car03/DoorR1B")
+tracks/41/interp = 1
+tracks/41/loop_wrap = true
+tracks/41/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -6.4040003, 1.2, 1, 1.43, 2.16, -7.144)
+tracks/42/type = "position_3d"
+tracks/42/imported = false
+tracks/42/enabled = true
+tracks/42/path = NodePath("Car03/DoorR2A")
+tracks/42/interp = 1
+tracks/42/loop_wrap = true
+tracks/42/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -3.596, 1.2, 1, 1.43, 2.16, -2.856)
+tracks/43/type = "position_3d"
+tracks/43/imported = false
+tracks/43/enabled = true
+tracks/43/path = NodePath("Car03/DoorR2B")
+tracks/43/interp = 1
+tracks/43/loop_wrap = true
+tracks/43/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -1.404, 1.2, 1, 1.43, 2.16, -2.144)
+tracks/44/type = "position_3d"
+tracks/44/imported = false
+tracks/44/enabled = true
+tracks/44/path = NodePath("Car03/DoorR3A")
+tracks/44/interp = 1
+tracks/44/loop_wrap = true
+tracks/44/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 1.404, 1.2, 1, 1.43, 2.16, 2.144)
+tracks/45/type = "position_3d"
+tracks/45/imported = false
+tracks/45/enabled = true
+tracks/45/path = NodePath("Car03/DoorR3B")
+tracks/45/interp = 1
+tracks/45/loop_wrap = true
+tracks/45/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 3.596, 1.2, 1, 1.43, 2.16, 2.856)
+tracks/46/type = "position_3d"
+tracks/46/imported = false
+tracks/46/enabled = true
+tracks/46/path = NodePath("Car03/DoorR4A")
+tracks/46/interp = 1
+tracks/46/loop_wrap = true
+tracks/46/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 6.4040003, 1.2, 1, 1.43, 2.16, 7.144)
+tracks/47/type = "position_3d"
+tracks/47/imported = false
+tracks/47/enabled = true
+tracks/47/path = NodePath("Car03/DoorR4B")
+tracks/47/interp = 1
+tracks/47/loop_wrap = true
+tracks/47/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 8.596, 1.2, 1, 1.43, 2.16, 7.856)
+tracks/48/type = "position_3d"
+tracks/48/imported = false
+tracks/48/enabled = true
+tracks/48/path = NodePath("Car04/DoorL1A")
+tracks/48/interp = 1
+tracks/48/loop_wrap = true
+tracks/48/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -8.596, 1.2, 1, -1.43, 2.16, -7.856)
+tracks/49/type = "position_3d"
+tracks/49/imported = false
+tracks/49/enabled = true
+tracks/49/path = NodePath("Car04/DoorL1B")
+tracks/49/interp = 1
+tracks/49/loop_wrap = true
+tracks/49/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -6.4040003, 1.2, 1, -1.43, 2.16, -7.144)
+tracks/50/type = "position_3d"
+tracks/50/imported = false
+tracks/50/enabled = true
+tracks/50/path = NodePath("Car04/DoorL2A")
+tracks/50/interp = 1
+tracks/50/loop_wrap = true
+tracks/50/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -3.596, 1.2, 1, -1.43, 2.16, -2.856)
+tracks/51/type = "position_3d"
+tracks/51/imported = false
+tracks/51/enabled = true
+tracks/51/path = NodePath("Car04/DoorL2B")
+tracks/51/interp = 1
+tracks/51/loop_wrap = true
+tracks/51/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -1.404, 1.2, 1, -1.43, 2.16, -2.144)
+tracks/52/type = "position_3d"
+tracks/52/imported = false
+tracks/52/enabled = true
+tracks/52/path = NodePath("Car04/DoorL3A")
+tracks/52/interp = 1
+tracks/52/loop_wrap = true
+tracks/52/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 1.404, 1.2, 1, -1.43, 2.16, 2.144)
+tracks/53/type = "position_3d"
+tracks/53/imported = false
+tracks/53/enabled = true
+tracks/53/path = NodePath("Car04/DoorL3B")
+tracks/53/interp = 1
+tracks/53/loop_wrap = true
+tracks/53/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 3.596, 1.2, 1, -1.43, 2.16, 2.856)
+tracks/54/type = "position_3d"
+tracks/54/imported = false
+tracks/54/enabled = true
+tracks/54/path = NodePath("Car04/DoorL4A")
+tracks/54/interp = 1
+tracks/54/loop_wrap = true
+tracks/54/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 6.4040003, 1.2, 1, -1.43, 2.16, 7.144)
+tracks/55/type = "position_3d"
+tracks/55/imported = false
+tracks/55/enabled = true
+tracks/55/path = NodePath("Car04/DoorL4B")
+tracks/55/interp = 1
+tracks/55/loop_wrap = true
+tracks/55/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 8.596, 1.2, 1, -1.43, 2.16, 7.856)
+tracks/56/type = "position_3d"
+tracks/56/imported = false
+tracks/56/enabled = true
+tracks/56/path = NodePath("Car04/DoorR1A")
+tracks/56/interp = 1
+tracks/56/loop_wrap = true
+tracks/56/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -8.596, 1.2, 1, 1.43, 2.16, -7.856)
+tracks/57/type = "position_3d"
+tracks/57/imported = false
+tracks/57/enabled = true
+tracks/57/path = NodePath("Car04/DoorR1B")
+tracks/57/interp = 1
+tracks/57/loop_wrap = true
+tracks/57/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -6.4040003, 1.2, 1, 1.43, 2.16, -7.144)
+tracks/58/type = "position_3d"
+tracks/58/imported = false
+tracks/58/enabled = true
+tracks/58/path = NodePath("Car04/DoorR2A")
+tracks/58/interp = 1
+tracks/58/loop_wrap = true
+tracks/58/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -3.596, 1.2, 1, 1.43, 2.16, -2.856)
+tracks/59/type = "position_3d"
+tracks/59/imported = false
+tracks/59/enabled = true
+tracks/59/path = NodePath("Car04/DoorR2B")
+tracks/59/interp = 1
+tracks/59/loop_wrap = true
+tracks/59/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -1.404, 1.2, 1, 1.43, 2.16, -2.144)
+tracks/60/type = "position_3d"
+tracks/60/imported = false
+tracks/60/enabled = true
+tracks/60/path = NodePath("Car04/DoorR3A")
+tracks/60/interp = 1
+tracks/60/loop_wrap = true
+tracks/60/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 1.404, 1.2, 1, 1.43, 2.16, 2.144)
+tracks/61/type = "position_3d"
+tracks/61/imported = false
+tracks/61/enabled = true
+tracks/61/path = NodePath("Car04/DoorR3B")
+tracks/61/interp = 1
+tracks/61/loop_wrap = true
+tracks/61/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 3.596, 1.2, 1, 1.43, 2.16, 2.856)
+tracks/62/type = "position_3d"
+tracks/62/imported = false
+tracks/62/enabled = true
+tracks/62/path = NodePath("Car04/DoorR4A")
+tracks/62/interp = 1
+tracks/62/loop_wrap = true
+tracks/62/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 6.4040003, 1.2, 1, 1.43, 2.16, 7.144)
+tracks/63/type = "position_3d"
+tracks/63/imported = false
+tracks/63/enabled = true
+tracks/63/path = NodePath("Car04/DoorR4B")
+tracks/63/interp = 1
+tracks/63/loop_wrap = true
+tracks/63/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 8.596, 1.2, 1, 1.43, 2.16, 7.856)
+tracks/64/type = "position_3d"
+tracks/64/imported = false
+tracks/64/enabled = true
+tracks/64/path = NodePath("Car05/DoorL1A")
+tracks/64/interp = 1
+tracks/64/loop_wrap = true
+tracks/64/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -8.596, 1.2, 1, -1.43, 2.16, -7.856)
+tracks/65/type = "position_3d"
+tracks/65/imported = false
+tracks/65/enabled = true
+tracks/65/path = NodePath("Car05/DoorL1B")
+tracks/65/interp = 1
+tracks/65/loop_wrap = true
+tracks/65/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -6.4040003, 1.2, 1, -1.43, 2.16, -7.144)
+tracks/66/type = "position_3d"
+tracks/66/imported = false
+tracks/66/enabled = true
+tracks/66/path = NodePath("Car05/DoorL2A")
+tracks/66/interp = 1
+tracks/66/loop_wrap = true
+tracks/66/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -3.596, 1.2, 1, -1.43, 2.16, -2.856)
+tracks/67/type = "position_3d"
+tracks/67/imported = false
+tracks/67/enabled = true
+tracks/67/path = NodePath("Car05/DoorL2B")
+tracks/67/interp = 1
+tracks/67/loop_wrap = true
+tracks/67/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -1.404, 1.2, 1, -1.43, 2.16, -2.144)
+tracks/68/type = "position_3d"
+tracks/68/imported = false
+tracks/68/enabled = true
+tracks/68/path = NodePath("Car05/DoorL3A")
+tracks/68/interp = 1
+tracks/68/loop_wrap = true
+tracks/68/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 1.404, 1.2, 1, -1.43, 2.16, 2.144)
+tracks/69/type = "position_3d"
+tracks/69/imported = false
+tracks/69/enabled = true
+tracks/69/path = NodePath("Car05/DoorL3B")
+tracks/69/interp = 1
+tracks/69/loop_wrap = true
+tracks/69/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 3.596, 1.2, 1, -1.43, 2.16, 2.856)
+tracks/70/type = "position_3d"
+tracks/70/imported = false
+tracks/70/enabled = true
+tracks/70/path = NodePath("Car05/DoorL4A")
+tracks/70/interp = 1
+tracks/70/loop_wrap = true
+tracks/70/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 6.4040003, 1.2, 1, -1.43, 2.16, 7.144)
+tracks/71/type = "position_3d"
+tracks/71/imported = false
+tracks/71/enabled = true
+tracks/71/path = NodePath("Car05/DoorL4B")
+tracks/71/interp = 1
+tracks/71/loop_wrap = true
+tracks/71/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 8.596, 1.2, 1, -1.43, 2.16, 7.856)
+tracks/72/type = "position_3d"
+tracks/72/imported = false
+tracks/72/enabled = true
+tracks/72/path = NodePath("Car05/DoorR1A")
+tracks/72/interp = 1
+tracks/72/loop_wrap = true
+tracks/72/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -8.596, 1.2, 1, 1.43, 2.16, -7.856)
+tracks/73/type = "position_3d"
+tracks/73/imported = false
+tracks/73/enabled = true
+tracks/73/path = NodePath("Car05/DoorR1B")
+tracks/73/interp = 1
+tracks/73/loop_wrap = true
+tracks/73/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -6.4040003, 1.2, 1, 1.43, 2.16, -7.144)
+tracks/74/type = "position_3d"
+tracks/74/imported = false
+tracks/74/enabled = true
+tracks/74/path = NodePath("Car05/DoorR2A")
+tracks/74/interp = 1
+tracks/74/loop_wrap = true
+tracks/74/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -3.596, 1.2, 1, 1.43, 2.16, -2.856)
+tracks/75/type = "position_3d"
+tracks/75/imported = false
+tracks/75/enabled = true
+tracks/75/path = NodePath("Car05/DoorR2B")
+tracks/75/interp = 1
+tracks/75/loop_wrap = true
+tracks/75/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -1.404, 1.2, 1, 1.43, 2.16, -2.144)
+tracks/76/type = "position_3d"
+tracks/76/imported = false
+tracks/76/enabled = true
+tracks/76/path = NodePath("Car05/DoorR3A")
+tracks/76/interp = 1
+tracks/76/loop_wrap = true
+tracks/76/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 1.404, 1.2, 1, 1.43, 2.16, 2.144)
+tracks/77/type = "position_3d"
+tracks/77/imported = false
+tracks/77/enabled = true
+tracks/77/path = NodePath("Car05/DoorR3B")
+tracks/77/interp = 1
+tracks/77/loop_wrap = true
+tracks/77/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 3.596, 1.2, 1, 1.43, 2.16, 2.856)
+tracks/78/type = "position_3d"
+tracks/78/imported = false
+tracks/78/enabled = true
+tracks/78/path = NodePath("Car05/DoorR4A")
+tracks/78/interp = 1
+tracks/78/loop_wrap = true
+tracks/78/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 6.4040003, 1.2, 1, 1.43, 2.16, 7.144)
+tracks/79/type = "position_3d"
+tracks/79/imported = false
+tracks/79/enabled = true
+tracks/79/path = NodePath("Car05/DoorR4B")
+tracks/79/interp = 1
+tracks/79/loop_wrap = true
+tracks/79/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 8.596, 1.2, 1, 1.43, 2.16, 7.856)
+
+[sub_resource type="Animation" id="Animation_mk0dy"]
+length = 1.2
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Car01/DoorL1A")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -8.596, 1.2, 1, -1.43, 2.16, -7.856)
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Car01/DoorL1B")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -6.4040003, 1.2, 1, -1.43, 2.16, -7.144)
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Car01/DoorL2A")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -3.596, 1.2, 1, -1.43, 2.16, -2.856)
+tracks/3/type = "position_3d"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Car01/DoorL2B")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -1.404, 1.2, 1, -1.43, 2.16, -2.144)
+tracks/4/type = "position_3d"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Car01/DoorL3A")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 1.404, 1.2, 1, -1.43, 2.16, 2.144)
+tracks/5/type = "position_3d"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Car01/DoorL3B")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 3.596, 1.2, 1, -1.43, 2.16, 2.856)
+tracks/6/type = "position_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Car01/DoorL4A")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 6.4040003, 1.2, 1, -1.43, 2.16, 7.144)
+tracks/7/type = "position_3d"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Car01/DoorL4B")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 8.596, 1.2, 1, -1.43, 2.16, 7.856)
+tracks/8/type = "position_3d"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Car02/DoorL1A")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -8.596, 1.2, 1, -1.43, 2.16, -7.856)
+tracks/9/type = "position_3d"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Car02/DoorL1B")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -6.4040003, 1.2, 1, -1.43, 2.16, -7.144)
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Car02/DoorL2A")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -3.596, 1.2, 1, -1.43, 2.16, -2.856)
+tracks/11/type = "position_3d"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Car02/DoorL2B")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -1.404, 1.2, 1, -1.43, 2.16, -2.144)
+tracks/12/type = "position_3d"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Car02/DoorL3A")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 1.404, 1.2, 1, -1.43, 2.16, 2.144)
+tracks/13/type = "position_3d"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Car02/DoorL3B")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 3.596, 1.2, 1, -1.43, 2.16, 2.856)
+tracks/14/type = "position_3d"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("Car02/DoorL4A")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 6.4040003, 1.2, 1, -1.43, 2.16, 7.144)
+tracks/15/type = "position_3d"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Car02/DoorL4B")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 8.596, 1.2, 1, -1.43, 2.16, 7.856)
+tracks/16/type = "position_3d"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("Car03/DoorL1A")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -8.596, 1.2, 1, -1.43, 2.16, -7.856)
+tracks/17/type = "position_3d"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("Car03/DoorL1B")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -6.4040003, 1.2, 1, -1.43, 2.16, -7.144)
+tracks/18/type = "position_3d"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("Car03/DoorL2A")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -3.596, 1.2, 1, -1.43, 2.16, -2.856)
+tracks/19/type = "position_3d"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("Car03/DoorL2B")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -1.404, 1.2, 1, -1.43, 2.16, -2.144)
+tracks/20/type = "position_3d"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("Car03/DoorL3A")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 1.404, 1.2, 1, -1.43, 2.16, 2.144)
+tracks/21/type = "position_3d"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("Car03/DoorL3B")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 3.596, 1.2, 1, -1.43, 2.16, 2.856)
+tracks/22/type = "position_3d"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("Car03/DoorL4A")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 6.4040003, 1.2, 1, -1.43, 2.16, 7.144)
+tracks/23/type = "position_3d"
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/path = NodePath("Car03/DoorL4B")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 8.596, 1.2, 1, -1.43, 2.16, 7.856)
+tracks/24/type = "position_3d"
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/path = NodePath("Car04/DoorL1A")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -8.596, 1.2, 1, -1.43, 2.16, -7.856)
+tracks/25/type = "position_3d"
+tracks/25/imported = false
+tracks/25/enabled = true
+tracks/25/path = NodePath("Car04/DoorL1B")
+tracks/25/interp = 1
+tracks/25/loop_wrap = true
+tracks/25/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -6.4040003, 1.2, 1, -1.43, 2.16, -7.144)
+tracks/26/type = "position_3d"
+tracks/26/imported = false
+tracks/26/enabled = true
+tracks/26/path = NodePath("Car04/DoorL2A")
+tracks/26/interp = 1
+tracks/26/loop_wrap = true
+tracks/26/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -3.596, 1.2, 1, -1.43, 2.16, -2.856)
+tracks/27/type = "position_3d"
+tracks/27/imported = false
+tracks/27/enabled = true
+tracks/27/path = NodePath("Car04/DoorL2B")
+tracks/27/interp = 1
+tracks/27/loop_wrap = true
+tracks/27/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -1.404, 1.2, 1, -1.43, 2.16, -2.144)
+tracks/28/type = "position_3d"
+tracks/28/imported = false
+tracks/28/enabled = true
+tracks/28/path = NodePath("Car04/DoorL3A")
+tracks/28/interp = 1
+tracks/28/loop_wrap = true
+tracks/28/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 1.404, 1.2, 1, -1.43, 2.16, 2.144)
+tracks/29/type = "position_3d"
+tracks/29/imported = false
+tracks/29/enabled = true
+tracks/29/path = NodePath("Car04/DoorL3B")
+tracks/29/interp = 1
+tracks/29/loop_wrap = true
+tracks/29/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 3.596, 1.2, 1, -1.43, 2.16, 2.856)
+tracks/30/type = "position_3d"
+tracks/30/imported = false
+tracks/30/enabled = true
+tracks/30/path = NodePath("Car04/DoorL4A")
+tracks/30/interp = 1
+tracks/30/loop_wrap = true
+tracks/30/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 6.4040003, 1.2, 1, -1.43, 2.16, 7.144)
+tracks/31/type = "position_3d"
+tracks/31/imported = false
+tracks/31/enabled = true
+tracks/31/path = NodePath("Car04/DoorL4B")
+tracks/31/interp = 1
+tracks/31/loop_wrap = true
+tracks/31/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 8.596, 1.2, 1, -1.43, 2.16, 7.856)
+tracks/32/type = "position_3d"
+tracks/32/imported = false
+tracks/32/enabled = true
+tracks/32/path = NodePath("Car05/DoorR1A")
+tracks/32/interp = 1
+tracks/32/loop_wrap = true
+tracks/32/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -8.596, 1.2, 1, 1.43, 2.16, -7.856)
+tracks/33/type = "position_3d"
+tracks/33/imported = false
+tracks/33/enabled = true
+tracks/33/path = NodePath("Car05/DoorR1B")
+tracks/33/interp = 1
+tracks/33/loop_wrap = true
+tracks/33/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -6.4040003, 1.2, 1, 1.43, 2.16, -7.144)
+tracks/34/type = "position_3d"
+tracks/34/imported = false
+tracks/34/enabled = true
+tracks/34/path = NodePath("Car05/DoorR2A")
+tracks/34/interp = 1
+tracks/34/loop_wrap = true
+tracks/34/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -3.596, 1.2, 1, 1.43, 2.16, -2.856)
+tracks/35/type = "position_3d"
+tracks/35/imported = false
+tracks/35/enabled = true
+tracks/35/path = NodePath("Car05/DoorR2B")
+tracks/35/interp = 1
+tracks/35/loop_wrap = true
+tracks/35/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -1.404, 1.2, 1, 1.43, 2.16, -2.144)
+tracks/36/type = "position_3d"
+tracks/36/imported = false
+tracks/36/enabled = true
+tracks/36/path = NodePath("Car05/DoorR3A")
+tracks/36/interp = 1
+tracks/36/loop_wrap = true
+tracks/36/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 1.404, 1.2, 1, 1.43, 2.16, 2.144)
+tracks/37/type = "position_3d"
+tracks/37/imported = false
+tracks/37/enabled = true
+tracks/37/path = NodePath("Car05/DoorR3B")
+tracks/37/interp = 1
+tracks/37/loop_wrap = true
+tracks/37/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 3.596, 1.2, 1, 1.43, 2.16, 2.856)
+tracks/38/type = "position_3d"
+tracks/38/imported = false
+tracks/38/enabled = true
+tracks/38/path = NodePath("Car05/DoorR4A")
+tracks/38/interp = 1
+tracks/38/loop_wrap = true
+tracks/38/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 6.4040003, 1.2, 1, 1.43, 2.16, 7.144)
+tracks/39/type = "position_3d"
+tracks/39/imported = false
+tracks/39/enabled = true
+tracks/39/path = NodePath("Car05/DoorR4B")
+tracks/39/interp = 1
+tracks/39/loop_wrap = true
+tracks/39/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 8.596, 1.2, 1, 1.43, 2.16, 7.856)
+
+[sub_resource type="Animation" id="Animation_rurmi"]
+length = 1.2
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Car01/DoorR1A")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -8.596, 1.2, 1, 1.43, 2.16, -7.856)
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Car01/DoorR1B")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -6.4040003, 1.2, 1, 1.43, 2.16, -7.144)
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Car01/DoorR2A")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -3.596, 1.2, 1, 1.43, 2.16, -2.856)
+tracks/3/type = "position_3d"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Car01/DoorR2B")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -1.404, 1.2, 1, 1.43, 2.16, -2.144)
+tracks/4/type = "position_3d"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Car01/DoorR3A")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 1.404, 1.2, 1, 1.43, 2.16, 2.144)
+tracks/5/type = "position_3d"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Car01/DoorR3B")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 3.596, 1.2, 1, 1.43, 2.16, 2.856)
+tracks/6/type = "position_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Car01/DoorR4A")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 6.4040003, 1.2, 1, 1.43, 2.16, 7.144)
+tracks/7/type = "position_3d"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Car01/DoorR4B")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 8.596, 1.2, 1, 1.43, 2.16, 7.856)
+tracks/8/type = "position_3d"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Car02/DoorR1A")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -8.596, 1.2, 1, 1.43, 2.16, -7.856)
+tracks/9/type = "position_3d"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Car02/DoorR1B")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -6.4040003, 1.2, 1, 1.43, 2.16, -7.144)
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Car02/DoorR2A")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -3.596, 1.2, 1, 1.43, 2.16, -2.856)
+tracks/11/type = "position_3d"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Car02/DoorR2B")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -1.404, 1.2, 1, 1.43, 2.16, -2.144)
+tracks/12/type = "position_3d"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Car02/DoorR3A")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 1.404, 1.2, 1, 1.43, 2.16, 2.144)
+tracks/13/type = "position_3d"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Car02/DoorR3B")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 3.596, 1.2, 1, 1.43, 2.16, 2.856)
+tracks/14/type = "position_3d"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("Car02/DoorR4A")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 6.4040003, 1.2, 1, 1.43, 2.16, 7.144)
+tracks/15/type = "position_3d"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Car02/DoorR4B")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 8.596, 1.2, 1, 1.43, 2.16, 7.856)
+tracks/16/type = "position_3d"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("Car03/DoorR1A")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -8.596, 1.2, 1, 1.43, 2.16, -7.856)
+tracks/17/type = "position_3d"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("Car03/DoorR1B")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -6.4040003, 1.2, 1, 1.43, 2.16, -7.144)
+tracks/18/type = "position_3d"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("Car03/DoorR2A")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -3.596, 1.2, 1, 1.43, 2.16, -2.856)
+tracks/19/type = "position_3d"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("Car03/DoorR2B")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -1.404, 1.2, 1, 1.43, 2.16, -2.144)
+tracks/20/type = "position_3d"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("Car03/DoorR3A")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 1.404, 1.2, 1, 1.43, 2.16, 2.144)
+tracks/21/type = "position_3d"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("Car03/DoorR3B")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 3.596, 1.2, 1, 1.43, 2.16, 2.856)
+tracks/22/type = "position_3d"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("Car03/DoorR4A")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 6.4040003, 1.2, 1, 1.43, 2.16, 7.144)
+tracks/23/type = "position_3d"
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/path = NodePath("Car03/DoorR4B")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 8.596, 1.2, 1, 1.43, 2.16, 7.856)
+tracks/24/type = "position_3d"
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/path = NodePath("Car04/DoorR1A")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -8.596, 1.2, 1, 1.43, 2.16, -7.856)
+tracks/25/type = "position_3d"
+tracks/25/imported = false
+tracks/25/enabled = true
+tracks/25/path = NodePath("Car04/DoorR1B")
+tracks/25/interp = 1
+tracks/25/loop_wrap = true
+tracks/25/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -6.4040003, 1.2, 1, 1.43, 2.16, -7.144)
+tracks/26/type = "position_3d"
+tracks/26/imported = false
+tracks/26/enabled = true
+tracks/26/path = NodePath("Car04/DoorR2A")
+tracks/26/interp = 1
+tracks/26/loop_wrap = true
+tracks/26/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -3.596, 1.2, 1, 1.43, 2.16, -2.856)
+tracks/27/type = "position_3d"
+tracks/27/imported = false
+tracks/27/enabled = true
+tracks/27/path = NodePath("Car04/DoorR2B")
+tracks/27/interp = 1
+tracks/27/loop_wrap = true
+tracks/27/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -1.404, 1.2, 1, 1.43, 2.16, -2.144)
+tracks/28/type = "position_3d"
+tracks/28/imported = false
+tracks/28/enabled = true
+tracks/28/path = NodePath("Car04/DoorR3A")
+tracks/28/interp = 1
+tracks/28/loop_wrap = true
+tracks/28/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 1.404, 1.2, 1, 1.43, 2.16, 2.144)
+tracks/29/type = "position_3d"
+tracks/29/imported = false
+tracks/29/enabled = true
+tracks/29/path = NodePath("Car04/DoorR3B")
+tracks/29/interp = 1
+tracks/29/loop_wrap = true
+tracks/29/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 3.596, 1.2, 1, 1.43, 2.16, 2.856)
+tracks/30/type = "position_3d"
+tracks/30/imported = false
+tracks/30/enabled = true
+tracks/30/path = NodePath("Car04/DoorR4A")
+tracks/30/interp = 1
+tracks/30/loop_wrap = true
+tracks/30/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 6.4040003, 1.2, 1, 1.43, 2.16, 7.144)
+tracks/31/type = "position_3d"
+tracks/31/imported = false
+tracks/31/enabled = true
+tracks/31/path = NodePath("Car04/DoorR4B")
+tracks/31/interp = 1
+tracks/31/loop_wrap = true
+tracks/31/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 8.596, 1.2, 1, 1.43, 2.16, 7.856)
+tracks/32/type = "position_3d"
+tracks/32/imported = false
+tracks/32/enabled = true
+tracks/32/path = NodePath("Car05/DoorL1A")
+tracks/32/interp = 1
+tracks/32/loop_wrap = true
+tracks/32/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -8.596, 1.2, 1, -1.43, 2.16, -7.856)
+tracks/33/type = "position_3d"
+tracks/33/imported = false
+tracks/33/enabled = true
+tracks/33/path = NodePath("Car05/DoorL1B")
+tracks/33/interp = 1
+tracks/33/loop_wrap = true
+tracks/33/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -6.4040003, 1.2, 1, -1.43, 2.16, -7.144)
+tracks/34/type = "position_3d"
+tracks/34/imported = false
+tracks/34/enabled = true
+tracks/34/path = NodePath("Car05/DoorL2A")
+tracks/34/interp = 1
+tracks/34/loop_wrap = true
+tracks/34/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -3.596, 1.2, 1, -1.43, 2.16, -2.856)
+tracks/35/type = "position_3d"
+tracks/35/imported = false
+tracks/35/enabled = true
+tracks/35/path = NodePath("Car05/DoorL2B")
+tracks/35/interp = 1
+tracks/35/loop_wrap = true
+tracks/35/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -1.404, 1.2, 1, -1.43, 2.16, -2.144)
+tracks/36/type = "position_3d"
+tracks/36/imported = false
+tracks/36/enabled = true
+tracks/36/path = NodePath("Car05/DoorL3A")
+tracks/36/interp = 1
+tracks/36/loop_wrap = true
+tracks/36/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 1.404, 1.2, 1, -1.43, 2.16, 2.144)
+tracks/37/type = "position_3d"
+tracks/37/imported = false
+tracks/37/enabled = true
+tracks/37/path = NodePath("Car05/DoorL3B")
+tracks/37/interp = 1
+tracks/37/loop_wrap = true
+tracks/37/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 3.596, 1.2, 1, -1.43, 2.16, 2.856)
+tracks/38/type = "position_3d"
+tracks/38/imported = false
+tracks/38/enabled = true
+tracks/38/path = NodePath("Car05/DoorL4A")
+tracks/38/interp = 1
+tracks/38/loop_wrap = true
+tracks/38/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 6.4040003, 1.2, 1, -1.43, 2.16, 7.144)
+tracks/39/type = "position_3d"
+tracks/39/imported = false
+tracks/39/enabled = true
+tracks/39/path = NodePath("Car05/DoorL4B")
+tracks/39/interp = 1
+tracks/39/loop_wrap = true
+tracks/39/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 8.596, 1.2, 1, -1.43, 2.16, 7.856)
+
+[sub_resource type="Animation" id="Animation_qcfpt"]
+length = 1.2
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Car01/DoorL1A")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.856, 1.2, 1, -1.43, 2.16, -8.596)
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Car01/DoorL1B")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.144, 1.2, 1, -1.43, 2.16, -6.4040003)
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Car01/DoorL2A")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.856, 1.2, 1, -1.43, 2.16, -3.596)
+tracks/3/type = "position_3d"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Car01/DoorL2B")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.144, 1.2, 1, -1.43, 2.16, -1.404)
+tracks/4/type = "position_3d"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Car01/DoorL3A")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.144, 1.2, 1, -1.43, 2.16, 1.404)
+tracks/5/type = "position_3d"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Car01/DoorL3B")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.856, 1.2, 1, -1.43, 2.16, 3.596)
+tracks/6/type = "position_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Car01/DoorL4A")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.144, 1.2, 1, -1.43, 2.16, 6.4040003)
+tracks/7/type = "position_3d"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Car01/DoorL4B")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.856, 1.2, 1, -1.43, 2.16, 8.596)
+tracks/8/type = "position_3d"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Car01/DoorR1A")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.856, 1.2, 1, 1.43, 2.16, -8.596)
+tracks/9/type = "position_3d"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Car01/DoorR1B")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.144, 1.2, 1, 1.43, 2.16, -6.4040003)
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Car01/DoorR2A")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.856, 1.2, 1, 1.43, 2.16, -3.596)
+tracks/11/type = "position_3d"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Car01/DoorR2B")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.144, 1.2, 1, 1.43, 2.16, -1.404)
+tracks/12/type = "position_3d"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Car01/DoorR3A")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.144, 1.2, 1, 1.43, 2.16, 1.404)
+tracks/13/type = "position_3d"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Car01/DoorR3B")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.856, 1.2, 1, 1.43, 2.16, 3.596)
+tracks/14/type = "position_3d"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("Car01/DoorR4A")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.144, 1.2, 1, 1.43, 2.16, 6.4040003)
+tracks/15/type = "position_3d"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Car01/DoorR4B")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.856, 1.2, 1, 1.43, 2.16, 8.596)
+tracks/16/type = "position_3d"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("Car02/DoorL1A")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.856, 1.2, 1, -1.43, 2.16, -8.596)
+tracks/17/type = "position_3d"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("Car02/DoorL1B")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.144, 1.2, 1, -1.43, 2.16, -6.4040003)
+tracks/18/type = "position_3d"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("Car02/DoorL2A")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.856, 1.2, 1, -1.43, 2.16, -3.596)
+tracks/19/type = "position_3d"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("Car02/DoorL2B")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.144, 1.2, 1, -1.43, 2.16, -1.404)
+tracks/20/type = "position_3d"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("Car02/DoorL3A")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.144, 1.2, 1, -1.43, 2.16, 1.404)
+tracks/21/type = "position_3d"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("Car02/DoorL3B")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.856, 1.2, 1, -1.43, 2.16, 3.596)
+tracks/22/type = "position_3d"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("Car02/DoorL4A")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.144, 1.2, 1, -1.43, 2.16, 6.4040003)
+tracks/23/type = "position_3d"
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/path = NodePath("Car02/DoorL4B")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.856, 1.2, 1, -1.43, 2.16, 8.596)
+tracks/24/type = "position_3d"
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/path = NodePath("Car02/DoorR1A")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.856, 1.2, 1, 1.43, 2.16, -8.596)
+tracks/25/type = "position_3d"
+tracks/25/imported = false
+tracks/25/enabled = true
+tracks/25/path = NodePath("Car02/DoorR1B")
+tracks/25/interp = 1
+tracks/25/loop_wrap = true
+tracks/25/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.144, 1.2, 1, 1.43, 2.16, -6.4040003)
+tracks/26/type = "position_3d"
+tracks/26/imported = false
+tracks/26/enabled = true
+tracks/26/path = NodePath("Car02/DoorR2A")
+tracks/26/interp = 1
+tracks/26/loop_wrap = true
+tracks/26/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.856, 1.2, 1, 1.43, 2.16, -3.596)
+tracks/27/type = "position_3d"
+tracks/27/imported = false
+tracks/27/enabled = true
+tracks/27/path = NodePath("Car02/DoorR2B")
+tracks/27/interp = 1
+tracks/27/loop_wrap = true
+tracks/27/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.144, 1.2, 1, 1.43, 2.16, -1.404)
+tracks/28/type = "position_3d"
+tracks/28/imported = false
+tracks/28/enabled = true
+tracks/28/path = NodePath("Car02/DoorR3A")
+tracks/28/interp = 1
+tracks/28/loop_wrap = true
+tracks/28/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.144, 1.2, 1, 1.43, 2.16, 1.404)
+tracks/29/type = "position_3d"
+tracks/29/imported = false
+tracks/29/enabled = true
+tracks/29/path = NodePath("Car02/DoorR3B")
+tracks/29/interp = 1
+tracks/29/loop_wrap = true
+tracks/29/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.856, 1.2, 1, 1.43, 2.16, 3.596)
+tracks/30/type = "position_3d"
+tracks/30/imported = false
+tracks/30/enabled = true
+tracks/30/path = NodePath("Car02/DoorR4A")
+tracks/30/interp = 1
+tracks/30/loop_wrap = true
+tracks/30/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.144, 1.2, 1, 1.43, 2.16, 6.4040003)
+tracks/31/type = "position_3d"
+tracks/31/imported = false
+tracks/31/enabled = true
+tracks/31/path = NodePath("Car02/DoorR4B")
+tracks/31/interp = 1
+tracks/31/loop_wrap = true
+tracks/31/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.856, 1.2, 1, 1.43, 2.16, 8.596)
+tracks/32/type = "position_3d"
+tracks/32/imported = false
+tracks/32/enabled = true
+tracks/32/path = NodePath("Car03/DoorL1A")
+tracks/32/interp = 1
+tracks/32/loop_wrap = true
+tracks/32/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.856, 1.2, 1, -1.43, 2.16, -8.596)
+tracks/33/type = "position_3d"
+tracks/33/imported = false
+tracks/33/enabled = true
+tracks/33/path = NodePath("Car03/DoorL1B")
+tracks/33/interp = 1
+tracks/33/loop_wrap = true
+tracks/33/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.144, 1.2, 1, -1.43, 2.16, -6.4040003)
+tracks/34/type = "position_3d"
+tracks/34/imported = false
+tracks/34/enabled = true
+tracks/34/path = NodePath("Car03/DoorL2A")
+tracks/34/interp = 1
+tracks/34/loop_wrap = true
+tracks/34/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.856, 1.2, 1, -1.43, 2.16, -3.596)
+tracks/35/type = "position_3d"
+tracks/35/imported = false
+tracks/35/enabled = true
+tracks/35/path = NodePath("Car03/DoorL2B")
+tracks/35/interp = 1
+tracks/35/loop_wrap = true
+tracks/35/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.144, 1.2, 1, -1.43, 2.16, -1.404)
+tracks/36/type = "position_3d"
+tracks/36/imported = false
+tracks/36/enabled = true
+tracks/36/path = NodePath("Car03/DoorL3A")
+tracks/36/interp = 1
+tracks/36/loop_wrap = true
+tracks/36/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.144, 1.2, 1, -1.43, 2.16, 1.404)
+tracks/37/type = "position_3d"
+tracks/37/imported = false
+tracks/37/enabled = true
+tracks/37/path = NodePath("Car03/DoorL3B")
+tracks/37/interp = 1
+tracks/37/loop_wrap = true
+tracks/37/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.856, 1.2, 1, -1.43, 2.16, 3.596)
+tracks/38/type = "position_3d"
+tracks/38/imported = false
+tracks/38/enabled = true
+tracks/38/path = NodePath("Car03/DoorL4A")
+tracks/38/interp = 1
+tracks/38/loop_wrap = true
+tracks/38/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.144, 1.2, 1, -1.43, 2.16, 6.4040003)
+tracks/39/type = "position_3d"
+tracks/39/imported = false
+tracks/39/enabled = true
+tracks/39/path = NodePath("Car03/DoorL4B")
+tracks/39/interp = 1
+tracks/39/loop_wrap = true
+tracks/39/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.856, 1.2, 1, -1.43, 2.16, 8.596)
+tracks/40/type = "position_3d"
+tracks/40/imported = false
+tracks/40/enabled = true
+tracks/40/path = NodePath("Car03/DoorR1A")
+tracks/40/interp = 1
+tracks/40/loop_wrap = true
+tracks/40/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.856, 1.2, 1, 1.43, 2.16, -8.596)
+tracks/41/type = "position_3d"
+tracks/41/imported = false
+tracks/41/enabled = true
+tracks/41/path = NodePath("Car03/DoorR1B")
+tracks/41/interp = 1
+tracks/41/loop_wrap = true
+tracks/41/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.144, 1.2, 1, 1.43, 2.16, -6.4040003)
+tracks/42/type = "position_3d"
+tracks/42/imported = false
+tracks/42/enabled = true
+tracks/42/path = NodePath("Car03/DoorR2A")
+tracks/42/interp = 1
+tracks/42/loop_wrap = true
+tracks/42/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.856, 1.2, 1, 1.43, 2.16, -3.596)
+tracks/43/type = "position_3d"
+tracks/43/imported = false
+tracks/43/enabled = true
+tracks/43/path = NodePath("Car03/DoorR2B")
+tracks/43/interp = 1
+tracks/43/loop_wrap = true
+tracks/43/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.144, 1.2, 1, 1.43, 2.16, -1.404)
+tracks/44/type = "position_3d"
+tracks/44/imported = false
+tracks/44/enabled = true
+tracks/44/path = NodePath("Car03/DoorR3A")
+tracks/44/interp = 1
+tracks/44/loop_wrap = true
+tracks/44/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.144, 1.2, 1, 1.43, 2.16, 1.404)
+tracks/45/type = "position_3d"
+tracks/45/imported = false
+tracks/45/enabled = true
+tracks/45/path = NodePath("Car03/DoorR3B")
+tracks/45/interp = 1
+tracks/45/loop_wrap = true
+tracks/45/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.856, 1.2, 1, 1.43, 2.16, 3.596)
+tracks/46/type = "position_3d"
+tracks/46/imported = false
+tracks/46/enabled = true
+tracks/46/path = NodePath("Car03/DoorR4A")
+tracks/46/interp = 1
+tracks/46/loop_wrap = true
+tracks/46/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.144, 1.2, 1, 1.43, 2.16, 6.4040003)
+tracks/47/type = "position_3d"
+tracks/47/imported = false
+tracks/47/enabled = true
+tracks/47/path = NodePath("Car03/DoorR4B")
+tracks/47/interp = 1
+tracks/47/loop_wrap = true
+tracks/47/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.856, 1.2, 1, 1.43, 2.16, 8.596)
+tracks/48/type = "position_3d"
+tracks/48/imported = false
+tracks/48/enabled = true
+tracks/48/path = NodePath("Car04/DoorL1A")
+tracks/48/interp = 1
+tracks/48/loop_wrap = true
+tracks/48/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.856, 1.2, 1, -1.43, 2.16, -8.596)
+tracks/49/type = "position_3d"
+tracks/49/imported = false
+tracks/49/enabled = true
+tracks/49/path = NodePath("Car04/DoorL1B")
+tracks/49/interp = 1
+tracks/49/loop_wrap = true
+tracks/49/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.144, 1.2, 1, -1.43, 2.16, -6.4040003)
+tracks/50/type = "position_3d"
+tracks/50/imported = false
+tracks/50/enabled = true
+tracks/50/path = NodePath("Car04/DoorL2A")
+tracks/50/interp = 1
+tracks/50/loop_wrap = true
+tracks/50/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.856, 1.2, 1, -1.43, 2.16, -3.596)
+tracks/51/type = "position_3d"
+tracks/51/imported = false
+tracks/51/enabled = true
+tracks/51/path = NodePath("Car04/DoorL2B")
+tracks/51/interp = 1
+tracks/51/loop_wrap = true
+tracks/51/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.144, 1.2, 1, -1.43, 2.16, -1.404)
+tracks/52/type = "position_3d"
+tracks/52/imported = false
+tracks/52/enabled = true
+tracks/52/path = NodePath("Car04/DoorL3A")
+tracks/52/interp = 1
+tracks/52/loop_wrap = true
+tracks/52/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.144, 1.2, 1, -1.43, 2.16, 1.404)
+tracks/53/type = "position_3d"
+tracks/53/imported = false
+tracks/53/enabled = true
+tracks/53/path = NodePath("Car04/DoorL3B")
+tracks/53/interp = 1
+tracks/53/loop_wrap = true
+tracks/53/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.856, 1.2, 1, -1.43, 2.16, 3.596)
+tracks/54/type = "position_3d"
+tracks/54/imported = false
+tracks/54/enabled = true
+tracks/54/path = NodePath("Car04/DoorL4A")
+tracks/54/interp = 1
+tracks/54/loop_wrap = true
+tracks/54/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.144, 1.2, 1, -1.43, 2.16, 6.4040003)
+tracks/55/type = "position_3d"
+tracks/55/imported = false
+tracks/55/enabled = true
+tracks/55/path = NodePath("Car04/DoorL4B")
+tracks/55/interp = 1
+tracks/55/loop_wrap = true
+tracks/55/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.856, 1.2, 1, -1.43, 2.16, 8.596)
+tracks/56/type = "position_3d"
+tracks/56/imported = false
+tracks/56/enabled = true
+tracks/56/path = NodePath("Car04/DoorR1A")
+tracks/56/interp = 1
+tracks/56/loop_wrap = true
+tracks/56/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.856, 1.2, 1, 1.43, 2.16, -8.596)
+tracks/57/type = "position_3d"
+tracks/57/imported = false
+tracks/57/enabled = true
+tracks/57/path = NodePath("Car04/DoorR1B")
+tracks/57/interp = 1
+tracks/57/loop_wrap = true
+tracks/57/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.144, 1.2, 1, 1.43, 2.16, -6.4040003)
+tracks/58/type = "position_3d"
+tracks/58/imported = false
+tracks/58/enabled = true
+tracks/58/path = NodePath("Car04/DoorR2A")
+tracks/58/interp = 1
+tracks/58/loop_wrap = true
+tracks/58/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.856, 1.2, 1, 1.43, 2.16, -3.596)
+tracks/59/type = "position_3d"
+tracks/59/imported = false
+tracks/59/enabled = true
+tracks/59/path = NodePath("Car04/DoorR2B")
+tracks/59/interp = 1
+tracks/59/loop_wrap = true
+tracks/59/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.144, 1.2, 1, 1.43, 2.16, -1.404)
+tracks/60/type = "position_3d"
+tracks/60/imported = false
+tracks/60/enabled = true
+tracks/60/path = NodePath("Car04/DoorR3A")
+tracks/60/interp = 1
+tracks/60/loop_wrap = true
+tracks/60/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.144, 1.2, 1, 1.43, 2.16, 1.404)
+tracks/61/type = "position_3d"
+tracks/61/imported = false
+tracks/61/enabled = true
+tracks/61/path = NodePath("Car04/DoorR3B")
+tracks/61/interp = 1
+tracks/61/loop_wrap = true
+tracks/61/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.856, 1.2, 1, 1.43, 2.16, 3.596)
+tracks/62/type = "position_3d"
+tracks/62/imported = false
+tracks/62/enabled = true
+tracks/62/path = NodePath("Car04/DoorR4A")
+tracks/62/interp = 1
+tracks/62/loop_wrap = true
+tracks/62/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.144, 1.2, 1, 1.43, 2.16, 6.4040003)
+tracks/63/type = "position_3d"
+tracks/63/imported = false
+tracks/63/enabled = true
+tracks/63/path = NodePath("Car04/DoorR4B")
+tracks/63/interp = 1
+tracks/63/loop_wrap = true
+tracks/63/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.856, 1.2, 1, 1.43, 2.16, 8.596)
+tracks/64/type = "position_3d"
+tracks/64/imported = false
+tracks/64/enabled = true
+tracks/64/path = NodePath("Car05/DoorL1A")
+tracks/64/interp = 1
+tracks/64/loop_wrap = true
+tracks/64/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.856, 1.2, 1, -1.43, 2.16, -8.596)
+tracks/65/type = "position_3d"
+tracks/65/imported = false
+tracks/65/enabled = true
+tracks/65/path = NodePath("Car05/DoorL1B")
+tracks/65/interp = 1
+tracks/65/loop_wrap = true
+tracks/65/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.144, 1.2, 1, -1.43, 2.16, -6.4040003)
+tracks/66/type = "position_3d"
+tracks/66/imported = false
+tracks/66/enabled = true
+tracks/66/path = NodePath("Car05/DoorL2A")
+tracks/66/interp = 1
+tracks/66/loop_wrap = true
+tracks/66/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.856, 1.2, 1, -1.43, 2.16, -3.596)
+tracks/67/type = "position_3d"
+tracks/67/imported = false
+tracks/67/enabled = true
+tracks/67/path = NodePath("Car05/DoorL2B")
+tracks/67/interp = 1
+tracks/67/loop_wrap = true
+tracks/67/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.144, 1.2, 1, -1.43, 2.16, -1.404)
+tracks/68/type = "position_3d"
+tracks/68/imported = false
+tracks/68/enabled = true
+tracks/68/path = NodePath("Car05/DoorL3A")
+tracks/68/interp = 1
+tracks/68/loop_wrap = true
+tracks/68/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.144, 1.2, 1, -1.43, 2.16, 1.404)
+tracks/69/type = "position_3d"
+tracks/69/imported = false
+tracks/69/enabled = true
+tracks/69/path = NodePath("Car05/DoorL3B")
+tracks/69/interp = 1
+tracks/69/loop_wrap = true
+tracks/69/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.856, 1.2, 1, -1.43, 2.16, 3.596)
+tracks/70/type = "position_3d"
+tracks/70/imported = false
+tracks/70/enabled = true
+tracks/70/path = NodePath("Car05/DoorL4A")
+tracks/70/interp = 1
+tracks/70/loop_wrap = true
+tracks/70/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.144, 1.2, 1, -1.43, 2.16, 6.4040003)
+tracks/71/type = "position_3d"
+tracks/71/imported = false
+tracks/71/enabled = true
+tracks/71/path = NodePath("Car05/DoorL4B")
+tracks/71/interp = 1
+tracks/71/loop_wrap = true
+tracks/71/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.856, 1.2, 1, -1.43, 2.16, 8.596)
+tracks/72/type = "position_3d"
+tracks/72/imported = false
+tracks/72/enabled = true
+tracks/72/path = NodePath("Car05/DoorR1A")
+tracks/72/interp = 1
+tracks/72/loop_wrap = true
+tracks/72/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.856, 1.2, 1, 1.43, 2.16, -8.596)
+tracks/73/type = "position_3d"
+tracks/73/imported = false
+tracks/73/enabled = true
+tracks/73/path = NodePath("Car05/DoorR1B")
+tracks/73/interp = 1
+tracks/73/loop_wrap = true
+tracks/73/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.144, 1.2, 1, 1.43, 2.16, -6.4040003)
+tracks/74/type = "position_3d"
+tracks/74/imported = false
+tracks/74/enabled = true
+tracks/74/path = NodePath("Car05/DoorR2A")
+tracks/74/interp = 1
+tracks/74/loop_wrap = true
+tracks/74/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.856, 1.2, 1, 1.43, 2.16, -3.596)
+tracks/75/type = "position_3d"
+tracks/75/imported = false
+tracks/75/enabled = true
+tracks/75/path = NodePath("Car05/DoorR2B")
+tracks/75/interp = 1
+tracks/75/loop_wrap = true
+tracks/75/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.144, 1.2, 1, 1.43, 2.16, -1.404)
+tracks/76/type = "position_3d"
+tracks/76/imported = false
+tracks/76/enabled = true
+tracks/76/path = NodePath("Car05/DoorR3A")
+tracks/76/interp = 1
+tracks/76/loop_wrap = true
+tracks/76/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.144, 1.2, 1, 1.43, 2.16, 1.404)
+tracks/77/type = "position_3d"
+tracks/77/imported = false
+tracks/77/enabled = true
+tracks/77/path = NodePath("Car05/DoorR3B")
+tracks/77/interp = 1
+tracks/77/loop_wrap = true
+tracks/77/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.856, 1.2, 1, 1.43, 2.16, 3.596)
+tracks/78/type = "position_3d"
+tracks/78/imported = false
+tracks/78/enabled = true
+tracks/78/path = NodePath("Car05/DoorR4A")
+tracks/78/interp = 1
+tracks/78/loop_wrap = true
+tracks/78/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.144, 1.2, 1, 1.43, 2.16, 6.4040003)
+tracks/79/type = "position_3d"
+tracks/79/imported = false
+tracks/79/enabled = true
+tracks/79/path = NodePath("Car05/DoorR4B")
+tracks/79/interp = 1
+tracks/79/loop_wrap = true
+tracks/79/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.856, 1.2, 1, 1.43, 2.16, 8.596)
+
+[sub_resource type="Animation" id="Animation_qgntc"]
+length = 1.2
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Car01/DoorL1A")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.856, 1.2, 1, -1.43, 2.16, -8.596)
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Car01/DoorL1B")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.144, 1.2, 1, -1.43, 2.16, -6.4040003)
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Car01/DoorL2A")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.856, 1.2, 1, -1.43, 2.16, -3.596)
+tracks/3/type = "position_3d"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Car01/DoorL2B")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.144, 1.2, 1, -1.43, 2.16, -1.404)
+tracks/4/type = "position_3d"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Car01/DoorL3A")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.144, 1.2, 1, -1.43, 2.16, 1.404)
+tracks/5/type = "position_3d"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Car01/DoorL3B")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.856, 1.2, 1, -1.43, 2.16, 3.596)
+tracks/6/type = "position_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Car01/DoorL4A")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.144, 1.2, 1, -1.43, 2.16, 6.4040003)
+tracks/7/type = "position_3d"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Car01/DoorL4B")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.856, 1.2, 1, -1.43, 2.16, 8.596)
+tracks/8/type = "position_3d"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Car02/DoorL1A")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.856, 1.2, 1, -1.43, 2.16, -8.596)
+tracks/9/type = "position_3d"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Car02/DoorL1B")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.144, 1.2, 1, -1.43, 2.16, -6.4040003)
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Car02/DoorL2A")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.856, 1.2, 1, -1.43, 2.16, -3.596)
+tracks/11/type = "position_3d"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Car02/DoorL2B")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.144, 1.2, 1, -1.43, 2.16, -1.404)
+tracks/12/type = "position_3d"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Car02/DoorL3A")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.144, 1.2, 1, -1.43, 2.16, 1.404)
+tracks/13/type = "position_3d"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Car02/DoorL3B")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.856, 1.2, 1, -1.43, 2.16, 3.596)
+tracks/14/type = "position_3d"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("Car02/DoorL4A")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.144, 1.2, 1, -1.43, 2.16, 6.4040003)
+tracks/15/type = "position_3d"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Car02/DoorL4B")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.856, 1.2, 1, -1.43, 2.16, 8.596)
+tracks/16/type = "position_3d"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("Car03/DoorL1A")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.856, 1.2, 1, -1.43, 2.16, -8.596)
+tracks/17/type = "position_3d"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("Car03/DoorL1B")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.144, 1.2, 1, -1.43, 2.16, -6.4040003)
+tracks/18/type = "position_3d"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("Car03/DoorL2A")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.856, 1.2, 1, -1.43, 2.16, -3.596)
+tracks/19/type = "position_3d"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("Car03/DoorL2B")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.144, 1.2, 1, -1.43, 2.16, -1.404)
+tracks/20/type = "position_3d"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("Car03/DoorL3A")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.144, 1.2, 1, -1.43, 2.16, 1.404)
+tracks/21/type = "position_3d"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("Car03/DoorL3B")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.856, 1.2, 1, -1.43, 2.16, 3.596)
+tracks/22/type = "position_3d"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("Car03/DoorL4A")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.144, 1.2, 1, -1.43, 2.16, 6.4040003)
+tracks/23/type = "position_3d"
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/path = NodePath("Car03/DoorL4B")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.856, 1.2, 1, -1.43, 2.16, 8.596)
+tracks/24/type = "position_3d"
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/path = NodePath("Car04/DoorL1A")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.856, 1.2, 1, -1.43, 2.16, -8.596)
+tracks/25/type = "position_3d"
+tracks/25/imported = false
+tracks/25/enabled = true
+tracks/25/path = NodePath("Car04/DoorL1B")
+tracks/25/interp = 1
+tracks/25/loop_wrap = true
+tracks/25/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.144, 1.2, 1, -1.43, 2.16, -6.4040003)
+tracks/26/type = "position_3d"
+tracks/26/imported = false
+tracks/26/enabled = true
+tracks/26/path = NodePath("Car04/DoorL2A")
+tracks/26/interp = 1
+tracks/26/loop_wrap = true
+tracks/26/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.856, 1.2, 1, -1.43, 2.16, -3.596)
+tracks/27/type = "position_3d"
+tracks/27/imported = false
+tracks/27/enabled = true
+tracks/27/path = NodePath("Car04/DoorL2B")
+tracks/27/interp = 1
+tracks/27/loop_wrap = true
+tracks/27/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.144, 1.2, 1, -1.43, 2.16, -1.404)
+tracks/28/type = "position_3d"
+tracks/28/imported = false
+tracks/28/enabled = true
+tracks/28/path = NodePath("Car04/DoorL3A")
+tracks/28/interp = 1
+tracks/28/loop_wrap = true
+tracks/28/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.144, 1.2, 1, -1.43, 2.16, 1.404)
+tracks/29/type = "position_3d"
+tracks/29/imported = false
+tracks/29/enabled = true
+tracks/29/path = NodePath("Car04/DoorL3B")
+tracks/29/interp = 1
+tracks/29/loop_wrap = true
+tracks/29/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.856, 1.2, 1, -1.43, 2.16, 3.596)
+tracks/30/type = "position_3d"
+tracks/30/imported = false
+tracks/30/enabled = true
+tracks/30/path = NodePath("Car04/DoorL4A")
+tracks/30/interp = 1
+tracks/30/loop_wrap = true
+tracks/30/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.144, 1.2, 1, -1.43, 2.16, 6.4040003)
+tracks/31/type = "position_3d"
+tracks/31/imported = false
+tracks/31/enabled = true
+tracks/31/path = NodePath("Car04/DoorL4B")
+tracks/31/interp = 1
+tracks/31/loop_wrap = true
+tracks/31/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.856, 1.2, 1, -1.43, 2.16, 8.596)
+tracks/32/type = "position_3d"
+tracks/32/imported = false
+tracks/32/enabled = true
+tracks/32/path = NodePath("Car05/DoorR1A")
+tracks/32/interp = 1
+tracks/32/loop_wrap = true
+tracks/32/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.856, 1.2, 1, 1.43, 2.16, -8.596)
+tracks/33/type = "position_3d"
+tracks/33/imported = false
+tracks/33/enabled = true
+tracks/33/path = NodePath("Car05/DoorR1B")
+tracks/33/interp = 1
+tracks/33/loop_wrap = true
+tracks/33/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.144, 1.2, 1, 1.43, 2.16, -6.4040003)
+tracks/34/type = "position_3d"
+tracks/34/imported = false
+tracks/34/enabled = true
+tracks/34/path = NodePath("Car05/DoorR2A")
+tracks/34/interp = 1
+tracks/34/loop_wrap = true
+tracks/34/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.856, 1.2, 1, 1.43, 2.16, -3.596)
+tracks/35/type = "position_3d"
+tracks/35/imported = false
+tracks/35/enabled = true
+tracks/35/path = NodePath("Car05/DoorR2B")
+tracks/35/interp = 1
+tracks/35/loop_wrap = true
+tracks/35/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.144, 1.2, 1, 1.43, 2.16, -1.404)
+tracks/36/type = "position_3d"
+tracks/36/imported = false
+tracks/36/enabled = true
+tracks/36/path = NodePath("Car05/DoorR3A")
+tracks/36/interp = 1
+tracks/36/loop_wrap = true
+tracks/36/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.144, 1.2, 1, 1.43, 2.16, 1.404)
+tracks/37/type = "position_3d"
+tracks/37/imported = false
+tracks/37/enabled = true
+tracks/37/path = NodePath("Car05/DoorR3B")
+tracks/37/interp = 1
+tracks/37/loop_wrap = true
+tracks/37/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.856, 1.2, 1, 1.43, 2.16, 3.596)
+tracks/38/type = "position_3d"
+tracks/38/imported = false
+tracks/38/enabled = true
+tracks/38/path = NodePath("Car05/DoorR4A")
+tracks/38/interp = 1
+tracks/38/loop_wrap = true
+tracks/38/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.144, 1.2, 1, 1.43, 2.16, 6.4040003)
+tracks/39/type = "position_3d"
+tracks/39/imported = false
+tracks/39/enabled = true
+tracks/39/path = NodePath("Car05/DoorR4B")
+tracks/39/interp = 1
+tracks/39/loop_wrap = true
+tracks/39/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.856, 1.2, 1, 1.43, 2.16, 8.596)
+
+[sub_resource type="Animation" id="Animation_fypkq"]
+length = 1.2
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Car01/DoorR1A")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.856, 1.2, 1, 1.43, 2.16, -8.596)
+tracks/1/type = "position_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Car01/DoorR1B")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.144, 1.2, 1, 1.43, 2.16, -6.4040003)
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Car01/DoorR2A")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.856, 1.2, 1, 1.43, 2.16, -3.596)
+tracks/3/type = "position_3d"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Car01/DoorR2B")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.144, 1.2, 1, 1.43, 2.16, -1.404)
+tracks/4/type = "position_3d"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Car01/DoorR3A")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.144, 1.2, 1, 1.43, 2.16, 1.404)
+tracks/5/type = "position_3d"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Car01/DoorR3B")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.856, 1.2, 1, 1.43, 2.16, 3.596)
+tracks/6/type = "position_3d"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Car01/DoorR4A")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.144, 1.2, 1, 1.43, 2.16, 6.4040003)
+tracks/7/type = "position_3d"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Car01/DoorR4B")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.856, 1.2, 1, 1.43, 2.16, 8.596)
+tracks/8/type = "position_3d"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Car02/DoorR1A")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.856, 1.2, 1, 1.43, 2.16, -8.596)
+tracks/9/type = "position_3d"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Car02/DoorR1B")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.144, 1.2, 1, 1.43, 2.16, -6.4040003)
+tracks/10/type = "position_3d"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Car02/DoorR2A")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.856, 1.2, 1, 1.43, 2.16, -3.596)
+tracks/11/type = "position_3d"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Car02/DoorR2B")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.144, 1.2, 1, 1.43, 2.16, -1.404)
+tracks/12/type = "position_3d"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Car02/DoorR3A")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.144, 1.2, 1, 1.43, 2.16, 1.404)
+tracks/13/type = "position_3d"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Car02/DoorR3B")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.856, 1.2, 1, 1.43, 2.16, 3.596)
+tracks/14/type = "position_3d"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("Car02/DoorR4A")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.144, 1.2, 1, 1.43, 2.16, 6.4040003)
+tracks/15/type = "position_3d"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("Car02/DoorR4B")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.856, 1.2, 1, 1.43, 2.16, 8.596)
+tracks/16/type = "position_3d"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("Car03/DoorR1A")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.856, 1.2, 1, 1.43, 2.16, -8.596)
+tracks/17/type = "position_3d"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("Car03/DoorR1B")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.144, 1.2, 1, 1.43, 2.16, -6.4040003)
+tracks/18/type = "position_3d"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("Car03/DoorR2A")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.856, 1.2, 1, 1.43, 2.16, -3.596)
+tracks/19/type = "position_3d"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("Car03/DoorR2B")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.144, 1.2, 1, 1.43, 2.16, -1.404)
+tracks/20/type = "position_3d"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("Car03/DoorR3A")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.144, 1.2, 1, 1.43, 2.16, 1.404)
+tracks/21/type = "position_3d"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("Car03/DoorR3B")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.856, 1.2, 1, 1.43, 2.16, 3.596)
+tracks/22/type = "position_3d"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("Car03/DoorR4A")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.144, 1.2, 1, 1.43, 2.16, 6.4040003)
+tracks/23/type = "position_3d"
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/path = NodePath("Car03/DoorR4B")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.856, 1.2, 1, 1.43, 2.16, 8.596)
+tracks/24/type = "position_3d"
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/path = NodePath("Car04/DoorR1A")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.856, 1.2, 1, 1.43, 2.16, -8.596)
+tracks/25/type = "position_3d"
+tracks/25/imported = false
+tracks/25/enabled = true
+tracks/25/path = NodePath("Car04/DoorR1B")
+tracks/25/interp = 1
+tracks/25/loop_wrap = true
+tracks/25/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -7.144, 1.2, 1, 1.43, 2.16, -6.4040003)
+tracks/26/type = "position_3d"
+tracks/26/imported = false
+tracks/26/enabled = true
+tracks/26/path = NodePath("Car04/DoorR2A")
+tracks/26/interp = 1
+tracks/26/loop_wrap = true
+tracks/26/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.856, 1.2, 1, 1.43, 2.16, -3.596)
+tracks/27/type = "position_3d"
+tracks/27/imported = false
+tracks/27/enabled = true
+tracks/27/path = NodePath("Car04/DoorR2B")
+tracks/27/interp = 1
+tracks/27/loop_wrap = true
+tracks/27/keys = PackedFloat32Array(0, 1, 1.43, 2.16, -2.144, 1.2, 1, 1.43, 2.16, -1.404)
+tracks/28/type = "position_3d"
+tracks/28/imported = false
+tracks/28/enabled = true
+tracks/28/path = NodePath("Car04/DoorR3A")
+tracks/28/interp = 1
+tracks/28/loop_wrap = true
+tracks/28/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.144, 1.2, 1, 1.43, 2.16, 1.404)
+tracks/29/type = "position_3d"
+tracks/29/imported = false
+tracks/29/enabled = true
+tracks/29/path = NodePath("Car04/DoorR3B")
+tracks/29/interp = 1
+tracks/29/loop_wrap = true
+tracks/29/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 2.856, 1.2, 1, 1.43, 2.16, 3.596)
+tracks/30/type = "position_3d"
+tracks/30/imported = false
+tracks/30/enabled = true
+tracks/30/path = NodePath("Car04/DoorR4A")
+tracks/30/interp = 1
+tracks/30/loop_wrap = true
+tracks/30/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.144, 1.2, 1, 1.43, 2.16, 6.4040003)
+tracks/31/type = "position_3d"
+tracks/31/imported = false
+tracks/31/enabled = true
+tracks/31/path = NodePath("Car04/DoorR4B")
+tracks/31/interp = 1
+tracks/31/loop_wrap = true
+tracks/31/keys = PackedFloat32Array(0, 1, 1.43, 2.16, 7.856, 1.2, 1, 1.43, 2.16, 8.596)
+tracks/32/type = "position_3d"
+tracks/32/imported = false
+tracks/32/enabled = true
+tracks/32/path = NodePath("Car05/DoorL1A")
+tracks/32/interp = 1
+tracks/32/loop_wrap = true
+tracks/32/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.856, 1.2, 1, -1.43, 2.16, -8.596)
+tracks/33/type = "position_3d"
+tracks/33/imported = false
+tracks/33/enabled = true
+tracks/33/path = NodePath("Car05/DoorL1B")
+tracks/33/interp = 1
+tracks/33/loop_wrap = true
+tracks/33/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -7.144, 1.2, 1, -1.43, 2.16, -6.4040003)
+tracks/34/type = "position_3d"
+tracks/34/imported = false
+tracks/34/enabled = true
+tracks/34/path = NodePath("Car05/DoorL2A")
+tracks/34/interp = 1
+tracks/34/loop_wrap = true
+tracks/34/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.856, 1.2, 1, -1.43, 2.16, -3.596)
+tracks/35/type = "position_3d"
+tracks/35/imported = false
+tracks/35/enabled = true
+tracks/35/path = NodePath("Car05/DoorL2B")
+tracks/35/interp = 1
+tracks/35/loop_wrap = true
+tracks/35/keys = PackedFloat32Array(0, 1, -1.43, 2.16, -2.144, 1.2, 1, -1.43, 2.16, -1.404)
+tracks/36/type = "position_3d"
+tracks/36/imported = false
+tracks/36/enabled = true
+tracks/36/path = NodePath("Car05/DoorL3A")
+tracks/36/interp = 1
+tracks/36/loop_wrap = true
+tracks/36/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.144, 1.2, 1, -1.43, 2.16, 1.404)
+tracks/37/type = "position_3d"
+tracks/37/imported = false
+tracks/37/enabled = true
+tracks/37/path = NodePath("Car05/DoorL3B")
+tracks/37/interp = 1
+tracks/37/loop_wrap = true
+tracks/37/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 2.856, 1.2, 1, -1.43, 2.16, 3.596)
+tracks/38/type = "position_3d"
+tracks/38/imported = false
+tracks/38/enabled = true
+tracks/38/path = NodePath("Car05/DoorL4A")
+tracks/38/interp = 1
+tracks/38/loop_wrap = true
+tracks/38/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.144, 1.2, 1, -1.43, 2.16, 6.4040003)
+tracks/39/type = "position_3d"
+tracks/39/imported = false
+tracks/39/enabled = true
+tracks/39/path = NodePath("Car05/DoorL4B")
+tracks/39/interp = 1
+tracks/39/loop_wrap = true
+tracks/39/keys = PackedFloat32Array(0, 1, -1.43, 2.16, 7.856, 1.2, 1, -1.43, 2.16, 8.596)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1wgoi"]
+_data = {
+&"close_all": SubResource("Animation_48rxv"),
+&"close_left": SubResource("Animation_mk0dy"),
+&"close_right": SubResource("Animation_rurmi"),
+&"open_all": SubResource("Animation_qcfpt"),
+&"open_left": SubResource("Animation_qgntc"),
+&"open_right": SubResource("Animation_fypkq")
+}
+
+[node name="R44FiveCarSet" type="Node3D" unique_id=669714117]
+
+[node name="Car01" type="Node3D" parent="." unique_id=1979018762]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 45.72)
+
+[node name="CabinStructure" type="GridMap" parent="Car01" unique_id=2091711466]
+mesh_library = ExtResource("1_qlb2l")
+cell_size = Vector3(1, 1, 0.01)
+cell_octant_size = 512
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+collision_mask = 0
+data = {
+"cells": PackedInt32Array(0, 64536, 0, 65536, 64536, 1, 0, 64736, 0, 65536, 64736, 1, 0, 64936, 0, 65536, 64936, 1, 0, 65136, 0, 65536, 65136, 1, 0, 65336, 0, 65536, 65336, 1, 0, 0, 0, 65536, 0, 1, 0, 200, 0, 65536, 200, 1, 0, 400, 0, 65536, 400, 1, 0, 600, 0, 65536, 600, 1, 0, 800, 0, 65536, 800, 1, 0, 1000, 0, 65536, 1000, 1, 65535, 65036, 655362, 65535, 0, 655362, 65535, 500, 655362, 65535, 64570, 655363, 65535, 966, 655363, 65535, 64786, 655364, 65535, 65286, 655364, 65535, 250, 655364, 65535, 750, 655364, 1, 65036, 2, 1, 0, 2, 1, 500, 2, 1, 64570, 3, 1, 966, 3, 1, 64786, 4, 1, 65286, 4, 1, 250, 4, 1, 750, 4, 0, 64446, 655365, 0, 1090, 5)
+}
+
+[node name="SeatCollision" type="StaticBody3D" parent="Car01" unique_id=392566792]
+collision_mask = 0
+
+[node name="@CollisionShape3D@2" type="CollisionShape3D" parent="Car01/SeatCollision" unique_id=1834851158]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_3yu4r")
+
+[node name="@CollisionShape3D@3" type="CollisionShape3D" parent="Car01/SeatCollision" unique_id=1917655310]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -5)
+shape = SubResource("BoxShape3D_6bspg")
+
+[node name="@CollisionShape3D@4" type="CollisionShape3D" parent="Car01/SeatCollision" unique_id=186792709]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 0)
+shape = SubResource("BoxShape3D_iv87i")
+
+[node name="@CollisionShape3D@5" type="CollisionShape3D" parent="Car01/SeatCollision" unique_id=1796013151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 5)
+shape = SubResource("BoxShape3D_iqr1n")
+
+[node name="@CollisionShape3D@6" type="CollisionShape3D" parent="Car01/SeatCollision" unique_id=316858989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_qe8xd")
+
+[node name="@CollisionShape3D@7" type="CollisionShape3D" parent="Car01/SeatCollision" unique_id=575922034]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_ylfp8")
+
+[node name="@CollisionShape3D@8" type="CollisionShape3D" parent="Car01/SeatCollision" unique_id=1558585707]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -5)
+shape = SubResource("BoxShape3D_wr8s7")
+
+[node name="@CollisionShape3D@9" type="CollisionShape3D" parent="Car01/SeatCollision" unique_id=420913755]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 0)
+shape = SubResource("BoxShape3D_j3e4q")
+
+[node name="@CollisionShape3D@10" type="CollisionShape3D" parent="Car01/SeatCollision" unique_id=867807081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 5)
+shape = SubResource("BoxShape3D_6rc62")
+
+[node name="@CollisionShape3D@11" type="CollisionShape3D" parent="Car01/SeatCollision" unique_id=1912390679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_jcrs6")
+
+[node name="DoorL1A" type="AnimatableBody3D" parent="Car01" unique_id=1223058810]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorL1A" unique_id=1966523827]
+shape = SubResource("BoxShape3D_2y2bs")
+
+[node name="DoorL1B" type="AnimatableBody3D" parent="Car01" unique_id=1343949890]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorL1B" unique_id=2036160480]
+shape = SubResource("BoxShape3D_av60g")
+
+[node name="DoorL2A" type="AnimatableBody3D" parent="Car01" unique_id=933790353]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorL2A" unique_id=789730083]
+shape = SubResource("BoxShape3D_wlldi")
+
+[node name="DoorL2B" type="AnimatableBody3D" parent="Car01" unique_id=1782442722]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorL2B" unique_id=2016207557]
+shape = SubResource("BoxShape3D_qjvis")
+
+[node name="DoorL3A" type="AnimatableBody3D" parent="Car01" unique_id=1428116564]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorL3A" unique_id=1421177885]
+shape = SubResource("BoxShape3D_njs22")
+
+[node name="DoorL3B" type="AnimatableBody3D" parent="Car01" unique_id=619195841]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorL3B" unique_id=1524661680]
+shape = SubResource("BoxShape3D_dm1mt")
+
+[node name="DoorL4A" type="AnimatableBody3D" parent="Car01" unique_id=372191226]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorL4A" unique_id=542521012]
+shape = SubResource("BoxShape3D_j4xmd")
+
+[node name="DoorL4B" type="AnimatableBody3D" parent="Car01" unique_id=1374106130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorL4B" unique_id=69737404]
+shape = SubResource("BoxShape3D_7b86g")
+
+[node name="DoorR1A" type="AnimatableBody3D" parent="Car01" unique_id=1692502817]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorR1A" unique_id=1761273544]
+shape = SubResource("BoxShape3D_thgu1")
+
+[node name="DoorR1B" type="AnimatableBody3D" parent="Car01" unique_id=1669602156]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorR1B" unique_id=2067588282]
+shape = SubResource("BoxShape3D_3pr3k")
+
+[node name="DoorR2A" type="AnimatableBody3D" parent="Car01" unique_id=217983693]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorR2A" unique_id=357174903]
+shape = SubResource("BoxShape3D_kijgy")
+
+[node name="DoorR2B" type="AnimatableBody3D" parent="Car01" unique_id=1100238876]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorR2B" unique_id=2106125631]
+shape = SubResource("BoxShape3D_isbas")
+
+[node name="DoorR3A" type="AnimatableBody3D" parent="Car01" unique_id=1896073600]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorR3A" unique_id=1656265971]
+shape = SubResource("BoxShape3D_bgyp0")
+
+[node name="DoorR3B" type="AnimatableBody3D" parent="Car01" unique_id=1559317974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorR3B" unique_id=1843106841]
+shape = SubResource("BoxShape3D_opm42")
+
+[node name="DoorR4A" type="AnimatableBody3D" parent="Car01" unique_id=2037450891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorR4A" unique_id=2002335976]
+shape = SubResource("BoxShape3D_wtgvj")
+
+[node name="DoorR4B" type="AnimatableBody3D" parent="Car01" unique_id=140079061]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car01/DoorR4B" unique_id=922073822]
+shape = SubResource("BoxShape3D_qtvl6")
+
+[node name="CouplerRear" type="Marker3D" parent="Car01" unique_id=1037284298]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, -11.43)
+
+[node name="CouplerFront" type="Marker3D" parent="Car01" unique_id=1210989556]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, 11.43)
+
+[node name="Car02" type="Node3D" parent="." unique_id=219102567]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 22.86)
+
+[node name="CabinStructure" type="GridMap" parent="Car02" unique_id=1696363987]
+mesh_library = ExtResource("1_qlb2l")
+cell_size = Vector3(1, 1, 0.01)
+cell_octant_size = 512
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+collision_mask = 0
+data = {
+"cells": PackedInt32Array(0, 64536, 0, 65536, 64536, 1, 0, 64736, 0, 65536, 64736, 1, 0, 64936, 0, 65536, 64936, 1, 0, 65136, 0, 65536, 65136, 1, 0, 65336, 0, 65536, 65336, 1, 0, 0, 0, 65536, 0, 1, 0, 200, 0, 65536, 200, 1, 0, 400, 0, 65536, 400, 1, 0, 600, 0, 65536, 600, 1, 0, 800, 0, 65536, 800, 1, 0, 1000, 0, 65536, 1000, 1, 65535, 65036, 655362, 65535, 0, 655362, 65535, 500, 655362, 65535, 64570, 655363, 65535, 966, 655363, 65535, 64786, 655364, 65535, 65286, 655364, 65535, 250, 655364, 65535, 750, 655364, 1, 65036, 2, 1, 0, 2, 1, 500, 2, 1, 64570, 3, 1, 966, 3, 1, 64786, 4, 1, 65286, 4, 1, 250, 4, 1, 750, 4, 0, 64446, 655365, 0, 1090, 5)
+}
+
+[node name="SeatCollision" type="StaticBody3D" parent="Car02" unique_id=1970771672]
+collision_mask = 0
+
+[node name="@CollisionShape3D@12" type="CollisionShape3D" parent="Car02/SeatCollision" unique_id=459402266]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_m6s6w")
+
+[node name="@CollisionShape3D@13" type="CollisionShape3D" parent="Car02/SeatCollision" unique_id=128897260]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -5)
+shape = SubResource("BoxShape3D_15ova")
+
+[node name="@CollisionShape3D@14" type="CollisionShape3D" parent="Car02/SeatCollision" unique_id=1023453716]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 0)
+shape = SubResource("BoxShape3D_n6vpx")
+
+[node name="@CollisionShape3D@15" type="CollisionShape3D" parent="Car02/SeatCollision" unique_id=1049373613]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 5)
+shape = SubResource("BoxShape3D_g5amj")
+
+[node name="@CollisionShape3D@16" type="CollisionShape3D" parent="Car02/SeatCollision" unique_id=883458229]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_4f0wk")
+
+[node name="@CollisionShape3D@17" type="CollisionShape3D" parent="Car02/SeatCollision" unique_id=1240561400]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_fwcew")
+
+[node name="@CollisionShape3D@18" type="CollisionShape3D" parent="Car02/SeatCollision" unique_id=958914577]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -5)
+shape = SubResource("BoxShape3D_btpwy")
+
+[node name="@CollisionShape3D@19" type="CollisionShape3D" parent="Car02/SeatCollision" unique_id=1489381919]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 0)
+shape = SubResource("BoxShape3D_50mxb")
+
+[node name="@CollisionShape3D@20" type="CollisionShape3D" parent="Car02/SeatCollision" unique_id=1982342690]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 5)
+shape = SubResource("BoxShape3D_46l04")
+
+[node name="@CollisionShape3D@21" type="CollisionShape3D" parent="Car02/SeatCollision" unique_id=1830828144]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_8fgq3")
+
+[node name="DoorL1A" type="AnimatableBody3D" parent="Car02" unique_id=1099746053]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorL1A" unique_id=251926359]
+shape = SubResource("BoxShape3D_b7ubh")
+
+[node name="DoorL1B" type="AnimatableBody3D" parent="Car02" unique_id=874056505]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorL1B" unique_id=188121874]
+shape = SubResource("BoxShape3D_6tg8y")
+
+[node name="DoorL2A" type="AnimatableBody3D" parent="Car02" unique_id=74835916]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorL2A" unique_id=1657848832]
+shape = SubResource("BoxShape3D_4q78d")
+
+[node name="DoorL2B" type="AnimatableBody3D" parent="Car02" unique_id=596780181]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorL2B" unique_id=1564885804]
+shape = SubResource("BoxShape3D_nlntc")
+
+[node name="DoorL3A" type="AnimatableBody3D" parent="Car02" unique_id=1911846726]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorL3A" unique_id=1779415305]
+shape = SubResource("BoxShape3D_v23i8")
+
+[node name="DoorL3B" type="AnimatableBody3D" parent="Car02" unique_id=4129768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorL3B" unique_id=1263428294]
+shape = SubResource("BoxShape3D_xh2o1")
+
+[node name="DoorL4A" type="AnimatableBody3D" parent="Car02" unique_id=989649336]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorL4A" unique_id=1231824063]
+shape = SubResource("BoxShape3D_ecf4n")
+
+[node name="DoorL4B" type="AnimatableBody3D" parent="Car02" unique_id=1847793935]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorL4B" unique_id=1741701192]
+shape = SubResource("BoxShape3D_sbwdc")
+
+[node name="DoorR1A" type="AnimatableBody3D" parent="Car02" unique_id=362646825]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorR1A" unique_id=757505115]
+shape = SubResource("BoxShape3D_quctu")
+
+[node name="DoorR1B" type="AnimatableBody3D" parent="Car02" unique_id=1504558447]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorR1B" unique_id=2096693697]
+shape = SubResource("BoxShape3D_rqbjj")
+
+[node name="DoorR2A" type="AnimatableBody3D" parent="Car02" unique_id=1773713512]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorR2A" unique_id=633271559]
+shape = SubResource("BoxShape3D_ek3sx")
+
+[node name="DoorR2B" type="AnimatableBody3D" parent="Car02" unique_id=806519917]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorR2B" unique_id=46791359]
+shape = SubResource("BoxShape3D_b31u1")
+
+[node name="DoorR3A" type="AnimatableBody3D" parent="Car02" unique_id=1896149221]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorR3A" unique_id=1834899443]
+shape = SubResource("BoxShape3D_dw2sd")
+
+[node name="DoorR3B" type="AnimatableBody3D" parent="Car02" unique_id=726240134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorR3B" unique_id=1112947565]
+shape = SubResource("BoxShape3D_jc0qr")
+
+[node name="DoorR4A" type="AnimatableBody3D" parent="Car02" unique_id=1907630891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorR4A" unique_id=1241682141]
+shape = SubResource("BoxShape3D_1vlc3")
+
+[node name="DoorR4B" type="AnimatableBody3D" parent="Car02" unique_id=2034399714]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car02/DoorR4B" unique_id=917699281]
+shape = SubResource("BoxShape3D_et7b8")
+
+[node name="CouplerRear" type="Marker3D" parent="Car02" unique_id=1458667327]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, -11.43)
+
+[node name="CouplerFront" type="Marker3D" parent="Car02" unique_id=513756706]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, 11.43)
+
+[node name="Car03" type="Node3D" parent="." unique_id=577784879]
+
+[node name="CabinStructure" type="GridMap" parent="Car03" unique_id=689443470]
+mesh_library = ExtResource("1_qlb2l")
+cell_size = Vector3(1, 1, 0.01)
+cell_octant_size = 512
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+collision_mask = 0
+data = {
+"cells": PackedInt32Array(0, 64536, 0, 65536, 64536, 1, 0, 64736, 0, 65536, 64736, 1, 0, 64936, 0, 65536, 64936, 1, 0, 65136, 0, 65536, 65136, 1, 0, 65336, 0, 65536, 65336, 1, 0, 0, 0, 65536, 0, 1, 0, 200, 0, 65536, 200, 1, 0, 400, 0, 65536, 400, 1, 0, 600, 0, 65536, 600, 1, 0, 800, 0, 65536, 800, 1, 0, 1000, 0, 65536, 1000, 1, 65535, 65036, 655362, 65535, 0, 655362, 65535, 500, 655362, 65535, 64570, 655363, 65535, 966, 655363, 65535, 64786, 655364, 65535, 65286, 655364, 65535, 250, 655364, 65535, 750, 655364, 1, 65036, 2, 1, 0, 2, 1, 500, 2, 1, 64570, 3, 1, 966, 3, 1, 64786, 4, 1, 65286, 4, 1, 250, 4, 1, 750, 4, 0, 64446, 655365, 0, 1090, 5)
+}
+
+[node name="SeatCollision" type="StaticBody3D" parent="Car03" unique_id=2026009872]
+collision_mask = 0
+
+[node name="@CollisionShape3D@12" type="CollisionShape3D" parent="Car03/SeatCollision" unique_id=1956095738]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_m6s6w")
+
+[node name="@CollisionShape3D@13" type="CollisionShape3D" parent="Car03/SeatCollision" unique_id=1422546794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -5)
+shape = SubResource("BoxShape3D_15ova")
+
+[node name="@CollisionShape3D@14" type="CollisionShape3D" parent="Car03/SeatCollision" unique_id=1591330455]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 0)
+shape = SubResource("BoxShape3D_n6vpx")
+
+[node name="@CollisionShape3D@15" type="CollisionShape3D" parent="Car03/SeatCollision" unique_id=1055884663]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 5)
+shape = SubResource("BoxShape3D_g5amj")
+
+[node name="@CollisionShape3D@16" type="CollisionShape3D" parent="Car03/SeatCollision" unique_id=560386147]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_4f0wk")
+
+[node name="@CollisionShape3D@17" type="CollisionShape3D" parent="Car03/SeatCollision" unique_id=824624531]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_fwcew")
+
+[node name="@CollisionShape3D@18" type="CollisionShape3D" parent="Car03/SeatCollision" unique_id=1413756164]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -5)
+shape = SubResource("BoxShape3D_btpwy")
+
+[node name="@CollisionShape3D@19" type="CollisionShape3D" parent="Car03/SeatCollision" unique_id=724225712]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 0)
+shape = SubResource("BoxShape3D_50mxb")
+
+[node name="@CollisionShape3D@20" type="CollisionShape3D" parent="Car03/SeatCollision" unique_id=829199893]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 5)
+shape = SubResource("BoxShape3D_46l04")
+
+[node name="@CollisionShape3D@21" type="CollisionShape3D" parent="Car03/SeatCollision" unique_id=1160080798]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_8fgq3")
+
+[node name="DoorL1A" type="AnimatableBody3D" parent="Car03" unique_id=232043627]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorL1A" unique_id=995387206]
+shape = SubResource("BoxShape3D_b7ubh")
+
+[node name="DoorL1B" type="AnimatableBody3D" parent="Car03" unique_id=1424837110]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorL1B" unique_id=1922861032]
+shape = SubResource("BoxShape3D_6tg8y")
+
+[node name="DoorL2A" type="AnimatableBody3D" parent="Car03" unique_id=230062967]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorL2A" unique_id=1741200379]
+shape = SubResource("BoxShape3D_4q78d")
+
+[node name="DoorL2B" type="AnimatableBody3D" parent="Car03" unique_id=937442969]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorL2B" unique_id=435503963]
+shape = SubResource("BoxShape3D_nlntc")
+
+[node name="DoorL3A" type="AnimatableBody3D" parent="Car03" unique_id=1332044533]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorL3A" unique_id=2001768011]
+shape = SubResource("BoxShape3D_v23i8")
+
+[node name="DoorL3B" type="AnimatableBody3D" parent="Car03" unique_id=722485505]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorL3B" unique_id=721163161]
+shape = SubResource("BoxShape3D_xh2o1")
+
+[node name="DoorL4A" type="AnimatableBody3D" parent="Car03" unique_id=1656601330]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorL4A" unique_id=2037181345]
+shape = SubResource("BoxShape3D_ecf4n")
+
+[node name="DoorL4B" type="AnimatableBody3D" parent="Car03" unique_id=423801265]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorL4B" unique_id=516509067]
+shape = SubResource("BoxShape3D_sbwdc")
+
+[node name="DoorR1A" type="AnimatableBody3D" parent="Car03" unique_id=247026090]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorR1A" unique_id=386692113]
+shape = SubResource("BoxShape3D_quctu")
+
+[node name="DoorR1B" type="AnimatableBody3D" parent="Car03" unique_id=1421396002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorR1B" unique_id=489709830]
+shape = SubResource("BoxShape3D_rqbjj")
+
+[node name="DoorR2A" type="AnimatableBody3D" parent="Car03" unique_id=1777009427]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorR2A" unique_id=90560661]
+shape = SubResource("BoxShape3D_ek3sx")
+
+[node name="DoorR2B" type="AnimatableBody3D" parent="Car03" unique_id=1278290231]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorR2B" unique_id=1103433976]
+shape = SubResource("BoxShape3D_b31u1")
+
+[node name="DoorR3A" type="AnimatableBody3D" parent="Car03" unique_id=1876433075]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorR3A" unique_id=1533865186]
+shape = SubResource("BoxShape3D_dw2sd")
+
+[node name="DoorR3B" type="AnimatableBody3D" parent="Car03" unique_id=932664416]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorR3B" unique_id=1188638480]
+shape = SubResource("BoxShape3D_jc0qr")
+
+[node name="DoorR4A" type="AnimatableBody3D" parent="Car03" unique_id=1728020198]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorR4A" unique_id=1054891520]
+shape = SubResource("BoxShape3D_1vlc3")
+
+[node name="DoorR4B" type="AnimatableBody3D" parent="Car03" unique_id=481189566]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car03/DoorR4B" unique_id=38281477]
+shape = SubResource("BoxShape3D_et7b8")
+
+[node name="CouplerRear" type="Marker3D" parent="Car03" unique_id=1814215545]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, -11.43)
+
+[node name="CouplerFront" type="Marker3D" parent="Car03" unique_id=866989112]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, 11.43)
+
+[node name="Car04" type="Node3D" parent="." unique_id=54195949]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22.86)
+
+[node name="CabinStructure" type="GridMap" parent="Car04" unique_id=979157367]
+mesh_library = ExtResource("1_qlb2l")
+cell_size = Vector3(1, 1, 0.01)
+cell_octant_size = 512
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+collision_mask = 0
+data = {
+"cells": PackedInt32Array(0, 64536, 0, 65536, 64536, 1, 0, 64736, 0, 65536, 64736, 1, 0, 64936, 0, 65536, 64936, 1, 0, 65136, 0, 65536, 65136, 1, 0, 65336, 0, 65536, 65336, 1, 0, 0, 0, 65536, 0, 1, 0, 200, 0, 65536, 200, 1, 0, 400, 0, 65536, 400, 1, 0, 600, 0, 65536, 600, 1, 0, 800, 0, 65536, 800, 1, 0, 1000, 0, 65536, 1000, 1, 65535, 65036, 655362, 65535, 0, 655362, 65535, 500, 655362, 65535, 64570, 655363, 65535, 966, 655363, 65535, 64786, 655364, 65535, 65286, 655364, 65535, 250, 655364, 65535, 750, 655364, 1, 65036, 2, 1, 0, 2, 1, 500, 2, 1, 64570, 3, 1, 966, 3, 1, 64786, 4, 1, 65286, 4, 1, 250, 4, 1, 750, 4, 0, 64446, 655365, 0, 1090, 5)
+}
+
+[node name="SeatCollision" type="StaticBody3D" parent="Car04" unique_id=1393577405]
+collision_mask = 0
+
+[node name="@CollisionShape3D@12" type="CollisionShape3D" parent="Car04/SeatCollision" unique_id=943160122]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_m6s6w")
+
+[node name="@CollisionShape3D@13" type="CollisionShape3D" parent="Car04/SeatCollision" unique_id=1335464106]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -5)
+shape = SubResource("BoxShape3D_15ova")
+
+[node name="@CollisionShape3D@14" type="CollisionShape3D" parent="Car04/SeatCollision" unique_id=225410951]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 0)
+shape = SubResource("BoxShape3D_n6vpx")
+
+[node name="@CollisionShape3D@15" type="CollisionShape3D" parent="Car04/SeatCollision" unique_id=1924261237]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 5)
+shape = SubResource("BoxShape3D_g5amj")
+
+[node name="@CollisionShape3D@16" type="CollisionShape3D" parent="Car04/SeatCollision" unique_id=64126829]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_4f0wk")
+
+[node name="@CollisionShape3D@17" type="CollisionShape3D" parent="Car04/SeatCollision" unique_id=1800307410]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_fwcew")
+
+[node name="@CollisionShape3D@18" type="CollisionShape3D" parent="Car04/SeatCollision" unique_id=98298633]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -5)
+shape = SubResource("BoxShape3D_btpwy")
+
+[node name="@CollisionShape3D@19" type="CollisionShape3D" parent="Car04/SeatCollision" unique_id=126219050]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 0)
+shape = SubResource("BoxShape3D_50mxb")
+
+[node name="@CollisionShape3D@20" type="CollisionShape3D" parent="Car04/SeatCollision" unique_id=1351558175]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 5)
+shape = SubResource("BoxShape3D_46l04")
+
+[node name="@CollisionShape3D@21" type="CollisionShape3D" parent="Car04/SeatCollision" unique_id=1426597873]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_8fgq3")
+
+[node name="DoorL1A" type="AnimatableBody3D" parent="Car04" unique_id=1050940710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorL1A" unique_id=1820788208]
+shape = SubResource("BoxShape3D_b7ubh")
+
+[node name="DoorL1B" type="AnimatableBody3D" parent="Car04" unique_id=1663597668]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorL1B" unique_id=1762174020]
+shape = SubResource("BoxShape3D_6tg8y")
+
+[node name="DoorL2A" type="AnimatableBody3D" parent="Car04" unique_id=208175493]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorL2A" unique_id=1628586003]
+shape = SubResource("BoxShape3D_4q78d")
+
+[node name="DoorL2B" type="AnimatableBody3D" parent="Car04" unique_id=1144189379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorL2B" unique_id=1718339251]
+shape = SubResource("BoxShape3D_nlntc")
+
+[node name="DoorL3A" type="AnimatableBody3D" parent="Car04" unique_id=368969388]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorL3A" unique_id=35276495]
+shape = SubResource("BoxShape3D_v23i8")
+
+[node name="DoorL3B" type="AnimatableBody3D" parent="Car04" unique_id=2073745710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorL3B" unique_id=1447757899]
+shape = SubResource("BoxShape3D_xh2o1")
+
+[node name="DoorL4A" type="AnimatableBody3D" parent="Car04" unique_id=389600015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorL4A" unique_id=86864063]
+shape = SubResource("BoxShape3D_ecf4n")
+
+[node name="DoorL4B" type="AnimatableBody3D" parent="Car04" unique_id=556174512]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorL4B" unique_id=1117537173]
+shape = SubResource("BoxShape3D_sbwdc")
+
+[node name="DoorR1A" type="AnimatableBody3D" parent="Car04" unique_id=1714629554]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorR1A" unique_id=22524163]
+shape = SubResource("BoxShape3D_quctu")
+
+[node name="DoorR1B" type="AnimatableBody3D" parent="Car04" unique_id=151904556]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorR1B" unique_id=2002874015]
+shape = SubResource("BoxShape3D_rqbjj")
+
+[node name="DoorR2A" type="AnimatableBody3D" parent="Car04" unique_id=687411871]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorR2A" unique_id=549678339]
+shape = SubResource("BoxShape3D_ek3sx")
+
+[node name="DoorR2B" type="AnimatableBody3D" parent="Car04" unique_id=1143051245]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorR2B" unique_id=1244440353]
+shape = SubResource("BoxShape3D_b31u1")
+
+[node name="DoorR3A" type="AnimatableBody3D" parent="Car04" unique_id=1595306996]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorR3A" unique_id=1108344522]
+shape = SubResource("BoxShape3D_dw2sd")
+
+[node name="DoorR3B" type="AnimatableBody3D" parent="Car04" unique_id=749064919]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorR3B" unique_id=337205282]
+shape = SubResource("BoxShape3D_jc0qr")
+
+[node name="DoorR4A" type="AnimatableBody3D" parent="Car04" unique_id=975243432]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorR4A" unique_id=1283400217]
+shape = SubResource("BoxShape3D_1vlc3")
+
+[node name="DoorR4B" type="AnimatableBody3D" parent="Car04" unique_id=1004398438]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car04/DoorR4B" unique_id=2077084256]
+shape = SubResource("BoxShape3D_et7b8")
+
+[node name="CouplerRear" type="Marker3D" parent="Car04" unique_id=1827246032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, -11.43)
+
+[node name="CouplerFront" type="Marker3D" parent="Car04" unique_id=188822536]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, 11.43)
+
+[node name="Car05" type="Node3D" parent="." unique_id=2090714505]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -45.72)
+
+[node name="CabinStructure" type="GridMap" parent="Car05" unique_id=1381818410]
+mesh_library = ExtResource("1_qlb2l")
+cell_size = Vector3(1, 1, 0.01)
+cell_octant_size = 512
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+collision_mask = 0
+data = {
+"cells": PackedInt32Array(0, 64536, 0, 65536, 64536, 1, 0, 64736, 0, 65536, 64736, 1, 0, 64936, 0, 65536, 64936, 1, 0, 65136, 0, 65536, 65136, 1, 0, 65336, 0, 65536, 65336, 1, 0, 0, 0, 65536, 0, 1, 0, 200, 0, 65536, 200, 1, 0, 400, 0, 65536, 400, 1, 0, 600, 0, 65536, 600, 1, 0, 800, 0, 65536, 800, 1, 0, 1000, 0, 65536, 1000, 1, 65535, 65036, 655362, 65535, 0, 655362, 65535, 500, 655362, 65535, 64570, 655363, 65535, 966, 655363, 65535, 64786, 655364, 65535, 65286, 655364, 65535, 250, 655364, 65535, 750, 655364, 1, 65036, 2, 1, 0, 2, 1, 500, 2, 1, 64570, 3, 1, 966, 3, 1, 64786, 4, 1, 65286, 4, 1, 250, 4, 1, 750, 4, 0, 64446, 655365, 0, 1090, 5)
+}
+
+[node name="SeatCollision" type="StaticBody3D" parent="Car05" unique_id=1013435180]
+collision_mask = 0
+
+[node name="@CollisionShape3D@2" type="CollisionShape3D" parent="Car05/SeatCollision" unique_id=1638119377]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_3yu4r")
+
+[node name="@CollisionShape3D@3" type="CollisionShape3D" parent="Car05/SeatCollision" unique_id=878207066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -5)
+shape = SubResource("BoxShape3D_6bspg")
+
+[node name="@CollisionShape3D@4" type="CollisionShape3D" parent="Car05/SeatCollision" unique_id=105052224]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 0)
+shape = SubResource("BoxShape3D_iv87i")
+
+[node name="@CollisionShape3D@5" type="CollisionShape3D" parent="Car05/SeatCollision" unique_id=243152949]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 5)
+shape = SubResource("BoxShape3D_iqr1n")
+
+[node name="@CollisionShape3D@6" type="CollisionShape3D" parent="Car05/SeatCollision" unique_id=420247253]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_qe8xd")
+
+[node name="@CollisionShape3D@7" type="CollisionShape3D" parent="Car05/SeatCollision" unique_id=956521083]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_ylfp8")
+
+[node name="@CollisionShape3D@8" type="CollisionShape3D" parent="Car05/SeatCollision" unique_id=1739803984]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -5)
+shape = SubResource("BoxShape3D_wr8s7")
+
+[node name="@CollisionShape3D@9" type="CollisionShape3D" parent="Car05/SeatCollision" unique_id=1883817152]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 0)
+shape = SubResource("BoxShape3D_j3e4q")
+
+[node name="@CollisionShape3D@10" type="CollisionShape3D" parent="Car05/SeatCollision" unique_id=1535472011]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 5)
+shape = SubResource("BoxShape3D_6rc62")
+
+[node name="@CollisionShape3D@11" type="CollisionShape3D" parent="Car05/SeatCollision" unique_id=1991637507]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_jcrs6")
+
+[node name="DoorL1A" type="AnimatableBody3D" parent="Car05" unique_id=388987167]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorL1A" unique_id=768286138]
+shape = SubResource("BoxShape3D_2y2bs")
+
+[node name="DoorL1B" type="AnimatableBody3D" parent="Car05" unique_id=448617853]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorL1B" unique_id=1432468876]
+shape = SubResource("BoxShape3D_av60g")
+
+[node name="DoorL2A" type="AnimatableBody3D" parent="Car05" unique_id=103945487]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorL2A" unique_id=1870102033]
+shape = SubResource("BoxShape3D_wlldi")
+
+[node name="DoorL2B" type="AnimatableBody3D" parent="Car05" unique_id=583079103]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorL2B" unique_id=512694439]
+shape = SubResource("BoxShape3D_qjvis")
+
+[node name="DoorL3A" type="AnimatableBody3D" parent="Car05" unique_id=1586943498]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorL3A" unique_id=1008122831]
+shape = SubResource("BoxShape3D_njs22")
+
+[node name="DoorL3B" type="AnimatableBody3D" parent="Car05" unique_id=1564831960]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorL3B" unique_id=380529505]
+shape = SubResource("BoxShape3D_dm1mt")
+
+[node name="DoorL4A" type="AnimatableBody3D" parent="Car05" unique_id=175253263]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorL4A" unique_id=1726589724]
+shape = SubResource("BoxShape3D_j4xmd")
+
+[node name="DoorL4B" type="AnimatableBody3D" parent="Car05" unique_id=2060297116]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorL4B" unique_id=2010938561]
+shape = SubResource("BoxShape3D_7b86g")
+
+[node name="DoorR1A" type="AnimatableBody3D" parent="Car05" unique_id=1891499217]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorR1A" unique_id=140560381]
+shape = SubResource("BoxShape3D_thgu1")
+
+[node name="DoorR1B" type="AnimatableBody3D" parent="Car05" unique_id=6812929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorR1B" unique_id=85023980]
+shape = SubResource("BoxShape3D_3pr3k")
+
+[node name="DoorR2A" type="AnimatableBody3D" parent="Car05" unique_id=2114318095]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorR2A" unique_id=263537757]
+shape = SubResource("BoxShape3D_kijgy")
+
+[node name="DoorR2B" type="AnimatableBody3D" parent="Car05" unique_id=1269920178]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorR2B" unique_id=1663142501]
+shape = SubResource("BoxShape3D_isbas")
+
+[node name="DoorR3A" type="AnimatableBody3D" parent="Car05" unique_id=569939373]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorR3A" unique_id=180880857]
+shape = SubResource("BoxShape3D_bgyp0")
+
+[node name="DoorR3B" type="AnimatableBody3D" parent="Car05" unique_id=945363766]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorR3B" unique_id=224154991]
+shape = SubResource("BoxShape3D_opm42")
+
+[node name="DoorR4A" type="AnimatableBody3D" parent="Car05" unique_id=1864550688]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorR4A" unique_id=688181211]
+shape = SubResource("BoxShape3D_wtgvj")
+
+[node name="DoorR4B" type="AnimatableBody3D" parent="Car05" unique_id=41448999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="Car05/DoorR4B" unique_id=1416368966]
+shape = SubResource("BoxShape3D_qtvl6")
+
+[node name="CouplerRear" type="Marker3D" parent="Car05" unique_id=1716915559]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, -11.43)
+
+[node name="CouplerFront" type="Marker3D" parent="Car05" unique_id=494999250]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, 11.43)
+
+[node name="Doors" type="AnimationPlayer" parent="." unique_id=1547873408]
+callback_mode_process = 0
+libraries/ = SubResource("AnimationLibrary_1wgoi")

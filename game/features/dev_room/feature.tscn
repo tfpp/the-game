@@ -7,6 +7,8 @@
 
 [ext_resource type="Script" path="res://features/dev_room/warp_commands.gd" id="warp"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [node name="DevRoom" type="Node3D"]
 script = ExtResource("warp")
 
@@ -96,3 +98,12 @@ script = ExtResource("2_gps")
 label = "Dev Room"
 hint = "Use !warp dev in chat to reach the warp room"
 area = AABB(285.5, -1, -308.5, 29, 6, 17)
+
+[node name="MetroAccess" type="Node3D" parent="Room"]
+script = ExtResource("metro_access")
+position = Vector3(10, 0, 4.5)
+rotation = Vector3(0, -1.5707963267948966, 0)
+zone_id = "dev_room"
+label = "Dev Room"
+station = 2
+slot = 3

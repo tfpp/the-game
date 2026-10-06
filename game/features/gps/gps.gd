@@ -204,6 +204,9 @@ func regions() -> Array[AABB]:
 ## Every door (`GarageDoor` and subclasses such as `RoomDoor`) as a routing link.
 func links() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
+	var metro := MetroService.for_node(self)
+	if metro != null:
+		result.append_array(metro.gps_links())
 	for node: Node in get_tree().get_nodes_in_group(&"interactables"):
 		if node is OperationsVan:
 			var van := node as OperationsVan
