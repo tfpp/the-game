@@ -3,24 +3,24 @@
 [ext_resource type="Script" path="res://features/holdables/thrown_item.gd" id="1_script"]
 [ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="interaction"]
 
-[sub_resource type="SceneReplicationConfig" id="Replication"]
-properties/0/path = NodePath(".:net_position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:net_landed")
-properties/1/spawn = true
-properties/1/replication_mode = 2
+[sub_resource type="SphereShape3D" id="BallShape"]
+radius = 0.122
 
-[node name="ThrownItem" type="Node3D"]
+[node name="ThrownItem" type="CharacterBody3D"]
+collision_layer = 0
+collision_mask = 1
 script = ExtResource("1_script")
 
 [node name="Mount" type="Node3D" parent="."]
 
-[node name="Sync" type="MultiplayerSynchronizer" parent="."]
-root_path = NodePath("..")
-replication_interval = 0.04
-replication_config = SubResource("Replication")
+[node name="Collider" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.122, 0)
+shape = SubResource("BallShape")
+disabled = true
 
 [node name="NetworkedEntity" type="Node" parent="."]
 script = ExtResource("interaction")
 interaction_range = 2.5
+replicated_properties = Array[NodePath]([NodePath(".:net_landed")])
+continuous_properties = Array[NodePath]([NodePath(".:net_position")])
+replication_interval = 0.04

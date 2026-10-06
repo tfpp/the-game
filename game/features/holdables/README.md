@@ -142,7 +142,8 @@ stash entries show their sale values. Ordinary items keep their old prompts.
   floor under the throw — see `_toss` in `hand.gd`, used by both a PROP's throw and a
   plain drop), then bounces it a few times, lower and fewer bounces the heavier the
   item's `weight`, before it settles as a pickup again where it lands. A dropped
-  pistol just thuds — weapons are heavy enough not to bounce.
+  pistol just thuds — weapons are heavy enough not to bounce. Basketballs use real
+  collision-based flight, bouncing and rolling instead (see below).
 - `throw_math.gd`: pure arc/aim/bounce math, unit-tested the same way
   `features/frogs/frog_hop.gd` keeps its hop math separate from the scene.
 
@@ -235,3 +236,32 @@ consumption effects use scoped NetworkedEntity events. Drops retain their origin
 instance, initialize visibility before their spawn snapshot, deny outsider pickups
 and are deleted when the instance empties. The server always retains simulation;
 owners retain their own inventory through travel.
+
+## Basketball throws (#521)
+
+The orange basketball remains on the south lobby counter at (-7.6, 1.05, 17).
+Collect with E / B / Circle / touch USE, then throw with left click / right
+bumper or trigger / touch FIRE. G / left bumper drops it using a shorter launch.
+After its first floor contact it can be collected again with Use, including
+while rolling. It stays in the world until collected or the session resets;
+private excursion drops still disappear when that instance empties. Disconnecting
+or respawning the thrower does not remove a shared-hub ball.
+
+`ThrownItem` uses a swept sphere only for the catalog `ball`, with gravity,
+floor/wall/ceiling rebounds and rolling friction from the existing `BallPhysics`
+math. Its view spins with travel and its collider never blocks players. A ball
+that falls 50 metres below its release point returns there to remain recoverable.
+Other items retain their weight-based scripted arcs. The three-argument
+`spawn_thrown_item(item_id, from, to)` API and `transfer_by(offset)` stay compatible:
+the latter moves the ball and its recovery origin without changing momentum.
+
+The existing server spawner owns all drops. `NetworkedInteraction` now declares
+ThrownItem's continuous position and pickup-ready state, including spawn snapshots
+for late joins and the existing private-zone visibility filter. Clients only
+smooth/spin the view; Use rechecks the sender, replicated player range, zone
+membership, inventory capacity and queued deletion on the server. There is no
+extra persistence store, damage, key binding or dynamic light.
+
+Basketball collision/persistence/pickup tests live in
+`tests/features/holdables/test_basketball.gd`; real transport coverage lives in
+`tests/features/holdables/test_basketball_network.gd`.
