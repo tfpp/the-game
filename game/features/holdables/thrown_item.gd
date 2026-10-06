@@ -1,20 +1,23 @@
 class_name ThrownItem
-extends Node3D
+extends CharacterBody3D
 ## A generic thrown or dropped item: arcs from `from` to a landing point, then bounces
 ## a few times — fewer and lower the heavier the item is (see throw_math.gd's
 ## `bounce_height`) — before settling as a new pickup so anyone can grab it again, the
 ## same item just back on the ground. Spawned by the holdables feature (holdables.gd)
 ## when a PROP item is thrown or any held item is dropped (see hand.gd's `_toss`).
+## Basketballs instead use collision-based bouncing/rolling and remain recoverable.
 ##
-## Server-authoritative flight, like frogs/frog.gd: the server integrates the arc and
+## Server-authoritative flight: the server integrates motion and
 ## publishes `net_position`/`net_landed`; other peers only smooth toward them.
 
 const FLIGHT_DURATION_S := 0.6
 const BOUNCE_DURATION_S := 0.3
 const REMOTE_SMOOTHING := 16.0
 const PICKUP_RANGE := 2.5
+const BALL_RESTITUTION := 0.72
 
-## Replicated (server -> everyone). See the synchronizer config in thrown_item.tscn.
+## Replicated by NetworkedInteraction (server -> everyone), including late joins.
+## For balls net_landed means pickup-ready after the first floor contact.
 @export var net_position := Vector3.ZERO
 @export var net_landed := false
 
@@ -27,6 +30,7 @@ var instance_id := -1
 
 var _elapsed := 0.0
 var _last_landed := false
+var _last_visual_position := Vector3.ZERO
 
 ## The flight segment currently being animated: the initial throw arc, then each
 ## successive (shorter, lower) bounce.
@@ -41,24 +45,30 @@ var _bounce_index := 0
 
 
 func _ready() -> void:
-	($Sync as MultiplayerSynchronizer).add_visibility_filter(network_peer_allowed)
-	($Sync as MultiplayerSynchronizer).update_visibility()
 	_entity.register_use(can_use, _collect)
 	position = from
 	net_position = from
+	_last_visual_position = from
 	_seg_from = from
 	_seg_to = to
 	var def := ItemCatalog.find(item_id)
 	if def != null:
 		_mount.add_child(ItemCatalog.create_view(item_id))
 		_mount.position.y = def.ground_clearance
+	if item_id == "ball":
+		($Collider as CollisionShape3D).disabled = false
+		# Keep the existing floor-level origin and put the sphere at the view's center.
+		velocity = (to - from) / FLIGHT_DURATION_S
+		velocity.y = 4.0
 	if not multiplayer.is_server():
 		set_physics_process(false)
 	_apply_landed(net_landed)
 
 
 func _physics_process(delta: float) -> void:
-	if not net_landed:
+	if item_id == "ball":
+		_advance_ball(delta)
+	elif not net_landed:
 		_advance(delta)
 
 
@@ -73,7 +83,38 @@ func transfer_by(offset: Vector3) -> void:
 	_seg_to += offset
 	net_position += offset
 	position = net_position
+	_last_visual_position += offset
 	reset_physics_interpolation()
+
+
+## Real swept-sphere collisions keep balls on floors and inside walls, even while
+## airborne. The original item arcs remain unchanged for weapons, food and loot.
+func _advance_ball(delta: float) -> void:
+	velocity = BallPhysics.apply_gravity(velocity, delta)
+	velocity = BallPhysics.apply_drag(velocity, delta, BallPhysics.AIR_DRAG_PER_S)
+	var remaining := delta
+	for _impact in range(4):
+		var collision := move_and_collide(velocity * remaining)
+		if collision == null:
+			break
+		var normal := collision.get_normal()
+		var speed := velocity.length()
+		remaining *= collision.get_remainder().length() / maxf(speed * remaining, 0.0001)
+		if normal.y > 0.5:
+			net_landed = true
+			if -velocity.dot(normal) < BallPhysics.MIN_BOUNCE_SPEED_M_S:
+				velocity = velocity.slide(normal)
+			else:
+				velocity = BallPhysics.reflect_off_wall(velocity, normal, BALL_RESTITUTION)
+			velocity = BallPhysics.apply_drag(velocity, delta, BallPhysics.GROUND_FRICTION_PER_S)
+			velocity = BallPhysics.settle(velocity)
+		else:
+			velocity = BallPhysics.reflect_off_wall(velocity, normal, BALL_RESTITUTION)
+	# A ball lost through a map gap returns to its release point instead of vanishing.
+	if position.y < from.y - 50.0:
+		position = from
+		velocity = Vector3.ZERO
+	net_position = position
 
 
 func _advance(delta: float) -> void:
@@ -125,14 +166,18 @@ func _process(delta: float) -> void:
 		_apply_landed(net_landed)
 	if multiplayer.is_server():
 		position = net_position
-		return
-	var t := 1.0 - exp(-REMOTE_SMOOTHING * delta)
-	# A room transfer is discontinuous; never draw a dropped item across the world.
-	position = (
-		net_position
-		if position.distance_squared_to(net_position) > 128 * 128
-		else position.lerp(net_position, t)
-	)
+	else:
+		var t := 1.0 - exp(-REMOTE_SMOOTHING * delta)
+		# A room transfer is discontinuous; never draw a dropped item across the world.
+		position = (
+			net_position
+			if position.distance_squared_to(net_position) > 128 * 128
+			else position.lerp(net_position, t)
+		)
+	if item_id == "ball":
+		var spin := BallPhysics.rolling_spin(position - _last_visual_position, BallPhysics.RADIUS_M)
+		_mount.quaternion = (spin * _mount.quaternion).normalized()
+	_last_visual_position = position
 
 
 func can_use(player: Player) -> bool:
@@ -140,7 +185,7 @@ func can_use(player: Player) -> bool:
 		not net_landed
 		or is_queued_for_deletion()
 		or not network_peer_allowed(player.get_multiplayer_authority())
-		or global_position.distance_to(player.global_position) > PICKUP_RANGE
+		or not _entity.in_range(player)
 	):
 		return false
 	var hand := Hand.for_peer(get_tree(), player.get_multiplayer_authority())

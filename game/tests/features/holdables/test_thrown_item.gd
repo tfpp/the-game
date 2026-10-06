@@ -23,15 +23,15 @@ func test_a_heavy_weapon_settles_on_first_landing_without_bouncing() -> void:
 	assert_eq(item._bounce_index, 0)
 
 
-func test_a_light_prop_bounces_at_least_once_before_settling() -> void:
-	var item := _spawn("ball", Vector3.ZERO, Vector3(4, 0, 0))
+func test_a_light_item_bounces_at_least_once_before_settling() -> void:
+	var item := _spawn("banana", Vector3.ZERO, Vector3(4, 0, 0))
 	item._advance(ThrownItem.FLIGHT_DURATION_S)
 	assert_false(item.net_landed)
 	assert_eq(item._bounce_index, 1)
 
 
 func test_bounces_shrink_and_eventually_settle() -> void:
-	var item := _spawn("ball", Vector3.ZERO, Vector3(4, 0, 0))
+	var item := _spawn("banana", Vector3.ZERO, Vector3(4, 0, 0))
 	var guard := 0
 	while not item.net_landed and guard < 20:
 		item._advance(1.0)

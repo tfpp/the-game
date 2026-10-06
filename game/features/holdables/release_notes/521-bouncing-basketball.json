@@ -1,0 +1,5 @@
+{
+  "title": "Basketballs that stick around",
+  "summary": "Thrown basketballs bounce off floors and walls, roll to a stop and stay available to pick up again.",
+  "notes": ["Keep thrown basketballs in the world with solid collisions, lively bounces and rolling."]
+}
