@@ -209,6 +209,70 @@ func test_boarding_departure_late_join_and_arrival_keep_shared_state() -> void:
 	)
 
 
+func test_train_impact_is_server_owned_and_death_reaches_owner() -> void:
+	var transport := Network.create_transport()
+	var port := randi_range(20000, 40000)
+	assert_eq(transport.create_server(port), OK)
+	var server := branch("ImpactServer", transport)
+	var server_combat := Combat.new()
+	server_combat.name = "Combat"
+	server.get_node("Features").add_child(server_combat)
+	server_combat.set_process(false)
+	var owner := connect_client(port, "ImpactOwner")
+	var owner_combat := Combat.new()
+	owner_combat.name = "Combat"
+	owner.get_node("Features").add_child(owner_combat)
+	var metro := server.get_node("Features/Metro") as MetroService
+	var owner_metro := owner.get_node("Features/Metro") as MetroService
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return server.multiplayer.get_peers().size() == 1, 5
+		)
+	)
+	var peer := owner.multiplayer.get_unique_id()
+	var at := MetroRules.station_position(3) + Vector3(0, 2.7, 70)
+	(server.get_node("PlayerSpawner") as MultiplayerSpawner).spawn({"peer": peer, "position": at})
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return owner_metro.player(peer) != null, 5
+		)
+	)
+	watch_signals(owner_combat)
+	watch_signals(server_combat)
+	metro.net_time = MetroRules.PERIOD - 1.1
+	metro.add_passenger(peer, 3)
+	# Calling the detector on a client must not mutate even its local Combat state.
+	owner_metro._check_train_impacts(MetroRules.PERIOD - 1.1, MetroRules.PERIOD - 0.9)
+	assert_signal_not_emitted(owner_combat, "player_died")
+	assert_false(server_combat.is_respawning(peer))
+	metro._check_train_impacts(MetroRules.PERIOD - 1.1, MetroRules.PERIOD - 0.9)
+	assert_true(server_combat.is_respawning(peer))
+	assert_true(metro.net_passengers.is_empty())
+	assert_eq(server_combat.kills_for(peer), 0)
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool: return get_signal_emit_count(owner_combat, "player_died") == 1,
+			5
+		)
+	)
+	metro._check_train_impacts(MetroRules.PERIOD - 1.1, MetroRules.PERIOD - 0.9)
+	assert_signal_emit_count(server_combat, "player_died", 1)
+	var late := connect_client(port, "ImpactLate")
+	var late_combat := Combat.new()
+	late_combat.name = "Combat"
+	late.get_node("Features").add_child(late_combat)
+	watch_signals(late_combat)
+	var late_metro := late.get_node("Features/Metro") as MetroService
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(), func() -> bool: return absf(late_metro.net_time - metro.net_time) < 0.01, 5
+		)
+	)
+	assert_signal_not_emitted(late_combat, "player_died", "Do not replay past impacts")
+	assert_true(late_metro.net_passengers.is_empty())
+
+
 func test_seat_requests_use_transport_identity_and_replicate_to_late_peer() -> void:
 	var transport := Network.create_transport()
 	var port := randi_range(20000, 40000)

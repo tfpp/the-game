@@ -84,6 +84,23 @@ requires both prior discovery and current eligibility; it calls the VIP owner's
 entry/leave methods. Hotel Props retains its developer gate. Room-owned cleanup,
 including refunds when leaving the betting room, continues to observe player location.
 
+## Track hazards
+
+Arriving and departing trains kill players whose server-observed capsule overlaps
+their swept path at any station, including jumping players. Stay on the platform;
+parked trains, the hidden tunnel reset and the separate ride compartments do not
+cause train damage. This works offline and on every device without new controls.
+
+MetroService checks the existing timetable's visible motion segments against the
+native train bounds (3.15 × 3.66 × 114.3 m), with capsule clearance and a longitudinal
+sweep to avoid fast trains skipping targets between ticks. No moving physics bodies
+or streamed visuals are required on the server. Validated boarding passengers still
+inside their cabin awaiting readiness are protected; leaving it removes protection.
+Combat.apply_damage owns the normal death screen, delayed respawn and death listeners,
+with self attribution so environmental impacts award no player kills. Metro's existing
+death callback clears passenger manifests and pending transfers. No new persistent
+state or RPC is introduced; late joiners use the current replicated timetable.
+
 ## Runtime and performance
 
 `MetroService` owns the clock and passenger manifest through `NetworkedEntity`.
