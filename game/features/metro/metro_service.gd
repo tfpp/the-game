@@ -207,6 +207,7 @@ func _physics_process(delta: float) -> void:
 			)
 	if previous < MetroRules.PERIOD - 3 and net_time >= MetroRules.PERIOD - 3:
 		_begin_arrival_transfer()
+	_check_train_impacts(previous, net_time)
 	if net_time >= MetroRules.PERIOD:
 		for index: int in 4:
 			_move_items(
@@ -216,6 +217,43 @@ func _physics_process(delta: float) -> void:
 		net_cycle += 1
 		_items_departed = false
 	_update_collision()
+
+
+func _check_train_impacts(previous: float, current: float) -> void:
+	if not multiplayer.is_server() or current <= MetroRules.DEPART:
+		return
+	var combat: Combat
+	for node: Node in get_tree().get_nodes_in_group(&"combat"):
+		if node.multiplayer == multiplayer:
+			combat = node as Combat
+			break
+	if combat == null:
+		return
+	for node: Node in get_tree().get_nodes_in_group(&"players"):
+		var rider := node as Player
+		if rider == null or rider.multiplayer != multiplayer or not alive(rider):
+			continue
+		var peer := rider.get_multiplayer_authority()
+		for station: MetroZone in stations:
+			var point := rider.net_position - station.global_position
+			var trip: Dictionary = transfers.pending.get(peer, {})
+			# A validated rider awaiting floor readiness still belongs to the cabin.
+			# Stepping out of that cabin forfeits protection.
+			if (
+				trip.get("kind", "") == "depart"
+				and trip.get("origin") == station.position
+				and MetroRules.aboard(point, rider.movement.hull_radius_m())
+			):
+				continue
+			if MetroRules.train_hits(
+				point,
+				rider.movement.hull_radius_m(),
+				rider.movement.hull_height_m(),
+				previous,
+				current
+			):
+				combat.apply_damage(peer, Combat.MAX_HEALTH, peer)
+				break
 
 
 func _begin_boarding_transfer() -> void:

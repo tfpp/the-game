@@ -1,0 +1,5 @@
+{
+  "title": "Mind the moving train",
+  "summary": "Jumping into the path of a moving metro train is now lethal.",
+  "notes": ["Kill players struck by arriving or departing metro trains using the normal death and respawn flow."]
+}

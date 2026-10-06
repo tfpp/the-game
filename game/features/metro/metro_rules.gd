@@ -12,6 +12,10 @@ const DEPART := OPEN + DWELL + CLOSE
 const STATION_BOUNDS := AABB(Vector3(-6, -1, -92), Vector3(30, 9, 184))
 const RIDE_BOUNDS := AABB(Vector3(-4, -1, -60), Vector3(8, 7, 120))
 const PITCH := 22.86
+# Native R44 assembly bounds, rail level to roof (README/model manifest).
+const TRAIN_HALF_WIDTH := 1.575
+const TRAIN_HALF_LENGTH := 57.15
+const TRAIN_HEIGHT := 3.66
 
 
 static func station_position(index: int) -> Vector3:
@@ -45,6 +49,38 @@ static func train_z(time: float) -> float:
 	if travel > 7:
 		return 140.0 * pow((10.0 - travel) / 3.0, 2)
 	return -200.0
+
+
+## Sweep only the two visible motion segments, never the hidden tunnel reset.
+## Point is capsule centre in station coordinates, not the player's rendered pose.
+static func train_hits(
+	point: Vector3, radius: float, height: float, previous: float, current: float
+) -> bool:
+	if current <= previous:
+		return false
+	if absf(point.x) > TRAIN_HALF_WIDTH + radius:
+		return false
+	if point.y + height * 0.5 < 0 or point.y - height * 0.5 > TRAIN_HEIGHT:
+		return false
+	# Keep endpoints as 64-bit floats like the timetable (Vector2 rounds to float32).
+	for segment: Array in [[DEPART, DEPART + 3], [DEPART + 7, PERIOD]]:
+		var start := maxf(previous, float(segment[0]))
+		var end := minf(current, float(segment[1]))
+		if end <= start:
+			continue
+		var from_z := train_z(start)
+		var to_z := train_z(end)
+		# train_z deliberately jumps while hidden; use the visible tunnel endpoint.
+		if start == DEPART + 7:
+			from_z = 140.0
+		if end == DEPART + 3:
+			to_z = -140.0
+		if (
+			point.z >= minf(from_z, to_z) - TRAIN_HALF_LENGTH - radius
+			and point.z <= maxf(from_z, to_z) + TRAIN_HALF_LENGTH + radius
+		):
+			return true
+	return false
 
 
 static func car_center(index: int) -> float:
