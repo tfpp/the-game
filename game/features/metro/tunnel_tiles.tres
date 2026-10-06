@@ -1,0 +1,30 @@
+[gd_resource type="MeshLibrary" format=3]
+
+[ext_resource type="Material" path="res://features/metro/lamp.tres" id="1_7c1vh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3sshw"]
+albedo_color = Color(0.09411765, 0.11764706, 0.10980392, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qi6ev"]
+material = SubResource("StandardMaterial3D_3sshw")
+size = Vector3(0.25, 5, 8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_4gcv1"]
+material = ExtResource("1_7c1vh")
+size = Vector3(0.08, 0.12, 8)
+
+[resource]
+item/0/name = ""
+item/0/mesh = SubResource("BoxMesh_qi6ev")
+item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+item/0/mesh_cast_shadow = 1
+item/0/shapes = []
+item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/navigation_layers = 1
+item/1/name = ""
+item/1/mesh = SubResource("BoxMesh_4gcv1")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+item/1/mesh_cast_shadow = 1
+item/1/shapes = []
+item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/navigation_layers = 1

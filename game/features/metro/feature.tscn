@@ -1,0 +1,95 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/metro/metro_service.gd" id="1_ga8nu"]
+[ext_resource type="Script" path="res://features/metro/metro_zone.gd" id="2_eri8i"]
+[ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="3_x5dus"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="4_idy3m"]
+
+[node name="Metro" type="Node3D" unique_id=755723694]
+script = ExtResource("1_ga8nu")
+
+[node name="Station0" type="Node3D" parent="." unique_id=364708001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8000)
+script = ExtResource("2_eri8i")
+station_index = 0
+room_scene = "res://features/metro/rooms/station.tscn"
+bounds = AABB(-6, -1, -92, 30, 9, 184)
+render_bounds = AABB(-6, -1, -92, 30, 9, 184)
+
+[node name="Destination" type="Marker3D" parent="Station0" unique_id=1442311943]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.2, 0)
+script = ExtResource("3_x5dus")
+label = "Metro / Crown"
+
+[node name="Ride0" type="Node3D" parent="." unique_id=1884454753]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10000)
+script = ExtResource("2_eri8i")
+ride_index = 0
+room_scene = "res://features/metro/rooms/transit.tscn"
+bounds = AABB(-4, -1, -60, 8, 7, 120)
+
+[node name="Station1" type="Node3D" parent="." unique_id=152720827]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 0, -8000)
+script = ExtResource("2_eri8i")
+station_index = 1
+room_scene = "res://features/metro/rooms/station.tscn"
+bounds = AABB(-6, -1, -92, 30, 9, 184)
+render_bounds = AABB(-6, -1, -92, 30, 9, 184)
+
+[node name="Destination" type="Marker3D" parent="Station1" unique_id=1647393262]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.2, 0)
+script = ExtResource("3_x5dus")
+label = "Metro / Market"
+
+[node name="Ride1" type="Node3D" parent="." unique_id=304947739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600, 0, -10000)
+script = ExtResource("2_eri8i")
+ride_index = 1
+room_scene = "res://features/metro/rooms/transit.tscn"
+bounds = AABB(-4, -1, -60, 8, 7, 120)
+
+[node name="Station2" type="Node3D" parent="." unique_id=1634972435]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1200, 0, -8000)
+script = ExtResource("2_eri8i")
+station_index = 2
+room_scene = "res://features/metro/rooms/station.tscn"
+bounds = AABB(-6, -1, -92, 30, 9, 184)
+render_bounds = AABB(-6, -1, -92, 30, 9, 184)
+
+[node name="Destination" type="Marker3D" parent="Station2" unique_id=489090923]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.2, 0)
+script = ExtResource("3_x5dus")
+label = "Metro / Works"
+
+[node name="Ride2" type="Node3D" parent="." unique_id=1114240433]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1200, 0, -10000)
+script = ExtResource("2_eri8i")
+ride_index = 2
+room_scene = "res://features/metro/rooms/transit.tscn"
+bounds = AABB(-4, -1, -60, 8, 7, 120)
+
+[node name="Station3" type="Node3D" parent="." unique_id=1053533299]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1800, 0, -8000)
+script = ExtResource("2_eri8i")
+station_index = 3
+room_scene = "res://features/metro/rooms/station.tscn"
+bounds = AABB(-6, -1, -92, 30, 9, 184)
+render_bounds = AABB(-6, -1, -92, 30, 9, 184)
+
+[node name="Destination" type="Marker3D" parent="Station3" unique_id=386790104]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.2, 0)
+script = ExtResource("3_x5dus")
+label = "Metro / Residences"
+
+[node name="Ride3" type="Node3D" parent="." unique_id=1813300989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1800, 0, -10000)
+script = ExtResource("2_eri8i")
+ride_index = 3
+room_scene = "res://features/metro/rooms/transit.tscn"
+bounds = AABB(-4, -1, -60, 8, 7, 120)
+
+[node name="NetworkedEntity" type="Node" parent="." unique_id=1435420753]
+script = ExtResource("4_idy3m")
+replicated_properties = Array[NodePath]([NodePath(".:net_cycle"), NodePath(".:net_passengers")])
+continuous_properties = Array[NodePath]([NodePath(".:net_time")])
+replication_interval = 0.1

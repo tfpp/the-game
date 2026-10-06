@@ -7,6 +7,8 @@
 [ext_resource type="Material" path="res://features/casino_hub/materials/carpet.tres" id="4_carpet"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/wallpaper.tres" id="5_wallpaper"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [node name="RoomDoors" type="Node3D"]
 
 [node name="Lobby" type="Node3D" parent="."]
@@ -114,3 +116,21 @@ use_collision = true
 script = ExtResource("1_door")
 destination = NodePath("../../Lounge/FromCellar")
 door_label = "Back to the lounge"
+
+[node name="MetroAccess" type="Node3D" parent="Lounge"]
+script = ExtResource("metro_access")
+position = Vector3(-1.6, 0, -0.65)
+rotation = Vector3(0, 0, 0)
+zone_id = "lounge"
+label = "Grand Lounge"
+station = 0
+slot = 2
+
+[node name="MetroAccess" type="Node3D" parent="Cellar"]
+script = ExtResource("metro_access")
+position = Vector3(0, 0, -0.65)
+rotation = Vector3(0, 0, 0)
+zone_id = "cellar"
+label = "Wine Cellar"
+station = 0
+slot = 3

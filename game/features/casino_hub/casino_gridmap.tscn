@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" path="res://features/casino_hub/models/casino_stool.tscn" id="11_mitxx"]
 [ext_resource type="Script" path="res://features/food_court/booth_seat.gd" id="seating"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [sub_resource type="Environment" id="Environment"]
 background_mode = 1
 background_color = Color(0.055, 0.042, 0.032, 1)
@@ -402,3 +404,12 @@ hint = "Above the mariachi stage; stairs in the west extension."
 
 [node name="VipWindow" parent="." instance=ExtResource("vip_window")]
 position = Vector3(24, 6.875, 0)
+
+[node name="MetroAccess" type="Node3D" parent="."]
+script = ExtResource("metro_access")
+position = Vector3(-16, 0, 15.5)
+rotation = Vector3(0, 3.141592653589793, 0)
+zone_id = "crown"
+label = "Golden Crown"
+station = 0
+slot = 0

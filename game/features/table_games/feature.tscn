@@ -9,6 +9,8 @@
 [ext_resource type="ArrayMesh" path="res://assets/table_games/models/craps_table.res" id="craps"]
 [ext_resource type="ArrayMesh" path="res://assets/table_games/models/video_poker_machine.res" id="video"]
 [ext_resource type="Script" path="res://features/safe_zone/safe_zone.gd" id="safe"]
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [node name="CrownGamingSuites" type="Node3D"]
 [node name="CasinoArrival" type="Marker3D" parent="."]
 position = Vector3(10, 1, -15)
@@ -111,3 +113,12 @@ pixel_size = 0.0025
 [node name="SafeZone" type="Node3D" parent="Room"]
 script = ExtResource("safe")
 bounds = AABB(-19, -1, -7, 38, 7, 14)
+
+[node name="MetroAccess" type="Node3D" parent="Room"]
+script = ExtResource("metro_access")
+position = Vector3(-3.8, 0, -2.3)
+rotation = Vector3(0, 0, 0)
+zone_id = "gaming_suites"
+label = "Gaming Suites"
+station = 0
+slot = 1

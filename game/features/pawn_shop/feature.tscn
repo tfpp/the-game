@@ -17,6 +17,8 @@
 [ext_resource type="ArrayMesh" path="res://assets/street_props/models/service_door.res" id="door_mesh"]
 [ext_resource type="Material" path="res://features/street_props/materials/service_door.tres" id="door_material"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [sub_resource type="StandardMaterial3D" id="door_paint"]
 transparency = 1
 albedo_color = Color(0, 0, 0, 0)
@@ -160,3 +162,12 @@ text = "RETURN TO GARAGE
 VIA VAN - E / USE"
 letter_height = 0.1
 padding = 0.04
+
+[node name="MetroAccess" type="Node3D" parent="Room"]
+script = ExtResource("metro_access")
+position = Vector3(-9, 0, 26.5)
+rotation = Vector3(0, 3.141592653589793, 0)
+zone_id = "rusty_hogg"
+label = "Rusty Hogg"
+station = 1
+slot = 1

@@ -26,6 +26,8 @@
 
 [ext_resource type="PackedScene" path="res://features/starter_room/roller_door.tscn" id="roller"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [sub_resource type="StandardMaterial3D" id="door_paint"]
 albedo_color = Color(0.27, 0.37, 0.35, 1)
 roughness = 1.0
@@ -197,3 +199,12 @@ script = ExtResource("workbench_ui")
 
 [node name="RollerDoor" parent="Room" instance=ExtResource("roller")]
 position = Vector3(3, 0, -8.72)
+
+[node name="MetroAccess" type="Node3D" parent="Room"]
+script = ExtResource("metro_access")
+position = Vector3(4, 0, 5.5)
+rotation = Vector3(0, 3.141592653589793, 0)
+zone_id = "operations"
+label = "Operations Garage"
+station = 2
+slot = 0

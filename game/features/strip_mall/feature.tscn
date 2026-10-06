@@ -10,6 +10,8 @@
 
 [ext_resource type="PackedScene" path="res://features/strip_mall/rival_food_service.tscn" id="food"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [node name="StripMall" type="Node3D"]
 
 [node name="Room" type="Node3D" parent="."]
@@ -106,3 +108,12 @@ door_label = "Visit the Strip Mall · food shops"
 
 [node name="Sign" parent="Entrance" index="2"]
 visible = false
+
+[node name="MetroAccess" type="Node3D" parent="Room"]
+script = ExtResource("metro_access")
+position = Vector3(3.5, 0, 25)
+rotation = Vector3(0, 0, 0)
+zone_id = "strip_mall"
+label = "Strip Mall"
+station = 1
+slot = 0

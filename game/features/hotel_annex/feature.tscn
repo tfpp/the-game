@@ -15,6 +15,8 @@
 
 [ext_resource type="Script" path="res://features/hotel_annex/interior_lighting.gd" id="lighting"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [sub_resource type="StandardMaterial3D" id="Pedestal"]
 albedo_color = Color(0.2, 0.12, 0.065, 1)
 
@@ -209,3 +211,21 @@ rotation = Vector3(0, 1.57079633, 0)
 [node name="Room306" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
 position = Vector3(21, 12, 28.5)
 rotation = Vector3(0, 1.57079633, 0)
+
+[node name="MetroAccess" type="Node3D" parent="Hotel"]
+script = ExtResource("metro_access")
+position = Vector3(3.5, 0, 6)
+rotation = Vector3(0, 0, 0)
+zone_id = "hotel"
+label = "Hotel Wing"
+station = 3
+slot = 0
+
+[node name="MetroAccess" type="Node3D" parent="Atrium"]
+script = ExtResource("metro_access")
+position = Vector3(13, 0, 4)
+rotation = Vector3(0, 0, 0)
+zone_id = "atrium"
+label = "Hotel Atrium"
+station = 3
+slot = 1

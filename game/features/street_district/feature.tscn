@@ -8,6 +8,8 @@
 [ext_resource type="Script" path="res://features/gps/gps_destination.gd" id="gps"]
 [ext_resource type="PackedScene" path="res://features/street_district/street_objects.tscn" id="objects"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [sub_resource type="StandardMaterial3D" id="paint"]
 albedo_color = Color(0.15, 0.4, 0.42, 1)
 roughness = 1.0
@@ -138,3 +140,12 @@ script = ExtResource("dev_gate")
 
 [node name="DevGate" type="Node" parent="Entrance"]
 script = ExtResource("dev_gate")
+
+[node name="MetroAccess" type="Node3D" parent="Room"]
+script = ExtResource("metro_access")
+position = Vector3(-5, 0, 5)
+rotation = Vector3(0, 3.141592653589793, 0)
+zone_id = "street"
+label = "Street District"
+station = 2
+slot = 1

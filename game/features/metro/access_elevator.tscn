@@ -1,0 +1,227 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/metro/metro_elevator.gd" id="1_jdnvc"]
+[ext_resource type="Material" path="res://features/elevator/models/painted_wood_brass.tres" id="2_521od"]
+[ext_resource type="ArrayMesh" path="res://assets/procedural_rooms/models/elevator/frame.tres" id="3_iffvv"]
+[ext_resource type="ArrayMesh" path="res://assets/procedural_rooms/models/elevator/leaf.tres" id="4_d6cs2"]
+[ext_resource type="Script" path="res://features/metro/metro_button.gd" id="5_gd4u6"]
+[ext_resource type="ArrayMesh" path="res://assets/procedural_rooms/models/elevator/button.tres" id="6_rh12u"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="7_xus6s"]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="8_nbpkj"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="9_do5p8"]
+[ext_resource type="MeshLibrary" path="res://features/metro/access_tiles.tres" id="10_gyb0k"]
+
+[sub_resource type="BoxShape3D" id="Jamb"]
+size = Vector3(0.16, 3.15, 0.24)
+
+[sub_resource type="BoxShape3D" id="Header"]
+size = Vector3(3.32, 0.16, 0.24)
+
+[sub_resource type="BoxShape3D" id="Leaf"]
+size = Vector3(1.49, 2.98, 0.14)
+
+[sub_resource type="BoxMesh" id="LampHousing"]
+size = Vector3(0.24, 0.16, 0.06)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ypx8h"]
+resource_local_to_scene = true
+albedo_color = Color(0.35, 0.03, 0.02, 1)
+roughness = 0.3
+emission_enabled = true
+emission = Color(1, 0.1, 0.05, 1)
+emission_energy_multiplier = 0.0
+
+[sub_resource type="CylinderMesh" id="LampLens"]
+top_radius = 0.055
+bottom_radius = 0.06
+height = 0.03
+radial_segments = 12
+rings = 1
+
+[node name="ElevatorCab" type="Node3D" unique_id=1700659300]
+script = ExtResource("1_jdnvc")
+
+[node name="Car" type="Node3D" parent="." unique_id=196288180]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.55)
+
+[node name="Doors" type="Node3D" parent="Car" unique_id=1973889331]
+transform = Transform3D(1, 0, 0, 0, 0.78, 0, 0, 0, 1, 0, 0.02, 1.35)
+
+[node name="Frame" type="MeshInstance3D" parent="Car/Doors" unique_id=971659494]
+material_override = ExtResource("2_521od")
+mesh = ExtResource("3_iffvv")
+
+[node name="Collision" type="StaticBody3D" parent="Car/Doors/Frame" unique_id=391617721]
+
+[node name="Left" type="CollisionShape3D" parent="Car/Doors/Frame/Collision" unique_id=1457365387]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58, 1.575, 0)
+shape = SubResource("Jamb")
+
+[node name="Right" type="CollisionShape3D" parent="Car/Doors/Frame/Collision" unique_id=1231840402]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.58, 1.575, 0)
+shape = SubResource("Jamb")
+
+[node name="Header" type="CollisionShape3D" parent="Car/Doors/Frame/Collision" unique_id=867649720]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.08, 0)
+shape = SubResource("Header")
+
+[node name="LeftLeaf" type="Node3D" parent="Car/Doors" unique_id=498194726]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 0, 0)
+
+[node name="Visual" type="MeshInstance3D" parent="Car/Doors/LeftLeaf" unique_id=2138039108]
+material_override = ExtResource("2_521od")
+mesh = ExtResource("4_d6cs2")
+
+[node name="Collision" type="StaticBody3D" parent="Car/Doors/LeftLeaf" unique_id=1555467875]
+
+[node name="Shape" type="CollisionShape3D" parent="Car/Doors/LeftLeaf/Collision" unique_id=664398080]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.49, 0)
+shape = SubResource("Leaf")
+
+[node name="RightLeaf" type="Node3D" parent="Car/Doors" unique_id=1610744547]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0, 0)
+
+[node name="Visual" type="MeshInstance3D" parent="Car/Doors/RightLeaf" unique_id=1956540369]
+material_override = ExtResource("2_521od")
+mesh = ExtResource("4_d6cs2")
+
+[node name="Collision" type="StaticBody3D" parent="Car/Doors/RightLeaf" unique_id=1821646312]
+
+[node name="Shape" type="CollisionShape3D" parent="Car/Doors/RightLeaf/Collision" unique_id=1709112015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.49, 0)
+shape = SubResource("Leaf")
+
+[node name="HallButton" type="Node3D" parent="Car" unique_id=2039855440]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 1.5, 1.75)
+script = ExtResource("5_gd4u6")
+
+[node name="Model" type="MeshInstance3D" parent="Car/HallButton" unique_id=1403459315]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -1.4, 0.27)
+material_override = ExtResource("2_521od")
+mesh = ExtResource("6_rh12u")
+
+[node name="NetworkedEntity" type="Node" parent="Car/HallButton" unique_id=363612272]
+script = ExtResource("7_xus6s")
+
+[node name="CabButton" type="Node3D" parent="Car" unique_id=1770050079]
+transform = Transform3D(7.54979e-08, 0, -1, 0, 1, 0, 1, 0, 7.54979e-08, 1.35, 1.5, -0.4)
+script = ExtResource("5_gd4u6")
+
+[node name="Model" type="MeshInstance3D" parent="Car/CabButton" unique_id=269189492]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -1.4, 0.27)
+material_override = ExtResource("2_521od")
+mesh = ExtResource("6_rh12u")
+
+[node name="NetworkedEntity" type="Node" parent="Car/CabButton" unique_id=1326942280]
+script = ExtResource("7_xus6s")
+
+[node name="Sign" type="Node3D" parent="Car" unique_id=753242514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.43, 1.7)
+script = ExtResource("8_nbpkj")
+text = "ELEVATOR"
+letter_height = 0.095
+
+[node name="Indicator" type="Node3D" parent="Car" unique_id=1603391622]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.22, 1.7)
+script = ExtResource("8_nbpkj")
+text = "C  /  THE GOLDEN CROWN"
+letter_height = 0.067
+padding = 0.03
+
+[node name="CabIndicator" type="Node3D" parent="Car" unique_id=2020407033]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.22, -1.32)
+script = ExtResource("8_nbpkj")
+text = "C"
+letter_height = 0.134
+padding = 0.03
+
+[node name="HallLamp" type="MeshInstance3D" parent="Car" unique_id=1149924993]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 2.25, 1.73)
+material_override = ExtResource("2_521od")
+mesh = SubResource("LampHousing")
+
+[node name="Lens" type="MeshInstance3D" parent="Car/HallLamp" unique_id=1086711995]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0.04)
+material_override = SubResource("StandardMaterial3D_ypx8h")
+mesh = SubResource("LampLens")
+
+[node name="CabLamp" type="MeshInstance3D" parent="Car" unique_id=74536482]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 2.22, -1.33)
+material_override = ExtResource("2_521od")
+mesh = SubResource("LampHousing")
+
+[node name="Lens" type="MeshInstance3D" parent="Car/CabLamp" unique_id=2097465154]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0.04)
+material_override = SubResource("StandardMaterial3D_ypx8h")
+mesh = SubResource("LampLens")
+
+[node name="CabLight" type="OmniLight3D" parent="Car" unique_id=1796083497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, -0.1)
+light_color = Color(1, 0.82, 0.58, 1)
+light_energy = 0.8
+light_specular = 0.0
+omni_range = 4.0
+
+[node name="NetworkedEntity" type="Node" parent="." unique_id=1262868515]
+script = ExtResource("9_do5p8")
+replicated_properties = Array[NodePath]([NodePath(".:net_state"), NodePath(".:net_overloaded"), NodePath(".:net_riding"), NodePath(".:net_floor")])
+continuous_properties = Array[NodePath]([NodePath(".:net_aperture")])
+
+[node name="Cabin" type="GridMap" parent="." unique_id=277127417]
+mesh_library = ExtResource("10_gyb0k")
+cell_size = Vector3(1, 1, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+
+[node name="Shell3" type="GridMap" parent="." unique_id=1144688108]
+mesh_library = ExtResource("10_gyb0k")
+cell_size = Vector3(1, 1, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 0)
+}
+
+[node name="Shell4" type="GridMap" parent="." unique_id=2124578717]
+mesh_library = ExtResource("10_gyb0k")
+cell_size = Vector3(1, 1, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 3)
+}
+
+[node name="Shell5" type="GridMap" parent="." unique_id=492254603]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.54, 0, 0)
+mesh_library = ExtResource("10_gyb0k")
+cell_size = Vector3(1, 1, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 1)
+}
+
+[node name="Shell6" type="GridMap" parent="." unique_id=1742970371]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.54, 0, 0)
+mesh_library = ExtResource("10_gyb0k")
+cell_size = Vector3(1, 1, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 1)
+}
+
+[node name="Shell7" type="GridMap" parent="." unique_id=1567903954]
+mesh_library = ExtResource("10_gyb0k")
+cell_size = Vector3(1, 1, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 2)
+}

@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" path="res://features/vip_lounge/interior.tscn" id="interior"]
 [ext_resource type="Material" path="res://features/casino_hub/materials/chrome.tres" id="mirror"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [node name="MirrorClub" type="Node3D"]
 script = ExtResource("club")
 
@@ -141,3 +143,14 @@ script = ExtResource("menu")
 
 [node name="Effects" type="Node3D" parent="."]
 script = ExtResource("effects")
+
+[node name="MetroAccess" type="Node3D" parent="."]
+script = ExtResource("metro_access")
+position = Vector3(28, 5, 8.5)
+rotation = Vector3(0, 3.141592653589793, 0)
+zone_id = "mirror_club"
+label = "Mirror Club"
+station = 0
+slot = 5
+access_policy = "vip"
+vip_path = NodePath("..")

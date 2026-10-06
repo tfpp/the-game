@@ -11,6 +11,8 @@
 
 [ext_resource type="PackedScene" path="res://features/casino_patrons/stationary_dealer.tscn" id="clerk"]
 
+[ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+
 [sub_resource type="SceneReplicationConfig" id="replication"]
 properties/0/path = NodePath(".:assignments")
 properties/0/spawn = true
@@ -84,3 +86,12 @@ replication_config = SubResource("replication")
 
 [node name="Clerk" parent="Lobby" instance=ExtResource("clerk")]
 position = Vector3(0, 0, -4)
+
+[node name="MetroAccess" type="Node3D" parent="Lobby"]
+script = ExtResource("metro_access")
+position = Vector3(-5, 0, -2)
+rotation = Vector3(0, 0, 0)
+zone_id = "apartments"
+label = "Lily Apartments"
+station = 3
+slot = 2
