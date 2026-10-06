@@ -112,6 +112,53 @@ Death, disconnect and removed connectors clear pending transfers. Carried invent
 stays on the player; the existing holdables owner moves `ThrownItem` drops (including
 dropped weapons) with their flight segment and network identity intact.
 
+## Seats and sheltering residents
+
+Board first, then Use a free orange lengthwise bucket: **E / B or Circle / touch USE**.
+Each car has ten usable buckets facing its aisle. Use again, move or Jump to stand
+in the clear centre aisle. Looking, aiming and the existing seated avatar work in
+first/third person and on other peers. Seats stand riders up at the two-second
+departure warning, and four seconds before the arrival cycle ends; board/ride
+transfers then use their original position, readiness and authority rules. Sit again
+once aboard the ride compartment or the next parked train. This is deliberately not
+moving-train attachment physics.
+
+Each permanent MetroZone owns a `MetroSeating` (FoodCourt subclass) and
+NetworkedInteraction endpoint outside streamed Content. The inherited server-owned
+`net_seats`, validated sit/stand actions, single-provider exclusion, local player
+pinning, avatar `seating` queries and death/disconnect/teleport/session cleanup
+remain the only seating implementation. Metro additionally checks that riders are
+alive, actually aboard a parked/ride train, outside the transfer warning window,
+and not waiting on a loading token. Occupancy replicates to observers and late
+joiners; no seat state persists. Food court, casino and table seating are unchanged.
+Cushions are y=1.68 (native R44 floor 1.2 + molded bucket surface 0.48); exits are
+floor-relative x=0 with real capsule clearance. Two other left buckets per car
+remain reserved for sleepers.
+
+People sheltering in the metro bring all five cars and all four stations to life:
+two slumped sleepers and one strolling resident per car, plus four bench sleepers
+and three platform walkers at each station. They are unnamed, non-hostile ambient
+residents, not combat targets, quest NPCs or sources of money/loot. They reuse
+PatronModel's existing skinned avatar, clothing and poses without casino named
+looks, new meshes/textures, lights or colliders. Doorways, aisles, boarding and
+elevator approaches remain passable.
+
+`MetroResidents` is streamed presentation only: bounded out-and-back walks and
+rests sample the existing server-owned metro clock/cycle. There is no separate
+client simulation, NPC state or network endpoint inside the room. Reloading or
+joining mid-cycle samples the current pose rather than restarting a route.
+Train residents follow the train's departure presentation; platform residents stay
+put. Skeleton animation updates only within 28 m of the local rider; unloaded
+rooms have no resident models or per-frame work.
+
+Tests cover authority, occupancy, automatic standing/boarding, original booth
+exclusion, capsule/floor placement, streamed lifetime, residents' bounds/facing,
+and WebSocket owner/observer/late-peer requests and disconnect cleanup.
+For native visual review, run
+`godot --audio-driver Dummy res://tests/features/metro/residents_visual_probe.tscn`
+from game/. It captures platform, cabin and seated first/third-person views to
+`/tmp/metro-residents-*.png`.
+
 ## Adding future travel rooms
 
 Add one `MetroAccess` Node3D to the permanent room anchor, **outside streamed Content**.
