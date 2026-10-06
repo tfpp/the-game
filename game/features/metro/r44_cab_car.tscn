@@ -1,0 +1,364 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/CabShell.res" id="1_0o2b3"]
+[ext_resource type="MeshLibrary" path="res://features/metro/cabin_tiles.tres" id="2_hiugo"]
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/PassengerFurniture.res" id="3_p6ebv"]
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/FluorescentDiffusers.res" id="4_upi40"]
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/PassengerDoor.res" id="5_hf23b"]
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/Truck.res" id="6_filu5"]
+[ext_resource type="ArrayMesh" path="res://assets/metro/models/CabLivery.res" id="7_lx0nr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3yu4r"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6bspg"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iv87i"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_iqr1n"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qe8xd"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ylfp8"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wr8s7"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j3e4q"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6rc62"]
+size = Vector3(0.72, 0.94, 2.98)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jcrs6"]
+size = Vector3(0.72, 0.94, 1.45)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2y2bs"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_av60g"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wlldi"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qjvis"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_njs22"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dm1mt"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j4xmd"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7b86g"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_thgu1"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3pr3k"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kijgy"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_isbas"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bgyp0"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_opm42"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wtgvj"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qtvl6"]
+size = Vector3(0.04, 1.92, 0.7)
+
+[node name="R44CabCar" type="Node3D" unique_id=1979018762]
+
+[node name="CabShell" type="MeshInstance3D" parent="." unique_id=2076434515]
+mesh = ExtResource("1_0o2b3")
+
+[node name="CabinStructure" type="GridMap" parent="." unique_id=2091711466]
+mesh_library = ExtResource("2_hiugo")
+cell_size = Vector3(1, 1, 0.01)
+cell_octant_size = 512
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+collision_mask = 0
+data = {
+"cells": PackedInt32Array(0, 64536, 0, 65536, 64536, 1, 0, 64736, 0, 65536, 64736, 1, 0, 64936, 0, 65536, 64936, 1, 0, 65136, 0, 65536, 65136, 1, 0, 65336, 0, 65536, 65336, 1, 0, 0, 0, 65536, 0, 1, 0, 200, 0, 65536, 200, 1, 0, 400, 0, 65536, 400, 1, 0, 600, 0, 65536, 600, 1, 0, 800, 0, 65536, 800, 1, 0, 1000, 0, 65536, 1000, 1, 65535, 65036, 655362, 65535, 0, 655362, 65535, 500, 655362, 65535, 64570, 655363, 65535, 966, 655363, 65535, 64786, 655364, 65535, 65286, 655364, 65535, 250, 655364, 65535, 750, 655364, 1, 65036, 2, 1, 0, 2, 1, 500, 2, 1, 64570, 3, 1, 966, 3, 1, 64786, 4, 1, 65286, 4, 1, 250, 4, 1, 750, 4, 0, 64446, 655365, 0, 1090, 5)
+}
+
+[node name="PassengerFurniture" type="MeshInstance3D" parent="." unique_id=1073229259]
+mesh = ExtResource("3_p6ebv")
+
+[node name="FluorescentDiffusers" type="MeshInstance3D" parent="." unique_id=1900823143]
+mesh = ExtResource("4_upi40")
+
+[node name="SeatCollision" type="StaticBody3D" parent="." unique_id=392566792]
+collision_mask = 0
+
+[node name="@CollisionShape3D@2" type="CollisionShape3D" parent="SeatCollision" unique_id=1834851158]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_3yu4r")
+
+[node name="@CollisionShape3D@3" type="CollisionShape3D" parent="SeatCollision" unique_id=1917655310]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, -5)
+shape = SubResource("BoxShape3D_6bspg")
+
+[node name="@CollisionShape3D@4" type="CollisionShape3D" parent="SeatCollision" unique_id=186792709]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 0)
+shape = SubResource("BoxShape3D_iv87i")
+
+[node name="@CollisionShape3D@5" type="CollisionShape3D" parent="SeatCollision" unique_id=1796013151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 5)
+shape = SubResource("BoxShape3D_iqr1n")
+
+[node name="@CollisionShape3D@6" type="CollisionShape3D" parent="SeatCollision" unique_id=316858989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_qe8xd")
+
+[node name="@CollisionShape3D@7" type="CollisionShape3D" parent="SeatCollision" unique_id=575922034]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -9.68)
+shape = SubResource("BoxShape3D_ylfp8")
+
+[node name="@CollisionShape3D@8" type="CollisionShape3D" parent="SeatCollision" unique_id=1558585707]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, -5)
+shape = SubResource("BoxShape3D_wr8s7")
+
+[node name="@CollisionShape3D@9" type="CollisionShape3D" parent="SeatCollision" unique_id=420913755]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 0)
+shape = SubResource("BoxShape3D_j3e4q")
+
+[node name="@CollisionShape3D@10" type="CollisionShape3D" parent="SeatCollision" unique_id=867807081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 5)
+shape = SubResource("BoxShape3D_6rc62")
+
+[node name="@CollisionShape3D@11" type="CollisionShape3D" parent="SeatCollision" unique_id=1912390679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.67, 9.68)
+shape = SubResource("BoxShape3D_jcrs6")
+
+[node name="CabinLight0" type="OmniLight3D" parent="." unique_id=1445064709]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, -6)
+light_color = Color(0.8627451, 0.88235295, 0.78431374, 1)
+light_energy = 0.75
+omni_range = 5.2
+
+[node name="CabinLight6" type="OmniLight3D" parent="." unique_id=1885363051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, 0)
+light_color = Color(0.8627451, 0.88235295, 0.78431374, 1)
+light_energy = 0.75
+omni_range = 5.2
+
+[node name="CabinLight12" type="OmniLight3D" parent="." unique_id=1452457769]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, 6)
+light_color = Color(0.8627451, 0.88235295, 0.78431374, 1)
+light_energy = 0.75
+omni_range = 5.2
+
+[node name="DoorL1A" type="AnimatableBody3D" parent="." unique_id=1223058810]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorL1A" unique_id=871667095]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorL1A" unique_id=1966523827]
+shape = SubResource("BoxShape3D_2y2bs")
+
+[node name="DoorL1B" type="AnimatableBody3D" parent="." unique_id=1343949890]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorL1B" unique_id=1068901264]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorL1B" unique_id=2036160480]
+shape = SubResource("BoxShape3D_av60g")
+
+[node name="DoorL2A" type="AnimatableBody3D" parent="." unique_id=933790353]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorL2A" unique_id=984025435]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorL2A" unique_id=789730083]
+shape = SubResource("BoxShape3D_wlldi")
+
+[node name="DoorL2B" type="AnimatableBody3D" parent="." unique_id=1782442722]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorL2B" unique_id=989067675]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorL2B" unique_id=2016207557]
+shape = SubResource("BoxShape3D_qjvis")
+
+[node name="DoorL3A" type="AnimatableBody3D" parent="." unique_id=1428116564]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorL3A" unique_id=1229388420]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorL3A" unique_id=1421177885]
+shape = SubResource("BoxShape3D_njs22")
+
+[node name="DoorL3B" type="AnimatableBody3D" parent="." unique_id=619195841]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorL3B" unique_id=1449464023]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorL3B" unique_id=1524661680]
+shape = SubResource("BoxShape3D_dm1mt")
+
+[node name="DoorL4A" type="AnimatableBody3D" parent="." unique_id=372191226]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorL4A" unique_id=416391700]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorL4A" unique_id=542521012]
+shape = SubResource("BoxShape3D_j4xmd")
+
+[node name="DoorL4B" type="AnimatableBody3D" parent="." unique_id=1374106130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorL4B" unique_id=864649836]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorL4B" unique_id=69737404]
+shape = SubResource("BoxShape3D_7b86g")
+
+[node name="DoorR1A" type="AnimatableBody3D" parent="." unique_id=1692502817]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorR1A" unique_id=334710145]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorR1A" unique_id=1761273544]
+shape = SubResource("BoxShape3D_thgu1")
+
+[node name="DoorR1B" type="AnimatableBody3D" parent="." unique_id=1669602156]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorR1B" unique_id=1092027783]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorR1B" unique_id=2067588282]
+shape = SubResource("BoxShape3D_3pr3k")
+
+[node name="DoorR2A" type="AnimatableBody3D" parent="." unique_id=217983693]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorR2A" unique_id=87972683]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorR2A" unique_id=357174903]
+shape = SubResource("BoxShape3D_kijgy")
+
+[node name="DoorR2B" type="AnimatableBody3D" parent="." unique_id=1100238876]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, -2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorR2B" unique_id=1579924459]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorR2B" unique_id=2106125631]
+shape = SubResource("BoxShape3D_isbas")
+
+[node name="DoorR3A" type="AnimatableBody3D" parent="." unique_id=1896073600]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorR3A" unique_id=1036007218]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorR3A" unique_id=1656265971]
+shape = SubResource("BoxShape3D_bgyp0")
+
+[node name="DoorR3B" type="AnimatableBody3D" parent="." unique_id=1559317974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 2.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorR3B" unique_id=1591934468]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorR3B" unique_id=1843106841]
+shape = SubResource("BoxShape3D_opm42")
+
+[node name="DoorR4A" type="AnimatableBody3D" parent="." unique_id=2037450891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.144)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorR4A" unique_id=1845577522]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorR4A" unique_id=2002335976]
+shape = SubResource("BoxShape3D_wtgvj")
+
+[node name="DoorR4B" type="AnimatableBody3D" parent="." unique_id=140079061]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.43, 2.16, 7.856)
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Visual" type="MeshInstance3D" parent="DoorR4B" unique_id=323015257]
+mesh = ExtResource("5_hf23b")
+
+[node name="Collision" type="CollisionShape3D" parent="DoorR4B" unique_id=922073822]
+shape = SubResource("BoxShape3D_qtvl6")
+
+[node name="TruckRear" type="MeshInstance3D" parent="." unique_id=1186765544]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.75)
+mesh = ExtResource("6_filu5")
+
+[node name="TruckFront" type="MeshInstance3D" parent="." unique_id=1236839472]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.75)
+mesh = ExtResource("6_filu5")
+
+[node name="CabLivery" type="MeshInstance3D" parent="." unique_id=226265248]
+mesh = ExtResource("7_lx0nr")
+
+[node name="CouplerRear" type="Marker3D" parent="." unique_id=1037284298]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, -11.43)
+
+[node name="CouplerFront" type="Marker3D" parent="." unique_id=1210989556]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74, 11.43)

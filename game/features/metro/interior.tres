@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/metro/textures/r44_interior.res" id="1_a58p5"]
+
+[resource]
+resource_name = "R44 worn wood and molded seats - 128px"
+albedo_texture = ExtResource("1_a58p5")
+roughness = 0.94
+texture_filter = 2
+texture_repeat = false

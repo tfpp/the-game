@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/metro/textures/r44_graffiti.res" id="1_c2unf"]
+
+[resource]
+resource_name = "Original 80s spraypaint - 128px"
+transparency = 2
+alpha_scissor_threshold = 0.3
+alpha_antialiasing_mode = 0
+albedo_texture = ExtResource("1_c2unf")
+texture_filter = 2
+texture_repeat = false
