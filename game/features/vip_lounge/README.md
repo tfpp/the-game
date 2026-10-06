@@ -11,6 +11,13 @@ lights bring the casino's authored light
 count to 32; no new shadow lights or large textures are introduced. Furniture,
 bar, stools, glasses and evening guests reuse existing native assets.
 
+The active camera gets a fog-free environment copy while inside `VipLounge.BOUNDS`,
+including the view through the pane. `lounge_atmosphere.gd` disables regular and
+volumetric fog only; lighting, sky and the shared environment remain unchanged.
+Leaving, switching cameras (including first/third person), or unloading restores
+that camera's previous override. This is local presentation on every client and
+in offline play, independent of admission or boost state.
+
 ## Discovery and access
 
 An unmarked mirror at **(23.7, 1.3, -15)** on the east promenade admits players

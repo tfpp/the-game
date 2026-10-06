@@ -12,6 +12,7 @@
 [ext_resource type="Material" path="res://features/casino_hub/materials/chrome.tres" id="mirror"]
 
 [ext_resource type="Script" path="res://features/metro/metro_access.gd" id="metro_access"]
+[ext_resource type="Script" path="res://features/vip_lounge/lounge_atmosphere.gd" id="atmosphere"]
 
 [node name="MirrorClub" type="Node3D"]
 script = ExtResource("club")
@@ -143,6 +144,9 @@ script = ExtResource("menu")
 
 [node name="Effects" type="Node3D" parent="."]
 script = ExtResource("effects")
+
+[node name="Atmosphere" type="Node3D" parent="."]
+script = ExtResource("atmosphere")
 
 [node name="MetroAccess" type="Node3D" parent="."]
 script = ExtResource("metro_access")
