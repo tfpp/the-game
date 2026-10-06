@@ -1,0 +1,5 @@
+{
+  "title": "Clear VIP views",
+  "summary": "The VIP room now has a fog-free view.",
+  "notes": ["Remove fog from the VIP room without changing atmosphere elsewhere."]
+}
