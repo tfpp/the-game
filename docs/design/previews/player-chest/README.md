@@ -3,12 +3,14 @@
 These are native Godot 4.7.2 Compatibility-renderer captures of the actual
 connected runtime mesh, not generated concept art:
 
-- [Front/oblique](front.png): unchanged Default beside Full on both human builds,
-  white underwear top, inventory shirt, tactical outfit and unchanged penguin.
-- [Side](side.png): front projection, shoulder/waist clearance and connected form.
-- [Rear](rear.png): no back deformation; underwear top and original clothing.
-- [Phone-sized settings](settings-phone.png): 390×844 native window, existing
-  scaled/scrolling settings panel with Chest → Full (honkers) selected.
+Reviewed and retained locally; PNG captures are ignored by repository policy:
+
+- `front.png`: unchanged Default beside Full on both human builds, white underwear
+  top, inventory shirt, tactical outfit and unchanged penguin.
+- `side.png`: front projection, shoulder/waist clearance and connected form.
+- `rear.png`: no back deformation; underwear top and original clothing.
+- `settings-phone.png`: 390×844 native window, existing scaled/scrolling settings
+  panel with Chest → Full (honkers) selected.
 
 Regenerate from the repository root (omit `xvfb-run -a` with a display):
 
