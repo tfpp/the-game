@@ -39,8 +39,62 @@ Lounge. The **CLASSIC HOTEL** door returns to that lounge. The atrium wing strea
 separately at `(0, 0, -1500)`, retaining the four floors, fountain, glass roof,
 gallery railings and guest rooms from the upstream hotel rebuild. Floors sit at
 y = 0, 4, 8 and 12. Its switchback ramps run 24 m for a 4 m rise (9.46 degrees).
-The eighteen upper guest rooms use shared swinging doors, kept outside streamed
-geometry so state survives unloading and late joins. Both wings register with GPS
+The eighteen upper guest rooms (101–106, 201–206, 301–306) use shared swinging
+**guest-room doors**, kept outside streamed geometry so state survives unloading
+and late joins. Use a door with **E / B or Circle / touch USE** to open its room
+panel, then choose **Open / close door**, **Rent ($10 / 30 minutes)** or
+**Purchase ($100 / until server restart)**. New offline wallets can afford rental;
+local editor wallets can also afford purchase. The renter's name appears on both
+sides of the moving leaf. Owners can toggle the lock, grant/revoke access for
+connected players, or release the room without a refund. Locking does not close an
+open door: close it separately when its swing area is clear.
+
+### Guest-room tenure contract
+
+`guest_door.gd` specializes SwingDoor only for these eighteen actual guest rooms.
+Classic/modern/Deco public salons, study keys, portals and **Lily Apartments' free
+reservations** are unchanged. No apartment unit, elevator or companion API is used
+or replaced. This adds no rooms, geometry, new keys or input bindings.
+
+Each always-present door owns one server-side tenure and pending payment receipt.
+The existing NetworkedInteraction validates transport sender, exact payload, live
+player, range, owner and selected connected guest; guests may open/close, never
+change ownership or permissions. SwingDoor retains physical collision, swing-away
+animation, player obstruction checks and shared audio. A locked door blocks
+unauthorized operation from the gallery, not tailgating through an open door.
+Anyone on the room side may operate it to escape, including after access revocation.
+No client movement enforcement or private room instance is introduced.
+
+Public occupant name, tenure, payment reservation, lock, guest peer list and leaf
+state replicate through NetworkedInteraction, including spawn snapshots. Stable
+account identity and receipts never replicate. Signed-in owners reclaim control
+on reconnect; guest owners vacate on disconnect, and guest access always expires
+on that guest's disconnect. Respawns retain tenure. Rental time advances on the
+server even when the room unloads or an account disconnects. Expiry/release keeps
+the leaf in place rather than slamming collision through occupants.
+
+**All tenure is server-session memory**: restart/redeploy/network-mode change
+clears rentals and purchases, with no refunds. Prices and these limits are visible
+before payment. Account money remains persistent through PlayerMoney alone.
+Payments freeze the vacancy before deferring `PlayerMoney.charge`; failure never
+grants a room. Uncertain responses reserve the door for the same identity/choice
+and retain the exact operation ID for retry. Terminal rejection releases the
+reservation. There is no permanent property database or API change.
+
+The modal scrolls between a fixed heading and Close button on phones, supports
+controller button focus, and closes on range loss/death. Desktop Esc / controller
+Back also closes it. All devices use the existing Use action.
+
+Tests: `test_guest_rooms.gd`, `test_guest_payment.gd` and
+`test_guest_network.gd` cover actual wallet charges, contention, permission/range
+validation, obstruction, lifecycle, uncertain/delayed receipts, unchanged placements
+and real ENet client requests / late joins / disconnects. For a rendered door and
+phone/landscape panel probe (output: `/tmp/hotel-{door,phone,landscape}.png`):
+
+```sh
+xvfb-run -a godot --path game --rendering-method gl_compatibility --audio-driver Dummy \\
+  res://tests/features/hotel_annex/guest_visual_probe.tscn
+``` Both wings register with GPS
 as separate regions connected by the existing RoomDoor links.
 
 Edit `atrium_hotel.gd` for its layout; it builds when loaded with no bake step.

@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://features/room_doors/swing_door.tscn" id="base"]
+[ext_resource type="Script" path="res://features/hotel_annex/guest_door.gd" id="door"]
+
+[node name="GuestDoor" instance=ExtResource("base")]
+script = ExtResource("door")
+
+[node name="NetworkedEntity" parent="." index="0"]
+replicated_properties = Array[NodePath]([NodePath(".:net_state"), NodePath(".:occupant"), NodePath(".:tenure"), NodePath(".:reservation"), NodePath(".:locked"), NodePath(".:guests")])

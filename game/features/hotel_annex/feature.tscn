@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 [ext_resource type="Script" path="res://features/signage/sign_board.gd" id="sign_board"]
 
 [ext_resource type="Script" path="res://features/room_doors/streamed_room.gd" id="room"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://features/holdables/item_pickup.tscn" id="pickup"]
 [ext_resource type="Script" path="res://features/room_doors/room_key_pickup.gd" id="key"]
 [ext_resource type="PackedScene" path="res://features/room_doors/swing_door.tscn" id="swing"]
+[ext_resource type="PackedScene" path="res://features/hotel_annex/guest_door.tscn" id="guest"]
 [ext_resource type="PackedScene" path="res://features/room_doors/ladder.tscn" id="ladder"]
 
 [ext_resource type="PackedScene" path="res://features/hotel_annex/modern_doors.tscn" id="modern_doors"]
@@ -140,75 +141,102 @@ door_label = "Return to the classic hotel"
 
 [node name="RoomDoors" type="Node3D" parent="Atrium"]
 
-[node name="Room101" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room101" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 101"
+interior_side = -1.0
 position = Vector3(-7, 4, 5.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room102" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room102" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 102"
+interior_side = -1.0
 position = Vector3(-7, 4, 17)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room103" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room103" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 103"
+interior_side = -1.0
 position = Vector3(-7, 4, 28.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room104" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room104" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 104"
 position = Vector3(21, 4, 5.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room105" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room105" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 105"
 position = Vector3(21, 4, 17)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room106" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room106" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 106"
 position = Vector3(21, 4, 28.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room201" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room201" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 201"
+interior_side = -1.0
 position = Vector3(-7, 8, 5.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room202" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room202" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 202"
+interior_side = -1.0
 position = Vector3(-7, 8, 17)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room203" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room203" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 203"
+interior_side = -1.0
 position = Vector3(-7, 8, 28.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room204" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room204" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 204"
 position = Vector3(21, 8, 5.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room205" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room205" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 205"
 position = Vector3(21, 8, 17)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room206" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room206" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 206"
 position = Vector3(21, 8, 28.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room301" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room301" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 301"
+interior_side = -1.0
 position = Vector3(-7, 12, 5.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room302" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room302" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 302"
+interior_side = -1.0
 position = Vector3(-7, 12, 17)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room303" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room303" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 303"
+interior_side = -1.0
 position = Vector3(-7, 12, 28.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room304" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room304" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 304"
 position = Vector3(21, 12, 5.5)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room305" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room305" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 305"
 position = Vector3(21, 12, 17)
 rotation = Vector3(0, 1.57079633, 0)
 
-[node name="Room306" parent="Atrium/RoomDoors" instance=ExtResource("swing")]
+[node name="Room306" parent="Atrium/RoomDoors" instance=ExtResource("guest")]
+door_label = "Room 306"
 position = Vector3(21, 12, 28.5)
 rotation = Vector3(0, 1.57079633, 0)
 
