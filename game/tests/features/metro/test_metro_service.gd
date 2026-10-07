@@ -38,15 +38,18 @@ func test_loop_opens_only_platform_side_and_actually_leaves() -> void:
 	metro.net_time = MetroRules.DEPART + 2
 	metro._update_collision()
 	metro.stations[0].update_view()
-	assert_lt(train.position.z, -50.0)
+	assert_between(train.position.z, -10.0, -2.0, "Pulls away gently")
 	assert_lt(collision.position.y, -100.0)
-	metro.net_time = MetroRules.DEPART + 5
+	metro.net_time = MetroRules.DEPART + 8.5
+	metro.stations[0].update_view()
+	assert_lt(train.position.z, -MetroRules.TRAIN_HALF_LENGTH - 67, "Tail is past the platform")
+	assert_true(train.visible)
+	metro.net_time = MetroRules.DEPART + MetroRules.TRAVEL * 0.5
 	metro.stations[0].update_view()
 	assert_false(train.visible)
 	metro.net_time = MetroRules.PERIOD - 1
 	metro.stations[0].update_view()
-	assert_gt(train.position.z, 0.0)
-	assert_lt(train.position.z, 20.0)
+	assert_between(train.position.z, 0.1, 2.0, "Creeps the last metre")
 	for cycle: int in 8:
 		var stops: Array[int] = []
 		for service: int in 4:

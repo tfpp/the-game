@@ -6,16 +6,30 @@ const NAMES: Array[String] = ["CROWN", "MARKET", "WORKS", "RESIDENCES"]
 const OPEN := 1.2
 const DWELL := 12.0
 const CLOSE := 1.2
-const TRAVEL := 10.0
+const TRAVEL := 18.0
 const PERIOD := OPEN + DWELL + CLOSE + TRAVEL
 const DEPART := OPEN + DWELL + CLOSE
 const STATION_BOUNDS := AABB(Vector3(-6, -1, -92), Vector3(30, 9, 184))
 const RIDE_BOUNDS := AABB(Vector3(-4, -1, -60), Vector3(8, 7, 120))
+## How far riders can see the platforms and tunnel passing their windows.
+const RIDE_VIEW := AABB(Vector3(-10, -1, -100), Vector3(34, 9, 200))
 const PITCH := 22.86
 # Native R44 assembly bounds, rail level to roof (README/model manifest).
 const TRAIN_HALF_WIDTH := 1.575
 const TRAIN_HALF_LENGTH := 57.15
 const TRAIN_HEIGHT := 3.66
+## Station walls close both tunnel mouths at |z| = 91.
+const TUNNEL_END := 91.0
+## Track between neighbouring stations. A departing train is past the far tunnel
+## wall before the next one, the same distance behind it, comes into view.
+const SPACING := 300.0
+## Every trip accelerates for RAMP seconds, cruises, then brakes for RAMP seconds.
+const RAMP := 7.5
+## Acceleration builds up and eases off over EASE seconds at each end of a ramp,
+## so trains never jolt into motion or slam to a stop.
+const EASE := 1.0
+const TOP_SPEED := SPACING / (TRAVEL - RAMP)
+const ACCELERATION := TOP_SPEED / (RAMP - EASE)
 
 
 static func station_position(index: int) -> Vector3:
@@ -40,18 +54,64 @@ static func aperture(time: float) -> float:
 	return 0.0
 
 
+## Metres a train has covered `travel` seconds after leaving a platform.
+static func distance(travel: float) -> float:
+	var t := clampf(travel, 0.0, TRAVEL)
+	if t > TRAVEL - RAMP:
+		return SPACING - _ramp_distance(TRAVEL - t)
+	return _ramp_distance(minf(t, RAMP)) + TOP_SPEED * maxf(t - RAMP, 0.0)
+
+
+## Metres per second `travel` seconds after leaving a platform.
+static func speed(travel: float) -> float:
+	var t := clampf(travel, 0.0, TRAVEL)
+	if t > TRAVEL - RAMP:
+		return _ramp_speed(TRAVEL - t)
+	return _ramp_speed(minf(t, RAMP))
+
+
+# The ramp's second half mirrors its first, so speed passes half of TOP_SPEED
+# at RAMP / 2 and acceleration fades out before cruising.
+static func _ramp_distance(t: float) -> float:
+	if t > RAMP * 0.5:
+		return TOP_SPEED * (t - RAMP * 0.5) + _rise_distance(RAMP - t)
+	return _rise_distance(t)
+
+
+static func _ramp_speed(t: float) -> float:
+	if t > RAMP * 0.5:
+		return TOP_SPEED - _rise_speed(RAMP - t)
+	return _rise_speed(t)
+
+
+static func _rise_distance(t: float) -> float:
+	if t < EASE:
+		return ACCELERATION * t * t * t / (6.0 * EASE)
+	return ACCELERATION * (t * t * 0.5 - EASE * t * 0.5 + EASE * EASE / 6.0)
+
+
+static func _rise_speed(t: float) -> float:
+	if t < EASE:
+		return ACCELERATION * t * t / (2.0 * EASE)
+	return ACCELERATION * (t - EASE * 0.5)
+
+
+## Station-relative z of the train beside a platform. The departing train leaves
+## along -Z; at mid-trip, out of sight, the view hands over to the next train,
+## SPACING behind it on the loop, which stops at z = 0.
 static func train_z(time: float) -> float:
 	if time <= DEPART:
 		return 0.0
-	var travel := time - DEPART
-	if travel < 3:
-		return -140.0 * pow(travel / 3.0, 2)
-	if travel > 7:
-		return 140.0 * pow((10.0 - travel) / 3.0, 2)
-	return -200.0
+	var covered := distance(time - DEPART)
+	return -covered if time < DEPART + TRAVEL * 0.5 else SPACING - covered
 
 
-## Sweep only the two visible motion segments, never the hidden tunnel reset.
+## Whether a station train at `z` is entirely behind a tunnel end wall.
+static func train_hidden(z: float) -> bool:
+	return absf(z) >= TUNNEL_END + TRAIN_HALF_LENGTH
+
+
+## Sweep the departing and arriving trains separately, never the hand-over.
 ## Point is capsule centre in station coordinates, not the player's rendered pose.
 static func train_hits(
 	point: Vector3, radius: float, height: float, previous: float, current: float
@@ -62,25 +122,31 @@ static func train_hits(
 		return false
 	if point.y + height * 0.5 < 0 or point.y - height * 0.5 > TRAIN_HEIGHT:
 		return false
+	var handover := DEPART + TRAVEL * 0.5
 	# Keep endpoints as 64-bit floats like the timetable (Vector2 rounds to float32).
-	for segment: Array in [[DEPART, DEPART + 3], [DEPART + 7, PERIOD]]:
+	for segment: Array in [[DEPART, handover, 0.0], [handover, PERIOD, SPACING]]:
 		var start := maxf(previous, float(segment[0]))
 		var end := minf(current, float(segment[1]))
 		if end <= start:
 			continue
-		var from_z := train_z(start)
-		var to_z := train_z(end)
-		# train_z deliberately jumps while hidden; use the visible tunnel endpoint.
-		if start == DEPART + 7:
-			from_z = 140.0
-		if end == DEPART + 3:
-			to_z = -140.0
+		var from_z := float(segment[2]) - distance(start - DEPART)
+		var to_z := float(segment[2]) - distance(end - DEPART)
 		if (
 			point.z >= minf(from_z, to_z) - TRAIN_HALF_LENGTH - radius
 			and point.z <= maxf(from_z, to_z) + TRAIN_HALF_LENGTH + radius
 		):
 			return true
 	return false
+
+
+## Departure board text at station `index`, `time` seconds into the cycle.
+static func station_board(index: int, time: float) -> String:
+	var status := "DEPARTS IN %02d s" % maxi(0, ceili(OPEN + DWELL - time))
+	if time >= DEPART:
+		status = "NEXT TRAIN %02d s" % ceili(PERIOD - time)
+	elif time >= OPEN + DWELL:
+		status = "DOORS CLOSING"
+	return "%s\nLOOP → %s\n%s" % [NAMES[index], NAMES[(index + 1) % 4], status]
 
 
 static func car_center(index: int) -> float:
@@ -104,6 +170,11 @@ static func aboard(point: Vector3, radius: float = 0.4064) -> bool:
 	return (
 		car_at(point) >= 0 and absf(point.x) <= 1.30 - radius and point.y >= 1.9 and point.y <= 3.0
 	)
+
+
+## Anywhere a parked train's passenger space or doorways could hold a capsule.
+static func in_car(point: Vector3) -> bool:
+	return car_at(point) >= 0 and absf(point.x) < 1.95 and point.y > 1.2 and point.y < 3.5
 
 
 static func inside_item(point: Vector3) -> bool:

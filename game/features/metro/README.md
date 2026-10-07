@@ -64,9 +64,16 @@ warps and the private slum excursion elevator remain available.
 
 The loop is **Crown → Market → Works → Residences → Crown**. Four logical services
 run one stop apart: 1.2 seconds opening, 12 seconds boarding (the last two warn),
-1.2 seconds closing and 10 seconds traveling. Each station sees a train every
-24.4 seconds. Ride multiple stops by remaining aboard. Metro stations and cars
+1.2 seconds closing and 18 seconds traveling. Each station sees a train every
+32.4 seconds. Ride multiple stops by remaining aboard. Metro stations and cars
 permit combat; the destinations retain their existing safe areas.
+
+Every train runs the same trip (`MetroRules.distance` / `speed`): 300 m between
+stations, 7.5 s accelerating, 3 s cruising at about 103 km/h, 7.5 s braking. The
+acceleration (at most 4.4 m/s², under half a g) builds up and eases off over a
+second at each end, so trains creep away from platforms and settle into them
+without jolts. The station view, the window scenery, the rail rumble's pitch and
+the ride's rattle all sample that one profile.
 
 | Station | Room elevators |
 | --- | --- |
@@ -88,18 +95,26 @@ including refunds when leaving the betting room, continues to observe player loc
 
 Arriving and departing trains kill players whose server-observed capsule overlaps
 their swept path at any station, including jumping players. Stay on the platform;
-parked trains, the hidden tunnel reset and the separate ride compartments do not
-cause train damage. This works offline and on every device without new controls.
+parked trains, the out-of-sight hand-over between the departing and arriving train
+and the separate ride compartments do not cause train damage. This works offline and
+on every device without new controls. The victim hears an original heart-monitor
+beep and flatline (`metro_flatline`, a homage to the shooter-classic death cue, not
+sampled game audio); bystanders hear it from the tracks.
 
-MetroService checks the existing timetable's visible motion segments against the
+MetroService sweeps the departing and arriving trains separately against the
 native train bounds (3.15 × 3.66 × 114.3 m), with capsule clearance and a longitudinal
 sweep to avoid fast trains skipping targets between ticks. No moving physics bodies
 or streamed visuals are required on the server. Validated boarding passengers still
 inside their cabin awaiting readiness are protected; leaving it removes protection.
+Movement is client-authoritative, so after the metro teleports someone off a departing
+train (to the ride, or back to the platform after the cutoff) the server briefly still
+sees their old cabin position. Passengers and riders shielded that cycle are therefore
+safe while that stale position is inside the parked train's cars, never on the tracks.
 Combat.apply_damage owns the normal death screen, delayed respawn and death listeners,
 with self attribution so environmental impacts award no player kills. Metro's existing
-death callback clears passenger manifests and pending transfers. No new persistent
-state or RPC is introduced; late joiners use the current replicated timetable.
+death callback clears passenger manifests and pending transfers. The flatline is a
+transient NetworkedEntity event, so late joiners never replay past impacts. Rebuild it
+with `godot --headless --path game -s res://features/metro/tools/build_flatline.gd`.
 
 ## Runtime and performance
 
@@ -109,10 +124,21 @@ server-observed capsule position, a closed-door cutoff and an owner-specific loa
 token. Teleports use the existing player-authority RPC. Elevator groups validate
 capacity, presence and destination eligibility before committing.
 
-Station trains accelerate into short, dark tunnel mouths. Riders transfer to a
-stationary, full five-car compartment with the same relative position/yaw, passing
-lights, rail hum and slight camera vibration. They remain free to move and fight.
-No train physics, route simulation or scenery runs between destination rooms.
+Station trains pull out into short, dark tunnel mouths; the view hands over to the
+next train at mid-trip, while both are behind the tunnel end walls. Riders transfer
+to a stationary, full five-car compartment with the same relative position/yaw.
+They remain free to move and fight. No train physics or route simulation runs.
+
+Instead, the ride's `Scenery` slides along +Z by the distance covered, so the
+windows show the trip in reverse: the station just left (a copy of the platform,
+its benches, boards and residents), 166 m of tunnel, then the next station, which
+lines up exactly as the doors open. The tunnel carries window-height lamps whose
+light sweeps through the cabin, cables, tags from the R44's own graffiti atlas,
+three block signals that drop to red behind the train, refuge niches with blue
+alarm lamps and a columned stretch beside an older parallel track. Scenery has no
+collision. `passing_surface.gdshader` keeps world-anchored textures riding with it;
+lights beyond 60 m are switched off, and the ride's render bounds let riders see
+along the platforms. Rail rumble pitch/volume and camera rattle follow the speed.
 
 Eight persistent `MetroZone` anchors share two streamed presentation scenes. The
 existing RoomVisibility owner loads only the current room and temporary arrival
@@ -205,7 +231,10 @@ godot --headless --path game res://features/metro/tools/build_realm.tscn
 GUT coverage in `tests/features/metro` includes all 40 train entrances, native player
 boarding, all 17 room connectors, timing and missed trains, elevator round trips,
 loading recovery, item flight preservation, a real server/owner/observer/late-peer
-trip, and public-room connector coverage. Full verification: `harness/verify.sh`.
+trip, and public-room connector coverage. `test_metro_motion.gd` checks the trip for
+jolts, the out-of-sight hand-over, platform alignment at both ends, scrolling
+textures, signals, the light budget and speed-scaled rumble and rattle.
+Full verification: `harness/verify.sh`.
 
 Check cross-feature elevator clearance in the complete live game with
 `godot --headless --path game res://features/metro/tools/audit_live.tscn`.

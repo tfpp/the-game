@@ -11,6 +11,8 @@ var starts: Array[Vector3] = []
 var ends: Array[Vector3] = []
 var sleeping: Array[bool] = []
 var headings: Array[float] = []
+## Appearance and walk phase; equal for the same person on every platform.
+var looks: Array[int] = []
 
 
 func _ready() -> void:
@@ -19,19 +21,32 @@ func _ready() -> void:
 		for bay: float in [-5.0, 5.0]:
 			_add(Vector3(-1, 1.2, center + bay + 0.37), Vector3.ZERO, true, -PI / 2)
 		_add(Vector3(0, 1.2, center - 8.8), Vector3(0, 1.2, center - 6.3), false, 0)
+	var first := models.size()
 	if zone.station_index >= 0:
-		for z: float in BENCHES:
-			_add(Vector3(11, 1.2, z), Vector3.ZERO, true, PI / 2)
-		for z: float in [-18.0, 6.0, 48.0]:
-			_add(Vector3(9, 1.2, z), Vector3(9, 1.2, z + 6), false, 0)
+		_add_platform(self, first)
+	elif zone.scenery != null:
+		# Riders see the same people on the platforms they pull out of and into.
+		for copy: String in ["Departure", "Arrival"]:
+			_add_platform(zone.scenery.get_node(copy) as Node3D, first)
 	update_view(0.0, true)
 
 
-func _add(start: Vector3, end: Vector3, asleep: bool, yaw: float) -> void:
+func _add_platform(parent: Node3D, look: int) -> void:
+	for z: float in BENCHES:
+		_add(Vector3(11, 1.2, z), Vector3.ZERO, true, PI / 2, parent, look)
+		look += 1
+	for z: float in [-18.0, 6.0, 48.0]:
+		_add(Vector3(9, 1.2, z), Vector3(9, 1.2, z + 6), false, 0, parent, look)
+		look += 1
+
+
+func _add(
+	start: Vector3, end: Vector3, asleep: bool, yaw: float, parent: Node3D = null, look := -1
+) -> void:
 	var model := PatronModel.new()
 	model.name = "Resident%d" % models.size()
-	add_child(model)
-	var index := models.size()
+	(parent if parent != null else self).add_child(model)
+	var index := models.size() if look < 0 else look
 	# Unnamed ordinary residents, not the casino's named patron looks.
 	(
 		model
@@ -52,6 +67,7 @@ func _add(start: Vector3, end: Vector3, asleep: bool, yaw: float) -> void:
 	ends.append(end)
 	sleeping.append(asleep)
 	headings.append(yaw)
+	looks.append(index)
 
 
 ## A bounded out-and-back walk with four seconds resting at each end.
@@ -82,7 +98,7 @@ func update_view(delta: float, force := false) -> void:
 		var yaw := headings[index]
 		var walk := 0.0
 		if not sleeping[index]:
-			var sample := stroll(starts[index], ends[index], clock + index * 2.7)
+			var sample := stroll(starts[index], ends[index], clock + looks[index] * 2.7)
 			point = sample["position"]
 			yaw = sample["yaw"]
 			walk = sample["walk"]

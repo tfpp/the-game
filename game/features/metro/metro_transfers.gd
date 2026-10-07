@@ -194,6 +194,7 @@ func _complete_train(rider: Player, trip: Dictionary) -> void:
 			and offset.y > -1
 			and offset.y < 3.5
 		):
+			metro.shield_from_train(peer)
 			rider.server_teleport.rpc_id(
 				peer, (trip["origin"] as Vector3) + MetroRules.platform_recovery(offset)
 			)
@@ -223,6 +224,7 @@ func _recover(rider: Player, trip: Dictionary) -> void:
 			and offset.y > -1
 			and offset.y < 3.5
 		):
+			metro.shield_from_train(peer)
 			rider.server_teleport.rpc_id(
 				peer, (trip["origin"] as Vector3) + MetroRules.platform_recovery(offset)
 			)
