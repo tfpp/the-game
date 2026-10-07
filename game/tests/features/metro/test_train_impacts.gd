@@ -97,6 +97,40 @@ func test_validated_boarder_waiting_for_readiness_is_safe_only_in_cabin() -> voi
 	assert_true(metro.transfers.pending.is_empty())
 
 
+func test_riders_the_metro_moved_off_a_departing_train_keep_their_old_seat_safe() -> void:
+	# Owners report their teleported position a round trip later; until then the
+	# server still sees them in the cabin the departing train is pulling away.
+	var seat := metro.stations[0].position + Vector3(0, 2.1244, 2.5)
+	rider(seat, 2)
+	metro.add_passenger(2, 0)
+	metro._check_train_impacts(MetroRules.DEPART, MetroRules.DEPART + 0.5)
+	assert_false(combat.is_respawning(2), "Transferred passenger")
+	metro.remove_passenger(2)
+	rider(seat + Vector3(0, 0, 1), 3)
+	metro.shield_from_train(3)
+	metro._check_train_impacts(MetroRules.DEPART, MetroRules.DEPART + 0.5)
+	assert_false(combat.is_respawning(3), "Sent back to the platform")
+	metro.net_cycle += 1
+	metro._check_train_impacts(MetroRules.DEPART, MetroRules.DEPART + 0.5)
+	assert_true(combat.is_respawning(3), "Shields last only for that departure")
+	assert_true(combat.is_respawning(2), "Others still in the cabin are struck")
+
+
+func test_shield_never_covers_the_tracks() -> void:
+	var player := rider(metro.stations[0].position + Vector3(0, 0.94, -70))
+	metro.add_passenger(1, 0)
+	metro.shield_from_train(1)
+	metro._check_train_impacts(MetroRules.DEPART + 2.8, MetroRules.DEPART + 3.0)
+	assert_true(combat.is_respawning(1))
+	assert_eq(player.net_position, metro.stations[0].position + Vector3(0, 0.94, -70))
+
+
+func test_late_runner_returned_to_platform_is_shielded() -> void:
+	rider(metro.stations[2].position + Vector3(1.6, 2.1244, 30))
+	metro._clear_unboarded()
+	assert_eq(metro._shielded.get(1, -1), metro.net_cycle)
+
+
 func test_physics_clock_checks_arrival_before_wrapping() -> void:
 	rider(metro.stations[2].position + Vector3(0, 2.7, 0))
 	metro._items_departed = true

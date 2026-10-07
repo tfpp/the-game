@@ -106,6 +106,11 @@ static func aboard(point: Vector3, radius: float = 0.4064) -> bool:
 	)
 
 
+## Anywhere a parked train's passenger space or doorways could hold a capsule.
+static func in_car(point: Vector3) -> bool:
+	return car_at(point) >= 0 and absf(point.x) < 1.95 and point.y > 1.2 and point.y < 3.5
+
+
 static func inside_item(point: Vector3) -> bool:
 	return car_at(point) >= 0 and absf(point.x) < 1.30 and point.y > 1.15 and point.y < 3.3
 

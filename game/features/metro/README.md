@@ -96,6 +96,10 @@ native train bounds (3.15 × 3.66 × 114.3 m), with capsule clearance and a long
 sweep to avoid fast trains skipping targets between ticks. No moving physics bodies
 or streamed visuals are required on the server. Validated boarding passengers still
 inside their cabin awaiting readiness are protected; leaving it removes protection.
+Movement is client-authoritative, so after the metro teleports someone off a departing
+train (to the ride, or back to the platform after the cutoff) the server briefly still
+sees their old cabin position. Passengers and riders shielded that cycle are therefore
+safe while that stale position is inside the parked train's cars, never on the tracks.
 Combat.apply_damage owns the normal death screen, delayed respawn and death listeners,
 with self attribution so environmental impacts award no player kills. Metro's existing
 death callback clears passenger manifests and pending transfers. No new persistent

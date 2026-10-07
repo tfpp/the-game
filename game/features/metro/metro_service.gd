@@ -15,6 +15,8 @@ var _ready_links := false
 var _view_time := 0.0
 var _received_time := -1.0
 var _items_departed := false
+## Peer -> cycle in which the metro sent them off a departing train.
+var _shielded: Dictionary[int, int] = {}
 @onready var entity: NetworkedEntity = $NetworkedEntity
 
 
@@ -236,14 +238,7 @@ func _check_train_impacts(previous: float, current: float) -> void:
 		var peer := rider.get_multiplayer_authority()
 		for station: MetroZone in stations:
 			var point := rider.net_position - station.global_position
-			var trip: Dictionary = transfers.pending.get(peer, {})
-			# A validated rider awaiting floor readiness still belongs to the cabin.
-			# Stepping out of that cabin forfeits protection.
-			if (
-				trip.get("kind", "") == "depart"
-				and trip.get("origin") == station.position
-				and MetroRules.aboard(point, rider.movement.hull_radius_m())
-			):
+			if _protected(peer, point, station, rider.movement.hull_radius_m()):
 				continue
 			if MetroRules.train_hits(
 				point,
@@ -254,6 +249,29 @@ func _check_train_impacts(previous: float, current: float) -> void:
 			):
 				combat.apply_damage(peer, Combat.MAX_HEALTH, peer)
 				break
+
+
+func _protected(peer: int, point: Vector3, station: MetroZone, radius: float) -> bool:
+	var trip: Dictionary = transfers.pending.get(peer, {})
+	# A validated rider awaiting floor readiness still belongs to the cabin.
+	# Stepping out of that cabin forfeits protection.
+	if (
+		trip.get("kind", "") == "depart"
+		and trip.get("origin") == station.position
+		and MetroRules.aboard(point, radius)
+	):
+		return true
+	# Movement is client-authoritative: after the metro teleports someone off a
+	# departing train, the server sees their old seat until the owner reports back.
+	return (
+		MetroRules.in_car(point)
+		and (net_passengers.has(peer) or _shielded.get(peer, -1) == net_cycle)
+	)
+
+
+## Protect a rider the metro is moving off the departing train this cycle.
+func shield_from_train(peer: int) -> void:
+	_shielded[peer] = net_cycle
 
 
 func _begin_boarding_transfer() -> void:
@@ -311,12 +329,8 @@ func _clear_unboarded() -> void:
 			continue
 		for station: MetroZone in stations:
 			var point := rider.net_position - station.position
-			if (
-				MetroRules.car_at(point) >= 0
-				and absf(point.x) < 1.95
-				and point.y > 1.2
-				and point.y < 3.5
-			):
+			if MetroRules.in_car(point):
+				shield_from_train(rider.get_multiplayer_authority())
 				rider.server_teleport.rpc_id(
 					rider.get_multiplayer_authority(),
 					station.position + MetroRules.platform_recovery(point)
@@ -338,6 +352,7 @@ func remove_passenger(peer: int) -> void:
 func _remove_peer(peer: int) -> void:
 	transfers.cancel(peer)
 	remove_passenger(peer)
+	_shielded.erase(peer)
 
 
 func _on_death(peer: int, _attacker: int) -> void:
@@ -444,6 +459,7 @@ func _reset(_mode: Network.Mode) -> void:
 	net_time = 0
 	net_cycle = 0
 	net_passengers = {}
+	_shielded.clear()
 	_items_departed = false
 	_received_time = -1
 	_view_time = 0
