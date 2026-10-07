@@ -1,0 +1,48 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://features/casino_props/props/video_poker_machine.tscn" id="cabinet"]
+[ext_resource type="Script" path="res://features/adventure_machine/machine.gd" id="machine"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="net"]
+[ext_resource type="FontFile" path="res://assets/fonts/inter/Inter-Regular.ttf" id="font"]
+
+[sub_resource type="StandardMaterial3D" id="screen_material"]
+shading_mode = 0
+albedo_color = Color(0.015, 0.035, 0.028, 1)
+
+[sub_resource type="QuadMesh" id="screen_mesh"]
+material = SubResource("screen_material")
+size = Vector2(0.49, 0.36)
+
+[node name="AdventureMachine" instance=ExtResource("cabinet")]
+position = Vector3(17, 0, -18.8)
+script = ExtResource("machine")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("net")
+interaction_range = 2.6
+interaction_offset = Vector3(0, 1.17, 0.22)
+
+[node name="ScreenFace" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.175, 0.214)
+mesh = SubResource("screen_mesh")
+cast_shadow = 0
+
+[node name="Title" type="Label3D" parent="."]
+position = Vector3(0, 1.245, 0.216)
+pixel_size = 0.00145
+font = ExtResource("font")
+font_size = 24
+outline_size = 0
+modulate = Color(0.72, 0.94, 0.75, 1)
+text = "BRINE &\nBUREAUCRACY"
+no_depth_test = false
+
+[node name="FreePlay" type="Label3D" parent="."]
+position = Vector3(0, 1.06, 0.216)
+pixel_size = 0.00145
+font = ExtResource("font")
+font_size = 18
+outline_size = 0
+modulate = Color(0.96, 0.81, 0.48, 1)
+text = "TEXT ADVENTURE\nFREE PLAY"
+no_depth_test = false
