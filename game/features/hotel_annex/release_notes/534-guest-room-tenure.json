@@ -1,0 +1,5 @@
+{
+  "title": "Atrium hotel room ownership",
+  "summary": "Rent or buy an Atrium guest room for the server session and control its swinging door.",
+  "notes": ["Add thirty-minute $10 rentals and $100 session purchases to the eighteen Atrium guest rooms.", "Display the occupant on each door and let owners manage locks and guest access.", "Keep Lily Apartments free-room reservations unchanged."]
+}
