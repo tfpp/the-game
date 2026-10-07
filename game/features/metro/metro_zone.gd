@@ -2,15 +2,27 @@ class_name MetroZone
 extends StreamedRoom
 ## Persistent anchor; presentation belongs to streamed Content, not the network tree.
 
+## Scenery lights further than this from a ride's train centre are switched off,
+## after fading over the last LIGHT_FADE metres so none pops on beside the cars.
+const LIGHT_REACH := 72.0
+const LIGHT_FADE := 12.0
+const PASSING := preload("res://features/metro/passing_surface.gdshader")
 @export var station_index := -1
 @export var ride_index := -1
 var seating: MetroSeating
 var train: Node3D
+## Ride compartments: the platforms and tunnel passing outside the windows.
+var scenery: Node3D
 var _doors: AnimationPlayer
 var _caption: Label3D
 var _boards: Array[Label3D] = []
 var _hum: AudioStreamPlayer3D
-var _light_bars: Node3D
+var _scenery_lights: Array[Light3D] = []
+var _light_energy: Array[float] = []
+var _signals: Array[Node3D] = []
+var _departure_boards: Array[Label3D] = []
+var _arrival_boards: Array[Label3D] = []
+var _scrolling: Array[ShaderMaterial] = []
 var _last_warning := -1
 var _last_phase := -1
 var _collision: Node3D
@@ -42,13 +54,22 @@ func _content_changed(loaded: bool) -> void:
 	_caption = null
 	_boards.clear()
 	_hum = null
-	_light_bars = null
+	scenery = null
+	_scenery_lights.clear()
+	_light_energy.clear()
+	_signals.clear()
+	_departure_boards.clear()
+	_arrival_boards.clear()
+	_scrolling.clear()
 	_collision = null
 	_collision_doors = null
 	_aperture = -1
 	if not loaded:
 		return
 	train = _content.get_node("Train") as Node3D
+	scenery = _content.get_node_or_null("Scenery") as Node3D
+	if scenery != null:
+		_collect_scenery()
 	var residents := MetroResidents.new()
 	residents.name = "ShelteringResidents"
 	residents.zone = self
@@ -58,7 +79,6 @@ func _content_changed(loaded: bool) -> void:
 	for node: Node in _content.find_children("Board*", "Label3D", false, false):
 		_boards.append(node as Label3D)
 	_hum = _content.get_node_or_null("RailSound") as AudioStreamPlayer3D
-	_light_bars = _content.get_node_or_null("TunnelBars") as Node3D
 	_collision = _content.get_node("TrainCollision") as Node3D
 	if multiplayer.is_server():
 		_collision.queue_free()
@@ -70,6 +90,58 @@ func _content_changed(loaded: bool) -> void:
 		_hum.bus = GameAudio.BUS
 		_hum.volume_db = -21
 	update_view()
+
+
+func _collect_scenery() -> void:
+	for node: Node in scenery.find_children("*", "Light3D", true, false):
+		_scenery_lights.append(node as Light3D)
+		_light_energy.append((node as Light3D).light_energy)
+	for node: Node in scenery.find_children("Signal*", "Node3D", true, false):
+		_signals.append(node as Node3D)
+	for node: Node in scenery.get_node("Departure").find_children("Board*", "Label3D", false):
+		_departure_boards.append(node as Label3D)
+	for node: Node in scenery.get_node("Arrival").find_children("Board*", "Label3D", false):
+		_arrival_boards.append(node as Label3D)
+	for node: Node in scenery.find_children("*", "GridMap", true, false):
+		var library := (node as GridMap).mesh_library
+		for item: int in library.get_item_list():
+			var mesh := library.get_item_mesh(item)
+			var material := mesh.surface_get_material(0) as ShaderMaterial if mesh != null else null
+			if material != null and material.shader == PASSING and not material in _scrolling:
+				_scrolling.append(material)
+
+
+## The ride compartment never moves: its scenery travels the trip in reverse.
+func _pass_scenery(metro: MetroService, t: float) -> void:
+	# Riders still aboard after arriving face that platform until the next boarding.
+	var boarding := t >= MetroRules.OPEN + MetroRules.DWELL
+	var covered := 0.0 if boarding else MetroRules.SPACING
+	if t >= MetroRules.DEPART:
+		covered = MetroRules.distance(t - MetroRules.DEPART)
+	scenery.position.z = covered
+	for material: ShaderMaterial in _scrolling:
+		material.set_shader_parameter(&"scroll", covered)
+	for index: int in _scenery_lights.size():
+		var light := _scenery_lights[index]
+		var reach := absf(light.global_position.z - global_position.z)
+		var fade := clampf((LIGHT_REACH - reach) / LIGHT_FADE, 0.0, 1.0)
+		light.visible = fade > 0.0
+		light.light_energy = _light_energy[index] * fade
+	for head: Node3D in _signals:
+		# A block signal drops to danger once the leading cab has passed it.
+		var clear := head.global_position.z - global_position.z < -MetroRules.TRAIN_HALF_LENGTH
+		(head.get_node("Clear") as Node3D).visible = clear
+		(head.get_node("Stop") as Node3D).visible = not clear
+	var from := MetroRules.station(ride_index, metro.net_cycle)
+	var to := MetroRules.station(ride_index, metro.net_cycle + (1 if boarding else 0))
+	_label(_departure_boards, MetroRules.station_board(from, t))
+	_label(_arrival_boards, MetroRules.station_board(to, t))
+
+
+static func _label(boards: Array[Label3D], text: String) -> void:
+	for board: Label3D in boards:
+		if board.text != text:
+			board.text = text
 
 
 func _process(_delta: float) -> void:
@@ -90,11 +162,11 @@ func update_view() -> void:
 	if ride_index >= 0:
 		opening = 0
 		train.position.z = 0
-		if _light_bars != null:
-			_light_bars.position.z = fposmod(t * 20, 8)
+		if scenery != null:
+			_pass_scenery(metro, t)
 	else:
 		train.position.z = MetroRules.train_z(t)
-		train.visible = t < MetroRules.DEPART + 3 or t > MetroRules.DEPART + 7
+		train.visible = not MetroRules.train_hidden(train.position.z)
 	if _collision != null:
 		var height := MetroRules.collision_y(t) if station_index >= 0 else 0.0
 		if _collision.position.y != height:
@@ -108,24 +180,7 @@ func update_view() -> void:
 		_aperture = opening
 	if _caption != null:
 		if station_index >= 0:
-			var remaining := maxi(0, ceili(MetroRules.OPEN + MetroRules.DWELL - t))
-			_caption.text = (
-				"%s\nLOOP → %s\n%s"
-				% [
-					MetroRules.NAMES[station_index],
-					MetroRules.NAMES[(station_index + 1) % 4],
-					(
-						("DEPARTS IN %02d s" % remaining)
-						if not traveling
-						else ("NEXT TRAIN %02d s" % ceili(MetroRules.PERIOD - t))
-					)
-				]
-			)
-			if t >= MetroRules.OPEN + MetroRules.DWELL and not traveling:
-				_caption.text = (
-					"%s\nLOOP → %s\nDOORS CLOSING"
-					% [MetroRules.NAMES[station_index], MetroRules.NAMES[(station_index + 1) % 4]]
-				)
+			_caption.text = MetroRules.station_board(station_index, t)
 		else:
 			var next := MetroRules.station(ride_index, metro.net_cycle + (1 if traveling else 0))
 			_caption.text = (
@@ -140,6 +195,12 @@ func update_view() -> void:
 			_hum.play()
 		elif not traveling and _hum.playing:
 			_hum.stop()
+		# The motors spin up and down with the train instead of starting at full hum.
+		var pace := MetroRules.speed(t - MetroRules.DEPART) / MetroRules.TOP_SPEED
+		_hum.pitch_scale = lerpf(0.6, 1.25, pace)
+		_hum.volume_db = lerpf(-30.0, -19.0, sqrt(pace))
+		if station_index >= 0:
+			_hum.position.z = train.position.z
 	# Phase events do not replay when a room first loads halfway through a phase.
 	var phase := 1 if t >= MetroRules.OPEN + MetroRules.DWELL - 2 else 0
 	if phase == 1 and _last_phase == 0 and _last_warning != metro.net_cycle:
@@ -157,7 +218,9 @@ func _shake() -> void:
 		return
 	_shake_camera = camera
 	var t := service().display_time()
-	_shake_offset = Vector2(sin(t * 31) * 0.004, sin(t * 43) * 0.006)
+	# Rattle grows with speed, so a standing train is still and stops are gentle.
+	var pace := MetroRules.speed(t - MetroRules.DEPART) / MetroRules.TOP_SPEED
+	_shake_offset = Vector2(sin(t * 31) * 0.004, sin(t * 43) * 0.006) * pace
 	camera.h_offset += _shake_offset.x
 	camera.v_offset += _shake_offset.y
 

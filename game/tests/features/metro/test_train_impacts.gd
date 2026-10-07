@@ -34,11 +34,15 @@ func hits(point: Vector3, start: float, end: float) -> bool:
 
 func test_visible_arrival_and_departure_sweep_not_hidden_reset() -> void:
 	var depart := MetroRules.DEPART
-	assert_true(hits(Vector3(0, 2.7, -70), depart + 0.9, depart + 1.1))
-	assert_true(hits(Vector3(0, 2.7, 70), depart + 8.9, depart + 9.1))
+	var handover := depart + MetroRules.TRAVEL * 0.5
+	assert_true(hits(Vector3(0, 2.7, -70), depart + 2.8, depart + 3.0), "Departing nose")
+	assert_true(hits(Vector3(0, 2.7, 70), depart + 9.7, depart + 9.9), "Arriving nose")
 	# This point is between the endpoints, but outside BOTH endpoint volumes.
-	assert_true(hits(Vector3(0, 2, -70), depart, depart + 3))
-	assert_false(hits(Vector3(0, 2, 0), depart + 3, depart + 7))
+	assert_false(hits(Vector3(0, 2, -80), depart + 3, depart + 3.001))
+	assert_false(hits(Vector3(0, 2, -80), handover - 0.001, handover))
+	assert_true(hits(Vector3(0, 2, -80), depart + 3, handover))
+	# The hand-over from departing to arriving train never sweeps the platform.
+	assert_false(hits(Vector3(0, 2, 0), handover - 0.1, handover + 0.1))
 	assert_false(hits(Vector3(0, 2, 0), 1, depart))
 	assert_false(hits(Vector3(0, 2, 0), 5, 5))
 	assert_false(hits(Vector3(0, 2, 0), MetroRules.PERIOD, 0))
@@ -63,13 +67,13 @@ func test_all_stations_kill_once_without_kill_credit_and_clear_travel() -> void:
 		metro.add_passenger(index + 1, index)
 		# Unrelated pending travel must not grant track immunity.
 		metro.transfers.pending[index + 1] = {"kind": "lift", "source": null, "cab": null}
-		metro._check_train_impacts(MetroRules.PERIOD - 1.1, MetroRules.PERIOD - 0.9)
+		metro._check_train_impacts(MetroRules.PERIOD - 4.1, MetroRules.PERIOD - 3.9)
 		assert_true(combat.is_respawning(index + 1))
 		assert_false(metro.net_passengers.has(index + 1))
 		assert_false(metro.transfers.pending.has(index + 1))
 		assert_eq(combat.kills_for(index + 1), 0)
 		assert_eq(player.net_position, metro.stations[index].global_position + Vector3(0, 2.7, 70))
-	metro._check_train_impacts(MetroRules.PERIOD - 1.1, MetroRules.PERIOD - 0.9)
+	metro._check_train_impacts(MetroRules.PERIOD - 4.1, MetroRules.PERIOD - 3.9)
 	assert_signal_emit_count(combat, "player_died", 4)
 
 
@@ -92,7 +96,7 @@ func test_validated_boarder_waiting_for_readiness_is_safe_only_in_cabin() -> voi
 	metro._check_train_impacts(MetroRules.DEPART, MetroRules.DEPART + 0.1)
 	assert_false(combat.is_respawning(1))
 	player.net_position = metro.stations[0].position + Vector3(0, 2.7, -58)
-	metro._check_train_impacts(MetroRules.DEPART, MetroRules.DEPART + 0.5)
+	metro._check_train_impacts(MetroRules.DEPART, MetroRules.DEPART + 2)
 	assert_true(combat.is_respawning(1))
 	assert_true(metro.transfers.pending.is_empty())
 

@@ -61,26 +61,42 @@ func test_loaded_station_has_sleepers_and_walkers_without_blocking_routes() -> v
 	assert_eq(residents.models[2].position, original, "Loading mid-cycle samples the same phase")
 
 
-func test_train_residents_follow_departure_and_transit_has_only_car_residents() -> void:
+func test_train_residents_follow_departure_and_passing_platforms_keep_theirs() -> void:
 	var zone := metro.stations[0]
 	zone.load_room(10000)
 	await wait_physics_frames(3)
 	var residents := zone._content.get_node("ShelteringResidents") as MetroResidents
 	var sleeper := residents.models[0]
-	metro.net_time = MetroRules.DEPART + 2
+	metro.net_time = MetroRules.DEPART + 4
 	zone.update_view()
 	residents.update_view(0, true)
+	assert_lt(zone.train.position.z, -20.0)
 	assert_almost_eq(sleeper.position.z - residents.starts[0].z, zone.train.position.z, 0.001)
 	assert_eq(residents.models[15].position, residents.starts[15], "Platform sleeper stays")
-	metro.net_time = MetroRules.DEPART + 5
+	metro.net_time = MetroRules.DEPART + MetroRules.TRAVEL * 0.5
 	zone.update_view()
 	residents.update_view(0)
 	assert_false(sleeper.visible)
 	assert_true(residents.models[15].visible)
-	metro.rides[0].load_room(10000)
+	var ride := metro.rides[0]
+	ride.load_room(10000)
 	await wait_physics_frames(3)
-	var ride_people := metro.rides[0]._content.get_node("ShelteringResidents") as MetroResidents
-	assert_eq(ride_people.models.size(), 15)
-	assert_eq(ride_people.sleeping.count(true), 10)
-	assert_eq(ride_people.sleeping.count(false), 5)
+	var ride_people := ride._content.get_node("ShelteringResidents") as MetroResidents
+	assert_eq(ride_people.models.size(), 29, "Cars plus both passing platforms")
+	assert_eq(ride_people.sleeping.count(true), 18)
+	assert_eq(ride_people.sleeping.count(false), 11)
 	assert_eq(ride_people.models[0].position, ride_people.starts[0])
+	# Riders watch the people they just left, then the next platform's own.
+	var platform := residents.looks.slice(15)
+	assert_eq(ride_people.looks.slice(15, 22), platform)
+	assert_eq(ride_people.looks.slice(22), platform)
+	assert_eq(ride_people.models[15].get_parent().name, &"Departure")
+	assert_eq(ride_people.models[22].get_parent().name, &"Arrival")
+	metro.net_time = MetroRules.DEPART + 4
+	ride.update_view()
+	ride_people.update_view(0, true)
+	var moved := ride.to_local(ride_people.models[15].global_position)
+	assert_almost_eq(moved.z - residents.starts[15].z, ride.scenery.position.z, 0.001)
+	assert_almost_eq(
+		ride.scenery.position.z, -MetroRules.train_z(MetroRules.DEPART + 4), 0.001, "Same motion"
+	)

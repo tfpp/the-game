@@ -132,7 +132,7 @@ func test_boarding_departure_late_join_and_arrival_keep_shared_state() -> void:
 		)
 	)
 	metro.transfers._physics_process(1.3)
-	metro.net_time = MetroRules.DEPART + 2
+	metro.net_time = MetroRules.DEPART + 6
 	metro._update_collision()
 	var player := server.get_node("Players/" + str(rider_id)) as Player
 	assert_true(
@@ -239,13 +239,13 @@ func test_train_impact_is_server_owned_and_death_reaches_owner() -> void:
 	)
 	watch_signals(owner_combat)
 	watch_signals(server_combat)
-	metro.net_time = MetroRules.PERIOD - 1.1
+	metro.net_time = MetroRules.PERIOD - 4.1
 	metro.add_passenger(peer, 3)
 	# Calling the detector on a client must not mutate even its local Combat state.
-	owner_metro._check_train_impacts(MetroRules.PERIOD - 1.1, MetroRules.PERIOD - 0.9)
+	owner_metro._check_train_impacts(MetroRules.PERIOD - 4.1, MetroRules.PERIOD - 3.9)
 	assert_signal_not_emitted(owner_combat, "player_died")
 	assert_false(server_combat.is_respawning(peer))
-	metro._check_train_impacts(MetroRules.PERIOD - 1.1, MetroRules.PERIOD - 0.9)
+	metro._check_train_impacts(MetroRules.PERIOD - 4.1, MetroRules.PERIOD - 3.9)
 	assert_true(server_combat.is_respawning(peer))
 	assert_true(metro.net_passengers.is_empty())
 	assert_eq(server_combat.kills_for(peer), 0)
@@ -256,7 +256,7 @@ func test_train_impact_is_server_owned_and_death_reaches_owner() -> void:
 			5
 		)
 	)
-	metro._check_train_impacts(MetroRules.PERIOD - 1.1, MetroRules.PERIOD - 0.9)
+	metro._check_train_impacts(MetroRules.PERIOD - 4.1, MetroRules.PERIOD - 3.9)
 	assert_signal_emit_count(server_combat, "player_died", 1)
 	var late := connect_client(port, "ImpactLate")
 	var late_combat := Combat.new()
