@@ -71,6 +71,14 @@ func connect_client(port: int, title: String) -> Node3D:
 
 
 func test_boarding_departure_late_join_and_arrival_keep_shared_state() -> void:
+	await _round_trip(0)
+
+
+func test_reverse_trip_replicates_to_owner_observer_and_late_joiner() -> void:
+	await _round_trip(4)
+
+
+func _round_trip(service_id: int) -> void:
 	var transport := Network.create_transport()
 	var port := randi_range(20000, 40000)
 	assert_eq(transport.create_server(port), OK)
@@ -89,11 +97,12 @@ func test_boarding_departure_late_join_and_arrival_keep_shared_state() -> void:
 	var observer_metro := observer.get_node("Features/Metro") as MetroService
 	metro.net_time = 5
 	metro._update_collision()
-	var origin := MetroRules.station_position(0)
+	var origin := metro.train_origin(service_id, 0)
+	var platform_offset := Vector3(4 if service_id < 4 else -4, 2.1244, 25.36)
 	var offset := Vector3(0, 2.1244, 25.36)
 	var spawner := server.get_node("PlayerSpawner") as MultiplayerSpawner
 	spawner.spawn({"peer": rider_id, "position": origin + offset})
-	spawner.spawn({"peer": observer_id, "position": origin + Vector3(4, 2.1244, 25.36)})
+	spawner.spawn({"peer": observer_id, "position": origin + platform_offset})
 	assert_true(
 		await RealTime.wait_until(
 			get_tree(),
@@ -132,6 +141,8 @@ func test_boarding_departure_late_join_and_arrival_keep_shared_state() -> void:
 		)
 	)
 	metro.transfers._physics_process(1.3)
+	assert_true(metro.net_passengers.has(rider_id))
+	metro._clear_unboarded()
 	metro.net_time = MetroRules.DEPART + 6
 	metro._update_collision()
 	var player := server.get_node("Players/" + str(rider_id)) as Player
@@ -139,7 +150,10 @@ func test_boarding_departure_late_join_and_arrival_keep_shared_state() -> void:
 		await RealTime.wait_until(
 			get_tree(),
 			func() -> bool:
-				return player.net_position.distance_to(MetroRules.ride_position(0) + offset) < 0.01,
+				return (
+					player.net_position.distance_to(MetroRules.ride_position(service_id) + offset)
+					< 0.01
+				),
 			5
 		)
 	)
@@ -154,7 +168,7 @@ func test_boarding_departure_late_join_and_arrival_keep_shared_state() -> void:
 			5
 		)
 	)
-	assert_false(observer_metro.rides[0].is_loaded())
+	assert_false(observer_metro.rides[service_id].is_loaded())
 	assert_false(owner_metro.stations[2].is_loaded())
 	var late := connect_client(port, "Late")
 	var late_metro := late.get_node("Features/Metro") as MetroService
@@ -187,7 +201,8 @@ func test_boarding_departure_late_join_and_arrival_keep_shared_state() -> void:
 			get_tree(),
 			func() -> bool:
 				return (
-					player.net_position.distance_to(MetroRules.station_position(1) + offset) < 0.01
+					player.net_position.distance_to(metro.train_origin(service_id, 1) + offset)
+					< 0.01
 				),
 			5
 		)
@@ -198,12 +213,15 @@ func test_boarding_departure_late_join_and_arrival_keep_shared_state() -> void:
 		)
 	)
 	var missed := server.get_node("Players/" + str(observer_id)) as Player
-	assert_lt(missed.net_position.distance_to(origin + Vector3(4, 2.1244, 25.36)), 0.01)
+	assert_lt(missed.net_position.distance_to(origin + platform_offset), 0.01)
 	assert_true(
 		await RealTime.wait_until(
 			get_tree(),
 			func() -> bool:
-				return owner_metro.stations[1].is_loaded() and not owner_metro.rides[0].is_loaded(),
+				return (
+					owner_metro.stations[MetroRules.station(service_id, 1)].is_loaded()
+					and not owner_metro.rides[service_id].is_loaded()
+				),
 			5
 		)
 	)

@@ -7,6 +7,8 @@ const GRAFFITI_TAGS := 8
 const STATION_ONLY: Array[String] = [
 	"Train",
 	"TrainCollision",
+	"ReverseTrain",
+	"ReverseTrainCollision",
 	"RailSound",
 	"TrackBed",
 	"Rails",
@@ -43,6 +45,7 @@ var _id := 0
 var _station_library: MeshLibrary
 var _station_items: Dictionary[String, int] = {}
 var _passing_materials: Dictionary[Material, Material] = {}
+var _passing_libraries: Dictionary[MeshLibrary, MeshLibrary] = {}
 
 
 func _ready() -> void:
@@ -55,12 +58,20 @@ func build() -> void:
 	_build_elevator()
 	_build_station()
 	_build_transit()
+	_build_transit(true)
 	_build_feature()
 	print("METRO_REALM_BUILD PASS")
 	get_tree().quit()
 
 
 func own(node: Node, owner: Node) -> void:
+	# Preserve shared train instances instead of embedding the same baked meshes
+	# again in every station and ride scene.
+	if (
+		node != owner
+		and node.scene_file_path in [ROOT + "train_visual.tscn", ROOT + "train_collision.tscn"]
+	):
+		return
 	node.scene_file_path = ""
 	for child: Node in node.get_children():
 		child.owner = owner
@@ -88,6 +99,7 @@ func _split_train() -> void:
 	for node: Node in visual.find_children("CabinLight*", "OmniLight3D", true, false):
 		if not node.name.ends_with("6"):
 			node.free()
+	(load(ROOT + "tools/batch_train.gd") as GDScript).bake(visual)
 	save(visual, ROOT + "train_visual.tscn")
 	visual.free()
 	var collision := source.instantiate() as Node3D
@@ -147,7 +159,9 @@ func add_sign(parent: Node3D, text: String, at: Vector3, yaw: float, size: float
 func _build_elevator() -> void:
 	library = MeshLibrary.new()
 	_id = 0
-	var steel := load(ROOT + "painted_steel.tres") as Material
+	var steel := _surface(
+		"res://assets/street_props/surfaces/painted_concrete.png", Color("8c9894"), 1.0
+	)
 	var floor_id := tile(Vector3(3.2, 0.12, 3.2), Vector3(0, -0.06, -1.6), steel)
 	var wall_id := tile(Vector3(0.12, 2.5, 3.2), Vector3(0, 1.25, -1.6), steel)
 	var back_id := tile(Vector3(3.2, 2.5, 0.12), Vector3(0, 1.25, -3.14), steel)
@@ -183,6 +197,7 @@ func _build_elevator() -> void:
 	(cab.get_node("Car/CabIndicator") as Node3D).position.y = 2.22
 	(cab.get_node("Car/CabLight") as Node3D).position.y = 2.25
 	(cab.get_node("Car/HallButton") as Node3D).position.x = 1.7
+	(load(ROOT + "tools/station_details.gd") as GDScript).elevator(self, cab)
 	save(cab, ROOT + "access_elevator.tscn")
 	cab.free()
 
@@ -200,6 +215,9 @@ func _build_station() -> void:
 		"res://assets/street_props/surfaces/painted_concrete.png", Color("bdc6af"), 0.5
 	)
 	var steel := load(ROOT + "painted_steel.tres") as Material
+	var green := _surface(
+		"res://assets/street_props/surfaces/painted_concrete.png", Color("4c9763"), 1.0
+	)
 	var yellow := StandardMaterial3D.new()
 	yellow.albedo_color = Color("bbaa59")
 	yellow.roughness = 1
@@ -209,7 +227,7 @@ func _build_station() -> void:
 	var wall_id := tile(Vector3(0.3, 5.6, 2), Vector3(0, 2.8, 0), concrete)
 	var ceiling_id := tile(Vector3(2, 0.25, 2), Vector3(0, 5.6, 0), plaster)
 	var stripe_id := tile(Vector3(0.18, 0.018, 2), Vector3(0, 1.21, 0), yellow, false)
-	var column_id := tile(Vector3(0.45, 4.4, 0.45), Vector3(0, 3.4, 0), steel)
+	var column_id := tile(Vector3(0.45, 4.4, 0.45), Vector3(0, 3.4, 0), green)
 	var rail_id := tile(Vector3(0.10, 0.12, 2), Vector3(0, 0.08, 0), steel, false)
 	var track_id := tile(Vector3(2, 0.2, 2), Vector3(0, -0.1, 0), dark)
 	var panel_id := tile(Vector3(0.05, 0.6, 2), Vector3(0, 3.5, 0), steel, false)
@@ -245,28 +263,30 @@ func _build_station() -> void:
 	for z: int in [-63, 63]:
 		for step: int in 3:
 			stairs.set_cell_item(Vector3i(step, 0, z), step_ids[step])
+			stairs.set_cell_item(Vector3i(16 - step, 0, z), step_ids[step])
 	for z: int in range(-66, 67, 2):
-		for x: int in range(3, 20, 2):
+		for x: int in range(3, 14, 2):
 			floor_grid.set_cell_item(Vector3i(x, 0, z), floor_id)
-		for x: int in range(-3, 22, 2):
+		for x: int in range(-3, 20, 2):
 			ceiling.set_cell_item(Vector3i(x, 0, z), ceiling_id)
-		for x: int in [-4, 22]:
+		for x: int in [-4, 20]:
 			walls.set_cell_item(Vector3i(x, 0, z), wall_id)
-		edge.set_cell_item(Vector3i(2, 0, z), stripe_id)
-		for x: int in [-1, 1]:
+		for x: int in [2, 14]:
+			edge.set_cell_item(Vector3i(x, 0, z), stripe_id)
+		for x: int in [-1, 1, 15, 17]:
 			tracks.set_cell_item(Vector3i(x, 0, z), track_id)
 			rail.set_cell_item(Vector3i(x, 0, z), rail_id)
 		band.set_cell_item(Vector3i(-3, 0, z), panel_id)
 	for z: int in range(-60, 61, 12):
-		columns.set_cell_item(Vector3i(7, 0, z), column_id)
+		if absi(z) >= 36:
+			columns.set_cell_item(Vector3i(8, 0, z), column_id)
 		beams.set_cell_item(Vector3i(0, 0, z), beam_id)
-		for x: int in [5, 15]:
+		for x: int in [4, 12]:
 			tubes.set_cell_item(Vector3i(x, 0, z), tube_id)
-		add_sign(room, "METRO   /   LOOP LINE", Vector3(-3.7, 3.65, z), PI / 2, 0.20)
 		var light := OmniLight3D.new()
-		light.position = Vector3(5, 4.4, z)
-		light.omni_range = 10
-		light.light_energy = 0.8
+		light.position = Vector3(8, 4.4, z)
+		light.omni_range = 11
+		light.light_energy = 1.05
 		light.shadow_enabled = false
 		room.add_child(light)
 	for z: int in [-42, -30, 30, 42]:
@@ -283,7 +303,7 @@ func _build_station() -> void:
 	# End walls close platform access to tunnels; the track opening stays visible.
 	var ends := grid(room, "PlatformEnds")
 	for z: int in [-67, 67]:
-		for x: int in range(3, 22, 2):
+		for x: int in range(3, 14, 2):
 			ends.set_cell_item(
 				Vector3i(x, 0, z),
 				wall_id,
@@ -292,15 +312,18 @@ func _build_station() -> void:
 	var tunnel_sides := grid(room, "TunnelMouths")
 	var tunnel_top := grid(room, "TunnelRoof")
 	var tunnel_back := grid(room, "TunnelDarkness")
-	for side: int in [-1, 1]:
-		for z: int in range(68, 91, 2):
-			for x: int in [-1, 1]:
-				tracks.set_cell_item(Vector3i(x, 0, z * side), track_id)
-			for x: int in [-3, 3]:
-				tunnel_sides.set_cell_item(Vector3i(x, 0, z * side), tunnel_wall)
-			tunnel_top.set_cell_item(Vector3i(0, 0, z * side), tunnel_roof)
-		tunnel_back.set_cell_item(Vector3i(0, 0, 91 * side), tunnel_end)
+	for track_x: int in [0, 16]:
+		for side: int in [-1, 1]:
+			for z: int in range(68, 91, 2):
+				for x: int in [-1, 1]:
+					tracks.set_cell_item(Vector3i(track_x + x, 0, z * side), track_id)
+					rail.set_cell_item(Vector3i(track_x + x, 0, z * side), rail_id)
+				for x: int in [-3, 3]:
+					tunnel_sides.set_cell_item(Vector3i(track_x + x, 0, z * side), tunnel_wall)
+				tunnel_top.set_cell_item(Vector3i(track_x, 0, z * side), tunnel_roof)
+			tunnel_back.set_cell_item(Vector3i(track_x, 0, 91 * side), tunnel_end)
 	_add_train(room)
+	_add_train(room, true)
 	var board_panels := grid(room, "DepartureBoards")
 	for z: int in [-48, -24, 0, 24, 48]:
 		board_panels.set_cell_item(Vector3i(0, 0, z), board_id)
@@ -314,13 +337,8 @@ func _build_station() -> void:
 			board.pixel_size = 0.008
 			board.modulate = Color("ddd4ab")
 			room.add_child(board)
-	add_sign(
-		room,
-		"CROWN > MARKET > WORKS > RESIDENCES\nEXIT ELEVATORS  >>>",
-		Vector3(10, 3.7, 0),
-		-PI / 2,
-		0.18
-	)
+	add_sign(room, "EXIT ELEVATORS", Vector3(6.25, 4.6, 0), -PI / 2, 0.18)
+	(load(ROOT + "tools/station_details.gd") as GDScript).station(self, room, board_id)
 	var audio := AudioStreamPlayer3D.new()
 	audio.name = "RailSound"
 	audio.position = Vector3(0, 2, 0)
@@ -356,22 +374,27 @@ func _surface(path: String, tint: Color, scale: float) -> ShaderMaterial:
 	return material
 
 
-func _add_train(room: Node3D) -> void:
+func _add_train(room: Node3D, reverse: bool = false) -> void:
 	var visual := (load(ROOT + "train_visual.tscn") as PackedScene).instantiate()
-	visual.name = "Train"
+	visual.name = "ReverseTrain" if reverse else "Train"
+	visual.position.x = MetroRules.TRACK_SPACING if reverse else 0.0
 	room.add_child(visual)
 	var collision := (load(ROOT + "train_collision.tscn") as PackedScene).instantiate()
-	collision.name = "TrainCollision"
+	collision.name = "ReverseTrainCollision" if reverse else "TrainCollision"
+	collision.position.x = MetroRules.TRACK_SPACING if reverse else 0.0
 	room.add_child(collision)
 
 
-func _build_transit() -> void:
+func _build_transit(reverse: bool = false) -> void:
+	_passing_materials.clear()
+	_passing_libraries.clear()
 	var room := Node3D.new()
 	room.name = "TransitInterior"
 	_add_train(room)
 	var tiles := _tunnel_library()
-	ResourceSaver.save(library, ROOT + "tunnel_tiles.tres")
-	library.take_over_path(ROOT + "tunnel_tiles.tres")
+	var library_path := ROOT + ("tunnel_reverse_tiles.tres" if reverse else "tunnel_tiles.tres")
+	ResourceSaver.save(library, library_path)
+	library.take_over_path(library_path)
 	# The compartment never moves. MetroZone slides this along +Z by the distance
 	# covered, so the platform left behind and the next one pass the windows.
 	var scenery := Node3D.new()
@@ -380,6 +403,12 @@ func _build_transit() -> void:
 	scenery.add_child(_platform_copy("Departure", 0))
 	scenery.add_child(_platform_copy("Arrival", -int(MetroRules.SPACING)))
 	_add_tunnel(scenery, tiles)
+	if reverse:
+		(scenery.get_node("Departure") as Node3D).position.x = -MetroRules.TRACK_SPACING
+		(scenery.get_node("Arrival") as Node3D).position = Vector3(
+			-MetroRules.TRACK_SPACING, 0, MetroRules.SPACING
+		)
+		(scenery.get_node("Tunnel") as Node3D).rotation.y = PI
 	var board := Label3D.new()
 	board.name = "Board"
 	board.position = Vector3(0, 3.15, 10.6)
@@ -392,7 +421,7 @@ func _build_transit() -> void:
 	audio.position = Vector3(0, 2, 0)
 	audio.max_distance = 150
 	room.add_child(audio)
-	save(room, ROOT + "rooms/transit.tscn")
+	save(room, ROOT + ("rooms/transit_reverse.tscn" if reverse else "rooms/transit.tscn"))
 	room.free()
 
 
@@ -481,6 +510,31 @@ func _platform_copy(label: String, z: int) -> Node3D:
 			benches += 1
 			copy.add_child(model)
 			child.free()
+	for node: Node in copy.find_children("*", "GridMap", true, false):
+		var map := node as GridMap
+		map.collision_layer = 0
+		map.collision_mask = 0
+		if map.mesh_library != library:
+			map.mesh_library = _passing_library(map.mesh_library)
+	return copy
+
+
+func _passing_library(source: MeshLibrary) -> MeshLibrary:
+	if _passing_libraries.has(source):
+		return _passing_libraries[source]
+	var copy := source.duplicate() as MeshLibrary
+	for item: int in copy.get_item_list():
+		copy.set_item_shapes(item, [])
+		var mesh := source.get_item_mesh(item).duplicate() as Mesh
+		if mesh is PrimitiveMesh:
+			(mesh as PrimitiveMesh).material = _passing((mesh as PrimitiveMesh).material)
+		else:
+			for surface: int in mesh.get_surface_count():
+				(mesh as ArrayMesh).surface_set_material(
+					surface, _passing(mesh.surface_get_material(surface))
+				)
+		copy.set_item_mesh(item, mesh)
+	_passing_libraries[source] = copy
 	return copy
 
 
@@ -718,8 +772,10 @@ func _build_feature() -> void:
 	var feature := Node3D.new()
 	feature.name = "Metro"
 	feature.set_script(load(ROOT + "metro_service.gd"))
-	for index: int in 4:
+	for index: int in MetroRules.SERVICES:
 		for ride: bool in [false, true]:
+			if not ride and index >= 4:
+				continue
 			var zone := Node3D.new()
 			zone.set_script(load(ROOT + "metro_zone.gd"))
 			zone.name = ("Ride" if ride else "Station") + str(index)
@@ -732,7 +788,16 @@ func _build_feature() -> void:
 				"render_bounds",
 				MetroRules.RIDE_VIEW if ride else AABB(Vector3(-6, -1, -92), Vector3(30, 9, 184))
 			)
-			zone.set("room_scene", ROOT + ("rooms/transit.tscn" if ride else "rooms/station.tscn"))
+			var room_path := "res://features/metro/rooms/station.tscn"
+			if ride:
+				room_path = (
+					"res://features/metro/rooms/transit.tscn"
+					if index < 4
+					else "res://features/metro/rooms/transit_reverse.tscn"
+				)
+				if index >= 4:
+					zone.set("render_bounds", AABB(Vector3(-24, -1, -100), Vector3(34, 9, 200)))
+			zone.set("room_scene", room_path)
 			feature.add_child(zone)
 			if not ride:
 				var gps := GpsDestination.new()

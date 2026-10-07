@@ -1,0 +1,49 @@
+[gd_resource type="MeshLibrary" format=3]
+
+[ext_resource type="Shader" path="res://features/casino_hub/materials/retro_surface.gdshader" id="1_0l2hq"]
+[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/painted_concrete.png" id="2_hwscq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jprsh"]
+render_priority = 0
+shader = ExtResource("1_0l2hq")
+shader_parameter/albedo_texture = ExtResource("2_hwscq")
+shader_parameter/tint = Color(0.73333335, 0.75686276, 0.72156864, 1)
+shader_parameter/texture_scale = 1.0
+shader_parameter/texture_inset = null
+shader_parameter/color_steps = null
+
+[sub_resource type="BoxMesh" id="BoxMesh_8je6s"]
+material = SubResource("ShaderMaterial_jprsh")
+size = Vector3(3.2, 1.8, 3.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ptvoa"]
+size = Vector3(3.2, 1.8, 3.2)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_osqku"]
+render_priority = 0
+shader = ExtResource("1_0l2hq")
+shader_parameter/albedo_texture = ExtResource("2_hwscq")
+shader_parameter/tint = Color(0.29803923, 0.5921569, 0.3882353, 1)
+shader_parameter/texture_scale = 1.5
+shader_parameter/texture_inset = null
+shader_parameter/color_steps = null
+
+[sub_resource type="BoxMesh" id="BoxMesh_q08xq"]
+material = SubResource("ShaderMaterial_osqku")
+size = Vector3(3.35, 0.13, 3.3)
+
+[resource]
+item/0/name = ""
+item/0/mesh = SubResource("BoxMesh_8je6s")
+item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, -1.6)
+item/0/mesh_cast_shadow = 1
+item/0/shapes = [SubResource("BoxShape3D_ptvoa"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, -1.6)]
+item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/navigation_layers = 1
+item/1/name = ""
+item/1/mesh = SubResource("BoxMesh_q08xq")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.22, -1.6)
+item/1/mesh_cast_shadow = 1
+item/1/shapes = []
+item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/navigation_layers = 1

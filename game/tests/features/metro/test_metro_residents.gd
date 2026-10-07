@@ -49,7 +49,7 @@ func test_loaded_station_has_sleepers_and_walkers_without_blocking_routes() -> v
 			assert_eq(residents.models[index].avatar.locomotion, &"seated")
 			assert_lt(residents.models[index].avatar._torso.rotation.x, 0.0)
 		if not residents.sleeping[index]:
-			assert_true(point.x == 0 or point.x == 9, "Stay in clear aisle/platform lane")
+			assert_true(point.x == 0 or point.x == 4, "Stay in clear aisle/platform lane")
 			assert_lte(absf(point.z), 55.0)
 	var original := residents.models[2].position
 	zone.unload_room()

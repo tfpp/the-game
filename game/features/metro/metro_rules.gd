@@ -1,8 +1,10 @@
 class_name MetroRules
 extends RefCounted
-## Timetable and coordinate rules. Four services, one stop apart on the same loop.
+## Two directions, each with four services one stop apart around the loop.
 
 const NAMES: Array[String] = ["CROWN", "MARKET", "WORKS", "RESIDENCES"]
+const SERVICES := 8
+const TRACK_SPACING := 16.0
 const OPEN := 1.2
 const DWELL := 12.0
 const CLOSE := 1.2
@@ -41,7 +43,19 @@ static func ride_position(service: int) -> Vector3:
 
 
 static func station(service: int, cycle: int) -> int:
-	return posmod(service + cycle, 4)
+	return posmod(service + cycle * direction(service), 4)
+
+
+static func direction(service: int) -> int:
+	return 1 if service < 4 else -1
+
+
+static func track(service: int) -> int:
+	return 0 if service < 4 else 1
+
+
+static func track_offset(track_index: int) -> Vector3:
+	return Vector3(TRACK_SPACING * track_index, 0, 0)
 
 
 static func aperture(time: float) -> float:
@@ -140,13 +154,17 @@ static func train_hits(
 
 
 ## Departure board text at station `index`, `time` seconds into the cycle.
-static func station_board(index: int, time: float) -> String:
+static func station_board(index: int, time: float, track_index: int = 0) -> String:
 	var status := "DEPARTS IN %02d s" % maxi(0, ceili(OPEN + DWELL - time))
 	if time >= DEPART:
 		status = "NEXT TRAIN %02d s" % ceili(PERIOD - time)
 	elif time >= OPEN + DWELL:
 		status = "DOORS CLOSING"
-	return "%s\nLOOP → %s\n%s" % [NAMES[index], NAMES[(index + 1) % 4], status]
+	var next := posmod(index + (1 if track_index == 0 else -1), 4)
+	return (
+		"%s\n%s → %s\n%s"
+		% [NAMES[index], "UPTOWN" if track_index == 0 else "DOWNTOWN", NAMES[next], status]
+	)
 
 
 static func car_center(index: int) -> float:
@@ -167,8 +185,13 @@ static func car_at(point: Vector3) -> int:
 
 
 static func aboard(point: Vector3, radius: float = 0.4064) -> bool:
+	# Capsule centres include crouching, jumping and standing beside the buckets.
+	# The previous aisle-only box ejected legitimate passengers at the cutoff.
 	return (
-		car_at(point) >= 0 and absf(point.x) <= 1.30 - radius and point.y >= 1.9 and point.y <= 3.0
+		car_at(point) >= 0
+		and absf(point.x) <= TRAIN_HALF_WIDTH - radius - 0.03
+		and point.y >= 1.5
+		and point.y <= 3.45
 	)
 
 
@@ -181,5 +204,5 @@ static func inside_item(point: Vector3) -> bool:
 	return car_at(point) >= 0 and absf(point.x) < 1.30 and point.y > 1.15 and point.y < 3.3
 
 
-static func platform_recovery(point: Vector3) -> Vector3:
-	return Vector3(3.3, 2.15, clampf(point.z, -54, 54))
+static func platform_recovery(point: Vector3, track_index: int = 0) -> Vector3:
+	return Vector3(3.3 if track_index == 0 else -3.3, 2.15, clampf(point.z, -54, 54))

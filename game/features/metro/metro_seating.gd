@@ -59,7 +59,7 @@ func _may_sit(peer: int, payload: Dictionary) -> bool:
 	return (
 		available()
 		and zone.service().alive(rider)
-		and MetroRules.aboard(rider.net_position - zone.global_position)
+		and MetroRules.aboard(rider.net_position - global_position)
 		and not zone.service().transfers.pending.has(peer)
 		and super._may_sit(peer, payload)
 	)

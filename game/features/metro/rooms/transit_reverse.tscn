@@ -1,504 +1,505 @@
 [gd_scene format=4]
 
-[ext_resource type="PackedScene" path="res://features/metro/train_visual.tscn" id="1_vfpr8"]
-[ext_resource type="PackedScene" path="res://features/metro/train_collision.tscn" id="2_skikr"]
-[ext_resource type="MeshLibrary" path="res://features/metro/tunnel_tiles.tres" id="3_r11bn"]
-[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="4_l1qum"]
-[ext_resource type="Shader" path="res://features/metro/passing_surface.gdshader" id="5_osgea"]
-[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/peeling_plaster.png" id="6_wghks"]
-[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/painted_concrete.png" id="7_28e76"]
-[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/brick_wall.png" id="8_ppxcs"]
-[ext_resource type="Material" path="res://features/metro/graffiti.tres" id="9_n3khm"]
-[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/rusted_steel.png" id="10_815cv"]
-[ext_resource type="Material" path="res://features/street_props/materials/bus_stop_bench.tres" id="11_qkr41"]
-[ext_resource type="ArrayMesh" path="res://assets/street_props/models/bus_stop_bench.res" id="12_h5n22"]
+[ext_resource type="PackedScene" path="res://features/metro/train_visual.tscn" id="1_2qelv"]
+[ext_resource type="PackedScene" path="res://features/metro/train_collision.tscn" id="2_8w6qn"]
+[ext_resource type="MeshLibrary" path="res://features/metro/tunnel_reverse_tiles.tres" id="3_ipo0h"]
+[ext_resource type="Script" path="res://features/signage/sign_board.gd" id="4_472tk"]
+[ext_resource type="Shader" path="res://features/metro/passing_surface.gdshader" id="5_0ar7g"]
+[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/peeling_plaster.png" id="6_bxlhu"]
+[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/painted_concrete.png" id="7_1ysrf"]
+[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/brick_wall.png" id="8_knnig"]
+[ext_resource type="Material" path="res://features/metro/graffiti.tres" id="9_e2o5j"]
+[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/rusted_steel.png" id="10_tm7x0"]
+[ext_resource type="Material" path="res://features/street_props/materials/bus_stop_bench.tres" id="11_m3sxj"]
+[ext_resource type="ArrayMesh" path="res://assets/street_props/models/bus_stop_bench.res" id="12_qv2wo"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_j0nsw"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_unknm"]
 render_priority = 0
-shader = ExtResource("5_osgea")
-shader_parameter/albedo_texture = ExtResource("6_wghks")
+shader = ExtResource("5_0ar7g")
+shader_parameter/albedo_texture = ExtResource("6_bxlhu")
 shader_parameter/tint = Color(0.57254905, 0.4509804, 0.26666668, 1)
 shader_parameter/texture_scale = 0.75
 shader_parameter/color_steps = null
 shader_parameter/scroll = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_kd7qu"]
-material = SubResource("ShaderMaterial_j0nsw")
+[sub_resource type="BoxMesh" id="BoxMesh_1m26y"]
+material = SubResource("ShaderMaterial_unknm")
 size = Vector3(0.08, 0.75, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_iyiat"]
-material = SubResource("ShaderMaterial_j0nsw")
+[sub_resource type="BoxMesh" id="BoxMesh_qwoju"]
+material = SubResource("ShaderMaterial_unknm")
 size = Vector3(0.08, 0.75, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_46gaw"]
-material = SubResource("ShaderMaterial_j0nsw")
+[sub_resource type="BoxMesh" id="BoxMesh_uxx53"]
+material = SubResource("ShaderMaterial_unknm")
 size = Vector3(24, 0.14, 0.32)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ewyu"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_27enf"]
 render_priority = 0
-shader = ExtResource("5_osgea")
-shader_parameter/albedo_texture = ExtResource("7_28e76")
+shader = ExtResource("5_0ar7g")
+shader_parameter/albedo_texture = ExtResource("7_1ysrf")
 shader_parameter/tint = Color(0.75686276, 0.72156864, 0.60784316, 1)
 shader_parameter/texture_scale = 0.5
 shader_parameter/color_steps = null
 shader_parameter/scroll = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_2hpoq"]
-material = SubResource("ShaderMaterial_1ewyu")
+[sub_resource type="BoxMesh" id="BoxMesh_fvdnk"]
+material = SubResource("ShaderMaterial_27enf")
 size = Vector3(0.16, 3.6, 1.4)
 
-[sub_resource type="MeshLibrary" id="MeshLibrary_wmfmd"]
+[sub_resource type="MeshLibrary" id="MeshLibrary_p856r"]
 item/0/name = ""
-item/0/mesh = SubResource("BoxMesh_kd7qu")
+item/0/mesh = SubResource("BoxMesh_1m26y")
 item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 4, 0)
 item/0/mesh_cast_shadow = 1
 item/0/shapes = []
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1
 item/1/name = ""
-item/1/mesh = SubResource("BoxMesh_iyiat")
+item/1/mesh = SubResource("BoxMesh_qwoju")
 item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 4, 0)
 item/1/mesh_cast_shadow = 1
 item/1/shapes = []
 item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/1/navigation_layers = 1
 item/2/name = ""
-item/2/mesh = SubResource("BoxMesh_46gaw")
+item/2/mesh = SubResource("BoxMesh_uxx53")
 item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5.21, 0)
 item/2/mesh_cast_shadow = 1
 item/2/shapes = []
 item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/2/navigation_layers = 1
 item/3/name = ""
-item/3/mesh = SubResource("BoxMesh_2hpoq")
+item/3/mesh = SubResource("BoxMesh_fvdnk")
 item/3/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 item/3/mesh_cast_shadow = 1
 item/3/shapes = []
 item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/3/navigation_layers = 1
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_83wxl"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5satu"]
 render_priority = 0
-shader = ExtResource("5_osgea")
-shader_parameter/albedo_texture = ExtResource("6_wghks")
+shader = ExtResource("5_0ar7g")
+shader_parameter/albedo_texture = ExtResource("6_bxlhu")
 shader_parameter/tint = Color(0.5764706, 0.30588236, 0.23137255, 1)
 shader_parameter/texture_scale = 0.75
 shader_parameter/color_steps = null
 shader_parameter/scroll = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_vxnsr"]
-material = SubResource("ShaderMaterial_83wxl")
+[sub_resource type="BoxMesh" id="BoxMesh_0070r"]
+material = SubResource("ShaderMaterial_5satu")
 size = Vector3(0.08, 0.75, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_rlosp"]
-material = SubResource("ShaderMaterial_83wxl")
+[sub_resource type="BoxMesh" id="BoxMesh_1j4yb"]
+material = SubResource("ShaderMaterial_5satu")
 size = Vector3(0.08, 0.75, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_21mwj"]
-material = SubResource("ShaderMaterial_83wxl")
+[sub_resource type="BoxMesh" id="BoxMesh_by41f"]
+material = SubResource("ShaderMaterial_5satu")
 size = Vector3(24, 0.14, 0.32)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7uhn7"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0vlk5"]
 render_priority = 0
-shader = ExtResource("5_osgea")
-shader_parameter/albedo_texture = ExtResource("8_ppxcs")
+shader = ExtResource("5_0ar7g")
+shader_parameter/albedo_texture = ExtResource("8_knnig")
 shader_parameter/tint = Color(0.70980394, 0.5764706, 0.47058824, 1)
 shader_parameter/texture_scale = 0.65
 shader_parameter/color_steps = null
 shader_parameter/scroll = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_4erb8"]
-material = SubResource("ShaderMaterial_7uhn7")
+[sub_resource type="BoxMesh" id="BoxMesh_boch5"]
+material = SubResource("ShaderMaterial_0vlk5")
 size = Vector3(0.1, 2.2, 4)
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_8jy18"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_0phh2"]
 _surfaces = [{
 "aabb": AABB(-0.16, 1.8322034, -1.35, 1e-05, 1.2355933, 2.7),
 "attribute_data": PackedByteArray("AACgPAAART8AAPY+AABFPwAA9j4AAHs/AACgPAAAez8="),
 "format": 34359742487,
 "index_count": 6,
 "index_data": PackedByteArray("AAABAAIAAAACAAMA"),
-"material": ExtResource("9_n3khm"),
+"material": ExtResource("9_e2o5j"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray("CtcjvshWREDNzKy/CtcjvshWREDNzKw/CtcjvqSF6j/NzKw/CtcjvqSF6j/NzKy/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78=")
 }]
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_q0mho"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_xfixm"]
 _surfaces = [{
 "aabb": AABB(-0.16, 1.8322034, -1.35, 1e-05, 1.2355933, 2.7),
 "attribute_data": PackedByteArray("AACgPAAART8AAPY+AABFPwAA9j4AAHs/AACgPAAAez8="),
 "format": 34359742487,
 "index_count": 6,
 "index_data": PackedByteArray("AAABAAIAAAACAAMA"),
-"material": ExtResource("9_n3khm"),
+"material": ExtResource("9_e2o5j"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray("CtcjvshWREDNzKy/CtcjvshWREDNzKw/CtcjvqSF6j/NzKw/CtcjvqSF6j/NzKy/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78=")
 }]
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_yvmm4"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_kogad"]
 _surfaces = [{
 "aabb": AABB(-0.16, 1.8322034, -1.35, 1e-05, 1.2355933, 2.7),
 "attribute_data": PackedByteArray("AACgPAAART8AAPY+AABFPwAA9j4AAHs/AACgPAAAez8="),
 "format": 34359742487,
 "index_count": 6,
 "index_data": PackedByteArray("AAABAAIAAAACAAMA"),
-"material": ExtResource("9_n3khm"),
+"material": ExtResource("9_e2o5j"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray("CtcjvshWREDNzKy/CtcjvshWREDNzKw/CtcjvqSF6j/NzKw/CtcjvqSF6j/NzKy/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78=")
 }]
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_eduee"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_5bui2"]
 _surfaces = [{
 "aabb": AABB(-0.16, 1.8322034, -1.35, 1e-05, 1.2355933, 2.7),
 "attribute_data": PackedByteArray("AACgPAAART8AAPY+AABFPwAA9j4AAHs/AACgPAAAez8="),
 "format": 34359742487,
 "index_count": 6,
 "index_data": PackedByteArray("AAABAAIAAAACAAMA"),
-"material": ExtResource("9_n3khm"),
+"material": ExtResource("9_e2o5j"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray("CtcjvshWREDNzKy/CtcjvshWREDNzKw/CtcjvqSF6j/NzKw/CtcjvqSF6j/NzKy/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78=")
 }]
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_ige70"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_h603l"]
 _surfaces = [{
 "aabb": AABB(-0.16, 1.8322034, -1.35, 1e-05, 1.2355933, 2.7),
 "attribute_data": PackedByteArray("AACgPAAART8AAPY+AABFPwAA9j4AAHs/AACgPAAAez8="),
 "format": 34359742487,
 "index_count": 6,
 "index_data": PackedByteArray("AAABAAIAAAACAAMA"),
-"material": ExtResource("9_n3khm"),
+"material": ExtResource("9_e2o5j"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray("CtcjvshWREDNzKy/CtcjvshWREDNzKw/CtcjvqSF6j/NzKw/CtcjvqSF6j/NzKy/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78=")
 }]
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_23c7v"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_2rt5l"]
 _surfaces = [{
 "aabb": AABB(-0.16, 1.8322034, -1.35, 1e-05, 1.2355933, 2.7),
 "attribute_data": PackedByteArray("AACgPAAAij4AAPY+AACKPgAA9j4AAPY+AACgPAAA9j4="),
 "format": 34359742487,
 "index_count": 6,
 "index_data": PackedByteArray("AAABAAIAAAACAAMA"),
-"material": ExtResource("9_n3khm"),
+"material": ExtResource("9_e2o5j"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray("CtcjvshWREDNzKy/CtcjvshWREDNzKw/CtcjvqSF6j/NzKw/CtcjvqSF6j/NzKy/AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//78=")
 }]
 
-[sub_resource type="MeshLibrary" id="MeshLibrary_0olqg"]
+[sub_resource type="MeshLibrary" id="MeshLibrary_bxtaa"]
 item/0/name = ""
-item/0/mesh = SubResource("BoxMesh_vxnsr")
+item/0/mesh = SubResource("BoxMesh_0070r")
 item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 4, 0)
 item/0/mesh_cast_shadow = 1
 item/0/shapes = []
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1
 item/1/name = ""
-item/1/mesh = SubResource("BoxMesh_rlosp")
+item/1/mesh = SubResource("BoxMesh_1j4yb")
 item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 4, 0)
 item/1/mesh_cast_shadow = 1
 item/1/shapes = []
 item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/1/navigation_layers = 1
 item/2/name = ""
-item/2/mesh = SubResource("BoxMesh_21mwj")
+item/2/mesh = SubResource("BoxMesh_by41f")
 item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5.21, 0)
 item/2/mesh_cast_shadow = 1
 item/2/shapes = []
 item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/2/navigation_layers = 1
 item/3/name = ""
-item/3/mesh = SubResource("BoxMesh_4erb8")
+item/3/mesh = SubResource("BoxMesh_boch5")
 item/3/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 item/3/mesh_cast_shadow = 1
 item/3/shapes = []
 item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/3/navigation_layers = 1
 item/4/name = ""
-item/4/mesh = SubResource("ArrayMesh_8jy18")
+item/4/mesh = SubResource("ArrayMesh_0phh2")
 item/4/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/4/mesh_cast_shadow = 1
 item/4/shapes = []
 item/4/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/4/navigation_layers = 1
 item/5/name = ""
-item/5/mesh = SubResource("ArrayMesh_q0mho")
+item/5/mesh = SubResource("ArrayMesh_xfixm")
 item/5/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/5/mesh_cast_shadow = 1
 item/5/shapes = []
 item/5/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/5/navigation_layers = 1
 item/6/name = ""
-item/6/mesh = SubResource("ArrayMesh_yvmm4")
+item/6/mesh = SubResource("ArrayMesh_kogad")
 item/6/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/6/mesh_cast_shadow = 1
 item/6/shapes = []
 item/6/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/6/navigation_layers = 1
 item/7/name = ""
-item/7/mesh = SubResource("ArrayMesh_eduee")
+item/7/mesh = SubResource("ArrayMesh_5bui2")
 item/7/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/7/mesh_cast_shadow = 1
 item/7/shapes = []
 item/7/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/7/navigation_layers = 1
 item/8/name = ""
-item/8/mesh = SubResource("ArrayMesh_ige70")
+item/8/mesh = SubResource("ArrayMesh_h603l")
 item/8/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/8/mesh_cast_shadow = 1
 item/8/shapes = []
 item/8/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/8/navigation_layers = 1
 item/9/name = ""
-item/9/mesh = SubResource("ArrayMesh_23c7v")
+item/9/mesh = SubResource("ArrayMesh_2rt5l")
 item/9/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/9/mesh_cast_shadow = 1
 item/9/shapes = []
 item/9/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/9/navigation_layers = 1
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ullqk"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yn7rb"]
 render_priority = 0
-shader = ExtResource("5_osgea")
-shader_parameter/albedo_texture = ExtResource("6_wghks")
+shader = ExtResource("5_0ar7g")
+shader_parameter/albedo_texture = ExtResource("6_bxlhu")
 shader_parameter/tint = Color(0.32941177, 0.46666667, 0.5137255, 1)
 shader_parameter/texture_scale = 0.75
 shader_parameter/color_steps = null
 shader_parameter/scroll = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_su506"]
-material = SubResource("ShaderMaterial_ullqk")
+[sub_resource type="BoxMesh" id="BoxMesh_j1wxx"]
+material = SubResource("ShaderMaterial_yn7rb")
 size = Vector3(0.08, 0.75, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_3ug6k"]
-material = SubResource("ShaderMaterial_ullqk")
+[sub_resource type="BoxMesh" id="BoxMesh_r5y4b"]
+material = SubResource("ShaderMaterial_yn7rb")
 size = Vector3(0.08, 0.75, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_554f8"]
-material = SubResource("ShaderMaterial_ullqk")
+[sub_resource type="BoxMesh" id="BoxMesh_1l7cu"]
+material = SubResource("ShaderMaterial_yn7rb")
 size = Vector3(24, 0.14, 0.32)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_pt0js"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hauqc"]
 render_priority = 0
-shader = ExtResource("5_osgea")
-shader_parameter/albedo_texture = ExtResource("10_815cv")
+shader = ExtResource("5_0ar7g")
+shader_parameter/albedo_texture = ExtResource("10_tm7x0")
 shader_parameter/tint = Color(0.43137255, 0.39607844, 0.3137255, 1)
 shader_parameter/texture_scale = 1.0
 shader_parameter/color_steps = null
 shader_parameter/scroll = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_ksqrk"]
-material = SubResource("ShaderMaterial_pt0js")
+[sub_resource type="BoxMesh" id="BoxMesh_ewhmn"]
+material = SubResource("ShaderMaterial_hauqc")
 size = Vector3(0.6, 0.25, 4)
 
-[sub_resource type="BoxMesh" id="BoxMesh_gtxuu"]
-material = SubResource("ShaderMaterial_pt0js")
+[sub_resource type="BoxMesh" id="BoxMesh_h5u21"]
+material = SubResource("ShaderMaterial_hauqc")
 size = Vector3(0.2, 2, 2.6)
 
-[sub_resource type="MeshLibrary" id="MeshLibrary_onrbw"]
+[sub_resource type="MeshLibrary" id="MeshLibrary_pl7oe"]
 item/0/name = ""
-item/0/mesh = SubResource("BoxMesh_su506")
+item/0/mesh = SubResource("BoxMesh_j1wxx")
 item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 4, 0)
 item/0/mesh_cast_shadow = 1
 item/0/shapes = []
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1
 item/1/name = ""
-item/1/mesh = SubResource("BoxMesh_3ug6k")
+item/1/mesh = SubResource("BoxMesh_r5y4b")
 item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 4, 0)
 item/1/mesh_cast_shadow = 1
 item/1/shapes = []
 item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/1/navigation_layers = 1
 item/2/name = ""
-item/2/mesh = SubResource("BoxMesh_554f8")
+item/2/mesh = SubResource("BoxMesh_1l7cu")
 item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5.21, 0)
 item/2/mesh_cast_shadow = 1
 item/2/shapes = []
 item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/2/navigation_layers = 1
 item/3/name = ""
-item/3/mesh = SubResource("BoxMesh_ksqrk")
+item/3/mesh = SubResource("BoxMesh_ewhmn")
 item/3/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.33, 0)
 item/3/mesh_cast_shadow = 1
 item/3/shapes = []
 item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/3/navigation_layers = 1
 item/4/name = ""
-item/4/mesh = SubResource("BoxMesh_gtxuu")
+item/4/mesh = SubResource("BoxMesh_h5u21")
 item/4/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 item/4/mesh_cast_shadow = 1
 item/4/shapes = []
 item/4/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/4/navigation_layers = 1
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_f17b4"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vlkwf"]
 render_priority = 0
-shader = ExtResource("5_osgea")
-shader_parameter/albedo_texture = ExtResource("6_wghks")
+shader = ExtResource("5_0ar7g")
+shader_parameter/albedo_texture = ExtResource("6_bxlhu")
 shader_parameter/tint = Color(0.3137255, 0.4745098, 0.39607844, 1)
 shader_parameter/texture_scale = 0.75
 shader_parameter/color_steps = null
 shader_parameter/scroll = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_4n3fd"]
-material = SubResource("ShaderMaterial_f17b4")
+[sub_resource type="BoxMesh" id="BoxMesh_mnv28"]
+material = SubResource("ShaderMaterial_vlkwf")
 size = Vector3(0.08, 0.75, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_uq725"]
-material = SubResource("ShaderMaterial_f17b4")
+[sub_resource type="BoxMesh" id="BoxMesh_qccil"]
+material = SubResource("ShaderMaterial_vlkwf")
 size = Vector3(0.08, 0.75, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_btu18"]
-material = SubResource("ShaderMaterial_f17b4")
+[sub_resource type="BoxMesh" id="BoxMesh_uu2su"]
+material = SubResource("ShaderMaterial_vlkwf")
 size = Vector3(24, 0.14, 0.32)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_usmpr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4lwk8"]
 render_priority = 0
-shader = ExtResource("5_osgea")
-shader_parameter/albedo_texture = ExtResource("6_wghks")
+shader = ExtResource("5_0ar7g")
+shader_parameter/albedo_texture = ExtResource("6_bxlhu")
 shader_parameter/tint = Color(0.64705884, 0.7254902, 0.6117647, 1)
 shader_parameter/texture_scale = 0.5
 shader_parameter/color_steps = null
 shader_parameter/scroll = null
 
-[sub_resource type="BoxMesh" id="BoxMesh_adg6g"]
-material = SubResource("ShaderMaterial_usmpr")
+[sub_resource type="BoxMesh" id="BoxMesh_07201"]
+material = SubResource("ShaderMaterial_4lwk8")
 size = Vector3(0.12, 2, 3.2)
 
-[sub_resource type="MeshLibrary" id="MeshLibrary_yvxke"]
+[sub_resource type="MeshLibrary" id="MeshLibrary_t43le"]
 item/0/name = ""
-item/0/mesh = SubResource("BoxMesh_4n3fd")
+item/0/mesh = SubResource("BoxMesh_mnv28")
 item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 4, 0)
 item/0/mesh_cast_shadow = 1
 item/0/shapes = []
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1
 item/1/name = ""
-item/1/mesh = SubResource("BoxMesh_uq725")
+item/1/mesh = SubResource("BoxMesh_qccil")
 item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 4, 0)
 item/1/mesh_cast_shadow = 1
 item/1/shapes = []
 item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/1/navigation_layers = 1
 item/2/name = ""
-item/2/mesh = SubResource("BoxMesh_btu18")
+item/2/mesh = SubResource("BoxMesh_uu2su")
 item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5.21, 0)
 item/2/mesh_cast_shadow = 1
 item/2/shapes = []
 item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/2/navigation_layers = 1
 item/3/name = ""
-item/3/mesh = SubResource("BoxMesh_adg6g")
+item/3/mesh = SubResource("BoxMesh_07201")
 item/3/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 item/3/mesh_cast_shadow = 1
 item/3/shapes = []
 item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/3/navigation_layers = 1
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6wnaj"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uxvsd"]
 albedo_color = Color(0.07058824, 0.078431375, 0.078431375, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_0xl3g"]
-material = SubResource("StandardMaterial3D_6wnaj")
+[sub_resource type="BoxMesh" id="BoxMesh_uqg1r"]
+material = SubResource("StandardMaterial3D_uxvsd")
 size = Vector3(0.26, 0.62, 0.24)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nqyel"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5n1wa"]
 albedo_color = Color(1, 0.22745098, 0.16470589, 1)
 emission_enabled = true
 emission = Color(1, 0.22745098, 0.16470589, 1)
 emission_energy_multiplier = 3.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_vpsxq"]
-material = SubResource("StandardMaterial3D_nqyel")
+[sub_resource type="BoxMesh" id="BoxMesh_nkcpj"]
+material = SubResource("StandardMaterial3D_5n1wa")
 size = Vector3(0.05, 0.14, 0.14)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ntdhs"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ucoac"]
 albedo_color = Color(0.22745098, 1, 0.47843137, 1)
 emission_enabled = true
 emission = Color(0.22745098, 1, 0.47843137, 1)
 emission_energy_multiplier = 3.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_tfa7h"]
-material = SubResource("StandardMaterial3D_ntdhs")
+[sub_resource type="BoxMesh" id="BoxMesh_lcyhl"]
+material = SubResource("StandardMaterial3D_ucoac")
 size = Vector3(0.05, 0.14, 0.14)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_my5xc"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_88d8f"]
 albedo_color = Color(0.07058824, 0.078431375, 0.078431375, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_4du82"]
-material = SubResource("StandardMaterial3D_my5xc")
+[sub_resource type="BoxMesh" id="BoxMesh_kinq1"]
+material = SubResource("StandardMaterial3D_88d8f")
 size = Vector3(0.26, 0.62, 0.24)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xyxy2"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0gxdm"]
 albedo_color = Color(1, 0.22745098, 0.16470589, 1)
 emission_enabled = true
 emission = Color(1, 0.22745098, 0.16470589, 1)
 emission_energy_multiplier = 3.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_8ihsb"]
-material = SubResource("StandardMaterial3D_xyxy2")
+[sub_resource type="BoxMesh" id="BoxMesh_d0mrj"]
+material = SubResource("StandardMaterial3D_0gxdm")
 size = Vector3(0.05, 0.14, 0.14)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eem0j"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e2ji2"]
 albedo_color = Color(0.22745098, 1, 0.47843137, 1)
 emission_enabled = true
 emission = Color(0.22745098, 1, 0.47843137, 1)
 emission_energy_multiplier = 3.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_82xey"]
-material = SubResource("StandardMaterial3D_eem0j")
+[sub_resource type="BoxMesh" id="BoxMesh_mnwa0"]
+material = SubResource("StandardMaterial3D_e2ji2")
 size = Vector3(0.05, 0.14, 0.14)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2rk8a"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7p76m"]
 albedo_color = Color(0.07058824, 0.078431375, 0.078431375, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_c2nqt"]
-material = SubResource("StandardMaterial3D_2rk8a")
+[sub_resource type="BoxMesh" id="BoxMesh_kadhw"]
+material = SubResource("StandardMaterial3D_7p76m")
 size = Vector3(0.26, 0.62, 0.24)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eyhn4"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dhklk"]
 albedo_color = Color(1, 0.22745098, 0.16470589, 1)
 emission_enabled = true
 emission = Color(1, 0.22745098, 0.16470589, 1)
 emission_energy_multiplier = 3.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_6ehkb"]
-material = SubResource("StandardMaterial3D_eyhn4")
+[sub_resource type="BoxMesh" id="BoxMesh_u2a4q"]
+material = SubResource("StandardMaterial3D_dhklk")
 size = Vector3(0.05, 0.14, 0.14)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mts3t"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vwfpx"]
 albedo_color = Color(0.22745098, 1, 0.47843137, 1)
 emission_enabled = true
 emission = Color(0.22745098, 1, 0.47843137, 1)
 emission_energy_multiplier = 3.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_gtg3f"]
-material = SubResource("StandardMaterial3D_mts3t")
+[sub_resource type="BoxMesh" id="BoxMesh_iinic"]
+material = SubResource("StandardMaterial3D_vwfpx")
 size = Vector3(0.05, 0.14, 0.14)
 
-[node name="TransitInterior" type="Node3D" unique_id=218989786]
+[node name="TransitInterior" type="Node3D" unique_id=854286495]
 
-[node name="Train" type="Node3D" parent="." unique_id=669714117 instance=ExtResource("1_vfpr8")]
+[node name="Train" type="Node3D" parent="." unique_id=669714117 instance=ExtResource("1_2qelv")]
 
-[node name="TrainCollision" type="Node3D" parent="." unique_id=11885347 instance=ExtResource("2_skikr")]
+[node name="TrainCollision" type="Node3D" parent="." unique_id=419397530 instance=ExtResource("2_8w6qn")]
 
-[node name="Scenery" type="Node3D" parent="." unique_id=2014354579]
+[node name="Scenery" type="Node3D" parent="." unique_id=1057138971]
 
 [node name="Departure" type="Node3D" parent="Scenery" unique_id=356083388]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 0)
 
 [node name="Platform" type="GridMap" parent="Scenery/Departure" unique_id=26474642]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -510,7 +511,7 @@ data = {
 }
 
 [node name="Walls" type="GridMap" parent="Scenery/Departure" unique_id=36650160]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -522,7 +523,7 @@ data = {
 }
 
 [node name="Ceiling" type="GridMap" parent="Scenery/Departure" unique_id=1022021645]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -534,7 +535,7 @@ data = {
 }
 
 [node name="YellowLine" type="GridMap" parent="Scenery/Departure" unique_id=1170178647]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -546,7 +547,7 @@ data = {
 }
 
 [node name="Columns" type="GridMap" parent="Scenery/Departure" unique_id=1631335895]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -558,7 +559,7 @@ data = {
 }
 
 [node name="WallBand" type="GridMap" parent="Scenery/Departure" unique_id=823940137]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -570,7 +571,7 @@ data = {
 }
 
 [node name="FluorescentTubes" type="GridMap" parent="Scenery/Departure" unique_id=486815014]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -582,7 +583,7 @@ data = {
 }
 
 [node name="CeilingBeams" type="GridMap" parent="Scenery/Departure" unique_id=651054964]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -649,7 +650,7 @@ light_energy = 1.05
 omni_range = 11.0
 
 [node name="PlatformEnds" type="GridMap" parent="Scenery/Departure" unique_id=671422126]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -661,7 +662,7 @@ data = {
 }
 
 [node name="DepartureBoards" type="GridMap" parent="Scenery/Departure" unique_id=635157971]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -744,12 +745,12 @@ font_size = 48
 
 [node name="@Node3D@16" type="Node3D" parent="Scenery/Departure" unique_id=1510594605]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 6.25, 4.6, 0)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "EXIT ELEVATORS"
 letter_height = 0.18
 
 [node name="ReverseDepartureBoards" type="GridMap" parent="Scenery/Departure" unique_id=633007749]
-mesh_library = ExtResource("3_r11bn")
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -835,7 +836,7 @@ font_size = 48
 [node name="Station0" type="Node3D" parent="Scenery/Departure/Identity" unique_id=831506400]
 
 [node name="StationBand" type="GridMap" parent="Scenery/Departure/Identity/Station0" unique_id=1818517399]
-mesh_library = SubResource("MeshLibrary_wmfmd")
+mesh_library = SubResource("MeshLibrary_p856r")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -847,7 +848,7 @@ data = {
 }
 
 [node name="BeamTrim" type="GridMap" parent="Scenery/Departure/Identity/Station0" unique_id=749226154]
-mesh_library = SubResource("MeshLibrary_wmfmd")
+mesh_library = SubResource("MeshLibrary_p856r")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -860,66 +861,66 @@ data = {
 
 [node name="@Node3D@17" type="Node3D" parent="Scenery/Departure/Identity/Station0" unique_id=1703740576]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
 [node name="@Node3D@18" type="Node3D" parent="Scenery/Departure/Identity/Station0" unique_id=573868307]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
 [node name="@Node3D@19" type="Node3D" parent="Scenery/Departure/Identity/Station0" unique_id=1452733540]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
 [node name="@Node3D@20" type="Node3D" parent="Scenery/Departure/Identity/Station0" unique_id=1427768118]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
 [node name="@Node3D@21" type="Node3D" parent="Scenery/Departure/Identity/Station0" unique_id=215241530]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
 [node name="@Node3D@22" type="Node3D" parent="Scenery/Departure/Identity/Station0" unique_id=590319799]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
 [node name="@Node3D@23" type="Node3D" parent="Scenery/Departure/Identity/Station0" unique_id=240148461]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
 [node name="@Node3D@24" type="Node3D" parent="Scenery/Departure/Identity/Station0" unique_id=754124369]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
 [node name="@Node3D@25" type="Node3D" parent="Scenery/Departure/Identity/Station0" unique_id=675437587]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, -36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "THE GOLDEN CROWN
 OPEN ALL NIGHT"
 
 [node name="@Node3D@26" type="Node3D" parent="Scenery/Departure/Identity/Station0" unique_id=1607572078]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, 36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "THE GOLDEN CROWN
 OPEN ALL NIGHT"
 
 [node name="Details" type="GridMap" parent="Scenery/Departure/Identity/Station0" unique_id=727889955]
-mesh_library = SubResource("MeshLibrary_wmfmd")
+mesh_library = SubResource("MeshLibrary_p856r")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -934,7 +935,7 @@ data = {
 visible = false
 
 [node name="StationBand" type="GridMap" parent="Scenery/Departure/Identity/Station1" unique_id=1507946955]
-mesh_library = SubResource("MeshLibrary_0olqg")
+mesh_library = SubResource("MeshLibrary_bxtaa")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -946,7 +947,7 @@ data = {
 }
 
 [node name="BeamTrim" type="GridMap" parent="Scenery/Departure/Identity/Station1" unique_id=277366214]
-mesh_library = SubResource("MeshLibrary_0olqg")
+mesh_library = SubResource("MeshLibrary_bxtaa")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -959,66 +960,66 @@ data = {
 
 [node name="@Node3D@27" type="Node3D" parent="Scenery/Departure/Identity/Station1" unique_id=1319229914]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
 [node name="@Node3D@28" type="Node3D" parent="Scenery/Departure/Identity/Station1" unique_id=1309573451]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
 [node name="@Node3D@29" type="Node3D" parent="Scenery/Departure/Identity/Station1" unique_id=1263023132]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
 [node name="@Node3D@30" type="Node3D" parent="Scenery/Departure/Identity/Station1" unique_id=1497773214]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
 [node name="@Node3D@31" type="Node3D" parent="Scenery/Departure/Identity/Station1" unique_id=1968898745]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
 [node name="@Node3D@32" type="Node3D" parent="Scenery/Departure/Identity/Station1" unique_id=1072174760]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
 [node name="@Node3D@33" type="Node3D" parent="Scenery/Departure/Identity/Station1" unique_id=1544566629]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
 [node name="@Node3D@34" type="Node3D" parent="Scenery/Departure/Identity/Station1" unique_id=904774015]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
 [node name="@Node3D@35" type="Node3D" parent="Scenery/Departure/Identity/Station1" unique_id=1407877439]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, -36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET STREET
 SPACE TO LET"
 
 [node name="@Node3D@36" type="Node3D" parent="Scenery/Departure/Identity/Station1" unique_id=2130385938]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, 36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET STREET
 SPACE TO LET"
 
 [node name="Details" type="GridMap" parent="Scenery/Departure/Identity/Station1" unique_id=493651016]
-mesh_library = SubResource("MeshLibrary_0olqg")
+mesh_library = SubResource("MeshLibrary_bxtaa")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1033,7 +1034,7 @@ data = {
 visible = false
 
 [node name="StationBand" type="GridMap" parent="Scenery/Departure/Identity/Station2" unique_id=597955540]
-mesh_library = SubResource("MeshLibrary_onrbw")
+mesh_library = SubResource("MeshLibrary_pl7oe")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1045,7 +1046,7 @@ data = {
 }
 
 [node name="BeamTrim" type="GridMap" parent="Scenery/Departure/Identity/Station2" unique_id=1798710868]
-mesh_library = SubResource("MeshLibrary_onrbw")
+mesh_library = SubResource("MeshLibrary_pl7oe")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1058,66 +1059,66 @@ data = {
 
 [node name="@Node3D@37" type="Node3D" parent="Scenery/Departure/Identity/Station2" unique_id=1381180209]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
 [node name="@Node3D@38" type="Node3D" parent="Scenery/Departure/Identity/Station2" unique_id=1124725145]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
 [node name="@Node3D@39" type="Node3D" parent="Scenery/Departure/Identity/Station2" unique_id=1990130296]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
 [node name="@Node3D@40" type="Node3D" parent="Scenery/Departure/Identity/Station2" unique_id=49582884]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
 [node name="@Node3D@41" type="Node3D" parent="Scenery/Departure/Identity/Station2" unique_id=1105085773]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
 [node name="@Node3D@42" type="Node3D" parent="Scenery/Departure/Identity/Station2" unique_id=1972325502]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
 [node name="@Node3D@43" type="Node3D" parent="Scenery/Departure/Identity/Station2" unique_id=785311722]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
 [node name="@Node3D@44" type="Node3D" parent="Scenery/Departure/Identity/Station2" unique_id=1394464524]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
 [node name="@Node3D@45" type="Node3D" parent="Scenery/Departure/Identity/Station2" unique_id=847013275]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, -36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS / SERVICE LINE
 AUTHORIZED PERSONNEL ONLY"
 
 [node name="@Node3D@46" type="Node3D" parent="Scenery/Departure/Identity/Station2" unique_id=461889773]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, 36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS / SERVICE LINE
 AUTHORIZED PERSONNEL ONLY"
 
 [node name="Details" type="GridMap" parent="Scenery/Departure/Identity/Station2" unique_id=733738742]
-mesh_library = SubResource("MeshLibrary_onrbw")
+mesh_library = SubResource("MeshLibrary_pl7oe")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1132,7 +1133,7 @@ data = {
 visible = false
 
 [node name="StationBand" type="GridMap" parent="Scenery/Departure/Identity/Station3" unique_id=289359611]
-mesh_library = SubResource("MeshLibrary_yvxke")
+mesh_library = SubResource("MeshLibrary_t43le")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1144,7 +1145,7 @@ data = {
 }
 
 [node name="BeamTrim" type="GridMap" parent="Scenery/Departure/Identity/Station3" unique_id=1384830459]
-mesh_library = SubResource("MeshLibrary_yvxke")
+mesh_library = SubResource("MeshLibrary_t43le")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1157,66 +1158,66 @@ data = {
 
 [node name="@Node3D@47" type="Node3D" parent="Scenery/Departure/Identity/Station3" unique_id=1571372494]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
 [node name="@Node3D@48" type="Node3D" parent="Scenery/Departure/Identity/Station3" unique_id=1796299652]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
 [node name="@Node3D@49" type="Node3D" parent="Scenery/Departure/Identity/Station3" unique_id=1236000503]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
 [node name="@Node3D@50" type="Node3D" parent="Scenery/Departure/Identity/Station3" unique_id=957418983]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
 [node name="@Node3D@51" type="Node3D" parent="Scenery/Departure/Identity/Station3" unique_id=348084439]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
 [node name="@Node3D@52" type="Node3D" parent="Scenery/Departure/Identity/Station3" unique_id=38519710]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
 [node name="@Node3D@53" type="Node3D" parent="Scenery/Departure/Identity/Station3" unique_id=1010239346]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
 [node name="@Node3D@54" type="Node3D" parent="Scenery/Departure/Identity/Station3" unique_id=462427737]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
 [node name="@Node3D@55" type="Node3D" parent="Scenery/Departure/Identity/Station3" unique_id=358396003]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, -36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES
 PLEASE KEEP IT DOWN"
 
 [node name="@Node3D@56" type="Node3D" parent="Scenery/Departure/Identity/Station3" unique_id=423962221]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, 36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES
 PLEASE KEEP IT DOWN"
 
 [node name="Details" type="GridMap" parent="Scenery/Departure/Identity/Station3" unique_id=312200830]
-mesh_library = SubResource("MeshLibrary_yvxke")
+mesh_library = SubResource("MeshLibrary_t43le")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1229,29 +1230,29 @@ data = {
 
 [node name="Bench0" type="MeshInstance3D" parent="Scenery/Departure" unique_id=1300844090]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 11, 1.2, -42)
-material_override = ExtResource("11_qkr41")
-mesh = ExtResource("12_h5n22")
+material_override = ExtResource("11_m3sxj")
+mesh = ExtResource("12_qv2wo")
 
 [node name="Bench1" type="MeshInstance3D" parent="Scenery/Departure" unique_id=1706344214]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 11, 1.2, -30)
-material_override = ExtResource("11_qkr41")
-mesh = ExtResource("12_h5n22")
+material_override = ExtResource("11_m3sxj")
+mesh = ExtResource("12_qv2wo")
 
 [node name="Bench2" type="MeshInstance3D" parent="Scenery/Departure" unique_id=1251262043]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 11, 1.2, 30)
-material_override = ExtResource("11_qkr41")
-mesh = ExtResource("12_h5n22")
+material_override = ExtResource("11_m3sxj")
+mesh = ExtResource("12_qv2wo")
 
 [node name="Bench3" type="MeshInstance3D" parent="Scenery/Departure" unique_id=1044296883]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 11, 1.2, 42)
-material_override = ExtResource("11_qkr41")
-mesh = ExtResource("12_h5n22")
+material_override = ExtResource("11_m3sxj")
+mesh = ExtResource("12_qv2wo")
 
-[node name="Arrival" type="Node3D" parent="Scenery" unique_id=989234257]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -300)
+[node name="Arrival" type="Node3D" parent="Scenery" unique_id=1144455708]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 300)
 
-[node name="Platform" type="GridMap" parent="Scenery/Arrival" unique_id=1914799675]
-mesh_library = ExtResource("3_r11bn")
+[node name="Platform" type="GridMap" parent="Scenery/Arrival" unique_id=612197327]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1262,8 +1263,8 @@ data = {
 "cells": PackedInt32Array(3, 65470, 0, 5, 65470, 0, 7, 65470, 0, 9, 65470, 0, 11, 65470, 0, 13, 65470, 0, 3, 65472, 0, 5, 65472, 0, 7, 65472, 0, 9, 65472, 0, 11, 65472, 0, 13, 65472, 0, 3, 65474, 0, 5, 65474, 0, 7, 65474, 0, 9, 65474, 0, 11, 65474, 0, 13, 65474, 0, 3, 65476, 0, 5, 65476, 0, 7, 65476, 0, 9, 65476, 0, 11, 65476, 0, 13, 65476, 0, 3, 65478, 0, 5, 65478, 0, 7, 65478, 0, 9, 65478, 0, 11, 65478, 0, 13, 65478, 0, 3, 65480, 0, 5, 65480, 0, 7, 65480, 0, 9, 65480, 0, 11, 65480, 0, 13, 65480, 0, 3, 65482, 0, 5, 65482, 0, 7, 65482, 0, 9, 65482, 0, 11, 65482, 0, 13, 65482, 0, 3, 65484, 0, 5, 65484, 0, 7, 65484, 0, 9, 65484, 0, 11, 65484, 0, 13, 65484, 0, 3, 65486, 0, 5, 65486, 0, 7, 65486, 0, 9, 65486, 0, 11, 65486, 0, 13, 65486, 0, 3, 65488, 0, 5, 65488, 0, 7, 65488, 0, 9, 65488, 0, 11, 65488, 0, 13, 65488, 0, 3, 65490, 0, 5, 65490, 0, 7, 65490, 0, 9, 65490, 0, 11, 65490, 0, 13, 65490, 0, 3, 65492, 0, 5, 65492, 0, 7, 65492, 0, 9, 65492, 0, 11, 65492, 0, 13, 65492, 0, 3, 65494, 0, 5, 65494, 0, 7, 65494, 0, 9, 65494, 0, 11, 65494, 0, 13, 65494, 0, 3, 65496, 0, 5, 65496, 0, 7, 65496, 0, 9, 65496, 0, 11, 65496, 0, 13, 65496, 0, 3, 65498, 0, 5, 65498, 0, 7, 65498, 0, 9, 65498, 0, 11, 65498, 0, 13, 65498, 0, 3, 65500, 0, 5, 65500, 0, 7, 65500, 0, 9, 65500, 0, 11, 65500, 0, 13, 65500, 0, 3, 65502, 0, 5, 65502, 0, 7, 65502, 0, 9, 65502, 0, 11, 65502, 0, 13, 65502, 0, 3, 65504, 0, 5, 65504, 0, 7, 65504, 0, 9, 65504, 0, 11, 65504, 0, 13, 65504, 0, 3, 65506, 0, 5, 65506, 0, 7, 65506, 0, 9, 65506, 0, 11, 65506, 0, 13, 65506, 0, 3, 65508, 0, 5, 65508, 0, 7, 65508, 0, 9, 65508, 0, 11, 65508, 0, 13, 65508, 0, 3, 65510, 0, 5, 65510, 0, 7, 65510, 0, 9, 65510, 0, 11, 65510, 0, 13, 65510, 0, 3, 65512, 0, 5, 65512, 0, 7, 65512, 0, 9, 65512, 0, 11, 65512, 0, 13, 65512, 0, 3, 65514, 0, 5, 65514, 0, 7, 65514, 0, 9, 65514, 0, 11, 65514, 0, 13, 65514, 0, 3, 65516, 0, 5, 65516, 0, 7, 65516, 0, 9, 65516, 0, 11, 65516, 0, 13, 65516, 0, 3, 65518, 0, 5, 65518, 0, 7, 65518, 0, 9, 65518, 0, 11, 65518, 0, 13, 65518, 0, 3, 65520, 0, 5, 65520, 0, 7, 65520, 0, 9, 65520, 0, 11, 65520, 0, 13, 65520, 0, 3, 65522, 0, 5, 65522, 0, 7, 65522, 0, 9, 65522, 0, 11, 65522, 0, 13, 65522, 0, 3, 65524, 0, 5, 65524, 0, 7, 65524, 0, 9, 65524, 0, 11, 65524, 0, 13, 65524, 0, 3, 65526, 0, 5, 65526, 0, 7, 65526, 0, 9, 65526, 0, 11, 65526, 0, 13, 65526, 0, 3, 65528, 0, 5, 65528, 0, 7, 65528, 0, 9, 65528, 0, 11, 65528, 0, 13, 65528, 0, 3, 65530, 0, 5, 65530, 0, 7, 65530, 0, 9, 65530, 0, 11, 65530, 0, 13, 65530, 0, 3, 65532, 0, 5, 65532, 0, 7, 65532, 0, 9, 65532, 0, 11, 65532, 0, 13, 65532, 0, 3, 65534, 0, 5, 65534, 0, 7, 65534, 0, 9, 65534, 0, 11, 65534, 0, 13, 65534, 0, 3, 0, 0, 5, 0, 0, 7, 0, 0, 9, 0, 0, 11, 0, 0, 13, 0, 0, 3, 2, 0, 5, 2, 0, 7, 2, 0, 9, 2, 0, 11, 2, 0, 13, 2, 0, 3, 4, 0, 5, 4, 0, 7, 4, 0, 9, 4, 0, 11, 4, 0, 13, 4, 0, 3, 6, 0, 5, 6, 0, 7, 6, 0, 9, 6, 0, 11, 6, 0, 13, 6, 0, 3, 8, 0, 5, 8, 0, 7, 8, 0, 9, 8, 0, 11, 8, 0, 13, 8, 0, 3, 10, 0, 5, 10, 0, 7, 10, 0, 9, 10, 0, 11, 10, 0, 13, 10, 0, 3, 12, 0, 5, 12, 0, 7, 12, 0, 9, 12, 0, 11, 12, 0, 13, 12, 0, 3, 14, 0, 5, 14, 0, 7, 14, 0, 9, 14, 0, 11, 14, 0, 13, 14, 0, 3, 16, 0, 5, 16, 0, 7, 16, 0, 9, 16, 0, 11, 16, 0, 13, 16, 0, 3, 18, 0, 5, 18, 0, 7, 18, 0, 9, 18, 0, 11, 18, 0, 13, 18, 0, 3, 20, 0, 5, 20, 0, 7, 20, 0, 9, 20, 0, 11, 20, 0, 13, 20, 0, 3, 22, 0, 5, 22, 0, 7, 22, 0, 9, 22, 0, 11, 22, 0, 13, 22, 0, 3, 24, 0, 5, 24, 0, 7, 24, 0, 9, 24, 0, 11, 24, 0, 13, 24, 0, 3, 26, 0, 5, 26, 0, 7, 26, 0, 9, 26, 0, 11, 26, 0, 13, 26, 0, 3, 28, 0, 5, 28, 0, 7, 28, 0, 9, 28, 0, 11, 28, 0, 13, 28, 0, 3, 30, 0, 5, 30, 0, 7, 30, 0, 9, 30, 0, 11, 30, 0, 13, 30, 0, 3, 32, 0, 5, 32, 0, 7, 32, 0, 9, 32, 0, 11, 32, 0, 13, 32, 0, 3, 34, 0, 5, 34, 0, 7, 34, 0, 9, 34, 0, 11, 34, 0, 13, 34, 0, 3, 36, 0, 5, 36, 0, 7, 36, 0, 9, 36, 0, 11, 36, 0, 13, 36, 0, 3, 38, 0, 5, 38, 0, 7, 38, 0, 9, 38, 0, 11, 38, 0, 13, 38, 0, 3, 40, 0, 5, 40, 0, 7, 40, 0, 9, 40, 0, 11, 40, 0, 13, 40, 0, 3, 42, 0, 5, 42, 0, 7, 42, 0, 9, 42, 0, 11, 42, 0, 13, 42, 0, 3, 44, 0, 5, 44, 0, 7, 44, 0, 9, 44, 0, 11, 44, 0, 13, 44, 0, 3, 46, 0, 5, 46, 0, 7, 46, 0, 9, 46, 0, 11, 46, 0, 13, 46, 0, 3, 48, 0, 5, 48, 0, 7, 48, 0, 9, 48, 0, 11, 48, 0, 13, 48, 0, 3, 50, 0, 5, 50, 0, 7, 50, 0, 9, 50, 0, 11, 50, 0, 13, 50, 0, 3, 52, 0, 5, 52, 0, 7, 52, 0, 9, 52, 0, 11, 52, 0, 13, 52, 0, 3, 54, 0, 5, 54, 0, 7, 54, 0, 9, 54, 0, 11, 54, 0, 13, 54, 0, 3, 56, 0, 5, 56, 0, 7, 56, 0, 9, 56, 0, 11, 56, 0, 13, 56, 0, 3, 58, 0, 5, 58, 0, 7, 58, 0, 9, 58, 0, 11, 58, 0, 13, 58, 0, 3, 60, 0, 5, 60, 0, 7, 60, 0, 9, 60, 0, 11, 60, 0, 13, 60, 0, 3, 62, 0, 5, 62, 0, 7, 62, 0, 9, 62, 0, 11, 62, 0, 13, 62, 0, 3, 64, 0, 5, 64, 0, 7, 64, 0, 9, 64, 0, 11, 64, 0, 13, 64, 0, 3, 66, 0, 5, 66, 0, 7, 66, 0, 9, 66, 0, 11, 66, 0, 13, 66, 0)
 }
 
-[node name="Walls" type="GridMap" parent="Scenery/Arrival" unique_id=2055645507]
-mesh_library = ExtResource("3_r11bn")
+[node name="Walls" type="GridMap" parent="Scenery/Arrival" unique_id=712097462]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1274,8 +1275,8 @@ data = {
 "cells": PackedInt32Array(65532, 65470, 1, 20, 65470, 1, 65532, 65472, 1, 20, 65472, 1, 65532, 65474, 1, 20, 65474, 1, 65532, 65476, 1, 20, 65476, 1, 65532, 65478, 1, 20, 65478, 1, 65532, 65480, 1, 20, 65480, 1, 65532, 65482, 1, 20, 65482, 1, 65532, 65484, 1, 20, 65484, 1, 65532, 65486, 1, 20, 65486, 1, 65532, 65488, 1, 20, 65488, 1, 65532, 65490, 1, 20, 65490, 1, 65532, 65492, 1, 20, 65492, 1, 65532, 65494, 1, 20, 65494, 1, 65532, 65496, 1, 20, 65496, 1, 65532, 65498, 1, 20, 65498, 1, 65532, 65500, 1, 20, 65500, 1, 65532, 65502, 1, 20, 65502, 1, 65532, 65504, 1, 20, 65504, 1, 65532, 65506, 1, 20, 65506, 1, 65532, 65508, 1, 20, 65508, 1, 65532, 65510, 1, 20, 65510, 1, 65532, 65512, 1, 20, 65512, 1, 65532, 65514, 1, 20, 65514, 1, 65532, 65516, 1, 20, 65516, 1, 65532, 65518, 1, 20, 65518, 1, 65532, 65520, 1, 20, 65520, 1, 65532, 65522, 1, 20, 65522, 1, 65532, 65524, 1, 20, 65524, 1, 65532, 65526, 1, 20, 65526, 1, 65532, 65528, 1, 20, 65528, 1, 65532, 65530, 1, 20, 65530, 1, 65532, 65532, 1, 20, 65532, 1, 65532, 65534, 1, 20, 65534, 1, 65532, 0, 1, 20, 0, 1, 65532, 2, 1, 20, 2, 1, 65532, 4, 1, 20, 4, 1, 65532, 6, 1, 20, 6, 1, 65532, 8, 1, 20, 8, 1, 65532, 10, 1, 20, 10, 1, 65532, 12, 1, 20, 12, 1, 65532, 14, 1, 20, 14, 1, 65532, 16, 1, 20, 16, 1, 65532, 18, 1, 20, 18, 1, 65532, 20, 1, 20, 20, 1, 65532, 22, 1, 20, 22, 1, 65532, 24, 1, 20, 24, 1, 65532, 26, 1, 20, 26, 1, 65532, 28, 1, 20, 28, 1, 65532, 30, 1, 20, 30, 1, 65532, 32, 1, 20, 32, 1, 65532, 34, 1, 20, 34, 1, 65532, 36, 1, 20, 36, 1, 65532, 38, 1, 20, 38, 1, 65532, 40, 1, 20, 40, 1, 65532, 42, 1, 20, 42, 1, 65532, 44, 1, 20, 44, 1, 65532, 46, 1, 20, 46, 1, 65532, 48, 1, 20, 48, 1, 65532, 50, 1, 20, 50, 1, 65532, 52, 1, 20, 52, 1, 65532, 54, 1, 20, 54, 1, 65532, 56, 1, 20, 56, 1, 65532, 58, 1, 20, 58, 1, 65532, 60, 1, 20, 60, 1, 65532, 62, 1, 20, 62, 1, 65532, 64, 1, 20, 64, 1, 65532, 66, 1, 20, 66, 1)
 }
 
-[node name="Ceiling" type="GridMap" parent="Scenery/Arrival" unique_id=1118807095]
-mesh_library = ExtResource("3_r11bn")
+[node name="Ceiling" type="GridMap" parent="Scenery/Arrival" unique_id=289402118]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1286,8 +1287,8 @@ data = {
 "cells": PackedInt32Array(65533, 65470, 2, 65535, 65470, 2, 1, 65470, 2, 3, 65470, 2, 5, 65470, 2, 7, 65470, 2, 9, 65470, 2, 11, 65470, 2, 13, 65470, 2, 15, 65470, 2, 17, 65470, 2, 19, 65470, 2, 65533, 65472, 2, 65535, 65472, 2, 1, 65472, 2, 3, 65472, 2, 5, 65472, 2, 7, 65472, 2, 9, 65472, 2, 11, 65472, 2, 13, 65472, 2, 15, 65472, 2, 17, 65472, 2, 19, 65472, 2, 65533, 65474, 2, 65535, 65474, 2, 1, 65474, 2, 3, 65474, 2, 5, 65474, 2, 7, 65474, 2, 9, 65474, 2, 11, 65474, 2, 13, 65474, 2, 15, 65474, 2, 17, 65474, 2, 19, 65474, 2, 65533, 65476, 2, 65535, 65476, 2, 1, 65476, 2, 3, 65476, 2, 5, 65476, 2, 7, 65476, 2, 9, 65476, 2, 11, 65476, 2, 13, 65476, 2, 15, 65476, 2, 17, 65476, 2, 19, 65476, 2, 65533, 65478, 2, 65535, 65478, 2, 1, 65478, 2, 3, 65478, 2, 5, 65478, 2, 7, 65478, 2, 9, 65478, 2, 11, 65478, 2, 13, 65478, 2, 15, 65478, 2, 17, 65478, 2, 19, 65478, 2, 65533, 65480, 2, 65535, 65480, 2, 1, 65480, 2, 3, 65480, 2, 5, 65480, 2, 7, 65480, 2, 9, 65480, 2, 11, 65480, 2, 13, 65480, 2, 15, 65480, 2, 17, 65480, 2, 19, 65480, 2, 65533, 65482, 2, 65535, 65482, 2, 1, 65482, 2, 3, 65482, 2, 5, 65482, 2, 7, 65482, 2, 9, 65482, 2, 11, 65482, 2, 13, 65482, 2, 15, 65482, 2, 17, 65482, 2, 19, 65482, 2, 65533, 65484, 2, 65535, 65484, 2, 1, 65484, 2, 3, 65484, 2, 5, 65484, 2, 7, 65484, 2, 9, 65484, 2, 11, 65484, 2, 13, 65484, 2, 15, 65484, 2, 17, 65484, 2, 19, 65484, 2, 65533, 65486, 2, 65535, 65486, 2, 1, 65486, 2, 3, 65486, 2, 5, 65486, 2, 7, 65486, 2, 9, 65486, 2, 11, 65486, 2, 13, 65486, 2, 15, 65486, 2, 17, 65486, 2, 19, 65486, 2, 65533, 65488, 2, 65535, 65488, 2, 1, 65488, 2, 3, 65488, 2, 5, 65488, 2, 7, 65488, 2, 9, 65488, 2, 11, 65488, 2, 13, 65488, 2, 15, 65488, 2, 17, 65488, 2, 19, 65488, 2, 65533, 65490, 2, 65535, 65490, 2, 1, 65490, 2, 3, 65490, 2, 5, 65490, 2, 7, 65490, 2, 9, 65490, 2, 11, 65490, 2, 13, 65490, 2, 15, 65490, 2, 17, 65490, 2, 19, 65490, 2, 65533, 65492, 2, 65535, 65492, 2, 1, 65492, 2, 3, 65492, 2, 5, 65492, 2, 7, 65492, 2, 9, 65492, 2, 11, 65492, 2, 13, 65492, 2, 15, 65492, 2, 17, 65492, 2, 19, 65492, 2, 65533, 65494, 2, 65535, 65494, 2, 1, 65494, 2, 3, 65494, 2, 5, 65494, 2, 7, 65494, 2, 9, 65494, 2, 11, 65494, 2, 13, 65494, 2, 15, 65494, 2, 17, 65494, 2, 19, 65494, 2, 65533, 65496, 2, 65535, 65496, 2, 1, 65496, 2, 3, 65496, 2, 5, 65496, 2, 7, 65496, 2, 9, 65496, 2, 11, 65496, 2, 13, 65496, 2, 15, 65496, 2, 17, 65496, 2, 19, 65496, 2, 65533, 65498, 2, 65535, 65498, 2, 1, 65498, 2, 3, 65498, 2, 5, 65498, 2, 7, 65498, 2, 9, 65498, 2, 11, 65498, 2, 13, 65498, 2, 15, 65498, 2, 17, 65498, 2, 19, 65498, 2, 65533, 65500, 2, 65535, 65500, 2, 1, 65500, 2, 3, 65500, 2, 5, 65500, 2, 7, 65500, 2, 9, 65500, 2, 11, 65500, 2, 13, 65500, 2, 15, 65500, 2, 17, 65500, 2, 19, 65500, 2, 65533, 65502, 2, 65535, 65502, 2, 1, 65502, 2, 3, 65502, 2, 5, 65502, 2, 7, 65502, 2, 9, 65502, 2, 11, 65502, 2, 13, 65502, 2, 15, 65502, 2, 17, 65502, 2, 19, 65502, 2, 65533, 65504, 2, 65535, 65504, 2, 1, 65504, 2, 3, 65504, 2, 5, 65504, 2, 7, 65504, 2, 9, 65504, 2, 11, 65504, 2, 13, 65504, 2, 15, 65504, 2, 17, 65504, 2, 19, 65504, 2, 65533, 65506, 2, 65535, 65506, 2, 1, 65506, 2, 3, 65506, 2, 5, 65506, 2, 7, 65506, 2, 9, 65506, 2, 11, 65506, 2, 13, 65506, 2, 15, 65506, 2, 17, 65506, 2, 19, 65506, 2, 65533, 65508, 2, 65535, 65508, 2, 1, 65508, 2, 3, 65508, 2, 5, 65508, 2, 7, 65508, 2, 9, 65508, 2, 11, 65508, 2, 13, 65508, 2, 15, 65508, 2, 17, 65508, 2, 19, 65508, 2, 65533, 65510, 2, 65535, 65510, 2, 1, 65510, 2, 3, 65510, 2, 5, 65510, 2, 7, 65510, 2, 9, 65510, 2, 11, 65510, 2, 13, 65510, 2, 15, 65510, 2, 17, 65510, 2, 19, 65510, 2, 65533, 65512, 2, 65535, 65512, 2, 1, 65512, 2, 3, 65512, 2, 5, 65512, 2, 7, 65512, 2, 9, 65512, 2, 11, 65512, 2, 13, 65512, 2, 15, 65512, 2, 17, 65512, 2, 19, 65512, 2, 65533, 65514, 2, 65535, 65514, 2, 1, 65514, 2, 3, 65514, 2, 5, 65514, 2, 7, 65514, 2, 9, 65514, 2, 11, 65514, 2, 13, 65514, 2, 15, 65514, 2, 17, 65514, 2, 19, 65514, 2, 65533, 65516, 2, 65535, 65516, 2, 1, 65516, 2, 3, 65516, 2, 5, 65516, 2, 7, 65516, 2, 9, 65516, 2, 11, 65516, 2, 13, 65516, 2, 15, 65516, 2, 17, 65516, 2, 19, 65516, 2, 65533, 65518, 2, 65535, 65518, 2, 1, 65518, 2, 3, 65518, 2, 5, 65518, 2, 7, 65518, 2, 9, 65518, 2, 11, 65518, 2, 13, 65518, 2, 15, 65518, 2, 17, 65518, 2, 19, 65518, 2, 65533, 65520, 2, 65535, 65520, 2, 1, 65520, 2, 3, 65520, 2, 5, 65520, 2, 7, 65520, 2, 9, 65520, 2, 11, 65520, 2, 13, 65520, 2, 15, 65520, 2, 17, 65520, 2, 19, 65520, 2, 65533, 65522, 2, 65535, 65522, 2, 1, 65522, 2, 3, 65522, 2, 5, 65522, 2, 7, 65522, 2, 9, 65522, 2, 11, 65522, 2, 13, 65522, 2, 15, 65522, 2, 17, 65522, 2, 19, 65522, 2, 65533, 65524, 2, 65535, 65524, 2, 1, 65524, 2, 3, 65524, 2, 5, 65524, 2, 7, 65524, 2, 9, 65524, 2, 11, 65524, 2, 13, 65524, 2, 15, 65524, 2, 17, 65524, 2, 19, 65524, 2, 65533, 65526, 2, 65535, 65526, 2, 1, 65526, 2, 3, 65526, 2, 5, 65526, 2, 7, 65526, 2, 9, 65526, 2, 11, 65526, 2, 13, 65526, 2, 15, 65526, 2, 17, 65526, 2, 19, 65526, 2, 65533, 65528, 2, 65535, 65528, 2, 1, 65528, 2, 3, 65528, 2, 5, 65528, 2, 7, 65528, 2, 9, 65528, 2, 11, 65528, 2, 13, 65528, 2, 15, 65528, 2, 17, 65528, 2, 19, 65528, 2, 65533, 65530, 2, 65535, 65530, 2, 1, 65530, 2, 3, 65530, 2, 5, 65530, 2, 7, 65530, 2, 9, 65530, 2, 11, 65530, 2, 13, 65530, 2, 15, 65530, 2, 17, 65530, 2, 19, 65530, 2, 65533, 65532, 2, 65535, 65532, 2, 1, 65532, 2, 3, 65532, 2, 5, 65532, 2, 7, 65532, 2, 9, 65532, 2, 11, 65532, 2, 13, 65532, 2, 15, 65532, 2, 17, 65532, 2, 19, 65532, 2, 65533, 65534, 2, 65535, 65534, 2, 1, 65534, 2, 3, 65534, 2, 5, 65534, 2, 7, 65534, 2, 9, 65534, 2, 11, 65534, 2, 13, 65534, 2, 15, 65534, 2, 17, 65534, 2, 19, 65534, 2, 65533, 0, 2, 65535, 0, 2, 1, 0, 2, 3, 0, 2, 5, 0, 2, 7, 0, 2, 9, 0, 2, 11, 0, 2, 13, 0, 2, 15, 0, 2, 17, 0, 2, 19, 0, 2, 65533, 2, 2, 65535, 2, 2, 1, 2, 2, 3, 2, 2, 5, 2, 2, 7, 2, 2, 9, 2, 2, 11, 2, 2, 13, 2, 2, 15, 2, 2, 17, 2, 2, 19, 2, 2, 65533, 4, 2, 65535, 4, 2, 1, 4, 2, 3, 4, 2, 5, 4, 2, 7, 4, 2, 9, 4, 2, 11, 4, 2, 13, 4, 2, 15, 4, 2, 17, 4, 2, 19, 4, 2, 65533, 6, 2, 65535, 6, 2, 1, 6, 2, 3, 6, 2, 5, 6, 2, 7, 6, 2, 9, 6, 2, 11, 6, 2, 13, 6, 2, 15, 6, 2, 17, 6, 2, 19, 6, 2, 65533, 8, 2, 65535, 8, 2, 1, 8, 2, 3, 8, 2, 5, 8, 2, 7, 8, 2, 9, 8, 2, 11, 8, 2, 13, 8, 2, 15, 8, 2, 17, 8, 2, 19, 8, 2, 65533, 10, 2, 65535, 10, 2, 1, 10, 2, 3, 10, 2, 5, 10, 2, 7, 10, 2, 9, 10, 2, 11, 10, 2, 13, 10, 2, 15, 10, 2, 17, 10, 2, 19, 10, 2, 65533, 12, 2, 65535, 12, 2, 1, 12, 2, 3, 12, 2, 5, 12, 2, 7, 12, 2, 9, 12, 2, 11, 12, 2, 13, 12, 2, 15, 12, 2, 17, 12, 2, 19, 12, 2, 65533, 14, 2, 65535, 14, 2, 1, 14, 2, 3, 14, 2, 5, 14, 2, 7, 14, 2, 9, 14, 2, 11, 14, 2, 13, 14, 2, 15, 14, 2, 17, 14, 2, 19, 14, 2, 65533, 16, 2, 65535, 16, 2, 1, 16, 2, 3, 16, 2, 5, 16, 2, 7, 16, 2, 9, 16, 2, 11, 16, 2, 13, 16, 2, 15, 16, 2, 17, 16, 2, 19, 16, 2, 65533, 18, 2, 65535, 18, 2, 1, 18, 2, 3, 18, 2, 5, 18, 2, 7, 18, 2, 9, 18, 2, 11, 18, 2, 13, 18, 2, 15, 18, 2, 17, 18, 2, 19, 18, 2, 65533, 20, 2, 65535, 20, 2, 1, 20, 2, 3, 20, 2, 5, 20, 2, 7, 20, 2, 9, 20, 2, 11, 20, 2, 13, 20, 2, 15, 20, 2, 17, 20, 2, 19, 20, 2, 65533, 22, 2, 65535, 22, 2, 1, 22, 2, 3, 22, 2, 5, 22, 2, 7, 22, 2, 9, 22, 2, 11, 22, 2, 13, 22, 2, 15, 22, 2, 17, 22, 2, 19, 22, 2, 65533, 24, 2, 65535, 24, 2, 1, 24, 2, 3, 24, 2, 5, 24, 2, 7, 24, 2, 9, 24, 2, 11, 24, 2, 13, 24, 2, 15, 24, 2, 17, 24, 2, 19, 24, 2, 65533, 26, 2, 65535, 26, 2, 1, 26, 2, 3, 26, 2, 5, 26, 2, 7, 26, 2, 9, 26, 2, 11, 26, 2, 13, 26, 2, 15, 26, 2, 17, 26, 2, 19, 26, 2, 65533, 28, 2, 65535, 28, 2, 1, 28, 2, 3, 28, 2, 5, 28, 2, 7, 28, 2, 9, 28, 2, 11, 28, 2, 13, 28, 2, 15, 28, 2, 17, 28, 2, 19, 28, 2, 65533, 30, 2, 65535, 30, 2, 1, 30, 2, 3, 30, 2, 5, 30, 2, 7, 30, 2, 9, 30, 2, 11, 30, 2, 13, 30, 2, 15, 30, 2, 17, 30, 2, 19, 30, 2, 65533, 32, 2, 65535, 32, 2, 1, 32, 2, 3, 32, 2, 5, 32, 2, 7, 32, 2, 9, 32, 2, 11, 32, 2, 13, 32, 2, 15, 32, 2, 17, 32, 2, 19, 32, 2, 65533, 34, 2, 65535, 34, 2, 1, 34, 2, 3, 34, 2, 5, 34, 2, 7, 34, 2, 9, 34, 2, 11, 34, 2, 13, 34, 2, 15, 34, 2, 17, 34, 2, 19, 34, 2, 65533, 36, 2, 65535, 36, 2, 1, 36, 2, 3, 36, 2, 5, 36, 2, 7, 36, 2, 9, 36, 2, 11, 36, 2, 13, 36, 2, 15, 36, 2, 17, 36, 2, 19, 36, 2, 65533, 38, 2, 65535, 38, 2, 1, 38, 2, 3, 38, 2, 5, 38, 2, 7, 38, 2, 9, 38, 2, 11, 38, 2, 13, 38, 2, 15, 38, 2, 17, 38, 2, 19, 38, 2, 65533, 40, 2, 65535, 40, 2, 1, 40, 2, 3, 40, 2, 5, 40, 2, 7, 40, 2, 9, 40, 2, 11, 40, 2, 13, 40, 2, 15, 40, 2, 17, 40, 2, 19, 40, 2, 65533, 42, 2, 65535, 42, 2, 1, 42, 2, 3, 42, 2, 5, 42, 2, 7, 42, 2, 9, 42, 2, 11, 42, 2, 13, 42, 2, 15, 42, 2, 17, 42, 2, 19, 42, 2, 65533, 44, 2, 65535, 44, 2, 1, 44, 2, 3, 44, 2, 5, 44, 2, 7, 44, 2, 9, 44, 2, 11, 44, 2, 13, 44, 2, 15, 44, 2, 17, 44, 2, 19, 44, 2, 65533, 46, 2, 65535, 46, 2, 1, 46, 2, 3, 46, 2, 5, 46, 2, 7, 46, 2, 9, 46, 2, 11, 46, 2, 13, 46, 2, 15, 46, 2, 17, 46, 2, 19, 46, 2, 65533, 48, 2, 65535, 48, 2, 1, 48, 2, 3, 48, 2, 5, 48, 2, 7, 48, 2, 9, 48, 2, 11, 48, 2, 13, 48, 2, 15, 48, 2, 17, 48, 2, 19, 48, 2, 65533, 50, 2, 65535, 50, 2, 1, 50, 2, 3, 50, 2, 5, 50, 2, 7, 50, 2, 9, 50, 2, 11, 50, 2, 13, 50, 2, 15, 50, 2, 17, 50, 2, 19, 50, 2, 65533, 52, 2, 65535, 52, 2, 1, 52, 2, 3, 52, 2, 5, 52, 2, 7, 52, 2, 9, 52, 2, 11, 52, 2, 13, 52, 2, 15, 52, 2, 17, 52, 2, 19, 52, 2, 65533, 54, 2, 65535, 54, 2, 1, 54, 2, 3, 54, 2, 5, 54, 2, 7, 54, 2, 9, 54, 2, 11, 54, 2, 13, 54, 2, 15, 54, 2, 17, 54, 2, 19, 54, 2, 65533, 56, 2, 65535, 56, 2, 1, 56, 2, 3, 56, 2, 5, 56, 2, 7, 56, 2, 9, 56, 2, 11, 56, 2, 13, 56, 2, 15, 56, 2, 17, 56, 2, 19, 56, 2, 65533, 58, 2, 65535, 58, 2, 1, 58, 2, 3, 58, 2, 5, 58, 2, 7, 58, 2, 9, 58, 2, 11, 58, 2, 13, 58, 2, 15, 58, 2, 17, 58, 2, 19, 58, 2, 65533, 60, 2, 65535, 60, 2, 1, 60, 2, 3, 60, 2, 5, 60, 2, 7, 60, 2, 9, 60, 2, 11, 60, 2, 13, 60, 2, 15, 60, 2, 17, 60, 2, 19, 60, 2, 65533, 62, 2, 65535, 62, 2, 1, 62, 2, 3, 62, 2, 5, 62, 2, 7, 62, 2, 9, 62, 2, 11, 62, 2, 13, 62, 2, 15, 62, 2, 17, 62, 2, 19, 62, 2, 65533, 64, 2, 65535, 64, 2, 1, 64, 2, 3, 64, 2, 5, 64, 2, 7, 64, 2, 9, 64, 2, 11, 64, 2, 13, 64, 2, 15, 64, 2, 17, 64, 2, 19, 64, 2, 65533, 66, 2, 65535, 66, 2, 1, 66, 2, 3, 66, 2, 5, 66, 2, 7, 66, 2, 9, 66, 2, 11, 66, 2, 13, 66, 2, 15, 66, 2, 17, 66, 2, 19, 66, 2)
 }
 
-[node name="YellowLine" type="GridMap" parent="Scenery/Arrival" unique_id=757680626]
-mesh_library = ExtResource("3_r11bn")
+[node name="YellowLine" type="GridMap" parent="Scenery/Arrival" unique_id=1188001861]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1298,8 +1299,8 @@ data = {
 "cells": PackedInt32Array(2, 65470, 3, 14, 65470, 3, 2, 65472, 3, 14, 65472, 3, 2, 65474, 3, 14, 65474, 3, 2, 65476, 3, 14, 65476, 3, 2, 65478, 3, 14, 65478, 3, 2, 65480, 3, 14, 65480, 3, 2, 65482, 3, 14, 65482, 3, 2, 65484, 3, 14, 65484, 3, 2, 65486, 3, 14, 65486, 3, 2, 65488, 3, 14, 65488, 3, 2, 65490, 3, 14, 65490, 3, 2, 65492, 3, 14, 65492, 3, 2, 65494, 3, 14, 65494, 3, 2, 65496, 3, 14, 65496, 3, 2, 65498, 3, 14, 65498, 3, 2, 65500, 3, 14, 65500, 3, 2, 65502, 3, 14, 65502, 3, 2, 65504, 3, 14, 65504, 3, 2, 65506, 3, 14, 65506, 3, 2, 65508, 3, 14, 65508, 3, 2, 65510, 3, 14, 65510, 3, 2, 65512, 3, 14, 65512, 3, 2, 65514, 3, 14, 65514, 3, 2, 65516, 3, 14, 65516, 3, 2, 65518, 3, 14, 65518, 3, 2, 65520, 3, 14, 65520, 3, 2, 65522, 3, 14, 65522, 3, 2, 65524, 3, 14, 65524, 3, 2, 65526, 3, 14, 65526, 3, 2, 65528, 3, 14, 65528, 3, 2, 65530, 3, 14, 65530, 3, 2, 65532, 3, 14, 65532, 3, 2, 65534, 3, 14, 65534, 3, 2, 0, 3, 14, 0, 3, 2, 2, 3, 14, 2, 3, 2, 4, 3, 14, 4, 3, 2, 6, 3, 14, 6, 3, 2, 8, 3, 14, 8, 3, 2, 10, 3, 14, 10, 3, 2, 12, 3, 14, 12, 3, 2, 14, 3, 14, 14, 3, 2, 16, 3, 14, 16, 3, 2, 18, 3, 14, 18, 3, 2, 20, 3, 14, 20, 3, 2, 22, 3, 14, 22, 3, 2, 24, 3, 14, 24, 3, 2, 26, 3, 14, 26, 3, 2, 28, 3, 14, 28, 3, 2, 30, 3, 14, 30, 3, 2, 32, 3, 14, 32, 3, 2, 34, 3, 14, 34, 3, 2, 36, 3, 14, 36, 3, 2, 38, 3, 14, 38, 3, 2, 40, 3, 14, 40, 3, 2, 42, 3, 14, 42, 3, 2, 44, 3, 14, 44, 3, 2, 46, 3, 14, 46, 3, 2, 48, 3, 14, 48, 3, 2, 50, 3, 14, 50, 3, 2, 52, 3, 14, 52, 3, 2, 54, 3, 14, 54, 3, 2, 56, 3, 14, 56, 3, 2, 58, 3, 14, 58, 3, 2, 60, 3, 14, 60, 3, 2, 62, 3, 14, 62, 3, 2, 64, 3, 14, 64, 3, 2, 66, 3, 14, 66, 3)
 }
 
-[node name="Columns" type="GridMap" parent="Scenery/Arrival" unique_id=388383452]
-mesh_library = ExtResource("3_r11bn")
+[node name="Columns" type="GridMap" parent="Scenery/Arrival" unique_id=1674136207]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1310,8 +1311,8 @@ data = {
 "cells": PackedInt32Array(8, 65476, 4, 8, 65488, 4, 8, 65500, 4, 8, 36, 4, 8, 48, 4, 8, 60, 4)
 }
 
-[node name="WallBand" type="GridMap" parent="Scenery/Arrival" unique_id=296044559]
-mesh_library = ExtResource("3_r11bn")
+[node name="WallBand" type="GridMap" parent="Scenery/Arrival" unique_id=392504483]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1322,8 +1323,8 @@ data = {
 "cells": PackedInt32Array(65533, 65470, 7, 65533, 65472, 7, 65533, 65474, 7, 65533, 65476, 7, 65533, 65478, 7, 65533, 65480, 7, 65533, 65482, 7, 65533, 65484, 7, 65533, 65486, 7, 65533, 65488, 7, 65533, 65490, 7, 65533, 65492, 7, 65533, 65494, 7, 65533, 65496, 7, 65533, 65498, 7, 65533, 65500, 7, 65533, 65502, 7, 65533, 65504, 7, 65533, 65506, 7, 65533, 65508, 7, 65533, 65510, 7, 65533, 65512, 7, 65533, 65514, 7, 65533, 65516, 7, 65533, 65518, 7, 65533, 65520, 7, 65533, 65522, 7, 65533, 65524, 7, 65533, 65526, 7, 65533, 65528, 7, 65533, 65530, 7, 65533, 65532, 7, 65533, 65534, 7, 65533, 0, 7, 65533, 2, 7, 65533, 4, 7, 65533, 6, 7, 65533, 8, 7, 65533, 10, 7, 65533, 12, 7, 65533, 14, 7, 65533, 16, 7, 65533, 18, 7, 65533, 20, 7, 65533, 22, 7, 65533, 24, 7, 65533, 26, 7, 65533, 28, 7, 65533, 30, 7, 65533, 32, 7, 65533, 34, 7, 65533, 36, 7, 65533, 38, 7, 65533, 40, 7, 65533, 42, 7, 65533, 44, 7, 65533, 46, 7, 65533, 48, 7, 65533, 50, 7, 65533, 52, 7, 65533, 54, 7, 65533, 56, 7, 65533, 58, 7, 65533, 60, 7, 65533, 62, 7, 65533, 64, 7, 65533, 66, 7)
 }
 
-[node name="FluorescentTubes" type="GridMap" parent="Scenery/Arrival" unique_id=79223923]
-mesh_library = ExtResource("3_r11bn")
+[node name="FluorescentTubes" type="GridMap" parent="Scenery/Arrival" unique_id=577760690]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1334,8 +1335,8 @@ data = {
 "cells": PackedInt32Array(4, 65476, 11, 12, 65476, 11, 4, 65488, 11, 12, 65488, 11, 4, 65500, 11, 12, 65500, 11, 4, 65512, 11, 12, 65512, 11, 4, 65524, 11, 12, 65524, 11, 4, 0, 11, 12, 0, 11, 4, 12, 11, 12, 12, 11, 4, 24, 11, 12, 24, 11, 4, 36, 11, 12, 36, 11, 4, 48, 11, 12, 48, 11, 4, 60, 11, 12, 60, 11)
 }
 
-[node name="CeilingBeams" type="GridMap" parent="Scenery/Arrival" unique_id=500811924]
-mesh_library = ExtResource("3_r11bn")
+[node name="CeilingBeams" type="GridMap" parent="Scenery/Arrival" unique_id=1250074780]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1346,63 +1347,63 @@ data = {
 "cells": PackedInt32Array(0, 65476, 12, 0, 65488, 12, 0, 65500, 12, 0, 65512, 12, 0, 65524, 12, 0, 0, 12, 0, 12, 12, 0, 24, 12, 0, 36, 12, 0, 48, 12, 0, 60, 12)
 }
 
-[node name="@OmniLight3D@2" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1371383649]
+[node name="@OmniLight3D@2" type="OmniLight3D" parent="Scenery/Arrival" unique_id=689350678]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, -60)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="@OmniLight3D@3" type="OmniLight3D" parent="Scenery/Arrival" unique_id=340003968]
+[node name="@OmniLight3D@3" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1729191978]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, -48)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="@OmniLight3D@4" type="OmniLight3D" parent="Scenery/Arrival" unique_id=235914589]
+[node name="@OmniLight3D@4" type="OmniLight3D" parent="Scenery/Arrival" unique_id=796167898]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, -36)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="@OmniLight3D@5" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1131032805]
+[node name="@OmniLight3D@5" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1252606122]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, -24)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="@OmniLight3D@6" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1107435266]
+[node name="@OmniLight3D@6" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1810393853]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, -12)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="@OmniLight3D@7" type="OmniLight3D" parent="Scenery/Arrival" unique_id=242040464]
+[node name="@OmniLight3D@7" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1359787538]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, 0)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="@OmniLight3D@8" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1367989224]
+[node name="@OmniLight3D@8" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1521650307]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, 12)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="@OmniLight3D@9" type="OmniLight3D" parent="Scenery/Arrival" unique_id=530793137]
+[node name="@OmniLight3D@9" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1792436443]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, 24)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="@OmniLight3D@10" type="OmniLight3D" parent="Scenery/Arrival" unique_id=921444255]
+[node name="@OmniLight3D@10" type="OmniLight3D" parent="Scenery/Arrival" unique_id=2087530045]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, 36)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="@OmniLight3D@11" type="OmniLight3D" parent="Scenery/Arrival" unique_id=210806073]
+[node name="@OmniLight3D@11" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1460484993]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, 48)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="@OmniLight3D@12" type="OmniLight3D" parent="Scenery/Arrival" unique_id=789414473]
+[node name="@OmniLight3D@12" type="OmniLight3D" parent="Scenery/Arrival" unique_id=1394699426]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4.4, 60)
 light_energy = 1.05
 omni_range = 11.0
 
-[node name="PlatformEnds" type="GridMap" parent="Scenery/Arrival" unique_id=1012112840]
-mesh_library = ExtResource("3_r11bn")
+[node name="PlatformEnds" type="GridMap" parent="Scenery/Arrival" unique_id=1250170192]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1413,8 +1414,8 @@ data = {
 "cells": PackedInt32Array(3, 65469, 1048577, 5, 65469, 1048577, 7, 65469, 1048577, 9, 65469, 1048577, 11, 65469, 1048577, 13, 65469, 1048577, 3, 67, 1048577, 5, 67, 1048577, 7, 67, 1048577, 9, 67, 1048577, 11, 67, 1048577, 13, 67, 1048577)
 }
 
-[node name="DepartureBoards" type="GridMap" parent="Scenery/Arrival" unique_id=474382822]
-mesh_library = ExtResource("3_r11bn")
+[node name="DepartureBoards" type="GridMap" parent="Scenery/Arrival" unique_id=1750632197]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1425,84 +1426,84 @@ data = {
 "cells": PackedInt32Array(0, 65488, 13, 0, 65512, 13, 0, 0, 13, 0, 24, 13, 0, 48, 13)
 }
 
-[node name="Board-48_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1579418966]
+[node name="Board-48_-1" type="Label3D" parent="Scenery/Arrival" unique_id=458666480]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.5, 4.4, -48.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.8666667, 0.83137256, 0.67058825, 1)
 font_size = 48
 
-[node name="Board-48_1" type="Label3D" parent="Scenery/Arrival" unique_id=33684048]
+[node name="Board-48_1" type="Label3D" parent="Scenery/Arrival" unique_id=524040293]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 4.4, -47.93)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.8666667, 0.83137256, 0.67058825, 1)
 font_size = 48
 
-[node name="Board-24_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1520545288]
+[node name="Board-24_-1" type="Label3D" parent="Scenery/Arrival" unique_id=82467605]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.5, 4.4, -24.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.8666667, 0.83137256, 0.67058825, 1)
 font_size = 48
 
-[node name="Board-24_1" type="Label3D" parent="Scenery/Arrival" unique_id=199638274]
+[node name="Board-24_1" type="Label3D" parent="Scenery/Arrival" unique_id=1608659005]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 4.4, -23.93)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.8666667, 0.83137256, 0.67058825, 1)
 font_size = 48
 
-[node name="Board0_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1213507191]
+[node name="Board0_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1494863495]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.5, 4.4, -0.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.8666667, 0.83137256, 0.67058825, 1)
 font_size = 48
 
-[node name="Board" type="Label3D" parent="Scenery/Arrival" unique_id=1812294800]
+[node name="Board" type="Label3D" parent="Scenery/Arrival" unique_id=1470265640]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 4.4, 0.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.8666667, 0.83137256, 0.67058825, 1)
 font_size = 48
 
-[node name="Board24_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1282221784]
+[node name="Board24_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1335005060]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.5, 4.4, 23.93)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.8666667, 0.83137256, 0.67058825, 1)
 font_size = 48
 
-[node name="Board24_1" type="Label3D" parent="Scenery/Arrival" unique_id=1297440642]
+[node name="Board24_1" type="Label3D" parent="Scenery/Arrival" unique_id=571510221]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 4.4, 24.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.8666667, 0.83137256, 0.67058825, 1)
 font_size = 48
 
-[node name="Board48_-1" type="Label3D" parent="Scenery/Arrival" unique_id=981287781]
+[node name="Board48_-1" type="Label3D" parent="Scenery/Arrival" unique_id=545059316]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 4.5, 4.4, 47.93)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.8666667, 0.83137256, 0.67058825, 1)
 font_size = 48
 
-[node name="Board48_1" type="Label3D" parent="Scenery/Arrival" unique_id=518581076]
+[node name="Board48_1" type="Label3D" parent="Scenery/Arrival" unique_id=1183724343]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 4.4, 48.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.8666667, 0.83137256, 0.67058825, 1)
 font_size = 48
 
-[node name="@Node3D@16" type="Node3D" parent="Scenery/Arrival" unique_id=253354087]
+[node name="@Node3D@16" type="Node3D" parent="Scenery/Arrival" unique_id=1834324927]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 6.25, 4.6, 0)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "EXIT ELEVATORS"
 letter_height = 0.18
 
-[node name="ReverseDepartureBoards" type="GridMap" parent="Scenery/Arrival" unique_id=1653148779]
-mesh_library = ExtResource("3_r11bn")
+[node name="ReverseDepartureBoards" type="GridMap" parent="Scenery/Arrival" unique_id=2106913970]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1513,82 +1514,82 @@ data = {
 "cells": PackedInt32Array(7, 65488, 13, 7, 65512, 13, 7, 0, 13, 7, 24, 13, 7, 48, 13)
 }
 
-[node name="BoardReverse-48_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1554313237]
+[node name="BoardReverse-48_-1" type="Label3D" parent="Scenery/Arrival" unique_id=418259380]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 11.5, 4.4, -48.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.76862746, 0.8235294, 0.7882353, 1)
 font_size = 48
 
-[node name="BoardReverse-48_1" type="Label3D" parent="Scenery/Arrival" unique_id=1855211712]
+[node name="BoardReverse-48_1" type="Label3D" parent="Scenery/Arrival" unique_id=915967804]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 4.4, -47.93)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.76862746, 0.8235294, 0.7882353, 1)
 font_size = 48
 
-[node name="BoardReverse-24_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1436636813]
+[node name="BoardReverse-24_-1" type="Label3D" parent="Scenery/Arrival" unique_id=822818710]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 11.5, 4.4, -24.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.76862746, 0.8235294, 0.7882353, 1)
 font_size = 48
 
-[node name="BoardReverse-24_1" type="Label3D" parent="Scenery/Arrival" unique_id=1527114744]
+[node name="BoardReverse-24_1" type="Label3D" parent="Scenery/Arrival" unique_id=576574595]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 4.4, -23.93)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.76862746, 0.8235294, 0.7882353, 1)
 font_size = 48
 
-[node name="BoardReverse0_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1630897321]
+[node name="BoardReverse0_-1" type="Label3D" parent="Scenery/Arrival" unique_id=2005256971]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 11.5, 4.4, -0.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.76862746, 0.8235294, 0.7882353, 1)
 font_size = 48
 
-[node name="BoardReverse0_1" type="Label3D" parent="Scenery/Arrival" unique_id=548959888]
+[node name="BoardReverse0_1" type="Label3D" parent="Scenery/Arrival" unique_id=132446363]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 4.4, 0.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.76862746, 0.8235294, 0.7882353, 1)
 font_size = 48
 
-[node name="BoardReverse24_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1354008143]
+[node name="BoardReverse24_-1" type="Label3D" parent="Scenery/Arrival" unique_id=1849667092]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 11.5, 4.4, 23.93)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.76862746, 0.8235294, 0.7882353, 1)
 font_size = 48
 
-[node name="BoardReverse24_1" type="Label3D" parent="Scenery/Arrival" unique_id=681615284]
+[node name="BoardReverse24_1" type="Label3D" parent="Scenery/Arrival" unique_id=178072053]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 4.4, 24.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.76862746, 0.8235294, 0.7882353, 1)
 font_size = 48
 
-[node name="BoardReverse48_-1" type="Label3D" parent="Scenery/Arrival" unique_id=2131909896]
+[node name="BoardReverse48_-1" type="Label3D" parent="Scenery/Arrival" unique_id=2100450473]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 11.5, 4.4, 47.93)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.76862746, 0.8235294, 0.7882353, 1)
 font_size = 48
 
-[node name="BoardReverse48_1" type="Label3D" parent="Scenery/Arrival" unique_id=1911427713]
+[node name="BoardReverse48_1" type="Label3D" parent="Scenery/Arrival" unique_id=1305816896]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 4.4, 48.07)
 pixel_size = 0.008
 double_sided = false
 modulate = Color(0.76862746, 0.8235294, 0.7882353, 1)
 font_size = 48
 
-[node name="Identity" type="Node3D" parent="Scenery/Arrival" unique_id=1629975891]
+[node name="Identity" type="Node3D" parent="Scenery/Arrival" unique_id=235864715]
 
-[node name="Station0" type="Node3D" parent="Scenery/Arrival/Identity" unique_id=277929176]
+[node name="Station0" type="Node3D" parent="Scenery/Arrival/Identity" unique_id=369544796]
 
-[node name="StationBand" type="GridMap" parent="Scenery/Arrival/Identity/Station0" unique_id=133848281]
-mesh_library = SubResource("MeshLibrary_wmfmd")
+[node name="StationBand" type="GridMap" parent="Scenery/Arrival/Identity/Station0" unique_id=1210338837]
+mesh_library = SubResource("MeshLibrary_p856r")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1599,8 +1600,8 @@ data = {
 "cells": PackedInt32Array(65532, 65470, 0, 20, 65470, 1, 65532, 65472, 0, 20, 65472, 1, 65532, 65474, 0, 20, 65474, 1, 65532, 65476, 0, 20, 65476, 1, 65532, 65478, 0, 20, 65478, 1, 65532, 65480, 0, 20, 65480, 1, 65532, 65482, 0, 20, 65482, 1, 65532, 65484, 0, 20, 65484, 1, 65532, 65486, 0, 20, 65486, 1, 65532, 65488, 0, 20, 65488, 1, 65532, 65490, 0, 20, 65490, 1, 65532, 65492, 0, 20, 65492, 1, 65532, 65494, 0, 20, 65494, 1, 65532, 65496, 0, 20, 65496, 1, 65532, 65498, 0, 20, 65498, 1, 65532, 65500, 0, 20, 65500, 1, 65532, 65502, 0, 20, 65502, 1, 65532, 65504, 0, 20, 65504, 1, 65532, 65506, 0, 20, 65506, 1, 65532, 65508, 0, 20, 65508, 1, 65532, 65510, 0, 20, 65510, 1, 65532, 65512, 0, 20, 65512, 1, 65532, 65514, 0, 20, 65514, 1, 65532, 65516, 0, 20, 65516, 1, 65532, 65518, 0, 20, 65518, 1, 65532, 65520, 0, 20, 65520, 1, 65532, 65522, 0, 20, 65522, 1, 65532, 65524, 0, 20, 65524, 1, 65532, 65526, 0, 20, 65526, 1, 65532, 65528, 0, 20, 65528, 1, 65532, 65530, 0, 20, 65530, 1, 65532, 65532, 0, 20, 65532, 1, 65532, 65534, 0, 20, 65534, 1, 65532, 0, 0, 20, 0, 1, 65532, 2, 0, 20, 2, 1, 65532, 4, 0, 20, 4, 1, 65532, 6, 0, 20, 6, 1, 65532, 8, 0, 20, 8, 1, 65532, 10, 0, 20, 10, 1, 65532, 12, 0, 20, 12, 1, 65532, 14, 0, 20, 14, 1, 65532, 16, 0, 20, 16, 1, 65532, 18, 0, 20, 18, 1, 65532, 20, 0, 20, 20, 1, 65532, 22, 0, 20, 22, 1, 65532, 24, 0, 20, 24, 1, 65532, 26, 0, 20, 26, 1, 65532, 28, 0, 20, 28, 1, 65532, 30, 0, 20, 30, 1, 65532, 32, 0, 20, 32, 1, 65532, 34, 0, 20, 34, 1, 65532, 36, 0, 20, 36, 1, 65532, 38, 0, 20, 38, 1, 65532, 40, 0, 20, 40, 1, 65532, 42, 0, 20, 42, 1, 65532, 44, 0, 20, 44, 1, 65532, 46, 0, 20, 46, 1, 65532, 48, 0, 20, 48, 1, 65532, 50, 0, 20, 50, 1, 65532, 52, 0, 20, 52, 1, 65532, 54, 0, 20, 54, 1, 65532, 56, 0, 20, 56, 1, 65532, 58, 0, 20, 58, 1, 65532, 60, 0, 20, 60, 1, 65532, 62, 0, 20, 62, 1, 65532, 64, 0, 20, 64, 1, 65532, 66, 0, 20, 66, 1)
 }
 
-[node name="BeamTrim" type="GridMap" parent="Scenery/Arrival/Identity/Station0" unique_id=1475386661]
-mesh_library = SubResource("MeshLibrary_wmfmd")
+[node name="BeamTrim" type="GridMap" parent="Scenery/Arrival/Identity/Station0" unique_id=780248608]
+mesh_library = SubResource("MeshLibrary_p856r")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1611,68 +1612,68 @@ data = {
 "cells": PackedInt32Array(0, 65476, 2, 0, 65488, 2, 0, 65500, 2, 0, 65512, 2, 0, 65524, 2, 0, 0, 2, 0, 12, 2, 0, 24, 2, 0, 36, 2, 0, 48, 2, 0, 60, 2)
 }
 
-[node name="@Node3D@17" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=1148515078]
+[node name="@Node3D@17" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=2097659614]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
-[node name="@Node3D@18" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=1181172873]
+[node name="@Node3D@18" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=2138647177]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
-[node name="@Node3D@19" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=1565492395]
+[node name="@Node3D@19" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=919960535]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
-[node name="@Node3D@20" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=1874679341]
+[node name="@Node3D@20" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=730126326]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
-[node name="@Node3D@21" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=368079228]
+[node name="@Node3D@21" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=1976763038]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
-[node name="@Node3D@22" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=2109830107]
+[node name="@Node3D@22" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=518237044]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
-[node name="@Node3D@23" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=1270815598]
+[node name="@Node3D@23" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=1820314699]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
-[node name="@Node3D@24" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=1660731157]
+[node name="@Node3D@24" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=368853322]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "CROWN"
 letter_height = 0.27
 
-[node name="@Node3D@25" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=1105997517]
+[node name="@Node3D@25" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=154764946]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, -36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "THE GOLDEN CROWN
 OPEN ALL NIGHT"
 
-[node name="@Node3D@26" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=796199425]
+[node name="@Node3D@26" type="Node3D" parent="Scenery/Arrival/Identity/Station0" unique_id=1713118164]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, 36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "THE GOLDEN CROWN
 OPEN ALL NIGHT"
 
-[node name="Details" type="GridMap" parent="Scenery/Arrival/Identity/Station0" unique_id=2111603498]
-mesh_library = SubResource("MeshLibrary_wmfmd")
+[node name="Details" type="GridMap" parent="Scenery/Arrival/Identity/Station0" unique_id=1732273327]
+mesh_library = SubResource("MeshLibrary_p856r")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1683,11 +1684,11 @@ data = {
 "cells": PackedInt32Array(65533, 65476, 3, 19, 65476, 3, 65533, 65484, 3, 19, 65484, 3, 65533, 65492, 3, 19, 65492, 3, 65533, 65500, 3, 19, 65500, 3, 65533, 65508, 3, 19, 65508, 3, 65533, 65516, 3, 19, 65516, 3, 65533, 65524, 3, 19, 65524, 3, 65533, 65532, 3, 19, 65532, 3, 65533, 4, 3, 19, 4, 3, 65533, 12, 3, 19, 12, 3, 65533, 20, 3, 19, 20, 3, 65533, 28, 3, 19, 28, 3, 65533, 36, 3, 19, 36, 3, 65533, 44, 3, 19, 44, 3, 65533, 52, 3, 19, 52, 3, 65533, 60, 3, 19, 60, 3)
 }
 
-[node name="Station1" type="Node3D" parent="Scenery/Arrival/Identity" unique_id=2031625552]
+[node name="Station1" type="Node3D" parent="Scenery/Arrival/Identity" unique_id=846379309]
 visible = false
 
-[node name="StationBand" type="GridMap" parent="Scenery/Arrival/Identity/Station1" unique_id=2136010721]
-mesh_library = SubResource("MeshLibrary_0olqg")
+[node name="StationBand" type="GridMap" parent="Scenery/Arrival/Identity/Station1" unique_id=1081947529]
+mesh_library = SubResource("MeshLibrary_bxtaa")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1698,8 +1699,8 @@ data = {
 "cells": PackedInt32Array(65532, 65470, 0, 20, 65470, 1, 65532, 65472, 0, 20, 65472, 1, 65532, 65474, 0, 20, 65474, 1, 65532, 65476, 0, 20, 65476, 1, 65532, 65478, 0, 20, 65478, 1, 65532, 65480, 0, 20, 65480, 1, 65532, 65482, 0, 20, 65482, 1, 65532, 65484, 0, 20, 65484, 1, 65532, 65486, 0, 20, 65486, 1, 65532, 65488, 0, 20, 65488, 1, 65532, 65490, 0, 20, 65490, 1, 65532, 65492, 0, 20, 65492, 1, 65532, 65494, 0, 20, 65494, 1, 65532, 65496, 0, 20, 65496, 1, 65532, 65498, 0, 20, 65498, 1, 65532, 65500, 0, 20, 65500, 1, 65532, 65502, 0, 20, 65502, 1, 65532, 65504, 0, 20, 65504, 1, 65532, 65506, 0, 20, 65506, 1, 65532, 65508, 0, 20, 65508, 1, 65532, 65510, 0, 20, 65510, 1, 65532, 65512, 0, 20, 65512, 1, 65532, 65514, 0, 20, 65514, 1, 65532, 65516, 0, 20, 65516, 1, 65532, 65518, 0, 20, 65518, 1, 65532, 65520, 0, 20, 65520, 1, 65532, 65522, 0, 20, 65522, 1, 65532, 65524, 0, 20, 65524, 1, 65532, 65526, 0, 20, 65526, 1, 65532, 65528, 0, 20, 65528, 1, 65532, 65530, 0, 20, 65530, 1, 65532, 65532, 0, 20, 65532, 1, 65532, 65534, 0, 20, 65534, 1, 65532, 0, 0, 20, 0, 1, 65532, 2, 0, 20, 2, 1, 65532, 4, 0, 20, 4, 1, 65532, 6, 0, 20, 6, 1, 65532, 8, 0, 20, 8, 1, 65532, 10, 0, 20, 10, 1, 65532, 12, 0, 20, 12, 1, 65532, 14, 0, 20, 14, 1, 65532, 16, 0, 20, 16, 1, 65532, 18, 0, 20, 18, 1, 65532, 20, 0, 20, 20, 1, 65532, 22, 0, 20, 22, 1, 65532, 24, 0, 20, 24, 1, 65532, 26, 0, 20, 26, 1, 65532, 28, 0, 20, 28, 1, 65532, 30, 0, 20, 30, 1, 65532, 32, 0, 20, 32, 1, 65532, 34, 0, 20, 34, 1, 65532, 36, 0, 20, 36, 1, 65532, 38, 0, 20, 38, 1, 65532, 40, 0, 20, 40, 1, 65532, 42, 0, 20, 42, 1, 65532, 44, 0, 20, 44, 1, 65532, 46, 0, 20, 46, 1, 65532, 48, 0, 20, 48, 1, 65532, 50, 0, 20, 50, 1, 65532, 52, 0, 20, 52, 1, 65532, 54, 0, 20, 54, 1, 65532, 56, 0, 20, 56, 1, 65532, 58, 0, 20, 58, 1, 65532, 60, 0, 20, 60, 1, 65532, 62, 0, 20, 62, 1, 65532, 64, 0, 20, 64, 1, 65532, 66, 0, 20, 66, 1)
 }
 
-[node name="BeamTrim" type="GridMap" parent="Scenery/Arrival/Identity/Station1" unique_id=185021309]
-mesh_library = SubResource("MeshLibrary_0olqg")
+[node name="BeamTrim" type="GridMap" parent="Scenery/Arrival/Identity/Station1" unique_id=323926656]
+mesh_library = SubResource("MeshLibrary_bxtaa")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1710,68 +1711,68 @@ data = {
 "cells": PackedInt32Array(0, 65476, 2, 0, 65488, 2, 0, 65500, 2, 0, 65512, 2, 0, 65524, 2, 0, 0, 2, 0, 12, 2, 0, 24, 2, 0, 36, 2, 0, 48, 2, 0, 60, 2)
 }
 
-[node name="@Node3D@27" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=445029640]
+[node name="@Node3D@27" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1634817096]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
-[node name="@Node3D@28" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1569045894]
+[node name="@Node3D@28" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=365931760]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
-[node name="@Node3D@29" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=941988212]
+[node name="@Node3D@29" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1232410514]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
-[node name="@Node3D@30" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1943963591]
+[node name="@Node3D@30" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=807571328]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
-[node name="@Node3D@31" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1107767489]
+[node name="@Node3D@31" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1856897417]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
-[node name="@Node3D@32" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1936621578]
+[node name="@Node3D@32" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1534667509]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
-[node name="@Node3D@33" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1867642642]
+[node name="@Node3D@33" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=67919213]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
-[node name="@Node3D@34" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1788345398]
+[node name="@Node3D@34" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=2109537296]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET"
 letter_height = 0.27
 
-[node name="@Node3D@35" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=918289893]
+[node name="@Node3D@35" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=342154928]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, -36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET STREET
 SPACE TO LET"
 
-[node name="@Node3D@36" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=226384539]
+[node name="@Node3D@36" type="Node3D" parent="Scenery/Arrival/Identity/Station1" unique_id=1294589261]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, 36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "MARKET STREET
 SPACE TO LET"
 
-[node name="Details" type="GridMap" parent="Scenery/Arrival/Identity/Station1" unique_id=685155672]
-mesh_library = SubResource("MeshLibrary_0olqg")
+[node name="Details" type="GridMap" parent="Scenery/Arrival/Identity/Station1" unique_id=276954946]
+mesh_library = SubResource("MeshLibrary_bxtaa")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1782,11 +1783,11 @@ data = {
 "cells": PackedInt32Array(65533, 65478, 3, 19, 65478, 4, 65533, 65502, 3, 19, 65502, 5, 65533, 65526, 3, 19, 65526, 6, 65533, 14, 3, 19, 14, 7, 65533, 38, 3, 19, 38, 8, 65533, 58, 3, 19, 58, 9)
 }
 
-[node name="Station2" type="Node3D" parent="Scenery/Arrival/Identity" unique_id=953881996]
+[node name="Station2" type="Node3D" parent="Scenery/Arrival/Identity" unique_id=72592320]
 visible = false
 
-[node name="StationBand" type="GridMap" parent="Scenery/Arrival/Identity/Station2" unique_id=355827194]
-mesh_library = SubResource("MeshLibrary_onrbw")
+[node name="StationBand" type="GridMap" parent="Scenery/Arrival/Identity/Station2" unique_id=559193564]
+mesh_library = SubResource("MeshLibrary_pl7oe")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1797,8 +1798,8 @@ data = {
 "cells": PackedInt32Array(65532, 65470, 0, 20, 65470, 1, 65532, 65472, 0, 20, 65472, 1, 65532, 65474, 0, 20, 65474, 1, 65532, 65476, 0, 20, 65476, 1, 65532, 65478, 0, 20, 65478, 1, 65532, 65480, 0, 20, 65480, 1, 65532, 65482, 0, 20, 65482, 1, 65532, 65484, 0, 20, 65484, 1, 65532, 65486, 0, 20, 65486, 1, 65532, 65488, 0, 20, 65488, 1, 65532, 65490, 0, 20, 65490, 1, 65532, 65492, 0, 20, 65492, 1, 65532, 65494, 0, 20, 65494, 1, 65532, 65496, 0, 20, 65496, 1, 65532, 65498, 0, 20, 65498, 1, 65532, 65500, 0, 20, 65500, 1, 65532, 65502, 0, 20, 65502, 1, 65532, 65504, 0, 20, 65504, 1, 65532, 65506, 0, 20, 65506, 1, 65532, 65508, 0, 20, 65508, 1, 65532, 65510, 0, 20, 65510, 1, 65532, 65512, 0, 20, 65512, 1, 65532, 65514, 0, 20, 65514, 1, 65532, 65516, 0, 20, 65516, 1, 65532, 65518, 0, 20, 65518, 1, 65532, 65520, 0, 20, 65520, 1, 65532, 65522, 0, 20, 65522, 1, 65532, 65524, 0, 20, 65524, 1, 65532, 65526, 0, 20, 65526, 1, 65532, 65528, 0, 20, 65528, 1, 65532, 65530, 0, 20, 65530, 1, 65532, 65532, 0, 20, 65532, 1, 65532, 65534, 0, 20, 65534, 1, 65532, 0, 0, 20, 0, 1, 65532, 2, 0, 20, 2, 1, 65532, 4, 0, 20, 4, 1, 65532, 6, 0, 20, 6, 1, 65532, 8, 0, 20, 8, 1, 65532, 10, 0, 20, 10, 1, 65532, 12, 0, 20, 12, 1, 65532, 14, 0, 20, 14, 1, 65532, 16, 0, 20, 16, 1, 65532, 18, 0, 20, 18, 1, 65532, 20, 0, 20, 20, 1, 65532, 22, 0, 20, 22, 1, 65532, 24, 0, 20, 24, 1, 65532, 26, 0, 20, 26, 1, 65532, 28, 0, 20, 28, 1, 65532, 30, 0, 20, 30, 1, 65532, 32, 0, 20, 32, 1, 65532, 34, 0, 20, 34, 1, 65532, 36, 0, 20, 36, 1, 65532, 38, 0, 20, 38, 1, 65532, 40, 0, 20, 40, 1, 65532, 42, 0, 20, 42, 1, 65532, 44, 0, 20, 44, 1, 65532, 46, 0, 20, 46, 1, 65532, 48, 0, 20, 48, 1, 65532, 50, 0, 20, 50, 1, 65532, 52, 0, 20, 52, 1, 65532, 54, 0, 20, 54, 1, 65532, 56, 0, 20, 56, 1, 65532, 58, 0, 20, 58, 1, 65532, 60, 0, 20, 60, 1, 65532, 62, 0, 20, 62, 1, 65532, 64, 0, 20, 64, 1, 65532, 66, 0, 20, 66, 1)
 }
 
-[node name="BeamTrim" type="GridMap" parent="Scenery/Arrival/Identity/Station2" unique_id=724932996]
-mesh_library = SubResource("MeshLibrary_onrbw")
+[node name="BeamTrim" type="GridMap" parent="Scenery/Arrival/Identity/Station2" unique_id=636966266]
+mesh_library = SubResource("MeshLibrary_pl7oe")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1809,68 +1810,68 @@ data = {
 "cells": PackedInt32Array(0, 65476, 2, 0, 65488, 2, 0, 65500, 2, 0, 65512, 2, 0, 65524, 2, 0, 0, 2, 0, 12, 2, 0, 24, 2, 0, 36, 2, 0, 48, 2, 0, 60, 2)
 }
 
-[node name="@Node3D@37" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=868722379]
+[node name="@Node3D@37" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=937484875]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
-[node name="@Node3D@38" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=2026038659]
+[node name="@Node3D@38" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=1902094916]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
-[node name="@Node3D@39" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=401338080]
+[node name="@Node3D@39" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=1843029804]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
-[node name="@Node3D@40" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=394752757]
+[node name="@Node3D@40" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=1725227464]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
-[node name="@Node3D@41" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=1753563817]
+[node name="@Node3D@41" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=1961770160]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
-[node name="@Node3D@42" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=463354362]
+[node name="@Node3D@42" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=753604468]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
-[node name="@Node3D@43" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=866481639]
+[node name="@Node3D@43" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=467374880]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
-[node name="@Node3D@44" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=1542724284]
+[node name="@Node3D@44" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=1568716032]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS"
 letter_height = 0.27
 
-[node name="@Node3D@45" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=415841526]
+[node name="@Node3D@45" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=1477559316]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, -36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS / SERVICE LINE
 AUTHORIZED PERSONNEL ONLY"
 
-[node name="@Node3D@46" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=1624077755]
+[node name="@Node3D@46" type="Node3D" parent="Scenery/Arrival/Identity/Station2" unique_id=260504940]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, 36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "WORKS / SERVICE LINE
 AUTHORIZED PERSONNEL ONLY"
 
-[node name="Details" type="GridMap" parent="Scenery/Arrival/Identity/Station2" unique_id=103341829]
-mesh_library = SubResource("MeshLibrary_onrbw")
+[node name="Details" type="GridMap" parent="Scenery/Arrival/Identity/Station2" unique_id=1115346366]
+mesh_library = SubResource("MeshLibrary_pl7oe")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1881,11 +1882,11 @@ data = {
 "cells": PackedInt32Array(5, 65472, 3, 12, 65472, 3, 5, 65476, 3, 12, 65476, 3, 5, 65480, 3, 12, 65480, 3, 5, 65484, 3, 12, 65484, 3, 5, 65488, 3, 12, 65488, 3, 5, 65492, 3, 12, 65492, 3, 5, 65496, 3, 12, 65496, 3, 5, 65500, 3, 12, 65500, 3, 5, 65504, 3, 12, 65504, 3, 5, 65508, 3, 12, 65508, 3, 5, 65512, 3, 12, 65512, 3, 5, 65516, 3, 12, 65516, 3, 5, 65520, 3, 12, 65520, 3, 5, 65524, 3, 12, 65524, 3, 5, 65528, 3, 12, 65528, 3, 5, 65532, 3, 12, 65532, 3, 5, 0, 3, 12, 0, 3, 5, 4, 3, 12, 4, 3, 5, 8, 3, 12, 8, 3, 5, 12, 3, 12, 12, 3, 5, 16, 3, 12, 16, 3, 5, 20, 3, 12, 20, 3, 5, 24, 3, 12, 24, 3, 5, 28, 3, 12, 28, 3, 5, 32, 3, 12, 32, 3, 5, 36, 3, 12, 36, 3, 5, 40, 3, 12, 40, 3, 5, 44, 3, 12, 44, 3, 5, 48, 3, 12, 48, 3, 5, 52, 3, 12, 52, 3, 5, 56, 3, 12, 56, 3, 5, 60, 3, 12, 60, 3, 5, 64, 3, 12, 64, 3, 19, 65486, 4, 19, 65510, 4, 19, 26, 4, 19, 50, 4)
 }
 
-[node name="Station3" type="Node3D" parent="Scenery/Arrival/Identity" unique_id=1869316758]
+[node name="Station3" type="Node3D" parent="Scenery/Arrival/Identity" unique_id=89267815]
 visible = false
 
-[node name="StationBand" type="GridMap" parent="Scenery/Arrival/Identity/Station3" unique_id=2131419571]
-mesh_library = SubResource("MeshLibrary_yvxke")
+[node name="StationBand" type="GridMap" parent="Scenery/Arrival/Identity/Station3" unique_id=1255513571]
+mesh_library = SubResource("MeshLibrary_t43le")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1896,8 +1897,8 @@ data = {
 "cells": PackedInt32Array(65532, 65470, 0, 20, 65470, 1, 65532, 65472, 0, 20, 65472, 1, 65532, 65474, 0, 20, 65474, 1, 65532, 65476, 0, 20, 65476, 1, 65532, 65478, 0, 20, 65478, 1, 65532, 65480, 0, 20, 65480, 1, 65532, 65482, 0, 20, 65482, 1, 65532, 65484, 0, 20, 65484, 1, 65532, 65486, 0, 20, 65486, 1, 65532, 65488, 0, 20, 65488, 1, 65532, 65490, 0, 20, 65490, 1, 65532, 65492, 0, 20, 65492, 1, 65532, 65494, 0, 20, 65494, 1, 65532, 65496, 0, 20, 65496, 1, 65532, 65498, 0, 20, 65498, 1, 65532, 65500, 0, 20, 65500, 1, 65532, 65502, 0, 20, 65502, 1, 65532, 65504, 0, 20, 65504, 1, 65532, 65506, 0, 20, 65506, 1, 65532, 65508, 0, 20, 65508, 1, 65532, 65510, 0, 20, 65510, 1, 65532, 65512, 0, 20, 65512, 1, 65532, 65514, 0, 20, 65514, 1, 65532, 65516, 0, 20, 65516, 1, 65532, 65518, 0, 20, 65518, 1, 65532, 65520, 0, 20, 65520, 1, 65532, 65522, 0, 20, 65522, 1, 65532, 65524, 0, 20, 65524, 1, 65532, 65526, 0, 20, 65526, 1, 65532, 65528, 0, 20, 65528, 1, 65532, 65530, 0, 20, 65530, 1, 65532, 65532, 0, 20, 65532, 1, 65532, 65534, 0, 20, 65534, 1, 65532, 0, 0, 20, 0, 1, 65532, 2, 0, 20, 2, 1, 65532, 4, 0, 20, 4, 1, 65532, 6, 0, 20, 6, 1, 65532, 8, 0, 20, 8, 1, 65532, 10, 0, 20, 10, 1, 65532, 12, 0, 20, 12, 1, 65532, 14, 0, 20, 14, 1, 65532, 16, 0, 20, 16, 1, 65532, 18, 0, 20, 18, 1, 65532, 20, 0, 20, 20, 1, 65532, 22, 0, 20, 22, 1, 65532, 24, 0, 20, 24, 1, 65532, 26, 0, 20, 26, 1, 65532, 28, 0, 20, 28, 1, 65532, 30, 0, 20, 30, 1, 65532, 32, 0, 20, 32, 1, 65532, 34, 0, 20, 34, 1, 65532, 36, 0, 20, 36, 1, 65532, 38, 0, 20, 38, 1, 65532, 40, 0, 20, 40, 1, 65532, 42, 0, 20, 42, 1, 65532, 44, 0, 20, 44, 1, 65532, 46, 0, 20, 46, 1, 65532, 48, 0, 20, 48, 1, 65532, 50, 0, 20, 50, 1, 65532, 52, 0, 20, 52, 1, 65532, 54, 0, 20, 54, 1, 65532, 56, 0, 20, 56, 1, 65532, 58, 0, 20, 58, 1, 65532, 60, 0, 20, 60, 1, 65532, 62, 0, 20, 62, 1, 65532, 64, 0, 20, 64, 1, 65532, 66, 0, 20, 66, 1)
 }
 
-[node name="BeamTrim" type="GridMap" parent="Scenery/Arrival/Identity/Station3" unique_id=487364428]
-mesh_library = SubResource("MeshLibrary_yvxke")
+[node name="BeamTrim" type="GridMap" parent="Scenery/Arrival/Identity/Station3" unique_id=208044992]
+mesh_library = SubResource("MeshLibrary_t43le")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1908,68 +1909,68 @@ data = {
 "cells": PackedInt32Array(0, 65476, 2, 0, 65488, 2, 0, 65500, 2, 0, 65512, 2, 0, 65524, 2, 0, 0, 2, 0, 12, 2, 0, 24, 2, 0, 36, 2, 0, 48, 2, 0, 60, 2)
 }
 
-[node name="@Node3D@47" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=1415670759]
+[node name="@Node3D@47" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=1799205412]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
-[node name="@Node3D@48" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=343617163]
+[node name="@Node3D@48" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=156782776]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
-[node name="@Node3D@49" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=1408651144]
+[node name="@Node3D@49" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=1530646809]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
-[node name="@Node3D@50" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=236524004]
+[node name="@Node3D@50" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=1779196278]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, -18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
-[node name="@Node3D@51" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=1509795317]
+[node name="@Node3D@51" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=228384478]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
-[node name="@Node3D@52" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=179961056]
+[node name="@Node3D@52" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=746470204]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 18)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
-[node name="@Node3D@53" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=95739106]
+[node name="@Node3D@53" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=1053903433]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
-[node name="@Node3D@54" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=1961280926]
+[node name="@Node3D@54" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=178360493]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.75, 4, 54)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES"
 letter_height = 0.27
 
-[node name="@Node3D@55" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=239439149]
+[node name="@Node3D@55" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=875580583]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, -36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES
 PLEASE KEEP IT DOWN"
 
-[node name="@Node3D@56" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=964151864]
+[node name="@Node3D@56" type="Node3D" parent="Scenery/Arrival/Identity/Station3" unique_id=986589669]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.73, 2.2, 36)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "RESIDENCES
 PLEASE KEEP IT DOWN"
 
-[node name="Details" type="GridMap" parent="Scenery/Arrival/Identity/Station3" unique_id=1269507900]
-mesh_library = SubResource("MeshLibrary_yvxke")
+[node name="Details" type="GridMap" parent="Scenery/Arrival/Identity/Station3" unique_id=393524612]
+mesh_library = SubResource("MeshLibrary_t43le")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -1980,30 +1981,31 @@ data = {
 "cells": PackedInt32Array(65533, 65476, 3, 19, 65476, 3, 65533, 65482, 3, 19, 65482, 3, 65533, 65488, 3, 19, 65488, 3, 65533, 65494, 3, 19, 65494, 3, 65533, 65500, 3, 19, 65500, 3, 65533, 65506, 3, 19, 65506, 3, 65533, 65512, 3, 19, 65512, 3, 65533, 65518, 3, 19, 65518, 3, 65533, 65524, 3, 19, 65524, 3, 65533, 65530, 3, 19, 65530, 3, 65533, 0, 3, 19, 0, 3, 65533, 6, 3, 19, 6, 3, 65533, 12, 3, 19, 12, 3, 65533, 18, 3, 19, 18, 3, 65533, 24, 3, 19, 24, 3, 65533, 30, 3, 19, 30, 3, 65533, 36, 3, 19, 36, 3, 65533, 42, 3, 19, 42, 3, 65533, 48, 3, 19, 48, 3, 65533, 54, 3, 19, 54, 3, 65533, 60, 3, 19, 60, 3)
 }
 
-[node name="Bench0" type="MeshInstance3D" parent="Scenery/Arrival" unique_id=1241620315]
+[node name="Bench0" type="MeshInstance3D" parent="Scenery/Arrival" unique_id=1180780601]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 11, 1.2, -42)
-material_override = ExtResource("11_qkr41")
-mesh = ExtResource("12_h5n22")
+material_override = ExtResource("11_m3sxj")
+mesh = ExtResource("12_qv2wo")
 
-[node name="Bench1" type="MeshInstance3D" parent="Scenery/Arrival" unique_id=1453197515]
+[node name="Bench1" type="MeshInstance3D" parent="Scenery/Arrival" unique_id=625116767]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 11, 1.2, -30)
-material_override = ExtResource("11_qkr41")
-mesh = ExtResource("12_h5n22")
+material_override = ExtResource("11_m3sxj")
+mesh = ExtResource("12_qv2wo")
 
-[node name="Bench2" type="MeshInstance3D" parent="Scenery/Arrival" unique_id=179774376]
+[node name="Bench2" type="MeshInstance3D" parent="Scenery/Arrival" unique_id=514234993]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 11, 1.2, 30)
-material_override = ExtResource("11_qkr41")
-mesh = ExtResource("12_h5n22")
+material_override = ExtResource("11_m3sxj")
+mesh = ExtResource("12_qv2wo")
 
-[node name="Bench3" type="MeshInstance3D" parent="Scenery/Arrival" unique_id=420989176]
+[node name="Bench3" type="MeshInstance3D" parent="Scenery/Arrival" unique_id=1202622022]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 11, 1.2, 42)
-material_override = ExtResource("11_qkr41")
-mesh = ExtResource("12_h5n22")
+material_override = ExtResource("11_m3sxj")
+mesh = ExtResource("12_qv2wo")
 
-[node name="Tunnel" type="Node3D" parent="Scenery" unique_id=1946331802]
+[node name="Tunnel" type="Node3D" parent="Scenery" unique_id=1855165356]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
-[node name="Lining" type="GridMap" parent="Scenery/Tunnel" unique_id=1526191253]
-mesh_library = ExtResource("3_r11bn")
+[node name="Lining" type="GridMap" parent="Scenery/Tunnel" unique_id=1776977557]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2012,8 +2014,8 @@ data = {
 "cells": PackedInt32Array(65533, 90, 655377, 3, 90, 17, 65533, 88, 655378, 3, 88, 17, 65533, 86, 655377, 3, 86, 17, 65533, 84, 655378, 3, 84, 17, 65533, 82, 655377, 3, 82, 17, 65533, 80, 655378, 3, 80, 17, 65533, 78, 655377, 3, 78, 17, 65533, 76, 655378, 3, 76, 18, 65533, 74, 655377, 3, 74, 17, 65533, 72, 655377, 3, 72, 18, 65533, 70, 655377, 3, 70, 17, 65533, 68, 655377, 3, 68, 18, 65533, 65468, 655377, 3, 65468, 18, 65533, 65466, 655377, 3, 65466, 17, 65533, 65464, 655377, 3, 65464, 18, 65533, 65462, 655377, 3, 65462, 17, 65533, 65460, 655377, 3, 65460, 18, 65533, 65458, 655378, 3, 65458, 17, 65533, 65456, 655377, 3, 65456, 17, 65533, 65454, 655378, 3, 65454, 17, 65533, 65452, 655377, 3, 65452, 17, 65533, 65450, 655378, 3, 65450, 17, 65533, 65448, 655377, 3, 65448, 17, 65533, 65446, 655378, 3, 65446, 17, 65533, 65444, 655387, 3, 65444, 17, 65533, 65442, 655378, 3, 65442, 18, 65533, 65440, 655377, 3, 65440, 17, 65533, 65438, 655377, 3, 65438, 18, 65533, 65436, 655377, 3, 65436, 17, 65533, 65434, 655377, 3, 65434, 18, 65533, 65432, 655377, 3, 65432, 17, 65533, 65430, 655377, 3, 65430, 18, 65533, 65428, 655377, 3, 65428, 17, 3, 65426, 18, 3, 65424, 17, 3, 65422, 17, 3, 65420, 17, 3, 65418, 17, 3, 65416, 17, 3, 65414, 17, 3, 65412, 17, 3, 65410, 17, 3, 65408, 27, 3, 65406, 17, 3, 65404, 18, 3, 65402, 17, 3, 65400, 18, 3, 65398, 17, 3, 65396, 18, 3, 65394, 17, 3, 65392, 18, 3, 65390, 17, 3, 65388, 17, 3, 65386, 17, 65533, 65384, 655377, 3, 65384, 17, 65533, 65382, 655378, 3, 65382, 17, 65533, 65380, 655377, 3, 65380, 17, 65533, 65378, 655378, 3, 65378, 17, 65533, 65376, 655377, 3, 65376, 17, 65533, 65374, 655378, 3, 65374, 18, 65533, 65372, 655377, 3, 65372, 17, 65533, 65370, 655377, 3, 65370, 18, 65533, 65368, 655377, 3, 65368, 17, 65533, 65366, 655377, 3, 65366, 18, 65533, 65364, 655377, 3, 65364, 17, 65533, 65362, 655377, 3, 65362, 18, 65533, 65360, 655377, 3, 65360, 17, 65533, 65358, 655377, 3, 65358, 18, 65533, 65356, 655378, 3, 65356, 17, 65533, 65354, 655377, 3, 65354, 17, 65533, 65352, 655378, 3, 65352, 17, 65533, 65350, 655387, 3, 65350, 17, 65533, 65348, 655378, 3, 65348, 17, 65533, 65346, 655377, 3, 65346, 17, 65533, 65344, 655378, 3, 65344, 17, 65533, 65342, 655377, 3, 65342, 17, 65533, 65340, 655378, 3, 65340, 18, 65533, 65338, 655377, 3, 65338, 17, 65533, 65336, 655377, 3, 65336, 18, 65533, 65334, 655377, 3, 65334, 17, 65533, 65332, 655377, 3, 65332, 18, 65533, 65330, 655377, 3, 65330, 17, 65533, 65328, 655377, 3, 65328, 18, 65533, 65326, 655377, 3, 65326, 17, 65533, 65324, 655377, 3, 65324, 18, 65533, 65322, 655378, 3, 65322, 27, 65533, 65320, 655377, 3, 65320, 17, 65533, 65318, 655378, 3, 65318, 17, 65533, 65316, 655377, 3, 65316, 17, 65533, 65314, 655378, 3, 65314, 17, 65533, 65312, 655377, 3, 65312, 17, 65533, 65310, 655378, 3, 65310, 17, 65533, 65308, 655377, 3, 65308, 17, 65533, 65306, 655378, 3, 65306, 18, 65533, 65304, 655377, 3, 65304, 17, 65533, 65168, 655377, 3, 65168, 17, 65533, 65166, 655377, 3, 65166, 18, 65533, 65164, 655377, 3, 65164, 17, 65533, 65162, 655377, 3, 65162, 18, 65533, 65160, 655377, 3, 65160, 17, 65533, 65158, 655377, 3, 65158, 18, 65533, 65156, 655377, 3, 65156, 17, 65533, 65154, 655377, 3, 65154, 18, 65533, 65152, 655378, 3, 65152, 17, 65533, 65150, 655377, 3, 65150, 17, 65533, 65148, 655378, 3, 65148, 17, 65533, 65146, 655377, 3, 65146, 17, 65527, 65426, 655379, 65527, 65424, 655379, 65527, 65422, 655379, 65527, 65420, 655379, 65527, 65418, 655379, 65527, 65416, 655379, 65527, 65414, 655379, 65527, 65412, 655379, 65527, 65410, 655379, 65527, 65408, 655379, 65527, 65406, 655379, 65527, 65404, 655379, 65527, 65402, 655379, 65527, 65400, 655379, 65527, 65398, 655379, 65527, 65396, 655379, 65527, 65394, 655379, 65527, 65392, 655379, 65527, 65390, 655379, 65527, 65388, 655379, 65527, 65386, 655379, 65528, 65428, 1048595, 65530, 65428, 1048595, 65532, 65428, 1048595, 65528, 65384, 1048595, 65530, 65384, 1048595, 65532, 65384, 1048595)
 }
 
-[node name="Cables" type="GridMap" parent="Scenery/Tunnel" unique_id=1135441305]
-mesh_library = ExtResource("3_r11bn")
+[node name="Cables" type="GridMap" parent="Scenery/Tunnel" unique_id=2103826878]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2022,8 +2024,8 @@ data = {
 "cells": PackedInt32Array(65533, 90, 655383, 3, 90, 24, 65533, 88, 655383, 3, 88, 24, 65533, 86, 655383, 3, 86, 24, 65533, 84, 655383, 3, 84, 24, 65533, 82, 655383, 3, 82, 24, 65533, 80, 655383, 3, 80, 24, 65533, 78, 655383, 3, 78, 24, 65533, 76, 655383, 3, 76, 24, 65533, 74, 655383, 3, 74, 24, 65533, 72, 655383, 3, 72, 24, 65533, 70, 655383, 3, 70, 24, 65533, 68, 655383, 3, 68, 24, 65533, 65468, 655383, 3, 65468, 24, 65533, 65466, 655383, 3, 65466, 24, 65533, 65464, 655383, 3, 65464, 24, 65533, 65462, 655383, 3, 65462, 24, 65533, 65460, 655383, 3, 65460, 24, 65533, 65458, 655383, 3, 65458, 24, 65533, 65456, 655383, 3, 65456, 24, 65533, 65454, 655383, 3, 65454, 24, 65533, 65452, 655383, 3, 65452, 24, 65533, 65450, 655383, 3, 65450, 24, 65533, 65448, 655383, 3, 65448, 24, 65533, 65446, 655383, 3, 65446, 24, 3, 65444, 24, 65533, 65442, 655383, 3, 65442, 24, 65533, 65440, 655383, 3, 65440, 24, 65533, 65438, 655383, 3, 65438, 24, 65533, 65436, 655383, 3, 65436, 24, 65533, 65434, 655383, 3, 65434, 24, 65533, 65432, 655383, 3, 65432, 24, 65533, 65430, 655383, 3, 65430, 24, 65533, 65428, 655383, 3, 65428, 24, 3, 65426, 24, 3, 65424, 24, 3, 65422, 24, 3, 65420, 24, 3, 65418, 24, 3, 65416, 24, 3, 65414, 24, 3, 65412, 24, 3, 65410, 24, 3, 65406, 24, 3, 65404, 24, 3, 65402, 24, 3, 65400, 24, 3, 65398, 24, 3, 65396, 24, 3, 65394, 24, 3, 65392, 24, 3, 65390, 24, 3, 65388, 24, 3, 65386, 24, 65533, 65384, 655383, 3, 65384, 24, 65533, 65382, 655383, 3, 65382, 24, 65533, 65380, 655383, 3, 65380, 24, 65533, 65378, 655383, 3, 65378, 24, 65533, 65376, 655383, 3, 65376, 24, 65533, 65374, 655383, 3, 65374, 24, 65533, 65372, 655383, 3, 65372, 24, 65533, 65370, 655383, 3, 65370, 24, 65533, 65368, 655383, 3, 65368, 24, 65533, 65366, 655383, 3, 65366, 24, 65533, 65364, 655383, 3, 65364, 24, 65533, 65362, 655383, 3, 65362, 24, 65533, 65360, 655383, 3, 65360, 24, 65533, 65358, 655383, 3, 65358, 24, 65533, 65356, 655383, 3, 65356, 24, 65533, 65354, 655383, 3, 65354, 24, 65533, 65352, 655383, 3, 65352, 24, 3, 65350, 24, 65533, 65348, 655383, 3, 65348, 24, 65533, 65346, 655383, 3, 65346, 24, 65533, 65344, 655383, 3, 65344, 24, 65533, 65342, 655383, 3, 65342, 24, 65533, 65340, 655383, 3, 65340, 24, 65533, 65338, 655383, 3, 65338, 24, 65533, 65336, 655383, 3, 65336, 24, 65533, 65334, 655383, 3, 65334, 24, 65533, 65332, 655383, 3, 65332, 24, 65533, 65330, 655383, 3, 65330, 24, 65533, 65328, 655383, 3, 65328, 24, 65533, 65326, 655383, 3, 65326, 24, 65533, 65324, 655383, 3, 65324, 24, 65533, 65322, 655383, 65533, 65320, 655383, 3, 65320, 24, 65533, 65318, 655383, 3, 65318, 24, 65533, 65316, 655383, 3, 65316, 24, 65533, 65314, 655383, 3, 65314, 24, 65533, 65312, 655383, 3, 65312, 24, 65533, 65310, 655383, 3, 65310, 24, 65533, 65308, 655383, 3, 65308, 24, 65533, 65306, 655383, 3, 65306, 24, 65533, 65304, 655383, 3, 65304, 24, 65533, 65168, 655383, 3, 65168, 24, 65533, 65166, 655383, 3, 65166, 24, 65533, 65164, 655383, 3, 65164, 24, 65533, 65162, 655383, 3, 65162, 24, 65533, 65160, 655383, 3, 65160, 24, 65533, 65158, 655383, 3, 65158, 24, 65533, 65156, 655383, 3, 65156, 24, 65533, 65154, 655383, 3, 65154, 24, 65533, 65152, 655383, 3, 65152, 24, 65533, 65150, 655383, 3, 65150, 24, 65533, 65148, 655383, 3, 65148, 24, 65533, 65146, 655383, 3, 65146, 24)
 }
 
-[node name="Brackets" type="GridMap" parent="Scenery/Tunnel" unique_id=1092247689]
-mesh_library = ExtResource("3_r11bn")
+[node name="Brackets" type="GridMap" parent="Scenery/Tunnel" unique_id=1019508374]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2032,8 +2034,8 @@ data = {
 "cells": PackedInt32Array(65533, 88, 655385, 3, 88, 26, 65533, 84, 655385, 3, 84, 26, 65533, 80, 655385, 3, 80, 26, 65533, 76, 655385, 3, 76, 26, 65533, 72, 655385, 3, 72, 26, 65533, 68, 655385, 3, 68, 26, 65533, 65468, 655385, 3, 65468, 26, 65533, 65464, 655385, 3, 65464, 26, 65533, 65460, 655385, 3, 65460, 26, 65533, 65456, 655385, 3, 65456, 26, 65533, 65452, 655385, 3, 65452, 26, 65533, 65448, 655385, 3, 65448, 26, 3, 65444, 26, 65533, 65440, 655385, 3, 65440, 26, 65533, 65436, 655385, 3, 65436, 26, 65533, 65432, 655385, 3, 65432, 26, 65533, 65428, 655385, 3, 65428, 26, 3, 65424, 26, 3, 65420, 26, 3, 65416, 26, 3, 65412, 26, 3, 65404, 26, 3, 65400, 26, 3, 65396, 26, 3, 65392, 26, 3, 65388, 26, 65533, 65384, 655385, 3, 65384, 26, 65533, 65380, 655385, 3, 65380, 26, 65533, 65376, 655385, 3, 65376, 26, 65533, 65372, 655385, 3, 65372, 26, 65533, 65368, 655385, 3, 65368, 26, 65533, 65364, 655385, 3, 65364, 26, 65533, 65360, 655385, 3, 65360, 26, 65533, 65356, 655385, 3, 65356, 26, 65533, 65352, 655385, 3, 65352, 26, 65533, 65348, 655385, 3, 65348, 26, 65533, 65344, 655385, 3, 65344, 26, 65533, 65340, 655385, 3, 65340, 26, 65533, 65336, 655385, 3, 65336, 26, 65533, 65332, 655385, 3, 65332, 26, 65533, 65328, 655385, 3, 65328, 26, 65533, 65324, 655385, 3, 65324, 26, 65533, 65320, 655385, 3, 65320, 26, 65533, 65316, 655385, 3, 65316, 26, 65533, 65312, 655385, 3, 65312, 26, 65533, 65308, 655385, 3, 65308, 26, 65533, 65304, 655385, 3, 65304, 26, 65533, 65168, 655385, 3, 65168, 26, 65533, 65164, 655385, 3, 65164, 26, 65533, 65160, 655385, 3, 65160, 26, 65533, 65156, 655385, 3, 65156, 26, 65533, 65152, 655385, 3, 65152, 26, 65533, 65148, 655385, 3, 65148, 26)
 }
 
-[node name="Columns" type="GridMap" parent="Scenery/Tunnel" unique_id=780857213]
-mesh_library = ExtResource("3_r11bn")
+[node name="Columns" type="GridMap" parent="Scenery/Tunnel" unique_id=61412637]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2042,8 +2044,8 @@ data = {
 "cells": PackedInt32Array(65533, 65426, 21, 65533, 65424, 21, 65533, 65422, 21, 65533, 65420, 21, 65533, 65418, 21, 65533, 65416, 21, 65533, 65414, 21, 65533, 65412, 21, 65533, 65410, 21, 65533, 65408, 21, 65533, 65406, 21, 65533, 65404, 21, 65533, 65402, 21, 65533, 65400, 21, 65533, 65398, 21, 65533, 65396, 21, 65533, 65394, 21, 65533, 65392, 21, 65533, 65390, 21, 65533, 65388, 21, 65533, 65386, 21)
 }
 
-[node name="Portals" type="GridMap" parent="Scenery/Tunnel" unique_id=223005256]
-mesh_library = ExtResource("3_r11bn")
+[node name="Portals" type="GridMap" parent="Scenery/Tunnel" unique_id=1484305726]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2052,8 +2054,8 @@ data = {
 "cells": PackedInt32Array(65533, 67, 29, 0, 67, 30, 65533, 65469, 29, 0, 65469, 30, 65533, 65303, 29, 0, 65303, 30, 65533, 65169, 29, 0, 65169, 30, 0, 92, 10, 0, 65144, 10)
 }
 
-[node name="TrackBed" type="GridMap" parent="Scenery/Tunnel" unique_id=1074909811]
-mesh_library = ExtResource("3_r11bn")
+[node name="TrackBed" type="GridMap" parent="Scenery/Tunnel" unique_id=1748597726]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2062,8 +2064,8 @@ data = {
 "cells": PackedInt32Array(65535, 90, 6, 1, 90, 6, 65535, 88, 6, 1, 88, 6, 65535, 86, 6, 1, 86, 6, 65535, 84, 6, 1, 84, 6, 65535, 82, 6, 1, 82, 6, 65535, 80, 6, 1, 80, 6, 65535, 78, 6, 1, 78, 6, 65535, 76, 6, 1, 76, 6, 65535, 74, 6, 1, 74, 6, 65535, 72, 6, 1, 72, 6, 65535, 70, 6, 1, 70, 6, 65535, 68, 6, 1, 68, 6, 65535, 66, 6, 1, 66, 6, 65535, 64, 6, 1, 64, 6, 65535, 62, 6, 1, 62, 6, 65535, 60, 6, 1, 60, 6, 65535, 58, 6, 1, 58, 6, 65535, 56, 6, 1, 56, 6, 65535, 54, 6, 1, 54, 6, 65535, 52, 6, 1, 52, 6, 65535, 50, 6, 1, 50, 6, 65535, 48, 6, 1, 48, 6, 65535, 46, 6, 1, 46, 6, 65535, 44, 6, 1, 44, 6, 65535, 42, 6, 1, 42, 6, 65535, 40, 6, 1, 40, 6, 65535, 38, 6, 1, 38, 6, 65535, 36, 6, 1, 36, 6, 65535, 34, 6, 1, 34, 6, 65535, 32, 6, 1, 32, 6, 65535, 30, 6, 1, 30, 6, 65535, 28, 6, 1, 28, 6, 65535, 26, 6, 1, 26, 6, 65535, 24, 6, 1, 24, 6, 65535, 22, 6, 1, 22, 6, 65535, 20, 6, 1, 20, 6, 65535, 18, 6, 1, 18, 6, 65535, 16, 6, 1, 16, 6, 65535, 14, 6, 1, 14, 6, 65535, 12, 6, 1, 12, 6, 65535, 10, 6, 1, 10, 6, 65535, 8, 6, 1, 8, 6, 65535, 6, 6, 1, 6, 6, 65535, 4, 6, 1, 4, 6, 65535, 2, 6, 1, 2, 6, 65535, 0, 6, 1, 0, 6, 65535, 65534, 6, 1, 65534, 6, 65535, 65532, 6, 1, 65532, 6, 65535, 65530, 6, 1, 65530, 6, 65535, 65528, 6, 1, 65528, 6, 65535, 65526, 6, 1, 65526, 6, 65535, 65524, 6, 1, 65524, 6, 65535, 65522, 6, 1, 65522, 6, 65535, 65520, 6, 1, 65520, 6, 65535, 65518, 6, 1, 65518, 6, 65535, 65516, 6, 1, 65516, 6, 65535, 65514, 6, 1, 65514, 6, 65535, 65512, 6, 1, 65512, 6, 65535, 65510, 6, 1, 65510, 6, 65535, 65508, 6, 1, 65508, 6, 65535, 65506, 6, 1, 65506, 6, 65535, 65504, 6, 1, 65504, 6, 65535, 65502, 6, 1, 65502, 6, 65535, 65500, 6, 1, 65500, 6, 65535, 65498, 6, 1, 65498, 6, 65535, 65496, 6, 1, 65496, 6, 65535, 65494, 6, 1, 65494, 6, 65535, 65492, 6, 1, 65492, 6, 65535, 65490, 6, 1, 65490, 6, 65535, 65488, 6, 1, 65488, 6, 65535, 65486, 6, 1, 65486, 6, 65535, 65484, 6, 1, 65484, 6, 65535, 65482, 6, 1, 65482, 6, 65535, 65480, 6, 1, 65480, 6, 65535, 65478, 6, 1, 65478, 6, 65535, 65476, 6, 1, 65476, 6, 65535, 65474, 6, 1, 65474, 6, 65535, 65472, 6, 1, 65472, 6, 65535, 65470, 6, 1, 65470, 6, 65535, 65468, 6, 1, 65468, 6, 65535, 65466, 6, 1, 65466, 6, 65535, 65464, 6, 1, 65464, 6, 65535, 65462, 6, 1, 65462, 6, 65535, 65460, 6, 1, 65460, 6, 65535, 65458, 6, 1, 65458, 6, 65535, 65456, 6, 1, 65456, 6, 65535, 65454, 6, 1, 65454, 6, 65535, 65452, 6, 1, 65452, 6, 65535, 65450, 6, 1, 65450, 6, 65535, 65448, 6, 1, 65448, 6, 65535, 65446, 6, 1, 65446, 6, 65535, 65444, 6, 1, 65444, 6, 65535, 65442, 6, 1, 65442, 6, 65535, 65440, 6, 1, 65440, 6, 65535, 65438, 6, 1, 65438, 6, 65535, 65436, 6, 1, 65436, 6, 65535, 65434, 6, 1, 65434, 6, 65535, 65432, 6, 1, 65432, 6, 65535, 65430, 6, 1, 65430, 6, 65535, 65428, 6, 1, 65428, 6, 65535, 65426, 6, 1, 65426, 6, 65529, 65426, 6, 65531, 65426, 6, 65535, 65424, 6, 1, 65424, 6, 65529, 65424, 6, 65531, 65424, 6, 65535, 65422, 6, 1, 65422, 6, 65529, 65422, 6, 65531, 65422, 6, 65535, 65420, 6, 1, 65420, 6, 65529, 65420, 6, 65531, 65420, 6, 65535, 65418, 6, 1, 65418, 6, 65529, 65418, 6, 65531, 65418, 6, 65535, 65416, 6, 1, 65416, 6, 65529, 65416, 6, 65531, 65416, 6, 65535, 65414, 6, 1, 65414, 6, 65529, 65414, 6, 65531, 65414, 6, 65535, 65412, 6, 1, 65412, 6, 65529, 65412, 6, 65531, 65412, 6, 65535, 65410, 6, 1, 65410, 6, 65529, 65410, 6, 65531, 65410, 6, 65535, 65408, 6, 1, 65408, 6, 65529, 65408, 6, 65531, 65408, 6, 65535, 65406, 6, 1, 65406, 6, 65529, 65406, 6, 65531, 65406, 6, 65535, 65404, 6, 1, 65404, 6, 65529, 65404, 6, 65531, 65404, 6, 65535, 65402, 6, 1, 65402, 6, 65529, 65402, 6, 65531, 65402, 6, 65535, 65400, 6, 1, 65400, 6, 65529, 65400, 6, 65531, 65400, 6, 65535, 65398, 6, 1, 65398, 6, 65529, 65398, 6, 65531, 65398, 6, 65535, 65396, 6, 1, 65396, 6, 65529, 65396, 6, 65531, 65396, 6, 65535, 65394, 6, 1, 65394, 6, 65529, 65394, 6, 65531, 65394, 6, 65535, 65392, 6, 1, 65392, 6, 65529, 65392, 6, 65531, 65392, 6, 65535, 65390, 6, 1, 65390, 6, 65529, 65390, 6, 65531, 65390, 6, 65535, 65388, 6, 1, 65388, 6, 65529, 65388, 6, 65531, 65388, 6, 65535, 65386, 6, 1, 65386, 6, 65529, 65386, 6, 65531, 65386, 6, 65535, 65384, 6, 1, 65384, 6, 65535, 65382, 6, 1, 65382, 6, 65535, 65380, 6, 1, 65380, 6, 65535, 65378, 6, 1, 65378, 6, 65535, 65376, 6, 1, 65376, 6, 65535, 65374, 6, 1, 65374, 6, 65535, 65372, 6, 1, 65372, 6, 65535, 65370, 6, 1, 65370, 6, 65535, 65368, 6, 1, 65368, 6, 65535, 65366, 6, 1, 65366, 6, 65535, 65364, 6, 1, 65364, 6, 65535, 65362, 6, 1, 65362, 6, 65535, 65360, 6, 1, 65360, 6, 65535, 65358, 6, 1, 65358, 6, 65535, 65356, 6, 1, 65356, 6, 65535, 65354, 6, 1, 65354, 6, 65535, 65352, 6, 1, 65352, 6, 65535, 65350, 6, 1, 65350, 6, 65535, 65348, 6, 1, 65348, 6, 65535, 65346, 6, 1, 65346, 6, 65535, 65344, 6, 1, 65344, 6, 65535, 65342, 6, 1, 65342, 6, 65535, 65340, 6, 1, 65340, 6, 65535, 65338, 6, 1, 65338, 6, 65535, 65336, 6, 1, 65336, 6, 65535, 65334, 6, 1, 65334, 6, 65535, 65332, 6, 1, 65332, 6, 65535, 65330, 6, 1, 65330, 6, 65535, 65328, 6, 1, 65328, 6, 65535, 65326, 6, 1, 65326, 6, 65535, 65324, 6, 1, 65324, 6, 65535, 65322, 6, 1, 65322, 6, 65535, 65320, 6, 1, 65320, 6, 65535, 65318, 6, 1, 65318, 6, 65535, 65316, 6, 1, 65316, 6, 65535, 65314, 6, 1, 65314, 6, 65535, 65312, 6, 1, 65312, 6, 65535, 65310, 6, 1, 65310, 6, 65535, 65308, 6, 1, 65308, 6, 65535, 65306, 6, 1, 65306, 6, 65535, 65304, 6, 1, 65304, 6, 65535, 65302, 6, 1, 65302, 6, 65535, 65300, 6, 1, 65300, 6, 65535, 65298, 6, 1, 65298, 6, 65535, 65296, 6, 1, 65296, 6, 65535, 65294, 6, 1, 65294, 6, 65535, 65292, 6, 1, 65292, 6, 65535, 65290, 6, 1, 65290, 6, 65535, 65288, 6, 1, 65288, 6, 65535, 65286, 6, 1, 65286, 6, 65535, 65284, 6, 1, 65284, 6, 65535, 65282, 6, 1, 65282, 6, 65535, 65280, 6, 1, 65280, 6, 65535, 65278, 6, 1, 65278, 6, 65535, 65276, 6, 1, 65276, 6, 65535, 65274, 6, 1, 65274, 6, 65535, 65272, 6, 1, 65272, 6, 65535, 65270, 6, 1, 65270, 6, 65535, 65268, 6, 1, 65268, 6, 65535, 65266, 6, 1, 65266, 6, 65535, 65264, 6, 1, 65264, 6, 65535, 65262, 6, 1, 65262, 6, 65535, 65260, 6, 1, 65260, 6, 65535, 65258, 6, 1, 65258, 6, 65535, 65256, 6, 1, 65256, 6, 65535, 65254, 6, 1, 65254, 6, 65535, 65252, 6, 1, 65252, 6, 65535, 65250, 6, 1, 65250, 6, 65535, 65248, 6, 1, 65248, 6, 65535, 65246, 6, 1, 65246, 6, 65535, 65244, 6, 1, 65244, 6, 65535, 65242, 6, 1, 65242, 6, 65535, 65240, 6, 1, 65240, 6, 65535, 65238, 6, 1, 65238, 6, 65535, 65236, 6, 1, 65236, 6, 65535, 65234, 6, 1, 65234, 6, 65535, 65232, 6, 1, 65232, 6, 65535, 65230, 6, 1, 65230, 6, 65535, 65228, 6, 1, 65228, 6, 65535, 65226, 6, 1, 65226, 6, 65535, 65224, 6, 1, 65224, 6, 65535, 65222, 6, 1, 65222, 6, 65535, 65220, 6, 1, 65220, 6, 65535, 65218, 6, 1, 65218, 6, 65535, 65216, 6, 1, 65216, 6, 65535, 65214, 6, 1, 65214, 6, 65535, 65212, 6, 1, 65212, 6, 65535, 65210, 6, 1, 65210, 6, 65535, 65208, 6, 1, 65208, 6, 65535, 65206, 6, 1, 65206, 6, 65535, 65204, 6, 1, 65204, 6, 65535, 65202, 6, 1, 65202, 6, 65535, 65200, 6, 1, 65200, 6, 65535, 65198, 6, 1, 65198, 6, 65535, 65196, 6, 1, 65196, 6, 65535, 65194, 6, 1, 65194, 6, 65535, 65192, 6, 1, 65192, 6, 65535, 65190, 6, 1, 65190, 6, 65535, 65188, 6, 1, 65188, 6, 65535, 65186, 6, 1, 65186, 6, 65535, 65184, 6, 1, 65184, 6, 65535, 65182, 6, 1, 65182, 6, 65535, 65180, 6, 1, 65180, 6, 65535, 65178, 6, 1, 65178, 6, 65535, 65176, 6, 1, 65176, 6, 65535, 65174, 6, 1, 65174, 6, 65535, 65172, 6, 1, 65172, 6, 65535, 65170, 6, 1, 65170, 6, 65535, 65168, 6, 1, 65168, 6, 65535, 65166, 6, 1, 65166, 6, 65535, 65164, 6, 1, 65164, 6, 65535, 65162, 6, 1, 65162, 6, 65535, 65160, 6, 1, 65160, 6, 65535, 65158, 6, 1, 65158, 6, 65535, 65156, 6, 1, 65156, 6, 65535, 65154, 6, 1, 65154, 6, 65535, 65152, 6, 1, 65152, 6, 65535, 65150, 6, 1, 65150, 6, 65535, 65148, 6, 1, 65148, 6, 65535, 65146, 6, 1, 65146, 6)
 }
 
-[node name="Rails" type="GridMap" parent="Scenery/Tunnel" unique_id=272691497]
-mesh_library = ExtResource("3_r11bn")
+[node name="Rails" type="GridMap" parent="Scenery/Tunnel" unique_id=713327897]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2072,8 +2074,8 @@ data = {
 "cells": PackedInt32Array(65535, 90, 5, 1, 90, 5, 65535, 88, 5, 1, 88, 5, 65535, 86, 5, 1, 86, 5, 65535, 84, 5, 1, 84, 5, 65535, 82, 5, 1, 82, 5, 65535, 80, 5, 1, 80, 5, 65535, 78, 5, 1, 78, 5, 65535, 76, 5, 1, 76, 5, 65535, 74, 5, 1, 74, 5, 65535, 72, 5, 1, 72, 5, 65535, 70, 5, 1, 70, 5, 65535, 68, 5, 1, 68, 5, 65535, 66, 5, 1, 66, 5, 65535, 64, 5, 1, 64, 5, 65535, 62, 5, 1, 62, 5, 65535, 60, 5, 1, 60, 5, 65535, 58, 5, 1, 58, 5, 65535, 56, 5, 1, 56, 5, 65535, 54, 5, 1, 54, 5, 65535, 52, 5, 1, 52, 5, 65535, 50, 5, 1, 50, 5, 65535, 48, 5, 1, 48, 5, 65535, 46, 5, 1, 46, 5, 65535, 44, 5, 1, 44, 5, 65535, 42, 5, 1, 42, 5, 65535, 40, 5, 1, 40, 5, 65535, 38, 5, 1, 38, 5, 65535, 36, 5, 1, 36, 5, 65535, 34, 5, 1, 34, 5, 65535, 32, 5, 1, 32, 5, 65535, 30, 5, 1, 30, 5, 65535, 28, 5, 1, 28, 5, 65535, 26, 5, 1, 26, 5, 65535, 24, 5, 1, 24, 5, 65535, 22, 5, 1, 22, 5, 65535, 20, 5, 1, 20, 5, 65535, 18, 5, 1, 18, 5, 65535, 16, 5, 1, 16, 5, 65535, 14, 5, 1, 14, 5, 65535, 12, 5, 1, 12, 5, 65535, 10, 5, 1, 10, 5, 65535, 8, 5, 1, 8, 5, 65535, 6, 5, 1, 6, 5, 65535, 4, 5, 1, 4, 5, 65535, 2, 5, 1, 2, 5, 65535, 0, 5, 1, 0, 5, 65535, 65534, 5, 1, 65534, 5, 65535, 65532, 5, 1, 65532, 5, 65535, 65530, 5, 1, 65530, 5, 65535, 65528, 5, 1, 65528, 5, 65535, 65526, 5, 1, 65526, 5, 65535, 65524, 5, 1, 65524, 5, 65535, 65522, 5, 1, 65522, 5, 65535, 65520, 5, 1, 65520, 5, 65535, 65518, 5, 1, 65518, 5, 65535, 65516, 5, 1, 65516, 5, 65535, 65514, 5, 1, 65514, 5, 65535, 65512, 5, 1, 65512, 5, 65535, 65510, 5, 1, 65510, 5, 65535, 65508, 5, 1, 65508, 5, 65535, 65506, 5, 1, 65506, 5, 65535, 65504, 5, 1, 65504, 5, 65535, 65502, 5, 1, 65502, 5, 65535, 65500, 5, 1, 65500, 5, 65535, 65498, 5, 1, 65498, 5, 65535, 65496, 5, 1, 65496, 5, 65535, 65494, 5, 1, 65494, 5, 65535, 65492, 5, 1, 65492, 5, 65535, 65490, 5, 1, 65490, 5, 65535, 65488, 5, 1, 65488, 5, 65535, 65486, 5, 1, 65486, 5, 65535, 65484, 5, 1, 65484, 5, 65535, 65482, 5, 1, 65482, 5, 65535, 65480, 5, 1, 65480, 5, 65535, 65478, 5, 1, 65478, 5, 65535, 65476, 5, 1, 65476, 5, 65535, 65474, 5, 1, 65474, 5, 65535, 65472, 5, 1, 65472, 5, 65535, 65470, 5, 1, 65470, 5, 65535, 65468, 5, 1, 65468, 5, 65535, 65466, 5, 1, 65466, 5, 65535, 65464, 5, 1, 65464, 5, 65535, 65462, 5, 1, 65462, 5, 65535, 65460, 5, 1, 65460, 5, 65535, 65458, 5, 1, 65458, 5, 65535, 65456, 5, 1, 65456, 5, 65535, 65454, 5, 1, 65454, 5, 65535, 65452, 5, 1, 65452, 5, 65535, 65450, 5, 1, 65450, 5, 65535, 65448, 5, 1, 65448, 5, 65535, 65446, 5, 1, 65446, 5, 65535, 65444, 5, 1, 65444, 5, 65535, 65442, 5, 1, 65442, 5, 65535, 65440, 5, 1, 65440, 5, 65535, 65438, 5, 1, 65438, 5, 65535, 65436, 5, 1, 65436, 5, 65535, 65434, 5, 1, 65434, 5, 65535, 65432, 5, 1, 65432, 5, 65535, 65430, 5, 1, 65430, 5, 65535, 65428, 5, 1, 65428, 5, 65535, 65426, 5, 1, 65426, 5, 65529, 65426, 5, 65531, 65426, 5, 65535, 65424, 5, 1, 65424, 5, 65529, 65424, 5, 65531, 65424, 5, 65535, 65422, 5, 1, 65422, 5, 65529, 65422, 5, 65531, 65422, 5, 65535, 65420, 5, 1, 65420, 5, 65529, 65420, 5, 65531, 65420, 5, 65535, 65418, 5, 1, 65418, 5, 65529, 65418, 5, 65531, 65418, 5, 65535, 65416, 5, 1, 65416, 5, 65529, 65416, 5, 65531, 65416, 5, 65535, 65414, 5, 1, 65414, 5, 65529, 65414, 5, 65531, 65414, 5, 65535, 65412, 5, 1, 65412, 5, 65529, 65412, 5, 65531, 65412, 5, 65535, 65410, 5, 1, 65410, 5, 65529, 65410, 5, 65531, 65410, 5, 65535, 65408, 5, 1, 65408, 5, 65529, 65408, 5, 65531, 65408, 5, 65535, 65406, 5, 1, 65406, 5, 65529, 65406, 5, 65531, 65406, 5, 65535, 65404, 5, 1, 65404, 5, 65529, 65404, 5, 65531, 65404, 5, 65535, 65402, 5, 1, 65402, 5, 65529, 65402, 5, 65531, 65402, 5, 65535, 65400, 5, 1, 65400, 5, 65529, 65400, 5, 65531, 65400, 5, 65535, 65398, 5, 1, 65398, 5, 65529, 65398, 5, 65531, 65398, 5, 65535, 65396, 5, 1, 65396, 5, 65529, 65396, 5, 65531, 65396, 5, 65535, 65394, 5, 1, 65394, 5, 65529, 65394, 5, 65531, 65394, 5, 65535, 65392, 5, 1, 65392, 5, 65529, 65392, 5, 65531, 65392, 5, 65535, 65390, 5, 1, 65390, 5, 65529, 65390, 5, 65531, 65390, 5, 65535, 65388, 5, 1, 65388, 5, 65529, 65388, 5, 65531, 65388, 5, 65535, 65386, 5, 1, 65386, 5, 65529, 65386, 5, 65531, 65386, 5, 65535, 65384, 5, 1, 65384, 5, 65535, 65382, 5, 1, 65382, 5, 65535, 65380, 5, 1, 65380, 5, 65535, 65378, 5, 1, 65378, 5, 65535, 65376, 5, 1, 65376, 5, 65535, 65374, 5, 1, 65374, 5, 65535, 65372, 5, 1, 65372, 5, 65535, 65370, 5, 1, 65370, 5, 65535, 65368, 5, 1, 65368, 5, 65535, 65366, 5, 1, 65366, 5, 65535, 65364, 5, 1, 65364, 5, 65535, 65362, 5, 1, 65362, 5, 65535, 65360, 5, 1, 65360, 5, 65535, 65358, 5, 1, 65358, 5, 65535, 65356, 5, 1, 65356, 5, 65535, 65354, 5, 1, 65354, 5, 65535, 65352, 5, 1, 65352, 5, 65535, 65350, 5, 1, 65350, 5, 65535, 65348, 5, 1, 65348, 5, 65535, 65346, 5, 1, 65346, 5, 65535, 65344, 5, 1, 65344, 5, 65535, 65342, 5, 1, 65342, 5, 65535, 65340, 5, 1, 65340, 5, 65535, 65338, 5, 1, 65338, 5, 65535, 65336, 5, 1, 65336, 5, 65535, 65334, 5, 1, 65334, 5, 65535, 65332, 5, 1, 65332, 5, 65535, 65330, 5, 1, 65330, 5, 65535, 65328, 5, 1, 65328, 5, 65535, 65326, 5, 1, 65326, 5, 65535, 65324, 5, 1, 65324, 5, 65535, 65322, 5, 1, 65322, 5, 65535, 65320, 5, 1, 65320, 5, 65535, 65318, 5, 1, 65318, 5, 65535, 65316, 5, 1, 65316, 5, 65535, 65314, 5, 1, 65314, 5, 65535, 65312, 5, 1, 65312, 5, 65535, 65310, 5, 1, 65310, 5, 65535, 65308, 5, 1, 65308, 5, 65535, 65306, 5, 1, 65306, 5, 65535, 65304, 5, 1, 65304, 5, 65535, 65302, 5, 1, 65302, 5, 65535, 65300, 5, 1, 65300, 5, 65535, 65298, 5, 1, 65298, 5, 65535, 65296, 5, 1, 65296, 5, 65535, 65294, 5, 1, 65294, 5, 65535, 65292, 5, 1, 65292, 5, 65535, 65290, 5, 1, 65290, 5, 65535, 65288, 5, 1, 65288, 5, 65535, 65286, 5, 1, 65286, 5, 65535, 65284, 5, 1, 65284, 5, 65535, 65282, 5, 1, 65282, 5, 65535, 65280, 5, 1, 65280, 5, 65535, 65278, 5, 1, 65278, 5, 65535, 65276, 5, 1, 65276, 5, 65535, 65274, 5, 1, 65274, 5, 65535, 65272, 5, 1, 65272, 5, 65535, 65270, 5, 1, 65270, 5, 65535, 65268, 5, 1, 65268, 5, 65535, 65266, 5, 1, 65266, 5, 65535, 65264, 5, 1, 65264, 5, 65535, 65262, 5, 1, 65262, 5, 65535, 65260, 5, 1, 65260, 5, 65535, 65258, 5, 1, 65258, 5, 65535, 65256, 5, 1, 65256, 5, 65535, 65254, 5, 1, 65254, 5, 65535, 65252, 5, 1, 65252, 5, 65535, 65250, 5, 1, 65250, 5, 65535, 65248, 5, 1, 65248, 5, 65535, 65246, 5, 1, 65246, 5, 65535, 65244, 5, 1, 65244, 5, 65535, 65242, 5, 1, 65242, 5, 65535, 65240, 5, 1, 65240, 5, 65535, 65238, 5, 1, 65238, 5, 65535, 65236, 5, 1, 65236, 5, 65535, 65234, 5, 1, 65234, 5, 65535, 65232, 5, 1, 65232, 5, 65535, 65230, 5, 1, 65230, 5, 65535, 65228, 5, 1, 65228, 5, 65535, 65226, 5, 1, 65226, 5, 65535, 65224, 5, 1, 65224, 5, 65535, 65222, 5, 1, 65222, 5, 65535, 65220, 5, 1, 65220, 5, 65535, 65218, 5, 1, 65218, 5, 65535, 65216, 5, 1, 65216, 5, 65535, 65214, 5, 1, 65214, 5, 65535, 65212, 5, 1, 65212, 5, 65535, 65210, 5, 1, 65210, 5, 65535, 65208, 5, 1, 65208, 5, 65535, 65206, 5, 1, 65206, 5, 65535, 65204, 5, 1, 65204, 5, 65535, 65202, 5, 1, 65202, 5, 65535, 65200, 5, 1, 65200, 5, 65535, 65198, 5, 1, 65198, 5, 65535, 65196, 5, 1, 65196, 5, 65535, 65194, 5, 1, 65194, 5, 65535, 65192, 5, 1, 65192, 5, 65535, 65190, 5, 1, 65190, 5, 65535, 65188, 5, 1, 65188, 5, 65535, 65186, 5, 1, 65186, 5, 65535, 65184, 5, 1, 65184, 5, 65535, 65182, 5, 1, 65182, 5, 65535, 65180, 5, 1, 65180, 5, 65535, 65178, 5, 1, 65178, 5, 65535, 65176, 5, 1, 65176, 5, 65535, 65174, 5, 1, 65174, 5, 65535, 65172, 5, 1, 65172, 5, 65535, 65170, 5, 1, 65170, 5, 65535, 65168, 5, 1, 65168, 5, 65535, 65166, 5, 1, 65166, 5, 65535, 65164, 5, 1, 65164, 5, 65535, 65162, 5, 1, 65162, 5, 65535, 65160, 5, 1, 65160, 5, 65535, 65158, 5, 1, 65158, 5, 65535, 65156, 5, 1, 65156, 5, 65535, 65154, 5, 1, 65154, 5, 65535, 65152, 5, 1, 65152, 5, 65535, 65150, 5, 1, 65150, 5, 65535, 65148, 5, 1, 65148, 5, 65535, 65146, 5, 1, 65146, 5)
 }
 
-[node name="Invert" type="GridMap" parent="Scenery/Tunnel" unique_id=75902888]
-mesh_library = ExtResource("3_r11bn")
+[node name="Invert" type="GridMap" parent="Scenery/Tunnel" unique_id=517044908]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2082,8 +2084,8 @@ data = {
 "cells": PackedInt32Array(0, 90, 20, 0, 88, 20, 0, 86, 20, 0, 84, 20, 0, 82, 20, 0, 80, 20, 0, 78, 20, 0, 76, 20, 0, 74, 20, 0, 72, 20, 0, 70, 20, 0, 68, 20, 0, 66, 20, 0, 64, 20, 0, 62, 20, 0, 60, 20, 0, 58, 20, 0, 56, 20, 0, 54, 20, 0, 52, 20, 0, 50, 20, 0, 48, 20, 0, 46, 20, 0, 44, 20, 0, 42, 20, 0, 40, 20, 0, 38, 20, 0, 36, 20, 0, 34, 20, 0, 32, 20, 0, 30, 20, 0, 28, 20, 0, 26, 20, 0, 24, 20, 0, 22, 20, 0, 20, 20, 0, 18, 20, 0, 16, 20, 0, 14, 20, 0, 12, 20, 0, 10, 20, 0, 8, 20, 0, 6, 20, 0, 4, 20, 0, 2, 20, 0, 0, 20, 0, 65534, 20, 0, 65532, 20, 0, 65530, 20, 0, 65528, 20, 0, 65526, 20, 0, 65524, 20, 0, 65522, 20, 0, 65520, 20, 0, 65518, 20, 0, 65516, 20, 0, 65514, 20, 0, 65512, 20, 0, 65510, 20, 0, 65508, 20, 0, 65506, 20, 0, 65504, 20, 0, 65502, 20, 0, 65500, 20, 0, 65498, 20, 0, 65496, 20, 0, 65494, 20, 0, 65492, 20, 0, 65490, 20, 0, 65488, 20, 0, 65486, 20, 0, 65484, 20, 0, 65482, 20, 0, 65480, 20, 0, 65478, 20, 0, 65476, 20, 0, 65474, 20, 0, 65472, 20, 0, 65470, 20, 0, 65468, 20, 0, 65466, 20, 0, 65464, 20, 0, 65462, 20, 0, 65460, 20, 0, 65458, 20, 0, 65456, 20, 0, 65454, 20, 0, 65452, 20, 0, 65450, 20, 0, 65448, 20, 0, 65446, 20, 0, 65444, 20, 0, 65442, 20, 0, 65440, 20, 0, 65438, 20, 0, 65436, 20, 0, 65434, 20, 0, 65432, 20, 0, 65430, 20, 0, 65428, 20, 0, 65426, 20, 65530, 65426, 20, 0, 65424, 20, 65530, 65424, 20, 0, 65422, 20, 65530, 65422, 20, 0, 65420, 20, 65530, 65420, 20, 0, 65418, 20, 65530, 65418, 20, 0, 65416, 20, 65530, 65416, 20, 0, 65414, 20, 65530, 65414, 20, 0, 65412, 20, 65530, 65412, 20, 0, 65410, 20, 65530, 65410, 20, 0, 65408, 20, 65530, 65408, 20, 0, 65406, 20, 65530, 65406, 20, 0, 65404, 20, 65530, 65404, 20, 0, 65402, 20, 65530, 65402, 20, 0, 65400, 20, 65530, 65400, 20, 0, 65398, 20, 65530, 65398, 20, 0, 65396, 20, 65530, 65396, 20, 0, 65394, 20, 65530, 65394, 20, 0, 65392, 20, 65530, 65392, 20, 0, 65390, 20, 65530, 65390, 20, 0, 65388, 20, 65530, 65388, 20, 0, 65386, 20, 65530, 65386, 20, 0, 65384, 20, 0, 65382, 20, 0, 65380, 20, 0, 65378, 20, 0, 65376, 20, 0, 65374, 20, 0, 65372, 20, 0, 65370, 20, 0, 65368, 20, 0, 65366, 20, 0, 65364, 20, 0, 65362, 20, 0, 65360, 20, 0, 65358, 20, 0, 65356, 20, 0, 65354, 20, 0, 65352, 20, 0, 65350, 20, 0, 65348, 20, 0, 65346, 20, 0, 65344, 20, 0, 65342, 20, 0, 65340, 20, 0, 65338, 20, 0, 65336, 20, 0, 65334, 20, 0, 65332, 20, 0, 65330, 20, 0, 65328, 20, 0, 65326, 20, 0, 65324, 20, 0, 65322, 20, 0, 65320, 20, 0, 65318, 20, 0, 65316, 20, 0, 65314, 20, 0, 65312, 20, 0, 65310, 20, 0, 65308, 20, 0, 65306, 20, 0, 65304, 20, 0, 65302, 20, 0, 65300, 20, 0, 65298, 20, 0, 65296, 20, 0, 65294, 20, 0, 65292, 20, 0, 65290, 20, 0, 65288, 20, 0, 65286, 20, 0, 65284, 20, 0, 65282, 20, 0, 65280, 20, 0, 65278, 20, 0, 65276, 20, 0, 65274, 20, 0, 65272, 20, 0, 65270, 20, 0, 65268, 20, 0, 65266, 20, 0, 65264, 20, 0, 65262, 20, 0, 65260, 20, 0, 65258, 20, 0, 65256, 20, 0, 65254, 20, 0, 65252, 20, 0, 65250, 20, 0, 65248, 20, 0, 65246, 20, 0, 65244, 20, 0, 65242, 20, 0, 65240, 20, 0, 65238, 20, 0, 65236, 20, 0, 65234, 20, 0, 65232, 20, 0, 65230, 20, 0, 65228, 20, 0, 65226, 20, 0, 65224, 20, 0, 65222, 20, 0, 65220, 20, 0, 65218, 20, 0, 65216, 20, 0, 65214, 20, 0, 65212, 20, 0, 65210, 20, 0, 65208, 20, 0, 65206, 20, 0, 65204, 20, 0, 65202, 20, 0, 65200, 20, 0, 65198, 20, 0, 65196, 20, 0, 65194, 20, 0, 65192, 20, 0, 65190, 20, 0, 65188, 20, 0, 65186, 20, 0, 65184, 20, 0, 65182, 20, 0, 65180, 20, 0, 65178, 20, 0, 65176, 20, 0, 65174, 20, 0, 65172, 20, 0, 65170, 20, 0, 65168, 20, 0, 65166, 20, 0, 65164, 20, 0, 65162, 20, 0, 65160, 20, 0, 65158, 20, 0, 65156, 20, 0, 65154, 20, 0, 65152, 20, 0, 65150, 20, 0, 65148, 20, 0, 65146, 20)
 }
 
-[node name="Roof" type="GridMap" parent="Scenery/Tunnel" unique_id=527332625]
-mesh_library = ExtResource("3_r11bn")
+[node name="Roof" type="GridMap" parent="Scenery/Tunnel" unique_id=1205080755]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2092,8 +2094,8 @@ data = {
 "cells": PackedInt32Array(0, 90, 9, 0, 88, 9, 0, 86, 9, 0, 84, 9, 0, 82, 9, 0, 80, 9, 0, 78, 9, 0, 76, 9, 0, 74, 9, 0, 72, 9, 0, 70, 9, 0, 68, 9, 0, 65468, 9, 0, 65466, 9, 0, 65464, 9, 0, 65462, 9, 0, 65460, 9, 0, 65458, 9, 0, 65456, 9, 0, 65454, 9, 0, 65452, 9, 0, 65450, 9, 0, 65448, 9, 0, 65446, 9, 0, 65444, 9, 0, 65442, 9, 0, 65440, 9, 0, 65438, 9, 0, 65436, 9, 0, 65434, 9, 0, 65432, 9, 0, 65430, 9, 0, 65428, 9, 0, 65426, 9, 65530, 65426, 9, 0, 65424, 9, 65530, 65424, 9, 0, 65422, 9, 65530, 65422, 9, 0, 65420, 9, 65530, 65420, 9, 0, 65418, 9, 65530, 65418, 9, 0, 65416, 9, 65530, 65416, 9, 0, 65414, 9, 65530, 65414, 9, 0, 65412, 9, 65530, 65412, 9, 0, 65410, 9, 65530, 65410, 9, 0, 65408, 9, 65530, 65408, 9, 0, 65406, 9, 65530, 65406, 9, 0, 65404, 9, 65530, 65404, 9, 0, 65402, 9, 65530, 65402, 9, 0, 65400, 9, 65530, 65400, 9, 0, 65398, 9, 65530, 65398, 9, 0, 65396, 9, 65530, 65396, 9, 0, 65394, 9, 65530, 65394, 9, 0, 65392, 9, 65530, 65392, 9, 0, 65390, 9, 65530, 65390, 9, 0, 65388, 9, 65530, 65388, 9, 0, 65386, 9, 65530, 65386, 9, 0, 65384, 9, 0, 65382, 9, 0, 65380, 9, 0, 65378, 9, 0, 65376, 9, 0, 65374, 9, 0, 65372, 9, 0, 65370, 9, 0, 65368, 9, 0, 65366, 9, 0, 65364, 9, 0, 65362, 9, 0, 65360, 9, 0, 65358, 9, 0, 65356, 9, 0, 65354, 9, 0, 65352, 9, 0, 65350, 9, 0, 65348, 9, 0, 65346, 9, 0, 65344, 9, 0, 65342, 9, 0, 65340, 9, 0, 65338, 9, 0, 65336, 9, 0, 65334, 9, 0, 65332, 9, 0, 65330, 9, 0, 65328, 9, 0, 65326, 9, 0, 65324, 9, 0, 65322, 9, 0, 65320, 9, 0, 65318, 9, 0, 65316, 9, 0, 65314, 9, 0, 65312, 9, 0, 65310, 9, 0, 65308, 9, 0, 65306, 9, 0, 65304, 9, 0, 65168, 9, 0, 65166, 9, 0, 65164, 9, 0, 65162, 9, 0, 65160, 9, 0, 65158, 9, 0, 65156, 9, 0, 65154, 9, 0, 65152, 9, 0, 65150, 9, 0, 65148, 9, 0, 65146, 9)
 }
 
-[node name="Lamps" type="GridMap" parent="Scenery/Tunnel" unique_id=1476384254]
-mesh_library = ExtResource("3_r11bn")
+[node name="Lamps" type="GridMap" parent="Scenery/Tunnel" unique_id=434457815]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2102,8 +2104,8 @@ data = {
 "cells": PackedInt32Array(3, 65463, 22, 65533, 65455, 655382, 3, 65447, 22, 65533, 65439, 655382, 3, 65431, 22, 3, 65415, 22, 3, 65399, 22, 3, 65383, 22, 65533, 65375, 655382, 3, 65367, 22, 65533, 65359, 655382, 3, 65351, 22, 65533, 65343, 655382, 3, 65335, 22, 65533, 65327, 655382, 3, 65319, 22, 65533, 65311, 655382, 65527, 65420, 655382, 65527, 65408, 655382, 65527, 65396, 655382)
 }
 
-[node name="Graffiti" type="GridMap" parent="Scenery/Tunnel" unique_id=143852204]
-mesh_library = ExtResource("3_r11bn")
+[node name="Graffiti" type="GridMap" parent="Scenery/Tunnel" unique_id=1834121257]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2112,8 +2114,8 @@ data = {
 "cells": PackedInt32Array(3, 65456, 31, 65533, 65439, 655394, 3, 65421, 33, 65527, 65406, 655397, 3, 65396, 35, 65533, 65373, 655397, 3, 65360, 36, 65533, 65339, 655398, 3, 65330, 32, 65533, 65314, 655391)
 }
 
-[node name="Alarms" type="GridMap" parent="Scenery/Tunnel" unique_id=1226258138]
-mesh_library = ExtResource("3_r11bn")
+[node name="Alarms" type="GridMap" parent="Scenery/Tunnel" unique_id=1799012860]
+mesh_library = ExtResource("3_ipo0h")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
 cell_center_y = false
@@ -2122,205 +2124,205 @@ data = {
 "cells": PackedInt32Array(65533, 65444, 655388, 3, 65408, 28, 65533, 65350, 655388, 3, 65322, 28)
 }
 
-[node name="Lamp1" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=738631143]
+[node name="Lamp1" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=34838185]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.75, -73)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp2" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1825451383]
+[node name="Lamp2" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=2065539346]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.75, -81)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp3" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1435362910]
+[node name="Lamp3" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=348807114]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.75, -89)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp4" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1370977821]
+[node name="Lamp4" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1391718007]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.75, -97)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp5" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=564041661]
+[node name="Lamp5" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1707135299]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.75, -105)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp7" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=722003398]
+[node name="Lamp7" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1229015098]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.75, -121)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp9" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1123251197]
+[node name="Lamp9" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1136816039]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.75, -137)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp11" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1544277593]
+[node name="Lamp11" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1962965743]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.75, -153)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp12" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=852701549]
+[node name="Lamp12" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=390117534]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.75, -161)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp13" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1560046025]
+[node name="Lamp13" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1579546116]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.75, -169)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp14" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=47026770]
+[node name="Lamp14" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=324431190]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.75, -177)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp15" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=2101562132]
+[node name="Lamp15" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1639236276]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.75, -185)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp16" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=104581388]
+[node name="Lamp16" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1000668075]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.75, -193)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp17" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1835864033]
+[node name="Lamp17" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=74116035]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.75, -201)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp18" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1491908003]
+[node name="Lamp18" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=1822943870]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.75, -209)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp19" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=2078573410]
+[node name="Lamp19" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=629831164]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.75, -217)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="Lamp20" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=146142487]
+[node name="Lamp20" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=931672149]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.75, -225)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 4.8
 
-[node name="ParallelLamp116" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=138160718]
+[node name="ParallelLamp116" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=363130468]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.6, 2.75, -116)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 6.0
 
-[node name="ParallelLamp128" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=109454081]
+[node name="ParallelLamp128" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=537255343]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.6, 2.75, -128)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 6.0
 
-[node name="ParallelLamp140" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=707501191]
+[node name="ParallelLamp140" type="OmniLight3D" parent="Scenery/Tunnel" unique_id=246648630]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.6, 2.75, -140)
 light_color = Color(1, 0.84705883, 0.63529414, 1)
 light_energy = 1.6
 omni_range = 6.0
 
-[node name="@Node3D@57" type="Node3D" parent="Scenery/Tunnel" unique_id=13045673]
+[node name="@Node3D@61" type="Node3D" parent="Scenery/Tunnel" unique_id=526664383]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.85, 2.72, -92)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "EXIT"
 letter_height = 0.1
 style = 1
 neon_color = Color(0.28627452, 0.8784314, 0.47843137, 1)
 
-[node name="@Node3D@58" type="Node3D" parent="Scenery/Tunnel" unique_id=172457806]
+[node name="@Node3D@62" type="Node3D" parent="Scenery/Tunnel" unique_id=478379494]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.85, 2.72, -128)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "EXIT"
 letter_height = 0.1
 style = 1
 neon_color = Color(0.28627452, 0.8784314, 0.47843137, 1)
 
-[node name="@Node3D@59" type="Node3D" parent="Scenery/Tunnel" unique_id=1677412712]
+[node name="@Node3D@63" type="Node3D" parent="Scenery/Tunnel" unique_id=1945590638]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.85, 2.72, -186)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "EXIT"
 letter_height = 0.1
 style = 1
 neon_color = Color(0.28627452, 0.8784314, 0.47843137, 1)
 
-[node name="@Node3D@60" type="Node3D" parent="Scenery/Tunnel" unique_id=1886846553]
+[node name="@Node3D@64" type="Node3D" parent="Scenery/Tunnel" unique_id=116061801]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.85, 2.72, -214)
-script = ExtResource("4_l1qum")
+script = ExtResource("4_472tk")
 text = "EXIT"
 letter_height = 0.1
 style = 1
 neon_color = Color(0.28627452, 0.8784314, 0.47843137, 1)
 
-[node name="Signal0" type="Node3D" parent="Scenery/Tunnel" unique_id=978188023]
+[node name="Signal0" type="Node3D" parent="Scenery/Tunnel" unique_id=1311412138]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.68, 2.8, -101)
 
-[node name="Housing" type="MeshInstance3D" parent="Scenery/Tunnel/Signal0" unique_id=2041670416]
-mesh = SubResource("BoxMesh_0xl3g")
+[node name="Housing" type="MeshInstance3D" parent="Scenery/Tunnel/Signal0" unique_id=1487618525]
+mesh = SubResource("BoxMesh_uqg1r")
 
-[node name="Stop" type="MeshInstance3D" parent="Scenery/Tunnel/Signal0" unique_id=197968587]
+[node name="Stop" type="MeshInstance3D" parent="Scenery/Tunnel/Signal0" unique_id=883562971]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.14, 0.15, 0)
-mesh = SubResource("BoxMesh_vpsxq")
+mesh = SubResource("BoxMesh_nkcpj")
 
-[node name="Clear" type="MeshInstance3D" parent="Scenery/Tunnel/Signal0" unique_id=627382972]
+[node name="Clear" type="MeshInstance3D" parent="Scenery/Tunnel/Signal0" unique_id=478802906]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.14, -0.15, 0)
-mesh = SubResource("BoxMesh_tfa7h")
+mesh = SubResource("BoxMesh_lcyhl")
 
-[node name="Signal1" type="Node3D" parent="Scenery/Tunnel" unique_id=1056139871]
+[node name="Signal1" type="Node3D" parent="Scenery/Tunnel" unique_id=1793132565]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.68, 2.8, -165)
 
-[node name="Housing" type="MeshInstance3D" parent="Scenery/Tunnel/Signal1" unique_id=200989079]
-mesh = SubResource("BoxMesh_4du82")
+[node name="Housing" type="MeshInstance3D" parent="Scenery/Tunnel/Signal1" unique_id=995234448]
+mesh = SubResource("BoxMesh_kinq1")
 
-[node name="Stop" type="MeshInstance3D" parent="Scenery/Tunnel/Signal1" unique_id=129522282]
+[node name="Stop" type="MeshInstance3D" parent="Scenery/Tunnel/Signal1" unique_id=685932283]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.14, 0.15, 0)
-mesh = SubResource("BoxMesh_8ihsb")
+mesh = SubResource("BoxMesh_d0mrj")
 
-[node name="Clear" type="MeshInstance3D" parent="Scenery/Tunnel/Signal1" unique_id=1594397775]
+[node name="Clear" type="MeshInstance3D" parent="Scenery/Tunnel/Signal1" unique_id=1120100200]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.14, -0.15, 0)
-mesh = SubResource("BoxMesh_82xey")
+mesh = SubResource("BoxMesh_mnwa0")
 
-[node name="Signal2" type="Node3D" parent="Scenery/Tunnel" unique_id=603268057]
+[node name="Signal2" type="Node3D" parent="Scenery/Tunnel" unique_id=1965675403]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.68, 2.8, -226)
 
-[node name="Housing" type="MeshInstance3D" parent="Scenery/Tunnel/Signal2" unique_id=1464576322]
-mesh = SubResource("BoxMesh_c2nqt")
+[node name="Housing" type="MeshInstance3D" parent="Scenery/Tunnel/Signal2" unique_id=1151556876]
+mesh = SubResource("BoxMesh_kadhw")
 
-[node name="Stop" type="MeshInstance3D" parent="Scenery/Tunnel/Signal2" unique_id=1270081862]
+[node name="Stop" type="MeshInstance3D" parent="Scenery/Tunnel/Signal2" unique_id=1815642724]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.14, 0.15, 0)
-mesh = SubResource("BoxMesh_6ehkb")
+mesh = SubResource("BoxMesh_u2a4q")
 
-[node name="Clear" type="MeshInstance3D" parent="Scenery/Tunnel/Signal2" unique_id=524064936]
+[node name="Clear" type="MeshInstance3D" parent="Scenery/Tunnel/Signal2" unique_id=1221951122]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.14, -0.15, 0)
-mesh = SubResource("BoxMesh_gtg3f")
+mesh = SubResource("BoxMesh_iinic")
 
-[node name="Board" type="Label3D" parent="." unique_id=1342609766]
+[node name="Board" type="Label3D" parent="." unique_id=727720536]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3.15, 10.6)
 pixel_size = 0.008
 font_size = 30
 
-[node name="RailSound" type="AudioStreamPlayer3D" parent="." unique_id=801283824]
+[node name="RailSound" type="AudioStreamPlayer3D" parent="." unique_id=2109719774]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 max_distance = 150.0

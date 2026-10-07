@@ -81,11 +81,12 @@ func test_throw_late_join_disconnect_and_competing_pickups() -> void:
 	)
 	assert_eq(hand.net_item_id, "")
 	var ball := server.get_node(BALL_PATH) as ThrownItem
-	assert_true(
-		await RealTime.wait_until(
-			get_tree(), func() -> bool: return ball.net_landed and ball.velocity.length() < .05, 5
-		)
-	)
+	# Settling follows physics time; a wall-clock deadline depends on host load.
+	for frame: int in 640:
+		if ball.net_landed and ball.velocity.length() < .05:
+			break
+		await get_tree().physics_frame
+	assert_true(ball.net_landed and ball.velocity.length() < .05, "Ball settles before late join")
 	ball.set_physics_process(false)
 	var current := ball.net_position
 	assert_gt(current.distance_to(ball.from), 1.0)
@@ -94,6 +95,14 @@ func test_throw_late_join_disconnect_and_competing_pickups() -> void:
 		await RealTime.wait_until(get_tree(), func() -> bool: return late.has_node(BALL_PATH), 5)
 	)
 	var late_ball := late.get_node(BALL_PATH) as ThrownItem
+	# Spawning the node and receiving its current snapshot are separate events.
+	assert_true(
+		await RealTime.wait_until(
+			get_tree(),
+			func() -> bool: return late_ball.net_position == current and late_ball.net_landed,
+			5
+		)
+	)
 	assert_eq(late_ball.net_position, current, "Late join receives the current position")
 	assert_true(late_ball.net_landed, "Late join can recover an already-thrown ball")
 	assert_false(late_ball.is_physics_processing(), "Only the server simulates collisions")

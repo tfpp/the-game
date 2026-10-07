@@ -1,0 +1,9 @@
+{
+  "title": "Stay aboard",
+  "summary": "Metro rides keep passengers aboard more reliably and render more efficiently.",
+  "notes": [
+    "Fix passengers being sent back to the platform after successfully boarding a train.",
+    "Keep crouching, jumping and passengers beside seats aboard, and retain their floor while the next room loads.",
+    "Reduce train rendering overhead, repeated elevator sign rebuilds and resident animation work."
+  ]
+}

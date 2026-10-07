@@ -5,7 +5,9 @@ extends Node3D
 
 const BENCHES: Array[float] = [-42.0, -30.0, 30.0, 42.0]
 const ACTIVE_DISTANCE := 28.0
+const VISIBLE_DISTANCE := 56.0
 var zone: MetroZone
+var track_index := 0
 var models: Array[PatronModel] = []
 var starts: Array[Vector3] = []
 var ends: Array[Vector3] = []
@@ -13,6 +15,7 @@ var sleeping: Array[bool] = []
 var headings: Array[float] = []
 ## Appearance and walk phase; equal for the same person on every platform.
 var looks: Array[int] = []
+var _pose_elapsed := 0.0
 
 
 func _ready() -> void:
@@ -22,7 +25,7 @@ func _ready() -> void:
 			_add(Vector3(-1, 1.2, center + bay + 0.37), Vector3.ZERO, true, -PI / 2)
 		_add(Vector3(0, 1.2, center - 8.8), Vector3(0, 1.2, center - 6.3), false, 0)
 	var first := models.size()
-	if zone.station_index >= 0:
+	if zone.station_index >= 0 and track_index == 0:
 		_add_platform(self, first)
 	elif zone.scenery != null:
 		# Riders see the same people on the platforms they pull out of and into.
@@ -36,7 +39,7 @@ func _add_platform(parent: Node3D, look: int) -> void:
 		_add(Vector3(11, 1.2, z), Vector3.ZERO, true, PI / 2, parent, look)
 		look += 1
 	for z: float in [-18.0, 6.0, 48.0]:
-		_add(Vector3(9, 1.2, z), Vector3(9, 1.2, z + 6), false, 0, parent, look)
+		_add(Vector3(4, 1.2, z), Vector3(4, 1.2, z + 6), false, 0, parent, look)
 		look += 1
 
 
@@ -89,9 +92,19 @@ func _process(delta: float) -> void:
 
 
 func update_view(delta: float, force := false) -> void:
+	_pose_elapsed += delta
+	# Cosmetic rigs need only 15 Hz; train transforms still follow every frame.
+	var animate := force or _pose_elapsed >= 1.0 / 15.0
+	var pose_delta := _pose_elapsed
+	if animate:
+		_pose_elapsed = 0.0
 	var metro := zone.service()
 	var clock := metro.net_cycle * MetroRules.PERIOD + metro.display_time()
 	var local := metro.player(multiplayer.get_unique_id())
+	var viewer: Node3D = get_viewport().get_camera_3d()
+	if viewer == null:
+		viewer = local
+	var moving := zone.train if track_index == 0 else zone.reverse_train
 	for index: int in models.size():
 		var model := models[index]
 		var point := starts[index]
@@ -104,22 +117,27 @@ func update_view(delta: float, force := false) -> void:
 			walk = sample["walk"]
 		if point.x < 2:
 			# Station presentation accelerates with its train; ride compartments stay fixed.
-			point.z += zone.train.position.z
+			point += moving.position
 		model.position = point
 		model.rotation.y = yaw
-		model.visible = zone.train.visible if point.x < 2 else true
-		var nearby := (
-			local != null
-			and local.global_position.distance_to(model.global_position) < ACTIVE_DISTANCE
+		var distance_squared := (
+			viewer.global_position.distance_squared_to(model.global_position)
+			if viewer != null
+			else 0.0
 		)
-		if not force and not nearby:
+		model.visible = (
+			(moving.visible or starts[index].x >= 2)
+			and distance_squared < VISIBLE_DISTANCE * VISIBLE_DISTANCE
+		)
+		var nearby := viewer != null and distance_squared < ACTIVE_DISTANCE * ACTIVE_DISTANCE
+		if not force and (not animate or not nearby or not model.visible):
 			continue
 		if sleeping[index]:
 			# Hip on the existing cushion; a relaxed forward slump, not a dead ragdoll.
-			var hip := 0.48 if point.x < 2 else 0.5
-			model.sit(delta, hip, 0, 0.12, -0.65)
+			var hip := 0.48 if starts[index].x < 2 else 0.5
+			model.sit(pose_delta, hip, 0, 0.12, -0.65)
 			model.avatar._torso.rotation.x = -0.3
 			model.avatar._head.rotation.x = -0.8
 			model.avatar.human.pose(model.avatar, false, false)
 		else:
-			model.pose(delta, walk, 0, 0, clock)
+			model.pose(pose_delta, walk, 0, 0, clock)

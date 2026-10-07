@@ -7,6 +7,8 @@ var metro: MetroService
 var entity: NetworkedEntity
 var _serial := 0
 var _time := 0.0
+var _local_token := -1
+var _local_origin := Vector3.INF
 
 
 func _ready() -> void:
@@ -62,7 +64,14 @@ func prepare(
 	if kind == "recover":
 		floor_y = position.y - 0.95
 	entity.send_event(
-		&"prepare", {"token": _serial, "position": position, "floor_y": floor_y}, peer
+		&"prepare",
+		{
+			"token": _serial,
+			"position": position,
+			"floor_y": floor_y,
+			"support": origin if kind == "depart" else Vector3.INF
+		},
+		peer
 	)
 	return true
 
@@ -84,7 +93,21 @@ func _ready_received(peer: int, _payload: Dictionary) -> bool:
 
 func _event(event: StringName, payload: Dictionary) -> void:
 	if event == &"prepare":
+		_local_token = int(payload["token"])
+		_local_origin = payload.get("support", Vector3.INF)
 		_load_destination(payload)
+	elif event == &"finished" and int(payload["token"]) == _local_token:
+		_local_token = -1
+		_local_origin = Vector3.INF
+
+
+func support_needed(origin: Vector3) -> bool:
+	if not multiplayer.is_server():
+		return _local_origin == origin
+	for trip: Dictionary in pending.values():
+		if trip.get("kind", "") == "depart" and trip.get("origin") == origin:
+			return true
+	return false
 
 
 func _load_destination(payload: Dictionary) -> void:
@@ -96,7 +119,11 @@ func _load_destination(payload: Dictionary) -> void:
 	# actual floor, never acknowledge only that a PackedScene was instantiated.
 	for frame: int in 420:
 		await get_tree().physics_frame
-		if not is_inside_tree() or (room != null and not room.is_loaded()):
+		if (
+			not is_inside_tree()
+			or _local_token != int(payload["token"])
+			or (room != null and not room.is_loaded())
+		):
 			return
 		if frame < 3:
 			continue
@@ -137,8 +164,8 @@ func _physics_process(delta: float) -> void:
 				continue
 			_complete_lift(source)
 		else:
-			_complete_train(rider, trip)
-			cancel(peer)
+			if _complete_train(rider, trip):
+				cancel(peer)
 
 
 func _group_ready(source: MetroElevator) -> bool:
@@ -178,15 +205,16 @@ func _complete_lift(source: MetroElevator) -> void:
 		cancel(peer)
 
 
-func _complete_train(rider: Player, trip: Dictionary) -> void:
+func _complete_train(rider: Player, trip: Dictionary) -> bool:
 	var peer := rider.get_multiplayer_authority()
 	if trip["kind"] == "recover":
 		if metro.rides[int(trip["service"])].contains(rider.net_position):
 			rider.server_teleport.rpc_id(peer, trip["position"])
 		metro.remove_passenger(peer)
-		return
+		return true
 	var offset := rider.net_position - (trip["origin"] as Vector3)
-	if not MetroRules.inside_item(offset) or absf(offset.x) > 1.1:
+	var track_index := MetroRules.track(int(trip["service"]))
+	if not MetroRules.aboard(offset, rider.movement.hull_radius_m()):
 		if (
 			trip["kind"] == "depart"
 			and MetroRules.car_at(offset) >= 0
@@ -196,18 +224,28 @@ func _complete_train(rider: Player, trip: Dictionary) -> void:
 		):
 			metro.shield_from_train(peer)
 			rider.server_teleport.rpc_id(
-				peer, (trip["origin"] as Vector3) + MetroRules.platform_recovery(offset)
+				peer,
+				(trip["origin"] as Vector3) + MetroRules.platform_recovery(offset, track_index)
 			)
+		elif (
+			trip["kind"] == "arrive"
+			and metro.rides[int(trip["service"])].contains(rider.net_position)
+		):
+			# Keep an unusual cabin pose aboard and retry safely; dropping the
+			# manifest here used to strand riders or eject them on the next cycle.
+			return false
 		metro.remove_passenger(peer)
-		return
+		return true
 	if trip["kind"] == "arrive" and metro.net_time >= MetroRules.OPEN + MetroRules.DWELL:
 		# A very slow arrival misses the parked train, never its supporting platform.
-		offset = MetroRules.platform_recovery(offset)
-	rider.server_teleport.rpc_id(peer, (trip["target"] as Vector3) + offset, rider.net_yaw)
+		offset = MetroRules.platform_recovery(offset, track_index)
+	# Keep the owner's current view instead of restoring an old replicated yaw.
+	rider.server_teleport.rpc_id(peer, (trip["target"] as Vector3) + offset)
 	if trip["kind"] == "depart":
 		metro.add_passenger(peer, int(trip["service"]))
 	else:
 		metro.remove_passenger(peer)
+	return true
 
 
 func _recover(rider: Player, trip: Dictionary) -> void:
@@ -226,7 +264,11 @@ func _recover(rider: Player, trip: Dictionary) -> void:
 		):
 			metro.shield_from_train(peer)
 			rider.server_teleport.rpc_id(
-				peer, (trip["origin"] as Vector3) + MetroRules.platform_recovery(offset)
+				peer,
+				(
+					(trip["origin"] as Vector3)
+					+ MetroRules.platform_recovery(offset, MetroRules.track(int(trip["service"])))
+				)
 			)
 		metro.remove_passenger(peer)
 		return
@@ -235,13 +277,21 @@ func _recover(rider: Player, trip: Dictionary) -> void:
 	var position: Vector3 = (
 		trip["position"]
 		if trip["kind"] == "recover"
-		else (trip["target"] as Vector3) + Vector3(3.3, 2.15, 0)
+		else (
+			(trip["target"] as Vector3)
+			+ MetroRules.platform_recovery(Vector3.ZERO, MetroRules.track(int(trip["service"])))
+		)
 	)
 	prepare(rider, rider.net_position, position, 0, "recover", int(trip["service"]))
 
 
 func cancel(peer: int) -> void:
 	var trip: Dictionary = pending.get(peer, {})
+	if (
+		trip.has("token")
+		and (peer == multiplayer.get_unique_id() or peer in multiplayer.get_peers())
+	):
+		entity.send_event(&"finished", {"token": trip["token"]}, peer)
 	pending.erase(peer)
 	for key: String in ["source", "cab"]:
 		var cab := trip.get(key) as MetroElevator
@@ -259,3 +309,5 @@ func _reset(_mode: Network.Mode) -> void:
 	for peer: int in pending.keys():
 		cancel(peer)
 	_time = 0
+	_local_token = -1
+	_local_origin = Vector3.INF

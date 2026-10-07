@@ -11,6 +11,7 @@ var accesses: Array[MetroAccess] = []
 var transfers: MetroTransfers
 var _collision: Array[Node3D] = []
 var _structure: Array[Node3D] = []
+var _collision_doors: Array[AnimationPlayer] = []
 var _ready_links := false
 var _view_time := 0.0
 var _received_time := -1.0
@@ -31,6 +32,7 @@ func _ready() -> void:
 	add_to_group(&"metro_service")
 	for i: int in 4:
 		stations.append(get_node("Station%d" % i) as MetroZone)
+	for i: int in MetroRules.SERVICES:
 		rides.append(get_node("Ride%d" % i) as MetroZone)
 	transfers = MetroTransfers.new()
 	transfers.name = "Transfers"
@@ -88,9 +90,10 @@ func register_access(access: MetroAccess) -> bool:
 	access.destination = kit.instantiate() as MetroElevator
 	access.destination.name = "Exit_" + access.zone_id
 	_configure_cab(access.destination, access, false)
-	access.destination.position = Vector3(17.5, 1.2, (access.slot - 2.5) * 8)
+	access.destination.position = Vector3(6.4, 1.2, (access.slot - 2.5) * 8)
 	access.destination.rotation.y = -PI / 2
 	stations[access.station].add_child(access.destination)
+	access.destination.attach_shaft()
 	access.source.partner = access.destination
 	access.destination.partner = access.source
 	var gps := GpsDestination.new()
@@ -204,18 +207,14 @@ func _physics_process(delta: float) -> void:
 	if not _items_departed and net_time >= MetroRules.DEPART:
 		_items_departed = true
 		_clear_unboarded()
-		for index: int in 4:
-			_move_items(
-				stations[MetroRules.station(index, net_cycle)].position, rides[index].position
-			)
+		for index: int in MetroRules.SERVICES:
+			_move_items(train_origin(index, net_cycle), rides[index].position)
 	if previous < MetroRules.PERIOD - 3 and net_time >= MetroRules.PERIOD - 3:
 		_begin_arrival_transfer()
 	_check_train_impacts(previous, net_time)
 	if net_time >= MetroRules.PERIOD:
-		for index: int in 4:
-			_move_items(
-				rides[index].position, stations[MetroRules.station(index, net_cycle + 1)].position
-			)
+		for index: int in MetroRules.SERVICES:
+			_move_items(rides[index].position, train_origin(index, net_cycle + 1))
 		net_time = fmod(net_time, MetroRules.PERIOD)
 		net_cycle += 1
 		_items_departed = false
@@ -238,29 +237,40 @@ func _check_train_impacts(previous: float, current: float) -> void:
 			continue
 		var peer := rider.get_multiplayer_authority()
 		for station: MetroZone in stations:
-			var point := rider.net_position - station.global_position
-			if _protected(peer, point, station, rider.movement.hull_radius_m()):
+			if not station.contains(rider.net_position):
 				continue
-			if MetroRules.train_hits(
-				point,
-				rider.movement.hull_radius_m(),
-				rider.movement.hull_height_m(),
-				previous,
-				current
-			):
-				combat.apply_damage(peer, Combat.MAX_HEALTH, peer)
-				if combat.is_respawning(peer):
-					entity.send_event(&"struck", {"peer": peer, "at": rider.net_position})
-				break
+			for track_index: int in 2:
+				var point := (
+					rider.net_position
+					- station.global_position
+					- MetroRules.track_offset(track_index)
+				)
+				if _protected(peer, point, station, rider.movement.hull_radius_m(), track_index):
+					continue
+				point.z *= 1 if track_index == 0 else -1
+				if MetroRules.train_hits(
+					point,
+					rider.movement.hull_radius_m(),
+					rider.movement.hull_height_m(),
+					previous,
+					current
+				):
+					combat.apply_damage(peer, Combat.MAX_HEALTH, peer)
+					if combat.is_respawning(peer):
+						entity.send_event(&"struck", {"peer": peer, "at": rider.net_position})
+					break
+			break
 
 
-func _protected(peer: int, point: Vector3, station: MetroZone, radius: float) -> bool:
+func _protected(
+	peer: int, point: Vector3, station: MetroZone, radius: float, track_index: int = 0
+) -> bool:
 	var trip: Dictionary = transfers.pending.get(peer, {})
 	# A validated rider awaiting floor readiness still belongs to the cabin.
 	# Stepping out of that cabin forfeits protection.
 	if (
 		trip.get("kind", "") == "depart"
-		and trip.get("origin") == station.position
+		and trip.get("origin") == station.position + MetroRules.track_offset(track_index)
 		and MetroRules.aboard(point, radius)
 	):
 		return true
@@ -289,17 +299,17 @@ func _on_event(event: StringName, payload: Dictionary) -> void:
 
 
 func _begin_boarding_transfer() -> void:
-	for service_id: int in 4:
-		var source := stations[MetroRules.station(service_id, net_cycle)]
+	for service_id: int in MetroRules.SERVICES:
+		var origin := train_origin(service_id, net_cycle)
 		for node: Node in get_tree().get_nodes_in_group(&"players"):
 			var rider := node as Player
 			if rider == null or rider.multiplayer != multiplayer or not alive(rider):
 				continue
-			var point := rider.net_position - source.position
+			var point := rider.net_position - origin
 			if MetroRules.aboard(point, rider.movement.hull_radius_m()):
 				transfers.prepare(
 					rider,
-					source.position,
+					origin,
 					rides[service_id].position,
 					MetroRules.CLOSE,
 					"depart",
@@ -313,7 +323,7 @@ func _begin_boarding_transfer() -> void:
 			):
 				rider.server_teleport.rpc_id(
 					rider.get_multiplayer_authority(),
-					source.position + MetroRules.platform_recovery(point)
+					origin + MetroRules.platform_recovery(point, MetroRules.track(service_id))
 				)
 
 
@@ -325,7 +335,7 @@ func _begin_arrival_transfer() -> void:
 			transfers.prepare(
 				rider,
 				rides[service_id].position,
-				stations[MetroRules.station(service_id, net_cycle + 1)].position,
+				train_origin(service_id, net_cycle + 1),
 				3.0,
 				"arrive",
 				service_id
@@ -339,16 +349,20 @@ func _clear_unboarded() -> void:
 		var rider := node as Player
 		if rider == null or rider.multiplayer != multiplayer or not alive(rider):
 			continue
-		if transfers.pending.has(rider.get_multiplayer_authority()):
+		# An owner may already be on the ride while the server still sees their
+		# old cabin pose. Never follow a successful transfer with a platform eject.
+		var peer := rider.get_multiplayer_authority()
+		if transfers.pending.has(peer) or net_passengers.has(peer):
 			continue
 		for station: MetroZone in stations:
-			var point := rider.net_position - station.position
-			if MetroRules.in_car(point):
-				shield_from_train(rider.get_multiplayer_authority())
-				rider.server_teleport.rpc_id(
-					rider.get_multiplayer_authority(),
-					station.position + MetroRules.platform_recovery(point)
-				)
+			for track_index: int in 2:
+				var origin := station.position + MetroRules.track_offset(track_index)
+				var point := rider.net_position - origin
+				if MetroRules.in_car(point):
+					shield_from_train(peer)
+					rider.server_teleport.rpc_id(
+						peer, origin + MetroRules.platform_recovery(point, track_index)
+					)
 
 
 func add_passenger(peer: int, service_id: int) -> void:
@@ -358,6 +372,8 @@ func add_passenger(peer: int, service_id: int) -> void:
 
 
 func remove_passenger(peer: int) -> void:
+	if not net_passengers.has(peer):
+		return
 	var snapshot := net_passengers.duplicate()
 	snapshot.erase(peer)
 	net_passengers = snapshot
@@ -386,39 +402,71 @@ func _move_items(origin: Vector3, target: Vector3) -> void:
 				item.transfer_by(target - origin)
 
 
+## Both station tracks share an island, but each has its own ride and manifest.
+func train_origin(service_id: int, cycle: int) -> Vector3:
+	return (
+		stations[MetroRules.station(service_id, cycle)].position
+		+ MetroRules.track_offset(MetroRules.track(service_id))
+	)
+
+
+func collision_height(station_index: int, track_index: int = 0) -> float:
+	if station_index < 0 or net_time < MetroRules.DEPART:
+		return 0.0
+	var origin := stations[station_index].position + MetroRules.track_offset(track_index)
+	# Slow loading must not remove the floor underneath a validated rider.
+	if transfers.support_needed(origin):
+		return 0.0
+	return -200.0
+
+
 func _sync_server_collision() -> void:
 	for node: Node3D in _collision + _structure:
 		node.queue_free()
 	_collision.clear()
+	_collision_doors.clear()
 	_structure.clear()
 	if not multiplayer.is_server():
 		return
 	var scene := load("res://features/metro/train_collision.tscn") as PackedScene
-	for zone: MetroZone in stations + rides:
-		var body := scene.instantiate() as Node3D
-		body.name = "ServerCollision"
-		zone.add_child(body)
-		_collision.append(body)
-		if zone.station_index >= 0:
-			var structure := (
-				(load("res://features/metro/station_collision.tscn") as PackedScene).instantiate()
-				as Node3D
-			)
-			zone.add_child(structure)
-			_structure.append(structure)
+	for track_index: int in 2:
+		for zone: MetroZone in stations:
+			_add_collision(scene, zone, track_index)
+	for zone: MetroZone in rides:
+		_add_collision(scene, zone, 0)
+	for zone: MetroZone in stations:
+		var structure := (
+			(load("res://features/metro/station_collision.tscn") as PackedScene).instantiate()
+			as Node3D
+		)
+		zone.add_child(structure)
+		_structure.append(structure)
 	_update_collision()
+
+
+func _add_collision(scene: PackedScene, zone: MetroZone, track_index: int) -> void:
+	var body := scene.instantiate() as Node3D
+	body.name = "ServerCollision" if track_index == 0 else "ReverseCollision"
+	body.position = MetroRules.track_offset(track_index)
+	body.set_meta("station", zone.station_index)
+	body.set_meta("track", track_index)
+	zone.add_child(body)
+	_collision.append(body)
+	_collision_doors.append(body.get_node("Doors") as AnimationPlayer)
 
 
 func _update_collision() -> void:
 	for index: int in _collision.size():
 		var body := _collision[index]
-		var height := MetroRules.collision_y(net_time) if index < 4 else 0.0
+		var station_index := int(body.get_meta("station"))
+		var track_index := int(body.get_meta("track"))
+		var height := collision_height(station_index, track_index)
 		if body.position.y != height:
 			body.position.y = height
-		var animation := body.get_node("Doors") as AnimationPlayer
-		var amount := MetroRules.aperture(net_time) if index < 4 else 0.0
+		var amount := MetroRules.aperture(net_time) if station_index >= 0 else 0.0
 		if body.get_meta("aperture", -1.0) != amount:
-			animation.play("open_right")
+			var animation := _collision_doors[index]
+			animation.play("open_right" if track_index == 0 else "open_left")
 			animation.seek(amount * 1.2, true)
 			animation.pause()
 			body.set_meta("aperture", amount)
@@ -448,12 +496,19 @@ func gps_links() -> Array[Dictionary]:
 				"label": "Exit to " + access.label
 			}
 		)
-	for index: int in 4:
+	for index: int in MetroRules.SERVICES:
+		var station_index := index % 4
+		var next := MetroRules.station(index, 1)
+		var platform := (
+			MetroRules.track_offset(MetroRules.track(index))
+			+ MetroRules.platform_recovery(Vector3.ZERO, MetroRules.track(index))
+		)
+		platform.y = 1.2
 		links.append(
 			{
-				"from": stations[index].position + Vector3(3, 1.2, 0),
-				"to": stations[(index + 1) % 4].position + Vector3(3, 1.2, 0),
-				"label": "Wait for the train to " + MetroRules.NAMES[(index + 1) % 4]
+				"from": stations[station_index].position + platform,
+				"to": stations[next].position + platform,
+				"label": "Wait for the train to " + MetroRules.NAMES[next]
 			}
 		)
 		var arrival := MetroRules.station(
@@ -462,7 +517,7 @@ func gps_links() -> Array[Dictionary]:
 		links.append(
 			{
 				"from": rides[index].position + Vector3(0, 1.2, 2.5),
-				"to": stations[arrival].position + Vector3(3, 1.2, 0),
+				"to": stations[arrival].position + platform,
 				"label": "Ride to " + MetroRules.NAMES[arrival]
 			}
 		)

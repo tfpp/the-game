@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="MeshLibrary" path="res://features/metro/shaft_tiles.tres" id="1_ymi58"]
+
+[node name="" type="Node3D" unique_id=1576284105]
+
+[node name="Shaft" type="GridMap" parent="." unique_id=1518028948]
+mesh_library = ExtResource("1_ymi58")
+cell_size = Vector3(1, 1, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 0)
+}
+
+[node name="CeilingCollar" type="GridMap" parent="." unique_id=1946070721]
+mesh_library = ExtResource("1_ymi58")
+cell_size = Vector3(1, 1, 1)
+cell_center_x = false
+cell_center_y = false
+cell_center_z = false
+data = {
+"cells": PackedInt32Array(0, 0, 1)
+}

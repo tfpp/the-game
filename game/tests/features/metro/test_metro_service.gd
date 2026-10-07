@@ -200,13 +200,13 @@ func test_gps_has_loop_and_ride_links_and_hides_ineligible_destinations() -> voi
 	access.label = "Restricted"
 	add_child_autofree(access)
 	await wait_physics_frames(3)
-	assert_eq(metro.gps_links().size(), 10)
+	assert_eq(metro.gps_links().size(), 18)
 	access.access_policy = "vip"
-	assert_eq(metro.gps_links().size(), 8)
+	assert_eq(metro.gps_links().size(), 16)
 	assert_false((access.get_node("MetroDestination") as GpsDestination).available())
 	metro.net_time = MetroRules.DEPART + 1
 	var ride_link: Dictionary = metro.gps_links()[1]
-	assert_eq(ride_link["to"], metro.stations[1].position + Vector3(3, 1.2, 0))
+	assert_eq(ride_link["to"], metro.stations[1].position + Vector3(3.3, 1.2, 0))
 
 
 func test_dedicated_collision_has_no_meshes_or_lights_and_session_clears_rooms() -> void:
