@@ -7,6 +7,14 @@ var outbound := true
 var metro: MetroService
 var partner: MetroElevator
 var _visual_range := 0.0
+var _last_sign := ""
+
+
+func attach_shaft() -> void:
+	# Station ceiling underside is y=5.475; cab roof is y=3.75.
+	var shaft := (load("res://features/metro/access_shaft.tscn") as PackedScene).instantiate()
+	shaft.name = "CeilingShaft"
+	add_child(shaft)
 
 
 func _depart() -> void:
@@ -34,6 +42,9 @@ func _process(delta: float) -> void:
 		nearby and local.global_position.distance_to(global_position) < 6
 	)
 	if nearby and access != null and not outbound:
-		($Car/Sign as SignBoard).text = (
+		var label := (
 			access.label.to_upper() if access.discovered(multiplayer.get_unique_id()) else "PRIVATE"
 		)
+		if label != _last_sign:
+			_last_sign = label
+			($Car/Sign as SignBoard).text = label

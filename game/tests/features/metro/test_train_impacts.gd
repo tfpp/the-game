@@ -89,6 +89,17 @@ func test_parked_train_ride_compartment_and_crown_are_unaffected() -> void:
 	assert_false(combat.is_respawning(1))
 
 
+func test_reverse_track_sweeps_in_the_other_direction() -> void:
+	var at := metro.stations[0].position + Vector3(16, 2.7, 70)
+	var player := rider(at)
+	metro._check_train_impacts(MetroRules.DEPART + 2.8, MetroRules.DEPART + 3.0)
+	assert_true(combat.is_respawning(1), "Reverse departure heads toward +Z")
+	assert_eq(player.net_position, at)
+	var platform := rider(metro.stations[0].position + Vector3(13.5, 2.1244, 0), 2)
+	metro._check_train_impacts(MetroRules.PERIOD - 0.1, MetroRules.PERIOD)
+	assert_false(combat.is_respawning(platform.get_multiplayer_authority()))
+
+
 func test_validated_boarder_waiting_for_readiness_is_safe_only_in_cabin() -> void:
 	var player := rider(metro.stations[0].position + Vector3(0, 2.1244, 2.5))
 	metro._begin_boarding_transfer()

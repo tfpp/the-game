@@ -1,0 +1,80 @@
+[gd_resource type="MeshLibrary" format=3]
+
+[ext_resource type="Shader" path="res://features/casino_hub/materials/retro_surface.gdshader" id="1_gifhr"]
+[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/peeling_plaster.png" id="2_4x2u3"]
+[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/rusted_steel.png" id="3_jiapm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uef3q"]
+render_priority = 0
+shader = ExtResource("1_gifhr")
+shader_parameter/albedo_texture = ExtResource("2_4x2u3")
+shader_parameter/tint = Color(0.32941177, 0.46666667, 0.5137255, 1)
+shader_parameter/texture_scale = 0.75
+shader_parameter/texture_inset = null
+shader_parameter/color_steps = null
+
+[sub_resource type="BoxMesh" id="BoxMesh_6mfej"]
+material = SubResource("ShaderMaterial_uef3q")
+size = Vector3(0.08, 0.75, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_janne"]
+material = SubResource("ShaderMaterial_uef3q")
+size = Vector3(0.08, 0.75, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_f3ji8"]
+material = SubResource("ShaderMaterial_uef3q")
+size = Vector3(24, 0.14, 0.32)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i21ed"]
+render_priority = 0
+shader = ExtResource("1_gifhr")
+shader_parameter/albedo_texture = ExtResource("3_jiapm")
+shader_parameter/tint = Color(0.43137255, 0.39607844, 0.3137255, 1)
+shader_parameter/texture_scale = 1.0
+shader_parameter/texture_inset = null
+shader_parameter/color_steps = null
+
+[sub_resource type="BoxMesh" id="BoxMesh_vs886"]
+material = SubResource("ShaderMaterial_i21ed")
+size = Vector3(0.6, 0.25, 4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rvnrs"]
+material = SubResource("ShaderMaterial_i21ed")
+size = Vector3(0.2, 2, 2.6)
+
+[resource]
+item/0/name = ""
+item/0/mesh = SubResource("BoxMesh_6mfej")
+item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 4, 0)
+item/0/mesh_cast_shadow = 1
+item/0/shapes = []
+item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/navigation_layers = 1
+item/1/name = ""
+item/1/mesh = SubResource("BoxMesh_janne")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 4, 0)
+item/1/mesh_cast_shadow = 1
+item/1/shapes = []
+item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/navigation_layers = 1
+item/2/name = ""
+item/2/mesh = SubResource("BoxMesh_f3ji8")
+item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5.21, 0)
+item/2/mesh_cast_shadow = 1
+item/2/shapes = []
+item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/navigation_layers = 1
+item/3/name = ""
+item/3/mesh = SubResource("BoxMesh_vs886")
+item/3/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.33, 0)
+item/3/mesh_cast_shadow = 1
+item/3/shapes = []
+item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/3/navigation_layers = 1
+item/4/name = ""
+item/4/mesh = SubResource("BoxMesh_rvnrs")
+item/4/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+item/4/mesh_cast_shadow = 1
+item/4/shapes = []
+item/4/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/4/navigation_layers = 1

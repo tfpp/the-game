@@ -1,0 +1,68 @@
+[gd_resource type="MeshLibrary" format=3]
+
+[ext_resource type="Shader" path="res://features/casino_hub/materials/retro_surface.gdshader" id="1_pveu8"]
+[ext_resource type="Texture2D" path="res://assets/street_props/surfaces/peeling_plaster.png" id="2_8yrfu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ml5j7"]
+render_priority = 0
+shader = ExtResource("1_pveu8")
+shader_parameter/albedo_texture = ExtResource("2_8yrfu")
+shader_parameter/tint = Color(0.3137255, 0.4745098, 0.39607844, 1)
+shader_parameter/texture_scale = 0.75
+shader_parameter/texture_inset = null
+shader_parameter/color_steps = null
+
+[sub_resource type="BoxMesh" id="BoxMesh_obt3u"]
+material = SubResource("ShaderMaterial_ml5j7")
+size = Vector3(0.08, 0.75, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7mwp3"]
+material = SubResource("ShaderMaterial_ml5j7")
+size = Vector3(0.08, 0.75, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_juihv"]
+material = SubResource("ShaderMaterial_ml5j7")
+size = Vector3(24, 0.14, 0.32)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f4m3w"]
+render_priority = 0
+shader = ExtResource("1_pveu8")
+shader_parameter/albedo_texture = ExtResource("2_8yrfu")
+shader_parameter/tint = Color(0.64705884, 0.7254902, 0.6117647, 1)
+shader_parameter/texture_scale = 0.5
+shader_parameter/texture_inset = null
+shader_parameter/color_steps = null
+
+[sub_resource type="BoxMesh" id="BoxMesh_65wlc"]
+material = SubResource("ShaderMaterial_f4m3w")
+size = Vector3(0.12, 2, 3.2)
+
+[resource]
+item/0/name = ""
+item/0/mesh = SubResource("BoxMesh_obt3u")
+item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 4, 0)
+item/0/mesh_cast_shadow = 1
+item/0/shapes = []
+item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/navigation_layers = 1
+item/1/name = ""
+item/1/mesh = SubResource("BoxMesh_7mwp3")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 4, 0)
+item/1/mesh_cast_shadow = 1
+item/1/shapes = []
+item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/navigation_layers = 1
+item/2/name = ""
+item/2/mesh = SubResource("BoxMesh_juihv")
+item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 5.21, 0)
+item/2/mesh_cast_shadow = 1
+item/2/shapes = []
+item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/navigation_layers = 1
+item/3/name = ""
+item/3/mesh = SubResource("BoxMesh_65wlc")
+item/3/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+item/3/mesh_cast_shadow = 1
+item/3/shapes = []
+item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/3/navigation_layers = 1

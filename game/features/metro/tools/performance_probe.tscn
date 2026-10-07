@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/metro/tools/performance_probe.gd" id="1"]
+
+[node name="PerformanceProbe" type="Node"]
+script = ExtResource("1")

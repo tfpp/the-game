@@ -4,12 +4,13 @@ extends Node3D
 var metro: MetroService
 var camera: Camera3D
 var player: Player
+var station_index := 0
 
 
 func _ready() -> void:
 	metro = (load("res://features/metro/feature.tscn") as PackedScene).instantiate() as MetroService
 	add_child(metro)
-	for index: int in 6:
+	for index: int in 16:
 		var access := MetroAccess.new()
 		access.name = "Room%d" % index
 		access.zone_id = "preview%d" % index
@@ -20,8 +21,9 @@ func _ready() -> void:
 			"Wine Cellar",
 			"Backroom Book",
 			"Mirror Club"
-		][index]
-		access.slot = index
+		][index % 6]
+		access.station = mini(index / 4, 3)
+		access.slot = index % 4
 		access.position = Vector3(index * 20, 0, 200)
 		add_child(access)
 	camera = Camera3D.new()
@@ -50,17 +52,17 @@ func _view(which: int) -> void:
 	Controls.pause()
 	player.set_physics_process(false)
 	player.set_process(false)
-	metro.stations[0].load_room(60000)
+	metro.stations[station_index].load_room(60000)
 	metro.rides[0].load_room(60000)
 	if which == 2:
 		camera.position = MetroRules.ride_position(0) + Vector3(0, 2.8, 8)
 		camera.look_at(MetroRules.ride_position(0) + Vector3(0, 2.5, -8))
 	elif which == 3:
-		camera.position = MetroRules.station_position(0) + Vector3(8, 3.1, 10)
-		camera.look_at(MetroRules.station_position(0) + Vector3(18, 2.8, -5))
+		camera.position = MetroRules.station_position(station_index) + Vector3(3.1, 3.1, -1)
+		camera.look_at(MetroRules.station_position(station_index) + Vector3(6.5, 3.5, -4))
 	else:
-		camera.position = MetroRules.station_position(0) + Vector3(8, 3.2, 58)
-		camera.look_at(MetroRules.station_position(0) + Vector3(0, 2.3, 28))
+		camera.position = MetroRules.station_position(station_index) + Vector3(8, 3.2, 58)
+		camera.look_at(MetroRules.station_position(station_index) + Vector3(8, 2.3, 28))
 	camera.current = true
 
 
@@ -91,4 +93,13 @@ func _capture() -> void:
 			await get_tree().process_frame
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("/tmp/metro-view-%d.png" % view)
+	metro.net_time = MetroRules.DEPART + MetroRules.TRAVEL * 0.5
+	for index: int in 4:
+		metro.stations[station_index].unload_room()
+		station_index = index
+		_view(1)
+		for frame: int in 6:
+			await get_tree().process_frame
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("/tmp/metro-station-%d.png" % index)
 	get_tree().quit()

@@ -105,40 +105,49 @@ albedo_color = Color(0.73333335, 0.6666667, 0.34901962, 1)
 material = SubResource("StandardMaterial3D_ulwx6")
 size = Vector3(0.18, 0.018, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_nr278"]
-material = ExtResource("5_cq37t")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nr278"]
+render_priority = 0
+shader = ExtResource("1_j6i4q")
+shader_parameter/albedo_texture = ExtResource("6_kiabj")
+shader_parameter/tint = Color(0.29803923, 0.5921569, 0.3882353, 1)
+shader_parameter/texture_scale = 1.0
+shader_parameter/texture_inset = null
+shader_parameter/color_steps = null
+
+[sub_resource type="BoxMesh" id="BoxMesh_6r3d7"]
+material = SubResource("ShaderMaterial_nr278")
 size = Vector3(0.45, 4.4, 0.45)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_6r3d7"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_apchd"]
 size = Vector3(0.45, 4.4, 0.45)
 
-[sub_resource type="BoxMesh" id="BoxMesh_apchd"]
+[sub_resource type="BoxMesh" id="BoxMesh_yveha"]
 material = ExtResource("5_cq37t")
 size = Vector3(0.1, 0.12, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_yveha"]
+[sub_resource type="BoxMesh" id="BoxMesh_vrich"]
 material = SubResource("StandardMaterial3D_o1d4y")
 size = Vector3(2, 0.2, 2)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_vrich"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_u328i"]
 size = Vector3(2, 0.2, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_u328i"]
+[sub_resource type="BoxMesh" id="BoxMesh_5mwb4"]
 material = ExtResource("5_cq37t")
 size = Vector3(0.05, 0.6, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_5mwb4"]
+[sub_resource type="BoxMesh" id="BoxMesh_mqtgs"]
 material = SubResource("StandardMaterial3D_o1d4y")
 size = Vector3(0.3, 4.6, 2)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_mqtgs"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_c573a"]
 size = Vector3(0.3, 4.6, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_c573a"]
+[sub_resource type="BoxMesh" id="BoxMesh_fdvee"]
 material = SubResource("StandardMaterial3D_o1d4y")
 size = Vector3(6, 0.3, 2)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_fdvee"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_c8ilb"]
 size = Vector3(6, 0.3, 2)
 
 [resource]
@@ -171,45 +180,45 @@ item/3/shapes = []
 item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/3/navigation_layers = 1
 item/4/name = ""
-item/4/mesh = SubResource("BoxMesh_nr278")
+item/4/mesh = SubResource("BoxMesh_6r3d7")
 item/4/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 0)
 item/4/mesh_cast_shadow = 1
-item/4/shapes = [SubResource("BoxShape3D_6r3d7"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 0)]
+item/4/shapes = [SubResource("BoxShape3D_apchd"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 0)]
 item/4/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/4/navigation_layers = 1
 item/5/name = ""
-item/5/mesh = SubResource("BoxMesh_apchd")
+item/5/mesh = SubResource("BoxMesh_yveha")
 item/5/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 item/5/mesh_cast_shadow = 1
 item/5/shapes = []
 item/5/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/5/navigation_layers = 1
 item/6/name = ""
-item/6/mesh = SubResource("BoxMesh_yveha")
+item/6/mesh = SubResource("BoxMesh_vrich")
 item/6/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 item/6/mesh_cast_shadow = 1
-item/6/shapes = [SubResource("BoxShape3D_vrich"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)]
+item/6/shapes = [SubResource("BoxShape3D_u328i"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)]
 item/6/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/6/navigation_layers = 1
 item/7/name = ""
-item/7/mesh = SubResource("BoxMesh_u328i")
+item/7/mesh = SubResource("BoxMesh_5mwb4")
 item/7/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 item/7/mesh_cast_shadow = 1
 item/7/shapes = []
 item/7/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/7/navigation_layers = 1
 item/8/name = ""
-item/8/mesh = SubResource("BoxMesh_5mwb4")
+item/8/mesh = SubResource("BoxMesh_mqtgs")
 item/8/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 item/8/mesh_cast_shadow = 1
-item/8/shapes = [SubResource("BoxShape3D_mqtgs"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)]
+item/8/shapes = [SubResource("BoxShape3D_c573a"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)]
 item/8/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/8/navigation_layers = 1
 item/9/name = ""
-item/9/mesh = SubResource("BoxMesh_c573a")
+item/9/mesh = SubResource("BoxMesh_fdvee")
 item/9/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.6, 0)
 item/9/mesh_cast_shadow = 1
-item/9/shapes = [SubResource("BoxShape3D_fdvee"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.6, 0)]
+item/9/shapes = [SubResource("BoxShape3D_c8ilb"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.6, 0)]
 item/9/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/9/navigation_layers = 1
 item/10/name = ""
