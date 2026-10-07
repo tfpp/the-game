@@ -32,6 +32,7 @@ func _ready() -> void:
 	var root := MODEL.instantiate()
 	add_child(root)
 	_find_nodes(root)
+	surface.mesh = PlayerChest.mesh_for(surface.mesh as ArrayMesh)
 	material.shader = SURFACE
 	for binding: Array in [
 		["face_texture", FACE],
@@ -77,6 +78,8 @@ func apply_appearance(model: BlockPlayerModel) -> void:
 	material.set_shader_parameter("shirt_equipped", not model.shirt_id.is_empty())
 	material.set_shader_parameter("pants_equipped", not model.pants_id.is_empty())
 	material.set_shader_parameter("tactical", model.outfit == "tactical")
+	material.set_shader_parameter("chest_covered", model.chest == "full")
+	_shape(PlayerChest.SHAPE, model.chest == "full" and model.body_type != &"penguin")
 	material.set_shader_parameter("hair_enabled", model.hair_style != "bald")
 	material.set_shader_parameter("hide_head", model.head_type != &"human")
 	_shape("Feminine", model.body_type == &"girl")

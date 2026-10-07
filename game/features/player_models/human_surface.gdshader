@@ -18,6 +18,8 @@ uniform vec4 eye_tint : source_color = vec4(0.15, 0.1, 0.05, 1.0);
 uniform float minimum_light : hint_range(0.0, 0.3) = 0.0;
 uniform bool shirt_equipped = false;
 uniform bool pants_equipped = false;
+// A simple white underwear top uses existing fabric when a full chest is unshirted.
+uniform bool chest_covered = false;
 uniform bool tactical = false;
 uniform bool tuxedo = false;
 uniform bool hair_enabled = true;
@@ -62,6 +64,10 @@ void fragment() {
 		if (tactical || shirt_equipped) {
 			artwork = texture(fabric_texture, painted_uv).rgb;
 			tint = shirt_tint.rgb;
+		}
+		if (chest_covered && !arm && !tactical && !shirt_equipped && abs(rest_xy.x) < 0.195 && rest_xy.y > 0.15 && rest_xy.y < 0.425) {
+			artwork = texture(fabric_texture, painted_uv).rgb;
+			tint = vec3(0.94);
 		}
 		if (tuxedo) {
 			// The back UV seam interpolates through the white front; keep the back vest black.
