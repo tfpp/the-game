@@ -96,6 +96,42 @@ palette index; account IDs remain on the server. Avatars, bare arms and legs,
 gripping hands, and the inventory preview all use the same skin color. Clothing
 and white underwear keep their own colors.
 
+## Honkers chest option
+
+Choose **Chest → Full (honkers)** on **Settings → Character Model** for a fuller
+chest, or **Default** to keep the original silhouette. It works with either human
+build and every head/tail. The penguin costume hides it, retaining the choice when
+switching back. The live settings and backpack previews show it; use **F3** or the
+touch **CAM** button to see your own avatar in third person. First-person hands
+and emotes keep their existing masks. Desktop, controller and touch use the same
+settings option; no new binding is needed.
+
+The chest is cosmetic: it changes no capsule, eye height, movement, income,
+equipment or combat rules. Shirts and the tactical outfit follow the same connected
+surface; without a shirt, Full adds a white underwear top using the existing fabric
+texture. This is a material treatment, not an inventory item.
+
+`PlayerAppearance` accepts the optional bounded `"chest": "default" | "full"`
+field. Older four/five-field appearances still default to the original chest, so
+NPCs, saved looks and other model callers remain supported. The existing
+`appearance` action is the only request interface: PlayerModels owns the accepted
+snapshot and NetworkedEntity supplies transport identity and late-join replication.
+The picker saves accepted looks with SettingsStore and restores them after reconnect;
+respawns retain the session choice, while disconnect/session reset clear server state.
+
+`player_chest.gd` builds one shared ArrayMesh with a sixth, native FullChest morph
+from the imported GLB. It preserves the original topology, skin weights, UVs,
+five morphs, bones and 128px artwork. A paired smooth front-torso profile projects
+at most 0.16 authored metres toward **-Z**, tapering before shoulders/neck/waist;
+normals follow the displacement and culling bounds include the projection. It adds
+no surfaces, body-part nodes, textures, lights or per-frame mesh generation.
+
+GUT coverage is in `test_player_chest.gd` and `test_chest_mesh.gd`; the existing
+`network_test.sh` also verifies Full reaches the server, owner and late observer,
+while rejecting invalid/forged requests and keeping the observer's look unchanged.
+For reproducible front/side/rear and settings captures, see
+[rendered review](../../../docs/design/previews/player-chest/README.md).
+
 ## Animation
 
 `block_player_motion.gd` derives poses from velocity:
@@ -176,8 +212,8 @@ four-avatar contact sheet, optionally passing `-- --avatar-capture=/tmp/avatars.
 All human geometry and seven 128×128 textures are original. The editable model
 is `assets/player_models/source/human.blend`, with reproducible authoring scripts
 beside it. Runtime uses one connected mesh, one shader surface, forty-five bones and
-five blend shapes. Geometry is shared across avatars; vertex morph weights and
-material tints are per instance. See `assets/player_models/README.md` for source
+five authored blend shapes plus the native FullChest morph. Geometry is shared
+across avatars; vertex morph weights and material tints are per instance. See `assets/player_models/README.md` for source
 commands and mesh budgets. The legacy `BlockPlayerModel` class name remains for
 compatibility with existing callers.
 

@@ -25,6 +25,7 @@ var body_type: StringName = &"default"
 var head_type: StringName = &"human"
 var tail_type: StringName = &"none"
 var outfit := "casual"
+var chest := "default"
 var hair_style := "classic"
 var hair_color_index := 0
 var eye_color_index := 0
@@ -573,11 +574,13 @@ func set_appearance(data: Dictionary) -> void:
 		return
 	var changed: bool = (
 		outfit != str(data.get("outfit", "casual"))
+		or chest != str(data.get("chest", "default"))
 		or hair_style != data["hair"]
 		or hair_color_index != int(data["hair_color"])
 		or eye_color_index != int(data["eyes"])
 	)
 	outfit = str(data.get("outfit", "casual"))
+	chest = str(data.get("chest", "default"))
 	hair_style = data["hair"]
 	hair_color_index = int(data["hair_color"])
 	eye_color_index = int(data["eyes"])

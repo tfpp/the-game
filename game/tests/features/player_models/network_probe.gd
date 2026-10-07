@@ -1,7 +1,9 @@
 extends Node
 ## Minimal authenticated peers exercising the production appearance endpoint.
 
-const LOOK := {"skin": 6, "hair": "long", "hair_color": 3, "eyes": 2, "outfit": "tactical"}
+const LOOK := {
+	"skin": 6, "hair": "long", "hair_color": 3, "eyes": 2, "outfit": "tactical", "chest": "full"
+}
 var _role := ""
 var _results: Array[int] = []
 var _emote_results: Array[int] = []
@@ -15,6 +17,8 @@ var _authenticated := false
 
 
 func _ready() -> void:
+	# Explicit probe requests must not race this machine's saved character restore.
+	_models.get_node("ModelPicker").set_process(false)
 	_models.entity.request_finished.connect(
 		func(action: StringName, result: NetworkedEntity.Result) -> void:
 			if action == &"emote":
@@ -77,6 +81,17 @@ func _process(_delta: float) -> void:
 			if not is_equal_approx(capsule.height, factor * PlayerHeight.BASE_METERS):
 				push_error("Replicated height did not reach the avatar/capsule")
 				get_tree().quit(1)
+			if not is_equal_approx(avatar.human.shape_weight(PlayerChest.SHAPE), 1.0):
+				continue
+			if not bool(avatar.human.material.get_shader_parameter("chest_covered")):
+				push_error("Replicated chest did not reach the shared avatar material")
+				get_tree().quit(1)
+			if (
+				_role == "late"
+				and _models.appearance_for(multiplayer.get_unique_id())["chest"] != "default"
+			):
+				push_error("Another player changed the late observer's appearance")
+				get_tree().quit(1)
 			_observed = true
 			print("AVATAR_OBSERVED peer=%d height=%f" % [peer, float(_models.heights[peer])])
 	var stop := str(Network.args.get("probe-stop", ""))
@@ -103,13 +118,16 @@ func _run() -> void:
 	_models.entity.request_action(
 		&"appearance", {"skin": 999999, "hair": "bald", "hair_color": 0, "eyes": 0}
 	)
+	var bad_chest := LOOK.duplicate()
+	bad_chest["chest"] = "unknown"
+	_models.entity.request_action(&"appearance", bad_chest)
 	_models.entity.request_action(&"height", {"value": 100, "peer_id": 1})
-	while _results.size() < 5:
+	while _results.size() < 6:
 		await get_tree().process_frame
 	var peer := multiplayer.get_unique_id()
 	while _models.appearance_for(peer) != LOOK or _models.type_for(peer) != "girl":
 		await get_tree().process_frame
-	if _results != [0, 0, 3, 3, 1] or _models.appearances.has(1):
+	if _results != [0, 0, 3, 3, 3, 1] or _models.appearances.has(1):
 		push_error("Appearance request identity/validation failed: %s" % [_results])
 		get_tree().quit(1)
 		return

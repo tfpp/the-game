@@ -6,7 +6,12 @@ item grips. Each hand has a palm, thumb and four separate fingers, with three
 weighted phalanges per digit (30 finger bones total). Open, relaxed and gripping
 poses deform those vertices; palms orient to item grip markers. Five blend shapes sculpt the same topology for feminine proportions,
 long, swept or cropped hair, and tactical clothing. There are no separate human
-body-part meshes. The GLB importer may duplicate vertices at UV seams.
+body-part meshes. Runtime adds the optional sixth FullChest morph through the native
+`features/player_models/player_chest.gd` definition; the original GLB/Blender file and
+all textures remain unchanged. It uses the same 1,707 imported UV/normal vertices,
+2,926 triangles, one surface and 45 bones, cached across avatars. No Python authoring
+is needed for this option. See the feature README and native chest preview for details.
+The GLB importer may duplicate vertices at UV seams.
 
 The editable source is `source/human.blend`; select the Human mesh in Blender to
 edit vertices, weights or shape keys. Runtime uses `models/human.glb`.

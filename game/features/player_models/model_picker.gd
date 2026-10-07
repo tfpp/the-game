@@ -117,12 +117,14 @@ func settings_page_build() -> Control:
 	_add_choice(
 		box, "hair_color", "Hair color", ["Dark brown", "Brown", "Blond", "Auburn", "Silver"], []
 	)
+	_add_choice(box, "chest", "Chest", ["Default", "Full (honkers)"], PlayerAppearance.CHESTS)
 	_add_choice(box, "outfit", "Outfit", ["Casual", "Tactical"], PlayerAppearance.OUTFITS)
 	_add_choice(box, "eyes", "Eye color", ["Brown", "Blue", "Green", "Grey"], [])
 	var note := Label.new()
 	note.text = (
-		"Skin, hair, eye and outfit choices are saved on this device. "
-		+ "Clothing is equipped in your backpack. Human details appear on human heads."
+		"Skin, hair, eye, chest and outfit choices are saved on this device. "
+		+ "Clothing is equipped in your backpack. Human details appear on human heads. "
+		+ "Full chest stays covered without a shirt and is hidden by the penguin costume."
 	)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(note)
@@ -199,6 +201,9 @@ func _refresh() -> void:
 	(_choices["hair_color"] as OptionButton).select(int(appearance["hair_color"]))
 	(_choices["outfit"] as OptionButton).select(
 		PlayerAppearance.OUTFITS.find(str(appearance.get("outfit", "casual")))
+	)
+	(_choices["chest"] as OptionButton).select(
+		PlayerAppearance.CHESTS.find(str(appearance.get("chest", "default")))
 	)
 	(_choices["eyes"] as OptionButton).select(int(appearance["eyes"]))
 	_preview.model.set_body_type(types["body"])

@@ -100,7 +100,7 @@ func test_picker_registers_a_character_settings_page_with_every_option() -> void
 	assert_true(picker.is_in_group(&"settings_pages"))
 	var page: Control = picker.settings_page_build()
 	add_child_autofree(page)
-	assert_eq(picker._choices.size(), 8)
+	assert_eq(picker._choices.size(), 9)
 	var skin := picker._choices["skin"] as OptionButton
 	assert_eq(skin.item_count, PlayerSkin.TONES.size() + 1)
 	assert_eq(picker._preview.mouse_filter, Control.MOUSE_FILTER_STOP)
@@ -120,7 +120,7 @@ func test_human_is_one_skinned_surface_with_vertex_blend_shapes() -> void:
 	assert_eq(human.surface.mesh.get_surface_count(), 1)
 	assert_not_null(human.surface.skin)
 	assert_eq(human.skeleton.get_bone_count(), 45)
-	assert_eq(human.surface.mesh.get_blend_shape_count(), 5)
+	assert_eq(human.surface.mesh.get_blend_shape_count(), 6)
 	var arrays := human.surface.mesh.surface_get_arrays(0)
 	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	assert_eq((arrays[Mesh.ARRAY_TEX_UV2] as PackedVector2Array).size(), vertices.size())
