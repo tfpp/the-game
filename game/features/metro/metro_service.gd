@@ -36,6 +36,7 @@ func _ready() -> void:
 	transfers.name = "Transfers"
 	add_child(transfers)
 	entity.session_reset.connect(_reset)
+	entity.event_received.connect(_on_event)
 	multiplayer.peer_disconnected.connect(_remove_peer)
 	call_deferred("_register_accesses")
 	call_deferred("_connect_combat")
@@ -248,6 +249,8 @@ func _check_train_impacts(previous: float, current: float) -> void:
 				current
 			):
 				combat.apply_damage(peer, Combat.MAX_HEALTH, peer)
+				if combat.is_respawning(peer):
+					entity.send_event(&"struck", {"peer": peer, "at": rider.net_position})
 				break
 
 
@@ -272,6 +275,17 @@ func _protected(peer: int, point: Vector3, station: MetroZone, radius: float) ->
 ## Protect a rider the metro is moving off the departing train this cycle.
 func shield_from_train(peer: int) -> void:
 	_shielded[peer] = net_cycle
+
+
+func _on_event(event: StringName, payload: Dictionary) -> void:
+	if event != &"struck":
+		return
+	# The victim hears the flatline in their ears; bystanders hear it on the tracks.
+	var at: Vector3 = payload.get("at", Vector3.INF)
+	if int(payload.get("peer", 0)) == multiplayer.get_unique_id():
+		GameAudio.play_ui(self, &"metro_flatline")
+	else:
+		GameAudio.play_at(self, &"metro_flatline", at)
 
 
 func _begin_boarding_transfer() -> void:

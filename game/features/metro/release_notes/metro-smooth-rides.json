@@ -4,6 +4,7 @@
   "notes": [
     "Make metro trains ease away from platforms and brake gently instead of launching out of stations.",
     "Show the platform being left, lit tunnels, graffiti, signals and the next platform passing the windows on every ride.",
-    "Lengthen each metro trip to 18 seconds, so trains now call at each station every 32.4 seconds."
+    "Lengthen each metro trip to 18 seconds, so trains now call at each station every 32.4 seconds.",
+    "Play a flatline when a moving train hits someone on the tracks."
   ]
 }

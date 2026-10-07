@@ -97,7 +97,9 @@ Arriving and departing trains kill players whose server-observed capsule overlap
 their swept path at any station, including jumping players. Stay on the platform;
 parked trains, the out-of-sight hand-over between the departing and arriving train
 and the separate ride compartments do not cause train damage. This works offline and
-on every device without new controls.
+on every device without new controls. The victim hears an original heart-monitor
+beep and flatline (`metro_flatline`, a homage to the shooter-classic death cue, not
+sampled game audio); bystanders hear it from the tracks.
 
 MetroService sweeps the departing and arriving trains separately against the
 native train bounds (3.15 × 3.66 × 114.3 m), with capsule clearance and a longitudinal
@@ -110,8 +112,9 @@ sees their old cabin position. Passengers and riders shielded that cycle are the
 safe while that stale position is inside the parked train's cars, never on the tracks.
 Combat.apply_damage owns the normal death screen, delayed respawn and death listeners,
 with self attribution so environmental impacts award no player kills. Metro's existing
-death callback clears passenger manifests and pending transfers. No new persistent
-state or RPC is introduced; late joiners use the current replicated timetable.
+death callback clears passenger manifests and pending transfers. The flatline is a
+transient NetworkedEntity event, so late joiners never replay past impacts. Rebuild it
+with `godot --headless --path game -s res://features/metro/tools/build_flatline.gd`.
 
 ## Runtime and performance
 

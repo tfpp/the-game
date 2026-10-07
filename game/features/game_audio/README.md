@@ -32,6 +32,11 @@ in the same bounded world voice pool. These are original one-second wordless
 harmonic yells, authored by `strip_mall/tools/build_yells.gd`, not TV recordings;
 server events trigger them only for visitors already viewing the plaza.
 
+The metro's `metro_flatline` (features/metro) is an original 2.2-second heart-monitor
+beep then flatline, 11025 Hz 8-bit, synthesized by `metro/tools/build_flatline.gd`;
+no sampled game audio. A player struck by a train hears it on the UI pool; bystanders
+hear it in the world pool at the impact. Late joiners do not replay it.
+
 ## Assets
 
 Files copied unmodified from the downloaded Kenney All-in-1 pack:

@@ -36,9 +36,12 @@ const VAN_DEPARTURE := preload("res://assets/starter_room/van_departure.wav")
 const WOK_YELL := preload("res://assets/strip_mall/audio/wok_yell.wav")
 const SUSHI_YELL := preload("res://assets/strip_mall/audio/sushi_yell.wav")
 
+const METRO_FLATLINE := preload("res://assets/metro/audio/flatline.wav")
+
 const PROFILES := {
 	&"city_wok_yell": [WOK_YELL, -15.0, 1.0],
 	&"city_sushi_yell": [SUSHI_YELL, -15.0, 1.0],
+	&"metro_flatline": [METRO_FLATLINE, -10.0, 1.0],
 	&"van_departure": [VAN_DEPARTURE, -12.0, 1.0],
 	&"pistol": [PISTOL_SHOT, -9.0, 1.0],
 	&"smg": [MP5_SHOT, -12.0, 1.0],

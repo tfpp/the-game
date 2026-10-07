@@ -101,6 +101,26 @@ func test_validated_boarder_waiting_for_readiness_is_safe_only_in_cabin() -> voi
 	assert_true(metro.transfers.pending.is_empty())
 
 
+func test_struck_rider_hears_the_flatline_and_bystanders_hear_it_trackside() -> void:
+	var audio := GameAudio.new()
+	add_child_autofree(audio)
+	watch_signals(audio)
+	var at := metro.stations[1].position + Vector3(0, 2.7, 70)
+	rider(at)
+	metro._check_train_impacts(MetroRules.PERIOD - 4.1, MetroRules.PERIOD - 3.9)
+	assert_true(combat.is_respawning(1))
+	assert_signal_emitted_with_parameters(
+		audio, "sound_started", [&"metro_flatline", false, Vector3.ZERO]
+	)
+	var bystander := rider(at + Vector3(0, 0, 2), 2)
+	metro._check_train_impacts(MetroRules.PERIOD - 4.1, MetroRules.PERIOD - 3.9)
+	assert_true(combat.is_respawning(2))
+	assert_signal_emitted_with_parameters(
+		audio, "sound_started", [&"metro_flatline", true, bystander.net_position]
+	)
+	assert_signal_emit_count(audio, "sound_started", 2, "One cue per death, not per tick")
+
+
 func test_riders_the_metro_moved_off_a_departing_train_keep_their_old_seat_safe() -> void:
 	# Owners report their teleported position a round trip later; until then the
 	# server still sees them in the cabin the departing train is pulling away.
