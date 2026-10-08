@@ -47,6 +47,7 @@ func _initialize() -> void:
 	Balcony.configure(level)
 	preload("res://features/casino_hub/gridmap/retired_food_hall.gd").trim(level)
 	preload("res://features/casino_hub/gridmap/vip_window.gd").configure(level)
+	preload("res://features/casino_hub/gridmap/metro_alcove.gd").configure(level)
 	var packed := PackedScene.new()
 	assert(packed.pack(level) == OK)
 	assert(ResourceSaver.save(packed, SCENE_PATH) == OK)

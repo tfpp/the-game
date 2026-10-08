@@ -95,6 +95,16 @@ requires both prior discovery and current eligibility; it calls the VIP owner's
 entry/leave methods. Hotel Props retains its developer gate. Room-owned cleanup,
 including refunds when leaving the betting room, continues to observe player location.
 
+## Casino wall recess (#540)
+
+The Golden Crown connector is recessed into the south wall, west of the entrance
+corridor, at `(-12, 0, 19.8)` facing north. The cab occupies the unused former-shop
+floor behind the wall instead of the promenade. Its existing METRO sign, call
+button, four-rider limit, Use controls and Crown station exit are unchanged;
+registration moves the GPS marker with it. Other room/station elevators and the
+north-wall excursion elevator are unchanged. The saved casino GridMaps and
+`casino_hub/gridmap/metro_alcove.gd` own the doorway; no runtime geometry changes.
+
 ## Track hazards
 
 Arriving and departing trains kill players whose server-observed capsule overlaps
