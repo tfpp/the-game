@@ -101,7 +101,7 @@ func test_five_metre_perimeter_and_ceiling_have_matching_collision() -> void:
 func test_double_width_panels_join_without_gaps_on_all_four_sides() -> void:
 	var walls := _room.get_node("Casino/WallsNorthSouth") as GridMap
 	var sides := _room.get_node("Casino/WallsEastWest") as GridMap
-	assert_eq(walls.get_used_cells_by_item(3).size(), 42)
+	assert_eq(walls.get_used_cells_by_item(3).size(), 40, "Two panels frame the metro recess")
 	assert_eq(sides.get_used_cells_by_item(3).size(), 27)
 	for x: int in range(-24, 24):
 		for sign_z: float in [-1.0, 1.0]:

@@ -226,6 +226,23 @@ The recess belongs to the asset; maps need no controller offset. Travel is
 disabled. Rebuild the elevator library before this casino scene if its
 fixed source changes. See [the elevator guide](../../elevator/README.md).
 
+## Recessed metro connector (#540)
+
+The separate METRO elevator now opens from the south wall at `(-12, 0, 19.8)`,
+west of the central entrance corridor, facing north. Its 3.2 m cabin depth sits
+behind the wall on the existing unused shop floor. Two panels on each decorated
+wall face become doorway headers, with narrow wood-wall GridMaps sealing the
+side seams; the painting above that spot moves to x=-20
+so the metro sign and globe lamps stay readable. The south promenade is clear.
+The permanent `MetroAccess` marker retains its Crown station/slot and network
+path; both the cab and GPS destination follow it automatically. No floor, roof,
+lighting, pit route or other elevator changes are needed.
+
+`metro_alcove.gd` is the idempotent offline recipe called by `build.gd` after the
+other casino modifications. The live scene stores its result, not a runtime
+geometry patch. `tests/features/metro/test_casino_alcove.gd` checks the real
+capsule/floor clearance, framing, GPS and round-trip arrival at the authored pose.
+
 ## Quarter-height pit and beige stucco
 
 The pit is exactly one quarter of the five-metre standard wall: **1.25 m**.
