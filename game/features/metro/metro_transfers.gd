@@ -30,7 +30,8 @@ func prepare(
 	kind: String,
 	service_id: int = -1,
 	source_cab: MetroElevator = null,
-	target_cab: MetroElevator = null
+	target_cab: MetroElevator = null,
+	facing: float = NAN
 ) -> bool:
 	var peer := player.get_multiplayer_authority()
 	if not multiplayer.is_server() or pending.has(peer) or not metro.alive(player):
@@ -38,7 +39,7 @@ func prepare(
 	_serial += 1
 	var offset := player.net_position - origin
 	var position := target + offset
-	var yaw := player.net_yaw
+	var yaw := player.net_yaw if is_nan(facing) else facing
 	if source_cab != null:
 		offset = source_cab.car.to_local(player.net_position)
 		position = target_cab.car.to_global(offset)
@@ -63,6 +64,8 @@ func prepare(
 	var floor_y := target_cab.car.global_position.y if target_cab != null else target.y + 1.2
 	if kind == "recover":
 		floor_y = position.y - 0.95
+	elif kind == "wake":
+		floor_y = position.y - player.movement.hull_height_m() * 0.5
 	entity.send_event(
 		&"prepare",
 		{
@@ -207,6 +210,10 @@ func _complete_lift(source: MetroElevator) -> void:
 
 func _complete_train(rider: Player, trip: Dictionary) -> bool:
 	var peer := rider.get_multiplayer_authority()
+	if trip["kind"] == "wake":
+		rider.server_teleport.rpc_id(peer, trip["position"], trip["yaw"])
+		metro.delivered.emit(peer)
+		return true
 	if trip["kind"] == "recover":
 		if metro.rides[int(trip["service"])].contains(rider.net_position):
 			rider.server_teleport.rpc_id(peer, trip["position"])
@@ -253,6 +260,10 @@ func _recover(rider: Player, trip: Dictionary) -> void:
 		(trip["source"] as MetroElevator).server_arrive()
 		return
 	var peer := rider.get_multiplayer_authority()
+	if trip["kind"] == "wake":
+		# A slow client keeps waiting (blacked out) for the platform; retry the handshake.
+		prepare(rider, rider.net_position, trip["position"], 0, "wake", -1, null, null, trip["yaw"])
+		return
 	if trip["kind"] == "depart":
 		# The departure platform is already loaded around this player.
 		var offset := rider.net_position - (trip["origin"] as Vector3)

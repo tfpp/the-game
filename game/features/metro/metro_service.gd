@@ -2,6 +2,9 @@ class_name MetroService
 extends Node3D
 ## Shared loop authority. World travel is only between compact stationary rooms.
 
+## Server-only: a `deliver()` drop-off has teleported `peer` onto its platform.
+signal delivered(peer: int)
+
 @export var net_time := 0.0
 @export var net_cycle := 0
 @export var net_passengers: Dictionary = {}
@@ -369,6 +372,26 @@ func add_passenger(peer: int, service_id: int) -> void:
 	var snapshot := net_passengers.duplicate()
 	snapshot[peer] = service_id
 	net_passengers = snapshot
+
+
+## Server: carries one player to a platform `position` (capsule centre, world space)
+## facing `yaw`, using the same readiness handshake as trains, so the station floor
+## is loaded on their client first. Emits `delivered` once teleported. features/booze
+## uses this to wake blacked-out drinkers on a platform. False if it cannot start.
+func deliver(rider: Player, position: Vector3, yaw: float) -> bool:
+	if not multiplayer.is_server() or not alive(rider):
+		return false
+	var peer := rider.get_multiplayer_authority()
+	if transfers.pending.has(peer):
+		return false
+	remove_passenger(peer)
+	return transfers.prepare(rider, rider.net_position, position, 0.0, "wake", -1, null, null, yaw)
+
+
+## Server: abandons a pending `deliver()` drop-off; other transfers are untouched.
+func cancel_delivery(peer: int) -> void:
+	if transfers.pending.get(peer, {}).get("kind", "") == "wake":
+		transfers.cancel(peer)
 
 
 func remove_passenger(peer: int) -> void:
