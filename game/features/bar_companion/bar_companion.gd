@@ -4,6 +4,10 @@ extends Node3D
 ## The bartender, Vivienne and the slot machines call into it; clients only read
 ## the replicated `stats` summary.
 
+## Server-only: emitted after every drink with the drinker's precise new intoxication.
+## features/booze listens to black out players who drink too much.
+signal drink_added(peer: int, intoxication: float)
+
 ## Seconds between refreshes of the replicated summary.
 const PUBLISH_S := 0.5
 
@@ -66,6 +70,15 @@ func add_drink(peer: int) -> void:
 	if multiplayer.is_server():
 		var row := _row(peer)
 		row["intox"] = minf(float(row["intox"]) + 1.0, CharmMath.MAX_INTOXICATION)
+		_publish()
+		_save()
+		drink_added.emit(peer, float(row["intox"]))
+
+
+## Server-only: clears `peer`'s intoxication (a blackout sleeps it off).
+func sober_up(peer: int) -> void:
+	if multiplayer.is_server():
+		_row(peer)["intox"] = 0.0
 		_publish()
 		_save()
 
