@@ -128,3 +128,11 @@ unlocking. Stash transfer UI and range/door/lift checks belong to starter_room.
 Offline first stash use activates atomic `user://offline-inventory.json` snapshots
 of carried and stored items, followed by the normal save interval and final Hand
 exit write. Dev-auth guests retain session inventory and cannot access saved stash.
+
+## Undressing (#538)
+
+`PlayerInventory.stow_equipment(slots)` is a server-only helper that empties the given
+equipment slots (-1 hand, -2 shirt, -3 pants, -4 hat) into free backpack slots and
+drops anything that does not fit at the player through the normal holdables drop.
+It refuses while loading or mid-sip, and never touches keys. `features/booze` uses it
+when a drinker blacks out, leaving them in the white underwear.

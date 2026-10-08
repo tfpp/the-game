@@ -280,3 +280,12 @@ Using the counter now opens the shared NPC dialogue panel (`ui/npc_dialogue/`) f
 **Buy** opens the existing bar shop, **Ask** answers with a rotating line of bar talk and
 **Leave** walks away. It is client-local; ordering still goes through the validated
 `order` action. Walking out of range closes either panel.
+
+## Casino liquor and blackouts (#538)
+
+`BarCompanion` still owns intoxication. `drink_added(peer, intoxication)` is a new
+server signal emitted after every `add_drink`, and `sober_up(peer)` clears a player's
+intoxication (saved like any other change). `features/booze` uses both: every sip of
+its casino drinks is one drink, and the eighth drink from any source (including beer
+and "Drink now") blacks the player out and sobers them up. Charisma rules, decay,
+persistence, the shop and existing callers are unchanged. See `../booze/README.md`.

@@ -350,6 +350,28 @@ func clear_carried() -> int:
 	return count
 
 
+## Server-only: empties equipment `slots` (-1 hand, -2 shirt, -3 pants, -4 hat) into
+## free backpack slots, dropping whatever does not fit in front of the player.
+## Without a shirt and pants the avatar is back in its white underwear; keys stay.
+## features/booze uses this when a drinker collapses and blacks out. Returns the IDs.
+func stow_equipment(slots: Array[int]) -> Array[String]:
+	var moved: Array[String] = []
+	if not multiplayer.is_server() or loading or hand().consumption.active():
+		return moved
+	for slot: int in slots:
+		var id := item_at(slot)
+		if id.is_empty():
+			continue
+		var empty := backpack.find("")
+		if empty != -1:
+			_set_item(empty, id)
+		elif not hand().drop_inventory_item(id):
+			continue
+		_set_item(slot, "")
+		moved.append(id)
+	return moved
+
+
 func _restorable(id: String, slot: int) -> bool:
 	var definition := ItemCatalog.find(id)
 	if definition == null or definition.category == ItemDefinition.Category.KEY:

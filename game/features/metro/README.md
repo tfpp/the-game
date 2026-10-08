@@ -305,3 +305,13 @@ Full verification: `harness/verify.sh`.
 
 Check cross-feature elevator clearance in the complete live game with
 `godot --headless --path game res://features/metro/tools/audit_live.tscn`.
+
+## Platform drop-offs (#538)
+
+`MetroService.deliver(player, position, yaw)` carries one player to a platform point
+using the same readiness handshake (`MetroTransfers` kind `wake`): the client loads the
+station and reports its floor, then the server teleports the owner and emits
+`delivered(peer)`. Expired handshakes retry; `cancel_delivery(peer)` abandons only a
+`wake` transfer. It refuses dead, respawning, instanced or already-transferring
+players and removes any stale passenger entry. `features/booze` uses it to wake
+blacked-out drinkers in the lanes beside either track (`platform_recovery` x).

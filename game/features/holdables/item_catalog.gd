@@ -8,6 +8,11 @@ const DEFINITIONS: Array[ItemDefinition] = [
 	preload("res://features/vip_lounge/items/luck_cocktail.tres"),
 	preload("res://features/vip_lounge/items/golden_hour.tres"),
 	preload("res://features/vip_lounge/items/velvet_reserve.tres"),
+	preload("res://features/booze/items/whiskey.tres"),
+	preload("res://features/booze/items/red_wine.tres"),
+	preload("res://features/booze/items/martini.tres"),
+	preload("res://features/booze/items/whiskey_rocks.tres"),
+	preload("res://features/booze/items/cosmopolitan.tres"),
 	preload("res://features/holdables/items/wendys_burger.tres"),
 	preload("res://features/holdables/items/cigarette.tres"),
 	preload("res://features/holdables/items/beer.tres"),
@@ -57,6 +62,11 @@ const CONSUMABLE_STAGES := {
 	"luck_cocktail": ["luck_cocktail"],
 	"golden_hour": ["golden_hour"],
 	"velvet_reserve": ["velvet_reserve"],
+	"whiskey": ["whiskey:1", "whiskey:2", "whiskey"],
+	"red_wine": ["red_wine:1", "red_wine:2", "red_wine"],
+	"martini": ["martini"],
+	"whiskey_rocks": ["whiskey_rocks"],
+	"cosmopolitan": ["cosmopolitan"],
 	"beer": ["beer:1", "beer:2", "beer"],
 	"cigarette": ["cigarette:1", "cigarette:2", "cigarette"],
 }
@@ -125,7 +135,7 @@ static func find(id: String) -> ItemDefinition:
 	if not kind.is_empty() and id != kind:
 		var partial := find(kind).duplicate() as ItemDefinition
 		partial.id = id
-		var unit := "sips" if kind == "beer" else "puffs"
+		var unit := "puffs" if kind == "cigarette" else "sips"
 		partial.display_name += " (%d %s left)" % [uses_remaining(id), unit]
 		return partial
 	if not ClothingCatalog.slot(id).is_empty():

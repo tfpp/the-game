@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://features/holdables/item_definition.gd" id="definition"]
+[ext_resource type="PackedScene" path="res://features/booze/items/martini_view.tscn" id="view"]
+
+[resource]
+script = ExtResource("definition")
+id = "martini"
+display_name = "Dry martini"
+category = 1
+view_scene = ExtResource("view")
+weight = 0.3
+ground_clearance = 0.06
+first_person_offset = Vector3(0.22, -0.20, -0.40)
+consumption_group = &"booze"

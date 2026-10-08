@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://features/booze/booze.gd" id="1_booze"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="2_entity"]
+[ext_resource type="Script" path="res://features/booze/drunk_view.gd" id="3_view"]
+
+[node name="Booze" type="Node3D"]
+script = ExtResource("1_booze")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("2_entity")
+replicated_properties = Array[NodePath]([NodePath(".:blackouts")])
+
+[node name="Spots" type="Node3D" parent="."]
+
+[node name="DrunkView" type="Node" parent="."]
+script = ExtResource("3_view")
