@@ -265,3 +265,11 @@ extra persistence store, damage, key binding or dynamic light.
 Basketball collision/persistence/pickup tests live in
 `tests/features/holdables/test_basketball.gd`; real transport coverage lives in
 `tests/features/holdables/test_basketball_network.gd`.
+
+## Casino liquor (#538)
+
+`features/booze` adds `whiskey` and `red_wine` (three sips, staged as `whiskey:2` /
+`whiskey:1` like beer) and single-glass `martini`, `whiskey_rocks` and `cosmopolitan`.
+They are FOOD consumables with `consumption_group = &"booze"`, so the existing
+`ConsumableUse` animation, validation and staged IDs apply unchanged; partial items of
+every kind except cigarettes now read "sips left". See `../booze/README.md`.

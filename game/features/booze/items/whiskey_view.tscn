@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/models/whiskey_bottle.res" id="mesh"]
+[ext_resource type="Material" path="res://features/casino_props/materials/whiskey_bottle.tres" id="material"]
+
+[node name="Whiskey" type="Node3D"]
+
+[node name="Bottle" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.13, 0)
+mesh = ExtResource("mesh")
+material_override = ExtResource("material")
+
+[node name="Grip" type="Marker3D" parent="."]
+
+[node name="Mouth" type="Marker3D" parent="."]
+position = Vector3(0, 0.1935, 0)

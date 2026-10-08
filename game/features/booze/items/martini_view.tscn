@@ -1,0 +1,65 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/casino_props/bundle/models/martini-glass.res" id="glass"]
+[ext_resource type="Material" path="res://features/casino_props/materials/bundle/martini-glass.tres" id="finish"]
+
+[sub_resource type="StandardMaterial3D" id="drink"]
+albedo_color = Color(0.86, 0.88, 0.70, 1)
+roughness = 0.4
+
+[sub_resource type="CylinderMesh" id="liquid"]
+top_radius = 0.05
+bottom_radius = 0.05
+height = 0.004
+radial_segments = 12
+rings = 1
+material = SubResource("drink")
+
+[sub_resource type="StandardMaterial3D" id="olive_finish"]
+albedo_color = Color(0.42, 0.55, 0.16, 1)
+roughness = 0.7
+
+[sub_resource type="SphereMesh" id="olive"]
+radius = 0.012
+height = 0.022
+radial_segments = 8
+rings = 4
+material = SubResource("olive_finish")
+
+[sub_resource type="StandardMaterial3D" id="pick_finish"]
+albedo_color = Color(0.66, 0.48, 0.25, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="pick"]
+top_radius = 0.0015
+bottom_radius = 0.0015
+height = 0.09
+radial_segments = 6
+rings = 1
+material = SubResource("pick_finish")
+
+[node name="Martini" type="Node3D"]
+
+[node name="Glass" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.06, 0)
+scale = Vector3(1.3, 1.3, 1.3)
+mesh = ExtResource("glass")
+material_override = ExtResource("finish")
+
+[node name="Drink" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.112, 0)
+mesh = SubResource("liquid")
+
+[node name="Olive" type="MeshInstance3D" parent="."]
+position = Vector3(0.012, 0.1, 0)
+mesh = SubResource("olive")
+
+[node name="Pick" type="MeshInstance3D" parent="."]
+position = Vector3(0.03, 0.13, 0)
+rotation_degrees = Vector3(0, 0, 35)
+mesh = SubResource("pick")
+
+[node name="Grip" type="Marker3D" parent="."]
+
+[node name="Mouth" type="Marker3D" parent="."]
+position = Vector3(0, 0.125, 0.045)
