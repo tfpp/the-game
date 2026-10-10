@@ -31,6 +31,10 @@ func TestProfileTracksHeartbeatTimeAcrossRestartAndLinking(t *testing.T) {
 	}
 	check := func(want int64) {
 		t.Helper()
+		seconds, err := s.Playtime(ctx, a.ID)
+		if err != nil || seconds != want {
+			t.Fatalf("game playtime: %d %v; want %d", seconds, err, want)
+		}
 		p, err := s.ProfileByDiscord(ctx, "123")
 		if err != nil || p.PlaytimeSeconds != want || p.DisplayName != "Player" {
 			t.Fatalf("profile: %+v %v; want %d", p, err, want)

@@ -115,7 +115,12 @@ func (s *Server) gameMoney(w http.ResponseWriter, r *http.Request) {
 			s.internalError(w, r, err)
 			return
 		}
-		writeJSON(w, 200, map[string]int64{"balance": balance})
+		seconds, err := s.store.Playtime(r.Context(), req.AccountID)
+		if err != nil {
+			s.internalError(w, r, err)
+			return
+		}
+		writeJSON(w, 200, map[string]int64{"balance": balance, "playtime_seconds": seconds})
 		return
 	}
 	if req.Action == "credit" {

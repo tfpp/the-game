@@ -34,6 +34,11 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	capture_players()
+	if multiplayer.is_server():
+		for peer: int in _connections:
+			var key: String = _connections[peer]["key"]
+			if key.begins_with("guest:"):
+				_history[key]["online_seconds"] = float(_history[key]["online_seconds"]) + delta
 	_save_elapsed += delta
 	if _save_elapsed >= 5.0:
 		_save_elapsed = 0.0
@@ -111,7 +116,14 @@ func capture_players() -> void:
 				"key": key, "jumps": 0, "kills": int(_kill_baselines.get(peer, 0))
 			}
 			if not _history.has(key):
-				_history[key] = {"name": "", "money": 0, "jumps": 0, "kills": 0}
+				_history[key] = {
+					"name": "",
+					"money": 0,
+					"jumps": 0,
+					"kills": 0,
+					"online_seconds": 0.0,
+					"portrait": {}
+				}
 				_dirty = true
 		var record: Dictionary = _history[_connections[peer]["key"]]
 		var display_name := Network.peer_name(peer)
@@ -136,6 +148,12 @@ func _sample(peer: int) -> void:
 		if int(record["money"]) != balance:
 			record["money"] = balance
 			_dirty = true
+	if money != null and not str(connection["key"]).begins_with("guest:"):
+		var seconds := money.playtime_for(peer)
+		if seconds >= 0:
+			if seconds != int(record["online_seconds"]):
+				record["online_seconds"] = seconds
+				_dirty = true
 	var combat := get_tree().get_first_node_in_group(&"combat") as Combat
 	var counts := {"jumps": jumps_for(peer), "kills": combat.kills_for(peer) if combat else 0}
 	for stat: String in counts:
@@ -153,6 +171,8 @@ func _publish() -> void:
 	var next: Array[Dictionary] = []
 	for key: String in _history:
 		var row: Dictionary = _history[key].duplicate()
+		row.erase("online_seconds")
+		row.erase("portrait")
 		row["peer"] = int(peers.get(key, 0))
 		next.append(row)
 	if entries != next:
@@ -163,6 +183,7 @@ func _disconnected(peer: int) -> void:
 	if not multiplayer.is_server() or not _connections.has(peer):
 		return
 	_sample(peer)
+	_capture_portrait(peer)
 	_kill_baselines[peer] = _connections[peer]["kills"]
 	_connections.erase(peer)
 	# Peer IDs may be reused; jump counts belong to a connection, not an identity.
@@ -203,8 +224,43 @@ func _ensure_loaded() -> void:
 				"name": value["name"],
 				"money": int(value["money"]),
 				"jumps": int(value["jumps"]),
-				"kills": int(value["kills"])
+				"kills": int(value["kills"]),
+				"online_seconds": 0.0,
+				"portrait": {}
 			}
+			var seconds: Variant = value.get("online_seconds", 0)
+			if (seconds is int or seconds is float) and is_finite(float(seconds)):
+				_history[key]["online_seconds"] = maxf(0.0, float(seconds))
+			var portrait: Variant = value.get("portrait", {})
+			if portrait is Dictionary and OnlineStatue.valid_portrait(portrait):
+				_history[key]["portrait"] = portrait
+
+
+## Server-only display snapshot; no account identifiers or client-authored scores.
+## Ties retain historical insertion order, like the existing panel rankings.
+func longest_online() -> Dictionary:
+	if not multiplayer.is_server():
+		return {}
+	capture_players()
+	for peer: int in _connections:
+		_capture_portrait(peer)
+	var best := {}
+	for record: Dictionary in _history.values():
+		if best.is_empty() or int(record["online_seconds"]) > int(best["seconds"]):
+			best = {
+				"name": record["name"],
+				"seconds": int(record["online_seconds"]),
+				"portrait": record["portrait"].duplicate(true)
+			}
+	return best
+
+
+func _capture_portrait(peer: int) -> void:
+	var record: Dictionary = _history[_connections[peer]["key"]]
+	var portrait := OnlineStatue.portrait_for(get_tree(), peer)
+	if record["portrait"] != portrait:
+		record["portrait"] = portrait
+		_dirty = true
 
 
 func _save() -> void:
