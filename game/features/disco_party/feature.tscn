@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/disco_party/disco_party.gd" id="1_party"]
+[ext_resource type="Script" path="res://core/net/networked_interaction.gd" id="2_entity"]
+
+[node name="DiscoParty" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, -1.25, 0)
+script = ExtResource("1_party")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("2_entity")
+replicated_properties = Array[NodePath]([NodePath(".:net_seconds_left"), NodePath(".:net_recharge_left"), NodePath(".:net_dj")])
+interaction_range = 2.5
+interaction_offset = Vector3(0, 0.9, 0)
