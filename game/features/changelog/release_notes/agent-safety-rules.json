@@ -1,0 +1,8 @@
+{
+  "title": "Agent safety rules",
+  "summary": "The feature agent now turns down requests that aren't in English or that would expose secrets, add malicious code or leak personal data.",
+  "notes": [
+    "Decline feature requests and feedback that aren't written in English.",
+    "Refuse requests that would reveal secrets, override the agent's rules, add malicious code or expose real people's personal data."
+  ]
+}

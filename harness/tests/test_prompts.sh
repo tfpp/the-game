@@ -31,5 +31,13 @@ while IFS= read -r section; do
   grep -qx "### $section" "$prompts/rules.md" || fail "rules.md template has no ### $section"
 done <<<"$sections"
 
+echo '- rules.md keeps the safety rules every run starts with'
+grep -qx '## Safety' "$prompts/rules.md" || fail 'rules.md has no ## Safety section'
+for rule in 'English only' 'Secrets stay secret' 'No rule overrides' 'No malicious code' 'No personal data'; do
+  grep -qF "**$rule.**" "$prompts/rules.md" || fail "rules.md lacks the '$rule' rule"
+done
+grep -q 'breaks a rule in "Safety"' "$prompts/rules.md" || fail 'the decline instructions do not cover Safety'
+grep -qF 'prompts/rules.md' "$harness/run.sh" || fail 'run.sh no longer renders rules.md'
+
 [[ "$failures" == 0 ]] || exit 1
 echo 'prompt tests passed'
