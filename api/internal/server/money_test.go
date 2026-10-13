@@ -116,6 +116,16 @@ func TestGameMoneyGirlIncomeRate(t *testing.T) {
 		if res.Code != 200 {
 			t.Fatal(res.Body.String())
 		}
+		var heartbeat struct {
+			Balance  int64 `json:"balance"`
+			Playtime int64 `json:"playtime_seconds"`
+		}
+		if err := json.Unmarshal(res.Body.Bytes(), &heartbeat); err != nil {
+			t.Fatal(err)
+		}
+		if heartbeat.Playtime != int64(i*5) {
+			t.Fatalf("heartbeat must expose existing cumulative playtime: %+v", heartbeat)
+		}
 		if i == 12 && !strings.Contains(res.Body.String(), `"balance":2425`) {
 			t.Fatal(res.Body.String())
 		}

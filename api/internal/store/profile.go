@@ -12,6 +12,13 @@ type Profile struct {
 	PlaytimeSeconds int64  `json:"playtime_seconds"`
 }
 
+// Playtime reads the existing heartbeat-owned counter; it never accrues time.
+func (s *Store) Playtime(ctx context.Context, accountID int64) (int64, error) {
+	var seconds int64
+	err := s.db.QueryRowContext(ctx, "SELECT playtime_seconds FROM accounts WHERE id = ?", accountID).Scan(&seconds)
+	return seconds, err
+}
+
 // ProfileByDiscord uses the existing verified OAuth link, not a player-supplied name.
 func (s *Store) ProfileByDiscord(ctx context.Context, discordID string) (Profile, error) {
 	var p Profile

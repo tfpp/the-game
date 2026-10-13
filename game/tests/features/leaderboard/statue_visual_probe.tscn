@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://main.tscn" id="1"]
+[ext_resource type="Script" path="res://tests/features/leaderboard/statue_visual_probe.gd" id="2"]
+
+[node name="StatueVisualProbe" type="Node"]
+script = ExtResource("2")
+
+[node name="Game" parent="." instance=ExtResource("1")]
