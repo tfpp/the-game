@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://features/casino_security/casino_security.gd" id="1_security"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="2_entity"]
+[ext_resource type="PackedScene" path="res://features/casino_security/guard.tscn" id="3_guard"]
+[ext_resource type="Script" path="res://features/casino_security/security_view.gd" id="4_view"]
+
+[node name="CasinoSecurity" type="Node3D"]
+script = ExtResource("1_security")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("2_entity")
+replicated_properties = Array[NodePath]([NodePath(".:detentions")])
+
+[node name="Guards" type="Node3D" parent="."]
+
+[node name="Guard0" parent="Guards" instance=ExtResource("3_guard")]
+position = Vector3(-4.6, 0, -17.6)
+post = Vector3(-4.6, 0, -17.6)
+post_yaw = 3.1415927
+
+[node name="Guard1" parent="Guards" instance=ExtResource("3_guard")]
+position = Vector3(-15.2, 0, 17.8)
+post = Vector3(-15.2, 0, 17.8)
+look = 1
+
+[node name="Guard2" parent="Guards" instance=ExtResource("3_guard")]
+position = Vector3(19.5, 0, 3.5)
+post = Vector3(19.5, 0, 3.5)
+post_yaw = 1.5707964
+look = 2
+
+[node name="SecurityView" type="Node" parent="."]
+script = ExtResource("4_view")

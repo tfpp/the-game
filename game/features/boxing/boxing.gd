@@ -13,6 +13,11 @@ extends Node
 ## (features/shooting_gallery's dummies) handle it themselves; players take
 ## damage through features/combat; other `killable`s take a hit from power punches.
 
+## Server: a punch or kick from `attacker_peer` landed on `target` (a player, dummy,
+## patron or other killable), whatever it did to them. features/casino_security
+## listens for fights in the Golden Crown.
+signal landed(attacker_peer: int, target: Node)
+
 const REACH_M := 2.0
 const SWEEP_RADIUS_M := 0.45
 const JAB_COOLDOWN_S := 0.3
@@ -150,6 +155,7 @@ func punch(peer: int, held_s: float, kicking: bool = false) -> Node:
 		return null
 	var target := hit["collider"] as Node
 	_land(target, peer, strength, power, BoxingMath.push_direction(player.net_yaw))
+	landed.emit(peer, target)
 	_play_landed.rpc(hit["position"])
 	return target
 

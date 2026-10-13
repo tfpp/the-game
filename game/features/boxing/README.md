@@ -64,3 +64,10 @@ color). Camera-space shoulder and wrist IK keeps the arms connected during jabs,
 power swings and charge draw-back; the non-arm surface is masked out. No extra RPCs
 or persistence are needed: accepted swings already broadcast to every peer, and
 late joiners start at rest rather than replaying old punches.
+
+## Landed signal
+
+After the server resolves a punch or kick that hits something, `Boxing` emits
+`landed(attacker_peer, target)`, whatever the hit did (blocked damage in a safe
+zone included). `features/casino_security` listens for fights in the Golden Crown.
+Hit resolution, cooldowns and damage are unchanged.

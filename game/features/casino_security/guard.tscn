@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://features/casino_security/guard.gd" id="1_guard"]
+[ext_resource type="Script" path="res://features/casino_security/guard_model.gd" id="2_model"]
+[ext_resource type="Script" path="res://core/net/networked_entity.gd" id="3_entity"]
+
+[sub_resource type="CapsuleShape3D" id="ColliderShape"]
+radius = 0.38
+height = 2.05
+
+[node name="Guard" type="AnimatableBody3D"]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_guard")
+
+[node name="Collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.025, 0)
+shape = SubResource("ColliderShape")
+
+[node name="Body" type="Node3D" parent="."]
+script = ExtResource("2_model")
+
+[node name="NetworkedEntity" type="Node" parent="."]
+script = ExtResource("3_entity")
+replicated_properties = Array[NodePath]([NodePath(".:net_state"), NodePath(".:net_carrying")])
+continuous_properties = Array[NodePath]([NodePath(".:net_position"), NodePath(".:net_yaw")])

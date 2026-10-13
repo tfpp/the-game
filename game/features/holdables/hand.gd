@@ -223,6 +223,7 @@ func _fire(def: ItemDefinition) -> void:
 	if player == null:
 		return
 	if def.damage > 0.0 and SafeZone.covers(get_tree(), player.global_position):
+		CasinoSecurity.report(self, peer_id, &"firearm")
 		return
 	var magazine := magazine_for(def.id)
 	if magazine != null and not magazine.can_fire():

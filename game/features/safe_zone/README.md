@@ -9,7 +9,9 @@ safe zone:
 - `Combat.apply_enemy_damage` rejects hostile NPC damage to a protected victim,
   without awarding player kill credit outside safe rooms.
 - Held weapons (`holdables/hand.gd`) and gun-machine guns (`gun_machine/gun_rig.gd`)
-  refuse to fire on the server: no shot, sound, cooldown or ammo is spent.
+  refuse to fire on the server: no shot, sound, cooldown or ammo is spent. The refusal
+  is reported to `features/casino_security`, whose bouncers throw the shooter out
+  when it happens in the main hall.
 - Thrown props, eating, punching and kicking killable toys keep working. The
   shooting gallery (x 306, z -306) and the slums are outside every zone.
 
