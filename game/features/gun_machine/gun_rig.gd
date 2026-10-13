@@ -244,6 +244,7 @@ func _fire(_peer: int, _payload: Dictionary) -> bool:
 	if player == null or gun_machine == null:
 		return false
 	if SafeZone.covers(get_tree(), player.global_position):
+		CasinoSecurity.report(self, peer_id, &"firearm")
 		return false
 	var barrel_count := int(net_stats["barrel_count"])
 	_fire_cooldown = 1.0 / maxf(float(net_stats["fire_rate"]), 0.01)

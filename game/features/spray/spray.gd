@@ -6,6 +6,10 @@ extends Node
 ## near the sender's player, then tells every peer to place the decal. Only the newest
 ## MAX_SPRAYS stay in the world.
 
+## Server: `peer_id` sprayed a decal at `point` (features/casino_security watches for
+## vandalism in the Golden Crown).
+signal sprayed(peer_id: int, point: Vector3)
+
 const SPRAY_ACTION := &"spray"
 const REACH := 6.0
 ## Extra distance the server allows beyond REACH for latency and camera offset.
@@ -21,6 +25,7 @@ var _texture: Texture2D
 
 
 func _ready() -> void:
+	add_to_group(&"spray")
 	Controls.ensure_action(SPRAY_ACTION, [_key_event(KEY_T)])
 
 
@@ -57,6 +62,7 @@ func request_spray(point: Vector3, normal: Vector3) -> void:
 		return
 	_last_sprayed[peer_id] = now
 	place_spray.rpc(point, normal.normalized())
+	sprayed.emit(peer_id, point)
 
 
 @rpc("authority", "call_local", "reliable")

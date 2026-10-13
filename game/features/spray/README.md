@@ -7,3 +7,7 @@ the sender's player, rate-limits to one spray per second per player, and broadca
 
 The default spray is a placeholder red "!" drawn in code (`Spray._default_texture`); the
 requested meme image couldn't be fetched in CI, so swap it for a real texture there.
+
+After the server accepts a spray it emits `sprayed(peer_id, point)`; the node is in
+the `spray` group. `features/casino_security` treats sprays in the Golden Crown as
+vandalism.
